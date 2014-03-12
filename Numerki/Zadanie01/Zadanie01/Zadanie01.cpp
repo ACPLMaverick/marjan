@@ -41,9 +41,9 @@ void bisekcja_iter(double a, double b, int count)
 	}
 	else
 	{
-		bool wynik = sprawdz(cos, 0.5, temp_x1);
-		bool przedzial1 = sprawdzPrzedzial(cos, 0.5, temp_x1, a);
-		bool przedzial2 = sprawdzPrzedzial(cos, 0.5, temp_x1, b);
+		//bool wynik = sprawdz(cos, 0.5, temp_x1);
+		//bool przedzial1 = sprawdzPrzedzial(cos, 0.5, temp_x1, a);
+		//bool przedzial2 = sprawdzPrzedzial(cos, 0.5, temp_x1, b);
 		std::cout << temp_x1 << std::endl;
 	}
 
