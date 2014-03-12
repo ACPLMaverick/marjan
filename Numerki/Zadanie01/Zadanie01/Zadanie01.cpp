@@ -1,7 +1,9 @@
 
 #include <iostream>
 #include <cmath>
-
+#include "gnuplot_i.hpp"
+using namespace std;
+#define GNUPLOT_PATH "C:\gnuplot\bin"
 //f(x) = cos(x/2), x (0,6), x0=pi
 
 double miejsceZerowe(double a, double b)
@@ -58,6 +60,7 @@ int main(int argc, char* argv[])
 {
 	//Wybierany jest ten przedzia³, dla którego spe³nione jest drugie za³o¿enie, tzn. albo f(x_{1})f(a)<0 albo f(x_{1})f(b)<0. 
 	//Ca³y proces powtarzany jest dla wybranego przedzia³u.
+	Gnuplot::set_GNUPlotPath(GNUPLOT_PATH);
 	int iter;
 	std::cout << "Podaj ilosc iteracji: ";
 	std::cin >> iter;
