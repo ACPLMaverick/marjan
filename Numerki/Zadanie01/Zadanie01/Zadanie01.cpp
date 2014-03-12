@@ -31,24 +31,18 @@ bool sprawdzPrzedzial(double (*func)(double), double n, double x1, double a)
 	else return false;
 }
 
-void bisekcja_iter(double a, double b, int count)
+double bisekcja_iter(double a, double b, int count)
 {
 	double temp_x1 = miejsceZerowe(a, b);
+
 	if (count > 0)
 	{
 		if (sprawdzPrzedzial(cos, 0.5, temp_x1, a) == 0)
-			bisekcja_iter(temp_x1, b, count - 1);
+			temp_x1 = bisekcja_iter(temp_x1, b, count - 1);
 		else
-			bisekcja_iter(a, temp_x1, count - 1);
+			temp_x1 = bisekcja_iter(a, temp_x1, count - 1);
 	}
-	else
-	{
-		bool wynik = sprawdz(cos, 0.5, temp_x1);
-		bool przedzial1 = sprawdzPrzedzial(cos, 0.5, temp_x1, a);
-		bool przedzial2 = sprawdzPrzedzial(cos, 0.5, temp_x1, b);
-		std::cout << temp_x1 << std::endl;
-	}
-
+	return temp_x1;
 }
 
 void bisekcja_dokladnosc()
@@ -62,9 +56,12 @@ int main(int argc, char* argv[])
 	//Ca³y proces powtarzany jest dla wybranego przedzia³u.
 	Gnuplot::set_GNUPlotPath(GNUPLOT_PATH);
 	int iter;
-	std::cout << "Podaj ilosc iteracji: ";
-	std::cin >> iter;
-	bisekcja_iter(0, 6, iter);
+	cout << "Podaj ilosc iteracji: ";
+	cin >> iter;
+	//bisekcja_iter(0, 6, iter);
+
+	
+	cout << endl << bisekcja_iter(0, 6, iter) << endl;
 	system("PAUSE");
 	return 0;
 }
