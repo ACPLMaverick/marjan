@@ -6,12 +6,13 @@ using namespace std;
 #define GNUPLOT_PATH "C:\gnuplot\bin"
 //f(x) = cos(x/2), x (0,6), x0=pi
 
+//METODA BISEKCJI
 double miejsceZerowe(double a, double b)
 {
 	return (a + b) / 2;
 }
 
-bool sprawdz(double (*func)(double), double n, double x1)
+bool sprawdz(double (*func)(double), double n, double x1)	//funkcja, która w za³o¿eniu mia³a wczeœniej koñczyæ algorytm
 {
 	double wartosc = func(n*x1);
 	if (wartosc = 0)
@@ -31,25 +32,46 @@ bool sprawdzPrzedzial(double (*func)(double), double n, double x1, double a)
 	else return false;
 }
 
-double bisekcja_iter(double a, double b, int count)
+double modul(double (*func)(double), double n, double x1)
+{
+	return abs(func(n*x1));
+}
+
+double bisekcja_iter(double a, double b, double e, int count)
 {
 	double temp_x1 = miejsceZerowe(a, b);
 
-	if (count > 0)
+	if (count > 0 || modul(cos, 0.5, temp_x1) > e)	
 	{
 		if (sprawdzPrzedzial(cos, 0.5, temp_x1, a) == 0)
-			temp_x1 = bisekcja_iter(temp_x1, b, count - 1);
+			temp_x1 = bisekcja_iter(temp_x1, b, e, count - 1);
 		else
-			temp_x1 = bisekcja_iter(a, temp_x1, count - 1);
+			temp_x1 = bisekcja_iter(a, temp_x1, e, count - 1);
 	}
 	return temp_x1;
 }
 
-void bisekcja_dokladnosc()
+//METODA REGULA FALSI
+double cieciwa(double (*func)(double), double n, double a, double b)
 {
-
+	return (a*func(n*b) - b*func(n*a)) / (func(n*b) - func(n*a));
 }
 
+double falsi_iter(double a, double b, int count)
+{
+	double temp_x1 = cieciwa(cos, 0.5, a, b);
+
+	if (count > 0)
+	{
+		if (sprawdzPrzedzial(cos, 0.5, temp_x1, a) <= 0)
+			temp_x1 = falsi_iter(temp_x1, a, count - 1);
+		else
+			temp_x1 = falsi_iter(temp_x1, b, count - 1);
+	}
+	return temp_x1;
+}
+
+//PROGRAM
 int main(int argc, char* argv[])
 {
 	//Wybierany jest ten przedzia³, dla którego spe³nione jest drugie za³o¿enie, tzn. albo f(x_{1})f(a)<0 albo f(x_{1})f(b)<0. 
@@ -58,10 +80,8 @@ int main(int argc, char* argv[])
 	int iter;
 	cout << "Podaj ilosc iteracji: ";
 	cin >> iter;
-	//bisekcja_iter(0, 6, iter);
-
-	
-	cout << endl << bisekcja_iter(0, 6, iter) << endl;
+	cout << endl << bisekcja_iter(0, 6, 3, iter) << endl;
+	cout << endl << falsi_iter(0, 6, iter);
 	system("PAUSE");
 	return 0;
 }
