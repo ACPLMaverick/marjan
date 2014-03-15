@@ -34,14 +34,14 @@ double miejsceZerowe(double a, double b)
 	return (a + b) / 2;
 }
 
-double sprawdz(double (*func)(double), double n, double x1)	//funkcja, która w za³o¿eniu mia³a wczeœniej koñczyæ algorytm
+double sprawdz(double (*func)(double), double x1)	//funkcja, która w za³o¿eniu mia³a wczeœniej koñczyæ algorytm
 {
-	return func(n*x1);
+	return func(x1);
 }
 
-bool sprawdzPrzedzial(double (*func)(double), double n, double x1, double a)
+bool sprawdzPrzedzial(double (*func)(double), double x1, double a)
 {
-	double wartosc = func(n*x1)*func(n*a);
+	double wartosc = func(x1)*func(a);
 	if (wartosc < 0)
 	{
 		return true;
@@ -49,50 +49,55 @@ bool sprawdzPrzedzial(double (*func)(double), double n, double x1, double a)
 	else return false;
 }
 
-double modul(double (*func)(double), double n, double x1)
+double modul(double (*func)(double), double x1)
 {
-	return abs(func(n*x1));
+	return abs(func(x1));
 	//return 1.0;
 }
 
-// METODA BISEKCJI - funkcja, wspó³czynnik wewn¹trz funkcji, pocz¹tek przedzia³u, koniec przedzia³u, epsilon, iloœc iteracji
-double bisekcja_iter(double(*func)(double), double n, double a, double b, double e, int count)
+// METODA BISEKCJI - funkcja, pocz¹tek przedzia³u, koniec przedzia³u, epsilon, iloœc iteracji
+double bisekcja_iter(double(*func)(double), double a, double b, double e, int count)
 {
 	double temp_x1 = miejsceZerowe(a, b);
 
-	if (count > 0 /*|| modul(func, 0.5, temp_x1) > e*/ && sprawdz(func, n, temp_x1)!=0)	
+	if (count > 0 && sprawdz(func, temp_x1)!=0)	
 	{
-		if (sprawdzPrzedzial(func, n, temp_x1, a) == 0)
-			temp_x1 = bisekcja_iter(func, n, temp_x1, b, e, count - 1);
+		if (sprawdzPrzedzial(func, temp_x1, a) == 0)
+			temp_x1 = bisekcja_iter(func, temp_x1, b, e, count - 1);
 		else
-			temp_x1 = bisekcja_iter(func, n, a, temp_x1, e, count - 1);
+			temp_x1 = bisekcja_iter(func, a, temp_x1, e, count - 1);
 	}
 	return temp_x1;
 }
 
 //METODA REGULA FALSI
-double cieciwa(double (*func)(double), double n, double a, double b)
+double cieciwa(double (*func)(double), double a, double b)
 {
-	return (a*func(n*b) - b*func(n*a)) / (func(n*b) - func(n*a));
+	return (a*func(b) - b*func(a)) / (func(b) - func(a));
 }
 
-// funkcja, wspó³czynnik wewn¹trz funkcji, pocz¹tek przedzia³u, koniec przedzia³u, epsilon, iloœc iteracji
-double falsi_iter(double(*func)(double), double n, double a, double b, double e, int count)
+// funkcja, pocz¹tek przedzia³u, koniec przedzia³u, epsilon, iloœc iteracji
+double falsi_iter(double(*func)(double), double a, double b, double e, int count)
 {
-	double temp_x1 = cieciwa(func, n, a, b);
+	double temp_x1 = cieciwa(func, a, b);
 
-	if (count > 0 && sprawdz(func, n, temp_x1)!=0)
+	if (count > 0 && sprawdz(func, temp_x1)!=0)
 	{
-		if (sprawdzPrzedzial(func, n, temp_x1, a) <= 0)
-			temp_x1 = falsi_iter(func, n, temp_x1, a, e, count - 1);
+		if (sprawdzPrzedzial(func, temp_x1, a) <= 0)
+			temp_x1 = falsi_iter(func, temp_x1, a, e, count - 1);
 		else
-			temp_x1 = falsi_iter(func, n, temp_x1, b, e, count - 1);
+			temp_x1 = falsi_iter(func, temp_x1, b, e, count - 1);
 	}
 	return temp_x1;
 }
 
 /////////////////////////////////////////////////////
 //		funkcje
+double cosx(double x)
+{
+	return cos(0.5*x);
+}
+
 double cosax(double x)
 {
 	return cos(pow(2, x));
@@ -133,7 +138,7 @@ int main(int argc, char* argv[])
 	Gnuplot::set_GNUPlotPath(GNUPLOT_PATH);
 
 	int mode, iter, function, stopien;
-	double a, b, e, n;
+	double a, b, e;
 	double (*wybranaFunkcja)(double);
 	double (*wybranaFunkcjaWielomian)(int[], int, double);
 
@@ -201,23 +206,19 @@ int main(int argc, char* argv[])
 	}
 	else if (function == 2)
 	{
-		wybranaFunkcja = cos;
-		n = 0.5;
+		wybranaFunkcja = cosx;
 	}
 	else if (function == 3)
 	{
 		wybranaFunkcja = sinax;
-		n = 1;
 	}
 	else if (function == 4)
 	{
 		wybranaFunkcja = wykl;
-		n = 1;
 	}
 	else if (function == 5)
 	{
 		wybranaFunkcja = acosx;
-		n = 1;
 	}
 	else
 	{
@@ -227,8 +228,8 @@ int main(int argc, char* argv[])
 	
 	system("CLS");
 
-	cout << "METODA BISEKCJI: " << bisekcja_iter(wybranaFunkcja, n, a, b, e, iter) << endl;
-	cout << "METODA FALSI: " << falsi_iter(wybranaFunkcja, n, a, b, e, iter) << endl;
+	cout << "METODA BISEKCJI: " << bisekcja_iter(wybranaFunkcja, a, b, e, iter) << endl;
+	cout << "METODA FALSI: " << falsi_iter(wybranaFunkcja, a, b, e, iter) << endl;
 
 	system("PAUSE");
 	return 0;
