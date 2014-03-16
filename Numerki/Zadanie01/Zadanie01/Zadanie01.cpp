@@ -70,6 +70,25 @@ double bisekcja_iter(double(*func)(double), double a, double b, double e, int co
 	return temp_x1;
 }
 
+double bisekcja_dokladnosc(double(*func)(double), double a, double b, double e)
+{
+	double temp_x1;
+	do
+	{
+		temp_x1 = miejsceZerowe(a, b);
+		if (sprawdzPrzedzial(func, temp_x1, a))
+		{
+			b = temp_x1;
+		}
+		else
+		{
+			a = temp_x1;
+		}
+		//cout << e << "   " << func(temp_x1) << endl;
+	} while (abs(func(temp_x1))>e);
+	return temp_x1;
+}
+
 //METODA REGULA FALSI
 double cieciwa(double (*func)(double), double a, double b)
 {
@@ -88,6 +107,25 @@ double falsi_iter(double(*func)(double), double a, double b, double e, int count
 		else
 			temp_x1 = falsi_iter(func, temp_x1, b, e, count - 1);
 	}
+	return temp_x1;
+}
+
+double falsi_dokladnosc(double (*func)(double), double a, double b, double e)
+{
+	double temp_x1;
+	do
+	{
+		temp_x1 = cieciwa(func, a, b);
+		if (sprawdzPrzedzial(func, temp_x1, a))
+		{
+			b = temp_x1;
+		}
+		else
+		{
+			a = temp_x1;
+		}
+		//cout << e << "   " << func(temp_x1) << endl;
+	} while (abs(func(temp_x1))>e);
 	return temp_x1;
 }
 
@@ -228,8 +266,17 @@ int main(int argc, char* argv[])
 	
 	system("CLS");
 
-	cout << "METODA BISEKCJI: " << bisekcja_iter(wybranaFunkcja, a, b, e, iter) << endl;
-	cout << "METODA FALSI: " << falsi_iter(wybranaFunkcja, a, b, e, iter) << endl;
+	if (e < 0)
+	{
+		cout << "METODA BISEKCJI: " << bisekcja_iter(wybranaFunkcja, a, b, e, iter) << endl;
+		cout << "METODA FALSI: " << falsi_iter(wybranaFunkcja, a, b, e, iter) << endl;
+	}
+	else
+	{
+		cout << "METODA BISEKCJI DOKLADNOSC: " << bisekcja_dokladnosc(wybranaFunkcja, a, b, e) << endl;
+		cout << "METODA FALSI DOKLADNOSC: " << falsi_dokladnosc(wybranaFunkcja, a, b, e) << endl;
+	}
+
 
 	system("PAUSE");
 	return 0;
