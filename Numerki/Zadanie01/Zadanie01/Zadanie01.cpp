@@ -1,9 +1,10 @@
 
 #include <iostream>
 #include <cmath>
+#define GNUPLOT_PATH "C:\\gnuplot\\bin"
 #include "gnuplot_i.hpp"
 using namespace std;
-#define GNUPLOT_PATH "C:\gnuplot\bin"
+
 //f(x) = cos(x/2), x (0,6), x0=pi
 
 double potega(double x, double y)
@@ -177,6 +178,7 @@ int main(int argc, char* argv[])
 	//Wybierany jest ten przedzia³, dla którego spe³nione jest drugie za³o¿enie, tzn. albo f(x_{1})f(a)<0 albo f(x_{1})f(b)<0. 
 	//Ca³y proces powtarzany jest dla wybranego przedzia³u.
 	Gnuplot::set_GNUPlotPath(GNUPLOT_PATH);
+	Gnuplot myPlot;
 
 	int mode, iter, function, stopien;
 	double a, b, e;
@@ -222,22 +224,27 @@ int main(int argc, char* argv[])
 	if (function == 1)
 	{
 		wybranaFunkcja = wielomian;
+		myPlot.set_title("4x^4 - 8x^3 + 2x + 0.25");
 	}
 	else if (function == 2)
 	{
 		wybranaFunkcja = cosx;
+		myPlot.set_title("cos(0.5x)");
 	}
 	else if (function == 3)
 	{
 		wybranaFunkcja = sinax;
+		myPlot.set_title("0.5sin(x/4)");
 	}
 	else if (function == 4)
 	{
 		wybranaFunkcja = wykl;
+		myPlot.set_title("2^(cos(3x))-1");
 	}
 	else if (function == 5)
 	{
 		wybranaFunkcja = acosx;
+		myPlot.set_title("2^(cos(x))-1");
 	}
 	else
 	{
@@ -247,17 +254,69 @@ int main(int argc, char* argv[])
 	
 	system("CLS");
 
+	// sprawdzanie warunku o ró¿nych znakach na krañcach przedzia³u
+
+	if (wybranaFunkcja(a)*wybranaFunkcja(b) > 0)
+	{
+		cout << "W podanym przedziale nie ma miejsca zerowego - znaki funkcji na krancach przedzialu nie sa rozne." << endl;
+		system("Pause");
+		exit(1);
+	}
+
+	//
+
+	double wynik_bisekcja;
+	double wynik_falsi;
+
 	if (e < 0)
 	{
-		cout << "METODA BISEKCJI: " << bisekcja_iter(wybranaFunkcja, a, b, e, iter) << endl;
-		cout << "METODA FALSI: " << falsi_iter(wybranaFunkcja, a, b, e, iter) << endl;
+		wynik_bisekcja = bisekcja_iter(wybranaFunkcja, a, b, e, iter);
+		wynik_falsi = falsi_iter(wybranaFunkcja, a, b, e, iter);
+		cout << "METODA BISEKCJI: " << wynik_bisekcja << endl;
+		cout << "METODA FALSI: " << wynik_falsi << endl;
 	}
 	else
 	{
-		cout << "METODA BISEKCJI DOKLADNOSC: " << bisekcja_dokladnosc(wybranaFunkcja, a, b, e) << endl;
-		cout << "METODA FALSI DOKLADNOSC: " << falsi_dokladnosc(wybranaFunkcja, a, b, e) << endl;
+		wynik_bisekcja = bisekcja_dokladnosc(wybranaFunkcja, a, b, e);
+		wynik_falsi = falsi_dokladnosc(wybranaFunkcja, a, b, e);
+		cout << "METODA BISEKCJI DOKLADNOSC: " << wynik_bisekcja << endl;
+		cout << "METODA FALSI DOKLADNOSC: " << wynik_falsi << endl;
 	}
 
+	// wykres
+	myPlot.set_xlabel("X");
+	myPlot.set_ylabel("Y");
+	myPlot.set_style("lines");
+	myPlot.set_grid();
+	myPlot.set_xrange(a, b);
+	double zakres = 100 * (abs(b - a));
+	
+	vector<double> x(zakres);
+	vector<double> y(zakres);
+	vector<double> x_wyniki_b(1);
+	vector<double> y_wyniki_b(1);
+	vector<double> x_wyniki_f(1);
+	vector<double> y_wyniki_f(1);
+
+	x_wyniki_b[0] = wynik_bisekcja;
+	x_wyniki_f[0] = wynik_falsi;
+	y_wyniki_b[0] = wybranaFunkcja(wynik_bisekcja);
+	y_wyniki_f[0] = wybranaFunkcja(wynik_falsi);
+
+	for (double i = 0.0; i < zakres; i = i + 1.0)
+	{
+		if(a*b >= 0) x[i] = a + b*(i / zakres);
+		else x[i] = a + 2 * b*(i / zakres);
+		y[i] = wybranaFunkcja(x[i]);
+	}
+
+	myPlot.plot_xy(x, y, "funkcja");
+
+	myPlot.set_style("points");
+	myPlot.set_pointsize(2.0);
+
+	myPlot.plot_xy(x_wyniki_b, y_wyniki_b, "x0 - bisekcja");
+	myPlot.plot_xy(x_wyniki_f, y_wyniki_f, "x0 - falsi");
 
 	system("PAUSE");
 	return 0;
