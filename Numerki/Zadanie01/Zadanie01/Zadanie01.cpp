@@ -143,7 +143,7 @@ double cosax(double x)
 
 double acosx(double x)
 {
-	return pow(2, cos(x));
+	return pow(2, cos(x)) - 1;
 }
 double sinax(double x)
 {
@@ -153,9 +153,12 @@ double wykl(double x)
 {
 	return pow(2, cos(3 * x)) - 1;	//musia³em zostawiæ pow, bo obs³uguje double
 }
-double wielomian(int wspolczynniki[], int stopien, double x)
+double wielomian(double x)
 {
 	// schemat hornera
+	// ustalam wspolczynniki:
+	double wspolczynniki[] = { 4.0, -8.0, 0.0, 2.0, 0.25 };
+	int stopien = 4;
 	double wynik = wspolczynniki[0];
 	for (int i = 1; i < stopien; i++)
 	{
@@ -178,14 +181,13 @@ int main(int argc, char* argv[])
 	int mode, iter, function, stopien;
 	double a, b, e;
 	double (*wybranaFunkcja)(double);
-	double (*wybranaFunkcjaWielomian)(int[], int, double);
 
 	cout << "Wybierz funkcje:" << endl
-		<< "1: Wielomian" << endl
+		<< "1: 4x^4 - 8x^3 + 2x + 0.25" << endl
 		<< "2: cos(0.5x)" << endl
 		<< "3: 0.5*sin(x/4)" << endl
 		<< "4: 2^(cos(3x))-1" << endl
-		<< "5: 2^(cos(x)" << endl;
+		<< "5: 2^(cos(x)) - 1" << endl;
 	cin >> function;
 
 	cout << "Wybierz kryterium zatrzymania: " << endl
@@ -219,28 +221,7 @@ int main(int argc, char* argv[])
 
 	if (function == 1)
 	{
-		/*
-		// tworzenie wielomianu
-		int stopien, arg;
-		cout << endl << "Podaj stopien wielomianu: ";
-		cin >> stopien;
-		cout << endl;
-		int *wspolczynniki = new int[stopien + 1];
-
-		for (int i = 0; i <= stopien; i++)
-		{
-			cout << "Wspolczynnik przy potedze " << stopien - i << ": ";
-			cin >> wspolczynniki[i];
-		}
-		cout << endl;
-		wybranaFunkcjaWielomian = wielomian;
-
-		system("CLS");
-
-		cout << "METODA BISEKCJI: " << bisekcja_iter(wybranaFunkcja, a, b, e, iter) << endl;
-		cout << "METODA FALSI: " << falsi_iter(wybranaFunkcja, a, b, e, iter) << endl;
-		system("PAUSE");*/
-		exit(0);
+		wybranaFunkcja = wielomian;
 	}
 	else if (function == 2)
 	{
