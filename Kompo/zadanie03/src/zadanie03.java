@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.util.Arrays;
 import java.sql.Date;
 
+
 public class zadanie03 {
 
 	/**
@@ -16,6 +17,10 @@ public class zadanie03 {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String txt;
+		//Date mojaData = Date.valueOf("2014-12-04");
+		txt = JOptionPane.showInputDialog("Podaj rozmiar tablicy");
+		//enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};
+		//enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};String txt;
 		txt = JOptionPane.showInputDialog("Podaj rozmiar tablicy");
 		int size = Integer.parseInt(txt);
 		Eksponat[] anArray = new Eksponat[size];
@@ -23,8 +28,14 @@ public class zadanie03 {
 		{
 			wstaw(anArray, i);
 		}
+		Eksponat[] anArray = new Eksponat[size];
+		for(int i = 0; i<size; i++)
+		{
+			wstaw(anArray, i);
+		}
 		
-		
+		Eksponat mojEksponat = new Eksponat("Moj eksponat", 1, Eksponat.lokalizacja.MAGAZYN, Date.valueOf("2014-03-18"));
+		System.out.println(mojEksponat.toString());
 	}
 
 }
