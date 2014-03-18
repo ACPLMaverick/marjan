@@ -3,7 +3,7 @@ import java.util.Date;
 class Eksponat {
 	 private String nazwa;
 	 private int numer;
-	 private enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};
+	 public enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};
 	 private lokalizacja l;
 	 private Date data_zmiany;
 
