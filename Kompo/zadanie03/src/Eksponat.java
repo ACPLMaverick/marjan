@@ -9,7 +9,10 @@ class Eksponat {
 
 	 public Eksponat(String n, int num, lokalizacja lok, Date data)
 	 {
-		 
+		 this.nazwa = n;
+		 this.numer = num;
+		 this.data_zmiany = data;
+		 this.l = lok;
 	 }
 	 
 	 public void put(String wartosc)
@@ -63,5 +66,20 @@ class Eksponat {
 	 {
 		 if(data_zmiany == d) return true;
 		 else return false;
+	 }
+	 
+	 public String toString()
+	 {
+		 String myName = nazwa;
+		 String myNumer = Integer.toString(numer);
+		 String myDate = data_zmiany.toString();
+		 String myLokalizacja = l.toString();
+		 String myString = "";
+		 myString = 
+				 "NAZWA: " + myName + 
+				 "\nNUMER: " + myNumer +
+				 "\nLOKALIZACJA: " + myLokalizacja +
+				 "\nDATA: " + myDate;
+		 return myString;
 	 }
 }
