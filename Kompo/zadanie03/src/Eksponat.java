@@ -1,6 +1,7 @@
+import java.util.Comparator;
 import java.util.Date;
 
-class Eksponat {
+class Eksponat implements Comparator<Eksponat>, Comparable<Eksponat>{
 	 public enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};
 	
 	 private String nazwa;
@@ -82,5 +83,20 @@ class Eksponat {
 				 "\nLOKALIZACJA: " + myLokalizacja +
 				 "\nDATA: " + myDate;
 		 return myString;
+	 }
+	 
+	 public int compare(Eksponat obj1, Eksponat obj2)
+	 {
+		return 0; 
+	 }
+	 
+	 public int compareTo(Eksponat obj1)
+	 {
+		return 0; 
+	 }
+	 
+	 boolean equals(Eksponat obj1)
+	 {
+		 return true;
 	 }
 }
