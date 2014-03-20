@@ -15,7 +15,7 @@ public class zadanie03 {
 		e[miejsce] = new Eksponat("puste", miejsce, Eksponat.lokalizacja.MAGAZYN, Date.valueOf("2014-03-18"));
 		String txt = JOptionPane.showInputDialog("Jak ma nazywac sie eksponat?");
 		e[miejsce].put(txt);
-		txt = JOptionPane.showInputDialog("Gdzie ma sie znajdowac: (1-4)");
+		txt = JOptionPane.showInputDialog("Podaj lokalizacje [MAGAZYN, KONSERWACJA, EKSPOZYCJA, WYPO¯YCZONY]: (1-4)");
 		int wybor = Integer.parseInt(txt);
 		switch(wybor)
 		{
@@ -35,15 +35,17 @@ public class zadanie03 {
 			e[miejsce].put(Eksponat.lokalizacja.MAGAZYN);
 			break;	
 		}
+		txt = JOptionPane.showInputDialog("Podaj date wprowadzenia eksponatu [YYYY-MM-DD]: ");
+		Date d = Date.valueOf(txt);
+		e[miejsce].put(d);
 	}
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String txt;
-		//Date mojaData = Date.valueOf("2014-12-04");
 		txt = JOptionPane.showInputDialog("Podaj rozmiar tablicy");
-		//enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};
 		int size = Integer.parseInt(txt);
+		System.out.println(size);
 		Eksponat[] anArray = new Eksponat[size];
 		for(int i = 0; i<size; i++)
 		{
@@ -72,7 +74,20 @@ public class zadanie03 {
 			}
 			break;
 		case 3:
-			Arrays.sort(anArray, fromIndex, toIndex, Eksponat.EksponatLocComparator);
+			Arrays.sort(anArray, fromIndex, toIndex, Eksponat.EksponatLocComparator);		//sortowanie po lokalizacji
+			for(int j = 0; j<size; j++)
+			{
+				System.out.println(anArray[j]);
+			}
+			break;
+		case 4:
+			Arrays.sort(anArray, fromIndex, toIndex, Eksponat.EksponatDateComparator);		//sortowanie po dacie
+			for(int j = 0; j<size; j++)
+			{
+				System.out.println(anArray[j]);
+			}
+			break;
+		default:							//brak sortowania
 			for(int j = 0; j<size; j++)
 			{
 				System.out.println(anArray[j]);
@@ -82,8 +97,6 @@ public class zadanie03 {
 		
 		
 		// TODO:
-		// implementacja porównywania obiektów klasy Eksponat (zosta³o po dacie)
-		// implementacja sortowania tablicy obiektów klasy Eksponat (zosta³o po dacie)
 		//Eksponat mojEksponat = new Eksponat("Moj eksponat", 1, Eksponat.lokalizacja.MAGAZYN, Date.valueOf("2014-03-18"));
 		//System.out.println(mojEksponat.toString());
 	}

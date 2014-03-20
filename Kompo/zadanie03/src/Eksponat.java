@@ -108,6 +108,14 @@ class Eksponat implements Comparable{
 			 return l1.compareTo(l2);
 		 }
 	 };
+	 
+	 public static Comparator<Eksponat> EksponatDateComparator = new Comparator<Eksponat>(){
+		 public int compare(Eksponat o1, Eksponat o2) {
+			 Date d1 = o1.setData();
+			 Date d2 = o2.setData();
+			 return d1.compareTo(d2);
+		 }
+	 };
 
 	/* @Override
 	 public boolean equals(Object obj1)
