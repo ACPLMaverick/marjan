@@ -1,9 +1,7 @@
 import java.util.Comparator;
 import java.util.Date;
 
-class Eksponat implements Comparator<Eksponat>, Comparable<Eksponat>{
-	 public enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};
-	
+class Eksponat implements Comparable{	
 	 private String nazwa;
 	 private int numer;
 	 public enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};
@@ -86,18 +84,37 @@ class Eksponat implements Comparator<Eksponat>, Comparable<Eksponat>{
 		 return myString;
 	 }
 	 
-	 public int compare(Eksponat obj1, Eksponat obj2)
+	 @Override
+	 public int compareTo(Object o)
 	 {
-		return 0; 
+		int number = ((Eksponat) o).setNumer();
+		return this.numer - number; 
 	 }
 	 
-	 public int compareTo(Eksponat obj1)
-	 {
-		return 0; 
-	 }
 	 
-	 boolean equals(Eksponat obj1)
+	 public static Comparator<Eksponat> EksponatNameComparator = new Comparator<Eksponat>(){
+		
+		public int compare(Eksponat o1, Eksponat o2) {
+			String eksponatNazwa1 = o1.setNazwa().toUpperCase();
+			String eksponatNazwa2 = o2.setNazwa().toUpperCase();
+			return eksponatNazwa1.compareTo(eksponatNazwa2);
+		}
+	 };
+	 
+	 public static Comparator<Eksponat> EksponatLocComparator = new Comparator<Eksponat>(){
+		 public int compare(Eksponat o1, Eksponat o2) {
+			 lokalizacja l1 = o1.setLokalizacja();
+			 lokalizacja l2 = o2.setLokalizacja();
+			 return l1.compareTo(l2);
+		 }
+	 };
+
+	/* @Override
+	 public boolean equals(Object obj1)
 	 {
-		 return true;
-	 }
+		 if(obj1 == this) {return true;}
+		 if(obj1 == null || obj1.getClass() != this.getClass()) {return false;}	//aby unikn¹æ ClassCastException
+		 Eksponat eks = (Eksponat) obj1;
+		 return numer = eks.numer && (nazwa = eks.nazwa || (nazwa != null && ))
+	 }*/
 }
