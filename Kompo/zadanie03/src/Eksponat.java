@@ -91,7 +91,6 @@ class Eksponat implements Comparable{
 		return this.numer - number; 
 	 }
 	 
-	 
 	 public static Comparator<Eksponat> EksponatNameComparator = new Comparator<Eksponat>(){
 		
 		public int compare(Eksponat o1, Eksponat o2) {

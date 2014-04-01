@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.sql.Date;
-
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.xppdom.XppDom;
+import org.xmlpull.v1.XmlPullParser;
 
 public class zadanie03 {
 
@@ -42,62 +44,16 @@ public class zadanie03 {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String txt;
-		txt = JOptionPane.showInputDialog("Podaj rozmiar tablicy");
-		int size = Integer.parseInt(txt);
-		System.out.println(size);
-		Eksponat[] anArray = new Eksponat[size];
-		for(int i = 0; i<size; i++)
-		{
-			wstaw(anArray, i);
-		}
-		String txt3 = JOptionPane.showInputDialog("Podaj pierwszy indeks");
-		int fromIndex = Integer.parseInt(txt3);
-		String txt4 = JOptionPane.showInputDialog("Podaj drugi indeks");
-		int toIndex = Integer.parseInt(txt4);
-		String txt2 = JOptionPane.showInputDialog("Wybierze pole do posortowania (1-4)");
-		int wybor = Integer.parseInt(txt2);
-		switch(wybor)
-		{
-		case 1:
-			Arrays.sort(anArray, fromIndex, toIndex, Eksponat.EksponatNameComparator);		//sortowanie po nazwie
-			for(int j = 0; j<size; j++)
-			{
-				System.out.println(anArray[j]);
-			}
-			break;
-		case 2:
-			Arrays.sort(anArray, fromIndex, toIndex);		//sortowanie po numerze
-			for(int j = 0; j<size; j++)
-			{
-				System.out.println(anArray[j]);
-			}
-			break;
-		case 3:
-			Arrays.sort(anArray, fromIndex, toIndex, Eksponat.EksponatLocComparator);		//sortowanie po lokalizacji
-			for(int j = 0; j<size; j++)
-			{
-				System.out.println(anArray[j]);
-			}
-			break;
-		case 4:
-			Arrays.sort(anArray, fromIndex, toIndex, Eksponat.EksponatDateComparator);		//sortowanie po dacie
-			for(int j = 0; j<size; j++)
-			{
-				System.out.println(anArray[j]);
-			}
-			break;
-		default:							//brak sortowania
-			for(int j = 0; j<size; j++)
-			{
-				System.out.println(anArray[j]);
-			}
-			break;
-		}
-		
-		
-		// TODO:
-		//Eksponat mojEksponat = new Eksponat("Moj eksponat", 1, Eksponat.lokalizacja.MAGAZYN, Date.valueOf("2014-03-18"));
-		//System.out.println(mojEksponat.toString());
+		Kontener kontener = new Kontener(4);
+		kontener.eksponaty.add(0, new Eksponat("Marcin", 1, Eksponat.lokalizacja.MAGAZYN, Date.valueOf("2014-03-25")));
+		kontener.eksponaty.add(1, new Eksponat("Janek", 5, Eksponat.lokalizacja.EKSPOZYCJA, Date.valueOf("2012-03-25")));
+		kontener.eksponaty.add(2, new Eksponat("Krzysiek", 3, Eksponat.lokalizacja.KONSERWACJA, Date.valueOf("2017-03-25")));
+		kontener.eksponaty.add(3, new Eksponat("Patryk", 8, Eksponat.lokalizacja.WYPO¯YCZONY, Date.valueOf("2024-03-25")));
+		kontener.wyswietl();
+		Serializacja ser = new Serializacja();
+		ser.saveToXml(kontener.eksponaty, "D:\\ser.xml");
+		Kontener kontener2 = new Kontener(1);
+		kontener2.eksponaty = ser.loadFromXml("D:\\ser.xml");
+		kontener.wyswietl();
 	}
 }
