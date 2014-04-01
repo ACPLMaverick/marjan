@@ -7,13 +7,23 @@ import java.sql.Date;
 import com.thoughtworks.xstream.*;
 import org.xmlpull.v1.XmlPullParser;
 
-public class Serializacja {
+class Serializacja {
 	
-	public void saveToXml(ArrayList<Eksponat> eksponaty, String path) 
+	private ArrayList<Eksponat> mojeEksponaty;
+	private String lokalizacjaPliku;
+	private Boolean isSaved;
+	
+	public Serializacja(ArrayList<Eksponat> eksponaty, String lokalizacjaPliku)
+	{
+		this.mojeEksponaty = eksponaty;
+		this.lokalizacjaPliku = lokalizacjaPliku;
+	}
+	
+	public void saveToXml() 
 	{
 		XStream xstream = new XStream();
-		String xml = xstream.toXML(eksponaty.get(0));
-		File plik = new File(path);
+		String xml = xstream.toXML(mojeEksponaty);
+		File plik = new File(lokalizacjaPliku);
 		try
 		{
 			plik.createNewFile();
@@ -29,30 +39,32 @@ public class Serializacja {
 		{
 			System.err.println("blad sec");
 		}
+		isSaved = true;
 	}
 	
-	public ArrayList<Eksponat> loadFromXml(String buffer)
+	@SuppressWarnings("unchecked")
+	public ArrayList<Eksponat> loadFromXml()
 	{
-		XStream xstream = new XStream();
-		xstream.alias("eksponat", Eksponat.class);
-		xstream.alias("eksponaty", java.util.List.class);
-		char buf[] = new char[1000];
-		File plik = new File(buffer);
-		try
+		if(isSaved)
 		{
-			FileReader strumien = new FileReader(buffer);
-			strumien.read(buf);
+			XStream xstream = new XStream();
+			File plik = new File(lokalizacjaPliku);
+			mojeEksponaty = (ArrayList<Eksponat>)xstream.fromXML(plik);
+			return mojeEksponaty;
 		}
-		catch(FileNotFoundException io)
+		else
 		{
-			System.out.println(io.getMessage());
+			return null;
 		}
-		catch(IOException io)
+	}
+	public void wyswietl()
+	{
+		if(isSaved)
 		{
-			System.out.println(io.getMessage());
+			for(int i = 0; i<mojeEksponaty.size(); i++)
+			{
+				System.out.println(mojeEksponaty.get(i).toString() + "\n");
+			}
 		}
-		
-		ArrayList<Eksponat> eksponaty = (ArrayList<Eksponat>) xstream.fromXML(buf.toString());
-		return null;
 	}
 }

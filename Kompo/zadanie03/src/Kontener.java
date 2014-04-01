@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -42,5 +43,36 @@ public class Kontener {
 		default:							//brak sortowania
 			break;
 		}
+	}
+	
+	void wstaw(int miejsce)
+	{
+		Eksponat nowyEksponat = new Eksponat("puste", miejsce, Eksponat.lokalizacja.MAGAZYN, Date.valueOf("2014-03-18"));
+		String txt = JOptionPane.showInputDialog("Jak ma nazywac sie eksponat?");
+		nowyEksponat.put(txt);
+		txt = JOptionPane.showInputDialog("Podaj lokalizacje [MAGAZYN, KONSERWACJA, EKSPOZYCJA, WYPOZYCZONY]: (1-4)");
+		int wybor = Integer.parseInt(txt);
+		switch(wybor)
+		{
+		case 1:
+			nowyEksponat.put(Eksponat.lokalizacja.MAGAZYN);
+			break;
+		case 2:
+			nowyEksponat.put(Eksponat.lokalizacja.KONSERWACJA);
+			break;
+		case 3:
+			nowyEksponat.put(Eksponat.lokalizacja.EKSPOZYCJA);
+			break;
+		case 4:
+			nowyEksponat.put(Eksponat.lokalizacja.WYPOZYCZONY);
+			break;
+		default:
+			nowyEksponat.put(Eksponat.lokalizacja.MAGAZYN);
+			break;	
+		}
+		txt = JOptionPane.showInputDialog("Podaj date wprowadzenia eksponatu [YYYY-MM-DD]: ");
+		Date d = Date.valueOf(txt);
+		nowyEksponat.put(d);
+		eksponaty.add(miejsce, nowyEksponat);
 	}
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 class Eksponat implements Comparable{	
 	 private String nazwa;
 	 private int numer;
-	 public enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPO¯YCZONY};
+	 public enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPOZYCZONY};
 	 private lokalizacja l;
 	 private Date data_zmiany;
 
@@ -32,19 +32,19 @@ class Eksponat implements Comparable{
 	 {
 		 data_zmiany = wartosc;
 	 }
-	 public String setNazwa()
+	 public String getNazwa()
 	 {
 		 return nazwa;
 	 }
-	 public int setNumer()
+	 public int getNumer()
 	 {
 		 return numer;
 	 }
-	 public lokalizacja setLokalizacja()
+	 public lokalizacja getLokalizacja()
 	 {
 		 return l;
 	 }
-	 public Date setData()
+	 public Date getData()
 	 {
 		 return data_zmiany;
 	 }
@@ -87,31 +87,31 @@ class Eksponat implements Comparable{
 	 @Override
 	 public int compareTo(Object o)
 	 {
-		int number = ((Eksponat) o).setNumer();
+		int number = ((Eksponat) o).getNumer();
 		return this.numer - number; 
 	 }
 	 
 	 public static Comparator<Eksponat> EksponatNameComparator = new Comparator<Eksponat>(){
 		
 		public int compare(Eksponat o1, Eksponat o2) {
-			String eksponatNazwa1 = o1.setNazwa().toUpperCase();
-			String eksponatNazwa2 = o2.setNazwa().toUpperCase();
+			String eksponatNazwa1 = o1.getNazwa().toUpperCase();
+			String eksponatNazwa2 = o2.getNazwa().toUpperCase();
 			return eksponatNazwa1.compareTo(eksponatNazwa2);
 		}
 	 };
 	 
 	 public static Comparator<Eksponat> EksponatLocComparator = new Comparator<Eksponat>(){
 		 public int compare(Eksponat o1, Eksponat o2) {
-			 lokalizacja l1 = o1.setLokalizacja();
-			 lokalizacja l2 = o2.setLokalizacja();
+			 lokalizacja l1 = o1.getLokalizacja();
+			 lokalizacja l2 = o2.getLokalizacja();
 			 return l1.compareTo(l2);
 		 }
 	 };
 	 
 	 public static Comparator<Eksponat> EksponatDateComparator = new Comparator<Eksponat>(){
 		 public int compare(Eksponat o1, Eksponat o2) {
-			 Date d1 = o1.setData();
-			 Date d2 = o2.setData();
+			 Date d1 = o1.getData();
+			 Date d2 = o2.getData();
 			 return d1.compareTo(d2);
 		 }
 	 };
