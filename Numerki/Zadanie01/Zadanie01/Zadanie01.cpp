@@ -7,7 +7,7 @@ using namespace std;
 
 //f(x) = cos(x/2), x (0,6), x0=pi
 
-double potega(double x, double y)
+double potega(double x, int y)
 {
 	if (x == 0 && y <= 0) exit(-1);
 	else if (x == 0) return 0;
@@ -43,11 +43,7 @@ double sprawdz(double (*func)(double), double x1)	//funkcja, która w za³o¿eniu m
 bool sprawdzPrzedzial(double (*func)(double), double x1, double a)
 {
 	double wartosc = func(x1)*func(a);
-	if (wartosc < 0)
-	{
-		return true;
-	}
-	else return false;
+	 return wartosc < 0;
 }
 
 double modul(double (*func)(double), double x1)
@@ -134,7 +130,7 @@ double falsi_dokladnosc(double (*func)(double), double a, double b, double e)
 //		funkcje
 double cosx(double x)
 {
-	return cos(0.5*x);
+	return sin(x);
 }
 
 double cosax(double x)
