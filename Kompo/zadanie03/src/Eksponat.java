@@ -1,7 +1,7 @@
 import java.util.Comparator;
 import java.util.Date;
 
-class Eksponat implements Comparable{	
+class Eksponat implements Comparable, IEksponat{	
 	 private String nazwa;
 	 private int numer;
 	 public enum lokalizacja{EKSPOZYCJA, MAGAZYN, KONSERWACJA, WYPOZYCZONY};

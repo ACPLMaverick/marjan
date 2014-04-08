@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Kontener {
+public class Kontener implements IKontener {
 	int rozmiar;
 	public ArrayList<Eksponat> eksponaty;
 	
@@ -14,15 +14,22 @@ public class Kontener {
 		this.eksponaty = new ArrayList<Eksponat>(rozmiar);
 	}
 	
-	void wyswietl()
+	public void wyswietl()
 	{
-		for(int i = 0; i<eksponaty.size(); i++)
+		if(eksponaty.size() != 0)
 		{
-			System.out.println(eksponaty.get(i).toString() + "\n");
+			for(int i = 0; i<eksponaty.size(); i++)
+			{
+				System.out.println(eksponaty.get(i).toString() + "\n");
+			}
+		}
+		else
+		{
+			System.out.println("Kontener jest pusty");
 		}
 	}
 	
-	void sortuj()
+	public void sortuj()
 	{
 		String txt2 = JOptionPane.showInputDialog("Wybierze pole do posortowania (1-4)");
 		int wybor = Integer.parseInt(txt2);
@@ -45,7 +52,7 @@ public class Kontener {
 		}
 	}
 	
-	void wstaw(int miejsce)
+	public void wstaw(int miejsce)
 	{
 		Eksponat nowyEksponat = new Eksponat("puste", miejsce, Eksponat.lokalizacja.MAGAZYN, Date.valueOf("2014-03-18"));
 		String txt = JOptionPane.showInputDialog("Jak ma nazywac sie eksponat?");
