@@ -72,7 +72,7 @@ bool eliminuj(double **macierz, int m)		//etap eliminacji zmiennych algorytmu
 
 bool oblicz(double **macierz, double *wyniki, int m)	//etap wyznaczania niewiadomych postêpowaniem odwrotnym
 {
-	double suma = 0;
+	double wyrazWolny = 0;
 	for (int i = m - 1; i >= 0; i--)
 	{
 		if (abs(macierz[i][i]) < epsilon && macierz[i][i] != macierz[i][m])
@@ -85,12 +85,12 @@ bool oblicz(double **macierz, double *wyniki, int m)	//etap wyznaczania niewiado
 			cout << "Uklad nieoznaczony" << endl;
 			return false;
 		}
-		suma = macierz[i][m];
+		wyrazWolny = macierz[i][m];
 		for (int j = m - 1; j > i; j--)
 		{
-			suma -= macierz[i][j] * wyniki[j];
+			wyrazWolny -= macierz[i][j] * wyniki[j];
 		}
-		wyniki[i] = suma / macierz[i][i];
+		wyniki[i] = wyrazWolny / macierz[i][i];
 	}
 	return true;
 }
