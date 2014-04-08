@@ -9,7 +9,7 @@
 
 using namespace std;
 
-const long double epsilon = 0.000001;
+const long double epsilon = 0.01;
 
 int podaj(char* i)									//funkcja dla podawania wielkoœci macierzy
 {
