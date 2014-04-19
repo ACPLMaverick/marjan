@@ -1,0 +1,263 @@
+#include <string>
+#include <iostream>
+#include <stdio.h>
+#include <cstdlib>
+#include <string.h>
+#include <conio.h>
+#include <fstream>
+
+using namespace std;
+
+string loadFile(string path);
+void encryptFile();
+void decryptFile();
+void convertToBinary(char letter, int tab[]);
+
+const int hTable[8][16] = { 
+{ 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
+{ 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+{ 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0 },
+{ 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+{ 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0 },
+{ 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 },
+{ 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0 },
+{ 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1 } 
+};
+
+const string PATH_LOAD = "file.txt";
+const string PATH_OUTPUT = "encrypted.txt";
+const string PATH_DECRYPTED = "decrypted.txt";
+
+int main()
+{
+	encryptFile();
+	_getch();
+	decryptFile();
+
+	_getch();
+	return 0;
+}
+
+void encryptFile()
+{
+	cout << "KODOWANIE PLIKU...\n";
+	string myFile = loadFile(PATH_LOAD);
+	int size = myFile.length();
+	char* chars = new char[size+1];
+	int** bytes = new int*[size+1];
+	for (int i = 0; i < size + 1; i++) bytes[i] = new int[16];
+	int charBuffer[8];
+
+	// konwersja stringu do tablicy charów
+	strcpy(chars, myFile.c_str());
+
+	// wpisywanie bajtów pliku do tablicy w formie binarnej
+	for (int i = 0; i < size + 1; i++)
+	{
+		convertToBinary(chars[i], charBuffer);
+		for (int j = 0; j < 8; j++)
+		{
+			bytes[i][j] = charBuffer[j];
+		}
+		// bity kontroli
+		for (int j = 8; j < 16; j++)
+		{
+			bytes[i][j] = 0;
+			for (int k = 0; k < 8; k++)
+			{
+				bytes[i][j] += charBuffer[k] * hTable[j-8][k];
+			}
+
+			bytes[i][j] %= 2;
+		}
+	}
+
+	/*
+	// wypisywanie tablicy na konsole - niepotrzebne
+	for (int i = 0; i < size + 1; i++)
+	{
+		for (int j = 0; j < 16; j++)
+		{
+			if (j == 8) cout << " ";
+			cout << bytes[i][j];
+		}
+		cout << endl;
+	}
+	*/
+
+	// zapisywanie do pliku
+	ofstream outputFile;
+	outputFile.open(PATH_OUTPUT);
+	for (int i = 0; i < size + 1; i++)
+	{
+		for (int j = 0; j < 16; j++)
+		{
+			outputFile << bytes[i][j];
+		}
+		outputFile << endl;
+	}
+
+	delete[] chars;
+	for (int i = 0; i < size + 1; i++) delete[] bytes[i];
+	delete[] bytes;
+	
+	cout << "PLIK " + PATH_LOAD + " ZAKODOWANY DO PLIKU " + PATH_OUTPUT + "\n";
+}
+
+void decryptFile()
+{
+	cout << "DEKODOWANIE PLIKU " + PATH_OUTPUT + "\n";
+
+	string myFile = loadFile(PATH_OUTPUT);
+	int size = myFile.length()/16;
+	int wordArray[16];
+	int errorArray[8];
+	int errorBit1;
+	int errorBit2;
+	char currentChar = 0;
+	bool isError = false;
+	int errorCount = 0;
+	int** bytes = new int*[size];
+	for (int i = 0; i < size; i++) bytes[i] = new int[16];
+
+	// wrzucanie s³ów bitowych do tablicy
+	char myChar;
+	for (int i = 0, j = 0, k = 0; i < myFile.length(); i++)
+	{
+		myChar = myFile.at(i);
+		if (myChar != '\n')
+		{
+			bytes[j][k] = myChar - 48;
+			k++;
+		}
+		else
+		{
+			j++;
+			k = 0;
+		}
+	}
+
+	// teraz mamy bity w tablicy trzeba siê wzi¹æ za odkodowywanie :D
+
+	// otwarcie pliku do zapisu
+	ofstream outputFile;
+	outputFile.open(PATH_DECRYPTED);
+	
+	// mno¿enie z hTable i sprawdzanie czy = 0
+	for (int i = 0; i < size-2; i++)
+	{
+		for (int j = 0; j < 16; j++)
+		{
+			wordArray[j] = bytes[i][j];
+		}
+
+		for (int j = 0; j < 8; j++)
+		{
+			errorArray[j] = 0;
+			for (int k = 0; k < 16; k++)
+			{
+				errorArray[j] += (wordArray[k] * hTable[j][k]);
+			}
+			errorArray[j] %= 2;
+
+			errorCount = 0;
+			if (errorArray[j] != 0) errorCount = 1;
+		}
+
+		// sprawdzanie i korekcja b³êdów
+
+		if (errorCount != 0)
+		{
+			cout << "ERROR! ";
+			isError = false;
+
+			for (int j = 0; j < 15; j++)
+			{
+				for (int k = j + 1; k < 16; k++)
+				{
+					isError = true;
+					for (int m = 0; m < 8; m++)
+					{
+						// TODO: ogarn¹æ
+						if (errorArray[m] != hTable[m][j] ^ hTable[m][k])
+						{
+							isError = false;
+							break;
+						}
+					}
+					if (isError)
+					{
+						cout << "TWO errors occured: in " << i+1 << " character, on " << j+1 << " and " << k+1 << " bit.\n";
+						if (wordArray[j] == 0) wordArray[j] = 1;
+						else wordArray[j] = 0;
+						if (wordArray[k] == 0) wordArray[k] = 1;
+						else wordArray[k] = 0;
+						errorCount = 2;
+						j = 16;
+						break;
+					}
+				}
+			}
+
+			if (errorCount == 1)
+			{
+				for (int j = 0; j < 16; j++)
+				{
+					for (int k = 0; k < 8; k++)
+					{
+						if (errorArray[k] != hTable[k][j]) break;
+
+						// to siê wykona kiedy nie bêd¹ siê ró¿niæ
+						if (k == 7)
+						{
+							cout << "ONE error occured: in " << i + 1 << " character, on " << j + 1 << " bit.\n";
+							if (wordArray[j] == 0) wordArray[j] = 1;
+							else wordArray[j] = 0;
+							j = 16;
+						}
+					}
+				}
+				errorCount = 0;
+			}
+		}
+
+		// konwersja i zapisywanie znaku do pliku
+		currentChar = 0;
+		for (int j = 0, pow = 128; j < 16; j++, pow/=2)
+		{
+			currentChar += pow * wordArray[j];
+		}
+		outputFile << currentChar;
+	}
+
+	outputFile.close();
+
+	for (int i = 0; i < size; i++) delete[] bytes[i];
+	delete[] bytes;
+}
+
+string loadFile(string path)
+{
+	ifstream myFile;
+	string retFile;
+	string buffer;
+	myFile.open(path);
+	do
+	{
+		getline(myFile, buffer);
+		retFile = retFile + buffer + "\n";
+	} while (!(myFile.eof()));
+	myFile.close();
+	return retFile;
+}
+
+void convertToBinary(char letter, int tab[])
+{
+	int number = (int)letter;
+
+	for (int i = 7; i >= 0; i--)
+	{
+		tab[i] = number % 2;
+		number /= 2;
+	}
+}
