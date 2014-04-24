@@ -11,7 +11,7 @@ using namespace std;
 string loadFile(string path);
 void encryptFile();
 void decryptFile();
-void convertToBinary(char letter, int tab[]);
+void convertToBinary(unsigned int letter, unsigned int tab[]);
 
 const int hTable[8][16] = { 
 { 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
@@ -43,16 +43,17 @@ void encryptFile()
 	cout << "KODOWANIE PLIKU...\n";
 	string myFile = loadFile(PATH_LOAD);
 	int size = myFile.length();
-	char* chars = new char[size+1];
-	int** bytes = new int*[size+1];
-	for (int i = 0; i < size + 1; i++) bytes[i] = new int[16];
-	int charBuffer[8];
+	unsigned int* chars = new unsigned int[size+1];
+	unsigned int** bytes = new unsigned int*[size+1];
+	for (int i = 0; i < size + 1; i++) bytes[i] = new unsigned int[16];
+	unsigned int charBuffer[8];
 
 	// konwersja stringu do tablicy charów
-	strcpy(chars, myFile.c_str());
+	//strcpy(chars, myFile.c_str());
+	for (int i = 0; i < size; i++) chars[i] = myFile.at(i);
 
 	// wpisywanie bajtów pliku do tablicy w formie binarnej
-	for (int i = 0; i < size + 1; i++)
+	for (int i = 0; i < size; i++)
 	{
 		convertToBinary(chars[i], charBuffer);
 		for (int j = 0; j < 8; j++)
@@ -88,7 +89,7 @@ void encryptFile()
 	// zapisywanie do pliku
 	ofstream outputFile;
 	outputFile.open(PATH_OUTPUT);
-	for (int i = 0; i < size + 1; i++)
+	for (int i = 0; i < size; i++)
 	{
 		for (int j = 0; j < 16; j++)
 		{
@@ -98,7 +99,7 @@ void encryptFile()
 	}
 
 	delete[] chars;
-	for (int i = 0; i < size + 1; i++) delete[] bytes[i];
+	for (int i = 0; i < size; i++) delete[] bytes[i];
 	delete[] bytes;
 	
 	cout << "PLIK " + PATH_LOAD + " ZAKODOWANY DO PLIKU " + PATH_OUTPUT + "\n";
@@ -112,8 +113,6 @@ void decryptFile()
 	int size = myFile.length()/16;
 	int wordArray[16];
 	int errorArray[8];
-	int errorBit1;
-	int errorBit2;
 	char currentChar = 0;
 	bool isError = false;
 	int errorCount = 0;
@@ -121,7 +120,7 @@ void decryptFile()
 	for (int i = 0; i < size; i++) bytes[i] = new int[16];
 
 	// wrzucanie s³ów bitowych do tablicy
-	char myChar;
+	int myChar;
 	for (int i = 0, j = 0, k = 0; i < myFile.length(); i++)
 	{
 		myChar = myFile.at(i);
@@ -178,7 +177,6 @@ void decryptFile()
 					isError = true;
 					for (int m = 0; m < 8; m++)
 					{
-						// TODO: ogarn¹æ
 						if (errorArray[m] != hTable[m][j] ^ hTable[m][k])
 						{
 							isError = false;
@@ -251,9 +249,9 @@ string loadFile(string path)
 	return retFile;
 }
 
-void convertToBinary(char letter, int tab[])
+void convertToBinary(unsigned int letter, unsigned int tab[])
 {
-	int number = (int)letter;
+	unsigned int number = letter;
 
 	for (int i = 7; i >= 0; i--)
 	{
