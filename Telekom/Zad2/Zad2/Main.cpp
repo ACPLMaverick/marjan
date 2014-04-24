@@ -111,13 +111,13 @@ void decryptFile()
 
 	string myFile = loadFile(PATH_OUTPUT);
 	int size = myFile.length()/16;
-	int wordArray[16];
-	int errorArray[8];
+	unsigned int wordArray[16];
+	unsigned int errorArray[8];
 	char currentChar = 0;
 	bool isError = false;
 	int errorCount = 0;
-	int** bytes = new int*[size];
-	for (int i = 0; i < size; i++) bytes[i] = new int[16];
+	unsigned int** bytes = new unsigned int*[size];
+	for (int i = 0; i < size; i++) bytes[i] = new unsigned int[16];
 
 	// wrzucanie s³ów bitowych do tablicy
 	int myChar;
@@ -150,17 +150,17 @@ void decryptFile()
 			wordArray[j] = bytes[i][j];
 		}
 
+		for (int j = 0; j < 8; j++) errorArray[j] = 0;
+
 		for (int j = 0; j < 8; j++)
 		{
-			errorArray[j] = 0;
 			for (int k = 0; k < 16; k++)
 			{
 				errorArray[j] += (wordArray[k] * hTable[j][k]);
 			}
 			errorArray[j] %= 2;
 
-			errorCount = 0;
-			if (errorArray[j] != 0) errorCount = 1;
+			if (errorArray[j] == 1) errorCount = 1;
 		}
 
 		// sprawdzanie i korekcja b³êdów
