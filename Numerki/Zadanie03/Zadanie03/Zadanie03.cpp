@@ -200,7 +200,7 @@ double func03(double x)
 	double wspolczynniki[] = { 4.0, -8.0, 0.0, 2.0, 0.25 };
 	int stopien = 4;
 	double wynik = wspolczynniki[0];
-	for (int i = 1; i < stopien; i++)
+	for (int i = 1; i < stopien + 1; i++)
 	{
 		wynik = wynik*x + wspolczynniki[i];
 	}
