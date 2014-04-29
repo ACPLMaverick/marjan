@@ -167,7 +167,7 @@ void decryptFile()
 
 		if (errorCount != 0)
 		{
-			cout << "ERROR! ";
+			//cout << "ERROR! ";
 			isError = false;
 
 			for (int j = 0; j < 15; j++)
@@ -185,7 +185,7 @@ void decryptFile()
 					}
 					if (isError)
 					{
-						cout << "TWO errors occured: in " << i+1 << " character, on " << j+1 << " and " << k+1 << " bit.\n";
+						cout << "DWA bledy znalezione: w " << i+1 << " znaku, na " << j+1 << " i " << k+1 << " bicie.\n";
 						if (wordArray[j] == 0) wordArray[j] = 1;
 						else wordArray[j] = 0;
 						if (wordArray[k] == 0) wordArray[k] = 1;
@@ -208,7 +208,7 @@ void decryptFile()
 						// to siê wykona kiedy nie bêd¹ siê ró¿niæ
 						if (k == 7)
 						{
-							cout << "ONE error occured: in " << i + 1 << " character, on " << j + 1 << " bit.\n";
+							cout << "JEDEN blad znaleziony: w " << i + 1 << " znaku, na " << j + 1 << " bicie.\n";
 							if (wordArray[j] == 0) wordArray[j] = 1;
 							else wordArray[j] = 0;
 							j = 16;
@@ -229,6 +229,7 @@ void decryptFile()
 	}
 
 	outputFile.close();
+	cout << "PLIK " + PATH_OUTPUT + " ODKODOWANY DO PLIKU " + PATH_DECRYPTED + "\n";
 
 	for (int i = 0; i < size; i++) delete[] bytes[i];
 	delete[] bytes;
