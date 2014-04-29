@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #define GNUPLOT_PATH "C:\\gnuplot\\bin"
+#define _CRT_SECURE_NO_WARNINGS
 #include "gnuplot_i.hpp"
 
 using namespace std;
@@ -176,9 +177,84 @@ void wyswietlWielomian(vector<double> vec, int counter)
 	cout << endl;
 }
 
+
+// DO WYBIERANIA FUNKCJI!!!!!!!!!!!!!!!
+
+typedef double(*fptr)(double);
+
+
+double func01(double x)
+{
+	return 5;
+}
+
+double func02(double x)
+{
+	return abs(x);
+}
+
+double func03(double x)
+{
+	// schemat hornera
+	// ustalam wspolczynniki:
+	double wspolczynniki[] = { 4.0, -8.0, 0.0, 2.0, 0.25 };
+	int stopien = 4;
+	double wynik = wspolczynniki[0];
+	for (int i = 1; i < stopien; i++)
+	{
+		wynik = wynik*x + wspolczynniki[i];
+	}
+
+	return wynik;
+}
+
+double func04(double x)
+{
+	return abs(cos(0.5*x));
+}
+
+double func05(double x)
+{
+	return cos(abs(x));
+}
+
+fptr wybierzFunkcje()
+{
+	double(*funkcja)(double) = nullptr;
+	int wybor;
+	bool zlyWybor = false;
+
+	cout << "Wybor funkcji: \n"
+		<< "1: f(x) = 5 \n"
+		<< "2: f(x) = |x| \n"
+		<< "3: f(x) = 4x^4 - 8x^3 + 2x + 0.25 \n"
+		<< "4: f(x) = |cos(0.5x)| \n"
+		<< "5: f(x) = cos(|x|) \n";
+	
+	do
+	{
+		zlyWybor = false;
+		cin >> wybor;
+		if (wybor == 1) funkcja = func01;
+		else if (wybor == 2) funkcja = func02;
+		else if (wybor == 3) funkcja = func03;
+		else if (wybor == 4) funkcja = func04;
+		else if (wybor == 5) funkcja = func05;
+		else zlyWybor = true;
+	} while (zlyWybor);
+
+	return funkcja;
+}
+
+
+/////////////////////////////////////////
+
 int main(int argc, char* argv[])
 {
-	int m = podaj("ilosc wezlow");
+	// wybór funkcji 
+	double(*wybranaFunkcja)(double) = wybierzFunkcje();
+	
+	int m = (int)podaj("ilosc wezlow");
 
 	//tablica wspó³czynników a_i oraz wspó³czynników ostatecznego wielomianu
 	vector<double> wspolczynniki(m);
@@ -204,7 +280,7 @@ int main(int argc, char* argv[])
 	
 	for (int i = 0; i < m; i++)							//wypelnianie kolumny y wartoœciami funkcji w wêz³ach
 	{
-		macierz[i][1] = oblicz(abs, macierz[i][0]);
+		macierz[i][1] = oblicz(wybranaFunkcja, macierz[i][0]);
 	}
 
 	//dla testów sta³e wartoœci - zakres [0;1] i 3 wêz³y
@@ -260,7 +336,7 @@ int main(int argc, char* argv[])
 	myPlot.set_grid();
 	myPlot.set_xrange(macierz[0][0], macierz[m-1][0]);
 	double zasieg_t = abs(b - a);
-	double zasieg = 100 * abs(macierz[m - 1][0] - macierz[0][0]);
+	double zasieg = 100 * abs(b - a);
 
 	//myPlot.set_style("points");
 	//myPlot.set_pointsize(2.0);
@@ -270,22 +346,44 @@ int main(int argc, char* argv[])
 	vector<double> x_inter(zasieg);
 	vector<double> y_func(zasieg);
 	vector<double> y_inter(zasieg);
-
+	vector<double> x_node;
+	vector<double> y_node;
+/*
+	for (double i = 0.0; i < zakres; i = i + 1.0)
+	{
+		if (a*b >= 0) x[i] = a + b*(i / zakres);
+		else x[i] = a + 2 * b*(i / zakres);
+		y[i] = wybranaFunkcja(x[i]);
+	}
+*/
 	for (double i = 0.0; i < zasieg; i += 1.0)
 	{
-		x_func[i] = a + 4 * b*(i / zasieg);
-		y_func[i] = oblicz(abs, x_func[i]);							//przyk³adowa funkcja
+		if (a*b >= 0) x_func[i] = a + b*(i / zasieg);
+		else x_func[i] = a + 2 * b*(i / zasieg);
+		y_func[i] = oblicz(wybranaFunkcja, x_func[i]);							//przyk³adowa funkcja
 	}
 
 	for (double i = 0.0; i < zasieg; i += 1.0)
 	{
-		x_inter[i] = a + 4 * b*(i / zasieg);
-		//cout << x_inter[i] << " = " << obliczWielomian(wspolczynniki, x_inter[i]) << endl;
+		if (a*b >= 0) x_inter[i] = a + b*(i / zasieg);
+		else x_inter[i] = a + 2 * b*(i / zasieg);
 		y_inter[i] = obliczWielomian(wspolczynniki, macierz, x_inter[i]);
+	}
+
+	// wêz³y
+	for (int i = 0; i < m; i++)						
+	{
+		x_node.push_back(macierz[i][0]);
+		y_node.push_back(macierz[i][1]);
 	}
 	
 	myPlot.plot_xy(x_func, y_func, "Funkcja wejsciowa");
-	myPlot.plot_xy(x_inter, y_inter, "Interpolacja");
+	myPlot.plot_xy(x_inter, y_inter, "Wielomian interpolacyjny");
+
+	myPlot.set_style("points");
+	myPlot.set_pointsize(2.0);
+
+	myPlot.plot_xy(x_node, y_node, "Wêz³y interpolacji");
 
 	//usuwanie macierzy
 	for (int i = 0; i < m; i++)
