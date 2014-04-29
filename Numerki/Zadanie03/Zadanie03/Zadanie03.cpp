@@ -63,7 +63,7 @@ double oblicz(double(*func)(double), double x)
 	return func(x);
 }
 
-double obliczX(double **macierz, double t, double odleglosc)
+double obliczX(double **macierz, double t, double odleglosc)		//nieu¿ywane
 {
 	return macierz[0][0] + t*odleglosc;
 }
@@ -73,38 +73,68 @@ double obliczT(double x0, double x, double odleglosc)
 	return (x - x0) / odleglosc;
 }
 
-vector<double> zamienWspolczynniki(vector<double> vec, int m)
+double obliczWspolczynnik(double **macierz, int k)
 {
-	int stopien = vec.size() - 1;
-	vector<double> wspolczynnikiNowe(m);
-	for (int i = 1; i <= stopien-1; i++)
+	double wynik = macierz[0][1];
+	double iloczyn = 1;
+	if (k == 0) return wynik;
+	else
 	{
-		wspolczynnikiNowe.at(i) += vec.at(i+1);
+		iloczyn = 1;
+		for (int j = 0; j < k; j++)
+		{
+			iloczyn *= (macierz[k][0] - macierz[j][0]);
+		}
+		cout << "iloczyn: " << iloczyn << endl;
+		wynik /= -iloczyn;
+		cout << "wynik przed: " << wynik << endl;
+		iloczyn *= -1;
+		for (int i = 1; i <= k; i++)
+		{
+			if (i == k) iloczyn *= -1;
+			wynik += (macierz[i][1] / iloczyn);
+		}
+		cout << "wynik koncowy: " << wynik << endl;
 	}
-	return wspolczynnikiNowe;
+	return wynik;
 }
 
-double obliczWielomian(vector<double> vec, double t)			//wykorzystano warunek interpolacji
+vector<double> obliczWspolczynnik2(double **macierz, int m)
+{
+	vector<double> vec;
+	for (int n = 0; n < m; n++)
+	{
+		double suma = 0;
+		for (int i = 0; i <= n; i++)
+		{
+			double mnoz = 1;
+			for (int j = 0; j <= n; j++)
+			{
+				if (j != i)
+				{
+					mnoz *= (macierz[i][0] - macierz[j][0]);
+				}
+			}
+			suma += (macierz[i][1] / mnoz);
+		}
+		vec.push_back(suma);
+	}
+	return vec;
+}
+
+double obliczWielomian(vector<double> vec, double **macierz, double t)			//wykorzystano warunek interpolacji
 {
 	int stopien = vec.size() - 1;
 	double iloczyn = 1;
 	double wynik = vec.at(0);
-	if (t < 1) return wynik;
-	else
+	for (int i = 1; i <= stopien; i++)
 	{
-		//for (int i = 0; i < t; i++)
-		//{
-		//	iloczyn *= t - i;
-		//}
-		for (int i = 1; i <= stopien; i++)
+		iloczyn = 1;
+		for (int j = 0; j < i; j++)
 		{
-			iloczyn = 1;
-			for (int j = 0; j < i; j++)
-			{
-				iloczyn *= t - j;
-			}
-			wynik += vec.at(i)*iloczyn;
+			iloczyn *= t - macierz[j][0];
 		}
+		wynik += vec.at(i)*iloczyn;
 	}
 	return wynik;
 }
@@ -151,7 +181,7 @@ int main(int argc, char* argv[])
 	int m = podaj("ilosc wezlow");
 
 	//tablica wspó³czynników a_i oraz wspó³czynników ostatecznego wielomianu
-	vector<double> wspolczynniki;
+	vector<double> wspolczynniki(m);
 	vector<double> x;
 
 	//dynamiczne tworzenie macierzy - m jest liczb¹ wêz³ów
@@ -184,10 +214,12 @@ int main(int argc, char* argv[])
 
 	wyswietl(macierz, m);
 
-	for (int i = 0; i < m; i++)
-	{
-		wspolczynniki.push_back(roznica(macierz, i) / silnia(i));
-	}
+	//for (int i = 0; i < m; i++)
+	//{
+	//	wspolczynniki.push_back(roznica(macierz, i) / silnia(i));
+	//}
+
+	wspolczynniki = obliczWspolczynnik2(macierz, m);
 
 	wyswietlWielomian(wspolczynniki, m);
 
@@ -203,8 +235,10 @@ int main(int argc, char* argv[])
 
 	for (int i = 0; i < m; i++)
 	{
-		cout << "w(" << x[i] << ") = " << obliczWielomian(wspolczynniki, i) << endl;  //to s¹ dane do wielomianu interpolacji
+		cout << "w(" << x[i] << ") = " << obliczWielomian(wspolczynniki, macierz, x[i]) << endl;  //to s¹ dane do wielomianu interpolacji
 	}
+
+	cout << "w(0) = " << obliczWielomian(wspolczynniki, macierz, 0) << endl;
 
 	//for (int i = 0; i < 101; i++)
 	//{
@@ -231,19 +265,24 @@ int main(int argc, char* argv[])
 	//myPlot.set_style("points");
 	//myPlot.set_pointsize(2.0);
 
-	vector<double> x_func(zasieg*2);
+	vector<double> x_func(zasieg);
 	vector<double> t_inter(zasieg);
 	vector<double> x_inter(zasieg);
-	vector<double> y_func(zasieg*2);
+	vector<double> y_func(zasieg);
 	vector<double> y_inter(zasieg);
 
-	for (double i = 0.0; i < zasieg*2; i += 1.0)
+	for (double i = 0.0; i < zasieg; i += 1.0)
 	{
-		if (a*b >= 0) x_func[i] = a + b*(i / zasieg*2);
-		else x_func[i] = a + 2 * b*(i / zasieg*2);
+		x_func[i] = a + 4 * b*(i / zasieg);
 		y_func[i] = oblicz(abs, x_func[i]);							//przyk³adowa funkcja
 	}
 
+	for (double i = 0.0; i < zasieg; i += 1.0)
+	{
+		x_inter[i] = a + 4 * b*(i / zasieg);
+		//cout << x_inter[i] << " = " << obliczWielomian(wspolczynniki, x_inter[i]) << endl;
+		y_inter[i] = obliczWielomian(wspolczynniki, macierz, x_inter[i]);
+	}
 	
 	myPlot.plot_xy(x_func, y_func, "Funkcja wejsciowa");
 	myPlot.plot_xy(x_inter, y_inter, "Interpolacja");
