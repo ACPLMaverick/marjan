@@ -1,8 +1,6 @@
 // Zadanie03.cpp : Defines the entry point for the console application.
 //
 
-//TODO: LICZENIE TEGO JEBANEGO WIELOMIANU W RAMACH WYKRESU
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -11,30 +9,6 @@
 #include "gnuplot_i.hpp"
 
 using namespace std;
-
-unsigned long long dwumianNewtona(unsigned int n, unsigned int k)
-{
-	double wynik = 1;
-	if (k == 0 || k == n) return (unsigned long long)wynik;
-	else
-	{
-		for (unsigned int i = 1; i <= k; i++)
-		{
-			wynik = wynik*(n - i + 1) / i;
-		}
-		return (unsigned long long)wynik;
-	}
-}
-
-unsigned long long silnia(int x)
-{
-	int wynik = 1;
-	for (int i = 1; i <= x; i++)
-	{
-		wynik *= i;
-	}
-	return (unsigned long long)wynik;
-}
 
 double podaj(char* i)									//funkcja dla podawania wielkoœci macierzy
 {
@@ -49,58 +23,17 @@ double odleglosc(int m, double a, double b)				//obliczanie odleg³oœci miêdzy wê
 	return (b - a) / (m-1);
 }
 
-double roznica(double **macierz, int k)			//obliczanie roznicy progresywnej
-{
-	double wartosc = 0;
-	for (int i = 0; i <= k; i++)
-	{
-		wartosc += pow(-1, k-i)*dwumianNewtona(k, i)*macierz[i][1];	//wykorzystano warunek interpolacji (pow jest tylko na razie)
-	}
-	return wartosc;
-}
-
 double oblicz(double(*func)(double), double x)
 {
 	return func(x);
 }
 
-double obliczX(double **macierz, double t, double odleglosc)		//nieu¿ywane
+double obliczX(double **macierz, double t, double odleglosc)
 {
 	return macierz[0][0] + t*odleglosc;
 }
 
-double obliczT(double x0, double x, double odleglosc)
-{
-	return (x - x0) / odleglosc;
-}
-
-double obliczWspolczynnik(double **macierz, int k)
-{
-	double wynik = macierz[0][1];
-	double iloczyn = 1;
-	if (k == 0) return wynik;
-	else
-	{
-		iloczyn = 1;
-		for (int j = 0; j < k; j++)
-		{
-			iloczyn *= (macierz[k][0] - macierz[j][0]);
-		}
-		cout << "iloczyn: " << iloczyn << endl;
-		wynik /= -iloczyn;
-		cout << "wynik przed: " << wynik << endl;
-		iloczyn *= -1;
-		for (int i = 1; i <= k; i++)
-		{
-			if (i == k) iloczyn *= -1;
-			wynik += (macierz[i][1] / iloczyn);
-		}
-		cout << "wynik koncowy: " << wynik << endl;
-	}
-	return wynik;
-}
-
-vector<double> obliczWspolczynnik2(double **macierz, int m)
+vector<double> obliczWspolczynnik(double **macierz, int m)
 {
 	vector<double> vec;
 	for (int n = 0; n < m; n++)
@@ -185,7 +118,7 @@ typedef double(*fptr)(double);
 
 double func01(double x)
 {
-	return 5;
+	return x - 5;
 }
 
 double func02(double x)
@@ -225,7 +158,7 @@ fptr wybierzFunkcje()
 	bool zlyWybor = false;
 
 	cout << "Wybor funkcji: \n"
-		<< "1: f(x) = 5 \n"
+		<< "1: f(x) = x - 5 \n"
 		<< "2: f(x) = |x| \n"
 		<< "3: f(x) = 4x^4 - 8x^3 + 2x + 0.25 \n"
 		<< "4: f(x) = |cos(0.5x)| \n"
@@ -283,19 +216,9 @@ int main(int argc, char* argv[])
 		macierz[i][1] = oblicz(wybranaFunkcja, macierz[i][0]);
 	}
 
-	//dla testów sta³e wartoœci - zakres [0;1] i 3 wêz³y
-	//macierz[0][1] = 2;
-	//macierz[1][1] = 3;
-	//macierz[2][1] = 0;
-
 	wyswietl(macierz, m);
 
-	//for (int i = 0; i < m; i++)
-	//{
-	//	wspolczynniki.push_back(roznica(macierz, i) / silnia(i));
-	//}
-
-	wspolczynniki = obliczWspolczynnik2(macierz, m);
+	wspolczynniki = obliczWspolczynnik(macierz, m);
 
 	wyswietlWielomian(wspolczynniki, m);
 
@@ -314,16 +237,6 @@ int main(int argc, char* argv[])
 		cout << "w(" << x[i] << ") = " << obliczWielomian(wspolczynniki, macierz, x[i]) << endl;  //to s¹ dane do wielomianu interpolacji
 	}
 
-	cout << "w(0) = " << obliczWielomian(wspolczynniki, macierz, 0) << endl;
-
-	//for (int i = 0; i < 101; i++)
-	//{
-	//	if (a*b >= 0) x[i] = a + b*(i / zasieg * 2);
-	//	else x_inter[i] = a + 2 * b*(i / zasieg * 2);
-	//	y_inter[i] = obliczWielomian(wspolczynniki, x_inter[i]);
-	//}
-
-
 	//GNUPLOT
 	Gnuplot::set_GNUPlotPath(GNUPLOT_PATH);
 	Gnuplot myPlot;
@@ -338,9 +251,6 @@ int main(int argc, char* argv[])
 	double zasieg_t = abs(b - a);
 	double zasieg = 100 * abs(b - a);
 
-	//myPlot.set_style("points");
-	//myPlot.set_pointsize(2.0);
-
 	vector<double> x_func(zasieg);
 	vector<double> t_inter(zasieg);
 	vector<double> x_inter(zasieg);
@@ -348,14 +258,7 @@ int main(int argc, char* argv[])
 	vector<double> y_inter(zasieg);
 	vector<double> x_node;
 	vector<double> y_node;
-/*
-	for (double i = 0.0; i < zakres; i = i + 1.0)
-	{
-		if (a*b >= 0) x[i] = a + b*(i / zakres);
-		else x[i] = a + 2 * b*(i / zakres);
-		y[i] = wybranaFunkcja(x[i]);
-	}
-*/
+
 	for (double i = 0.0; i < zasieg; i += 1.0)
 	{
 		x_func[i] = a*((zasieg - i) / zasieg) + b*(i / zasieg);
