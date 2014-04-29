@@ -358,15 +358,13 @@ int main(int argc, char* argv[])
 */
 	for (double i = 0.0; i < zasieg; i += 1.0)
 	{
-		if (a*b >= 0) x_func[i] = a + b*(i / zasieg);
-		else x_func[i] = a + 2 * b*(i / zasieg);
+		x_func[i] = a*((zasieg - i) / zasieg) + b*(i / zasieg);
 		y_func[i] = oblicz(wybranaFunkcja, x_func[i]);							//przyk³adowa funkcja
 	}
 
 	for (double i = 0.0; i < zasieg; i += 1.0)
 	{
-		if (a*b >= 0) x_inter[i] = a + b*(i / zasieg);
-		else x_inter[i] = a + 2 * b*(i / zasieg);
+		x_inter[i] = a*((zasieg - i) / zasieg) + b*(i / zasieg);
 		y_inter[i] = obliczWielomian(wspolczynniki, macierz, x_inter[i]);
 	}
 
