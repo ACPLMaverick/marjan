@@ -24,9 +24,9 @@ const int hTable[8][16] = {
 { 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1 } 
 };
 
-const string PATH_LOAD = "file.txt";
+const string PATH_LOAD = "picture2.bmp";
 const string PATH_OUTPUT = "encrypted.txt";
-const string PATH_DECRYPTED = "decrypted.txt";
+const string PATH_DECRYPTED = "decrypted.bmp";
 
 int main()
 {
