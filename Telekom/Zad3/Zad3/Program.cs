@@ -21,10 +21,10 @@ namespace Zad3
         const byte NUL = 0x00;
         const byte SUB = 0x1A;          // do dopełnienia danych w 128-bajtowym pakiecie
 
-        const string fileSendPath = "G:\\picture.bmp";
-        const string fileRecievePath = "G:\\fileRecieve.bmp";
-        const string portNameRec = "COM3";
-        const string portNameSnd = "COM4";
+        const string fileSendPath = "C:\\Users\\student\\Documents\\picture.bmp";
+        const string fileRecievePath = "C:\\Users\\student\\Documents\\fileRecieve.bmp";
+        const string portNameRec = "COM1";
+        const string portNameSnd = "COM1";
 
         delegate byte ControlSumDelegate(byte[] buffer);
         static ControlSumDelegate ControlSum = NormalSum;
@@ -74,6 +74,8 @@ namespace Zad3
                 // TRYB ODBIORNIKA
                 SerialPort port = new SerialPort(portNameRec, 9600);
                 port.DataBits = 8;
+                port.StopBits = StopBits.One;
+                port.Parity = Parity.None;
                 connect(port);
                 File.WriteAllBytes(fileRecievePath, Decrypt128(recieve(port)));
             }
@@ -82,6 +84,8 @@ namespace Zad3
                 // TRYB NADAJNIKA
                 SerialPort port = new SerialPort(portNameSnd, 9600);
                 port.DataBits = 8;
+                port.StopBits = StopBits.One;
+                port.Parity = Parity.None;
                 connect(port);
                 if(File.Exists(fileSendPath))
                 {
@@ -149,12 +153,6 @@ namespace Zad3
             byte[] dest = new byte[128];
             for (int i = 0; i < 128; i++) dest[i] = source[sizeSource, i];
             return dest;
-        }
-
-        static bool GetBit(byte myByte, byte position)
-        {
-            // wyłuskanie konkretnego bitu z bajtu
-            return Convert.ToBoolean(myByte & (1 << position));
         }
 
         static byte NormalSum(byte[] buffer)
@@ -280,21 +278,27 @@ namespace Zad3
             Console.WriteLine("SENDER: Waiting for NAK...");
             byte waitingForNAK = 0;
             // oczekiwanie na NAK od odbiorcy
-            Thread.BeginCriticalRegion();
-            for (int i = 0; i < 20; i++ )
+            int counter = 0;
+            port.ReadExisting();
+
+            // obsługa C
+            while (true)
             {
-                try
-                {
-                    if ((waitingForNAK = Convert.ToByte(port.ReadByte())) == NAK) break;
-                }
-                catch(SystemException e)
-                {
-                    System.Console.WriteLine(e.Message);
-                }
-                Thread.Sleep(1000);
+                Console.WriteLine("SENDER: Waiting... count " + counter.ToString());
+                if ((waitingForNAK = Convert.ToByte(port.ReadByte())) > Convert.ToByte(1)) break;
+                counter++;
             }
-            Thread.EndCriticalRegion();
-            if(waitingForNAK != NAK)
+
+            portWriteByte(NAK, port);
+
+            while(true)
+            {
+                    Console.WriteLine("SENDER: Waiting... count " + counter.ToString());
+                    if ((waitingForNAK = Convert.ToByte(port.ReadByte())) > Convert.ToByte(1)) break;
+                counter++;
+            }
+            
+            if(waitingForNAK != NAK && waitingForNAK != C)
             {
                 Console.WriteLine("SENDER: NAK not recieved. Exiting...");
                 return;
