@@ -20,10 +20,10 @@ int main(int argc, char* argv[])
 	cin >> f;
 
 	cout << "///KWADRATURA NEWTONA-COTESA///" << endl;
-	double a = podaj("poczatek przedzialu calkowania");
-	double b = podaj("kraniec przedzialu calkowania");
+	double a = podaj("kraniec przedzialu calkowania");
+	double delta = podaj("delte");
 	double dokladnosc = podaj("dokladnosc calkowania");
-	double wynik = simpson_iter(simpson[f - 1], a, b, dokladnosc);
+	double wynik = simpson_granica(simpson[f - 1], a, delta, dokladnosc);
 	cout << wynik << endl;
 
 	cout << "///KWADRATURA GAUSSA///" << endl;

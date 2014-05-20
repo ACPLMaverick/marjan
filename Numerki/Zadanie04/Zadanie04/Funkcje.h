@@ -128,8 +128,22 @@ double simpson_iter(double(*func)(double), double a, double b, double dokladnosc
 		wynik_temp *= h / 3;
 		i++;
 	} while (abs(wynik_temp - wynik) > dokladnosc);
-	cout << "warunek:" << abs(wynik_temp - wynik) << endl;
-	cout << "Liczba iteracji: " << i << endl;
+	cout << "Liczba iteracji [simpson_iter]: " << i << endl;
+	return wynik;
+}
+
+double simpson_granica(double(*func)(double), double a, double delta, double dokladnosc)
+{
+	double wynik = simpson_iter(func, 0, a, dokladnosc);
+	double wynik_temp = dokladnosc;
+	int i = 0;
+	while (wynik_temp >= dokladnosc)
+	{
+		wynik_temp = simpson_iter(func, a, a + delta, dokladnosc);
+		a += delta;
+		wynik += wynik_temp;
+		i++;
+	}
 	return wynik;
 }
 
