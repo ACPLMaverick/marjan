@@ -21,81 +21,97 @@ namespace Zad3
         const byte NUL = 0x00;
         const byte SUB = 0x1A;          // do dopełnienia danych w 128-bajtowym pakiecie
 
-        const string fileSendPath = "C:\\Users\\student\\Documents\\picture.bmp";
-        const string fileRecievePath = "C:\\Users\\student\\Documents\\fileRecieve.bmp";
-        const string portNameRec = "COM1";
-        const string portNameSnd = "COM1";
+        static string filePath = "C:\\tekst.txt";
+        static string portName = "COM3";
+        static bool isCRC = false;
 
         delegate byte ControlSumDelegate(byte[] buffer);
         static ControlSumDelegate ControlSum = NormalSum;
 
-        static void Main(string[] args)
+        static char giveFuncionality()
         {
-            /*
-            // TESTOWANIE CRC
-            byte[] CRCTab = new byte[128];
-            byte[] CRCTab2 = new byte[128];
-            Random generator = new Random();
-            for(int i =0; i<128; i++)
-            {
-                CRCTab[i] = Convert.ToByte(generator.Next(255));
-            }
-            for (int i = 0; i < 128; i++)
-            {
-                CRCTab2[i] = CRCTab[i];
-                if(i==10) CRCTab2[i] -= 1;
-            }
-            byte CRCSum = CRC(CRCTab);
-            byte CRCSum2 = CRC(CRCTab2);
-            Console.WriteLine(CRCSum.ToString());
-            Console.WriteLine(CRCSum2.ToString());
-            Console.ReadKey();
-             */
-
-            Console.WriteLine("XMODEM");
             Console.WriteLine("Select program funcionality:");
             Console.WriteLine("1: Reciever");
             Console.WriteLine("2: Sender");
             ConsoleKeyInfo choiceFunc = Console.ReadKey();
             Console.WriteLine();
-            if (choiceFunc.KeyChar != '1' && choiceFunc.KeyChar != '2') throw new ArgumentException("Bad option");
+            return choiceFunc.KeyChar;
+        }
+
+        static char giveControlSum()
+        {
             Console.WriteLine("Select control sum algorithm:");
             Console.WriteLine("1: Normal sum");
             Console.WriteLine("2: CRC sum");
             ConsoleKeyInfo choiceAlg = Console.ReadKey();
             Console.WriteLine();
-            if (choiceAlg.KeyChar != '1' && choiceAlg.KeyChar != '2') throw new ArgumentException("Bad option");
+            return choiceAlg.KeyChar;
+        }
 
-            if (choiceAlg.KeyChar == '1') ControlSum = NormalSum;
-            else ControlSum = CRC;
+        static void givePortNumber()
+        {
+            Console.WriteLine("Give COM port number: ");
+            char number = (Console.ReadKey()).KeyChar;
+            Console.WriteLine();
+            if (number > 47 && number < 58) portName = "COM" + number.ToString();
+            else Console.WriteLine("Incorrect number given. Using default port " + portName + ".");
+        }
+
+        static void giveFilePath()
+        {
+            Console.WriteLine("Give file path: ");
+            string myPath = Console.ReadLine();
+            if (myPath.Length > 3) filePath = myPath;
+            else Console.WriteLine("Incorrect path given. Using default path " + filePath);
+        }
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("XMODEM");
+            char choiceFunc = giveFuncionality();
+            if (choiceFunc != '1' && choiceFunc != '2') throw new ArgumentException("Bad option");
+            /*char choiceAlg = giveControlSum();
+            if (choiceAlg != '1' && choiceAlg != '2') throw new ArgumentException("Bad option");
+            if (choiceAlg == '1') ControlSum = NormalSum;
+            else
+            {
+                ControlSum = CRC;
+                isCRC = true;
+            }
+             */
+
+            givePortNumber();
+            giveFilePath();
             
-            if(choiceFunc.KeyChar == '1')
+            if(choiceFunc == '1')
             {
                 // TRYB ODBIORNIKA
-                SerialPort port = new SerialPort(portNameRec, 9600);
+                SerialPort port = new SerialPort(portName, 9600);
                 port.DataBits = 8;
                 port.StopBits = StopBits.One;
                 port.Parity = Parity.None;
                 connect(port);
-                File.WriteAllBytes(fileRecievePath, Decrypt128(recieve(port)));
+                File.WriteAllBytes(filePath, Decrypt128(recieve(port)));
             }
-            else if(choiceFunc.KeyChar == '2')
+            else if(choiceFunc == '2')
             {
                 // TRYB NADAJNIKA
-                SerialPort port = new SerialPort(portNameSnd, 9600);
+                SerialPort port = new SerialPort(portName, 9600);
                 port.DataBits = 8;
                 port.StopBits = StopBits.One;
                 port.Parity = Parity.None;
                 connect(port);
-                if(File.Exists(fileSendPath))
+                if(File.Exists(filePath))
                 {
-                    send(port, Encrypt128(File.ReadAllBytes(fileSendPath)));
+                    send(port, Encrypt128(File.ReadAllBytes(filePath)));
                 }
                 else
                 {
                     throw new IOException("File does not exist.");
                 }
             }
+            Console.WriteLine("Program finished.");
+            Console.ReadKey();
         }
 
         static byte[] Encrypt128(byte[] input)
@@ -160,7 +176,10 @@ namespace Zad3
             // Zwykła suma kontrolna
             uint sum = 0;
             foreach (byte x in buffer) sum += x;
-            return Convert.ToByte((sum << 24) >> 24);
+            Console.WriteLine("UINT CHECKSUM: " + sum.ToString());
+            byte returnSum = Convert.ToByte(sum % 256);
+            Console.WriteLine("BYTE CHECKSUM: " + returnSum.ToString());
+            return returnSum;
         }
 
         static byte CRC(byte[] buffer)
@@ -180,6 +199,41 @@ namespace Zad3
                 sum += ((tempX << 8) >> 8);                     // dodanie 3 ostatnich bitów do sumy kontrolnej
             }
             return Convert.ToByte((sum << 24) >> 24);
+        }
+
+        static ushort CRCChecksum(byte[] bytes)
+        {
+            const ushort polynomial = 0xA001;
+            ushort[] table = new ushort[256];
+
+            ushort value;
+            ushort temp;
+            for (ushort i = 0; i < table.Length; ++i)
+            {
+                value = 0;
+                temp = i;
+                for (byte j = 0; j < 8; ++j)
+                {
+                    if (((value ^ temp) & 0x0001) != 0)
+                    {
+                        value = (ushort)((value >> 1) ^ polynomial);
+                    }
+                    else
+                    {
+                        value >>= 1;
+                    }
+                    temp >>= 1;
+                }
+                table[i] = value;
+            }
+
+            ushort crc = 0;
+            for (int i = 0; i < bytes.Length; ++i)
+            {
+                byte index = (byte)(crc ^ bytes[i]);
+                crc = (ushort)((crc >> 8) ^ table[index]);
+            }
+            return crc;
         }
 
         static void portWriteByte(byte data, SerialPort port)
@@ -225,7 +279,7 @@ namespace Zad3
             }
             Thread.EndCriticalRegion();
 
-            byte myByte = Convert.ToByte(port.ReadByte()); ;
+            byte myByte = Convert.ToByte(port.ReadByte()); 
             while(myByte != EOT)
             {
                 // odczytywanie odebranych rzeczy zgodnie z kolejnością wysłania
@@ -278,26 +332,34 @@ namespace Zad3
             Console.WriteLine("SENDER: Waiting for NAK...");
             byte waitingForNAK = 0;
             // oczekiwanie na NAK od odbiorcy
-            int counter = 0;
-            port.ReadExisting();
-
-            // obsługa C
-            while (true)
-            {
-                Console.WriteLine("SENDER: Waiting... count " + counter.ToString());
-                if ((waitingForNAK = Convert.ToByte(port.ReadByte())) > Convert.ToByte(1)) break;
-                counter++;
-            }
-
-            portWriteByte(NAK, port);
-
+            int counter = 1;
+ 
             while(true)
             {
-                    Console.WriteLine("SENDER: Waiting... count " + counter.ToString());
-                    if ((waitingForNAK = Convert.ToByte(port.ReadByte())) > Convert.ToByte(1)) break;
+                Console.WriteLine("SENDER: Waiting... count " + counter.ToString());
                 counter++;
+                waitingForNAK = Convert.ToByte(port.ReadByte());
+                Console.WriteLine(waitingForNAK.ToString());
+                if (waitingForNAK == NAK) break;
+                //portWriteByte(NUL, port);
             }
-            
+            /*
+            Console.WriteLine(waitingForNAK.ToString());
+
+            if(waitingForNAK == C)
+            {
+                // obsługa C
+
+                while (true)
+                {
+                    Console.WriteLine("SENDER: Waiting... count " + counter.ToString());
+                    counter++;
+                    if ((waitingForNAK = Convert.ToByte(port.ReadByte())) > Convert.ToByte(1)) break;
+                }
+            }
+            */
+
+            if (waitingForNAK == C) isCRC = true;
             if(waitingForNAK != NAK && waitingForNAK != C)
             {
                 Console.WriteLine("SENDER: NAK not recieved. Exiting...");
@@ -345,9 +407,24 @@ namespace Zad3
                 }
 
                 //generowanie sumy kontrolnej
-                byte checksum = ControlSum(Rewrite(bigBuffer, Convert.ToByte(packet - 1)));
-                Console.WriteLine("SENDER: Sending checksum...");
-                portWriteByte(checksum, port);
+                if(isCRC)
+                {
+                    uint checksum = CRCChecksum(Rewrite(bigBuffer, Convert.ToByte(packet - 1)));
+                    uint checksumlast = checksum;
+                    checksum = ((checksum << 16) >> 24);
+                    checksumlast = (checksumlast << 24) >> 24;
+                    byte bytesumfirst = Convert.ToByte(checksum);
+                    byte bytesumlast = Convert.ToByte(checksumlast);
+                    portWriteByte(bytesumfirst, port);
+                    portWriteByte(bytesumlast, port);
+                }
+                else
+                {
+                    byte checksum = NormalSum(Rewrite(bigBuffer, Convert.ToByte(packet - 1)));
+                    Console.WriteLine("SENDER: Sending checksum...");
+                    portWriteByte(checksum, port);
+                }
+                
 
                 // oczekiwanie na ACK
                 Console.WriteLine("SENDER: Waiting for ACK...");
