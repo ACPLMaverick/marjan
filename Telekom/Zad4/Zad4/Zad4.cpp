@@ -11,6 +11,7 @@
 using namespace std;
 
 HANDLE HandlePort;
+bool canRead = true;
 
 char GivePortNumber();
 int GiveFuncionality();
@@ -19,6 +20,7 @@ bool ConfigureConnection(HANDLE HandlePort, int baudRate);
 char* PortRead(char* data, int dataSize);
 bool PortSend(unsigned char myChar, HANDLE HandlePort);
 bool PortSendString(string str, HANDLE HandlePort);
+void WaitForOK(HANDLE HandlePort);
 DWORD WINAPI reciever(LPVOID lpParam);
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -44,32 +46,47 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	char myChar = NULL;
-
-	if (functionality == 1)
+	if (functionality != 3)
 	{
-		PortSendString("ATM0", HandlePort);
-		PortSend(10, HandlePort);
-		PortSend(13, HandlePort);
-		PortSendString("ATC1", HandlePort);
-		PortSend(10, HandlePort);
-		PortSend(13, HandlePort);
-		PortSendString("ATD55", HandlePort); 
-		PortSend(10, HandlePort);
-		PortSend(13, HandlePort);
-	}
-	else if (functionality == 2)
-	{
-	}
-	else
-	{
-		cout << "Something went wrong." << endl;
-		return(-1);
+		if (functionality == 1)
+		{
+			PortSendString("ATM0", HandlePort);
+			PortSend(10, HandlePort);
+			PortSend(13, HandlePort);
+			WaitForOK(HandlePort);
+			PortSendString("ATC1", HandlePort);
+			PortSend(10, HandlePort);
+			PortSend(13, HandlePort);
+			WaitForOK(HandlePort);
+			PortSendString("ATD55", HandlePort);
+			PortSend(10, HandlePort);
+			PortSend(13, HandlePort);
+		}
+		else if (functionality == 2)
+		{
+			PortSendString("ATM0", HandlePort);
+			PortSend(10, HandlePort);
+			PortSend(13, HandlePort);
+			WaitForOK(HandlePort);
+			PortSendString("ATH1", HandlePort);
+			PortSend(10, HandlePort);
+			PortSend(13, HandlePort);
+			WaitForOK(HandlePort);
+			PortSendString("ATA", HandlePort);
+			PortSend(10, HandlePort);
+			PortSend(13, HandlePort);
+		}
+		else
+		{
+			cout << "Something went wrong." << endl;
+			return(-1);
+		}
 	}
 	/* do wys³ania:
 	01 -	ATM0
 			ATC1
 			ATD55
-	02 -	ATH11
+	02 -	ATH1
 			ATA
 	*/
 
@@ -87,7 +104,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			PortSend(10, HandlePort);
 			PortSend(13, HandlePort);
 			cout << endl;
-			// zdefiniowac!
 		}
 		cout << myChar;
 		PortSend(myChar, HandlePort);
@@ -97,6 +113,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	_getch();
 	return 0;
 }
+
 
 char GivePortNumber()
 {
@@ -111,23 +128,42 @@ char GivePortNumber()
 
 int GiveFuncionality()
 {
-	cout << "Give funcionality" << endl;
+	cout << "Give funcionality" << endl
+		<< "1: Dialer" << endl
+		<< "2: Reciever" << endl
+		<< "3: Manual mode" << endl;
 	char myChar;
 	do
 	{
 		myChar = _getch();
-	} while (myChar != 49 && myChar != 50);
+	} while (myChar != 49 && myChar != 50 && myChar != 51);
 	return myChar - 48;
 }
 
 bool PortSendString(string str, HANDLE HandlePort)
 {
+	cout << ">> Sending: " << str << endl;
 	unsigned char myChar;
 	for (int i = 0; i < str.length(); i++)
 	{
 		PortSend(str.at(i), HandlePort);
 	}
 	return true;
+}
+
+void WaitForOK(HANDLE HandlePort)
+{
+	char buffer[3] = { 0, 0, 0 };
+
+	cout << ">> Waiting for OK..." << endl;
+	canRead = false;
+	while (buffer[0] != 'O' || buffer[1] != 'K')
+	{
+		PortRead(buffer, 3);
+		Sleep(1000);
+	}
+	canRead = true;
+	cout << ">> OK recieved" << endl;
 }
 
 bool CreatePort(wchar_t* port, HANDLE &HandlePort)
@@ -161,7 +197,6 @@ bool ConfigureConnection(HANDLE HandlePort, int baudRate)
 	SerialPort.fDtrControl = DTR_CONTROL_ENABLE; // jw dla DTR (data-terminal-ready)
 	SerialPort.fDsrSensitivity = false; // wy³¹czenie oddzia³ywania sygna³u DSR na sterownik po³¹czenia
 	SerialPort.fTXContinueOnXoff = true; //transmisja jest kontynuowana po tym jak bufor wejœciowy przekroczy limit o XOffLim bajtów i sterownik wyœle XoffChar by zakoñczyæ odbieranie
-	// bytes of being full and the driver has transmitted the XoffChar character to stop receiving bytes.
 	SerialPort.fOutX = false; // wy³¹czenie kontroli przep³ywu XON/XOFF podczas wysy³ania
 	SerialPort.fInX = false; // jw dla odbierania
 	SerialPort.fErrorChar = false; // wy³¹czenie zaznaczania bajtów z b³êdami przez ErrorChary
@@ -228,7 +263,10 @@ DWORD WINAPI reciever(LPVOID lpParam)
 	char buffer[32];
 	while (true)
 	{
-		PortRead(buffer, 32);
-		cout << buffer;
+		if (canRead)
+		{
+			PortRead(buffer, 32);
+			cout << buffer;
+		}
 	}
 }
