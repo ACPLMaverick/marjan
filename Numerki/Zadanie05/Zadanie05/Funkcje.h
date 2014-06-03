@@ -13,6 +13,7 @@ double podajFunkcje();
 //FUNKCJE MATEMATYCZNE
 unsigned long long silnia(int n);
 unsigned long long dwumianNewtona(double n, double k);
+double potega(double x, int y);
 
 //FUNKCJE WEJŒCIOWE
 double horner(std::vector<double> wspolczynniki, int stopien, double x);

@@ -17,10 +17,7 @@ double **macierz = wypelnij(wezly);
 
 double(*func[])(double) = { exponent, wielomian, modul, liniowa, cos };
 
-double potega(int a, int n)
-{
-	return 0;
-}
+
 
 void wyczyscWektor(vector<double> &w)
 {

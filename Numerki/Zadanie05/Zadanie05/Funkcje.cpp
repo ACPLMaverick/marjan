@@ -92,6 +92,28 @@ unsigned long long dwumianNewtona(double n, double k)
 	}
 }
 
+double potega(double x, int y)
+{
+	if (x == 0 && y <= 0) exit(-1);
+	else if (x == 0) return 0;
+	else if (x == 1) return 1;
+	else
+	{
+		double n = 1;
+		int i;
+		if (y < 0)
+		{
+			x = 1 / x;
+			y = -y;
+		}
+		for (i = 1; i <= y; ++i)
+		{
+			n *= x;
+		}
+		return n;
+	}
+}
+
 //FUNKCJE WEJŒCIOWE
 double horner(vector<double> wspolczynniki, int stopien, double x)
 {
@@ -133,7 +155,7 @@ void wyznaczWspolczynniki(vector<double> &w, int stopien)	//wyznaczanie wspó³czy
 	if (stopien == 0) w[0] = 1;
 	for (int i = 0; i < stopien+1 ; i++)
 	{
-		y = pow(-1, i) * dwumianNewtona(stopien, i) / silnia(i);
+		y = potega(-1, i) * dwumianNewtona(stopien, i) / silnia(i);
 		w[i] = y;
 	}
 }
