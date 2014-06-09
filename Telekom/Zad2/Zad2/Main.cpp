@@ -142,7 +142,7 @@ void decryptFile()
 	ofstream outputFile;
 	outputFile.open(PATH_DECRYPTED);
 	
-	// mno¿enie z hTable i sprawdzanie czy = 0
+	// mno¿enie z hTable i sprawdzanie czy = 0 - zgodnie z instrukcj¹, jeœli bêd¹ same 0 to nie ma b³êdów
 	for (int i = 0; i < size-2; i++)
 	{
 		for (int j = 0; j < 16; j++)
@@ -177,6 +177,7 @@ void decryptFile()
 					isError = true;
 					for (int m = 0; m < 8; m++)
 					{
+						// znajdowanie miejsc z b³êdem i naprawa dla dwóch b³êdów
 						if (errorArray[m] != hTable[m][j] ^ hTable[m][k])
 						{
 							isError = false;
@@ -204,6 +205,7 @@ void decryptFile()
 					for (int k = 0; k < 8; k++)
 					{
 						if (errorArray[k] != hTable[k][j]) break;
+						// znajdowanie miejsca z b³êdem i naprawa b³êdu dla 1 b³êdu
 
 						// to siê wykona kiedy nie bêd¹ siê ró¿niæ
 						if (k == 7)
@@ -237,6 +239,7 @@ void decryptFile()
 
 string loadFile(string path)
 {
+	// funkcja odpowiedzialna za wczytanie pliku i zwrócenie go jako string
 	ifstream myFile;
 	string retFile;
 	string buffer;
@@ -252,6 +255,7 @@ string loadFile(string path)
 
 void convertToBinary(unsigned int letter, unsigned int tab[])
 {
+	// konwersja inta na postaæ binarn¹ w formie tablicy zer i jedynek
 	unsigned int number = letter;
 
 	for (int i = 7; i >= 0; i--)

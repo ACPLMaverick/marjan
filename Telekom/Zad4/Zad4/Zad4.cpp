@@ -48,31 +48,32 @@ int _tmain(int argc, _TCHAR* argv[])
 	char myChar = NULL;
 	if (functionality != 3)
 	{
+		// zautomatyzowane wysy³anie komend jêzyka Hayesa w celu nawi¹zania po³¹czenia modemowego
 		if (functionality == 1)
 		{
-			PortSendString("ATM0", HandlePort);
+			PortSendString("ATM0", HandlePort);		// wy³¹cz g³oœnik
 			PortSend(10, HandlePort);
 			PortSend(13, HandlePort);
 			WaitForOK(HandlePort);
-			PortSendString("ATC1", HandlePort);
+			PortSendString("ATC1", HandlePort);		// utwórz falê noœn¹
 			PortSend(10, HandlePort);
 			PortSend(13, HandlePort);
 			WaitForOK(HandlePort);
-			PortSendString("ATD55", HandlePort);
+			PortSendString("ATD55", HandlePort);	// zadzwoñ pod nr 55
 			PortSend(10, HandlePort);
 			PortSend(13, HandlePort);
 		}
 		else if (functionality == 2)
 		{
-			PortSendString("ATM0", HandlePort);
+			PortSendString("ATM0", HandlePort);		// wy³¹cz g³oœnik
 			PortSend(10, HandlePort);
 			PortSend(13, HandlePort);
 			WaitForOK(HandlePort);
-			PortSendString("ATH1", HandlePort);
+			PortSendString("ATH1", HandlePort);		// podnieœ s³uchawkê
 			PortSend(10, HandlePort);
 			PortSend(13, HandlePort);
 			WaitForOK(HandlePort);
-			PortSendString("ATA", HandlePort);
+			PortSendString("ATA", HandlePort);		// odbierz po³¹czenie
 			PortSend(10, HandlePort);
 			PortSend(13, HandlePort);
 		}
@@ -82,16 +83,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			return(-1);
 		}
 	}
-	/* do wys³ania:
-	01 -	ATM0
-			ATC1
-			ATD55
-	02 -	ATH1
-			ATA
-	*/
 
 	while (true)
 	{
+		// nieskoñczona pêtla, w której przesy³amy wpisane na konsolê znaki do portu
 		myChar = _getch();
 		if (myChar == 27)
 		{
@@ -142,6 +137,7 @@ int GiveFuncionality()
 
 bool PortSendString(string str, HANDLE HandlePort)
 {
+	// wysy³anie stringu do portu
 	cout << ">> Sending: " << str << endl;
 	unsigned char myChar;
 	for (int i = 0; i < str.length(); i++)
@@ -153,6 +149,7 @@ bool PortSendString(string str, HANDLE HandlePort)
 
 void WaitForOK(HANDLE HandlePort)
 {
+	// oczekiwanie a¿ w buforze portu pojawi siê string OK
 	char buffer[3] = { 0, 0, 0 };
 
 	cout << ">> Waiting for OK..." << endl;
@@ -168,6 +165,7 @@ void WaitForOK(HANDLE HandlePort)
 
 bool CreatePort(wchar_t* port, HANDLE &HandlePort)
 {
+	// otwarcie portu o zadaniej nazwie
 	HandlePort = CreateFile(port, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 	if (HandlePort == INVALID_HANDLE_VALUE)
 	{
@@ -245,6 +243,7 @@ bool ConfigureConnection(HANDLE HandlePort, int baudRate)
 
 char* PortRead(char* data, int dataSize)
 {
+	// odczytanie danej liczby bajtów z portu
 	DWORD recieved = 0;
 	for (int i = 0; i < dataSize; i++) data[i] = 0;
 	ReadFile(HandlePort, data, dataSize - 1, &recieved, NULL);
@@ -253,6 +252,7 @@ char* PortRead(char* data, int dataSize)
 
 bool PortSend(unsigned char myChar, HANDLE HandlePort)
 {
+	// wysy³anie 1 bajtu do portu
 	DWORD bytesWritten = 0;
 	while (bytesWritten == 0) WriteFile(HandlePort, &myChar, 1, &bytesWritten, NULL);
 	return true;
@@ -260,6 +260,7 @@ bool PortSend(unsigned char myChar, HANDLE HandlePort)
 
 DWORD WINAPI reciever(LPVOID lpParam)
 {
+	// definiowanie recievera - co siê dzieje przy odebranych znakach - wypisywanie na ekran
 	char buffer[32];
 	while (true)
 	{

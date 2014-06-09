@@ -93,6 +93,7 @@ namespace Zad3
 
         static byte[] Encrypt128(byte[] input)
         {
+            // metoda dzieli plik na 128-bajtowe fragmenty, w przypadku niedomiaru, dopełnia znakiem SUB
             int checkModulo = input.Length % 128;
             int packetCount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(input.Length) / 128));
             byte[] data = new byte[packetCount * 128];
@@ -121,6 +122,7 @@ namespace Zad3
 
         static byte[] Decrypt128(byte[] input)
         {
+            // metoda odzyskuje całość wiadomości z pakietów 128-bajtowych
             int size = 0;
             while(size<input.Length)
             {
@@ -169,6 +171,7 @@ namespace Zad3
 
         static void connect(SerialPort port)
         {
+            // metoda otwiera port i obsługuje jego wyjątki
             try
             {
                 port.Open();
@@ -176,6 +179,7 @@ namespace Zad3
             catch (Exception e)
             {
                 Console.WriteLine("Error: " + e.Message);
+                port.Close();
             }
             if (port.IsOpen) Console.WriteLine("Connected to port: " + port.PortName);
         }
@@ -187,6 +191,7 @@ namespace Zad3
             byte[] actualBuffer = new byte[128];
             byte[] returnBuffer = new byte[128 * 256];
 
+            // wysyłąnie znaku NAK w równych odstępach czasu co 10 sekund i sprawdzanie odpowiedzi
             Thread.BeginCriticalRegion();
             System.Console.WriteLine("RECIEVER: initialisation started. Sending NAK.");
             for (int i = 0; i < 5; i++ )
