@@ -1,7 +1,6 @@
 // Zad4.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include <cstdlib>
 #include <iostream>
 #include <conio.h>
@@ -23,7 +22,7 @@ bool PortSendString(string str, HANDLE HandlePort);
 void WaitForOK(HANDLE HandlePort);
 DWORD WINAPI reciever(LPVOID lpParam);
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 	cout << "MODEM CONNECTION" << endl;
 	wchar_t port[5] = { 'c', 'o', 'm' };
