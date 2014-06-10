@@ -1,0 +1,29 @@
+ka¿dy element wizulany dzieli siê na 2 czêœci
+XAML - definiuje jak wygl¹da okienko i czêœciowo jak siê zachowuje
+xaml.cs - code behind do tego, tam siê powinno pisaæ bardzo oszczêdnie jeœli nie w ogóle (nie wi¹zaæ logiki z widokiem), je¿eli ju¿ to rzeczy œciœle zwi¹zane z widokiem
+
+ka¿da kontrolka ma DataContext - mówi nam o zestawie danych, z jak¹ kontrolka pracuje, automatycznie jest dziedziczony przez wszystkie obiekty, które s¹ w drzewku naszego okienka (zawiera referencjê do view model (?) )
+
+MVVM - Model, View, View Model; wspierany przez WPF
+[v] <-(notifications) <->(commands) <->(binding) [VM] <-> [M]
+Model - warstwa logiki biznesowej i obiekty biznesowe (Book, Reader), wszystkie el. dostêpowe do baz danych, dataprovidery
+View - wszystko co jest zwi¹zane z interakcj¹ z u¿ytkownikiem
+View Model - LOGIKA WYŒWIETLANIA - logiczny stan waszego widoku, pomost miêdzy View a Model
+ka¿dy View ma jeden i dok³adnie jeden View Model, wi¹zany przez DataContext
+view model jest w 100% unit-testowalny, unikaæ wywo³añ bezpoœrednich, np. dialogu do otwierania pliku
+view ma œwiadomoœæ jaki view model jest podpiêty
+view model nie ma dostêpu do view ale - notyfikacje, komendy, binding
+notyfikacje - implementuje siê interfejs INotifyPropertyChanged, vm informuje widok, ¿e coœ siê zmieni³o i widok powinien siê odœwie¿yæ; wyœwietlanie treœci, która siê zmieni³a w view model
+komendy - interfejs ICommand - zestaw metod, które s¹ wywo³ywane podczas akcji wykonywanej przez u¿ytkownika, np. klikniêcie w guzik
+binding - powi¹zanie miêdzy propertiesami na view modelu i tym co jest na kontrolce, np. textbox, text block czy listbox, tree view, przy zmianie danych (notify) view musi wiedzieæ sk¹d te dane wzi¹æ
+
+chcemy wyœwietliæ dane ksi¹¿ki, to view model pobiera dane z model i tak je preparuje, ¿eby by³y dobre do wyœwietlania i wysy³a do view
+
+w vm mamy jakieœ obiekty interfejsowe, które inicjalizujemy konkretnymi pobieranymi z model
+
+MVVM PRISM - implementing the mvvm pattern
+
+----
+three-tier arch
+VM i V to prezentacja
+M to logika biznesowa i dane
