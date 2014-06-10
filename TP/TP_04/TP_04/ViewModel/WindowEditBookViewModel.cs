@@ -73,22 +73,21 @@ namespace TP_04.ViewModel
             if (author == "") author = "NO AUTHOR";
             if (yR == "") yR = "-1";
             editBook(title,author,Convert.ToInt32(yR));
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         public void ButtonCancelClicked(object sender)
         {
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         private void editBook(string title, string author, int yearReleased)
         {
-            Model.Book bookCol = modelController.GetOffice().getBookCollection().ElementAt(selectedItem);
+            //Model.Book bookCol = modelController.GetOffice().getBookCollection().ElementAt(selectedItem);
             Model.Book bookProp = prop.ElementAt(selectedItem);
-            Model.Book myNewBook = new Model.Book(title, author, yearReleased, bookCol.key);
-            bookCol.title = title;
-            bookCol.author = author;
-            bookCol.yearRelased = yearReleased;
+            //bookCol.title = title;
+            //bookCol.author = author;
+            //bookCol.yearRelased = yearReleased;
             bookProp.title = title;
             bookProp.author = author;
             bookProp.yearRelased = yearReleased;

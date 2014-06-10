@@ -56,7 +56,7 @@ namespace TP_04.ViewModel
             this.prop_books = prop_books;
             this.prop_readers = prop_readers;
             this.selectedItem = selectedItem;
-            this.rent = modelController.GetOffice().getRentCollection().ElementAt(selectedItem);
+            this.rent = prop.ElementAt(selectedItem);
             setPreviousValues();
         }
 
@@ -67,13 +67,13 @@ namespace TP_04.ViewModel
             ComboBox comboReaders = (ComboBox)sentList[1];
             int selectedBook = comboBooks.SelectedIndex;
             int selectedReader = comboReaders.SelectedIndex;
-            editRent(modelController.GetOffice().getBookCollection().ElementAt(selectedBook), modelController.GetOffice().getReaderCollection().ElementAt(selectedReader));
-            System.Windows.Application.Current.Windows[1].Close();
+            editRent(prop_books.ElementAt(selectedBook), prop_readers.ElementAt(selectedReader));
+            GetActiveWindow().Close();
         }
 
         public void ButtonCancelClicked(object sender)
         {
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         private void editRent(Model.Book book, Model.Reader reader)

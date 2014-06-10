@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace TP_04.Common
 {
@@ -28,6 +29,16 @@ namespace TP_04.Common
             {
                 handler(this, new PropertyChangedEventArgs(name));
             }
+        }
+
+        protected Window GetActiveWindow()
+        {
+            WindowCollection windows = System.Windows.Application.Current.Windows;
+            foreach (Window window in windows)
+            {
+                if (window.IsActive) return window;
+            }
+            return null;
         }
     }
 }

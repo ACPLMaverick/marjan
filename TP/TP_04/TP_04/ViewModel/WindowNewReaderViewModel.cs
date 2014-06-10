@@ -60,18 +60,18 @@ namespace TP_04.ViewModel
             if (surname == "") surname = "NO AUTHOR";
             if (pesel == "") pesel = "-1";
             createNewBook(name,surname,Convert.ToDouble(pesel));
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         public void ButtonCancelClicked(object sender)
         {
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         private void createNewBook(string name, string surname, double pesel)
         {
             reader = new Model.Reader(name, surname, pesel);
-            modelController.GetOffice().getReaderCollection().Add(reader);
+            //modelController.GetOffice().getReaderCollection().Add(reader);
             prop.Add(reader);
         }
     }

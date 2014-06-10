@@ -61,12 +61,12 @@ namespace TP_04.ViewModel
             int selectedBook = comboBooks.SelectedIndex;
             int selectedReader = comboReaders.SelectedIndex;
             createNewRent(modelController.GetOffice().getBookCollection().ElementAt(selectedBook), modelController.GetOffice().getReaderCollection().ElementAt(selectedReader));
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         public void ButtonCancelClicked(object sender)
         {
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         private void createNewRent(Model.Book book, Model.Reader reader)
@@ -75,7 +75,7 @@ namespace TP_04.ViewModel
             book.rented += 1;
             book.wasRented = true;
             reader.rented += 1;
-            modelController.GetOffice().getRentCollection().Add(rent);
+            //modelController.GetOffice().getRentCollection().Add(rent);
             prop.Add(rent);
         }
     }

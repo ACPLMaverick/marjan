@@ -73,21 +73,21 @@ namespace TP_04.ViewModel
             if (surname == "") surname = "NO AUTHOR";
             if (pesel == "") pesel = "-1";
             editReader(name,surname,Convert.ToDouble(pesel));
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         public void ButtonCancelClicked(object sender)
         {
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         private void editReader(string name, string surname, double pesel)
         {
-            Model.Reader readerCol = modelController.GetOffice().getReaderCollection().ElementAt(selectedItem);
+            //Model.Reader readerCol = modelController.GetOffice().getReaderCollection().ElementAt(selectedItem);
             Model.Reader readerProp = prop.ElementAt(selectedItem);
-            readerCol.name = name;
-            readerCol.secondName = surname;
-            readerCol.pesel = pesel;
+            //readerCol.name = name;
+            //readerCol.secondName = surname;
+            //readerCol.pesel = pesel;
             readerProp.name = name;
             readerProp.secondName = surname;
             readerProp.pesel = pesel;

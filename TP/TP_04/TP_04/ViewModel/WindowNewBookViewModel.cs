@@ -60,18 +60,18 @@ namespace TP_04.ViewModel
             if (author == "") author = "NO AUTHOR";
             if (yR == "") yR = "-1";
             createNewBook(title,author,Convert.ToInt32(yR));
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         public void ButtonCancelClicked(object sender)
         {
-            System.Windows.Application.Current.Windows[1].Close();
+            GetActiveWindow().Close();
         }
 
         private void createNewBook(string title, string author, int yearReleased)
         {
             book = new Model.Book(title, author, yearReleased, 0);
-            modelController.GetOffice().getBookCollection().Add(book);
+            //modelController.GetOffice().getBookCollection().Add(book);
             prop.Add(book);
         }
     }

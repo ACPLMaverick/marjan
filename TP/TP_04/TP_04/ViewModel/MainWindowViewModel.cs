@@ -72,6 +72,8 @@ namespace TP_04.ViewModel
 
             UpdateLists();
 
+            model.setObsCols(books, readers, rents);
+
             ButtonExitCommand = new Common.DelegateCommand(ButtonExitClicked);
             ButtonNewCommand = new Common.DelegateCommand(ButtonNewClicked);
             ButtonEditCommand = new Common.DelegateCommand(ButtonEditClicked);
@@ -167,19 +169,19 @@ namespace TP_04.ViewModel
             {
                 int selected = lvBooks.SelectedIndex;
                 books.RemoveAt(selected);
-                model.GetOffice().getBookCollection().RemoveAt(selected);
+                //model.GetOffice().getBookCollection().RemoveAt(selected);
             }
             else if(currentList == "readers")
             {
                 int selected = lvReaders.SelectedIndex;
                 readers.RemoveAt(selected);
-                model.GetOffice().getReaderCollection().RemoveAt(selected);
+               // model.GetOffice().getReaderCollection().RemoveAt(selected);
             }
             else if(currentList == "rents")
             {
                 int selected = lvRents.SelectedIndex;
                 rents.RemoveAt(selected);
-                model.GetOffice().getRentCollection().RemoveAt(selected);
+                //model.GetOffice().getRentCollection().RemoveAt(selected);
             }
         }
 
