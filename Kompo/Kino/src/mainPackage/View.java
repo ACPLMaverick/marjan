@@ -14,6 +14,8 @@ import javax.swing.border.EmptyBorder;
 
 public class View extends JFrame {
 	
+	private Controller myController;
+	
 	private JLabel title1 = new JLabel("Witaj!");
 	private JLabel title2 = new JLabel("Wybierz konto:");
 	private JButton userButton = new JButton("Uzytkownik");
@@ -25,7 +27,9 @@ public class View extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public View() {
+	public View(Controller controller) {
+		this.myController = controller;
+		
 		JPanel contentPane = new JPanel();
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -8,9 +8,9 @@ import javax.swing.event.ListSelectionListener;
 
 public class Controller {
 	private View theView;
-	private Data theModel;
+	private Model theModel;
 	
-	public Controller(View theView, Data theModel){
+	public Controller(View theView, Model theModel){
 		this.theView = theView;
 		this.theModel = theModel;
 		

@@ -8,9 +8,10 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		View theView = new View();
-		Data theModel = new Data();
-		Controller theController = new Controller(theView, theModel);
+		Controller theController = null;
+		View theView = new View(theController);
+		Model theModel = new Model(theController);
+		theController = new Controller(theView, theModel);
 		theView.setVisible(true);
 	}
 }

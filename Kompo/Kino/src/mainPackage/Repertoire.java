@@ -3,6 +3,11 @@ package mainPackage;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * 
+ * Reprezentuje ca³y repertuar, przechowuje kolekcjê seansów
+ *
+ */
 public class Repertoire {
 	
 	private ArrayList<Seance> seanceList;
@@ -17,37 +22,37 @@ public class Repertoire {
 		seanceList.add(seance);
 	}
 	
+	public void delete(int i)
+	{
+		seanceList.remove(i);
+	}
 	// by index
 	public Seance get(int i)
 	{
 		return seanceList.get(i);
 	}
 	
-//	// by date
-//	public ArrayList<Seance> get(Date date)
-//	{
-//		ArrayList<Seance> newSeances = new ArrayList<Seance>();
-//		return newSeances;
-//	}
-//	
-//	// by price
-//	public ArrayList<Seance> get(Date date)
-//	{
-//		ArrayList<Seance> newSeances = new ArrayList<Seance>();
-//		return newSeances;
-//	}
-//	
-//	// by genre
-//	public ArrayList<Seance> get(Date date)
-//	{
-//		ArrayList<Seance> newSeances = new ArrayList<Seance>();
-//		return newSeances;
-//	}
-//	
-//	// by name
-//	public ArrayList<Seance> get(Date date)
-//	{
-//		ArrayList<Seance> newSeances = new ArrayList<Seance>();
-//		return newSeances;
-//	}
+	public ArrayList<Seance> get()
+	{
+		return seanceList;
+	}
+	
+	/**
+	 * 
+	 * @return zwraca repertuar w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
+	 */
+	public Object[][] getAsObjectMatrix()
+	{
+		Object[][] myArray = new Object[seanceList.size()][];
+		for(int i = 0; i < seanceList.size(); i++)
+		{
+			Object[] myObjArray = seanceList.get(i).getParamsAsObjectArray();
+			for(int j = 0; j < seanceList.get(i).getFieldsCount(); j++)
+			{
+				myArray[i][j] = myObjArray[j];
+			}
+		}
+		return myArray;
+	}
+
 }
