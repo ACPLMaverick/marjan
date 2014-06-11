@@ -1,0 +1,29 @@
+﻿<Window x:Class="TP_04.WindowNewBook"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ViewModel="clr-namespace:TP_04.ViewModel"
+        xmlns:View="clr-namespace:TP_04.View"
+        Title="Book" Height="166.326" Width="306.122">
+    <Grid>
+        <Button x:Name="BookButtonOK" Content="OK" HorizontalAlignment="Left" Margin="131,107,0,0" VerticalAlignment="Top" Width="75" Command="{Binding ButtonOKCommand}">
+            <Button.Resources>
+                <View:MultiConverter x:Key="MVConv"></View:MultiConverter>
+            </Button.Resources>
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource MVConv}">
+                    <Binding ElementName="BookTETitle" />
+                    <Binding ElementName="BookTEAuthor" />
+                    <Binding ElementName="BookTEYearReleased" />
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>
+        <Button x:Name="BookButtonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="211,107,0,0" VerticalAlignment="Top" Width="75" Command="{Binding ButtonCancelCommand}"/>
+        <TextBox x:Name="BookTETitle" HorizontalAlignment="Left" Height="23" Margin="88,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="198"/>
+        <TextBlock x:Name="BookTBTitle" HorizontalAlignment="Left" Margin="10,17,0,0" TextWrapping="Wrap" Text="Title:" VerticalAlignment="Top"/>
+        <TextBlock x:Name="BookTBAuthor" HorizontalAlignment="Left" Margin="10,45,0,0" TextWrapping="Wrap" Text="Author:" VerticalAlignment="Top" RenderTransformOrigin="0.644,1.568"/>
+        <TextBox x:Name="BookTEAuthor" HorizontalAlignment="Left" Height="23" Margin="88,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="198"/>
+        <TextBox x:Name="BookTEYearReleased" HorizontalAlignment="Left" Height="23" Margin="88,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="198"/>
+        <TextBlock x:Name="BookTBYearReleased" HorizontalAlignment="Left" Margin="10,73,0,0" TextWrapping="Wrap" Text="Year released:" VerticalAlignment="Top" RenderTransformOrigin="0.644,1.568"/>
+
+    </Grid>
+</Window>
