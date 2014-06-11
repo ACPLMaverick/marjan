@@ -24,6 +24,7 @@ public class MyTableModel extends AbstractTableModel{
 		return test[row][col];
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Class getColumnClass(int c){
 		return getValueAt(0, c).getClass();
 	}    
