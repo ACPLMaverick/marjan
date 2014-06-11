@@ -43,7 +43,7 @@ public class Repertoire {
 	 */
 	public Object[][] getAsObjectMatrix()
 	{
-		Object[][] myArray = new Object[seanceList.size()][];
+		Object[][] myArray = new Object[seanceList.size()][seanceList.get(0).getFieldsCount()];
 		for(int i = 0; i < seanceList.size(); i++)
 		{
 			Object[] myObjArray = seanceList.get(i).getParamsAsObjectArray();

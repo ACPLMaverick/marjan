@@ -28,6 +28,7 @@ public class Controller {
 			theView.um.disableButton(theView.um.getBookButton());
 			theView.um.addBackButtonListener(backButtonListener);
 			theView.um.getUserListSelection().addListSelectionListener(new SelectionListener());
+			updateRepertoireTable();
 		}
 	};
 	
@@ -72,4 +73,10 @@ public class Controller {
 			theView.um.enableButton(theView.um.getBookButton());
 		}
 	};
+	
+	public void updateRepertoireTable()
+	{
+		Object[][] newContent = theModel.repertoire.getAsObjectMatrix();
+		theView.um.setTableContent(newContent);
+	}
 }

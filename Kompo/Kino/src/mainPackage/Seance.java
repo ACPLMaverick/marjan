@@ -10,25 +10,23 @@ import java.util.Date;
  *
  */
 public class Seance {
-
-	public enum Genre {THRILLER, COMEDY, ROMANCE, WAR, CARTOON, UNKNOWN};
 	
-	private Genre myGenre;
+	private String myGenre;
 	private String title;
 	private Date date;
-	private String seatPlan;
+	private int seatPlan;
 	private double price;
 	
 	public Seance()
 	{
-		this.myGenre = Genre.UNKNOWN;
-		this.title = "none";
+		this.myGenre = "nieznany";
+		this.title = "brak";
 		this.date = new Date();
-		this.seatPlan = "none";
+		this.seatPlan = 0;
 		this.price = 0.0;
 	}
 	
-	public Seance(Genre myGenre, String title, Date date, String seatPlan, double price)
+	public Seance(String myGenre, String title, Date date, int seatPlan, double price)
 	{
 		this.myGenre = myGenre;
 		this.title = title;
@@ -37,15 +35,23 @@ public class Seance {
 		this.price = price;
 	}
 	
-	public Genre getGenre() { return myGenre; }
+	public String getGenre() { return myGenre; }
 	public String getTitle() { return title; }
 	public Date getDate() { return date; }
-	public String getSeatPlan() { return seatPlan; }
+	public int getSeatPlan() { return seatPlan; }
 	public double getPrice() { return price; }
 	
-	public String getDateAsString() { return date.toString(); }
+	public String getDateAsString() 
+	{ 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		String myTime = String.valueOf(cal.get(Calendar.HOUR)) + ":" + String.valueOf(cal.get(Calendar.MINUTE));
+		String myDate = String.valueOf(cal.get(Calendar.DAY_OF_MONTH)) + "-" + String.valueOf(cal.get(Calendar.MONTH)) + "-" + String.valueOf(cal.get(Calendar.YEAR));
+		String finalDate = myDate + " " + myTime;
+		return finalDate; 
+	}
 	public String getPriceAsString() { return String.valueOf(price); }
-	public String getGenreAsString() { return myGenre.toString(); }
+	public String getSeatPlanAsString() { return String.valueOf(seatPlan); }
 	
 	/**
 	 * 

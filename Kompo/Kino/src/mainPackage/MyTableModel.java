@@ -4,8 +4,8 @@ import javax.swing.table.AbstractTableModel;
 
 public class MyTableModel extends AbstractTableModel{
 	private String[] columnNames = {"Tytu³", "Godzina", "Dzieñ", "Sala", "Cena"};
-	private Object[][] test = {{"Ojciec Chrzestny", "17:00", "10-06-2014", "4", "14.00"}, 
-							   {"Taksówkarz", "15:00", "12-06-2014", "5", "15.00"}
+	private Object[][] content = {{"Ojciec Chrzestny", "17:00", "10-06-2014", "4", "14.00"}, 
+							   	 {"Taksówkarz", "15:00", "12-06-2014", "5", "15.00"}
 	};
 	
 	public int getColumnCount() {
@@ -13,7 +13,7 @@ public class MyTableModel extends AbstractTableModel{
 	}
 
 	public int getRowCount() {
-		return test.length;
+		return content.length;
 	}
 	
 	public String getColumnName(int col){
@@ -21,7 +21,7 @@ public class MyTableModel extends AbstractTableModel{
 	}
 
 	public Object getValueAt(int row, int col) {
-		return test[row][col];
+		return content[row][col];
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -36,4 +36,6 @@ public class MyTableModel extends AbstractTableModel{
             return true;
         }
     }
+	
+	public void setContent(Object[][] newContent) { this.content = newContent; }
 }

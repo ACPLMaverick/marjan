@@ -1,5 +1,7 @@
 package mainPackage;
 
+import java.util.Date;
+
 /**
  * 
  * 
@@ -10,22 +12,24 @@ public class Model {
 	private Controller myController;
 	
 	// TODO: sprawdziæ czy faktycznie musza byæ public
+	// TODO: naprawiæ pokazywanie godziny w seanse
 	public Repertoire repertoire;
 	public TicketCollection boughtTickets;
 	public TicketCollection reservedTickets;
 	public CostCollection costs;
 	public DBController dataBaseController;
 	
+	static final int placesAvailable = 60;
+	
 	public Model(Controller controller)
 	{
 		this.myController = controller;
 		
-		this.repertoire = new Repertoire();
 		this.boughtTickets = new TicketCollection();
 		this.reservedTickets = new TicketCollection();
 		this.costs = new CostCollection();
 		this.dataBaseController = new DBController();
 		
-		dataBaseController.getWholeRepertoire();
+		this.repertoire = dataBaseController.getWholeRepertoire();
 	}
 }

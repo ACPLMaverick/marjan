@@ -96,4 +96,6 @@ public class UserMenu extends JFrame {
 	public JButton getBookButton(){
 		return bookTicketButton;
 	}
+	
+	public void setTableContent(Object[][] newContent) { myTableModel.setContent(newContent); }
 }
