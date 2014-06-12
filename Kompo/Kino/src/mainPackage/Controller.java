@@ -80,4 +80,16 @@ public class Controller {
 		Object[][] newContent = updater.getRepertoireAsObjects();
 		theView.um.setTableContent(newContent);
 	}
+	
+	public void serialiseRepertoire()
+	{
+		SerializationController ser = new SerializationController<Repertoire>(theModel.repertoire);
+		ser.serialize("D:\\repertuar.xml");
+	}
+	
+	public void deserialiseRepertoire()
+	{
+		SerializationController ser = new SerializationController<Repertoire>(theModel.repertoire);
+		theModel.repertoire = (Repertoire)ser.deserialize("D:\\repertuar.xml");
+	}
 }
