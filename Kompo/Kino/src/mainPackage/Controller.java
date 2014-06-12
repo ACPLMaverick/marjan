@@ -76,7 +76,8 @@ public class Controller {
 	
 	public void updateRepertoireTable()
 	{
-		Object[][] newContent = theModel.repertoire.getAsObjectMatrix();
+		SelectionController updater = new SelectionController(theModel.repertoire);
+		Object[][] newContent = updater.getRepertoireAsObjects();
 		theView.um.setTableContent(newContent);
 	}
 }

@@ -36,23 +36,5 @@ public class Repertoire {
 	{
 		return seanceList;
 	}
-	
-	/**
-	 * 
-	 * @return zwraca repertuar w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
-	 */
-	public Object[][] getAsObjectMatrix()
-	{
-		Object[][] myArray = new Object[seanceList.size()][seanceList.get(0).getFieldsCount()];
-		for(int i = 0; i < seanceList.size(); i++)
-		{
-			Object[] myObjArray = seanceList.get(i).getParamsAsObjectArray();
-			for(int j = 0; j < seanceList.get(i).getFieldsCount(); j++)
-			{
-				myArray[i][j] = myObjArray[j];
-			}
-		}
-		return myArray;
-	}
 
 }

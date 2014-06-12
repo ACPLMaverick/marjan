@@ -19,7 +19,7 @@ public class Model {
 	public CostCollection costs;
 	public DBController dataBaseController;
 	
-	static final int placesAvailable = 60;
+	public static final int placesAvailable = 60;
 	
 	public Model(Controller controller)
 	{

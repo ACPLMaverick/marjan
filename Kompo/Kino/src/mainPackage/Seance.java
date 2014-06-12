@@ -53,27 +53,6 @@ public class Seance {
 	public String getPriceAsString() { return String.valueOf(price); }
 	public String getSeatPlanAsString() { return String.valueOf(seatPlan); }
 	
-	/**
-	 * 
-	 * @return zwraca parametry seansu w tablicy Object[],
-	 * do tabeli
-	 */
-	public Object[] getParamsAsObjectArray()
-	{
-		ArrayList<Object> objects = new ArrayList<Object>();
-		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		String myTime = String.valueOf(cal.get(Calendar.HOUR)) + ":" + String.valueOf(cal.get(Calendar.MINUTE));
-		String myDate = String.valueOf(cal.get(Calendar.DAY_OF_MONTH)) + "-" + String.valueOf(cal.get(Calendar.MONTH)) + "-" + String.valueOf(cal.get(Calendar.YEAR));
-		
-		objects.add(this.title);
-		objects.add(myTime);
-		objects.add(myDate);
-		objects.add(this.seatPlan);
-		objects.add(String.valueOf(this.price));
-		return objects.toArray();
-	}
 	
 	/**
 	 *	

@@ -67,7 +67,6 @@ public class DBController {
 		Repertoire newRep = new Repertoire();
 		for(String str : resultString)
 		{
-			System.out.println(str);
 			String[] elements = str.split(";");
 			
 			String dateString = elements[2];
