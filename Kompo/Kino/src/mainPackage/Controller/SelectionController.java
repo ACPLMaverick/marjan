@@ -409,6 +409,7 @@ public class SelectionController {
 		
 		objects.add(ticket.getSeance().getTitle());
 		objects.add(splitDate[0]);
+		objects.add(String.valueOf(ticket.getPrice()));
 		return objects.toArray();
 	}
 }
