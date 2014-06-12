@@ -24,4 +24,6 @@ public class Ticket {
 	{
 		return this.price;
 	}
+	
+	public int getFieldsCount() { return 3; }
 }

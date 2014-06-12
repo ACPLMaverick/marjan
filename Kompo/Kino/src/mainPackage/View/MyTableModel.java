@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 // przyda³oby siê i trzeba zrobiæ te¿ tabelê przychodów i wydatków. Przyjête kolumny: TYP, DATA, ILOŒÆ HAJSU
 // hajs siê musi zgadzaæ
-// przyda³oby siê zrobiæ te¿ tabelê aktualnie kupionych biletów do wyœwietlenia gdzieœ obok. Przyjête kolumny: TYTU£ FILMU, DATA, ILOŒÆ BILETÓW
+// przyda³oby siê zrobiæ te¿ tabelê aktualnie kupionych biletów do wyœwietlenia gdzieœ obok. Przyjête kolumny: TYTU£ FILMU, DATA, CENA
 
 public class MyTableModel extends AbstractTableModel{
 	private String[] columnNames = {"Tytu³", "Godzina", "Dzieñ", "Wolne miejsca", "Cena"};

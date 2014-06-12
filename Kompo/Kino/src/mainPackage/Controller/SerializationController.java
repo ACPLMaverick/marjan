@@ -1,9 +1,15 @@
-package mainPackage.Model;
+package mainPackage.Controller;
 
 import java.io.*;
 
 import com.thoughtworks.xstream.XStream;
 
+/**
+ * 
+ * @author Maverick
+ *	Klasa u¿ywana do serializacji i deserializacji kolekcji w formacie XML
+ * @param <T> supposed to be Repertoire
+ */
 public class SerializationController<T> {
 	
 	private T myCollection;

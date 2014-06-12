@@ -13,7 +13,6 @@ import javax.swing.event.ListSelectionListener;
 import mainPackage.Model.Model;
 import mainPackage.Model.Repertoire;
 import mainPackage.Model.Seance;
-import mainPackage.Model.SerializationController;
 import mainPackage.View.View;
 
 public class Controller {

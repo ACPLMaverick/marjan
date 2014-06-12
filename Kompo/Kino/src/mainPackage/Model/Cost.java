@@ -23,18 +23,18 @@ public class Cost {
 		if(myObject instanceof Ticket)
 		{
 			price = Math.abs(((Ticket) myObject).getPrice());
-			this.type = "TICKET";
+			this.type = "BILET";
 		}
 		else if(myObject instanceof Seance)
 		{
 			price = -100.0;
 			// fixed cost of having a seance
-			this.type = "SEANCE";
+			this.type = "SEANS";
 		}
 		else if(myObject instanceof License)
 		{
 			price = - Math.abs(((License) myObject).getPrice());
-			this.type = "LICENSE";
+			this.type = "LICENCJA";
 		}
 		else
 		{
@@ -46,4 +46,7 @@ public class Cost {
 	public Object getObject() { return myObject; }
 	public Date getDate() { return date; }
 	public String getPriceAsString() { return String.format("%.2f", this.price) + " z³"; }
+	public String getType() { return type; }
+	
+	public int getFieldsCount() { return 3; }
 }
