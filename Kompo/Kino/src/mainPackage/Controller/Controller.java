@@ -2,6 +2,7 @@ package mainPackage.Controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
@@ -11,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 
 import mainPackage.Model.Model;
 import mainPackage.Model.Repertoire;
+import mainPackage.Model.Seance;
 import mainPackage.View.View;
 
 public class Controller {
@@ -52,17 +54,18 @@ public class Controller {
 	ActionListener buyButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.um.createBuyTicketMenu();
-			theView.um.buyTicket.setSeanceTitle(sl.txt, sl.date);
-			theView.um.buyTicket.setTicketPrice(sl.price);
 			theView.um.buyTicket.getTicketCount().addChangeListener(spinnerChangeListener);
+			theView.um.buyTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
+			theView.um.buyTicket.setTicketPrice(sl.seance.getPriceAsString());
 		}
 	};
 	
 	ChangeListener spinnerChangeListener = new ChangeListener(){
-		
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
-			System.out.println(theView.um.buyTicket.getTicketCount().getValue());
+			double cena = sl.seance.getPrice();
+			cena *= Double.valueOf(theView.um.buyTicket.getSpinnerListModel().getValue().toString());
+			theView.um.buyTicket.setTicketPrice(String.valueOf(cena));
 		}
 	};
 	
@@ -80,7 +83,7 @@ public class Controller {
 	};
 	
 	class SelectionListener implements ListSelectionListener {
-		public String txt, date, price;		//TODO: zapisywanie w tablicy objektów zazaczonego rzêdu
+		public Seance seance;
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
@@ -93,10 +96,7 @@ public class Controller {
 			
 			theView.um.enableButton(theView.um.getBuyButton());
 			theView.um.enableButton(theView.um.getBookButton());
-			txt = theView.um.getMyTableModel().getValueAt(row, 0).toString();
-			date = theView.um.getMyTableModel().getValueAt(row, 1).toString() + " "
-					+ theView.um.getMyTableModel().getValueAt(row, 2).toString();
-			price = theView.um.getMyTableModel().getValueAt(row, 4).toString();
+			seance = theModel.repertoire.get(row);
 		}
 	};
 	
