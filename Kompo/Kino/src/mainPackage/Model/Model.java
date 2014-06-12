@@ -3,9 +3,6 @@ package mainPackage.Model;
 import java.util.Date;
 
 import mainPackage.Controller.Controller;
-import mainPackage.Controller.CostCollection;
-import mainPackage.Controller.DBController;
-import mainPackage.Controller.TicketCollection;
 
 /**
  * 

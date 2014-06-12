@@ -1,8 +1,6 @@
-package mainPackage.Controller;
+package mainPackage.Model;
 
 import java.util.ArrayList;
-
-import mainPackage.Model.Ticket;
 
 /**
  * 

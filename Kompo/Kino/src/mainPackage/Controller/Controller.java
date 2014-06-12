@@ -13,6 +13,7 @@ import javax.swing.event.ListSelectionListener;
 import mainPackage.Model.Model;
 import mainPackage.Model.Repertoire;
 import mainPackage.Model.Seance;
+import mainPackage.Model.SerializationController;
 import mainPackage.View.View;
 
 public class Controller {
@@ -103,7 +104,7 @@ public class Controller {
 	public void updateRepertoireTable()
 	{
 		SelectionController updater = new SelectionController(theModel.repertoire);
-		Object[][] newContent = updater.getRepertoireAsObjects();
+		Object[][] newContent = updater.getRepertoireAsObjects("sci-fi");
 		theView.um.setTableContent(newContent);
 	}
 	

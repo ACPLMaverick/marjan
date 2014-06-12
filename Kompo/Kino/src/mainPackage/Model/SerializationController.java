@@ -1,4 +1,4 @@
-package mainPackage.Controller;
+package mainPackage.Model;
 
 import java.io.*;
 

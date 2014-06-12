@@ -1,12 +1,9 @@
-package mainPackage.Controller;
+package mainPackage.Model;
 
 import java.util.*;
 import java.util.Date;
 import java.sql.*;
 import java.util.ArrayList;
-
-import mainPackage.Model.Repertoire;
-import mainPackage.Model.Seance;
 
 import com.sun.*;
 
