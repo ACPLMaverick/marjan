@@ -1,14 +1,11 @@
-package mainPackage.Model;
+package mainPackage.Controller;
 
-import java.awt.EventQueue;
-
-import mainPackage.Controller.Controller;
-import mainPackage.View.View;
-
+import mainPackage.Model.*;
+import mainPackage.View.*;
 public class Main {
 
 	/**
-	 * @param args
+	 * Metoda main programu
 	 */
 	public static void main(String[] args) {
 		Controller theController = null;
