@@ -24,6 +24,7 @@ import mainPackage.Model.Seance;
 import mainPackage.Model.Ticket;
 import mainPackage.View.View;
 
+
 public class Controller {
 	private View theView;
 	private Model theModel;
@@ -31,6 +32,7 @@ public class Controller {
 	
 	private SelectionListener sl = new SelectionListener();			//to na razie mój jedyny pomys³ jak pobraæ
 																	//zaznaczony tytu³
+	private TicketsSelectionListener bought = new TicketsSelectionListener();
 	
 	public Controller(View theView, Model theModel){
 		this.theView = theView;
@@ -137,6 +139,13 @@ public class Controller {
 		theView.um.setTableContent(newContent);
 	}
 	
+	public void updateBoughtTable()
+	{
+		SelectionController updater = new TicketsSelectionController(theModel.boughtTickets);
+		Object[][] newContent = updater.getCollectionAsObjects();
+		theView.um.basketMenu.setBoughtTableContent(newContent);
+	}
+	
 	public void updateCostsTable()
 	{
 		SelectionController updater = new CostsSelectionController(theModel.costs, null, null, null, 0, 0);
@@ -197,7 +206,6 @@ public class Controller {
 			}
 			theView.um.getUserListSelection().addListSelectionListener(sl);
 			updateRepertoireTable();
-			updateCostsTable();
 		}
 	};
 	
@@ -253,9 +261,27 @@ public class Controller {
 	
 	ActionListener basketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			SelectionController updater = new TicketsSelectionController(theModel.boughtTickets, null, null, null, 0, 0);
 			Object[][] tickets = updater.getCollectionAsObjects();
-			theView.um.createBasketMenu(tickets, null);
+			theView.um.createBasketMenu();
+			theView.um.basketMenu.getBoughtTicketsListSelection().addListSelectionListener(bought);
+			theView.um.basketMenu.addDeleteTicketButtonListener(deleteTicketButtonListener);
+			theView.um.disableButton(theView.um.basketMenu.getBoughtDeleteButton());
+			updateBoughtTable();
+		}
+	};
+	
+	ActionListener deleteTicketButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			theModel.boughtTickets.delete(bought.row);
+			if(theModel.boughtTickets.get().size() == 0){
+				theView.um.basketMenu.getBasketFrame().dispose();
+				theView.um.disableButton(theView.um.getBasketButton());
+			}
+			else{
+				theView.um.basketMenu.getBasketFrame().setVisible(false);
+				updateBoughtTable();
+				theView.um.basketMenu.getBasketFrame().setVisible(true);
+			}
 		}
 	};
 	
@@ -268,12 +294,27 @@ public class Controller {
 			if(e.getValueIsAdjusting()) return;
 			int row = theView.um.getUserTable().getSelectedRow();
 			if(row < 0) return;
-			int col = theView.um.getUserTable().getSelectedColumn();
-			if(col < 0) return;
 			
 			theView.um.enableButton(theView.um.getBuyButton());
 			theView.um.enableButton(theView.um.getBookButton());
 			seance = theModel.repertoire.get(row);
 		}
 	};
+	
+	class TicketsSelectionListener implements ListSelectionListener{
+		public Ticket ticket;
+		public int row;
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getValueIsAdjusting()) return;
+			row = theView.um.basketMenu.getTicketsTable().getSelectedRow();
+			if(row < 0) return;
+			
+			//ticket = theModel.boughtTickets.get(row);
+			theView.um.enableButton(theView.um.basketMenu.getBoughtDeleteButton());
+			System.out.println(Integer.valueOf(row));
+		}
+	};
 }
+	
