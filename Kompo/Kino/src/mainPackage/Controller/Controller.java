@@ -102,8 +102,8 @@ public class Controller {
 	
 	ActionListener basketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			SelectionController updater = new SelectionController(theModel.boughtTickets);
-			Object[][] tickets = updater.getTicketsAsObjects();
+			SelectionController updater = new TicketsSelectionController(theModel.boughtTickets, null, null, null, 0, 0);
+			Object[][] tickets = updater.getCollectionAsObjects();
 			theView.um.createBasketMenu(tickets, null);
 		}
 	};
@@ -128,8 +128,8 @@ public class Controller {
 	
 	public void updateRepertoireTable()
 	{
-		SelectionController updater = new SelectionController(theModel.repertoire);
-		Object[][] newContent = updater.getRepertoireAsObjects();
+		SelectionController updater = new RepertoireSelectionController(theModel.repertoire, null, null, null, null, 0, 0);
+		Object[][] newContent = updater.getCollectionAsObjects();
 		theView.um.setTableContent(newContent);
 	}
 	
