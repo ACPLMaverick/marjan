@@ -65,6 +65,10 @@ public class BasketMenu extends JFrame {
 		boughtDeleteButton.addActionListener(listenForDeleteTicketButton);
 	}
 	
+	public void addDeleteReservationButtonListener(ActionListener listenForDeleteTicketButton){
+		bookedDeleteButton.addActionListener(listenForDeleteTicketButton);
+	}
+	
 	public JFrame getBasketFrame(){
 		return basketMenu;
 	}

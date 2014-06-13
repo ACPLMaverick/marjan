@@ -25,7 +25,12 @@ public class UserMenu extends JFrame {
 	private JButton bookTicketButton = new JButton("Rezerwuj bilet");
 	private JButton backButton = new JButton("Wstecz");
 	private JButton basketButton = new JButton("Twoje bilety");
-
+	/*ADDED FOR FILTERING*/
+	private String[] args = {"Gatunek", "Dzieñ", "Miesi¹c", "Rok", "Nazwa"};
+	private String[] genres = {"Wszystkie", "Sci-fi", "Krymina³", "Western", "Wojenny",
+			"Thriller", "Horror", "Dramat"};
+	private JComboBox filter = new JComboBox(args);
+	private JComboBox genreFilter = new JComboBox(genres);
 	public BuyTicketMenu buyTicket;
 	public BookTicketMenu bookTicket;
 	public BasketMenu basketMenu;
@@ -40,6 +45,8 @@ public class UserMenu extends JFrame {
 		userPane.add(bookTicketButton);
 		userPane.add(backButton);
 		userPane.add(basketButton);
+		userPane.add(filter);
+		userPane.add(genreFilter);
 		userPane.setLayout(null);
 		
 		userTitle.setBounds(250, 10, 300, 50);
@@ -54,6 +61,9 @@ public class UserMenu extends JFrame {
 		bookTicketButton.setBounds(480, 470, 120, 50);
 		backButton.setBounds(30, 20, 150, 50);
 		basketButton.setBounds(600, 20, 150, 50);
+		
+		filter.setBounds(10, 80, 80, 25);
+		genreFilter.setBounds(10, 150, 80, 25);
 		
 		userMenu.add(userPane);
 		userMenu.setVisible(true);
@@ -95,6 +105,14 @@ public class UserMenu extends JFrame {
 		basketButton.addActionListener(listenForBasketButton);
 	}
 	
+	public void addFilterComboListener(ActionListener listenForComboBox){
+		filter.addActionListener(listenForComboBox);
+	}
+	
+	public void addGenreFilterComboListener(ActionListener listenForComboBox){
+		genreFilter.addActionListener(listenForComboBox);
+	}
+	
 	public ListSelectionModel getUserListSelection(){
 		return selectionModel;
 	}
@@ -121,6 +139,14 @@ public class UserMenu extends JFrame {
 	
 	public JButton getBasketButton(){
 		return basketButton;
+	}
+	
+	public JComboBox getFilterCombo(){
+		return filter;
+	}
+	
+	public JComboBox getGenreFilterCombo(){
+		return genreFilter;
 	}
 	
 	public void setTableContent(Object[][] newContent) { myTableModel.setContent(newContent); }
