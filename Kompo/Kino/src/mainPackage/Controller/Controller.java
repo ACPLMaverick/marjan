@@ -233,6 +233,7 @@ public class Controller {
 			theView.setVisible(false);
 			theView.createAdminMenu();
 			createReminder();
+			createChart(); //TEMP
 		}
 	};
 	
