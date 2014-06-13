@@ -2,7 +2,13 @@ package mainPackage.Controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
@@ -10,6 +16,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import mainPackage.Model.Cost;
+import mainPackage.Model.Film;
 import mainPackage.Model.Model;
 import mainPackage.Model.Repertoire;
 import mainPackage.Model.Seance;
@@ -19,6 +27,7 @@ import mainPackage.View.View;
 public class Controller {
 	private View theView;
 	private Model theModel;
+	private Date currentDate;
 	
 	private SelectionListener sl = new SelectionListener();			//to na razie mój jedyny pomys³ jak pobraæ
 																	//zaznaczony tytu³
@@ -26,10 +35,131 @@ public class Controller {
 	public Controller(View theView, Model theModel){
 		this.theView = theView;
 		this.theModel = theModel;
+		this.currentDate = new Date();
+		theModel.repertoire.connectedMode = false;					// TO JEST FLAGA, KTÓRA USTAWIA, ¯E NIE APDEJTUJEMY BAZY DANYCH
 		
 		this.theView.addUserButtonListener(userButtonListener);
 		this.theView.addAdminButtonListener(adminButtonListener);
+		updateCosts();
 	}
+	
+	/**
+	 * zawsze generujemy ca³e koszta od nowa<br>
+	 * sk³adowe kosztów: <br>
+	 * + kupione bilety, <br>
+	 * - licencje filmów co miesi¹c, <br>
+	 * - wystawiony seans
+	 */
+	@SuppressWarnings("unchecked")
+	public void updateCosts()
+	{
+		// zawsze generujemy ca³e koszta od nowa
+		// sk³adowe kosztów: + kupione bilety, - licencje filmów co miesi¹c, - wystawiony seans
+		theModel.costs.get().clear();
+		
+		for(Seance seance : theModel.repertoire.get())
+		{
+			if(seance.getDate().getTime() < currentDate.getTime())theModel.costs.add(new Cost(seance));
+		}
+		
+		for(Ticket ticket : theModel.boughtTickets.get())
+		{
+			theModel.costs.add(new Cost(ticket));
+		}
+		
+		for(Film film : theModel.repertoire.getFilms())
+		{
+			theModel.costs.add(new Cost(film));
+		}
+		
+		Collections.sort(theModel.costs.get());
+	}
+	
+	/**
+	 * kasujemy wszystkie interesujace nas elementy (kupione/zarezerwowane bilety, koszta, seanse)<br>
+	 * starsze ni¿ podana data
+	 * @param mode - 0: wszystko, 1: bez repertuaru
+	 */
+	public void clearAllByDate(Date dateMin, int mode)
+	{
+		for(int i = 0; i < theModel.boughtTickets.get().size(); i++)
+		{
+			Ticket currentTicket = theModel.boughtTickets.get(i);
+			if(currentTicket.getSeance().getDate().getTime() < dateMin.getTime()) theModel.boughtTickets.delete(i);
+		}
+		
+		for(int i = 0; i < theModel.reservedTickets.get().size(); i++)
+		{
+			Ticket currentTicket = theModel.reservedTickets.get(i);
+			if(currentTicket.getSeance().getDate().getTime() < dateMin.getTime()) theModel.reservedTickets.delete(i);
+		}
+		
+		for(int i = 0; i < theModel.costs.get().size(); i++)
+		{
+			Cost currentCost = theModel.costs.get(i);
+			if(currentCost.getDate().getTime() < dateMin.getTime()) theModel.costs.delete(i);
+		}
+		
+		if(mode != 1)
+		{
+			for(int i = 0; i < theModel.repertoire.get().size(); i++)
+			{
+				Seance seance = theModel.repertoire.get(i);
+				if(seance.getDate().getTime() < dateMin.getTime()) theModel.repertoire.delete(i);
+			}
+		}
+	}
+	
+	public void saveCostsToFile()
+	{
+		String path = theView.createSaveMenu("txt");
+		if(path == null) return;
+		
+		File myFile = new File(path);
+		
+		try
+		{
+			myFile.createNewFile();
+			FileWriter stream = new FileWriter(myFile);
+			stream.write(theModel.costs.toString());
+			stream.close();
+		}
+		catch(IOException e)
+		{
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public void updateRepertoireTable()
+	{
+		SelectionController updater = new RepertoireSelectionController(theModel.repertoire, null, null, null, null, 0, 0);
+		Object[][] newContent = updater.getCollectionAsObjects();
+		theView.um.setTableContent(newContent);
+	}
+	
+	public void updateCostsTable()
+	{
+		SelectionController updater = new CostsSelectionController(theModel.costs, null, null, null, 0, 0);
+		Object[][] newContent = updater.getCollectionAsObjects();
+		//theView.um.setTableContent(newContent);
+	}
+	
+	public void serialiseRepertoire()
+	{
+		String path = theView.createSaveMenu("xml");
+		if(path == null) return;
+		SerializationController<Repertoire> ser = new SerializationController<Repertoire>(theModel.repertoire);
+		ser.serialize(path);
+	}
+	
+	public void deserialiseRepertoire()
+	{
+		String path = theView.createSaveMenu("xml");
+		if(path == null) return;
+		SerializationController<Repertoire> ser = new SerializationController<Repertoire>(theModel.repertoire);
+		theModel.repertoire = (Repertoire)ser.deserialize(path);
+	}
+
 	
 	ActionListener userButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
@@ -48,6 +178,7 @@ public class Controller {
 			}
 			theView.um.getUserListSelection().addListSelectionListener(sl);
 			updateRepertoireTable();
+			updateCostsTable();
 		}
 	};
 	
@@ -125,23 +256,4 @@ public class Controller {
 			seance = theModel.repertoire.get(row);
 		}
 	};
-	
-	public void updateRepertoireTable()
-	{
-		SelectionController updater = new RepertoireSelectionController(theModel.repertoire, null, null, null, null, 0, 0);
-		Object[][] newContent = updater.getCollectionAsObjects();
-		theView.um.setTableContent(newContent);
-	}
-	
-	public void serialiseRepertoire()
-	{
-		SerializationController ser = new SerializationController<Repertoire>(theModel.repertoire);
-		ser.serialize("D:\\repertuar.xml");
-	}
-	
-	public void deserialiseRepertoire()
-	{
-		SerializationController ser = new SerializationController<Repertoire>(theModel.repertoire);
-		theModel.repertoire = (Repertoire)ser.deserialize("D:\\repertuar.xml");
-	}
 }

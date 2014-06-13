@@ -73,7 +73,7 @@ public class DBController {
 			String[] dateStringElements = dateString.split(" ");
 			String[] dateElements = dateStringElements[0].split("-");
 			String[] hourElements = dateStringElements[1].split(":");
-			GregorianCalendar cal = new GregorianCalendar(Integer.valueOf(dateElements[0]), Integer.valueOf(dateElements[1]), Integer.valueOf(dateElements[2]), Integer.valueOf(hourElements[0]), Integer.valueOf(hourElements[1]));
+			GregorianCalendar cal = new GregorianCalendar(Integer.valueOf(dateElements[0]), Integer.valueOf(dateElements[1]) - 1, Integer.valueOf(dateElements[2]), Integer.valueOf(hourElements[0]), Integer.valueOf(hourElements[1]));
 			Date date = cal.getTime();
 			Seance newSeance = new Seance(new Film(elements[0], elements[1], Double.valueOf(elements[3]), Double.valueOf(elements[4])), date, 0);
 			//Seance newSeance = new Seance(elements[1], elements[0], date, 0, Double.valueOf(elements[3]));

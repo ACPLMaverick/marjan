@@ -15,31 +15,41 @@ public class Repertoire {
 	private ArrayList<Film> filmList;
 	private DBController myDBController;
 	
+	public boolean connectedMode;
+	
 	public Repertoire()
 	{
 		this.seanceList = new ArrayList<Seance>();
 		this.myDBController = new DBController();
 		this.seanceList = this.myDBController.getWholeRepertoire();
 		this.filmList = this.myDBController.getAllFilms();
+		this.connectedMode = true;
 	}
 	
 	public void add(Seance seance)
 	{
 		seanceList.add(seance);
-		myDBController.addSeance(seance);
+		if(connectedMode) myDBController.addSeance(seance);
 	}
 	
 	public void delete(int i)
 	{
 		Seance toDelete = seanceList.get(i);
 		seanceList.remove(i);
-		myDBController.deleteSeance(toDelete.getDateAsString());
+		if(connectedMode) myDBController.deleteSeance(toDelete.getDateAsString());
 	}
 	
 	public void update(Seance seance, int i)
 	{
-		myDBController.updateSeance(seance, seanceList.get(i).getDateAsString());
-		this.seanceList = this.myDBController.getWholeRepertoire();
+		if(connectedMode) 
+		{
+			myDBController.updateSeance(seance, seanceList.get(i).getDateAsString());
+			this.seanceList = this.myDBController.getWholeRepertoire();
+		}
+		else
+		{
+			System.out.println("update unavailable being not in connected mode!");
+		}
 	}
 	
 	public Seance get(int i)
@@ -62,20 +72,27 @@ public class Repertoire {
 	public void addFilm(Film film)
 	{
 		filmList.add(film);
-		myDBController.addFilm(film);
+		if(connectedMode) myDBController.addFilm(film);
 	}
 	
 	public void deleteFilm(int i)
 	{
 		Film toDelete = filmList.get(i);
 		filmList.remove(i);
-		myDBController.deleteFilm(toDelete.getTitle());
+		if(connectedMode) myDBController.deleteFilm(toDelete.getTitle());
 	}
 	
 	public void updateFilm(Film film, int i)
 	{
-		myDBController.updateFilm(film, filmList.get(i).getTitle());
-		this.filmList = this.myDBController.getAllFilms();
+		if(connectedMode) 
+		{
+			myDBController.updateFilm(film, filmList.get(i).getTitle());
+			this.filmList = this.myDBController.getAllFilms();
+		}
+		else
+		{
+			System.out.println("update unavailable being not in connected mode!");
+		}
 	}
 	
 	public Film getFilm(int i)

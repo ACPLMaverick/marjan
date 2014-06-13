@@ -4,13 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
 
 import mainPackage.Controller.Controller;
 
@@ -72,5 +75,60 @@ public class View extends JFrame {
 	
 	public void createSmallWindow(String txt){
 		window = new SmallWindow(txt);
+	}
+	
+	/**
+	 * Metoda tworzy okno do zapisu pliku
+	 * @param extension - rozszerzenie. Przyjmowane "txt" albo "xml"
+	 * @return zwraca œcie¿kê do pliku
+	 */
+	public String createSaveMenu(String extension)
+	{
+		JFileChooser chooser = new JFileChooser();
+		if(extension == "xml")
+		{
+			chooser.setFileFilter(new FileFilter()
+			{
+
+				@Override
+				public boolean accept(File arg0) {
+					if(arg0.isDirectory()) return true;
+					return arg0.getName().endsWith(".xml");
+				}
+
+				@Override
+				public String getDescription() {
+					return "XML files (*.xml)";
+				}
+				
+			});
+		}
+		else
+		{
+			chooser.setFileFilter(new FileFilter()
+			{
+
+				@Override
+				public boolean accept(File arg0) {
+					if(arg0.isDirectory()) return true;
+					return arg0.getName().endsWith(".txt");
+				}
+
+				@Override
+				public String getDescription() {
+					return "Text files (*.txt)";
+				}
+				
+			});
+		}
+		int control = chooser.showSaveDialog(View.this);
+		if(control == JFileChooser.APPROVE_OPTION)
+		{
+			return chooser.getSelectedFile().getAbsolutePath() + (extension=="xml" ? ".xml" : ".txt");
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
