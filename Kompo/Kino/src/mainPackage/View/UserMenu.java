@@ -67,8 +67,8 @@ public class UserMenu extends JFrame {
 		bookTicket = new BookTicketMenu();
 	}
 	
-	public void createBasketMenu(Object[][] content, Object[][] bookedcontent){
-		basketMenu = new BasketMenu(content, bookedcontent);
+	public void createBasketMenu(){
+		basketMenu = new BasketMenu();
 	}
 	
 	public void disableButton(JButton button){
