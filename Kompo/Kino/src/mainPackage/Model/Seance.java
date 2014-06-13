@@ -11,35 +11,30 @@ import java.util.Date;
  */
 public class Seance {
 	
-	private String myGenre;
-	private String title;
+	private Film film;
 	private Date date;
 	private int seatPlan;
-	private double price;
 	
 	public Seance()
 	{
-		this.myGenre = "nieznany";
-		this.title = "brak";
+		this.film = new Film();
 		this.date = new Date();
 		this.seatPlan = 0;
-		this.price = 0.0;
 	}
 	
-	public Seance(String myGenre, String title, Date date, int seatPlan, double price)
+	public Seance(Film film, Date date, int seatPlan)
 	{
-		this.myGenre = myGenre;
-		this.title = title;
+		this.film = film;
 		this.date = date;
 		this.seatPlan = seatPlan;
-		this.price = price;
 	}
 	
-	public String getGenre() { return myGenre; }
-	public String getTitle() { return title; }
+	public Film getFilm() { return film; }
+	public String getGenre() { return this.film.getGenre(); }
+	public String getTitle() { return this.film.getTitle(); }
 	public Date getDate() { return date; }
 	public int getSeatPlan() { return seatPlan; }
-	public double getPrice() { return price; }
+	public double getPrice() { return this.film.getPrice(); }
 	
 	public String getDateAsString() 
 	{ 
@@ -50,7 +45,7 @@ public class Seance {
 		String finalDate = myDate + " " + myTime;
 		return finalDate; 
 	}
-	public String getPriceAsString() { return String.valueOf(price); }
+	public String getPriceAsString() { return String.valueOf(this.film.getPrice()); }
 	public String getSeatPlanAsString() { return String.valueOf(seatPlan); }
 	
 	

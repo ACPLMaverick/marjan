@@ -19,7 +19,6 @@ public class Model {
 	public TicketCollection boughtTickets;
 	public TicketCollection reservedTickets;
 	public CostCollection costs;
-	public DBController dataBaseController;
 	
 	public static final int placesAvailable = 60;
 	
@@ -30,8 +29,6 @@ public class Model {
 		this.boughtTickets = new TicketCollection();
 		this.reservedTickets = new TicketCollection();
 		this.costs = new CostCollection();
-		this.dataBaseController = new DBController();
-		
-		this.repertoire = dataBaseController.getWholeRepertoire();
+		this.repertoire = new Repertoire();
 	}
 }

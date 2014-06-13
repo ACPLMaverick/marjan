@@ -25,7 +25,7 @@ public class DBController {
 	 * Metoda s³u¿y do pobrania ca³ego repertuaru z bazy danych. Zwraca obiekt typu Repertoire
 	 *
 	 */
-	public Repertoire getWholeRepertoire()
+	public ArrayList<Seance> getWholeRepertoire()
 	{
 		String command = "SELECT Films.Title, Films.Genre, Seances.SeanceDate, Films.TicketPrice, Films.LicensePrice "
 						+ "FROM Seances INNER JOIN Films ON Seances.ID_film = Films.ID";
@@ -64,7 +64,7 @@ public class DBController {
 			return null;
 		}
 		
-		Repertoire newRep = new Repertoire();
+		ArrayList<Seance> newRep = new ArrayList<Seance>();
 		for(String str : resultString)
 		{
 			String[] elements = str.split(";");
@@ -75,7 +75,8 @@ public class DBController {
 			String[] hourElements = dateStringElements[1].split(":");
 			GregorianCalendar cal = new GregorianCalendar(Integer.valueOf(dateElements[0]), Integer.valueOf(dateElements[1]), Integer.valueOf(dateElements[2]), Integer.valueOf(hourElements[0]), Integer.valueOf(hourElements[1]));
 			Date date = cal.getTime();
-			Seance newSeance = new Seance(elements[1], elements[0], date, 0, Double.valueOf(elements[3]));
+			Seance newSeance = new Seance(new Film(elements[0], elements[1], Double.valueOf(elements[3]), Double.valueOf(elements[4])), date, 0);
+			//Seance newSeance = new Seance(elements[1], elements[0], date, 0, Double.valueOf(elements[3]));
 			newRep.add(newSeance);
 		}
 		
@@ -183,11 +184,11 @@ public class DBController {
 	 * Metoda s³u¿y do dodawania nowego filmu do bazy danych.
 	 * @param filmData dane tablicy musi odpowiadaæ kolumnom tabeli: Title, Genre, TicketPrice, LicensePrice
 	 */
-	public void addFilm(String[] filmData)
+	public void addFilm(Film film)
 	{
 		String command = 
 				"INSERT INTO Films (Title, Genre, TicketPrice, LicensePrice) "
-						+ "VALUES ('" + filmData[0] +"', '" + filmData[1] + "', " + filmData[2] + ", " + filmData[3] + ")";
+						+ "VALUES ('" + film.getTitle() +"', '" + film.getGenre() + "', " + film.getPriceAsString() + ", " + film.getLicensePriceAsString() + ")";
 				
 		try 
 		{
@@ -214,11 +215,11 @@ public class DBController {
 	 * @param filmData dane tablicy musi odpowiadaæ kolumnom tabeli: Title, Genre, TicketPrice, LicensePrice
 	 * @param filmName po nim wyszukujemy zadany film do modyfikacji
 	 */
-	public void updateFilm(String[] filmData, String filmName)
+	public void updateFilm(Film film, String filmName)
 	{
 		String command = 
 				"UPDATE Films "
-				+ "SET Title='" + filmData[0] +"', Genre='" + filmData[1] + "', TicketPrice=" + filmData[2] + ", LicensePrice=" + filmData[3] + " "
+				+ "SET Title='" + film.getTitle() +"', Genre='" + film.getGenre() + "', TicketPrice=" + film.getPriceAsString() + ", LicensePrice=" + film.getLicensePriceAsString() + " "
 				+ "WHERE Title='" + filmName + "'";
 				
 		try 
@@ -275,7 +276,7 @@ public class DBController {
 	 * Metoda s³u¿y do pobierania filmu z bazy danych.
 	 * @param filmName po nim wyszukujemy zadany film do usuniêcia
 	 */
-	public ArrayList<String> getFilm(String filmName)
+	public Film getFilm(String filmName)
 	{
 		String command = "SELECT TOP 1 Films.Title, Films.Genre, Films.TicketPrice, Films.LicensePrice "
 				+ "FROM Films "
@@ -312,18 +313,18 @@ public class DBController {
 			e.printStackTrace();
 			return null;
 		}
-		return resultString;
+		return new Film(resultString.get(0), resultString.get(1), Double.valueOf(resultString.get(2)), Double.valueOf(resultString.get(3)));
 	}
 	
 	/**
 	 * Metoda s³u¿y do pobrania wszystkich filmów z bazy danych
 	 * 
 	 */
-	public ArrayList<ArrayList<String>> getAllFilms()
+	public ArrayList<Film> getAllFilms()
 	{
 		String command = "SELECT Films.Title, Films.Genre, Films.TicketPrice, Films.LicensePrice "
 				+ "FROM Films";
-		ArrayList<ArrayList<String>> resultString = new ArrayList<ArrayList<String>>();
+		ArrayList<Film> resultString = new ArrayList<Film>();
 		
 		try 
 		{
@@ -339,7 +340,7 @@ public class DBController {
 				{
 					myString.add(results.getString(i));
 				}
-				resultString.add(myString);	
+				resultString.add(new Film(myString.get(0), myString.get(1), Double.valueOf(myString.get(2)), Double.valueOf(myString.get(3))));	
 			}
 			
 			stat.close();
