@@ -30,6 +30,5 @@ public class Model {
 		this.reservedTickets = new TicketCollection();
 		this.costs = new CostCollection();
 		this.repertoire = new Repertoire();
-		System.out.println(repertoire.get(3).getDateAsString());
 	}
 }

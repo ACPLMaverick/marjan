@@ -159,7 +159,26 @@ public class Controller {
 		SerializationController<Repertoire> ser = new SerializationController<Repertoire>(theModel.repertoire);
 		theModel.repertoire = (Repertoire)ser.deserialize(path);
 	}
+	
+	private void createReminder()
+	{
+		int costCount = checkIfReminderIsNeeded();
+		if(costCount == 0) return;
+		String remTitle = "Przypomnienie o p³atnoœci za licencjê!";
+		String remDesc = "Termin " + String.valueOf(costCount) + " Twoich p³atnoœci jest mniejszy ni¿ 24 godziny b¹dŸ ju¿ up³yn¹³!\n "
+						+ "Zaleca siê jak najszybsze dokonanie op³at!";
+	}
 
+	private int checkIfReminderIsNeeded()
+	{
+		ArrayList<Cost> tempCosts = new ArrayList<Cost>();
+		for(Cost cost : theModel.costs.get())
+		{
+			if((cost.getDate().getTime() >= this.currentDate.getTime() - 86400000) && cost.getType().equals("LICENSE")) tempCosts.add(cost);
+		}
+		if(tempCosts.size() > 0) return tempCosts.size();
+		else return 0;
+	}
 	
 	ActionListener userButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
@@ -186,6 +205,7 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			theView.setVisible(false);
 			theView.createAdminMenu();
+			createReminder();
 		}
 	};
 	
