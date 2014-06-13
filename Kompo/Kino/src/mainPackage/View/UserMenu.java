@@ -24,9 +24,11 @@ public class UserMenu extends JFrame {
 	private JButton buyTicketButton = new JButton("Kup bilet");
 	private JButton bookTicketButton = new JButton("Rezerwuj bilet");
 	private JButton backButton = new JButton("Wstecz");
+	private JButton basketButton = new JButton("Twoje bilety");
 
 	public BuyTicketMenu buyTicket;
 	public BookTicketMenu bookTicket;
+	public BasketMenu basketMenu;
 	
 	public UserMenu(){
 		userMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,6 +39,7 @@ public class UserMenu extends JFrame {
 		userPane.add(buyTicketButton);
 		userPane.add(bookTicketButton);
 		userPane.add(backButton);
+		userPane.add(basketButton);
 		userPane.setLayout(null);
 		
 		userTitle.setBounds(250, 10, 300, 50);
@@ -50,6 +53,7 @@ public class UserMenu extends JFrame {
 		buyTicketButton.setBounds(150, 470, 120, 50);
 		bookTicketButton.setBounds(480, 470, 120, 50);
 		backButton.setBounds(30, 20, 150, 50);
+		basketButton.setBounds(600, 20, 150, 50);
 		
 		userMenu.add(userPane);
 		userMenu.setVisible(true);
@@ -61,6 +65,10 @@ public class UserMenu extends JFrame {
 	
 	public void createBookTicketMenu(){
 		bookTicket = new BookTicketMenu();
+	}
+	
+	public void createBasketMenu(Object[][] content, Object[][] bookedcontent){
+		basketMenu = new BasketMenu(content, bookedcontent);
 	}
 	
 	public void disableButton(JButton button){
@@ -81,6 +89,10 @@ public class UserMenu extends JFrame {
 	
 	public void addBackButtonListener(ActionListener listenForBackButton){
 		backButton.addActionListener(listenForBackButton);
+	}
+	
+	public void addBasketButtonListener(ActionListener listenForBasketButton){
+		basketButton.addActionListener(listenForBasketButton);
 	}
 	
 	public ListSelectionModel getUserListSelection(){
@@ -105,6 +117,10 @@ public class UserMenu extends JFrame {
 	
 	public JButton getBookButton(){
 		return bookTicketButton;
+	}
+	
+	public JButton getBasketButton(){
+		return basketButton;
 	}
 	
 	public void setTableContent(Object[][] newContent) { myTableModel.setContent(newContent); }

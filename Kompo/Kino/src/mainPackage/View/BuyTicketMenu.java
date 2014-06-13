@@ -1,6 +1,7 @@
 package mainPackage.View;
 
 import java.awt.Font;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,6 +13,7 @@ import javax.swing.SwingConstants;
 
 public class BuyTicketMenu extends TicketMenu {
 	private String[] tickets = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}; //na sztywno
+	private double ticketPrice;
 	private SpinnerListModel ticketModel = new SpinnerListModel(tickets);
 	private JSpinner spinner = new JSpinner(ticketModel);
 	private JLabel welcomeText = new JLabel("Kupujesz bilet na:");
@@ -55,11 +57,16 @@ public class BuyTicketMenu extends TicketMenu {
 		seanceDate.setFont(new Font("Courier New", 2, 14));
 	}
 	
-	public void setTicketPrice(String price){
-		JTextArea sum = new JTextArea(price);
+	public void setTicketPrice(double price){
+		this.ticketPrice = price;
+		JTextArea sum = new JTextArea(String.valueOf(price));
 		this.add(sum);
 		sum.setBounds(150,140,50,20);
 		sum.setEditable(false);
+	}
+	
+	public double getTicketPrice(){
+		return ticketPrice;
 	}
 	
 	public JSpinner getTicketCount(){
@@ -68,5 +75,9 @@ public class BuyTicketMenu extends TicketMenu {
 	
 	public SpinnerListModel getSpinnerListModel(){
 		return ticketModel;
+	}
+	
+	public void addBuyButtonListener(ActionListener buyTicketButtonListener){
+		buyButton.addActionListener(buyTicketButtonListener);
 	}
 }

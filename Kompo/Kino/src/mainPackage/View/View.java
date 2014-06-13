@@ -25,6 +25,7 @@ public class View extends JFrame {
 	
 	public UserMenu um;
 	public AdminMenu am;
+	public SmallWindow window;
 	
 	/**
 	 * Create the frame.
@@ -67,5 +68,9 @@ public class View extends JFrame {
 	
 	public void createAdminMenu(){
 		am = new AdminMenu();
+	}
+	
+	public void createSmallWindow(String txt){
+		window = new SmallWindow(txt);
 	}
 }

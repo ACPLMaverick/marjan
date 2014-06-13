@@ -13,6 +13,7 @@ import javax.swing.event.ListSelectionListener;
 import mainPackage.Model.Model;
 import mainPackage.Model.Repertoire;
 import mainPackage.Model.Seance;
+import mainPackage.Model.Ticket;
 import mainPackage.View.View;
 
 public class Controller {
@@ -39,6 +40,12 @@ public class Controller {
 			theView.um.addBookButtonListener(bookButtonListener);
 			theView.um.disableButton(theView.um.getBookButton());
 			theView.um.addBackButtonListener(backButtonListener);
+			theView.um.addBasketButtonListener(basketButtonListener);
+			theView.um.disableButton(theView.um.getBasketButton());
+			if(theModel.boughtTickets.get().isEmpty() == false)
+			{
+				theView.um.enableButton(theView.um.getBasketButton());
+			}
 			theView.um.getUserListSelection().addListSelectionListener(sl);
 			updateRepertoireTable();
 		}
@@ -56,7 +63,8 @@ public class Controller {
 			theView.um.createBuyTicketMenu();
 			theView.um.buyTicket.getTicketCount().addChangeListener(spinnerChangeListener);
 			theView.um.buyTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
-			theView.um.buyTicket.setTicketPrice(sl.seance.getPriceAsString());
+			theView.um.buyTicket.setTicketPrice(sl.seance.getPrice());
+			theView.um.buyTicket.addBuyButtonListener(buyTicketButtonListener);
 		}
 	};
 	
@@ -65,7 +73,17 @@ public class Controller {
 		public void stateChanged(ChangeEvent arg0) {
 			double cena = sl.seance.getPrice();
 			cena *= Double.valueOf(theView.um.buyTicket.getSpinnerListModel().getValue().toString());
-			theView.um.buyTicket.setTicketPrice(String.valueOf(cena));
+			theView.um.buyTicket.setTicketPrice(cena);
+		}
+	};
+	
+	ActionListener buyTicketButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			theView.createSmallWindow("Zakup trafi³ do koszyka");
+			for(int i = 0; i<Integer.valueOf(theView.um.buyTicket.getSpinnerListModel().getValue().toString()); i++){
+				theModel.boughtTickets.add(new Ticket(sl.seance));
+			}
+			theView.um.enableButton(theView.um.getBasketButton());
 		}
 	};
 	
@@ -79,6 +97,14 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			theView.setVisible(true);
 			theView.um.getUserMenu().setVisible(false);
+		}
+	};
+	
+	ActionListener basketButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			SelectionController updater = new SelectionController(theModel.boughtTickets);
+			Object[][] tickets = updater.getTicketsAsObjects();
+			theView.um.createBasketMenu(tickets, null);
 		}
 	};
 	
@@ -103,7 +129,7 @@ public class Controller {
 	public void updateRepertoireTable()
 	{
 		SelectionController updater = new SelectionController(theModel.repertoire);
-		Object[][] newContent = updater.getRepertoireAsObjects("sci-fi");
+		Object[][] newContent = updater.getRepertoireAsObjects();
 		theView.um.setTableContent(newContent);
 	}
 	
