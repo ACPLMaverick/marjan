@@ -55,8 +55,9 @@ public class View extends JFrame {
 		adminButton.setBounds(65, 150, 150, 30);
 		
 		this.add(contentPane);
+		this.setVisible(true);
 	}
-	
+
 	public void addUserButtonListener(ActionListener listenForUserButton){
 		userButton.addActionListener(listenForUserButton);
 	}
@@ -75,6 +76,11 @@ public class View extends JFrame {
 	
 	public void createSmallWindow(String txt){
 		window = new SmallWindow(txt);
+	}
+	
+	public void createSmallWindow(String txtBig, String txtSmall)
+	{
+		window = new SmallWindow(txtBig, txtSmall);
 	}
 	
 	/**

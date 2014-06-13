@@ -173,9 +173,11 @@ public class Controller {
 	{
 		int costCount = checkIfReminderIsNeeded();
 		if(costCount == 0) return;
-		String remTitle = "Przypomnienie o p³atnoœci za licencjê!";
-		String remDesc = "Termin " + String.valueOf(costCount) + " Twoich p³atnoœci jest mniejszy ni¿ 24 godziny b¹dŸ ju¿ up³yn¹³!\n "
-						+ "Zaleca siê jak najszybsze dokonanie op³at!";
+		String remTitle = String.format("<html><div style=\"width:%dpx;\">%s</div><html>",300, "Przypomnienie o <br/>p³atnoœci za licencjê!");
+		String remDesc = String.format("<html><div style=\"width:%dpx;\">%s</div><html>",250, 
+						"Termin op³aty " + String.valueOf(costCount) + " licencji na filmy jest mniejszy ni¿ 24 godziny b¹dŸ ju¿ up³yn¹³!\n "
+						+ "Zaleca siê jak najszybsze dokonanie op³at!");
+		theView.createSmallWindow(remTitle, remDesc);
 	}
 
 	private int checkIfReminderIsNeeded()
@@ -261,7 +263,6 @@ public class Controller {
 	
 	ActionListener basketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			Object[][] tickets = updater.getCollectionAsObjects();
 			theView.um.createBasketMenu();
 			theView.um.basketMenu.getBoughtTicketsListSelection().addListSelectionListener(bought);
 			theView.um.basketMenu.addDeleteTicketButtonListener(deleteTicketButtonListener);

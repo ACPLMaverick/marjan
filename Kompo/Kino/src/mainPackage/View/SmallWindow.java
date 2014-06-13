@@ -1,5 +1,6 @@
 package mainPackage.View;
 
+import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JFrame;
@@ -35,11 +36,12 @@ public class SmallWindow extends JFrame {
 		this.add(description);
 		this.setLayout(null);
 		
+		userTitle.setMaximumSize(new Dimension(300, 100));
 		userTitle.setBounds(30, 20, 300, 50);
-		userTitle.setFont(new Font("Courier New", 1, 18));
+		userTitle.setFont(new Font("Courier New", 1, 16));
 		
-		description.setBounds(30, 80, 300, 100);
-		description.setFont(new Font("Courier New", 0, 10));
+		description.setBounds(30, 80, 300, 50);
+		description.setFont(new Font("Courier New", 0, 12));
 		
 		this.add(windowPane);
 		this.setVisible(true);
