@@ -1,8 +1,11 @@
 package mainPackage.Model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * 
@@ -38,12 +41,16 @@ public class Seance {
 	
 	public String getDateAsString() 
 	{ 
+		/*
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		String myTime = String.valueOf(cal.get(Calendar.HOUR)) + ":" + String.valueOf(cal.get(Calendar.MINUTE));
 		String myDate = String.valueOf(cal.get(Calendar.DAY_OF_MONTH)) + "-" + String.valueOf(cal.get(Calendar.MONTH)) + "-" + String.valueOf(cal.get(Calendar.YEAR));
 		String finalDate = myDate + " " + myTime;
 		return finalDate; 
+		*/
+		DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		return df.format(this.date);
 	}
 	public String getPriceAsString() { return String.valueOf(this.film.getPrice()); }
 	public String getSeatPlanAsString() { return String.valueOf(seatPlan); }

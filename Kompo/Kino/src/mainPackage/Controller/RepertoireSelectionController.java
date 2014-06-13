@@ -147,9 +147,7 @@ public class RepertoireSelectionController implements SelectionController {
 		Seance seance = (Seance)object;
 		ArrayList<Object> objects = new ArrayList<Object>();
 		
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-		String allDate = df.format(seance.getDate());
-		String[] splitDate = allDate.split(" ");
+		String[] splitDate = seance.getDateAsString().split(" ");
 		
 		objects.add(seance.getTitle());
 		objects.add(splitDate[1]);
