@@ -37,6 +37,12 @@ public interface SelectionController {
 	
 	/**
 	 * 
+	 * @return zwraca kolekcjê w formacie odpowiednim do umieszczenia na wykresie
+	 */
+	public abstract ArrayList<ArrayList<Number>> getCollectionAsChartData();
+	
+	/**
+	 * 
 	 * @return zwraca listê elementów w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
 	 * @param type - zwraca tylko te obiekty, które maj¹ odpowiedni typ
 	 */

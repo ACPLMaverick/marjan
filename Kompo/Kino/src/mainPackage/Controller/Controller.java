@@ -169,6 +169,13 @@ public class Controller {
 		theModel.repertoire = (Repertoire)ser.deserialize(path);
 	}
 	
+	public void createChart()
+	{
+		SelectionController contr = new CostsSelectionController(theModel.costs);
+		ArrayList<ArrayList<Number>> data = contr.getCollectionAsChartData();
+		theView.createCostChart(data.get(0), data.get(1));
+	}
+	
 	private void createReminder()
 	{
 		int costCount = checkIfReminderIsNeeded();
@@ -216,6 +223,7 @@ public class Controller {
 			theView.setVisible(false);
 			theView.createAdminMenu();
 			createReminder();
+			createChart(); // TEMP
 		}
 	};
 	

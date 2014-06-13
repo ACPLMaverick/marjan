@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.thoughtworks.xstream.converters.Converter;
+
 import mainPackage.Model.Cost;
 import mainPackage.Model.CostCollection;
 import mainPackage.Model.Model;
@@ -126,7 +128,34 @@ public class CostsSelectionController implements SelectionController {
 		return myArray;
 	}
 	
-	
+	/**
+	 * 
+	 * @return zwraca kolekcjê w formacie odpowiednim do umieszczenia na wykresie
+	 * X - czas (long)
+	 * Y - cost ca³kowity z danego dnia)
+	 */
+	public ArrayList<ArrayList<Number>> getCollectionAsChartData()
+	{
+		ArrayList<ArrayList<Number>> retData = new ArrayList<ArrayList<Number>>();
+		ArrayList<Number> x = new ArrayList<Number>();
+		ArrayList<Number> y = new ArrayList<Number>();
+		
+		for(Cost cost : myCollection.get())
+		{
+			String tempParamType;
+			
+			if(this.paramType == "") tempParamType = cost.getType();
+			else tempParamType = this.paramType;
+			
+				x.add(cost.getDate().getTime());
+				System.out.println(cost.getDate().toString());
+				y.add(cost.getPrice());
+		}
+		retData.add(x);
+		retData.add(y);
+		
+		return retData;
+	}
 	
 	/**
 	 * 

@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -29,6 +30,8 @@ public class View extends JFrame {
 	public UserMenu um;
 	public AdminMenu am;
 	public SmallWindow window;
+	
+	public Chart costChart;
 	
 	/**
 	 * Create the frame.
@@ -81,6 +84,16 @@ public class View extends JFrame {
 	public void createSmallWindow(String txtBig, String txtSmall)
 	{
 		window = new SmallWindow(txtBig, txtSmall);
+	}
+	
+	public void createCostChart(ArrayList<Number> x, ArrayList<Number> y)
+	{
+		try {
+			costChart = new Chart("Przychody / wydatki", x, y);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**

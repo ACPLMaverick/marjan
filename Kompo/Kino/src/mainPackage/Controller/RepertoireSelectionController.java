@@ -135,7 +135,11 @@ public class RepertoireSelectionController implements SelectionController {
 		return myArray;
 	}
 	
-	
+	@Override
+	public ArrayList<ArrayList<Number>> getCollectionAsChartData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	/**
 	 * 
@@ -156,4 +160,5 @@ public class RepertoireSelectionController implements SelectionController {
 		objects.add(String.format("%.2f", seance.getPrice()) + " z³");
 		return objects.toArray();
 	}
+
 }

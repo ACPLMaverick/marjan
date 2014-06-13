@@ -2,6 +2,7 @@ package mainPackage.Model;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * 
@@ -39,7 +40,8 @@ public class Cost implements Comparable{
 			price = - Math.abs(((Film) myObject).getPrice());
 			this.type = "LICENCJA";
 			Date currentDate = new Date();
-			GregorianCalendar cal = new GregorianCalendar(currentDate.getYear(), ((currentDate.getMonth() + 1) % 12) , 1);
+			GregorianCalendar cal = new GregorianCalendar(currentDate.getYear() + 1900, ((currentDate.getMonth() + 1) % 12) , 1);
+			cal.setTimeZone(TimeZone.getTimeZone("PST"));
 			this.date = cal.getTime();
 		}
 		else

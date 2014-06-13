@@ -108,6 +108,11 @@ public class TicketsSelectionController implements SelectionController {
 		return myArray;
 	}
 	
+	@Override
+	public ArrayList<ArrayList<Number>> getCollectionAsChartData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	/**
@@ -130,4 +135,5 @@ public class TicketsSelectionController implements SelectionController {
 		objects.add(String.format("%.2f", ticket.getPrice()) + " z³");
 		return objects.toArray();
 	}
+
 }
