@@ -36,6 +36,8 @@ public class Controller {
 	private TicketsSelectionListener bought = new TicketsSelectionListener();
 	private BookedSelectionListener booked = new BookedSelectionListener();
 	
+	public Controller() { }
+	
 	public Controller(View theView, Model theModel){
 		this.theView = theView;
 		this.theModel = theModel;
@@ -185,6 +187,18 @@ public class Controller {
 		theView.createCostChart(data.get(0), data.get(1));
 	}
 	
+	public Date getCurrentDate() { return this.currentDate; }
+	
+	public ArrayList<String> getFilmTitles()
+	{
+		ArrayList<String> filmTitles = new ArrayList<String>();
+		for(Film film : theModel.repertoire.getFilms())
+		{
+			filmTitles.add(film.getTitle());
+		}
+		return filmTitles;
+	}
+	
 	private void createReminder()
 	{
 		int costCount = checkIfReminderIsNeeded();
@@ -287,7 +301,7 @@ public class Controller {
 	
 	ActionListener bookTicketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			theView.createSmallWindow("Rezerwacja trafi³a do koszyka");
+			theView.createSmallWindow(String.format("<html><div style=\"width:%dpx;\">%s</div><html>",250, "Rezerwacja trafi³a do koszyka."));
 			for(int i = 0; i<Integer.valueOf(theView.um.bookTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.reservedTickets.add(new Ticket(sl.seance));
 			}
@@ -324,13 +338,13 @@ public class Controller {
 	
 	ActionListener filterComboListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			JComboBox cb = (JComboBox)e.getSource();
-			String filter = (String)cb.getSelectedItem();
-			if(filter == "Gatunek"){
-				theView.um.getGenreFilterCombo().setEnabled(true);
-				
-			}
-			else theView.um.getGenreFilterCombo().setEnabled(false);
+//			JComboBox cb = (JComboBox)e.getSource();
+//			String filter = (String)cb.getSelectedItem();
+//			if(filter == "Gatunek"){
+//				theView.um.getGenreFilterCombo().setEnabled(true);
+//				
+//			}
+//			else theView.um.getGenreFilterCombo().setEnabled(false);
 		}
 	};
 	

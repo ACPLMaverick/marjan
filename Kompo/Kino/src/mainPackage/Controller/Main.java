@@ -18,6 +18,7 @@ public class Main {
 				 View theView = new View(theController);
 				 Model theModel = new Model(theController);
 				 theController = new Controller(theView, theModel);
+				 theView.setController(theController);
 			 } 
 		 }); 
 	}

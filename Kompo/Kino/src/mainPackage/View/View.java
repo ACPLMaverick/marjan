@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -38,7 +39,6 @@ public class View extends JFrame {
 	 */
 	public View(Controller controller) {
 		this.myController = controller;
-		
 		JPanel contentPane = new JPanel();
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,6 +61,11 @@ public class View extends JFrame {
 		this.setVisible(true);
 	}
 	
+	public void setController(Controller controller)
+	{
+		this.myController = controller;
+	}
+	
 	public void addUserButtonListener(ActionListener listenForUserButton){
 		userButton.addActionListener(listenForUserButton);
 	}
@@ -70,7 +75,8 @@ public class View extends JFrame {
 	}
 	
 	public void createUserMenu(){
-		um = new UserMenu();
+		if(myController == null) um = new UserMenu(new ArrayList<String>());
+		else um = new UserMenu(myController.getFilmTitles());
 	}
 	
 	public void createAdminMenu(){
