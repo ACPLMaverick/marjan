@@ -61,47 +61,8 @@ public abstract class UserMenu extends JFrame {
 	public UserMenu(ArrayList<String> filmTitles){
 		filmTitles.add(0, "wszystkie filmy");
 		this.filter = new JComboBox(filmTitles.toArray(new String[] {}));
-		this.priceMin.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent e)
-			{
-				char myChar = e.getKeyChar();
-				if(((myChar != '0' && 
-						myChar != '1' && 
-						myChar != '2' &&
-						myChar != '3' &&
-						myChar != '4' &&
-						myChar != '5' &&
-						myChar != '6' &&
-						myChar != '7' &&
-						myChar != '8' &&
-						myChar != '9' &&
-						myChar != '.')) && (myChar != KeyEvent.VK_BACK_SPACE || myChar != KeyEvent.VK_ENTER))
-				{
-					e.consume();
-				}
-			}
-		});
-		
-		this.priceMax.addKeyListener(new KeyAdapter() {
-			public void keyTyped(KeyEvent e)
-			{
-				char myChar = e.getKeyChar();
-				if(((myChar != '0' && 
-						myChar != '1' && 
-						myChar != '2' &&
-						myChar != '3' &&
-						myChar != '4' &&
-						myChar != '5' &&
-						myChar != '6' &&
-						myChar != '7' &&
-						myChar != '8' &&
-						myChar != '9' &&
-						myChar != '.')) && (myChar != KeyEvent.VK_BACK_SPACE || myChar != KeyEvent.VK_ENTER))
-				{
-					e.consume();
-				}
-			}
-		});
+		this.priceMin.addKeyListener(new MyKeyAdapter());
+		this.priceMax.addKeyListener(new MyKeyAdapter());
 		
 		userMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		userMenu.setSize(800, 600);
@@ -338,5 +299,26 @@ public abstract class UserMenu extends JFrame {
 			strings.add(String.valueOf(i));
 		}
 		return strings.toArray(new String[] {});
+	}
+	
+	class MyKeyAdapter extends KeyAdapter {
+		public void keyTyped(KeyEvent e)
+		{
+			char myChar = e.getKeyChar();
+			if(((myChar != '0' && 
+					myChar != '1' && 
+					myChar != '2' &&
+					myChar != '3' &&
+					myChar != '4' &&
+					myChar != '5' &&
+					myChar != '6' &&
+					myChar != '7' &&
+					myChar != '8' &&
+					myChar != '9' &&
+					myChar != '.')) && (myChar != KeyEvent.VK_BACK_SPACE || myChar != KeyEvent.VK_ENTER))
+			{
+				e.consume();
+			}
+		}
 	}
 }
