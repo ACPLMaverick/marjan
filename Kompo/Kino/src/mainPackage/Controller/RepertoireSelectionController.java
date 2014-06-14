@@ -43,9 +43,9 @@ public class RepertoireSelectionController implements SelectionController {
 		paramTitle = "";
 		paramGenre = "";
 		paramDateMin = new Date();
-		paramDateMin.setTime(Long.MIN_VALUE);
+		paramDateMin.setTime(- Long.MAX_VALUE);
 		paramDateMax = new Date(Long.MAX_VALUE);
-		paramPriceMin = Double.MIN_VALUE;
+		paramPriceMin = - Double.MAX_VALUE;
 		paramPriceMax = Double.MAX_VALUE;
 	}
 	
@@ -73,7 +73,7 @@ public class RepertoireSelectionController implements SelectionController {
 		if(paramDateMin == null) 
 		{
 			this.paramDateMin = new Date();
-			this.paramDateMin.setTime(Long.MIN_VALUE);
+			this.paramDateMin.setTime(- Long.MAX_VALUE);
 		}
 		else this.paramDateMin = paramDateMin;
 		if(paramDateMax == null)
@@ -83,7 +83,7 @@ public class RepertoireSelectionController implements SelectionController {
 		}
 		else this.paramDateMax = paramDateMax;
 
-		if(paramPriceMin == 0.0) this.paramPriceMin = Double.MIN_VALUE;
+		if(paramPriceMin == 0.0) this.paramPriceMin = - Double.MAX_VALUE;
 		else this.paramPriceMin = paramPriceMin;
 		
 		if(paramPriceMax == 0.0) this.paramPriceMax = Double.MAX_VALUE;

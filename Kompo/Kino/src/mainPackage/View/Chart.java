@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -51,7 +52,7 @@ public class Chart extends ApplicationFrame {
 		for(int i = 0; i< data_x.size(); i++)
 		{
 			series.add(data_x.get(i), data_y.get(i));
-			System.out.println(String.valueOf(data_x.get(i)) + " | " + String.valueOf(data_y.get(i)));
+			//System.out.println(String.valueOf(data_x.get(i)) + " | " + String.valueOf(data_y.get(i)));
 		}
 		final XYSeriesCollection data = new XYSeriesCollection(series);
 		final JFreeChart chart = ChartFactory.createTimeSeriesChart(
@@ -78,6 +79,7 @@ public class Chart extends ApplicationFrame {
 			}
 			
 		});
+		
 		return chart;
 	}
 	

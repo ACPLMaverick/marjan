@@ -43,9 +43,9 @@ public class CostsSelectionController implements SelectionController {
 		this.myCollection = myRep;
 		paramType = "";
 		paramDateMin = new Date();
-		paramDateMin.setTime(Long.MIN_VALUE);
+		paramDateMin.setTime(- Long.MAX_VALUE);
 		paramDateMax = new Date(Long.MAX_VALUE);
-		paramPriceMin = Double.MIN_VALUE;
+		paramPriceMin = - Double.MAX_VALUE;
 		paramPriceMax = Double.MAX_VALUE;
 	}
 	
@@ -79,7 +79,7 @@ public class CostsSelectionController implements SelectionController {
 		}
 		else this.paramDateMax = paramDateMax;
 
-		if(paramPriceMin == 0.0) this.paramPriceMin = Double.MIN_VALUE;
+		if(paramPriceMin == 0.0) this.paramPriceMin = - Double.MAX_VALUE;
 		else this.paramPriceMin = paramPriceMin;
 		
 		if(paramPriceMax == 0.0) this.paramPriceMax = Double.MAX_VALUE;
@@ -147,12 +147,45 @@ public class CostsSelectionController implements SelectionController {
 			if(this.paramType == "") tempParamType = cost.getType();
 			else tempParamType = this.paramType;
 			
+			if(cost.getType().equals(tempParamType) && 
+					cost.getDate().getTime() >= this.paramDateMin.getTime() &&
+					cost.getDate().getTime() <= this.paramDateMax.getTime() &&
+					cost.getPrice() >= this.paramPriceMin &&
+					cost.getPrice() <= this.paramPriceMax)
+			{
 				x.add(cost.getDate().getTime());
-				System.out.println(cost.getDate().toString());
 				y.add(cost.getPrice());
+			}
 		}
-		retData.add(x);
-		retData.add(y);
+		
+		ArrayList<Number> new_x = new ArrayList<Number>();
+		ArrayList<Number> new_y = new ArrayList<Number>();
+		
+		double sum = 0;
+		int i = 0;
+		for(; i < x.size() - 1; i++)
+		{
+			if(x.get(i+1).equals(x.get(i)))
+			{
+				sum = sum + (Double) y.get(i);
+			}
+			else
+			{
+				new_x.add(x.get(i));
+				sum = sum + (Double) y.get(i);
+				new_y.add(Double.valueOf(sum));
+				sum = 0;
+			}
+		}
+		
+			new_x.add(x.get(i));
+			sum = sum + (Double) y.get(i);
+			new_y.add(Double.valueOf(sum));
+			System.out.println(String.valueOf(sum));
+			sum = 0;
+		
+		retData.add(new_x);
+		retData.add(new_y);
 		
 		return retData;
 	}
