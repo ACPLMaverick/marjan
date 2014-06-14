@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.swing.JComboBox;
 import javax.swing.ListSelectionModel;
@@ -136,9 +137,9 @@ public class Controller {
 		}
 	}
 	
-	public void updateRepertoireTable()
+	public void updateRepertoireTable(String title, String genre, Date dateMin, Date dateMax, double priceMin, double priceMax)
 	{
-		SelectionController updater = new RepertoireSelectionController(theModel.repertoire, null, null, null, null, 0, 0);
+		SelectionController updater = new RepertoireSelectionController(theModel.repertoire, title, genre, dateMin, dateMax, priceMin, priceMax);
 		Object[][] newContent = updater.getCollectionAsObjects();
 		theView.um.setTableContent(newContent);
 	}
@@ -221,6 +222,42 @@ public class Controller {
 		else return 0;
 	}
 	
+	private void updateFiltersInView()
+	{
+		ArrayList<String> content = theView.um.getAllFilterContent();
+		//for(String str : content) System.out.println(str);
+		String title = "";
+		String genre = "";
+		Date dateMin;
+		Date dateMax;
+		double priceMin;
+		double priceMax;
+		
+		if(content.get(0) == "wszystkie filmy") title = "";
+		else title = content.get(0);
+		
+		if(content.get(1) == "wszystkie gatunki") genre = "";
+		else genre = content.get(1);
+		
+		GregorianCalendar calMin = new GregorianCalendar(Integer.valueOf(content.get(4)), Integer.valueOf(content.get(3)) - 1, 
+				Integer.valueOf(content.get(2)), 0, 0);
+		GregorianCalendar calMax = new GregorianCalendar(Integer.valueOf(content.get(7)), Integer.valueOf(content.get(6)) - 1, 
+				Integer.valueOf(content.get(5)), 23, 59);
+		dateMin = calMin.getTime();
+		dateMax = calMax.getTime();
+		
+		priceMin = Double.valueOf(content.get(8));
+		priceMax = Double.valueOf(content.get(9));
+		
+//		System.out.println(String.valueOf(title));
+//		System.out.println(String.valueOf(genre));
+//		System.out.println(String.valueOf(dateMin));
+//		System.out.println(String.valueOf(dateMax));
+//		System.out.println(String.valueOf(priceMin));
+//		System.out.println(String.valueOf(priceMax));
+		updateRepertoireTable(title, genre, dateMin, dateMax, priceMin, priceMax);
+	}
+	
 	ActionListener userButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.setVisible(false);
@@ -232,13 +269,20 @@ public class Controller {
 			theView.um.addBackButtonListener(backButtonListener);
 			theView.um.addBasketButtonListener(basketButtonListener);
 			theView.um.disableButton(theView.um.getBasketButton());
-			theView.um.addFilterComboListener(filterComboListener);
 			if(theModel.boughtTickets.get().isEmpty() == false)
 			{
 				theView.um.enableButton(theView.um.getBasketButton());
 			}
 			theView.um.getUserListSelection().addListSelectionListener(sl);
-			updateRepertoireTable();
+			updateRepertoireTable("","",null, null, 0, 0);
+			
+			for(JComboBox cb : theView.um.getAllComboBoxes())
+			{
+				cb.addActionListener(comboListener);
+			}
+			
+			theView.um.getPriceMinTextField().addActionListener(comboListener);
+			theView.um.getPriceMaxTextField().addActionListener(comboListener);
 		}
 	};
 	
@@ -336,7 +380,7 @@ public class Controller {
 		}
 	};
 	
-	ActionListener filterComboListener = new ActionListener(){
+	ActionListener comboListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 //			JComboBox cb = (JComboBox)e.getSource();
 //			String filter = (String)cb.getSelectedItem();
@@ -345,6 +389,7 @@ public class Controller {
 //				
 //			}
 //			else theView.um.getGenreFilterCombo().setEnabled(false);
+			updateFiltersInView();
 		}
 	};
 	

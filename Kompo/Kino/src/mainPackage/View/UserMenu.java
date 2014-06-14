@@ -1,6 +1,8 @@
 package mainPackage.View;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -55,7 +57,49 @@ public class UserMenu extends JFrame {
 	public BasketMenu basketMenu;
 	
 	public UserMenu(ArrayList<String> filmTitles){
+		filmTitles.add(0, "wszystkie filmy");
 		this.filter = new JComboBox(filmTitles.toArray(new String[] {}));
+		this.priceMin.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e)
+			{
+				char myChar = e.getKeyChar();
+				if(((myChar != '0' && 
+						myChar != '1' && 
+						myChar != '2' &&
+						myChar != '3' &&
+						myChar != '4' &&
+						myChar != '5' &&
+						myChar != '6' &&
+						myChar != '7' &&
+						myChar != '8' &&
+						myChar != '9' &&
+						myChar != '.')) && (myChar != KeyEvent.VK_BACK_SPACE || myChar != KeyEvent.VK_ENTER))
+				{
+					e.consume();
+				}
+			}
+		});
+		
+		this.priceMax.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e)
+			{
+				char myChar = e.getKeyChar();
+				if(((myChar != '0' && 
+						myChar != '1' && 
+						myChar != '2' &&
+						myChar != '3' &&
+						myChar != '4' &&
+						myChar != '5' &&
+						myChar != '6' &&
+						myChar != '7' &&
+						myChar != '8' &&
+						myChar != '9' &&
+						myChar != '.')) && (myChar != KeyEvent.VK_BACK_SPACE || myChar != KeyEvent.VK_ENTER))
+				{
+					e.consume();
+				}
+			}
+		});
 		
 		userMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		userMenu.setSize(800, 600);
@@ -199,15 +243,62 @@ public class UserMenu extends JFrame {
 		return basketButton;
 	}
 	
-	public JComboBox getFilterCombo(){
-		return filter;
+//	public JComboBox getFilterCombo(){
+//		return filter;
+//	}
+//	
+//	public JComboBox getGenreFilterCombo(){
+//		return genreFilter;
+//	}
+	
+	public ArrayList<JComboBox> getAllComboBoxes()
+	{
+		ArrayList<JComboBox> list = new ArrayList<JComboBox>();
+		list.add(filter);
+		list.add(genreFilter);
+		list.add(dayMin);
+		list.add(monthMin);
+		list.add(yearMin);
+		list.add(dayMax);
+		list.add(monthMax);
+		list.add(yearMax);
+		return list;
 	}
 	
-	public JComboBox getGenreFilterCombo(){
-		return genreFilter;
+	public ArrayList<String> getAllFilterContent()
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		
+		list.add((String)filter.getSelectedItem());
+		list.add((String)genreFilter.getSelectedItem());
+		list.add((String)dayMin.getSelectedItem());
+		list.add((String)monthMin.getSelectedItem());
+		list.add((String)yearMin.getSelectedItem());
+		list.add((String)dayMax.getSelectedItem());
+		list.add((String)monthMax.getSelectedItem());
+		list.add((String)yearMax.getSelectedItem());
+		list.add(priceMin.getText());
+		list.add(priceMax.getText());
+		
+		return list;
 	}
 	
-	public void setTableContent(Object[][] newContent) { myTableModel.setContent(newContent); }
+	public JTextField getPriceMinTextField()
+	{
+		return this.priceMin;
+	}
+	
+	public JTextField getPriceMaxTextField()
+	{
+		return this.priceMax;
+	}
+	
+	public void setTableContent(Object[][] newContent) 
+	{ 
+		myTableModel.setContent(newContent);
+		myTableModel.fireTableDataChanged();
+		//System.out.println(String.valueOf(newContent.length));
+	}
 	
 	private String[] CBGetYears()
 	{
