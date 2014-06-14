@@ -20,37 +20,37 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 
 
-public class UserMenu extends JFrame {
-	private Date currentDate = new Date();
-	private JFrame userMenu = new JFrame();
-	private JPanel userPane = new JPanel();
-	private JLabel userTitle = new JLabel("Witaj w koncie uzytkownika!");
-	private JLabel dateFrom = new JLabel("OD:");
-	private JLabel dateTo = new JLabel("DO:");
-	private JLabel priceFrom = new JLabel("CENA OD:");
-	private JLabel priceTo = new JLabel("CENA DO:");
-	private MyTableModel myTableModel = new MyTableModel();
-	private JTable repertoireTable = new JTable(myTableModel);
-	private ListSelectionModel selectionModel = repertoireTable.getSelectionModel();
-	private JScrollPane scrollPane = new JScrollPane(repertoireTable);
-	private JButton buyTicketButton = new JButton("Kup bilet");
-	private JButton bookTicketButton = new JButton("Rezerwuj bilet");
-	private JButton backButton = new JButton("Wstecz");
-	private JButton basketButton = new JButton("Twoje bilety");
+public abstract class UserMenu extends JFrame {
+	protected Date currentDate = new Date();
+	protected JFrame userMenu = new JFrame();
+	protected JPanel userPane = new JPanel();
+	protected JLabel userTitle = new JLabel("Witaj w koncie uzytkownika!");
+	protected JLabel dateFrom = new JLabel("OD:");
+	protected JLabel dateTo = new JLabel("DO:");
+	protected JLabel priceFrom = new JLabel("CENA OD:");
+	protected JLabel priceTo = new JLabel("CENA DO:");
+	protected MyTableModel myTableModel = new MyTableModel();
+	protected JTable repertoireTable = new JTable(myTableModel);
+	protected ListSelectionModel selectionModel = repertoireTable.getSelectionModel();
+	protected JScrollPane scrollPane = new JScrollPane(repertoireTable);
+	protected JButton buyTicketButton = new JButton("Kup bilet");
+	protected JButton bookTicketButton = new JButton("Rezerwuj bilet");
+	protected JButton backButton = new JButton("Wstecz");
+	protected JButton basketButton = new JButton("Twoje bilety");
 	/*ADDED FOR FILTERING*/
 	//private String[] titles = {"Gatunek", "Dzieñ", "Miesi¹c", "Rok", "Nazwa"};
-	private String[] genres = {"wszystkie gatunki", "sci-fi", "krymina³", "western", "wojenny",
+	protected String[] genres = {"wszystkie gatunki", "sci-fi", "krymina³", "western", "wojenny",
 			"thriller", "horror", "dramat"};
-	private JComboBox filter;
-	private JComboBox genreFilter = new JComboBox(genres);
-	private JComboBox dayMin = new JComboBox(CBGetDays());
-	private JComboBox monthMin = new JComboBox(CBGetMonths());
-	private JComboBox yearMin = new JComboBox(CBGetYears());
-	private JComboBox dayMax = new JComboBox(CBGetDays());
-	private JComboBox monthMax = new JComboBox(CBGetMonths());
-	private JComboBox yearMax = new JComboBox(CBGetYears());
-	private JTextField priceMin = new JTextField("0.00");
-	private JTextField priceMax = new JTextField("0.00");
+	protected JComboBox filter;
+	protected JComboBox genreFilter = new JComboBox(genres);
+	protected JComboBox dayMin = new JComboBox(CBGetDays());
+	protected JComboBox monthMin = new JComboBox(CBGetMonths());
+	protected JComboBox yearMin = new JComboBox(CBGetYears());
+	protected JComboBox dayMax = new JComboBox(CBGetDays());
+	protected JComboBox monthMax = new JComboBox(CBGetMonths());
+	protected JComboBox yearMax = new JComboBox(CBGetYears());
+	protected JTextField priceMin = new JTextField("0.00");
+	protected JTextField priceMax = new JTextField("0.00");
 	
 	public BuyTicketMenu buyTicket;
 	public BookTicketMenu bookTicket;
@@ -300,7 +300,7 @@ public class UserMenu extends JFrame {
 		//System.out.println(String.valueOf(newContent.length));
 	}
 	
-	private String[] CBGetYears()
+	protected String[] CBGetYears()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
 		GregorianCalendar cal = new GregorianCalendar();
@@ -313,7 +313,7 @@ public class UserMenu extends JFrame {
 		return strings.toArray(new String[] {});
 	}
 	
-	private String[] CBGetMonths()
+	protected String[] CBGetMonths()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
 		for(int i = 1; i <= 12; i++)
@@ -323,7 +323,7 @@ public class UserMenu extends JFrame {
 		return strings.toArray(new String[] {});
 	}
 	
-	private String[] CBGetDays()
+	protected String[] CBGetDays()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
 		for(int i = 1; i <= 31; i++)

@@ -24,6 +24,7 @@ import mainPackage.Model.Model;
 import mainPackage.Model.Repertoire;
 import mainPackage.Model.Seance;
 import mainPackage.Model.Ticket;
+import mainPackage.View.UserMenu;
 import mainPackage.View.View;
 
 
@@ -36,6 +37,7 @@ public class Controller {
 																	//zaznaczony tytu³
 	private TicketsSelectionListener bought = new TicketsSelectionListener();
 	private BookedSelectionListener booked = new BookedSelectionListener();
+	private UserMenu currentMenu;
 	
 	public Controller() { }
 	
@@ -47,6 +49,7 @@ public class Controller {
 		
 		this.theView.addUserButtonListener(userButtonListener);
 		this.theView.addAdminButtonListener(adminButtonListener);
+		
 		updateCosts();
 	}
 	
@@ -141,21 +144,21 @@ public class Controller {
 	{
 		SelectionController updater = new RepertoireSelectionController(theModel.repertoire, title, genre, dateMin, dateMax, priceMin, priceMax);
 		Object[][] newContent = updater.getCollectionAsObjects();
-		theView.um.setTableContent(newContent);
+		currentMenu.setTableContent(newContent);
 	}
 	
 	public void updateBoughtTable()
 	{
 		SelectionController updater = new TicketsSelectionController(theModel.boughtTickets);
 		Object[][] newContent = updater.getCollectionAsObjects();
-		theView.um.basketMenu.setBoughtTableContent(newContent);
+		currentMenu.basketMenu.setBoughtTableContent(newContent);
 	}
 
 	public void updateBookedTable()
 	{
 		SelectionController updater = new TicketsSelectionController(theModel.reservedTickets);
 		Object[][] newContent = updater.getCollectionAsObjects();
-		theView.um.basketMenu.setBookedTableContent(newContent);
+		currentMenu.basketMenu.setBookedTableContent(newContent);
 	}
 	
 	public void updateCostsTable()
@@ -224,7 +227,7 @@ public class Controller {
 	
 	private void updateFiltersInView()
 	{
-		ArrayList<String> content = theView.um.getAllFilterContent();
+		ArrayList<String> content = currentMenu.getAllFilterContent();
 		//for(String str : content) System.out.println(str);
 		String title = "";
 		String genre = "";
@@ -262,6 +265,7 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			theView.setVisible(false);
 			theView.createUserMenu();
+			currentMenu = theView.um;
 			theView.um.addBuyButtonListener(buyButtonListener);
 			theView.um.disableButton(theView.um.getBuyButton());
 			theView.um.addBookButtonListener(bookButtonListener);
@@ -291,17 +295,36 @@ public class Controller {
 			theView.setVisible(false);
 			theView.createAdminMenu();
 			createReminder();
-			createChart(); //TEMP
+			//createChart(); //TEMP
+			currentMenu = theView.am;
+			theView.am.addBuyButtonListener(buyButtonListener);
+			theView.am.addBookButtonListener(bookButtonListener);
+			theView.am.addBackButtonListener(backButtonListener);
+			theView.am.addBasketButtonListener(basketButtonListener);
+			if(theModel.boughtTickets.get().isEmpty() == false)
+			{
+				theView.am.enableButton(theView.um.getBasketButton());
+			}
+			theView.am.getUserListSelection().addListSelectionListener(sl);
+			updateRepertoireTable("","",null, null, 0, 0);
+			
+			for(JComboBox cb : theView.am.getAllComboBoxes())
+			{
+				cb.addActionListener(comboListener);
+			}
+			
+			theView.am.getPriceMinTextField().addActionListener(comboListener);
+			theView.am.getPriceMaxTextField().addActionListener(comboListener);
 		}
 	};
 	
 	ActionListener buyButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			theView.um.createBuyTicketMenu();
-			theView.um.buyTicket.getTicketCount().addChangeListener(spinnerChangeListener);
-			theView.um.buyTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
-			theView.um.buyTicket.setTicketPrice(sl.seance.getPrice());
-			theView.um.buyTicket.addBuyButtonListener(buyTicketButtonListener);
+			currentMenu.createBuyTicketMenu();
+			currentMenu.buyTicket.getTicketCount().addChangeListener(spinnerChangeListener);
+			currentMenu.buyTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
+			currentMenu.buyTicket.setTicketPrice(sl.seance.getPrice());
+			currentMenu.buyTicket.addBuyButtonListener(buyTicketButtonListener);
 		}
 	};
 	
@@ -309,28 +332,28 @@ public class Controller {
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
 			double cena = sl.seance.getPrice();
-			cena *= Double.valueOf(theView.um.buyTicket.getSpinnerListModel().getValue().toString());
-			theView.um.buyTicket.setTicketPrice(cena);
+			cena *= Double.valueOf(currentMenu.buyTicket.getSpinnerListModel().getValue().toString());
+			currentMenu.buyTicket.setTicketPrice(cena);
 		}
 	};
 	
 	ActionListener buyTicketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.createSmallWindow("Zakup trafi³ do koszyka");
-			for(int i = 0; i<Integer.valueOf(theView.um.buyTicket.getSpinnerListModel().getValue().toString()); i++){
+			for(int i = 0; i<Integer.valueOf(currentMenu.buyTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.boughtTickets.add(new Ticket(sl.seance));
 			}
-			theView.um.enableButton(theView.um.getBasketButton());
+			currentMenu.enableButton(currentMenu.getBasketButton());
 		}
 	};
 	
 	ActionListener bookButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			theView.um.createBookTicketMenu();
-			theView.um.bookTicket.getTicketCount().addChangeListener(spinnerBookChangeListener);
-			theView.um.bookTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
-			theView.um.bookTicket.setTicketPrice(sl.seance.getPrice());
-			theView.um.bookTicket.addBookButtonListener(bookTicketButtonListener);
+			currentMenu.createBookTicketMenu();
+			currentMenu.bookTicket.getTicketCount().addChangeListener(spinnerBookChangeListener);
+			currentMenu.bookTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
+			currentMenu.bookTicket.setTicketPrice(sl.seance.getPrice());
+			currentMenu.bookTicket.addBookButtonListener(bookTicketButtonListener);
 		}
 	};
 	
@@ -338,8 +361,8 @@ public class Controller {
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
 			double cena = sl.seance.getPrice();
-			cena *= Double.valueOf(theView.um.bookTicket.getSpinnerListModel().getValue().toString());
-			theView.um.bookTicket.setTicketPrice(cena);
+			cena *= Double.valueOf(currentMenu.bookTicket.getSpinnerListModel().getValue().toString());
+			currentMenu.bookTicket.setTicketPrice(cena);
 		}
 	};
 	
@@ -349,26 +372,26 @@ public class Controller {
 			for(int i = 0; i<Integer.valueOf(theView.um.bookTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.reservedTickets.add(new Ticket(sl.seance));
 			}
-			theView.um.enableButton(theView.um.getBasketButton());
+			currentMenu.enableButton(currentMenu.getBasketButton());
 		}
 	};
 	
 	ActionListener backButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.setVisible(true);
-			theView.um.getUserMenu().setVisible(false);
+			currentMenu.getUserMenu().setVisible(false);
 		}
 	};
 	
 	ActionListener basketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			theView.um.createBasketMenu();
-			theView.um.basketMenu.getBoughtTicketsListSelection().addListSelectionListener(bought);
-			theView.um.basketMenu.getBookedTicketsListSelection().addListSelectionListener(booked);
-			theView.um.basketMenu.addDeleteTicketButtonListener(deleteTicketButtonListener);
-			theView.um.basketMenu.addDeleteReservationButtonListener(deleteReservationButtonListener);
-			theView.um.disableButton(theView.um.basketMenu.getBoughtDeleteButton());
-			theView.um.disableButton(theView.um.basketMenu.getBookedDeleteButton());
+			currentMenu.createBasketMenu();
+			currentMenu.basketMenu.getBoughtTicketsListSelection().addListSelectionListener(bought);
+			currentMenu.basketMenu.getBookedTicketsListSelection().addListSelectionListener(booked);
+			currentMenu.basketMenu.addDeleteTicketButtonListener(deleteTicketButtonListener);
+			currentMenu.basketMenu.addDeleteReservationButtonListener(deleteReservationButtonListener);
+			currentMenu.disableButton(currentMenu.basketMenu.getBoughtDeleteButton());
+			currentMenu.disableButton(currentMenu.basketMenu.getBookedDeleteButton());
 			if(theModel.boughtTickets.get().size() == 0)
 				updateBookedTable();
 			else if(theModel.reservedTickets.get().size() == 0)
@@ -397,14 +420,14 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			theModel.boughtTickets.delete(bought.row);
 			if(theModel.boughtTickets.get().size() == 0){
-				theView.um.basketMenu.getBasketFrame().dispose();
+				currentMenu.basketMenu.getBasketFrame().dispose();
 				theModel.boughtTickets.add(new Ticket(new Seance()));
 				//theView.um.disableButton(theView.um.getBasketButton());
 			}
 			else{
-				theView.um.basketMenu.getBasketFrame().setVisible(false);
+				currentMenu.basketMenu.getBasketFrame().setVisible(false);
 				updateBoughtTable();
-				theView.um.basketMenu.getBasketFrame().setVisible(true);
+				currentMenu.basketMenu.getBasketFrame().setVisible(true);
 			}
 		}
 	};
@@ -413,14 +436,14 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			theModel.reservedTickets.delete(booked.row);
 			if(theModel.reservedTickets.get().size() == 0){
-				theView.um.basketMenu.getBasketFrame().dispose();
+				currentMenu.basketMenu.getBasketFrame().dispose();
 				theModel.reservedTickets.add(new Ticket(new Seance()));
 				//theView.um.disableButton(theView.um.getBasketButton());
 			}
 			else{
-				theView.um.basketMenu.getBasketFrame().setVisible(false);
+				currentMenu.basketMenu.getBasketFrame().setVisible(false);
 				updateBookedTable();
-				theView.um.basketMenu.getBasketFrame().setVisible(true);
+				currentMenu.basketMenu.getBasketFrame().setVisible(true);
 			}
 		}
 	};
@@ -432,11 +455,11 @@ public class Controller {
 			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 			// TODO Auto-generated method stub
 			if(e.getValueIsAdjusting()) return;
-			int row = theView.um.getUserTable().getSelectedRow();
+			int row = currentMenu.getUserTable().getSelectedRow();
 			if(row < 0) return;
 			
-			theView.um.enableButton(theView.um.getBuyButton());
-			theView.um.enableButton(theView.um.getBookButton());
+			currentMenu.enableButton(currentMenu.getBuyButton());
+			currentMenu.enableButton(currentMenu.getBookButton());
 			seance = theModel.repertoire.get(row);
 		}
 	};
@@ -448,11 +471,11 @@ public class Controller {
 		public void valueChanged(ListSelectionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getValueIsAdjusting()) return;
-			row = theView.um.basketMenu.getTicketsTable().getSelectedRow();
+			row = currentMenu.basketMenu.getTicketsTable().getSelectedRow();
 			if(row < 0) return;
 			
 			if(theModel.boughtTickets.get().size() != 0)
-				theView.um.enableButton(theView.um.basketMenu.getBoughtDeleteButton());
+				currentMenu.enableButton(currentMenu.basketMenu.getBoughtDeleteButton());
 			System.out.println(Integer.valueOf(row));
 		}
 	};
@@ -463,11 +486,11 @@ public class Controller {
 		public void valueChanged(ListSelectionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getValueIsAdjusting()) return;
-			row = theView.um.basketMenu.getBookedTable().getSelectedRow();
+			row = currentMenu.basketMenu.getBookedTable().getSelectedRow();
 			if(row < 0) return;
 			
 			if(theModel.reservedTickets.get().size() != 0)
-				theView.um.enableButton(theView.um.basketMenu.getBookedDeleteButton());
+				currentMenu.enableButton(currentMenu.basketMenu.getBookedDeleteButton());
 			System.out.println(Integer.valueOf(row));
 		}
 	};

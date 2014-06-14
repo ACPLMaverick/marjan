@@ -28,8 +28,8 @@ public class View extends JFrame {
 	private JButton userButton = new JButton("Uzytkownik");
 	private JButton adminButton = new JButton("Administrator");
 	
-	public UserMenu um;
-	public AdminMenu am;
+	public UserMenuUser um;
+	public UserMenuAdmin am;
 	public SmallWindow window;
 	
 	public Chart costChart;
@@ -75,12 +75,13 @@ public class View extends JFrame {
 	}
 	
 	public void createUserMenu(){
-		if(myController == null) um = new UserMenu(new ArrayList<String>());
-		else um = new UserMenu(myController.getFilmTitles());
+		if(myController == null) um = new UserMenuUser(new ArrayList<String>());
+		else um = new UserMenuUser(myController.getFilmTitles());
 	}
 	
 	public void createAdminMenu(){
-		am = new AdminMenu();
+		if(myController == null) am = new UserMenuAdmin(new ArrayList<String>());
+		else am = new UserMenuAdmin(myController.getFilmTitles());
 	}
 	
 	public void createSmallWindow(String txt){
