@@ -60,7 +60,7 @@ public class View extends JFrame {
 		this.add(contentPane);
 		this.setVisible(true);
 	}
-
+	
 	public void addUserButtonListener(ActionListener listenForUserButton){
 		userButton.addActionListener(listenForUserButton);
 	}

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
+import javax.swing.JComboBox;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ public class Controller {
 	private SelectionListener sl = new SelectionListener();			//to na razie mój jedyny pomys³ jak pobraæ
 																	//zaznaczony tytu³
 	private TicketsSelectionListener bought = new TicketsSelectionListener();
+	private BookedSelectionListener booked = new BookedSelectionListener();
 	
 	public Controller(View theView, Model theModel){
 		this.theView = theView;
@@ -145,6 +147,13 @@ public class Controller {
 		Object[][] newContent = updater.getCollectionAsObjects();
 		theView.um.basketMenu.setBoughtTableContent(newContent);
 	}
+
+	public void updateBookedTable()
+	{
+		SelectionController updater = new TicketsSelectionController(theModel.reservedTickets);
+		Object[][] newContent = updater.getCollectionAsObjects();
+		theView.um.basketMenu.setBookedTableContent(newContent);
+	}
 	
 	public void updateCostsTable()
 	{
@@ -209,6 +218,7 @@ public class Controller {
 			theView.um.addBackButtonListener(backButtonListener);
 			theView.um.addBasketButtonListener(basketButtonListener);
 			theView.um.disableButton(theView.um.getBasketButton());
+			theView.um.addFilterComboListener(filterComboListener);
 			if(theModel.boughtTickets.get().isEmpty() == false)
 			{
 				theView.um.enableButton(theView.um.getBasketButton());
@@ -223,7 +233,7 @@ public class Controller {
 			theView.setVisible(false);
 			theView.createAdminMenu();
 			createReminder();
-			createChart(); // TEMP
+			createChart(); //TEMP
 		}
 	};
 	
@@ -259,6 +269,29 @@ public class Controller {
 	ActionListener bookButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.um.createBookTicketMenu();
+			theView.um.bookTicket.getTicketCount().addChangeListener(spinnerBookChangeListener);
+			theView.um.bookTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
+			theView.um.bookTicket.setTicketPrice(sl.seance.getPrice());
+			theView.um.bookTicket.addBookButtonListener(bookTicketButtonListener);
+		}
+	};
+	
+	ChangeListener spinnerBookChangeListener = new ChangeListener(){
+		@Override
+		public void stateChanged(ChangeEvent arg0) {
+			double cena = sl.seance.getPrice();
+			cena *= Double.valueOf(theView.um.bookTicket.getSpinnerListModel().getValue().toString());
+			theView.um.bookTicket.setTicketPrice(cena);
+		}
+	};
+	
+	ActionListener bookTicketButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			theView.createSmallWindow("Rezerwacja trafi³a do koszyka");
+			for(int i = 0; i<Integer.valueOf(theView.um.bookTicket.getSpinnerListModel().getValue().toString()); i++){
+				theModel.reservedTickets.add(new Ticket(sl.seance));
+			}
+			theView.um.enableButton(theView.um.getBasketButton());
 		}
 	};
 	
@@ -273,9 +306,31 @@ public class Controller {
 		public void actionPerformed(ActionEvent e){
 			theView.um.createBasketMenu();
 			theView.um.basketMenu.getBoughtTicketsListSelection().addListSelectionListener(bought);
+			theView.um.basketMenu.getBookedTicketsListSelection().addListSelectionListener(booked);
 			theView.um.basketMenu.addDeleteTicketButtonListener(deleteTicketButtonListener);
+			theView.um.basketMenu.addDeleteReservationButtonListener(deleteReservationButtonListener);
 			theView.um.disableButton(theView.um.basketMenu.getBoughtDeleteButton());
-			updateBoughtTable();
+			theView.um.disableButton(theView.um.basketMenu.getBookedDeleteButton());
+			if(theModel.boughtTickets.get().size() == 0)
+				updateBookedTable();
+			else if(theModel.reservedTickets.get().size() == 0)
+				updateBoughtTable();
+			else if(theModel.boughtTickets.get().size() != 0 && theModel.reservedTickets.get().size() != 0){
+				updateBookedTable();
+				updateBoughtTable();
+			}
+		}
+	};
+	
+	ActionListener filterComboListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			JComboBox cb = (JComboBox)e.getSource();
+			String filter = (String)cb.getSelectedItem();
+			if(filter == "Gatunek"){
+				theView.um.getGenreFilterCombo().setEnabled(true);
+				
+			}
+			else theView.um.getGenreFilterCombo().setEnabled(false);
 		}
 	};
 	
@@ -284,11 +339,28 @@ public class Controller {
 			theModel.boughtTickets.delete(bought.row);
 			if(theModel.boughtTickets.get().size() == 0){
 				theView.um.basketMenu.getBasketFrame().dispose();
-				theView.um.disableButton(theView.um.getBasketButton());
+				theModel.boughtTickets.add(new Ticket(new Seance()));
+				//theView.um.disableButton(theView.um.getBasketButton());
 			}
 			else{
 				theView.um.basketMenu.getBasketFrame().setVisible(false);
 				updateBoughtTable();
+				theView.um.basketMenu.getBasketFrame().setVisible(true);
+			}
+		}
+	};
+	
+	ActionListener deleteReservationButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			theModel.reservedTickets.delete(booked.row);
+			if(theModel.reservedTickets.get().size() == 0){
+				theView.um.basketMenu.getBasketFrame().dispose();
+				theModel.reservedTickets.add(new Ticket(new Seance()));
+				//theView.um.disableButton(theView.um.getBasketButton());
+			}
+			else{
+				theView.um.basketMenu.getBasketFrame().setVisible(false);
+				updateBookedTable();
 				theView.um.basketMenu.getBasketFrame().setVisible(true);
 			}
 		}
@@ -320,8 +392,23 @@ public class Controller {
 			row = theView.um.basketMenu.getTicketsTable().getSelectedRow();
 			if(row < 0) return;
 			
-			//ticket = theModel.boughtTickets.get(row);
-			theView.um.enableButton(theView.um.basketMenu.getBoughtDeleteButton());
+			if(theModel.boughtTickets.get().size() != 0)
+				theView.um.enableButton(theView.um.basketMenu.getBoughtDeleteButton());
+			System.out.println(Integer.valueOf(row));
+		}
+	};
+	
+	class BookedSelectionListener implements ListSelectionListener{
+		public int row;
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getValueIsAdjusting()) return;
+			row = theView.um.basketMenu.getBookedTable().getSelectedRow();
+			if(row < 0) return;
+			
+			if(theModel.reservedTickets.get().size() != 0)
+				theView.um.enableButton(theView.um.basketMenu.getBookedDeleteButton());
 			System.out.println(Integer.valueOf(row));
 		}
 	};
