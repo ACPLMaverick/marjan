@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -23,6 +24,7 @@ import javax.swing.table.TableColumn;
 public abstract class UserMenu extends JFrame {
 	protected Date currentDate = new Date();
 	protected JFrame userMenu = new JFrame();
+	protected JTabbedPane tabPane = new JTabbedPane();
 	protected JPanel userPane = new JPanel();
 	protected JLabel userTitle = new JLabel("Witaj w koncie uzytkownika!");
 	protected JLabel dateFrom = new JLabel("OD:");
@@ -104,11 +106,9 @@ public abstract class UserMenu extends JFrame {
 		userMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		userMenu.setSize(800, 600);
 		
-		userPane.add(userTitle);
 		userPane.add(scrollPane);
 		userPane.add(buyTicketButton);
 		userPane.add(bookTicketButton);
-		userPane.add(backButton);
 		userPane.add(basketButton);
 		userPane.add(filter);
 		userPane.add(genreFilter);
@@ -126,7 +126,10 @@ public abstract class UserMenu extends JFrame {
 		userPane.add(priceMax);
 		userPane.setLayout(null);
 		
-		userTitle.setBounds(250, 10, 300, 50);
+		userMenu.add(userTitle);
+		userMenu.add(backButton);
+		
+		userTitle.setBounds(250, 30, 300, 50);
 		userTitle.setFont(new Font("Courier New", 2, 18));
 		
 		scrollPane.setBounds(190, 80, 580, 350);
@@ -136,7 +139,7 @@ public abstract class UserMenu extends JFrame {
 		
 		buyTicketButton.setBounds(150, 470, 120, 50);
 		bookTicketButton.setBounds(480, 470, 120, 50);
-		backButton.setBounds(30, 20, 150, 50);
+		backButton.setBounds(30, 45, 150, 50);
 		basketButton.setBounds(600, 20, 150, 50);
 		
 		filter.setBounds(5, 80, 178, 25);
@@ -167,7 +170,9 @@ public abstract class UserMenu extends JFrame {
 		priceTo.setBounds(5, 230, 80, 25);
 		priceMax.setBounds(87, 230, 100, 25);
 		
-		userMenu.add(userPane);
+		tabPane.addTab("Repertuar", userPane);
+		
+		userMenu.add(tabPane);
 		userMenu.setVisible(true);
 	}
 	
@@ -292,6 +297,8 @@ public abstract class UserMenu extends JFrame {
 	{
 		return this.priceMax;
 	}
+	
+	public JTabbedPane getTabbedPane() { return this.tabPane; }
 	
 	public void setTableContent(Object[][] newContent) 
 	{ 

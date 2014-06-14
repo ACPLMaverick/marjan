@@ -25,6 +25,7 @@ import mainPackage.Model.Repertoire;
 import mainPackage.Model.Seance;
 import mainPackage.Model.Ticket;
 import mainPackage.View.UserMenu;
+import mainPackage.View.UserMenuAdmin;
 import mainPackage.View.View;
 
 
@@ -315,6 +316,10 @@ public class Controller {
 			
 			theView.am.getPriceMinTextField().addActionListener(comboListener);
 			theView.am.getPriceMaxTextField().addActionListener(comboListener);
+			
+			theView.am.getTabbedPane().addChangeListener(_currentPanelComboListener);
+			theView.am.getAddSeanceButton().addActionListener(_addSeanceButtonListener);
+			theView.am.getRemoveSeanceButton().addActionListener(_removeSeanceButtonListener);
 		}
 	};
 	
@@ -445,6 +450,26 @@ public class Controller {
 				updateBookedTable();
 				currentMenu.basketMenu.getBasketFrame().setVisible(true);
 			}
+		}
+	};
+	
+	ActionListener _addSeanceButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+		}
+	};
+	
+	ActionListener _removeSeanceButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+		}
+	};
+	
+	ChangeListener _currentPanelComboListener = new ChangeListener(){
+		@Override
+		public void stateChanged(ChangeEvent arg0) {
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("tab changed");
 		}
 	};
 	
