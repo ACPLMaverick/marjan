@@ -37,4 +37,6 @@ public class Film {
 	
 	public String getPriceAsString() { return String.valueOf(this.price); }
 	public String getLicensePriceAsString() { return String.valueOf(this.licensePrice); }
+	
+	public int getFieldsCount() { return 4; }
 }

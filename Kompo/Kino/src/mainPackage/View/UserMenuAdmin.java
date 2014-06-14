@@ -1,6 +1,7 @@
 package mainPackage.View;
 
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -8,6 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -164,6 +166,78 @@ public class UserMenuAdmin extends UserMenu {
 		userPane.setVisible(true);
 	}
 	
-	public JButton getAddSeanceButton() { return this.addSeanceButton; }
-	public JButton getRemoveSeanceButton() { return this.removeSeanceButton; }
+	public MyTableModel getCostsTableModel() { return this.costTableModel; }
+	public MyTableModel getFilmsTableModel() { return this.filmsTableModel; }
+	public ListSelectionModel getCostsListSelection() { return costSelectionModel; }
+	public ListSelectionModel getFilmsListSelection() { return filmsSelectionModel; }
+
+	public void addActionListenersToButtons(ActionListener[] col)
+	{
+		this.addSeanceButton.addActionListener(col[0]);
+		this.removeSeanceButton.addActionListener(col[1]);
+		this.loadRep.addActionListener(col[2]);
+		this.saveRep.addActionListener(col[3]);
+		this.chartButton.addActionListener(col[4]);
+		this.deleteButton.addActionListener(col[5]);
+		this.saveCostsButton.addActionListener(col[6]);
+		this.addFilmButton.addActionListener(col[7]);
+		this.deleteFilmButton.addActionListener(col[8]);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	
+	public ArrayList<JComboBox> getAllComboBoxesOfCost()
+	{
+		ArrayList<JComboBox> list = new ArrayList<JComboBox>();
+		list.add(costType);
+		list.add(costdayMin);
+		list.add(costmonthMin);
+		list.add(costyearMin);
+		list.add(costdayMax);
+		list.add(costmonthMax);
+		list.add(costyearMax);
+		return list;
+	}
+	
+	public ArrayList<String> getAllFilterContentOfCost()
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		
+		list.add((String)costType.getSelectedItem());
+		list.add((String)costdayMin.getSelectedItem());
+		list.add((String)costmonthMin.getSelectedItem());
+		list.add((String)costyearMin.getSelectedItem());
+		list.add((String)costdayMax.getSelectedItem());
+		list.add((String)costmonthMax.getSelectedItem());
+		list.add((String)costyearMax.getSelectedItem());
+		list.add(costpriceMin.getText());
+		list.add(costpriceMax.getText());
+		
+		return list;
+	}
+	
+	public JTextField getPriceMinTextFieldOfCost()
+	{
+		return this.costpriceMin;
+	}
+	
+	public JTextField getPriceMaxTextFieldOfCost()
+	{
+		return this.costpriceMax;
+	}
+	
+	public void setTableContentOfCost(Object[][] newContent) 
+	{ 
+		costTableModel.setContent(newContent);
+		costTableModel.fireTableDataChanged();
+	}
+	
+	////////////////////////////////////////////////////////////////////////
+	
+	
+	public void setTableContentOfFilms(Object[][] newContent) 
+	{ 
+		filmsTableModel.setContent(newContent);
+		filmsTableModel.fireTableDataChanged();
+	}
 }

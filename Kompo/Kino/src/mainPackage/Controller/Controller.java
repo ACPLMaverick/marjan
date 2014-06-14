@@ -36,6 +36,9 @@ public class Controller {
 	
 	private SelectionListener sl = new SelectionListener();			//to na razie mój jedyny pomys³ jak pobraæ
 																	//zaznaczony tytu³
+	private SelectionListener slCosts = new SelectionListener();
+	private SelectionListener slFilms = new SelectionListener();
+	
 	private TicketsSelectionListener bought = new TicketsSelectionListener();
 	private BookedSelectionListener booked = new BookedSelectionListener();
 	private UserMenu currentMenu;
@@ -162,10 +165,24 @@ public class Controller {
 		currentMenu.basketMenu.setBookedTableContent(newContent);
 	}
 	
-	public void updateCostsTable()
+	public void updateFilmsTable()
 	{
-		SelectionController updater = new CostsSelectionController(theModel.costs, null, null, null, 0, 0);
+		SelectionController updater = new FilmsSelectionController(theModel.repertoire.getFilms());
 		Object[][] newContent = updater.getCollectionAsObjects();
+		if(currentMenu instanceof UserMenuAdmin)
+		{
+			((UserMenuAdmin) currentMenu).setTableContentOfFilms(newContent);
+		}
+	}
+	
+	public void updateCostsTable(String type, Date dateMin, Date dateMax, double priceMin, double priceMax)
+	{
+		SelectionController updater = new CostsSelectionController(theModel.costs, type, dateMin, dateMax, priceMin, priceMax);
+		Object[][] newContent = updater.getCollectionAsObjects();
+		if(currentMenu instanceof UserMenuAdmin)
+		{
+			((UserMenuAdmin) currentMenu).setTableContentOfCost(newContent);
+		}
 		//theView.um.setTableContent(newContent);
 	}
 	
@@ -229,7 +246,6 @@ public class Controller {
 	private void updateFiltersInView()
 	{
 		ArrayList<String> content = currentMenu.getAllFilterContent();
-		//for(String str : content) System.out.println(str);
 		String title = "";
 		String genre = "";
 		Date dateMin;
@@ -253,13 +269,35 @@ public class Controller {
 		priceMin = Double.valueOf(content.get(8));
 		priceMax = Double.valueOf(content.get(9));
 		
-//		System.out.println(String.valueOf(title));
-//		System.out.println(String.valueOf(genre));
-//		System.out.println(String.valueOf(dateMin));
-//		System.out.println(String.valueOf(dateMax));
-//		System.out.println(String.valueOf(priceMin));
-//		System.out.println(String.valueOf(priceMax));
 		updateRepertoireTable(title, genre, dateMin, dateMax, priceMin, priceMax);
+		
+		/////////////////////////
+		
+		if(currentMenu instanceof UserMenuAdmin)
+		{
+			UserMenuAdmin admin = (UserMenuAdmin) currentMenu;
+			ArrayList<String> contentCost = admin.getAllFilterContentOfCost();
+			String costType = "";
+			Date costdateMin;
+			Date costdateMax;
+			double costpriceMin;
+			double costpriceMax;
+			
+			if(contentCost.get(0) == "WSZYSTKIE") costType = "";
+			else costType = contentCost.get(0);
+			
+			GregorianCalendar costcalMin = new GregorianCalendar(Integer.valueOf(contentCost.get(3)), Integer.valueOf(contentCost.get(2)) - 1, 
+					Integer.valueOf(contentCost.get(1)), 0, 0);
+			GregorianCalendar costcalMax = new GregorianCalendar(Integer.valueOf(contentCost.get(6)), Integer.valueOf(contentCost.get(5)) - 1, 
+					Integer.valueOf(contentCost.get(4)), 23, 59);
+			costdateMin = calMin.getTime();
+			costdateMax = calMax.getTime();
+			
+			costpriceMin = Double.valueOf(contentCost.get(7));
+			costpriceMax = Double.valueOf(contentCost.get(8));
+			
+			updateCostsTable(costType, costdateMin, costdateMax, costpriceMin, costpriceMax);
+		}
 	}
 	
 	ActionListener userButtonListener = new ActionListener(){
@@ -307,19 +345,33 @@ public class Controller {
 				theView.am.enableButton(theView.um.getBasketButton());
 			}
 			theView.am.getUserListSelection().addListSelectionListener(sl);
+			theView.am.getCostsListSelection().addListSelectionListener(slCosts);
+			theView.am.getFilmsListSelection().addListSelectionListener(slFilms);
 			updateRepertoireTable("","",null, null, 0, 0);
+			updateCostsTable("",null, null, 0, 0);
+			updateFilmsTable();
 			
 			for(JComboBox cb : theView.am.getAllComboBoxes())
 			{
 				cb.addActionListener(comboListener);
 			}
 			
+			for(JComboBox cb : theView.am.getAllComboBoxesOfCost())
+			{
+				cb.addActionListener(comboListener);
+			}
+			
 			theView.am.getPriceMinTextField().addActionListener(comboListener);
 			theView.am.getPriceMaxTextField().addActionListener(comboListener);
+			theView.am.getPriceMinTextFieldOfCost().addActionListener(comboListener);
+			theView.am.getPriceMinTextFieldOfCost().addActionListener(comboListener);
 			
 			theView.am.getTabbedPane().addChangeListener(_currentPanelComboListener);
-			theView.am.getAddSeanceButton().addActionListener(_addSeanceButtonListener);
-			theView.am.getRemoveSeanceButton().addActionListener(_removeSeanceButtonListener);
+			
+			ActionListener[] ac = { _addSeanceButtonListener, _removeSeanceButtonListener, _loadRepButtonListener, _saveRepButtonListener, 
+									_chartButtonListener, _deleteButtonListener, _saveCostsButtonListener, _addFilmButtonListener, 
+									_deleteButtonListener};
+			theView.am.addActionListenersToButtons(ac);
 		}
 	};
 	
@@ -453,15 +505,69 @@ public class Controller {
 		}
 	};
 	
+	
+	///////////////////////////////////////////////////////////////////////////////////////
+	
 	ActionListener _addSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
 		}
 	};
 	
 	ActionListener _removeSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
+		}
+	};
+	
+	ActionListener _loadRepButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
+		}
+	};
+	
+	ActionListener _saveRepButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
+		}
+	};
+	
+	ActionListener _chartButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
+		}
+	};
+	
+	ActionListener _deleteButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
+		}
+	};
+	
+	ActionListener _saveCostsButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
+		}
+	};
+	
+	ActionListener _addFilmButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
+		}
+	};
+	
+	ActionListener _deleteFilmButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
+			Main.log("button!");
 		}
 	};
 	
@@ -472,6 +578,8 @@ public class Controller {
 			Main.log("tab changed");
 		}
 	};
+	
+	//////////////////////////////////////////////////////////////////////////////////////
 	
 	class SelectionListener implements ListSelectionListener {
 		public Seance seance;
