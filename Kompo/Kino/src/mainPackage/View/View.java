@@ -157,4 +157,38 @@ public class View extends JFrame {
 			return null;
 		}
 	}
+	
+	/**
+	 * Metoda tworzy okno do odczytu pliku
+	 * @param extension - rozszerzenie. Rozszerzeniem jest XML
+	 * @return zwraca œcie¿kê do pliku
+	 */
+	public String createLoadMenu()
+	{
+		JFileChooser chooser = new JFileChooser();
+			chooser.setFileFilter(new FileFilter()
+			{
+
+				@Override
+				public boolean accept(File arg0) {
+					if(arg0.isDirectory()) return true;
+					return arg0.getName().endsWith(".xml");
+				}
+
+				@Override
+				public String getDescription() {
+					return "XML files (*.xml)";
+				}
+				
+			});
+		int control = chooser.showOpenDialog(View.this);
+		if(control == JFileChooser.APPROVE_OPTION)
+		{
+			return chooser.getSelectedFile().getAbsolutePath();
+		}
+		else
+		{
+			return null;
+		}
+	}
 }

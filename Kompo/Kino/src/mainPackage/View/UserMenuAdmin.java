@@ -170,6 +170,8 @@ public class UserMenuAdmin extends UserMenu {
 	public MyTableModel getFilmsTableModel() { return this.filmsTableModel; }
 	public ListSelectionModel getCostsListSelection() { return costSelectionModel; }
 	public ListSelectionModel getFilmsListSelection() { return filmsSelectionModel; }
+	public JTable getCostsTable(){ return costTable; }
+	public JTable getFilmsTable(){ return filmsTable; }
 
 	public void addActionListenersToButtons(ActionListener[] col)
 	{

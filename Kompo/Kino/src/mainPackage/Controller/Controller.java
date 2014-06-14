@@ -36,8 +36,8 @@ public class Controller {
 	
 	private SelectionListener sl = new SelectionListener();			//to na razie mój jedyny pomys³ jak pobraæ
 																	//zaznaczony tytu³
-	private SelectionListener slCosts = new SelectionListener();
-	private SelectionListener slFilms = new SelectionListener();
+	private CostsSelectionListener slCosts = new CostsSelectionListener();
+	private FilmsSelectionListener slFilms = new FilmsSelectionListener();
 	
 	private TicketsSelectionListener bought = new TicketsSelectionListener();
 	private BookedSelectionListener booked = new BookedSelectionListener();
@@ -65,7 +65,7 @@ public class Controller {
 	 * - wystawiony seans
 	 */
 	@SuppressWarnings("unchecked")
-	public void updateCosts()
+	private void updateCosts()
 	{
 		// zawsze generujemy ca³e koszta od nowa
 		// sk³adowe kosztów: + kupione bilety, - licencje filmów co miesi¹c, - wystawiony seans
@@ -94,37 +94,66 @@ public class Controller {
 	 * starsze ni¿ podana data
 	 * @param mode - 0: wszystko, 1: bez repertuaru
 	 */
-	public void clearAllByDate(Date dateMin, int mode)
+	private void clearAllByDate()
 	{
+		UserMenuAdmin admin = (UserMenuAdmin) currentMenu;
+		ArrayList<String> contentCost = admin.getAllFilterContentOfCost();
+		String costType = contentCost.get(0);
+		Date costdateMin;
+		Date costdateMax;
+		double costpriceMin;
+		double costpriceMax;
+		
+		GregorianCalendar costcalMin = new GregorianCalendar(Integer.valueOf(contentCost.get(3)), Integer.valueOf(contentCost.get(2)) - 1, 
+				Integer.valueOf(contentCost.get(1)), 0, 0);
+		GregorianCalendar costcalMax = new GregorianCalendar(Integer.valueOf(contentCost.get(6)), Integer.valueOf(contentCost.get(5)) - 1, 
+				Integer.valueOf(contentCost.get(4)), 23, 59);
+		costdateMin = costcalMin.getTime();
+		costdateMax = costcalMax.getTime();
+		
+		costpriceMin = Double.valueOf(contentCost.get(7));
+		costpriceMax = Double.valueOf(contentCost.get(8));
+		if(costpriceMax == 0) costpriceMax = Double.MAX_VALUE;
+		if(costpriceMin == 0) costpriceMin = -Double.MAX_VALUE;
+		
 		for(int i = 0; i < theModel.boughtTickets.get().size(); i++)
 		{
 			Ticket currentTicket = theModel.boughtTickets.get(i);
-			if(currentTicket.getSeance().getDate().getTime() < dateMin.getTime()) theModel.boughtTickets.delete(i);
+			if((contentCost.get(0).equals("SEANS") || contentCost.get(0).equals("LICENCJA")) && 
+					currentTicket.getSeance().getDate().getTime() < costdateMin.getTime() &&
+					currentTicket.getSeance().getDate().getTime() > costdateMax.getTime() &&
+					currentTicket.getSeance().getPrice() < costpriceMin &&
+					currentTicket.getSeance().getPrice() > costpriceMax
+					) theModel.boughtTickets.delete(i);
 		}
 		
 		for(int i = 0; i < theModel.reservedTickets.get().size(); i++)
 		{
 			Ticket currentTicket = theModel.reservedTickets.get(i);
-			if(currentTicket.getSeance().getDate().getTime() < dateMin.getTime()) theModel.reservedTickets.delete(i);
+			if((contentCost.get(0).equals("SEANS") || contentCost.get(0).equals("LICENCJA")) && 
+					currentTicket.getSeance().getDate().getTime() < costdateMin.getTime() &&
+					currentTicket.getSeance().getDate().getTime() > costdateMax.getTime() &&
+					currentTicket.getSeance().getPrice() < costpriceMin &&
+					currentTicket.getSeance().getPrice() > costpriceMax
+					) theModel.reservedTickets.delete(i);
 		}
 		
 		for(int i = 0; i < theModel.costs.get().size(); i++)
 		{
 			Cost currentCost = theModel.costs.get(i);
-			if(currentCost.getDate().getTime() < dateMin.getTime()) theModel.costs.delete(i);
-		}
-		
-		if(mode != 1)
-		{
-			for(int i = 0; i < theModel.repertoire.get().size(); i++)
-			{
-				Seance seance = theModel.repertoire.get(i);
-				if(seance.getDate().getTime() < dateMin.getTime()) theModel.repertoire.delete(i);
-			}
+			if(
+					currentCost.getDate().getTime() <= costdateMin.getTime() ||
+					currentCost.getDate().getTime() >= costdateMax.getTime() ||
+					currentCost.getPrice() <= costpriceMin ||
+					currentCost.getPrice() >= costpriceMax
+					)
+				{
+					theModel.costs.delete(i);
+				}
 		}
 	}
 	
-	public void saveCostsToFile()
+	private void saveCostsToFile()
 	{
 		String path = theView.createSaveMenu("txt");
 		if(path == null) return;
@@ -144,28 +173,28 @@ public class Controller {
 		}
 	}
 	
-	public void updateRepertoireTable(String title, String genre, Date dateMin, Date dateMax, double priceMin, double priceMax)
+	private void updateRepertoireTable(String title, String genre, Date dateMin, Date dateMax, double priceMin, double priceMax)
 	{
 		SelectionController updater = new RepertoireSelectionController(theModel.repertoire, title, genre, dateMin, dateMax, priceMin, priceMax);
 		Object[][] newContent = updater.getCollectionAsObjects();
 		currentMenu.setTableContent(newContent);
 	}
 	
-	public void updateBoughtTable()
+	private void updateBoughtTable()
 	{
 		SelectionController updater = new TicketsSelectionController(theModel.boughtTickets);
 		Object[][] newContent = updater.getCollectionAsObjects();
 		currentMenu.basketMenu.setBoughtTableContent(newContent);
 	}
 
-	public void updateBookedTable()
+	private void updateBookedTable()
 	{
 		SelectionController updater = new TicketsSelectionController(theModel.reservedTickets);
 		Object[][] newContent = updater.getCollectionAsObjects();
 		currentMenu.basketMenu.setBookedTableContent(newContent);
 	}
 	
-	public void updateFilmsTable()
+	private void updateFilmsTable()
 	{
 		SelectionController updater = new FilmsSelectionController(theModel.repertoire.getFilms());
 		Object[][] newContent = updater.getCollectionAsObjects();
@@ -175,7 +204,7 @@ public class Controller {
 		}
 	}
 	
-	public void updateCostsTable(String type, Date dateMin, Date dateMax, double priceMin, double priceMax)
+	private void updateCostsTable(String type, Date dateMin, Date dateMax, double priceMin, double priceMax)
 	{
 		SelectionController updater = new CostsSelectionController(theModel.costs, type, dateMin, dateMax, priceMin, priceMax);
 		Object[][] newContent = updater.getCollectionAsObjects();
@@ -186,7 +215,7 @@ public class Controller {
 		//theView.um.setTableContent(newContent);
 	}
 	
-	public void serialiseRepertoire()
+	private void serialiseRepertoire()
 	{
 		String path = theView.createSaveMenu("xml");
 		if(path == null) return;
@@ -194,15 +223,17 @@ public class Controller {
 		ser.serialize(path);
 	}
 	
-	public void deserialiseRepertoire()
+	private void deserialiseRepertoire()
 	{
-		String path = theView.createSaveMenu("xml");
+		String path = theView.createLoadMenu();
 		if(path == null) return;
 		SerializationController<Repertoire> ser = new SerializationController<Repertoire>(theModel.repertoire);
-		theModel.repertoire = (Repertoire)ser.deserialize(path);
+		Repertoire newRep = (Repertoire)ser.deserialize(path);
+		theModel.repertoire.get().clear();
+		theModel.repertoire.get().addAll(newRep.get());
 	}
 	
-	public void createChart()
+	private void createChart()
 	{
 		SelectionController contr = new CostsSelectionController(theModel.costs);
 		ArrayList<ArrayList<Number>> data = contr.getCollectionAsChartData();
@@ -290,14 +321,59 @@ public class Controller {
 					Integer.valueOf(contentCost.get(1)), 0, 0);
 			GregorianCalendar costcalMax = new GregorianCalendar(Integer.valueOf(contentCost.get(6)), Integer.valueOf(contentCost.get(5)) - 1, 
 					Integer.valueOf(contentCost.get(4)), 23, 59);
-			costdateMin = calMin.getTime();
-			costdateMax = calMax.getTime();
+			costdateMin = costcalMin.getTime();
+			costdateMax = costcalMax.getTime();
 			
 			costpriceMin = Double.valueOf(contentCost.get(7));
 			costpriceMax = Double.valueOf(contentCost.get(8));
 			
 			updateCostsTable(costType, costdateMin, costdateMax, costpriceMin, costpriceMax);
+			updateFilmsTable();
 		}
+	}
+	
+	private void addSeance()
+	{
+		
+	}
+	
+	private void deleteSeance()
+	{
+		Seance mySeance = this.sl.seance;
+		if(mySeance == null) return;
+		int i = 0;
+		for(Seance seance : theModel.repertoire.get())
+		{
+			if(seance.equals(mySeance)) 
+			{
+				theModel.repertoire.delete(i);
+				break;
+			}
+			i++;
+		}
+		updateFiltersInView();
+	}
+	
+	private void addFilm()
+	{
+		
+	}
+	
+	private void deleteFilm()
+	{
+		Film myFilm = this.slFilms.film;
+		if(myFilm == null) return;
+		int i = 0;
+		for(Film film : theModel.repertoire.getFilms())
+		{
+			if(film.equals(myFilm)) 
+			{
+				theModel.repertoire.deleteFilm(i);;
+				break;
+			}
+			i++;
+		}
+		updateFiltersInView();
 	}
 	
 	ActionListener userButtonListener = new ActionListener(){
@@ -370,7 +446,7 @@ public class Controller {
 			
 			ActionListener[] ac = { _addSeanceButtonListener, _removeSeanceButtonListener, _loadRepButtonListener, _saveRepButtonListener, 
 									_chartButtonListener, _deleteButtonListener, _saveCostsButtonListener, _addFilmButtonListener, 
-									_deleteButtonListener};
+									_deleteFilmButtonListener};
 			theView.am.addActionListenersToButtons(ac);
 		}
 	};
@@ -510,72 +586,62 @@ public class Controller {
 	
 	ActionListener _addSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+			addSeance();
 		}
 	};
 	
 	ActionListener _removeSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+			deleteSeance();
 		}
 	};
 	
 	ActionListener _loadRepButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+			deserialiseRepertoire();
 		}
 	};
 	
 	ActionListener _saveRepButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+			serialiseRepertoire();
 		}
 	};
 	
 	ActionListener _chartButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+			createChart();
 		}
 	};
 	
 	ActionListener _deleteButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+			clearAllByDate();
 		}
 	};
 	
 	ActionListener _saveCostsButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+			saveCostsToFile();
 		}
 	};
 	
 	ActionListener _addFilmButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+
 		}
 	};
 	
 	ActionListener _deleteFilmButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("button!");
+			deleteFilm();
 		}
 	};
 	
 	ChangeListener _currentPanelComboListener = new ChangeListener(){
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
-			UserMenuAdmin adm = (UserMenuAdmin)currentMenu;
-			Main.log("tab changed");
+			//Main.log("tab changed");
 		}
 	};
 	
@@ -594,6 +660,28 @@ public class Controller {
 			currentMenu.enableButton(currentMenu.getBuyButton());
 			currentMenu.enableButton(currentMenu.getBookButton());
 			seance = theModel.repertoire.get(row);
+		}
+	};
+	
+	class CostsSelectionListener implements ListSelectionListener {
+		public Cost cost;
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			if(e.getValueIsAdjusting()) return;
+			int row = ((UserMenuAdmin)currentMenu).getCostsTable().getSelectedRow();
+			if(row < 0) return;
+			cost = theModel.costs.get(row);
+		}
+	};
+	
+	class FilmsSelectionListener implements ListSelectionListener {
+		public Film film;
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			if(e.getValueIsAdjusting()) return;
+			int row = ((UserMenuAdmin)currentMenu).getFilmsTable().getSelectedRow();
+			if(row < 0) return;
+			film = theModel.repertoire.getFilms().get(row);
 		}
 	};
 	

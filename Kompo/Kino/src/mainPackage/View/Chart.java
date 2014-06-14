@@ -60,9 +60,9 @@ public class Chart extends ApplicationFrame {
 				"CZAS", 
 				"PRZYCH. / WYD.", 
 				data, 
-				true, 
-				true, 
-				true
+				false, 
+				false, 
+				false
 		);
 		chart.setBackgroundPaint(new Paint() {
 

@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 //przyda³oby siê zrobiæ te¿ tabelê aktualnie kupionych biletów do wyœwietlenia gdzieœ obok. Przyjête kolumny: TYTU£ FILMU, DATA, CENA
 
 public class MyTableModel extends AbstractTableModel{
-	private String[] columnNames = {"Tytu³", "Godzina", "Dzieñ", "Zajête miejsca", "Cena"};
+	private String[] columnNames = {"Tytu³", "Godzina", "Dzieñ", "Wolne miejsca", "Cena"};
 	private Object[][] content = {{"Ojciec Chrzestny", "17:00", "10-06-2014", "4", "14.00"}, 
 							   	 {"Taksówkarz", "15:00", "12-06-2014", "5", "15.00"}
 	};

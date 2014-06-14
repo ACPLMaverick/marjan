@@ -15,7 +15,7 @@ public class Repertoire {
 	private ArrayList<Film> filmList;
 	private DBController myDBController;
 	
-	public boolean connectedMode;
+	public boolean connectedMode = true;
 	
 	public Repertoire()
 	{
@@ -23,7 +23,6 @@ public class Repertoire {
 		this.myDBController = new DBController();
 		this.seanceList = this.myDBController.getWholeRepertoire();
 		this.filmList = this.myDBController.getAllFilms();
-		this.connectedMode = true;
 	}
 	
 	public void add(Seance seance)
