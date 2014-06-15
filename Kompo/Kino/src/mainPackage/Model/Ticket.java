@@ -9,6 +9,8 @@ public class Ticket {
 	private Seance mySeance;
 	private double price;
 	
+	public static final int fieldsCount = 3;
+	
 	public Ticket(Seance mySeance)
 	{
 		this.mySeance = mySeance;
@@ -24,6 +26,4 @@ public class Ticket {
 	{
 		return this.price;
 	}
-	
-	public int getFieldsCount() { return 3; }
 }

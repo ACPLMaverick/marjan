@@ -121,11 +121,11 @@ public class RepertoireSelectionController implements SelectionController {
 			}
 		}
 		
-		Object[][] myArray = new Object[objAL.size()][myCollection.get().get(0).getFieldsCount()];
+		Object[][] myArray = new Object[objAL.size()][Seance.fieldsCount];
 		for(int i = 0; i < objAL.size(); i++)
 		{
 			Object[] myObjArray = objAL.get(i);
-			for(int j = 0; j < myCollection.get().get(i).getFieldsCount(); j++)
+			for(int j = 0; j < Seance.fieldsCount; j++)
 			{
 				myArray[i][j] = myObjArray[j];
 			}

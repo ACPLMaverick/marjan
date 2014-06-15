@@ -17,6 +17,7 @@ public class Seance {
 	private Film film;
 	private Date date;
 	private int seatPlan;
+	public static final int fieldsCount = 5;
 	
 	public Seance()
 	{
@@ -56,13 +57,4 @@ public class Seance {
 	public String getPriceAsString() { return String.valueOf(this.film.getPrice()); }
 	public String getSeatPlanAsString() { return String.valueOf(seatPlan); }
 	
-	
-	/**
-	 *	
-	 * @return zwraca iloœæ pól klasy Seans
-	 */
-	public int getFieldsCount()
-	{
-		return 5;
-	}
 }

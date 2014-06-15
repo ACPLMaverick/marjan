@@ -18,7 +18,8 @@ public class MyKeyAdapter extends KeyAdapter {
 				myChar != '7' &&
 				myChar != '8' &&
 				myChar != '9' &&
-				myChar != '.')) && (myChar != KeyEvent.VK_BACK_SPACE || myChar != KeyEvent.VK_ENTER))
+				myChar != '.' &&
+				myChar != '-' )) && (myChar != KeyEvent.VK_BACK_SPACE || myChar != KeyEvent.VK_ENTER))
 		{
 			e.consume();
 		}

@@ -60,7 +60,6 @@ public class Repertoire {
 	{
 		return seanceList;
 	}
-	
 	//////////////////////////////////////
 	
 	public ArrayList<Film> getFilms()

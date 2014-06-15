@@ -16,6 +16,8 @@ public class Cost implements Comparable{
 	private Date date;
 	private String type;
 	
+	public static final int fieldsCount = 3;
+	
 	@SuppressWarnings("deprecation")
 	public Cost(Object myObject)
 	{
@@ -55,8 +57,6 @@ public class Cost implements Comparable{
 	public Date getDate() { return date; }
 	public String getPriceAsString() { return String.format("%.2f", this.price) + " z³"; }
 	public String getType() { return type; }
-	
-	public int getFieldsCount() { return 3; }
 
 	@Override
 	public int compareTo(Object arg0) {

@@ -51,7 +51,7 @@ public class Controller {
 		this.theView = theView;
 		this.theModel = theModel;
 		this.currentDate = new Date();
-//		theModel.repertoire.connectedMode = false;					// TO JEST FLAGA, KTÓRA USTAWIA, ¯E NIE APDEJTUJEMY BAZY DANYCH
+		theModel.repertoire.connectedMode = false;					// TO JEST FLAGA, KTÓRA USTAWIA, ¯E NIE APDEJTUJEMY BAZY DANYCH
 		
 		this.theView.addUserButtonListener(userButtonListener);
 		this.theView.addAdminButtonListener(adminButtonListener);
@@ -75,7 +75,8 @@ public class Controller {
 		
 		for(Seance seance : theModel.repertoire.get())
 		{
-			if(seance.getDate().getTime() < currentDate.getTime())theModel.costs.add(new Cost(seance));
+//			if(seance.getDate().getTime() < currentDate.getTime())theModel.costs.add(new Cost(seance));
+			theModel.costs.add(new Cost(seance));
 		}
 		
 		for(Ticket ticket : theModel.boughtTickets.get())
@@ -118,41 +119,60 @@ public class Controller {
 		if(costpriceMax == 0) costpriceMax = Double.MAX_VALUE;
 		if(costpriceMin == 0) costpriceMin = -Double.MAX_VALUE;
 		
+		ArrayList<Seance> tbdSeance = new ArrayList<Seance>();
+		ArrayList<Ticket> tbdBoughtTicket = new ArrayList<Ticket>();
+		ArrayList<Ticket> tbdReservedTicket = new ArrayList<Ticket>();
+		ArrayList<Film> tbdFilm = new ArrayList<Film>();
+		
 		for(int i = 0; i < theModel.boughtTickets.get().size(); i++)
 		{
 			Ticket currentTicket = theModel.boughtTickets.get(i);
-			if((contentCost.get(0).equals("SEANS") || contentCost.get(0).equals("LICENCJA")) && 
-					currentTicket.getSeance().getDate().getTime() < costdateMin.getTime() &&
-					currentTicket.getSeance().getDate().getTime() > costdateMax.getTime() &&
-					currentTicket.getSeance().getPrice() < costpriceMin &&
+			if((costType.equals("SEANS") || costType.equals("LICENCJA")) || 
+					currentTicket.getSeance().getDate().getTime() < costdateMin.getTime() ||
+					currentTicket.getSeance().getDate().getTime() > costdateMax.getTime() ||
+					currentTicket.getSeance().getPrice() < costpriceMin ||
 					currentTicket.getSeance().getPrice() > costpriceMax
-					) theModel.boughtTickets.delete(i);
+					) tbdBoughtTicket.add(theModel.boughtTickets.get(i));
 		}
 		
 		for(int i = 0; i < theModel.reservedTickets.get().size(); i++)
 		{
 			Ticket currentTicket = theModel.reservedTickets.get(i);
-			if((contentCost.get(0).equals("SEANS") || contentCost.get(0).equals("LICENCJA")) && 
-					currentTicket.getSeance().getDate().getTime() < costdateMin.getTime() &&
-					currentTicket.getSeance().getDate().getTime() > costdateMax.getTime() &&
-					currentTicket.getSeance().getPrice() < costpriceMin &&
+			if((costType.equals("SEANS") || costType.equals("LICENCJA")) || 
+					currentTicket.getSeance().getDate().getTime() < costdateMin.getTime() ||
+					currentTicket.getSeance().getDate().getTime() > costdateMax.getTime() ||
+					currentTicket.getSeance().getPrice() < costpriceMin ||
 					currentTicket.getSeance().getPrice() > costpriceMax
-					) theModel.reservedTickets.delete(i);
+					) tbdReservedTicket.add(theModel.reservedTickets.get(i));
 		}
 		
-		for(int i = 0; i < theModel.costs.get().size(); i++)
+		for(int i = 0; i < theModel.repertoire.get().size(); i++)
 		{
-			Cost currentCost = theModel.costs.get(i);
-			if(
-					currentCost.getDate().getTime() <= costdateMin.getTime() ||
-					currentCost.getDate().getTime() >= costdateMax.getTime() ||
-					currentCost.getPrice() <= costpriceMin ||
-					currentCost.getPrice() >= costpriceMax
-					)
-				{
-					theModel.costs.delete(i);
-				}
+			Seance currentSeance = theModel.repertoire.get(i);
+			if((costType.equals("LICENCJA") || costType.equals("BILET")) || 
+					currentSeance.getDate().getTime() < costdateMin.getTime() ||
+					currentSeance.getDate().getTime() > costdateMax.getTime() ||
+					currentSeance.getPrice() < costpriceMin ||
+					currentSeance.getPrice() > costpriceMax
+					) tbdSeance.add(theModel.repertoire.get(i));
 		}
+		
+		for(int i = 0; i < theModel.repertoire.getFilms().size(); i++)
+		{
+			Film currentFilm = theModel.repertoire.getFilm(i);
+			if((costType.equals("SEANS") || costType.equals("BILET")) || 
+					currentFilm.getPrice() < costpriceMin ||
+					currentFilm.getPrice() > costpriceMax
+					) tbdFilm.add(theModel.repertoire.getFilms().get(i));
+		}
+		
+		theModel.boughtTickets.get().removeAll(tbdBoughtTicket);
+		theModel.reservedTickets.get().removeAll(tbdReservedTicket);
+		theModel.repertoire.get().removeAll(tbdSeance);
+		theModel.repertoire.getFilms().removeAll(tbdFilm);
+		
+		updateCosts();
+		updateFiltersInView();
 	}
 	
 	private void saveCostsToFile()
@@ -352,6 +372,7 @@ public class Controller {
 		
 		Seance newSeance = new Seance(myFilm, myDate, 0);
 		theModel.repertoire.add(newSeance);
+		updateCosts();
 		updateFiltersInView();
 		
 		theView.crWindowSeance.dispose();
@@ -371,6 +392,7 @@ public class Controller {
 			}
 			i++;
 		}
+		updateCosts();
 		updateFiltersInView();
 	}
 	
@@ -382,6 +404,7 @@ public class Controller {
 		double ticketPrice = Double.valueOf(content.get(2));
 		double licensePrice = Double.valueOf(content.get(3));
 		theModel.repertoire.addFilm(new Film(title, genre, ticketPrice, licensePrice));
+		updateCosts();
 		updateFiltersInView();
 		theView.crWindowFilm.dispose();
 	}
@@ -400,6 +423,7 @@ public class Controller {
 			}
 			i++;
 		}
+		updateCosts();
 		updateFiltersInView();
 	}
 	
@@ -467,7 +491,7 @@ public class Controller {
 			theView.am.getPriceMinTextField().addActionListener(comboListener);
 			theView.am.getPriceMaxTextField().addActionListener(comboListener);
 			theView.am.getPriceMinTextFieldOfCost().addActionListener(comboListener);
-			theView.am.getPriceMinTextFieldOfCost().addActionListener(comboListener);
+			theView.am.getPriceMaxTextFieldOfCost().addActionListener(comboListener);
 			
 			theView.am.getTabbedPane().addChangeListener(_currentPanelComboListener);
 			
@@ -504,10 +528,11 @@ public class Controller {
 			seatPlan = sl.seance.getSeatPlan();
 			for(int i = 0; i<Integer.valueOf(currentMenu.buyTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.boughtTickets.add(new Ticket(sl.seance));
-				theModel.costs.add(new Cost(new Ticket(sl.seance)));
+//				theModel.costs.add(new Cost(new Ticket(sl.seance)));
 				seatPlan++;
 			}
 			sl.seance.setSeatPlan(seatPlan);
+			updateCosts();
 			updateFiltersInView();
 			currentMenu.getUserMenu().setEnabled(true);
 			currentMenu.enableButton(currentMenu.getBasketButton());
@@ -540,10 +565,11 @@ public class Controller {
 			seatPlan = sl.seance.getSeatPlan();
 			for(int i = 0; i<Integer.valueOf(theView.um.bookTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.reservedTickets.add(new Ticket(sl.seance));
-				theModel.costs.add(new Cost(new Ticket(sl.seance)));
+//				theModel.costs.add(new Cost(new Ticket(sl.seance)));
 				seatPlan++;
 			}
 			sl.seance.setSeatPlan(seatPlan);
+			updateCosts();
 			updateFiltersInView();
 			currentMenu.getUserMenu().setEnabled(true);
 			currentMenu.enableButton(currentMenu.getBasketButton());
@@ -595,22 +621,22 @@ public class Controller {
 			seatPlan = theModel.boughtTickets.get(bought.row).getSeance().getSeatPlan();
 			seatPlan--;
 			theModel.boughtTickets.get(bought.row).getSeance().setSeatPlan(seatPlan);
-			//
-			// USUWANIE COSTS
-			//
-			for(int i = 0; i < theModel.costs.get().size(); i++){
-				Object myObject = theModel.costs.get().get(i).getObject();
-				if(myObject instanceof Ticket){
-					System.out.println(myObject);
-					System.out.println((theModel.boughtTickets.get(bought.row)));
-					if((myObject).equals(theModel.boughtTickets.get(bought.row))){
-						theModel.costs.delete(i);
-					}
-				}
-			}
-			//
-			//
-			//
+//			//
+//			// USUWANIE COSTS
+//			//
+//			for(int i = 0; i < theModel.costs.get().size(); i++){
+//				Object myObject = theModel.costs.get().get(i).getObject();
+//				if(myObject instanceof Ticket){
+//					System.out.println(myObject);
+//					System.out.println((theModel.boughtTickets.get(bought.row)));
+//					if((myObject).equals(theModel.boughtTickets.get(bought.row))){
+//						theModel.costs.delete(i);
+//					}
+//				}
+//			}
+//			//
+//			//
+//			//
 			theModel.boughtTickets.delete(bought.row);
 			if(theModel.boughtTickets.get().size() == 0){
 				currentMenu.basketMenu.getBasketFrame().dispose();
@@ -622,6 +648,7 @@ public class Controller {
 				updateBoughtTable();
 				currentMenu.basketMenu.getBasketFrame().setVisible(true);
 			}
+			updateCosts();
 			updateFiltersInView();
 		}
 	};
@@ -642,6 +669,7 @@ public class Controller {
 				updateBookedTable();
 				currentMenu.basketMenu.getBasketFrame().setVisible(true);
 			}
+			updateCosts();
 			updateFiltersInView();
 		}
 	};

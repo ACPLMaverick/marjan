@@ -51,11 +51,11 @@ public class FilmsSelectionController implements SelectionController {
 				objAL.add(getElementAsObjects(film));
 		}
 		
-		Object[][] myArray = new Object[objAL.size()][myCollection.get(0).getFieldsCount()];
+		Object[][] myArray = new Object[objAL.size()][Film.fieldsCount];
 		for(int i = 0; i < objAL.size(); i++)
 		{
 			Object[] myObjArray = objAL.get(i);
-			for(int j = 0; j < myCollection.get(i).getFieldsCount(); j++)
+			for(int j = 0; j < Film.fieldsCount; j++)
 			{
 				myArray[i][j] = myObjArray[j];
 			}
