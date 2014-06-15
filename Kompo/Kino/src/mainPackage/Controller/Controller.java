@@ -478,6 +478,7 @@ public class Controller {
 			seatPlan = sl.seance.getSeatPlan();
 			for(int i = 0; i<Integer.valueOf(currentMenu.buyTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.boughtTickets.add(new Ticket(sl.seance));
+				theModel.costs.add(new Cost(new Ticket(sl.seance)));
 				seatPlan++;
 			}
 			sl.seance.setSeatPlan(seatPlan);
@@ -513,6 +514,7 @@ public class Controller {
 			seatPlan = sl.seance.getSeatPlan();
 			for(int i = 0; i<Integer.valueOf(theView.um.bookTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.reservedTickets.add(new Ticket(sl.seance));
+				theModel.costs.add(new Cost(new Ticket(sl.seance)));
 				seatPlan++;
 			}
 			sl.seance.setSeatPlan(seatPlan);
@@ -567,6 +569,22 @@ public class Controller {
 			seatPlan = theModel.boughtTickets.get(bought.row).getSeance().getSeatPlan();
 			seatPlan--;
 			theModel.boughtTickets.get(bought.row).getSeance().setSeatPlan(seatPlan);
+			//
+			// USUWANIE COSTS
+			//
+			for(int i = 0; i < theModel.costs.get().size(); i++){
+				Object myObject = theModel.costs.get().get(i).getObject();
+				if(myObject instanceof Ticket){
+					System.out.println(myObject);
+					System.out.println((theModel.boughtTickets.get(bought.row)));
+					if((myObject).equals(theModel.boughtTickets.get(bought.row))){
+						theModel.costs.delete(i);
+					}
+				}
+			}
+			//
+			//
+			//
 			theModel.boughtTickets.delete(bought.row);
 			if(theModel.boughtTickets.get().size() == 0){
 				currentMenu.basketMenu.getBasketFrame().dispose();
