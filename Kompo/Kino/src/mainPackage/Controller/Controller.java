@@ -51,7 +51,7 @@ public class Controller {
 		this.theView = theView;
 		this.theModel = theModel;
 		this.currentDate = new Date();
-		theModel.repertoire.connectedMode = false;					// TO JEST FLAGA, KTÓRA USTAWIA, ¯E NIE APDEJTUJEMY BAZY DANYCH
+//		theModel.repertoire.connectedMode = false;					// TO JEST FLAGA, KTÓRA USTAWIA, ¯E NIE APDEJTUJEMY BAZY DANYCH
 		
 		this.theView.addUserButtonListener(userButtonListener);
 		this.theView.addAdminButtonListener(adminButtonListener);
