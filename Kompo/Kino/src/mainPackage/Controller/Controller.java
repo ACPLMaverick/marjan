@@ -17,6 +17,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.transform.OutputKeys;
 
 import mainPackage.Model.Cost;
 import mainPackage.Model.Film;
@@ -50,7 +51,7 @@ public class Controller {
 		this.theView = theView;
 		this.theModel = theModel;
 		this.currentDate = new Date();
-		theModel.repertoire.connectedMode = false;					// TO JEST FLAGA, KTÓRA USTAWIA, ¯E NIE APDEJTUJEMY BAZY DANYCH
+//		theModel.repertoire.connectedMode = false;					// TO JEST FLAGA, KTÓRA USTAWIA, ¯E NIE APDEJTUJEMY BAZY DANYCH
 		
 		this.theView.addUserButtonListener(userButtonListener);
 		this.theView.addAdminButtonListener(adminButtonListener);
@@ -335,7 +336,25 @@ public class Controller {
 	
 	private void addSeance()
 	{
+		ArrayList<JComboBox> myCBs = theView.crWindowSeance.getAllComboBoxes();
+		int filmIndex = myCBs.get(0).getSelectedIndex();
+		String dateDay = (String)myCBs.get(1).getSelectedItem();
+		String dateMonth = (String)myCBs.get(2).getSelectedItem();
+		String dateYear = (String)myCBs.get(3).getSelectedItem();
+		String dateHour = (String)myCBs.get(4).getSelectedItem();
+		String dateMinute = (String)myCBs.get(5).getSelectedItem();
 		
+		GregorianCalendar myCal = new GregorianCalendar(Integer.valueOf(dateYear), Integer.valueOf(dateMonth) - 1, 
+				Integer.valueOf(dateDay), Integer.valueOf(dateHour), Integer.valueOf(dateMinute));
+		Date myDate = myCal.getTime();
+		
+		Film myFilm = theModel.repertoire.getFilm(filmIndex);
+		
+		Seance newSeance = new Seance(myFilm, myDate, 0);
+		theModel.repertoire.add(newSeance);
+		updateFiltersInView();
+		
+		theView.crWindowSeance.dispose();
 	}
 	
 	private void deleteSeance()
@@ -357,7 +376,14 @@ public class Controller {
 	
 	private void addFilm()
 	{
-		
+		ArrayList<String> content = theView.crWindowFilm.getAllContent();
+		String title = content.get(0);
+		String genre = content.get(1);
+		double ticketPrice = Double.valueOf(content.get(2));
+		double licensePrice = Double.valueOf(content.get(3));
+		theModel.repertoire.addFilm(new Film(title, genre, ticketPrice, licensePrice));
+		updateFiltersInView();
+		theView.crWindowFilm.dispose();
 	}
 	
 	private void deleteFilm()
@@ -625,7 +651,8 @@ public class Controller {
 	
 	ActionListener _addSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			addSeance();
+			theView.createCWSeance();
+			theView.crWindowSeance.addActionListenersToButtons(new ActionListener[] { _OKCreationSeanceButtonListener, _cancelCreationSeanceButtonListener });
 		}
 	};
 	
@@ -646,7 +673,7 @@ public class Controller {
 			serialiseRepertoire();
 		}
 	};
-	
+
 	ActionListener _chartButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			createChart();
@@ -667,13 +694,38 @@ public class Controller {
 	
 	ActionListener _addFilmButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-
+			theView.createCVFilm();
+			theView.crWindowFilm.addActionListenersToButtons(new ActionListener[] { _OKCreationFilmButtonListener, _cancelCreationFilmButtonListener });
 		}
 	};
 	
 	ActionListener _deleteFilmButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			deleteFilm();
+		}
+	};
+	
+	ActionListener _OKCreationSeanceButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			addSeance();
+		}
+	};
+	
+	ActionListener _cancelCreationSeanceButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			theView.crWindowSeance.dispose();
+		}
+	};
+	
+	ActionListener _OKCreationFilmButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			addFilm();
+		}
+	};
+	
+	ActionListener _cancelCreationFilmButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			theView.crWindowFilm.dispose();
 		}
 	};
 	
@@ -754,5 +806,70 @@ public class Controller {
 			System.out.println(Integer.valueOf(row));
 		}
 	};
+	
+	public static String[] CBGetYears()
+	{
+		ArrayList<String> strings = new ArrayList<String>();
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(new Date());
+		int year = cal.get(GregorianCalendar.YEAR);
+		for(; year >= 2000; year--)
+		{
+			strings.add(String.valueOf(year));
+		}
+		return strings.toArray(new String[] {});
+	}
+	
+	public static String[] CBGetMonths()
+	{
+		ArrayList<String> strings = new ArrayList<String>();
+		for(int i = 1; i <= 12; i++)
+		{
+			strings.add(String.valueOf(i));
+		}
+		return strings.toArray(new String[] {});
+	}
+	
+	public static String[] CBGetDays()
+	{
+		ArrayList<String> strings = new ArrayList<String>();
+		for(int i = 1; i <= 31; i++)
+		{
+			strings.add(String.valueOf(i));
+		}
+		return strings.toArray(new String[] {});
+	}
+	
+	public static String[] CBGetHours()
+	{
+		ArrayList<String> strings = new ArrayList<String>();
+		for(int i = 0; i <= 23; i++)
+		{
+			strings.add(String.valueOf(i));
+		}
+		return strings.toArray(new String[] {});
+	}
+	
+	public static String[] CBGetMinutes()
+	{
+		ArrayList<String> strings = new ArrayList<String>();
+		for(int i = 0; i <= 59; i++)
+		{
+			strings.add(String.valueOf(i));
+		}
+		return strings.toArray(new String[] {});
+	}
+	
+	public static String[] CBGetGenres()
+	{
+		return new String[] {"wszystkie gatunki", "sci-fi", "krymina³", "western", "wojenny",
+				"thriller", "horror", "dramat"};
+	}
+	
+	public static String[] CBGetGenresNoAll()
+	{
+		return new String[] {"sci-fi", "krymina³", "western", "wojenny",
+				"thriller", "horror", "dramat"};
+	}
 }
 	

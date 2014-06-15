@@ -31,6 +31,8 @@ public class View extends JFrame {
 	public UserMenuUser um;
 	public UserMenuAdmin am;
 	public SmallWindow window;
+	public SeanceCreationWindow crWindowSeance;
+	public FilmCreationWindow crWindowFilm;
 	
 	public Chart costChart;
 	
@@ -91,6 +93,17 @@ public class View extends JFrame {
 	public void createSmallWindow(String txtBig, String txtSmall)
 	{
 		window = new SmallWindow(txtBig, txtSmall);
+	}
+	
+	public void createCWSeance()
+	{
+		this.crWindowSeance = new SeanceCreationWindow(myController.getFilmTitles(), Controller.CBGetDays(), Controller.CBGetMonths(),
+												Controller.CBGetYears(), Controller.CBGetHours(), Controller.CBGetMinutes());
+	}
+	
+	public void createCVFilm()
+	{
+		this.crWindowFilm = new FilmCreationWindow();
 	}
 	
 	public void createCostChart(ArrayList<Number> x, ArrayList<Number> y)

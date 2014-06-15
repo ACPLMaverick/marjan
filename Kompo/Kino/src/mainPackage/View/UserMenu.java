@@ -20,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 
+import mainPackage.Controller.Controller;
+
 
 public abstract class UserMenu extends JFrame {
 	protected Date currentDate = new Date();
@@ -41,16 +43,15 @@ public abstract class UserMenu extends JFrame {
 	protected JButton basketButton = new JButton("Twoje bilety");
 	/*ADDED FOR FILTERING*/
 	//private String[] titles = {"Gatunek", "Dzieñ", "Miesi¹c", "Rok", "Nazwa"};
-	protected String[] genres = {"wszystkie gatunki", "sci-fi", "krymina³", "western", "wojenny",
-			"thriller", "horror", "dramat"};
+	protected String[] genres = Controller.CBGetGenres();
 	protected JComboBox filter;
 	protected JComboBox genreFilter = new JComboBox(genres);
-	protected JComboBox dayMin = new JComboBox(CBGetDays());
-	protected JComboBox monthMin = new JComboBox(CBGetMonths());
-	protected JComboBox yearMin = new JComboBox(CBGetYears());
-	protected JComboBox dayMax = new JComboBox(CBGetDays());
-	protected JComboBox monthMax = new JComboBox(CBGetMonths());
-	protected JComboBox yearMax = new JComboBox(CBGetYears());
+	protected JComboBox dayMin = new JComboBox(Controller.CBGetDays());
+	protected JComboBox monthMin = new JComboBox(Controller.CBGetMonths());
+	protected JComboBox yearMin = new JComboBox(Controller.CBGetYears());
+	protected JComboBox dayMax = new JComboBox(Controller.CBGetDays());
+	protected JComboBox monthMax = new JComboBox(Controller.CBGetMonths());
+	protected JComboBox yearMax = new JComboBox(Controller.CBGetYears());
 	protected JTextField priceMin = new JTextField("0.00");
 	protected JTextField priceMax = new JTextField("0.00");
 	
@@ -266,59 +267,5 @@ public abstract class UserMenu extends JFrame {
 		myTableModel.setContent(newContent);
 		myTableModel.fireTableDataChanged();
 		//System.out.println(String.valueOf(newContent.length));
-	}
-	
-	protected String[] CBGetYears()
-	{
-		ArrayList<String> strings = new ArrayList<String>();
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(this.currentDate);
-		int year = cal.get(GregorianCalendar.YEAR);
-		for(; year >= 2000; year--)
-		{
-			strings.add(String.valueOf(year));
-		}
-		return strings.toArray(new String[] {});
-	}
-	
-	protected String[] CBGetMonths()
-	{
-		ArrayList<String> strings = new ArrayList<String>();
-		for(int i = 1; i <= 12; i++)
-		{
-			strings.add(String.valueOf(i));
-		}
-		return strings.toArray(new String[] {});
-	}
-	
-	protected String[] CBGetDays()
-	{
-		ArrayList<String> strings = new ArrayList<String>();
-		for(int i = 1; i <= 31; i++)
-		{
-			strings.add(String.valueOf(i));
-		}
-		return strings.toArray(new String[] {});
-	}
-	
-	class MyKeyAdapter extends KeyAdapter {
-		public void keyTyped(KeyEvent e)
-		{
-			char myChar = e.getKeyChar();
-			if(((myChar != '0' && 
-					myChar != '1' && 
-					myChar != '2' &&
-					myChar != '3' &&
-					myChar != '4' &&
-					myChar != '5' &&
-					myChar != '6' &&
-					myChar != '7' &&
-					myChar != '8' &&
-					myChar != '9' &&
-					myChar != '.')) && (myChar != KeyEvent.VK_BACK_SPACE || myChar != KeyEvent.VK_ENTER))
-			{
-				e.consume();
-			}
-		}
 	}
 }

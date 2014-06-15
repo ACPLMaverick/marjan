@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 
+import mainPackage.Controller.Controller;
 import mainPackage.Controller.Main;
 
 public class UserMenuAdmin extends UserMenu {
@@ -38,12 +39,12 @@ public class UserMenuAdmin extends UserMenu {
 	
 	protected String[] costTypes = {"WSZYSTKIE", "LICENCJA", "SEANS", "BILET"};
 	protected JComboBox costType = new JComboBox(costTypes);
-	protected JComboBox costdayMin = new JComboBox(CBGetDays());
-	protected JComboBox costmonthMin = new JComboBox(CBGetMonths());
-	protected JComboBox costyearMin = new JComboBox(CBGetYears());
-	protected JComboBox costdayMax = new JComboBox(CBGetDays());
-	protected JComboBox costmonthMax = new JComboBox(CBGetMonths());
-	protected JComboBox costyearMax = new JComboBox(CBGetYears());
+	protected JComboBox costdayMin = new JComboBox(Controller.CBGetDays());
+	protected JComboBox costmonthMin = new JComboBox(Controller.CBGetMonths());
+	protected JComboBox costyearMin = new JComboBox(Controller.CBGetYears());
+	protected JComboBox costdayMax = new JComboBox(Controller.CBGetDays());
+	protected JComboBox costmonthMax = new JComboBox(Controller.CBGetMonths());
+	protected JComboBox costyearMax = new JComboBox(Controller.CBGetYears());
 	protected JTextField costpriceMin = new JTextField("0.00");
 	protected JTextField costpriceMax = new JTextField("0.00");
 	protected JLabel costdateFrom = new JLabel("OD:");
@@ -141,6 +142,8 @@ public class UserMenuAdmin extends UserMenu {
 		costsPane.add(costpriceFrom);
 		costsPane.add(costpriceTo);
 		costsPane.add(costpriceMin);
+		costpriceMin.addKeyListener(new MyKeyAdapter());
+		costpriceMax.addKeyListener(new MyKeyAdapter());
 		costsPane.add(costpriceMax);
 		costsPane.add(deleteButton);
 		costsPane.add(saveCostsButton);
