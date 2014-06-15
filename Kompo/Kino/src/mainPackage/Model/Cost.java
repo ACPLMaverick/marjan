@@ -39,7 +39,7 @@ public class Cost implements Comparable{
 		}
 		else if(myObject instanceof Film)
 		{
-			price = - Math.abs(((Film) myObject).getPrice());
+			price = - Math.abs(((Film) myObject).getLicensePrice());
 			this.type = "LICENCJA";
 			Date currentDate = new Date();
 			GregorianCalendar cal = new GregorianCalendar(currentDate.getYear() + 1900, ((currentDate.getMonth() + 1) % 12) , 1);
