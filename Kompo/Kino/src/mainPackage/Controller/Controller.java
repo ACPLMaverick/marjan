@@ -42,6 +42,7 @@ public class Controller {
 	private TicketsSelectionListener bought = new TicketsSelectionListener();
 	private BookedSelectionListener booked = new BookedSelectionListener();
 	private UserMenu currentMenu;
+	private int seatPlan;	//póki co tutaj - ogólna iloœæ miejsc zarówno dla buy i book
 	
 	public Controller() { }
 	
@@ -454,6 +455,7 @@ public class Controller {
 	ActionListener buyButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			currentMenu.createBuyTicketMenu();
+			currentMenu.getUserMenu().setEnabled(false);
 			currentMenu.buyTicket.getTicketCount().addChangeListener(spinnerChangeListener);
 			currentMenu.buyTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
 			currentMenu.buyTicket.setTicketPrice(sl.seance.getPrice());
@@ -473,9 +475,14 @@ public class Controller {
 	ActionListener buyTicketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.createSmallWindow("Zakup trafi³ do koszyka");
+			seatPlan = sl.seance.getSeatPlan();
 			for(int i = 0; i<Integer.valueOf(currentMenu.buyTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.boughtTickets.add(new Ticket(sl.seance));
+				seatPlan++;
 			}
+			sl.seance.setSeatPlan(seatPlan);
+			updateFiltersInView();
+			currentMenu.getUserMenu().setEnabled(true);
 			currentMenu.enableButton(currentMenu.getBasketButton());
 		}
 	};
@@ -483,6 +490,7 @@ public class Controller {
 	ActionListener bookButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			currentMenu.createBookTicketMenu();
+			currentMenu.getUserMenu().setEnabled(false);
 			currentMenu.bookTicket.getTicketCount().addChangeListener(spinnerBookChangeListener);
 			currentMenu.bookTicket.setSeanceTitle(sl.seance.getTitle(), sl.seance.getDateAsString());
 			currentMenu.bookTicket.setTicketPrice(sl.seance.getPrice());
@@ -502,9 +510,14 @@ public class Controller {
 	ActionListener bookTicketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.createSmallWindow(String.format("<html><div style=\"width:%dpx;\">%s</div><html>",250, "Rezerwacja trafi³a do koszyka."));
+			seatPlan = sl.seance.getSeatPlan();
 			for(int i = 0; i<Integer.valueOf(theView.um.bookTicket.getSpinnerListModel().getValue().toString()); i++){
 				theModel.reservedTickets.add(new Ticket(sl.seance));
+				seatPlan++;
 			}
+			sl.seance.setSeatPlan(seatPlan);
+			updateFiltersInView();
+			currentMenu.getUserMenu().setEnabled(true);
 			currentMenu.enableButton(currentMenu.getBasketButton());
 		}
 	};
@@ -551,6 +564,9 @@ public class Controller {
 	
 	ActionListener deleteTicketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
+			seatPlan = theModel.boughtTickets.get(bought.row).getSeance().getSeatPlan();
+			seatPlan--;
+			theModel.boughtTickets.get(bought.row).getSeance().setSeatPlan(seatPlan);
 			theModel.boughtTickets.delete(bought.row);
 			if(theModel.boughtTickets.get().size() == 0){
 				currentMenu.basketMenu.getBasketFrame().dispose();
@@ -562,11 +578,15 @@ public class Controller {
 				updateBoughtTable();
 				currentMenu.basketMenu.getBasketFrame().setVisible(true);
 			}
+			updateFiltersInView();
 		}
 	};
 	
 	ActionListener deleteReservationButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
+			seatPlan = theModel.reservedTickets.get(booked.row).getSeance().getSeatPlan();
+			seatPlan--;
+			theModel.reservedTickets.get(booked.row).getSeance().setSeatPlan(seatPlan);
 			theModel.reservedTickets.delete(booked.row);
 			if(theModel.reservedTickets.get().size() == 0){
 				currentMenu.basketMenu.getBasketFrame().dispose();
@@ -578,6 +598,7 @@ public class Controller {
 				updateBookedTable();
 				currentMenu.basketMenu.getBasketFrame().setVisible(true);
 			}
+			updateFiltersInView();
 		}
 	};
 	

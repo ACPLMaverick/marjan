@@ -37,6 +37,7 @@ public class Seance {
 	public String getTitle() { return this.film.getTitle(); }
 	public Date getDate() { return date; }
 	public int getSeatPlan() { return seatPlan; }
+	public void setSeatPlan(int i) { seatPlan = i; };
 	public double getPrice() { return this.film.getPrice(); }
 	
 	public String getDateAsString() 
