@@ -14,8 +14,13 @@ import javax.swing.JTextField;
 
 import mainPackage.Controller.Controller;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa reprezentujaca interfejs graficzny okna dodawania filmow.
+ */
 @SuppressWarnings("serial")
 public class FilmCreationWindow extends JFrame {
+	
 	private JPanel windowPane = new JPanel();
 	private JLabel userTitle;
 	private JLabel lTitle;
@@ -29,6 +34,9 @@ public class FilmCreationWindow extends JFrame {
 	private JButton bOK;
 	private JButton bCancel;
 	
+	/**
+	 * Tworzy nowe okno dodawania filmow.
+	 */
 	public FilmCreationWindow()
 	{
 		userTitle = new JLabel("Nowy film");
@@ -78,6 +86,22 @@ public class FilmCreationWindow extends JFrame {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Dodaje ActionListener do guzikow akceptowania i anulowania.
+	 *
+	 * @param col tabela ActionListener[] ktore dodawane sa do guzikow akceptowania i anulowania.
+	 */
+	public void addActionListenersToButtons(ActionListener[] col)
+	{
+		this.bOK.addActionListener(col[0]);
+		this.bCancel.addActionListener(col[1]);
+	}
+	
+	/**
+	 * Zwraca cala zawartosc wpisana przez administratora.
+	 *
+	 * @return Cala zawartosc pol tekstowych JTextArea.
+	 */
 	public ArrayList<String> getAllContent()
 	{
 		ArrayList<String> list = new ArrayList<String>();
@@ -86,11 +110,5 @@ public class FilmCreationWindow extends JFrame {
 		list.add(fTicketPrice.getText());
 		list.add(fLicensePrice.getText());
 		return list;
-	}
-	
-	public void addActionListenersToButtons(ActionListener[] col)
-	{
-		this.bOK.addActionListener(col[0]);
-		this.bCancel.addActionListener(col[1]);
 	}
 }

@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package mainPackage.Controller;
 
 import java.awt.event.ActionEvent;
@@ -30,23 +33,36 @@ import mainPackage.View.UserMenuAdmin;
 import mainPackage.View.View;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa odpowiadaj¹ca za za³o¿enia warstwy logiki w architekturze MVC.
+ */
 public class Controller {
+	
 	private View theView;
 	private Model theModel;
 	private Date currentDate;
-	
 	private SelectionListener sl = new SelectionListener();			//to na razie mój jedyny pomys³ jak pobraæ
 																	//zaznaczony tytu³
 	private CostsSelectionListener slCosts = new CostsSelectionListener();
 	private FilmsSelectionListener slFilms = new FilmsSelectionListener();
-	
 	private TicketsSelectionListener bought = new TicketsSelectionListener();
 	private BookedSelectionListener booked = new BookedSelectionListener();
 	private UserMenu currentMenu;
 	private int seatPlan;	//póki co tutaj - ogólna iloœæ miejsc zarówno dla buy i book
 	
+	/**
+	 * Tworzy obiekt klasy Controller spelniajacej zalozenia warstwy logiki w architekturze MVC.
+	 */
 	public Controller() { }
 	
+	/**
+	 * Tworzy obiekt klasy Controller spelniajacej zalozenia warstwy logiki w architekturze MVC 
+	 * z okreslonymi parametrami.
+	 *
+	 * @param theView - przechowuje wszystkie okna interfejsu u¿ytkownika.
+	 * @param theModel - przechowuje ca³¹ bazê danych.
+	 */
 	public Controller(View theView, Model theModel){
 		this.theView = theView;
 		this.theModel = theModel;
@@ -55,19 +71,16 @@ public class Controller {
 		
 		this.theView.addUserButtonListener(userButtonListener);
 		this.theView.addAdminButtonListener(adminButtonListener);
+		this.theView.addAboutAppButtonListener(aboutAppButtonListener);
 		
 		updateCosts();
 	}
 	
 	/**
-	 * zawsze generujemy ca³e koszta od nowa<br>
-	 * sk³adowe kosztów: <br>
-	 * + kupione bilety, <br>
-	 * - licencje filmów co miesi¹c, <br>
-	 * - wystawiony seans
+	 * Aktualizuje kolekcje zwiazana z kosztami za bilety, seasne i licencje.
 	 */
 	@SuppressWarnings("unchecked")
-	private void updateCosts()
+	public void updateCosts()
 	{
 		// zawsze generujemy ca³e koszta od nowa
 		// sk³adowe kosztów: + kupione bilety, - licencje filmów co miesi¹c, - wystawiony seans
@@ -93,11 +106,10 @@ public class Controller {
 	}
 	
 	/**
-	 * kasujemy wszystkie interesujace nas elementy (kupione/zarezerwowane bilety, koszta, seanse)<br>
-	 * starsze ni¿ podana data
-	 * @param mode - 0: wszystko, 1: bez repertuaru
+	 * Usuwa wszystkie interesujace nas elementy (kupione/zarezerwowane bilety, koszta, seanse)
+	 * starsze niz podana data.
 	 */
-	private void clearAllByDate()
+	public void clearAllByDate()
 	{
 		UserMenuAdmin admin = (UserMenuAdmin) currentMenu;
 		ArrayList<String> contentCost = admin.getAllFilterContentOfCost();
@@ -175,7 +187,10 @@ public class Controller {
 		updateFiltersInView();
 	}
 	
-	private void saveCostsToFile()
+	/**
+	 * Zapisuje koszty do pliku.
+	 */
+	public void saveCostsToFile()
 	{
 		String path = theView.createSaveMenu("txt");
 		if(path == null) return;
@@ -195,28 +210,47 @@ public class Controller {
 		}
 	}
 	
-	private void updateRepertoireTable(String title, String genre, Date dateMin, Date dateMax, double priceMin, double priceMax)
+	/**
+	 * Aktualizuje tabele repertuaru.
+	 *
+	 * @param title zadany tytul albo null.
+	 * @param genre zadany gatunek albo null.
+	 * @param dateMin zadana data minimalna albo null.
+	 * @param dateMax zadana data maksymalna albo null.
+	 * @param priceMin zadana cena minimalna albo 0.
+	 * @param priceMax zadana cena maksymalna albo 0.
+	 */
+	public void updateRepertoireTable(String title, String genre, Date dateMin, Date dateMax, double priceMin, double priceMax)
 	{
 		SelectionController updater = new RepertoireSelectionController(theModel.repertoire, title, genre, dateMin, dateMax, priceMin, priceMax);
 		Object[][] newContent = updater.getCollectionAsObjects();
 		currentMenu.setTableContent(newContent);
 	}
 	
-	private void updateBoughtTable()
+	/**
+	 * Aktualizuje tabele kupionych biletow.
+	 */
+	public void updateBoughtTable()
 	{
 		SelectionController updater = new TicketsSelectionController(theModel.boughtTickets);
 		Object[][] newContent = updater.getCollectionAsObjects();
 		currentMenu.basketMenu.setBoughtTableContent(newContent);
 	}
 
-	private void updateBookedTable()
+	/**
+	 * Aktualizuje tabele zarezerwowanych biletow.
+	 */
+	public void updateBookedTable()
 	{
 		SelectionController updater = new TicketsSelectionController(theModel.reservedTickets);
 		Object[][] newContent = updater.getCollectionAsObjects();
 		currentMenu.basketMenu.setBookedTableContent(newContent);
 	}
 	
-	private void updateFilmsTable()
+	/**
+	 * Aktualizuje tabele filmow.
+	 */
+	public void updateFilmsTable()
 	{
 		SelectionController updater = new FilmsSelectionController(theModel.repertoire.getFilms());
 		Object[][] newContent = updater.getCollectionAsObjects();
@@ -226,7 +260,16 @@ public class Controller {
 		}
 	}
 	
-	private void updateCostsTable(String type, Date dateMin, Date dateMax, double priceMin, double priceMax)
+	/**
+	 * Aktualizuje tabele kosztow.
+	 *
+	 * @param type okresla typ kosztow: BILET, SEANS lub LICENCJA.
+	 * @param dateMin zadana data minimalna albo null.
+	 * @param dateMax zadana data maksymalna albo null.
+	 * @param priceMin zadana cena minimalna albo 0.
+	 * @param priceMax zadana cena maksymalna albo 0.
+	 */
+	public void updateCostsTable(String type, Date dateMin, Date dateMax, double priceMin, double priceMax)
 	{
 		SelectionController updater = new CostsSelectionController(theModel.costs, type, dateMin, dateMax, priceMin, priceMax);
 		Object[][] newContent = updater.getCollectionAsObjects();
@@ -237,7 +280,10 @@ public class Controller {
 		//theView.um.setTableContent(newContent);
 	}
 	
-	private void serialiseRepertoire()
+	/**
+	 * Serializuje repertuar
+	 */
+	public void serialiseRepertoire()
 	{
 		String path = theView.createSaveMenu("xml");
 		if(path == null) return;
@@ -245,7 +291,10 @@ public class Controller {
 		ser.serialize(path);
 	}
 	
-	private void deserialiseRepertoire()
+	/**
+	 * Deserialise repertoire.
+	 */
+	public void deserialiseRepertoire()
 	{
 		String path = theView.createLoadMenu();
 		if(path == null) return;
@@ -255,15 +304,28 @@ public class Controller {
 		theModel.repertoire.get().addAll(newRep.get());
 	}
 	
-	private void createChart()
+	/**
+	 * Tworzy wykres w oparciu o dane.
+	 */
+	public void createChart()
 	{
 		SelectionController contr = new CostsSelectionController(theModel.costs);
 		ArrayList<ArrayList<Number>> data = contr.getCollectionAsChartData();
 		theView.createCostChart(data.get(0), data.get(1));
 	}
 	
+	/**
+	 * Zwraca obecna date.
+	 *
+	 * @return Obecna date.
+	 */
 	public Date getCurrentDate() { return this.currentDate; }
 	
+	/**
+	 * Zwraca tytuly filmow.
+	 *
+	 * @return Tytuly filmow.
+	 */
 	public ArrayList<String> getFilmTitles()
 	{
 		ArrayList<String> filmTitles = new ArrayList<String>();
@@ -274,7 +336,10 @@ public class Controller {
 		return filmTitles;
 	}
 	
-	private void createReminder()
+	/**
+	 * Tworzy przypomnienie.
+	 */
+	public void createReminder()
 	{
 		int costCount = checkIfReminderIsNeeded();
 		if(costCount == 0) return;
@@ -285,7 +350,12 @@ public class Controller {
 		theView.createSmallWindow(remTitle, remDesc);
 	}
 
-	private int checkIfReminderIsNeeded()
+	/**
+	 * Sprawdza czy przypomnienie jest wymagane.
+	 *
+	 * @return Rozmiar list kosztow lub 0.
+	 */
+	public int checkIfReminderIsNeeded()
 	{
 		ArrayList<Cost> tempCosts = new ArrayList<Cost>();
 		for(Cost cost : theModel.costs.get())
@@ -296,7 +366,10 @@ public class Controller {
 		else return 0;
 	}
 	
-	private void updateFiltersInView()
+	/**
+	 * Aktualizuje filtry w interfejsie uzytkownika.
+	 */
+	public void updateFiltersInView()
 	{
 		ArrayList<String> content = currentMenu.getAllFilterContent();
 		String title = "";
@@ -354,7 +427,10 @@ public class Controller {
 		}
 	}
 	
-	private void addSeance()
+	/**
+	 * Dodaje seans.
+	 */
+	public void addSeance()
 	{
 		ArrayList<JComboBox> myCBs = theView.crWindowSeance.getAllComboBoxes();
 		int filmIndex = myCBs.get(0).getSelectedIndex();
@@ -378,7 +454,10 @@ public class Controller {
 		theView.crWindowSeance.dispose();
 	}
 	
-	private void deleteSeance()
+	/**
+	 * Usuwa seans.
+	 */
+	public void deleteSeance()
 	{
 		Seance mySeance = this.sl.seance;
 		if(mySeance == null) return;
@@ -396,7 +475,10 @@ public class Controller {
 		updateFiltersInView();
 	}
 	
-	private void addFilm()
+	/**
+	 * Dodaje film.
+	 */
+	public void addFilm()
 	{
 		ArrayList<String> content = theView.crWindowFilm.getAllContent();
 		String title = content.get(0);
@@ -409,7 +491,10 @@ public class Controller {
 		theView.crWindowFilm.dispose();
 	}
 	
-	private void deleteFilm()
+	/**
+	 * Usuwa film.
+	 */
+	public void deleteFilm()
 	{
 		Film myFilm = this.slFilms.film;
 		if(myFilm == null) return;
@@ -427,6 +512,7 @@ public class Controller {
 		updateFiltersInView();
 	}
 	
+	/** The user button listener. */
 	ActionListener userButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.setVisible(false);
@@ -456,6 +542,7 @@ public class Controller {
 		}
 	};
 	
+	/** The admin button listener. */
 	ActionListener adminButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.setVisible(false);
@@ -502,6 +589,13 @@ public class Controller {
 		}
 	};
 	
+	ActionListener aboutAppButtonListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			theView.createAboutAppWindow("Autorzy", "Marcin Wawrzonowski", "Jan Be³cz¹cki");
+		}
+	};
+	
+	/** The buy button listener. */
 	ActionListener buyButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			currentMenu.createBuyTicketMenu();
@@ -513,6 +607,7 @@ public class Controller {
 		}
 	};
 	
+	/** The spinner change listener. */
 	ChangeListener spinnerChangeListener = new ChangeListener(){
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
@@ -522,6 +617,7 @@ public class Controller {
 		}
 	};
 	
+	/** The buy ticket button listener. */
 	ActionListener buyTicketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.createSmallWindow("Zakup trafi³ do koszyka");
@@ -539,6 +635,7 @@ public class Controller {
 		}
 	};
 	
+	/** The book button listener. */
 	ActionListener bookButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			currentMenu.createBookTicketMenu();
@@ -550,6 +647,7 @@ public class Controller {
 		}
 	};
 	
+	/** The spinner book change listener. */
 	ChangeListener spinnerBookChangeListener = new ChangeListener(){
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
@@ -559,6 +657,7 @@ public class Controller {
 		}
 	};
 	
+	/** The book ticket button listener. */
 	ActionListener bookTicketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.createSmallWindow(String.format("<html><div style=\"width:%dpx;\">%s</div><html>",250, "Rezerwacja trafi³a do koszyka."));
@@ -576,6 +675,7 @@ public class Controller {
 		}
 	};
 	
+	/** The back button listener. */
 	ActionListener backButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.setVisible(true);
@@ -583,6 +683,7 @@ public class Controller {
 		}
 	};
 	
+	/** The basket button listener. */
 	ActionListener basketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			currentMenu.createBasketMenu();
@@ -603,6 +704,7 @@ public class Controller {
 		}
 	};
 	
+	/** The combo listener. */
 	ActionListener comboListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 //			JComboBox cb = (JComboBox)e.getSource();
@@ -616,6 +718,7 @@ public class Controller {
 		}
 	};
 	
+	/** The delete ticket button listener. */
 	ActionListener deleteTicketButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			seatPlan = theModel.boughtTickets.get(bought.row).getSeance().getSeatPlan();
@@ -653,6 +756,7 @@ public class Controller {
 		}
 	};
 	
+	/** The delete reservation button listener. */
 	ActionListener deleteReservationButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			seatPlan = theModel.reservedTickets.get(booked.row).getSeance().getSeatPlan();
@@ -677,6 +781,7 @@ public class Controller {
 	
 	///////////////////////////////////////////////////////////////////////////////////////
 	
+	/** The _add seance button listener. */
 	ActionListener _addSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.createCWSeance();
@@ -684,42 +789,49 @@ public class Controller {
 		}
 	};
 	
+	/** The _remove seance button listener. */
 	ActionListener _removeSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			deleteSeance();
 		}
 	};
 	
+	/** The _load rep button listener. */
 	ActionListener _loadRepButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			deserialiseRepertoire();
 		}
 	};
 	
+	/** The _save rep button listener. */
 	ActionListener _saveRepButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			serialiseRepertoire();
 		}
 	};
 
+	/** The _chart button listener. */
 	ActionListener _chartButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			createChart();
 		}
 	};
 	
+	/** The _delete button listener. */
 	ActionListener _deleteButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			clearAllByDate();
 		}
 	};
 	
+	/** The _save costs button listener. */
 	ActionListener _saveCostsButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			saveCostsToFile();
 		}
 	};
 	
+	/** The _add film button listener. */
 	ActionListener _addFilmButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.createCVFilm();
@@ -727,36 +839,42 @@ public class Controller {
 		}
 	};
 	
+	/** The _delete film button listener. */
 	ActionListener _deleteFilmButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			deleteFilm();
 		}
 	};
 	
+	/** The _ ok creation seance button listener. */
 	ActionListener _OKCreationSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			addSeance();
 		}
 	};
 	
+	/** The _cancel creation seance button listener. */
 	ActionListener _cancelCreationSeanceButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.crWindowSeance.dispose();
 		}
 	};
 	
+	/** The _ ok creation film button listener. */
 	ActionListener _OKCreationFilmButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			addFilm();
 		}
 	};
 	
+	/** The _cancel creation film button listener. */
 	ActionListener _cancelCreationFilmButtonListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			theView.crWindowFilm.dispose();
 		}
 	};
 	
+	/** The _current panel combo listener. */
 	ChangeListener _currentPanelComboListener = new ChangeListener(){
 		@Override
 		public void stateChanged(ChangeEvent arg0) {
@@ -766,8 +884,25 @@ public class Controller {
 	
 	//////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * The listener interface for receiving selection events.
+	 * The class that is interested in processing a selection
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addSelectionListener<code> method. When
+	 * the selection event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see SelectionEvent
+	 */
 	class SelectionListener implements ListSelectionListener {
+		
+		/** The seance. */
 		public Seance seance;
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
@@ -782,8 +917,25 @@ public class Controller {
 		}
 	};
 	
+	/**
+	 * The listener interface for receiving costsSelection events.
+	 * The class that is interested in processing a costsSelection
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addCostsSelectionListener<code> method. When
+	 * the costsSelection event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see CostsSelectionEvent
+	 */
 	class CostsSelectionListener implements ListSelectionListener {
+		
+		/** The cost. */
 		public Cost cost;
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if(e.getValueIsAdjusting()) return;
@@ -793,8 +945,25 @@ public class Controller {
 		}
 	};
 	
+	/**
+	 * The listener interface for receiving filmsSelection events.
+	 * The class that is interested in processing a filmsSelection
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addFilmsSelectionListener<code> method. When
+	 * the filmsSelection event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see FilmsSelectionEvent
+	 */
 	class FilmsSelectionListener implements ListSelectionListener {
+		
+		/** The film. */
 		public Film film;
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if(e.getValueIsAdjusting()) return;
@@ -804,9 +973,28 @@ public class Controller {
 		}
 	};
 	
+	/**
+	 * The listener interface for receiving ticketsSelection events.
+	 * The class that is interested in processing a ticketsSelection
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addTicketsSelectionListener<code> method. When
+	 * the ticketsSelection event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see TicketsSelectionEvent
+	 */
 	class TicketsSelectionListener implements ListSelectionListener{
+		
+		/** The ticket. */
 		public Ticket ticket;
+		
+		/** The row. */
 		public int row;
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			// TODO Auto-generated method stub
@@ -820,8 +1008,25 @@ public class Controller {
 		}
 	};
 	
+	/**
+	 * The listener interface for receiving bookedSelection events.
+	 * The class that is interested in processing a bookedSelection
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addBookedSelectionListener<code> method. When
+	 * the bookedSelection event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see BookedSelectionEvent
+	 */
 	class BookedSelectionListener implements ListSelectionListener{
+		
+		/** The row. */
 		public int row;
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			// TODO Auto-generated method stub
@@ -835,6 +1040,11 @@ public class Controller {
 		}
 	};
 	
+	/**
+	 * Zwraca tablice lat z kalendarza.
+	 *
+	 * @return Tablice lat String[].
+	 */
 	public static String[] CBGetYears()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
@@ -848,6 +1058,11 @@ public class Controller {
 		return strings.toArray(new String[] {});
 	}
 	
+	/**
+	 * Zwraca tablice miesiecy z kalendarza.
+	 *
+	 * @return Tablice miesiecy String[].
+	 */
 	public static String[] CBGetMonths()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
@@ -858,6 +1073,11 @@ public class Controller {
 		return strings.toArray(new String[] {});
 	}
 	
+	/**
+	 * Zwraca tablice dni z kalendarza.
+	 *
+	 * @return Tablice dni String[].
+	 */
 	public static String[] CBGetDays()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
@@ -868,6 +1088,11 @@ public class Controller {
 		return strings.toArray(new String[] {});
 	}
 	
+	/**
+	 * Zwraca tablice godzin z kalendarza.
+	 *
+	 * @return Tablice godzin String[].
+	 */
 	public static String[] CBGetHours()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
@@ -878,6 +1103,11 @@ public class Controller {
 		return strings.toArray(new String[] {});
 	}
 	
+	/**
+	 * Zwraca tablice minut z kalendarza.
+	 *
+	 * @return Tablice minut String[].
+	 */
 	public static String[] CBGetMinutes()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
@@ -888,12 +1118,22 @@ public class Controller {
 		return strings.toArray(new String[] {});
 	}
 	
+	/**
+	 * Zwraca tablice gatunkow.
+	 *
+	 * @return Tablice gatunkow String[].
+	 */
 	public static String[] CBGetGenres()
 	{
 		return new String[] {"wszystkie gatunki", "sci-fi", "krymina³", "western", "wojenny",
 				"thriller", "horror", "dramat"};
 	}
 	
+	/**
+	 * Zwraca tablice nie wszystkich gatunkow.
+	 *
+	 * @return Tablice nie wszystkich gatunkow String[].
+	 */
 	public static String[] CBGetGenresNoAll()
 	{
 		return new String[] {"sci-fi", "krymina³", "western", "wojenny",

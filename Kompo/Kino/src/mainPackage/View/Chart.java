@@ -22,6 +22,10 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa reprezentujaca wykres kosztow i wydatkow rysowany w menu administratora.
+ */
 @SuppressWarnings("serial")
 public class Chart extends ApplicationFrame {
 	
@@ -29,6 +33,14 @@ public class Chart extends ApplicationFrame {
 	private ArrayList<Number> data_x;
 	private ArrayList<Number> data_y;
 	
+	/**
+	 * Tworzy nowy wykres z konkretnymi parametrami.
+	 *
+	 * @param title tytul wykresu
+	 * @param data_x wartosci na osi X
+	 * @param data_y wartosci na osi Y
+	 * @throws Exception the exception
+	 */
 	public Chart(String title, ArrayList<Number> data_x, ArrayList<Number> data_y) throws Exception {
 		super(title);
 		this.title = title;
@@ -46,6 +58,11 @@ public class Chart extends ApplicationFrame {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Generuje wykres jako element interfejsu graficznego.
+	 *
+	 * @return Wykres w postaci JFreeChart.
+	 */
 	private JFreeChart generateChart()
 	{
 		final XYSeries series = new XYSeries("Test");
@@ -87,6 +104,10 @@ public class Chart extends ApplicationFrame {
 	class myPaintContext implements PaintContext {
 
 		public myPaintContext(ColorModel cm_, AffineTransform xform_) { }
+		
+		/* (non-Javadoc)
+		 * @see java.awt.PaintContext#dispose()
+		 */
 		@Override
 		public void dispose() 
 		{
@@ -94,12 +115,18 @@ public class Chart extends ApplicationFrame {
 			
 		}
 
+		/* (non-Javadoc)
+		 * @see java.awt.PaintContext#getColorModel()
+		 */
 		@Override
 		public ColorModel getColorModel() 
 		{
 			return ColorModel.getRGBdefault();
 		}
 
+		/* (non-Javadoc)
+		 * @see java.awt.PaintContext#getRaster(int, int, int, int)
+		 */
 		@Override
 		public Raster getRaster(int x, int y, int w, int h) 
 		{

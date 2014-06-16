@@ -19,25 +19,43 @@ import javax.swing.filechooser.FileFilter;
 
 import mainPackage.Controller.Controller;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa odpowiadaj¹ca za za³o¿enia warstwy interfejsu graficznego w architekturze MVC.
+ */
 public class View extends JFrame {
 	
-	private Controller myController;
+	//TODO: Okienko "o programie"
 	
+	private Controller myController;
 	private JLabel title1 = new JLabel("Witaj!");
 	private JLabel title2 = new JLabel("Wybierz konto:");
 	private JButton userButton = new JButton("Uzytkownik");
 	private JButton adminButton = new JButton("Administrator");
+	private JButton aboutApp = new JButton("O programie");
 	
+	/** Referencja do menu uzytkownika. */
 	public UserMenuUser um;
+	
+	/** Referencja do menu administratora. */
 	public UserMenuAdmin am;
+	
+	/** Referencja do okna dialogowego. */
 	public SmallWindow window;
+	
+	/** Referencja do okna dodawania seansow. */
 	public SeanceCreationWindow crWindowSeance;
+	
+	/** Referencja do okna dodawania filmow. */
 	public FilmCreationWindow crWindowFilm;
 	
+	/** Referencja do okna wykresu kosztow. */
 	public Chart costChart;
 	
 	/**
-	 * Create the frame.
+	 * Tworzy nowy obiekt typu View spelniajacy zalozenia warstwy interfejsu graficznego architektury MVC.
+	 *
+	 * @param controller referencja do obiektu typu Controller, przetwarzajacej dane.
 	 */
 	public View(Controller controller) {
 		this.myController = controller;
@@ -50,6 +68,7 @@ public class View extends JFrame {
 		contentPane.add(title2);
 		contentPane.add(userButton);
 		contentPane.add(adminButton);
+		contentPane.add(aboutApp);
 		
 		contentPane.setLayout(null);
 		title1.setBounds(100, 10, 100, 50);
@@ -58,54 +77,109 @@ public class View extends JFrame {
 		title2.setFont(new Font("Courier New", 2, 20));
 		userButton.setBounds(65, 100, 150, 30);
 		adminButton.setBounds(65, 150, 150, 30);
+		aboutApp.setBounds(70, 190, 140, 30);
 		
 		this.add(contentPane);
 		this.setVisible(true);
 	}
 	
-	public void setController(Controller controller)
-	{
-		this.myController = controller;
-	}
-	
+	/**
+	 * Dodaje ActionListener do guzika menu uzytkownika.
+	 *
+	 * @param listenForUserButton ActionListener dodawany do guzika.
+	 */
 	public void addUserButtonListener(ActionListener listenForUserButton){
 		userButton.addActionListener(listenForUserButton);
 	}
 	
+	/**
+	 * Dodaje ActionListener do guzika menu administratora.
+	 *
+	 * @param listenForAdminButton ActionListener dodawany do guzika.
+	 */
 	public void addAdminButtonListener(ActionListener listenForAdminButton){
 		adminButton.addActionListener(listenForAdminButton);
 	}
 	
+	/**
+	 * Dodaje ActionListener do guzika menu z informacjami o autorach.
+	 * 
+	 * @param listenForAboutAppButton ActionListener dodawany do guzika.
+	 */
+	public void addAboutAppButtonListener(ActionListener listenForAboutAppButton){
+		aboutApp.addActionListener(listenForAboutAppButton);
+	}
+	
+	/**
+	 * Tworzy menu uzytkownika.
+	 */
 	public void createUserMenu(){
 		if(myController == null) um = new UserMenuUser(new ArrayList<String>());
 		else um = new UserMenuUser(myController.getFilmTitles());
 	}
 	
+	/**
+	 * Tworzy menu administratora.
+	 */
 	public void createAdminMenu(){
 		if(myController == null) am = new UserMenuAdmin(new ArrayList<String>());
 		else am = new UserMenuAdmin(myController.getFilmTitles());
 	}
 	
+	/**
+	 * Tworzy proste okienko z pojedynczym tekstem.
+	 *
+	 * @param txt tekst wyswietlany w oknie.
+	 */
 	public void createSmallWindow(String txt){
 		window = new SmallWindow(txt);
 	}
 	
+	/**
+	 * Tworzy proste okienko z dwoma tekstami.
+	 *
+	 * @param txtBig tekst napisany wiekszym rozmiarem czcionki.
+	 * @param txtSmall tekst napisany mniejszym rozmiarem czcionki.
+	 */
 	public void createSmallWindow(String txtBig, String txtSmall)
 	{
 		window = new SmallWindow(txtBig, txtSmall);
 	}
 	
+	/**
+	 * Tworzy proste okienko z tytulem i dwoma tekstami.
+	 * 
+	 * @param title tytul.
+	 * @param name1 tekst napisany mniejszym rozmiarem czcionki.
+	 * @param name2 tekst napisany mniejszym rozmiarem czcionki.
+	 */
+	public void createAboutAppWindow(String title, String name1, String name2) {
+		window = new SmallWindow(title, name1, name2);
+	}
+	
+	/**
+	 * Tworzy okno dodawania seansow.
+	 */
 	public void createCWSeance()
 	{
 		this.crWindowSeance = new SeanceCreationWindow(myController.getFilmTitles(), Controller.CBGetDays(), Controller.CBGetMonths(),
 												Controller.CBGetYears(), Controller.CBGetHours(), Controller.CBGetMinutes());
 	}
 	
+	/**
+	 * Tworzy okno dodawania filmow.
+	 */
 	public void createCVFilm()
 	{
 		this.crWindowFilm = new FilmCreationWindow();
 	}
 	
+	/**
+	 * Tworzy okno z wykresem kosztow.
+	 *
+	 * @param x wartosci na osi X
+	 * @param y wartosci na osi Y
+	 */
 	public void createCostChart(ArrayList<Number> x, ArrayList<Number> y)
 	{
 		try {
@@ -117,9 +191,10 @@ public class View extends JFrame {
 	}
 	
 	/**
-	 * Metoda tworzy okno do zapisu pliku
-	 * @param extension - rozszerzenie. Przyjmowane "txt" albo "xml"
-	 * @return zwraca œcie¿kê do pliku
+	 * Tworzy okno do zapisu pliku.
+	 *
+	 * @param extension rozszerzenie. Przyjmowane "txt" albo "xml"
+	 * @return Sciezke do pliku
 	 */
 	public String createSaveMenu(String extension)
 	{
@@ -172,9 +247,9 @@ public class View extends JFrame {
 	}
 	
 	/**
-	 * Metoda tworzy okno do odczytu pliku
-	 * @param extension - rozszerzenie. Rozszerzeniem jest XML
-	 * @return zwraca œcie¿kê do pliku
+	 * Tworzy okno do odczytu pliku.
+	 *
+	 * @return Sciezke do pliku
 	 */
 	public String createLoadMenu()
 	{
@@ -203,5 +278,15 @@ public class View extends JFrame {
 		{
 			return null;
 		}
+	}
+	
+	/**
+	 * Ustawia powiazanie powiazanie z klasa Controller.
+	 *
+	 * @param controller referencja do obiektu typu Controller, przetwarzajacej dane.
+	 */
+	public void setController(Controller controller)
+	{
+		this.myController = controller;
 	}
 }

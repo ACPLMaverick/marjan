@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package mainPackage.Controller;
 
 import java.text.DateFormat;
@@ -16,10 +19,11 @@ import mainPackage.Model.Seance;
 import mainPackage.Model.Ticket;
 import mainPackage.Model.TicketCollection;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
- * Klasa s³u¿y do konwersji kolekcji na macierze Objectów, co jest niezbêdne przy wrzucaniu danych do tabeli.
- * Odpowiada tak¿e za sortowanie i selekcjê danych po konkretnym parametrze.
+ * Klasa sluzy do konwersji kolekcji na macierze Object[][], co jest niezbedne przy wrzucaniu danych do tabeli.
+ * Odpowiada takze za sortowanie i selekcje danych po konkretnym parametrze.
  *
  */
 
@@ -29,15 +33,19 @@ import mainPackage.Model.TicketCollection;
  * BILETY: wybieramy: tytu³, data, cena
  */
 public class CostsSelectionController implements SelectionController {
-	
+
 	private CostCollection myCollection;
-	
 	private String paramType;
 	private Date paramDateMin;
 	private Date paramDateMax;
 	private double paramPriceMin;
 	private double paramPriceMax;
 	
+	/**
+	 * Tworzy nowy obiekt klasy CostsSelectionController.
+	 *
+	 * @param myRep przechowuje kolekcje kosztow.
+	 */
 	public CostsSelectionController(CostCollection myRep)
 	{
 		this.myCollection = myRep;
@@ -50,13 +58,14 @@ public class CostsSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @param myRep obiekt Repertoire
-	 * @param paramTitle ¿¹dany typ kosztu albo null
-	 * @param paramDateMin ¿¹dana data minimalna albo null
-	 * @param paramDateMax ¿¹dana data maksymalna albo null
-	 * @param paramPriceMin ¿¹dana cena minimalna albo 0
-	 * @param paramPriceMax ¿¹dana cena maksymalna albo 0
+	 * Tworzy nowy obiekt klasy CostsSelectionController z konkretnymi parametrami.
+	 *
+	 * @param myRep przechowuje kolekcje kosztow.
+	 * @param paramType okresla typ kosztow: BILET, SEANS lub LICENCJA.
+	 * @param paramDateMin zadana data minimalna albo null.
+	 * @param paramDateMax zadana data maksymalna albo null.
+	 * @param paramPriceMin zadana cena minimalna albo 0.
+	 * @param paramPriceMax zadana cena maksymalna albo 0.
 	 */
 	public CostsSelectionController(CostCollection myRep, String paramType, Date paramDateMin,
 										Date paramDateMax, double paramPriceMin, double paramPriceMax)
@@ -87,9 +96,9 @@ public class CostsSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @return zwraca listê kosztów w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
-	 * @param type - zwraca tylko te obiekty, które maj¹ odpowiedni typ
+	 * Przeksztalca kolekcje kosztow w macierz Object[][].
+	 *
+	 * @return Liste kosztow w postaci odpowiedniej macierzy Object[][], do wrzucenia w tabele.
 	 */
 	
 	@Override
@@ -129,13 +138,13 @@ public class CostsSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @return zwraca kolekcjê w formacie odpowiednim do umieszczenia na wykresie
-	 * X - czas (long)
-	 * Y - cost ca³kowity z danego dnia)
+	 * Przeksztalca kolekcje kosztow w dane mozliwe do umieszczenia na wykresie.
+	 *
+	 * @return Kolekcje w formacie odpowiednim do umieszczenia na wykresie.
 	 */
 	public ArrayList<ArrayList<Number>> getCollectionAsChartData()
 	{
+		//X - czas (long); Y - cost ca³kowity z danego dnia)
 		ArrayList<ArrayList<Number>> retData = new ArrayList<ArrayList<Number>>();
 		ArrayList<Number> x = new ArrayList<Number>();
 		ArrayList<Number> y = new ArrayList<Number>();
@@ -191,9 +200,10 @@ public class CostsSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @return zwraca parametry kosztu w tablicy Object[],
-	 * do tabeli
+	 * Przeksztalca koszt w tablice Object[].
+	 *
+	 * @param object Obiekt rzutowany na Cost w celu zwrocenia wartosci jego pol w postaci tablicy Object[].
+	 * @return Parametry kosztu w postaci tablicy Object[].
 	 */
 	@Override
 	public Object[] getElementAsObjects(Object object)

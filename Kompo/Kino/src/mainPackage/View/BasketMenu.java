@@ -13,7 +13,12 @@ import javax.swing.ListSelectionModel;
 
 import mainPackage.Model.TicketCollection;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa reprezentujaca interfejs graficzny koszyka zakupow i rezerwacji biletow dla uzytkownika lub administratora.
+ */
 public class BasketMenu extends JFrame {
+	
 	private String[] columnNames = {"Tytu³", "Data", "Cena"};
 	private Object[][] content = {{"A", "B", "C"}};
 	private Object[][] bookedContent = {{"A", "B", "C"}};
@@ -32,6 +37,9 @@ public class BasketMenu extends JFrame {
 	private ListSelectionModel boughtSelectionModel = boughtTable.getSelectionModel();
 	private ListSelectionModel bookedSelectionModel = bookedTable.getSelectionModel();
 	
+	/**
+	 * Tworzy okno koszyka.
+	 */
 	public BasketMenu(){
 		
 		basketMenu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -61,46 +69,101 @@ public class BasketMenu extends JFrame {
 		basketMenu.setVisible(true);
 	}
 	
+	/**
+	 * Dodaje ActionListener do guzika usuwania kupionego biletu.
+	 *
+	 * @param listenForDeleteTicketButton ActionListener dodawany do guzika.
+	 */
 	public void addDeleteTicketButtonListener(ActionListener listenForDeleteTicketButton){
 		boughtDeleteButton.addActionListener(listenForDeleteTicketButton);
 	}
 	
+	/**
+	 * Dodaje ActionListener do guzika usuwania zarezerwowanego biletu.
+	 *
+	 * @param listenForDeleteTicketButton ActionListener dodawany do guzika.
+	 */
 	public void addDeleteReservationButtonListener(ActionListener listenForDeleteTicketButton){
 		bookedDeleteButton.addActionListener(listenForDeleteTicketButton);
 	}
 	
+	/**
+	 * Zwraca element interfejsu - ramke JFrame.
+	 *
+	 * @return Ramke JFrame.
+	 */
 	public JFrame getBasketFrame(){
 		return basketMenu;
 	}
 	
+	/**
+	 * Zwraca element interfejsu - tabele przeznaczona na kupione bilety.
+	 *
+	 * @return Tabele JTable biletow.
+	 */
 	public JTable getTicketsTable(){
 		return boughtTable;
 	}
 	
+	/**
+	 * Zwraca element interfejsu - tabele przeznaczona na zarezerwowane bilety.
+	 *
+	 * @return Tabele JTable zarezerwowanych biletow.
+	 */
 	public JTable getBookedTable(){
 		return bookedTable;
 	}
 	
+	/**
+	 * Zwraca element interfejsu - guzik przeznaczony do usuwania z tablicy kupionych biletow.
+	 *
+	 * @return Guzik JButton do usuwania kupionych biletow.
+	 */
 	public JButton getBoughtDeleteButton(){
 		return boughtDeleteButton;
 	}
 	
+	/**
+	 * Zwraca element interfejsu - guzik przeznaczony do usuwania z tablicy zarezerwowanych biletow.
+	 *
+	 * @return Guzik JButton do usuwania zarezerwowanych biletow.
+	 */
 	public JButton getBookedDeleteButton(){
 		return bookedDeleteButton;
 	}
 	
+	/**
+	 * Zwraca element interfejsu - ListSelectionModel tablicy kupionych biletow.
+	 *
+	 * @return ListSelectionModel tablicy kupionych biletow.
+	 */
 	public ListSelectionModel getBoughtTicketsListSelection(){
 		return boughtSelectionModel;
 	}
 	
+	/**
+	 * Zwraca element interfejsu - ListSelectionModel tablicy zarezerwowanych biletow.
+	 *
+	 * @return ListSelectionModel tablicy zarezerwowanych biletow.
+	 */
 	public ListSelectionModel getBookedTicketsListSelection(){
 		return bookedSelectionModel;
 	}
 	
+	/**
+	 * Ustawia zawartosc tabeli kupionych biletow.
+	 *
+	 * @param tickets macierz Object[][] kupionych biletow.
+	 */
 	public void setBoughtTableContent(Object[][] tickets){
 		myTableModel.setContent(tickets);
 	}
 	
+	/**
+	 * Ustawia zawartosc tabeli zarezerwowanych biletow.
+	 *
+	 * @param books macierz Object[][] kupionych biletow.
+	 */
 	public void setBookedTableContent(Object[][] books){
 		bookedTableModel.setContent(books);
 	}

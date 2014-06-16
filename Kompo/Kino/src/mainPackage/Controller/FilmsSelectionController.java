@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package mainPackage.Controller;
 
 import java.text.DateFormat;
@@ -15,10 +18,11 @@ import mainPackage.Model.Seance;
 import mainPackage.Model.Ticket;
 import mainPackage.Model.TicketCollection;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
- * Klasa s³u¿y do konwersji kolekcji filmów na macierze Objectów, co jest niezbêdne przy wrzucaniu danych do tabeli.
- * Ta klasa nie obs³uguje selektywnego wybierania obiektów.
+ * Klasa sluzy do konwersji kolekcji filmow na macierze Object[][], co jest niezbedne przy wrzucaniu danych do tabeli.
+ * Ta klasa nie obs³uguje selektywnego wybierania obiektow.
  *
  */
 
@@ -28,18 +32,23 @@ import mainPackage.Model.TicketCollection;
  * BILETY: wybieramy: tytu³, data, cena
  */
 public class FilmsSelectionController implements SelectionController {
-	
+
 	private ArrayList<Film> myCollection;
 	
+	/**
+	 * Tworzy nowy obiekt klasy FilmsSelectionController.
+	 *
+	 * @param myFilms kolekcja filmow.
+	 */
 	public FilmsSelectionController(ArrayList<Film> myFilms)
 	{
 		this.myCollection = myFilms;
 	}
 	
 	/**
-	 * 
-	 * @return zwraca listê kosztów w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
-	 * @param type - zwraca tylko te obiekty, które maj¹ odpowiedni typ
+	 * Przeksztalca kolekcje filmow w macierz Object[][].
+	 *
+	 * @return Liste filmow w postaci odpowiedniej macierzy Object[][], do wrzucenia w tabele.
 	 */
 
 	public Object[][] getCollectionAsObjects()
@@ -65,6 +74,9 @@ public class FilmsSelectionController implements SelectionController {
 		return myArray;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mainPackage.Controller.SelectionController#getCollectionAsChartData()
+	 */
 	@Override
 	public ArrayList<ArrayList<Number>> getCollectionAsChartData() {
 		// TODO Auto-generated method stub
@@ -72,9 +84,10 @@ public class FilmsSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @return zwraca parametry seansu w tablicy Object[],
-	 * do tabeli
+	 * Przeksztalca film w tablice Object[].
+	 *
+	 * @param object Obiekt rzutowany na Film w celu zwrocenia wartosci jego pol w postaci tablicy Object[].
+	 * @return Parametry filmu w postaci tablicy Object[].
 	 */
 	public Object[] getElementAsObjects(Object object)
 	{

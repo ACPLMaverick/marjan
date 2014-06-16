@@ -7,23 +7,28 @@ import java.util.ArrayList;
 
 import com.sun.*;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
- * Klasa odpowiada za komunikacjê z baz¹ danych.
+ * Klasa odpowiada za komunikacje z baza danych.
  *
  */
 public class DBController {
-	
+
 	private Connection connection;
 	
+	/**
+	 * Tworzy nowy obiekt typu DBController.
+	 */
 	public DBController()
 	{
 		this.connection = null;
 	}
 	
 	/**
-	 * Metoda s³u¿y do pobrania ca³ego repertuaru z bazy danych. Zwraca obiekt typu Repertoire
+	 * Pobiera caly repertuar z bazy danych.
 	 *
+	 * @return caly repertuar.
 	 */
 	public ArrayList<Seance> getWholeRepertoire()
 	{
@@ -84,8 +89,9 @@ public class DBController {
 	}
 	
 	/**
-	 * Metoda s³u¿y do dodawania nowego seansu do bazy danych.
+	 * Dodaje nowy seans do bazy danych.
 	 *
+	 * @param seance seans.
 	 */
 	public void addSeance(Seance seance)
 	{
@@ -117,8 +123,10 @@ public class DBController {
 	}
 	
 	/**
-	 * Metoda s³u¿y do aktualizacji istniej¹cego seansu w bazie danych. Wyszukiwanie po dacie
+	 * Aktualizuje istniej¹cy seans w bazie danych. Wyszukiwanie po dacie.
 	 *
+	 * @param seance seans do zaktualizowania.
+	 * @param dateTime data (kryterium wyszukiwania).
 	 */
 	public void updateSeance(Seance seance, String dateTime)
 	{
@@ -151,8 +159,9 @@ public class DBController {
 	}
 	
 	/**
-	 * Metoda s³u¿y do usuwania seansu z bazy danych. Wyszukiwanie po dacie.
+	 * Usuwa seans z bazy danych. Wyszukiwanie po dacie.
 	 *
+	 * @param dateTime data (kryterium wyszukiwania).
 	 */
 	public void deleteSeance(String dateTime)
 	{
@@ -181,8 +190,9 @@ public class DBController {
 	}
 	
 	/**
-	 * Metoda s³u¿y do dodawania nowego filmu do bazy danych.
-	 * @param filmData dane tablicy musi odpowiadaæ kolumnom tabeli: Title, Genre, TicketPrice, LicensePrice
+	 * Dodaje nowy film do bazy danych.
+	 *
+	 * @param film film.
 	 */
 	public void addFilm(Film film)
 	{
@@ -211,9 +221,10 @@ public class DBController {
 	}
 	
 	/**
-	 * Metoda s³u¿y do aktualizacji istniej¹cego filmu w bazie danych.
-	 * @param filmData dane tablicy musi odpowiadaæ kolumnom tabeli: Title, Genre, TicketPrice, LicensePrice
-	 * @param filmName po nim wyszukujemy zadany film do modyfikacji
+	 * Aktualizuje istniej¹cy film w bazie danych. Wyszukiwanie po tytule filmu.
+	 *
+	 * @param film film.
+	 * @param filmName tytul filmu (kryterium wyszukiwania).
 	 */
 	public void updateFilm(Film film, String filmName)
 	{
@@ -243,8 +254,9 @@ public class DBController {
 	}
 	
 	/**
-	 * Metoda s³u¿y do usuwania filmu z bazy danych.
-	 * @param filmName po nim wyszukujemy zadany film do usuniêcia
+	 * Usuwa film z bazy danych. Wyszukiwanie po tytule filmu.
+	 * 
+	 * @param filmName tytul filmu (kryterium wyszukiwania).
 	 */
 	public void deleteFilm(String filmName)
 	{
@@ -273,8 +285,10 @@ public class DBController {
 	}
 	
 	/**
-	 * Metoda s³u¿y do pobierania filmu z bazy danych.
-	 * @param filmName po nim wyszukujemy zadany film do usuniêcia
+	 * Pobiera film z bazy danych o konkretnym tytule.
+	 *
+	 * @param filmName tytul filmu (kryterium wyszukiwania).
+	 * @return Film o konkretnym tytule.
 	 */
 	public Film getFilm(String filmName)
 	{
@@ -317,8 +331,9 @@ public class DBController {
 	}
 	
 	/**
-	 * Metoda s³u¿y do pobrania wszystkich filmów z bazy danych
-	 * 
+	 * Pobiera wszystkie filmy z bazy danych.
+	 *
+	 * @return Kolekcje filmow.
 	 */
 	public ArrayList<Film> getAllFilms()
 	{

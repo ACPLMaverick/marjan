@@ -11,8 +11,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa reprezentujaca interfejs graficzny okna dodawania seansow.
+ */
 @SuppressWarnings("serial")
 public class SeanceCreationWindow extends JFrame {
+	
 	private JPanel windowPane = new JPanel();
 	private JLabel userTitle;
 	private JLabel lFilm;
@@ -26,6 +31,16 @@ public class SeanceCreationWindow extends JFrame {
 	private JButton bOK;
 	private JButton bCancel;
 	
+	/**
+	 * Tworzy nowe okno dodawania seansow z okreslonymi parametrami.
+	 *
+	 * @param filmTitles lista tytulow filmow.
+	 * @param dateDays tablica dni.
+	 * @param dateMonths tablica miesiecy.
+	 * @param dateYears tablica lat.
+	 * @param dateHours tablica godzin.
+	 * @param dateMinutes tablica minut.
+	 */
 	public SeanceCreationWindow(ArrayList<String> filmTitles, String[] dateDays, String[] dateMonths, String[] dateYears, String[] dateHours, String[] dateMinutes)
 	{
 		userTitle = new JLabel("Nowy seans");
@@ -72,6 +87,22 @@ public class SeanceCreationWindow extends JFrame {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Dodaje ActionListener do guzikow akceptowania i anulowania.
+	 *
+	 * @param col tabela ActionListener[] ktore dodawane sa do guzikow akceptowania i anulowania.
+	 */
+	public void addActionListenersToButtons(ActionListener[] col)
+	{
+		this.bOK.addActionListener(col[0]);
+		this.bCancel.addActionListener(col[1]);
+	}
+	
+	/**
+	 * Zwraca cala zawartosc podana przez administratora.
+	 *
+	 * @return Cala zawartosc pol JComboBox.
+	 */
 	public ArrayList<JComboBox> getAllComboBoxes()
 	{
 		ArrayList<JComboBox> list = new ArrayList<JComboBox>();
@@ -82,11 +113,5 @@ public class SeanceCreationWindow extends JFrame {
 		list.add(cbDateHour);
 		list.add(cbDateMinute);
 		return list;
-	}
-	
-	public void addActionListenersToButtons(ActionListener[] col)
-	{
-		this.bOK.addActionListener(col[0]);
-		this.bCancel.addActionListener(col[1]);
 	}
 }

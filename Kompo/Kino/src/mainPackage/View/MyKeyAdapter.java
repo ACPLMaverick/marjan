@@ -4,7 +4,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa reprezentuje skroty klawiszowe wykorzystywane przy podawaniu wartosci.
+ */
 public class MyKeyAdapter extends KeyAdapter {
+	
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyAdapter#keyTyped(java.awt.event.KeyEvent)
+	 */
 	public void keyTyped(KeyEvent e)
 	{
 		char myChar = e.getKeyChar();

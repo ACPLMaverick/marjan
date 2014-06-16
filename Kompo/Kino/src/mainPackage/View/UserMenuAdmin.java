@@ -18,13 +18,16 @@ import javax.swing.table.TableColumn;
 import mainPackage.Controller.Controller;
 import mainPackage.Controller.Main;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa dziedziczaca po UserMenu reprezentuje interfejs graficzny menu administratora.
+ */
 public class UserMenuAdmin extends UserMenu {
+	
 	private JPanel costsPane;
 	private JPanel filmsPane;
-	
 	private JButton addSeanceButton;
 	private JButton removeSeanceButton;
-	
 	private JButton loadRep = new JButton("Wczytaj z XML");
 	private JButton saveRep = new JButton("Zapisz do XML");
 	
@@ -34,9 +37,7 @@ public class UserMenuAdmin extends UserMenu {
 	protected JTable costTable;
 	protected ListSelectionModel costSelectionModel;
 	protected JScrollPane costScrollPane;
-	
 	protected JButton chartButton = new JButton("Poka¿ na wykresie");
-	
 	protected String[] costTypes = {"WSZYSTKIE", "LICENCJA", "SEANS", "BILET"};
 	protected JComboBox costType = new JComboBox(costTypes);
 	protected JComboBox costdayMin = new JComboBox(Controller.CBGetDays());
@@ -51,9 +52,7 @@ public class UserMenuAdmin extends UserMenu {
 	protected JLabel costdateTo = new JLabel("DO:");
 	protected JLabel costpriceFrom = new JLabel("CENA OD:");
 	protected JLabel costpriceTo = new JLabel("CENA DO:");
-	
 	protected JButton deleteButton = new JButton("Usuñ odfiltrowane");
-	
 	protected JButton saveCostsButton = new JButton("Zapisz do pliku");
 	
 	////////////////////////////////////////////////
@@ -62,10 +61,14 @@ public class UserMenuAdmin extends UserMenu {
 	protected JTable filmsTable;
 	protected ListSelectionModel filmsSelectionModel;
 	protected JScrollPane filmsScrollPane;
-	
 	protected JButton addFilmButton = new JButton("Dodaj film");
 	protected JButton deleteFilmButton = new JButton("Usuñ film");
 	
+	/**
+	 * Tworzy nowe okno menu administratora.
+	 *
+	 * @param filmTitles lista tytulow filmow dla konstruktora klasy bazowej.
+	 */
 	public UserMenuAdmin(ArrayList<String> filmTitles)
 	{
 		super(filmTitles);
@@ -169,13 +172,12 @@ public class UserMenuAdmin extends UserMenu {
 		userPane.setVisible(true);
 	}
 	
-	public MyTableModel getCostsTableModel() { return this.costTableModel; }
-	public MyTableModel getFilmsTableModel() { return this.filmsTableModel; }
-	public ListSelectionModel getCostsListSelection() { return costSelectionModel; }
-	public ListSelectionModel getFilmsListSelection() { return filmsSelectionModel; }
-	public JTable getCostsTable(){ return costTable; }
-	public JTable getFilmsTable(){ return filmsTable; }
-
+	/**
+	 * Dodaje ActionListener do guzikow.
+	 *
+	 * @param col tabela ActionListener[] ktore dodawane sa do guzikow. 
+	 * Co najmniej 9-elementowa.
+	 */
 	public void addActionListenersToButtons(ActionListener[] col)
 	{
 		this.addSeanceButton.addActionListener(col[0]);
@@ -189,8 +191,55 @@ public class UserMenuAdmin extends UserMenu {
 		this.deleteFilmButton.addActionListener(col[8]);
 	}
 	
+	/**
+	 * Zwraca MyTableModel zawierajacy dane o kosztach.
+	 *
+	 * @return Dane o kosztach z MyTableModel.
+	 */
+	public MyTableModel getCostsTableModel() { return this.costTableModel; }
+	
+	/**
+	 * Zwraca MyTableModel zawierajacy dane o filmach.
+	 *
+	 * @return Dane o filmach z MyTableModel.
+	 */
+	public MyTableModel getFilmsTableModel() { return this.filmsTableModel; }
+	
+	/**
+	 * Zwraca ListSelectionModel kosztow.
+	 *
+	 * @return ListSelectionModel kosztow.
+	 */
+	public ListSelectionModel getCostsListSelection() { return costSelectionModel; }
+	
+	/**
+	 * Zwraca ListSelectionModel filmow.
+	 *
+	 * @return ListSelectionModel filmow.
+	 */
+	public ListSelectionModel getFilmsListSelection() { return filmsSelectionModel; }
+	
+	/**
+	 * Zwraca tabele kosztow.
+	 *
+	 * @return Tabele kosztow.
+	 */
+	public JTable getCostsTable(){ return costTable; }
+	
+	/**
+	 * Zwraca tabele filmow.
+	 *
+	 * @return Tabele filmow.
+	 */
+	public JTable getFilmsTable(){ return filmsTable; }
+	
 	///////////////////////////////////////////////////////////////////////////
 	
+	/**
+	* Zwraca wszystkie elementy interfejsu - JComboBox.
+ 	*
+ 	* @return Wszystkie JComboBox.
+	 */
 	public ArrayList<JComboBox> getAllComboBoxesOfCost()
 	{
 		ArrayList<JComboBox> list = new ArrayList<JComboBox>();
@@ -204,6 +253,11 @@ public class UserMenuAdmin extends UserMenu {
 		return list;
 	}
 	
+	/**
+	 * Zwraca cala zawartosc filtrow podana przez uzytkownka lub administratora.
+	 *
+	 * @return Cala zawartosc filtrow.
+	 */
 	public ArrayList<String> getAllFilterContentOfCost()
 	{
 		ArrayList<String> list = new ArrayList<String>();
@@ -221,16 +275,31 @@ public class UserMenuAdmin extends UserMenu {
 		return list;
 	}
 	
+	/**
+	 * Zwraca wartosc z filtru minimalnego kosztu.
+	 *
+	 * @return Wartosc z filtru minimalnego kosztu.
+	 */
 	public JTextField getPriceMinTextFieldOfCost()
 	{
 		return this.costpriceMin;
 	}
 	
+	/**
+	 * Zwraca wartosc z filtru maksymalnego kosztu.
+	 *
+	 * @return Wartosc z filtru maksymalnego kosztu.
+	 */
 	public JTextField getPriceMaxTextFieldOfCost()
 	{
 		return this.costpriceMax;
 	}
 	
+	/**
+	 * Ustawia zawartosc tabeli kosztow.
+	 *
+	 * @param newContent nowa zawartosc tabeli kosztow.
+	 */
 	public void setTableContentOfCost(Object[][] newContent) 
 	{ 
 		costTableModel.setContent(newContent);
@@ -240,6 +309,11 @@ public class UserMenuAdmin extends UserMenu {
 	////////////////////////////////////////////////////////////////////////
 	
 	
+	/**
+	 * Ustawia zawartosc tabeli filmow.
+	 *
+	 * @param newContent nowa zawartosc tabeli filmow.
+	 */
 	public void setTableContentOfFilms(Object[][] newContent) 
 	{ 
 		filmsTableModel.setContent(newContent);

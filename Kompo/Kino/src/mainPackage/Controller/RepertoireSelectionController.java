@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package mainPackage.Controller;
 
 import java.text.DateFormat;
@@ -14,10 +17,11 @@ import mainPackage.Model.Seance;
 import mainPackage.Model.Ticket;
 import mainPackage.Model.TicketCollection;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
- * Klasa s³u¿y do konwersji kolekcji na macierze Objectów, co jest niezbêdne przy wrzucaniu danych do tabeli.
- * Odpowiada tak¿e za sortowanie i selekcjê danych po konkretnym parametrze.
+ * Klasa sluzy do konwersji kolekcji na macierze Object[][], co jest niezbedne przy wrzucaniu danych do tabeli.
+ * Odpowiada takze za sortowanie i selekcje danych po konkretnym parametrze.
  *
  */
 
@@ -27,9 +31,8 @@ import mainPackage.Model.TicketCollection;
  * BILETY: wybieramy: tytu³, data, cena
  */
 public class RepertoireSelectionController implements SelectionController {
-	
+
 	private Repertoire myCollection;
-	
 	private String paramTitle;
 	private String paramGenre;
 	private Date paramDateMin;
@@ -37,6 +40,11 @@ public class RepertoireSelectionController implements SelectionController {
 	private double paramPriceMin;
 	private double paramPriceMax;
 	
+	/**
+	 * Tworzy nowy obiekt klasy RepertoireSelectionController.
+	 *
+	 * @param myRep przechowuje repertuar.
+	 */
 	public RepertoireSelectionController(Repertoire myRep)
 	{
 		this.myCollection = myRep;
@@ -50,14 +58,15 @@ public class RepertoireSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @param myRep obiekt Repertoire
-	 * @param paramTitle ¿¹dany tytu³ albo null
-	 * @param paramGenre ¿¹dany gatunek albo null
-	 * @param paramDateMin ¿¹dana data minimalna albo null
-	 * @param paramDateMax ¿¹dana data maksymalna albo null
-	 * @param paramPriceMin ¿¹dana cena minimalna albo 0
-	 * @param paramPriceMax ¿¹dana cena maksymalna albo 0
+	 * Tworzy nowy obiekt klasy RepertoireSelectionController z konkretnymi parametrami.
+	 *
+	 * @param myRep przechowuje repertuar.
+	 * @param paramTitle zadany tytul albo null.
+	 * @param paramGenre zadany gatunek albo null.
+	 * @param paramDateMin zadana data minimalna albo null.
+	 * @param paramDateMax zadana data maksymalna albo null.
+	 * @param paramPriceMin zadana cena minimalna albo 0.
+	 * @param paramPriceMax zadana cena maksymalna albo 0.
 	 */
 	public RepertoireSelectionController(Repertoire myRep, String paramTitle, String paramGenre, Date paramDateMin,
 										Date paramDateMax, double paramPriceMin, double paramPriceMax)
@@ -91,9 +100,9 @@ public class RepertoireSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @return zwraca listê kosztów w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
-	 * @param type - zwraca tylko te obiekty, które maj¹ odpowiedni typ
+	 * Przeksztalca kolekcje seansow w macierz Object[][].
+	 *
+	 * @return Liste seansow w postaci odpowiedniej macierzy Object[][], do wrzucenia w tabele.
 	 */
 
 	public Object[][] getCollectionAsObjects()
@@ -135,6 +144,9 @@ public class RepertoireSelectionController implements SelectionController {
 		return myArray;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mainPackage.Controller.SelectionController#getCollectionAsChartData()
+	 */
 	@Override
 	public ArrayList<ArrayList<Number>> getCollectionAsChartData() {
 		// TODO Auto-generated method stub
@@ -142,9 +154,10 @@ public class RepertoireSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @return zwraca parametry seansu w tablicy Object[],
-	 * do tabeli
+	 * Przeksztalca seans w tablice Object[].
+	 *
+	 * @param object Obiekt rzutowany na Seance w celu zwrocenia wartosci jego pol w postaci tablicy Object[].
+	 * @return Parametry seansu w postaci tablicy Object[].
 	 */
 	public Object[] getElementAsObjects(Object object)
 	{

@@ -6,11 +6,19 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa reprezentujaca interfejs graficzny ekranu administratora.
+ */
 public class AdminMenu {
+	
 	JFrame adminMenu = new JFrame();
 	JPanel adminPane = new JPanel();
 	JLabel adminTitle = new JLabel("Witaj w koncie administratora!");
 	
+	/**
+	 * Tworzy nowe okno ekranu administratora.
+	 */
 	public AdminMenu(){
 		adminMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		adminMenu.setSize(380,280);

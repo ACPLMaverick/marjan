@@ -4,10 +4,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
- * Klasa reprezentuje jeden koszt, przechowuje konkretn¹ kwotê, obiekt, którego dotyczy koszt i datê poniesienia tego kosztu.
- *
+ * Klasa reprezentuje jeden koszt, przechowuje konkretna kwote, obiekt, ktorego dotyczy koszt date poniesienia tego kosztu.
+ * oraz rodzaj kosztu: BILET, SEANS lub LICENCJA
+ * 
  */
 public class Cost implements Comparable{
 	
@@ -16,8 +18,14 @@ public class Cost implements Comparable{
 	private Date date;
 	private String type;
 	
+	/** Stala okreslajaca ilosc pol jakie opisuja koszt w interfejsie. */
 	public static final int fieldsCount = 3;
 	
+	/**
+	 * Tworzy nowy obiekt typu Cost.
+	 *
+	 * @param myObject obiekt, ktory decyduje o typie kosztu. Moze to byc bilet, seans albo film.
+	 */
 	@SuppressWarnings("deprecation")
 	public Cost(Object myObject)
 	{
@@ -52,12 +60,44 @@ public class Cost implements Comparable{
 		}
 	}
 	
+	/**
+	 * Zwraca cene.
+	 *
+	 * @return cene.
+	 */
 	public double getPrice() { return price; }
+	
+	/**
+	 * Zwraca bilet, seans lub film, w zaleznosci od typu kosztu.
+	 *
+	 * @return obiekt.
+	 */
 	public Object getObject() { return myObject; }
+	
+	/**
+	 * Zwraca date zaksiegowania kosztu.
+	 *
+	 * @return date.
+	 */
 	public Date getDate() { return date; }
+	
+	/**
+	 * Zwraca cene.
+	 *
+	 * @return cene typu String.
+	 */
 	public String getPriceAsString() { return String.format("%.2f", this.price) + " z³"; }
+	
+	/**
+	 * Zwraca typ kosztu.
+	 *
+	 * @return typ: BILET, SEANS lub LICENCJA.
+	 */
 	public String getType() { return type; }
 
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(Object arg0) {
 		Cost secondCost = (Cost)arg0;
@@ -65,6 +105,9 @@ public class Cost implements Comparable{
 		return this.date.compareTo(newDate);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString()
 	{

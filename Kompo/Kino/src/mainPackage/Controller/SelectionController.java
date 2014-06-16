@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package mainPackage.Controller;
 
 import java.text.DateFormat;
@@ -14,10 +17,11 @@ import mainPackage.Model.Seance;
 import mainPackage.Model.Ticket;
 import mainPackage.Model.TicketCollection;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
- * Klasa s³u¿y do konwersji kolekcji na macierze Objectów, co jest niezbêdne przy wrzucaniu danych do tabeli.
- * Odpowiada tak¿e za sortowanie i selekcjê danych po konkretnym parametrze.
+ * Klasa sluzy do konwersji kolekcji na macierze Object[][], co jest niezbedne przy wrzucaniu danych do tabeli.
+ * Odpowiada takze za sortowanie i selekcje danych po konkretnym parametrze.
  *
  */
 
@@ -30,21 +34,24 @@ public interface SelectionController {
 	
 	
 	/**
-	 * 
-	 * @return zwraca kolekcjê w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
+	 * Przeksztalca kolekcje w macierz Object[][].
+	 *
+	 * @return Liste w postaci odpowiedniej macierzy Object[][], do wrzucenia w tabele.
 	 */
 	public abstract Object[][] getCollectionAsObjects();
 	
 	/**
-	 * 
-	 * @return zwraca kolekcjê w formacie odpowiednim do umieszczenia na wykresie
+	 * Przeksztalca kolekcje w dane mozliwe do umieszczenia na wykresie.
+	 *
+	 * @return Kolekcje w formacie odpowiednim do umieszczenia na wykresie.
 	 */
 	public abstract ArrayList<ArrayList<Number>> getCollectionAsChartData();
 	
 	/**
-	 * 
-	 * @return zwraca listê elementów w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
-	 * @param type - zwraca tylko te obiekty, które maj¹ odpowiedni typ
+	 * Przeksztalca obiekt w tablice Object[].
+	 *
+	 * @param element Obiekt rzutowany na inny typ w celu zwrocenia wartosci jego pol w postaci tablicy Object[].
+	 * @return Parametry obiektu w postaci tablicy Object[].
 	 */
 	public abstract Object[] getElementAsObjects(Object element);
 }

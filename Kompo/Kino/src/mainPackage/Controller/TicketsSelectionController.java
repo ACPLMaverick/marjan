@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package mainPackage.Controller;
 
 import java.text.DateFormat;
@@ -8,16 +11,26 @@ import java.util.Date;
 import mainPackage.Model.Ticket;
 import mainPackage.Model.TicketCollection;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa sluzy do konwersji kolekcji na macierze Object[][], co jest niezbedne przy wrzucaniu danych do tabeli.
+ * Odpowiada takze za sortowanie i selekcje danych po konkretnym parametrze.
+ * 
+ */
 public class TicketsSelectionController implements SelectionController {
 
 	private TicketCollection myCollection;
-	
 	private String paramTitle;
 	private Date paramDateMin;
 	private Date paramDateMax;
 	private double paramPriceMin;
 	private double paramPriceMax;
 	
+	/**
+	 * Tworzy nowy obiekt klasy TicketsSelectionController.
+	 *
+	 * @param myRep przechowuje kolekcje biletow.
+	 */
 	public TicketsSelectionController(TicketCollection myRep)
 	{
 		this.myCollection = myRep;
@@ -30,13 +43,14 @@ public class TicketsSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @param myRep obiekt Repertoire
-	 * @param paramTitle ¿¹dany typ kosztu albo null
-	 * @param paramDateMin ¿¹dana data minimalna albo null
-	 * @param paramDateMax ¿¹dana data maksymalna albo null
-	 * @param paramPriceMin ¿¹dana cena minimalna albo 0
-	 * @param paramPriceMax ¿¹dana cena maksymalna albo 0
+	 * Tworzy nowy obiekt klasy TicketsSelectionController z konkretnymi parametrami.
+	 *
+	 * @param myRep przechowuje kolekcje biletow.
+	 * @param paramTitle zadany typ kosztu albo null.
+	 * @param paramDateMin zadana data minimalna albo null.
+	 * @param paramDateMax zadana data maksymalna albo null.
+	 * @param paramPriceMin zadana cena minimalna albo 0.
+	 * @param paramPriceMax zadana cena maksymalna albo 0.
 	 */
 	public TicketsSelectionController(TicketCollection myRep, String paramTitle, Date paramDateMin,
 										Date paramDateMax, double paramPriceMin, double paramPriceMax)
@@ -67,9 +81,9 @@ public class TicketsSelectionController implements SelectionController {
 	}
 	
 	/**
-	 * 
-	 * @return zwraca listê kosztów w postaci odpowiedniej macierzy Object'ów, do wrzucenia w tabelê
-	 * @param Title - zwraca tylko te obiekty, które maj¹ odpowiedni typ
+	 * Przeksztalca kolekcje biletow w macierz Object[][].
+	 *
+	 * @return Liste biletow w postaci odpowiedniej macierzy Object[][], do wrzucenia w tabele.
 	 */
 	
 	@Override
@@ -108,6 +122,9 @@ public class TicketsSelectionController implements SelectionController {
 		return myArray;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mainPackage.Controller.SelectionController#getCollectionAsChartData()
+	 */
 	@Override
 	public ArrayList<ArrayList<Number>> getCollectionAsChartData() {
 		// TODO Auto-generated method stub
@@ -116,9 +133,10 @@ public class TicketsSelectionController implements SelectionController {
 	
 	
 	/**
-	 * 
-	 * @return zwraca parametry kosztu w tablicy Object[],
-	 * do tabeli
+	 * Przeksztalca bilet w tablice Object[].
+	 *
+	 * @param object Obiekt rzutowany na Ticket w celu zwrocenia wartosci jego pol w postaci tablicy Object[].
+	 * @return Parametry seansu w postaci tablicy Object[].
 	 */
 	@Override
 	public Object[] getElementAsObjects(Object object)

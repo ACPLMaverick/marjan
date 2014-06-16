@@ -11,8 +11,13 @@ import javax.swing.JTextArea;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Klasa reprezentujaca interfejs graficzny menu zakupu biletow dla uzytkownika lub administratora.
+ */
 public class BuyTicketMenu extends TicketMenu {
-	private String[] tickets = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}; //na sztywno
+	
+	private String[] tickets = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 	private double ticketPrice;
 	private SpinnerListModel ticketModel = new SpinnerListModel(tickets);
 	private JSpinner spinner = new JSpinner(ticketModel);
@@ -21,6 +26,9 @@ public class BuyTicketMenu extends TicketMenu {
 	private JLabel ticketsSum = new JLabel("Suma:");
 	private JButton buyButton = new JButton("Kup");
 	
+	/**
+	 * Tworzy okno menu zakupu biletow.
+	 */
 	public BuyTicketMenu(){
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(300,280);
@@ -45,6 +53,49 @@ public class BuyTicketMenu extends TicketMenu {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Dodaje ActionListener do guzika zakupu biletu.
+	 *
+	 * @param buyTicketButtonListener ActionListener dodawany do guzika.
+	 */
+	public void addBuyButtonListener(ActionListener buyTicketButtonListener){
+		buyButton.addActionListener(buyTicketButtonListener);
+	}
+	
+	
+	/**
+	 * Zwraca cene biletu.
+	 *
+	 * @return Cene biletu.
+	 */
+	public double getTicketPrice(){
+		return ticketPrice;
+	}
+	
+	/**
+	 * Zwraca element interfejsu JSpinner w ktorym okresla sie ilosc zakupionych biletow.
+	 *
+	 * @return Element interfejsu - JSpinner.
+	 */
+	public JSpinner getTicketCount(){
+		return spinner;
+	}
+	
+	/**
+	 * Zwraca SpinnerListModel dla elementu interfejsu JSpinner.
+	 *
+	 * @return SpinnerListModel dla JSpinner.
+	 */
+	public SpinnerListModel getSpinnerListModel(){
+		return ticketModel;
+	}
+	
+	/**
+	 * Ustawia tytul seansu w elemencie interfejsu JLabel.
+	 *
+	 * @param text tytul seansu.
+	 * @param date data seansu.
+	 */
 	public void setSeanceTitle(String text, String date){
 		JLabel seanceTitle = new JLabel(text);
 		JLabel seanceDate = new JLabel(date);
@@ -57,27 +108,16 @@ public class BuyTicketMenu extends TicketMenu {
 		seanceDate.setFont(new Font("Courier New", 2, 14));
 	}
 	
+	/**
+	 * Ustawia cene biletu w elemencie interfejsu JTextArea.
+	 *
+	 * @param price cena biletu.
+	 */
 	public void setTicketPrice(double price){
 		this.ticketPrice = price;
 		JTextArea sum = new JTextArea(String.valueOf(price));
 		this.add(sum);
 		sum.setBounds(150,140,50,20);
 		sum.setEditable(false);
-	}
-	
-	public double getTicketPrice(){
-		return ticketPrice;
-	}
-	
-	public JSpinner getTicketCount(){
-		return spinner;
-	}
-	
-	public SpinnerListModel getSpinnerListModel(){
-		return ticketModel;
-	}
-	
-	public void addBuyButtonListener(ActionListener buyTicketButtonListener){
-		buyButton.addActionListener(buyTicketButtonListener);
 	}
 }

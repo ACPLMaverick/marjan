@@ -1,24 +1,35 @@
+/*
+ * 
+ */
 package mainPackage.Controller;
 
 import java.io.*;
 
 import com.thoughtworks.xstream.XStream;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
- * @author Maverick
- *	Klasa u¿ywana do serializacji i deserializacji kolekcji w formacie XML
- * @param <T> supposed to be Repertoire
+ * Klasa generyczna uzywana do serializacji i deserializacji kolekcji w formacie XML
  */
 public class SerializationController<T> {
 	
 	private T myCollection;
 	
+	/**
+	 * Tworzy nowy obiekt klasy SerializationController.
+	 *
+	 * @param myCollection kolekcja elementow typu generycznego.
+	 */
 	public SerializationController(T myCollection)
 	{
 		this.myCollection = myCollection;
 	}
 	
+	/**
+	 * Serializuje kolekcje do pliku XML o podanej sciezce.
+	 *
+	 * @param path sciezka okreslajaca, gdzie ma zostac stworzony plik XML.
+	 */
 	public void serialize(String path)
 	{
 		if(myCollection == null) throw new NullPointerException("Collection not initialised!");
@@ -43,6 +54,12 @@ public class SerializationController<T> {
 		}
 	}
 	
+	/**
+	 * Deserializuje plik XML o podanej sciezce
+	 *
+	 * @param path sciezka do pliku XML.
+	 * @return Kolekcje ktora zawiera zdeserializowane dane.
+	 */
 	public T deserialize(String path)
 	{
 
