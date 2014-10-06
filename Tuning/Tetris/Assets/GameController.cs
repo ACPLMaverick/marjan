@@ -83,7 +83,11 @@ public class GameController : MonoBehaviour {
 
     void createBlock()
     {
-        currentBlock = (GameObject)Instantiate(GameObject.Find("blockJshape"), startPos, Quaternion.identity);
+        string type;
+        int randomCurrent = (int)Random.value % 7;
+        int randomNext = (int)Random.value % 7;
+        
+        currentBlock = (GameObject)Instantiate(GameObject.Find("blockIshape"), startPos, Quaternion.identity);
     }
 
     bool checkForCollisions()
@@ -92,7 +96,7 @@ public class GameController : MonoBehaviour {
 
         foreach (BrickController brick in brickControllers)
         {
-            RaycastHit2D hit = Physics2D.Raycast(new Vector2(brick.transform.position.x, brick.transform.position.y - (distance / 2)), new Vector2(Vector3.down.x, Vector3.down.y), 100f);
+            RaycastHit2D hit = Physics2D.Raycast(new Vector2(brick.transform.position.x, brick.transform.position.y - 0.2f), new Vector2(Vector3.down.x, Vector3.down.y), 100f);
             //Debug.Log(Mathf.Abs(hit.transform.position.y - brick.transform.position.y));
 
             bool notOurs = true;
@@ -104,9 +108,12 @@ public class GameController : MonoBehaviour {
                 }
             }
 
-            if ((Mathf.Abs(hit.transform.position.y - brick.transform.position.y) <= (distance + 0.01f)) && notOurs)
+            if(brick != null)
             {
-                return true;
+                if ((Mathf.Abs(hit.transform.position.y - brick.transform.position.y) <= (distance + 0.01f)) && notOurs)
+                {
+                    return true;
+                }
             }
         }
 
@@ -119,89 +126,97 @@ public class GameController : MonoBehaviour {
         //currentBlock.transform.position = pos;
         BrickController[] brickControllers = currentBlock.GetComponent<BlockController>().GetMyBricks();
 
-        ArrayList leftBricks = new ArrayList();
-        ArrayList rightBricks = new ArrayList();
-        float currentY = -99.0f;
+        Vector2 vector;
+        Vector2 sourceVector;
 
-        BrickController temp;
-        for (int write = 0; write < brickControllers.Length; write++)
-        {
-            for (int sort = 0; sort < brickControllers.Length - 1; sort++)
-            {
-                if (brickControllers[sort].transform.position.y > brickControllers[sort + 1].transform.position.y)
-                {
-                    temp = brickControllers[sort + 1];
-                    brickControllers[sort + 1] = brickControllers[sort];
-                    brickControllers[sort] = temp;
-                }
-            }
-        }
-
-        ArrayList tempList = new ArrayList();
-        currentY = brickControllers[0].transform.position.y;
         foreach(BrickController brick in brickControllers)
         {
-            if(brick.transform.position.y != currentY)
+            if (side == "L")
             {
-                currentY = brick.transform.position.y;
-                leftBricks.Add(GetLeastXValue(tempList));
-                rightBricks.Add(GetMostXValue(tempList));
-                tempList.Clear();
-                tempList.Add(brick);
+                vector = new Vector2(Vector3.left.x, Vector3.left.y);
+                sourceVector = new Vector2(brick.transform.position.x - (distance / 2 + 0.01f), brick.transform.position.y);
             }
-            else
+            else if (side == "R")
             {
-                tempList.Add(brick);
+                vector = new Vector2(Vector3.right.x, Vector3.right.y);
+                sourceVector = new Vector2(brick.transform.position.x + (distance / 2 + 0.01f), brick.transform.position.y);
             }
-        }
-        if(tempList.Count != 0)
-        {
-            leftBricks.Add(GetLeastXValue(tempList));
-            rightBricks.Add(GetMostXValue(tempList));
-        }
+            else return false;
+            RaycastHit2D hit = Physics2D.Raycast(sourceVector, vector, 100f);
 
-        Debug.Log("L: " + leftBricks.Count + " R: " + rightBricks.Count);
-
-        if(side == "L")
-        {
-            foreach (Object obj in leftBricks)
-            {
-                if (((BrickController)obj).checkEdgeCollision(side)) return true;
-            }
-        }
-        else if(side == "R")
-        {
-            foreach (Object obj in rightBricks)
-            {
-                if (((BrickController)obj).checkEdgeCollision(side)) return true;
-            }
-        }
-        /*
-        //GameObject[] pileBricks = brickPile.GetComponent<BrickPileController>().GetMyBricks();
-        foreach(BrickController brick in brickControllers)
-        {
-            
-            
-            //if (brick.checkEdgeCollision())
-            //{
-            //    currentBlock.transform.position = oldpos;
-            //    return true;
-            //}
-
-            foreach(GameObject obj in pileBricks)
-            {
-                Debug.Log(obj.transform.position + " | " + brick.gameObject.transform.position);
-                if(Mathf.Abs(obj.transform.position.x - brick.gameObject.transform.position.x) <= 0.1 &&
-                    Mathf.Abs(obj.transform.position.y - brick.gameObject.transform.position.y) <= 0.1)
+                Debug.Log((Mathf.Abs(hit.transform.position.x - brick.transform.position.x)));
+                if ((Mathf.Abs(hit.transform.position.x - brick.transform.position.x) <= (distance + 0.2f)))
                 {
-                    currentBlock.transform.position = oldpos;
-                    return true;
-                }
-            }
+                    //Debug.Log(hit.transform.position.x);
+                    bool notOurs = true;
 
+                    foreach(BrickController other in brickControllers)
+                    {
+                        if (other.GetComponent<BoxCollider2D>() == hit.collider) notOurs = false;
+                    }
+
+                    if(notOurs) return true;
+                }
         }
-        */
-        //currentBlock.transform.position = oldpos;
+
+        //ArrayList leftBricks = new ArrayList();
+        //ArrayList rightBricks = new ArrayList();
+        //float currentY = -99.0f;
+
+        //BrickController temp;
+        //for (int write = 0; write < brickControllers.Length; write++)
+        //{
+        //    for (int sort = 0; sort < brickControllers.Length - 1; sort++)
+        //    {
+        //        if (brickControllers[sort].transform.position.y > brickControllers[sort + 1].transform.position.y)
+        //        {
+        //            temp = brickControllers[sort + 1];
+        //            brickControllers[sort + 1] = brickControllers[sort];
+        //            brickControllers[sort] = temp;
+        //        }
+        //    }
+        //}
+
+        //ArrayList tempList = new ArrayList();
+        //currentY = brickControllers[0].transform.position.y;
+        //foreach(BrickController brick in brickControllers)
+        //{
+        //    if(brick.transform.position.y != currentY)
+        //    {
+        //        currentY = brick.transform.position.y;
+        //        leftBricks.Add(GetLeastXValue(tempList));
+        //        rightBricks.Add(GetMostXValue(tempList));
+        //        tempList.Clear();
+        //        tempList.Add(brick);
+        //    }
+        //    else
+        //    {
+        //        tempList.Add(brick);
+        //    }
+        //}
+        //if(tempList.Count != 0)
+        //{
+        //    leftBricks.Add(GetLeastXValue(tempList));
+        //    rightBricks.Add(GetMostXValue(tempList));
+        //}
+
+        //Debug.Log("L: " + leftBricks.Count + " R: " + rightBricks.Count);
+
+        //if(side == "L")
+        //{
+        //    foreach (Object obj in leftBricks)
+        //    {
+        //        if (((BrickController)obj).checkEdgeCollision(side)) return true;
+        //    }
+        //}
+        //else if(side == "R")
+        //{
+        //    foreach (Object obj in rightBricks)
+        //    {
+        //        if (((BrickController)obj).checkEdgeCollision(side)) return true;
+        //    }
+        //}
+
         return false;
     }
 
@@ -210,7 +225,6 @@ public class GameController : MonoBehaviour {
         ArrayList brickVectors = new ArrayList();
         BrickController[] brickControllers = currentBlock.GetComponent<BlockController>().GetMyBricks();
 
-        //currentBlock.GetComponent<BlockController>().BlockRotate(pos);
         currentBlock.transform.rotation = Quaternion.Euler(currentBlock.transform.rotation.eulerAngles + pos);
 
         foreach(BrickController brick in brickControllers)
@@ -218,7 +232,6 @@ public class GameController : MonoBehaviour {
             brickVectors.Add(brick.transform.position);
         }
 
-        //currentBlock.GetComponent<BlockController>().BlockRotate(-pos);
         currentBlock.transform.rotation = Quaternion.Euler(currentBlock.transform.rotation.eulerAngles - pos);
         Vector3 oldpos = currentBlock.transform.position;
         currentBlock.transform.position = wpizdu;
@@ -229,37 +242,12 @@ public class GameController : MonoBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(myVector.x, myVector.y), new Vector2(Vector3.down.x, Vector3.down.y), 100.0f);
             //Debug.Log("VectorX: " + myVector.x + " VectorY: " + myVector.y + " distance: " + hit.distance + " fraction: " + hit.fraction);
 
-            if (hit.fraction == 0)
+            if (hit.fraction <= 0.1)
             {
                 currentBlock.transform.position = oldpos;
                 return true;
             }
         }
-
-        //Quaternion oldpos = currentBlock.transform.rotation;
-        //currentBlock.transform.rotation = pos;
-        //BrickController[] brickControllers = currentBlock.GetComponent<BlockController>().GetMyBricks();
-
-        //foreach (BrickController brick in brickControllers)
-        //{
-        //    if (brick.checkEdgeCollision())
-        //    {
-        //        currentBlock.transform.rotation = oldpos;
-        //        return true;
-        //    }
-
-        //    //GameObject[] pileBricks = brickPile.GetComponent<BrickPileController>().GetMyBricks();
-        //    //foreach (GameObject obj in pileBricks)
-        //    //{
-        //    //    Debug.Log(obj.transform.position + " | " + brick.gameObject.transform.position);
-        //    //    if (Mathf.Abs(obj.transform.position.x - brick.gameObject.transform.position.x) <= 0.1 &&
-        //    //        Mathf.Abs(obj.transform.position.y - brick.gameObject.transform.position.y) <= 0.1)
-        //    //    {
-        //    //        currentBlock.transform.rotation = oldpos;
-        //    //        return true;
-        //    //    }
-        //    //}
-        //}
 
         currentBlock.transform.position = oldpos;
         return false;

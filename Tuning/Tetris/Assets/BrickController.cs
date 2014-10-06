@@ -44,11 +44,15 @@ public class BrickController : MonoBehaviour {
 
         RaycastHit2D hit = Physics2D.Raycast(sourceVector, vector, 100f);
  
-        if ((Mathf.Abs(hit.transform.position.x - transform.position.x) <= (GameController.distance + 0.01f)))
+        if(hit != null && gameObject != null)
         {
-            Debug.Log(hit.transform.position.x);
-            edgeCollision = true;
+            if ((Mathf.Abs(hit.transform.position.x - transform.position.x) <= (GameController.distance + 0.01f)))
+            {
+                //Debug.Log(hit.transform.position.x);
+                edgeCollision = true;
+            }
         }
+        
 
         return edgeCollision;
     }

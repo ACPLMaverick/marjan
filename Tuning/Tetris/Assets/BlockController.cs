@@ -15,18 +15,18 @@ public class BlockController : MonoBehaviour {
 
     public void BlockRotate(Vector3 rotation)
     {
-        //BrickController[] myBricks = GetMyBricks();
+        BrickController[] myBricks = GetMyBricks();
 
-        //Vector3 backwardRotation = new Vector3(rotation.x, rotation.y, -rotation.z);
+        Vector3 backwardRotation = new Vector3(rotation.x, rotation.y, -rotation.z);
         Quaternion newRotationBlock = transform.rotation;
         newRotationBlock = Quaternion.Euler(newRotationBlock.eulerAngles + rotation);
 
         transform.rotation = newRotationBlock;
 
-        //foreach (BrickController brick in myBricks)
-        //{
-        //    brick.transform.rotation = Quaternion.Euler(brick.transform.rotation.eulerAngles + backwardRotation);
-        //}
+        foreach (BrickController brick in myBricks)
+        {
+            brick.transform.rotation = Quaternion.Euler(brick.transform.rotation.eulerAngles + backwardRotation);
+        }
     }
 
     public BrickController[] GetMyBricks()
