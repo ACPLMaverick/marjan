@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="lab01.css" type="text/css"?>
+<ksiegarnia>
+  <dzial nazwa="fantasy">
+    <ksiazka tytul="" autor="" rok_wydania="" isbn="" cena="">
+      <tytul>
+        Miecz przeznaczenia
+      </tytul>
+      <autor>
+        Andrzej Sapkowski
+      </autor>
+      <rok_wydania>
+        1992
+      </rok_wydania>
+      <isbn>
+        83-7054-037-6
+      </isbn>
+      <cena>
+        20.00 zł
+      </cena>
+    </ksiazka>
+    <ksiazka tytul="" autor="" rok_wydania="" isbn="" cena="">
+      <tytul>
+        Miecz przeznaczenia
+      </tytul>
+      <autor>
+        Andrzej Sapkowski
+      </autor>
+      <rok_wydania>
+        1992
+      </rok_wydania>
+      <isbn>
+        83-7054-037-6
+      </isbn>
+      <cena>
+        20.00 zł
+      </cena>
+    </ksiazka>
+  </dzial>
+  <dzial nazwa ="sci-fi">
+    
+  </dzial>
+  <dzial nazwa ="historyczne">
+
+  </dzial>
+  <dzial nazwa ="biografie">
+
+  </dzial>
+</ksiegarnia>

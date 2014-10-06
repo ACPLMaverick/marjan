@@ -1,0 +1,21 @@
+ksiegarnia
+{
+    background-color:#F1F1A6;
+    font-family:Calibri;
+    font-size:large;
+}
+
+dzial
+{
+    display:block;
+}
+
+ksiazka
+{
+    display:table;
+}
+
+tytul,autor,rok_wydania,isbn,cena
+{
+    display:table-row;
+}

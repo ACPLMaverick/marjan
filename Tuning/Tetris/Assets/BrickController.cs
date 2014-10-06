@@ -23,16 +23,39 @@ public class BrickController : MonoBehaviour {
 
 	}
 
-    public bool checkEdgeCollision()
+    public bool checkEdgeCollision(string side)
     {
-        if (transform.position.x < edgeLeft || transform.position.x > edgeRight) edgeCollision = true;
-        else edgeCollision = false;
+        //if (transform.position.x < edgeLeft || transform.position.x > edgeRight) edgeCollision = true;
+        //else edgeCollision = false;
+        edgeCollision = false;
+        Vector2 vector;
+        Vector2 sourceVector;
+        if (side == "L")
+        {
+            vector = new Vector2(Vector3.left.x, Vector3.left.y);
+            sourceVector = new Vector2(transform.position.x - (GameController.distance / 2 + 0.01f), transform.position.y);
+        }
+        else if (side == "R")
+        {
+            vector = new Vector2(Vector3.right.x, Vector3.right.y);
+            sourceVector = new Vector2(transform.position.x + (GameController.distance / 2 + 0.01f), transform.position.y);
+        }
+        else return edgeCollision;
+
+        RaycastHit2D hit = Physics2D.Raycast(sourceVector, vector, 100f);
+ 
+        if ((Mathf.Abs(hit.transform.position.x - transform.position.x) <= (GameController.distance + 0.01f)))
+        {
+            Debug.Log(hit.transform.position.x);
+            edgeCollision = true;
+        }
+
         return edgeCollision;
     }
 
     public bool checkCollision()
     {
-        if (transform.position.y < edgeBottom) collision = true;
+        //if (transform.position.y < edgeBottom) collision = true;
         return collision;
     }
 
