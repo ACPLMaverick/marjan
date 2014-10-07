@@ -5,13 +5,17 @@ public class GameController : MonoBehaviour {
 
     public static float distance = 0.4f;
     public static Vector3 startPos = new Vector3(-0.1989098f, 4.739200f - distance, 0.0f);
+    public static Vector3 previewPos = new Vector3(3.717794f, 4.342112f, 0.0f);
     public static Vector3 wpizdu = new Vector3(100f, 100f, 0.0f);
     public static float falldownSpeed = 4.0f;
     float refTime;
     bool collision;
     int score = 0;
 
+    public static Color[] brickColors;
+
     GameObject currentBlock = null;
+    GameObject nextBlock = null;
     GameObject brickPile = null;
     GameObject UITextNextblock;
     GameObject UITextScore;
@@ -26,6 +30,15 @@ public class GameController : MonoBehaviour {
         UITextNextblock = GameObject.Find("UITextNextblock");
         UITextScore = GameObject.Find("UITextScore");
         UITextScore.guiText.text = "Score: " + score.ToString();
+
+        brickColors = new Color[7] { Color.blue, Color.yellow, Color.red, Color.magenta, Color.cyan, Color.green, Color.clear }; 
+        //colorIshape = Color.blue;
+        //colorJshape = Color.yellow;
+        //colorLshape = Color.red;
+        //colorOshape = Color.magenta;
+        //colorTshape = Color.cyan;
+        //colorSshape = Color.green;
+        //colorZshape = Color.clear;
 	}
 	
 	// Update is called once per frame
@@ -60,7 +73,7 @@ public class GameController : MonoBehaviour {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     Vector3 rotationVector = new Vector3(0.0f, 0.0f, -90.0f);
-                    if (true) currentBlock.GetComponent<BlockController>().BlockRotate(rotationVector);
+                    if (!checkForEdgeCollisionsRotation(rotationVector)) currentBlock.GetComponent<BlockController>().BlockRotate(rotationVector);
                 }
             }
             else
@@ -83,11 +96,106 @@ public class GameController : MonoBehaviour {
 
     void createBlock()
     {
-        string type;
-        int randomCurrent = (int)Random.value % 7;
-        int randomNext = (int)Random.value % 7;
-        
-        currentBlock = (GameObject)Instantiate(GameObject.Find("blockIshape"), startPos, Quaternion.identity);
+        string typeCurrent, typeNext;
+        int randomCurrent = Random.Range(0, 7);
+        int randomNext = Random.Range(0, 7);
+        Debug.Log(randomCurrent + " " + randomNext);
+
+        if(currentBlock == null)
+        {
+            switch (randomCurrent)
+            {
+                case 0:
+                    typeCurrent = "blockIshape";
+                    break;
+                case 1:
+                    typeCurrent = "blockJshape";
+                    break;
+                case 2:
+                    typeCurrent = "blockLshape";
+                    break;
+                case 3:
+                    typeCurrent = "blockOshape";
+                    break;
+                case 4:
+                    typeCurrent = "blockZshape";
+                    break;
+                case 5:
+                    typeCurrent = "blockSshape";
+                    break;
+                case 6:
+                    typeCurrent = "blockTshape";
+                    break;
+                default:
+                    typeCurrent = "blockIshape";
+                    break;
+            }
+            currentBlock = (GameObject)Instantiate(GameObject.Find(typeCurrent), startPos, Quaternion.identity);
+            ChangeColor(currentBlock, Color.red);
+            switch (randomNext)
+            {
+                case 0:
+                    typeNext = "blockIshape";
+                    break;
+                case 1:
+                    typeNext = "blockJshape";
+                    break;
+                case 2:
+                    typeNext = "blockLshape";
+                    break;
+                case 3:
+                    typeNext = "blockOshape";
+                    break;
+                case 4:
+                    typeNext = "blockZshape";
+                    break;
+                case 5:
+                    typeNext = "blockSshape";
+                    break;
+                case 6:
+                    typeNext = "blockTshape";
+                    break;
+                default:
+                    typeNext = "blockIshape";
+                    break;
+            }
+            nextBlock = (GameObject)Instantiate(GameObject.Find(typeNext), previewPos, Quaternion.identity);
+            //ChangeColor(nextBlock, brickColors[randomNext]);
+        }
+        else
+        {
+            currentBlock = nextBlock;
+            currentBlock.transform.position = startPos;
+            switch (randomNext)
+            {
+                case 0:
+                    typeNext = "blockIshape";
+                    break;
+                case 1:
+                    typeNext = "blockJshape";
+                    break;
+                case 2:
+                    typeNext = "blockLshape";
+                    break;
+                case 3:
+                    typeNext = "blockOshape";
+                    break;
+                case 4:
+                    typeNext = "blockZshape";
+                    break;
+                case 5:
+                    typeNext = "blockSshape";
+                    break;
+                case 6:
+                    typeNext = "blockTshape";
+                    break;
+                default:
+                    typeNext = "blockIshape";
+                    break;
+            }
+            nextBlock = (GameObject)Instantiate(GameObject.Find(typeNext), previewPos, Quaternion.identity);
+            //ChangeColor(nextBlock, brickColors[randomNext]);
+        }
     }
 
     bool checkForCollisions()
@@ -110,7 +218,7 @@ public class GameController : MonoBehaviour {
 
             if(brick != null)
             {
-                if ((Mathf.Abs(hit.transform.position.y - brick.transform.position.y) <= (distance + 0.01f)) && notOurs)
+                if ((Mathf.Abs(hit.point.y - brick.transform.position.y) <= (0.22f)) && notOurs)
                 {
                     return true;
                 }
@@ -145,7 +253,7 @@ public class GameController : MonoBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(sourceVector, vector, 100f);
 
                 Debug.Log((Mathf.Abs(hit.transform.position.x - brick.transform.position.x)));
-                if ((Mathf.Abs(hit.transform.position.x - brick.transform.position.x) <= (distance + 0.2f)))
+                if ((Mathf.Abs(hit.transform.position.x - brick.transform.position.x) <= (2*distance)))
                 {
                     //Debug.Log(hit.transform.position.x);
                     bool notOurs = true;
@@ -158,65 +266,6 @@ public class GameController : MonoBehaviour {
                     if(notOurs) return true;
                 }
         }
-
-        //ArrayList leftBricks = new ArrayList();
-        //ArrayList rightBricks = new ArrayList();
-        //float currentY = -99.0f;
-
-        //BrickController temp;
-        //for (int write = 0; write < brickControllers.Length; write++)
-        //{
-        //    for (int sort = 0; sort < brickControllers.Length - 1; sort++)
-        //    {
-        //        if (brickControllers[sort].transform.position.y > brickControllers[sort + 1].transform.position.y)
-        //        {
-        //            temp = brickControllers[sort + 1];
-        //            brickControllers[sort + 1] = brickControllers[sort];
-        //            brickControllers[sort] = temp;
-        //        }
-        //    }
-        //}
-
-        //ArrayList tempList = new ArrayList();
-        //currentY = brickControllers[0].transform.position.y;
-        //foreach(BrickController brick in brickControllers)
-        //{
-        //    if(brick.transform.position.y != currentY)
-        //    {
-        //        currentY = brick.transform.position.y;
-        //        leftBricks.Add(GetLeastXValue(tempList));
-        //        rightBricks.Add(GetMostXValue(tempList));
-        //        tempList.Clear();
-        //        tempList.Add(brick);
-        //    }
-        //    else
-        //    {
-        //        tempList.Add(brick);
-        //    }
-        //}
-        //if(tempList.Count != 0)
-        //{
-        //    leftBricks.Add(GetLeastXValue(tempList));
-        //    rightBricks.Add(GetMostXValue(tempList));
-        //}
-
-        //Debug.Log("L: " + leftBricks.Count + " R: " + rightBricks.Count);
-
-        //if(side == "L")
-        //{
-        //    foreach (Object obj in leftBricks)
-        //    {
-        //        if (((BrickController)obj).checkEdgeCollision(side)) return true;
-        //    }
-        //}
-        //else if(side == "R")
-        //{
-        //    foreach (Object obj in rightBricks)
-        //    {
-        //        if (((BrickController)obj).checkEdgeCollision(side)) return true;
-        //    }
-        //}
-
         return false;
     }
 
@@ -242,7 +291,7 @@ public class GameController : MonoBehaviour {
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(myVector.x, myVector.y), new Vector2(Vector3.down.x, Vector3.down.y), 100.0f);
             //Debug.Log("VectorX: " + myVector.x + " VectorY: " + myVector.y + " distance: " + hit.distance + " fraction: " + hit.fraction);
 
-            if (hit.fraction <= 0.1)
+            if (hit.fraction <= 0.01)
             {
                 currentBlock.transform.position = oldpos;
                 return true;
@@ -253,23 +302,12 @@ public class GameController : MonoBehaviour {
         return false;
     }
 
-    BrickController GetMostXValue(ArrayList list)
+    void ChangeColor(GameObject block, Color color)
     {
-        BrickController tempBrick = (BrickController)(list[0]);
-        foreach(Object obj in list)
+        BrickController[] bricks = block.GetComponent<BlockController>().GetMyBricks();
+        foreach(BrickController brick in bricks)
         {
-            if (((BrickController)obj).transform.position.x > tempBrick.transform.position.x) tempBrick = (BrickController)obj;
+            brick.renderer.material.color = color;
         }
-        return tempBrick;
-    }
-
-    BrickController GetLeastXValue(ArrayList list)
-    {
-        BrickController tempBrick = (BrickController)(list[0]);
-        foreach (Object obj in list)
-        {
-            if (((BrickController)obj).transform.position.x < tempBrick.transform.position.x) tempBrick = (BrickController)obj;
-        }
-        return tempBrick;
     }
 }
