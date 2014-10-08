@@ -6,17 +6,22 @@
 #define GRAY_BRUSH 2
 //includes
 #include <Windows.h>
+// my classes
+#include "Direct3D.h"
 
 // globals
 const bool FULL_SCREEN = false;
 const bool SHOW_CURSOR = false;
-const unsigned int BACKGROUND_COLOR = DKGRAY_BRUSH;
+const bool VSYNC_ENABLED = false;
+const unsigned int BACKGROUND_COLOR = BLACK_BRUSH;
 const float SCREEN_FAR = 1000.0f;
-const float SCREEN_NEAR = 0.1f;
+const float SCREEN_DEPTH = 0.1f;
 
 class Graphics
 {
 private:
+	Direct3D* m_D3D;
+
 	bool Render();
 public:
 	Graphics();

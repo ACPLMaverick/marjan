@@ -1,5 +1,6 @@
 
 
+
 // GLOBALS
 cbuffer MatrixBuffer
 {
@@ -20,9 +21,9 @@ struct PixelInput
 	float4 position : SV_POSITION;
 	float4 color : COLOR;
 };
-[numthreads(1, 1, 1)]
+
 // vertex shader
-PixelInput main( VertexInput input /*uint3 DTid : SV_DispatchThreadID*/ ) : SV_TARGET
+PixelInput ColorVertexShader( VertexInput input /*uint3 DTid : SV_DispatchThreadID*/ )
 {
 	PixelInput output;
 
