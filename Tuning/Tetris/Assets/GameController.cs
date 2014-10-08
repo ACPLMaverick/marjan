@@ -5,7 +5,7 @@ public class GameController : MonoBehaviour {
 
     public static float distance = 0.4f;
     public static Vector3 startPos = new Vector3(-0.1989098f, 4.739200f - distance, 0.0f);
-    public static Vector3 previewPos = new Vector3(3.717794f, 4.342112f, 0.0f);
+    public static Vector3 previewPos = new Vector3(3.917794f, 4.342112f, 0.0f);
     public static Vector3 wpizdu = new Vector3(100f, 100f, 0.0f);
     public static float falldownSpeed = 4.0f;
     float refTime;
@@ -17,7 +17,6 @@ public class GameController : MonoBehaviour {
     GameObject currentBlock = null;
     GameObject nextBlock = null;
     GameObject brickPile = null;
-    GameObject UITextNextblock;
     GameObject UITextScore;
 
 	// Use this for initialization
@@ -27,7 +26,6 @@ public class GameController : MonoBehaviour {
         refTime = Time.time;
         collision = false;
 
-        UITextNextblock = GameObject.Find("UITextNextblock");
         UITextScore = GameObject.Find("UITextScore");
         UITextScore.guiText.text = "Score: " + score.ToString();
 
@@ -99,7 +97,7 @@ public class GameController : MonoBehaviour {
         string typeCurrent, typeNext;
         int randomCurrent = Random.Range(0, 7);
         int randomNext = Random.Range(0, 7);
-        Debug.Log(randomCurrent + " " + randomNext);
+        //Debug.Log(randomCurrent + " " + randomNext);
 
         if(currentBlock == null)
         {
@@ -230,7 +228,6 @@ public class GameController : MonoBehaviour {
 
     bool checkForEdgeCollisions(string side)
     {
-        Vector3 oldpos = currentBlock.transform.position;
         //currentBlock.transform.position = pos;
         BrickController[] brickControllers = currentBlock.GetComponent<BlockController>().GetMyBricks();
 
@@ -252,7 +249,7 @@ public class GameController : MonoBehaviour {
             else return false;
             RaycastHit2D hit = Physics2D.Raycast(sourceVector, vector, 100f);
 
-                Debug.Log((Mathf.Abs(hit.transform.position.x - brick.transform.position.x)));
+                //Debug.Log((Mathf.Abs(hit.transform.position.x - brick.transform.position.x)));
                 if ((Mathf.Abs(hit.transform.position.x - brick.transform.position.x) <= (2*distance)))
                 {
                     //Debug.Log(hit.transform.position.x);
@@ -305,9 +302,15 @@ public class GameController : MonoBehaviour {
     void ChangeColor(GameObject block, Color color)
     {
         BrickController[] bricks = block.GetComponent<BlockController>().GetMyBricks();
+        int i = 0;
         foreach(BrickController brick in bricks)
         {
-            brick.renderer.material.color = color;
+            if(brick.renderer.material.color != null)
+            {
+                Debug.Log(i.ToString() + " " + brick.gameObject.renderer.material.color.ToString());
+                //brick.renderer.material.color = color;
+                i++;
+            }
         }
     }
 }

@@ -44,7 +44,7 @@ public class BrickController : MonoBehaviour {
 
         RaycastHit2D hit = Physics2D.Raycast(sourceVector, vector, 100f);
  
-        if(hit != null && gameObject != null)
+        if(gameObject != null)
         {
             if ((Mathf.Abs(hit.transform.position.x - transform.position.x) <= (GameController.distance + 0.01f)))
             {
