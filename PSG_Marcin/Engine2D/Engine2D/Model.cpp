@@ -40,35 +40,47 @@ int Model::GetIndexCount()
 	return m_indexCount;
 }
 
-bool Model::InitializeBuffers(ID3D11Device* device)
+Model::VertexIndex Model::LoadGeometry()
 {
 	Vertex* vertices;
 	unsigned long* indices;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
-	HRESULT result;
-
+	
 	m_vertexCount = 3;
 	m_indexCount = 3;
 
 	vertices = new Vertex[m_vertexCount];
-	if (!vertices) return false;
-
 	indices = new unsigned long[m_indexCount];
-	if (!indices) return false;
 
 	// load vertex array with data
 	vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f); // BL
-	vertices[0].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[0].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f); // TL
-	vertices[1].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[1].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f); // BR
-	vertices[2].color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[2].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// load index array with data
 	indices[0] = 0; // BL
 	indices[1] = 1; // TL
 	indices[2] = 2; // BR
+
+	VertexIndex toReturn;
+	toReturn.vertexArrayPtr = vertices;
+	toReturn.indexArrayPtr = indices;
+	return toReturn;
+}
+
+bool Model::InitializeBuffers(ID3D11Device* device)
+{
+	Vertex* vertices = nullptr;
+	unsigned long* indices = nullptr;
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	HRESULT result;
+
+	VertexIndex set = LoadGeometry();
+	vertices = set.vertexArrayPtr;
+	indices = set.indexArrayPtr;
 
 	// setup description of static vertex buffer
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -90,10 +102,14 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	// as above / index buffer
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBufferDesc.ByteWidth = sizeof(unsigned long)*m_indexCount;
-	vertexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+
+	indexData.pSysMem = indices;
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
 
 	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
 	if (FAILED(result)) return false;

@@ -8,6 +8,9 @@
 #include <Windows.h>
 // my classes
 #include "Direct3D.h"
+#include "Camera.h"
+#include "Model.h"
+#include "ColorShader.h"
 
 // globals
 const bool FULL_SCREEN = false;
@@ -21,6 +24,9 @@ class Graphics
 {
 private:
 	Direct3D* m_D3D;
+	Camera* m_Camera;
+	Model* m_Model;
+	ColorShader* m_ColorShader;
 
 	bool Render();
 public:

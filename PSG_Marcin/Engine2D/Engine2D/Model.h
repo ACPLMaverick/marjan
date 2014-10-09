@@ -13,12 +13,20 @@ private:
 		D3DXVECTOR4 color;
 	};
 
+	struct VertexIndex
+	{
+		Vertex* vertexArrayPtr;
+		unsigned long* indexArrayPtr;
+	};
+
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount;
 
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
+
+	virtual VertexIndex LoadGeometry();
 public:
 	Model();
 	Model(const Model&);

@@ -76,7 +76,7 @@ bool ColorShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFil
 		return false;
 	}
 
-	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "PixelVertexShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 		&pixelShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
