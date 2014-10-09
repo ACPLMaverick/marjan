@@ -6,6 +6,7 @@ Graphics::Graphics()
 	m_D3D = nullptr;
 	m_Camera = nullptr;
 	m_Model = nullptr;
+	m_Model02 = nullptr;
 	m_ColorShader = nullptr;
 }
 
@@ -36,12 +37,21 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Camera) return false;
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 
-	m_Model = new Model();
+	m_Model = new Model(D3DXVECTOR3(3.0f, 0.0f, 0.0f));
 	if (!m_Model) return false;
 	result = m_Model->Initialize(m_D3D->GetDevice());
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model", "Error", MB_OK);
+		return false;
+	}
+
+	m_Model02 = new Model();
+	if (!m_Model02) return false;
+	result = m_Model02->Initialize(m_D3D->GetDevice());
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the model 02", "Error", MB_OK);
 		return false;
 	}
 
@@ -75,6 +85,12 @@ void Graphics::Shutdown()
 		m_Model->Shutdown();
 		delete m_Model;
 		m_Model = nullptr;
+	}
+	if (m_Model02)
+	{
+		m_Model02->Shutdown();
+		delete m_Model02;
+		m_Model02 = nullptr;
 	}
 	if (m_ColorShader)
 	{
@@ -113,6 +129,10 @@ bool Graphics::Render()
 		m_Model->Render(m_D3D->GetDeviceContext());
 
 		// render the model using color shader
+		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+		if (!result) return false;
+
+		m_Model02->Render(m_D3D->GetDeviceContext());
 		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 		if (!result) return false;
 

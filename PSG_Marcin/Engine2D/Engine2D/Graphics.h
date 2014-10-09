@@ -26,6 +26,7 @@ private:
 	Direct3D* m_D3D;
 	Camera* m_Camera;
 	Model* m_Model;
+	Model* m_Model02;
 	ColorShader* m_ColorShader;
 
 	bool Render();

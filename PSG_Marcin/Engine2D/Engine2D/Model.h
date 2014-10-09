@@ -22,6 +22,8 @@ private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount;
 
+	D3DXVECTOR3 position;
+
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
@@ -29,6 +31,7 @@ private:
 	virtual VertexIndex LoadGeometry();
 public:
 	Model();
+	Model(D3DXVECTOR3 position);
 	Model(const Model&);
 	~Model();
 

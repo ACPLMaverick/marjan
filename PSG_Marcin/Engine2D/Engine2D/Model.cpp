@@ -5,6 +5,14 @@ Model::Model()
 {
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
+	position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+}
+
+Model::Model(D3DXVECTOR3 position)
+{
+	m_vertexBuffer = nullptr;
+	m_indexBuffer = nullptr;
+	this->position = position;
 }
 
 Model::Model(const Model& other)
@@ -52,11 +60,11 @@ Model::VertexIndex Model::LoadGeometry()
 	indices = new unsigned long[m_indexCount];
 
 	// load vertex array with data
-	vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f); // BL
+	vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f) + position; // BL
 	vertices[0].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f); // TL
+	vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f) + position; // TL
 	vertices[1].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
-	vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f); // BR
+	vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f) + position; // BR
 	vertices[2].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// load index array with data
