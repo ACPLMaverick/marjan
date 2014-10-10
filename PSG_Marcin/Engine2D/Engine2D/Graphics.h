@@ -6,10 +6,12 @@
 #define GRAY_BRUSH 2
 //includes
 #include <Windows.h>
+#include <vector>
 // my classes
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Sprite2D.h"
 #include "ColorShader.h"
 
 // globals
@@ -25,11 +27,12 @@ class Graphics
 private:
 	Direct3D* m_D3D;
 	Camera* m_Camera;
-	Model* m_Model;
-	Model* m_Model02;
+	vector<Model*> models;
 	ColorShader* m_ColorShader;
 
 	bool Render();
+	bool InitializeModels();
+	void RelaseModels();
 public:
 	Graphics();
 	Graphics(const Graphics&);

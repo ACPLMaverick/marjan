@@ -6,7 +6,7 @@
 
 class Model
 {
-private:
+protected:
 	struct Vertex
 	{
 		D3DXVECTOR3 position;

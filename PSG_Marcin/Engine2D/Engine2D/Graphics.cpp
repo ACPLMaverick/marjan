@@ -5,8 +5,6 @@ Graphics::Graphics()
 {
 	m_D3D = nullptr;
 	m_Camera = nullptr;
-	m_Model = nullptr;
-	m_Model02 = nullptr;
 	m_ColorShader = nullptr;
 }
 
@@ -35,23 +33,12 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	m_Camera = new Camera();
 	if (!m_Camera) return false;
-	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, -30.0f);
 
-	m_Model = new Model(D3DXVECTOR3(3.0f, 0.0f, 0.0f));
-	if (!m_Model) return false;
-	result = m_Model->Initialize(m_D3D->GetDevice());
+	result = InitializeModels();
 	if (!result)
 	{
-		MessageBox(hwnd, "Could not initialize the model", "Error", MB_OK);
-		return false;
-	}
-
-	m_Model02 = new Model();
-	if (!m_Model02) return false;
-	result = m_Model02->Initialize(m_D3D->GetDevice());
-	if (!result)
-	{
-		MessageBox(hwnd, "Could not initialize the model 02", "Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize models!", "Error", MB_OK);
 		return false;
 	}
 
@@ -80,18 +67,7 @@ void Graphics::Shutdown()
 		delete m_Camera;
 		m_Camera = nullptr;
 	}
-	if (m_Model)
-	{
-		m_Model->Shutdown();
-		delete m_Model;
-		m_Model = nullptr;
-	}
-	if (m_Model02)
-	{
-		m_Model02->Shutdown();
-		delete m_Model02;
-		m_Model02 = nullptr;
-	}
+	RelaseModels();
 	if (m_ColorShader)
 	{
 		m_ColorShader->Shutdown();
@@ -112,12 +88,12 @@ bool Graphics::Frame()
 
 bool Graphics::Render()
 {
-	if (m_D3D && m_Model && m_Camera && m_ColorShader)
+	if (m_D3D && m_Camera && m_ColorShader)
 	{
 		D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
 		bool result;
 
-		m_D3D->BeginScene(0.5f, 0.5f, 0.5f, 1.0f);
+		m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
 		m_Camera->Render();
 		
@@ -125,20 +101,64 @@ bool Graphics::Render()
 		m_D3D->GetWorldnMatrix(worldMatrix);
 		m_D3D->GetProjectionMatrix(projectionMatrix);
 
+		for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
+		{
+			(*it)->Render(m_D3D->GetDeviceContext());
+			result = m_ColorShader->Render(m_D3D->GetDeviceContext(), (*it)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+			if (!result) return false;
+		}
+
 		// put the model vertex and index buffers on the graphics pipeline to prepare them for drawing
-		m_Model->Render(m_D3D->GetDeviceContext());
+		//m_Model->Render(m_D3D->GetDeviceContext());
 
-		// render the model using color shader
-		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-		if (!result) return false;
+		//// render the model using color shader
+		//result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+		//if (!result) return false;
 
-		m_Model02->Render(m_D3D->GetDeviceContext());
-		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-		if (!result) return false;
+		//m_Model02->Render(m_D3D->GetDeviceContext());
+		//result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model02->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+		//if (!result) return false;
 
 		m_D3D->EndScene();
 
 		return true;
 	}
 	else return false;
+}
+
+bool Graphics::InitializeModels()
+{
+	// tu dodajemy nowe modele;
+	Model* myModel;
+	bool result;
+	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	if (!myModel) return false;
+	result = myModel->Initialize(m_D3D->GetDevice());
+	if (!result) return false;
+	models.push_back(myModel);
+
+	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f));
+	if (!myModel) return false;
+	result = myModel->Initialize(m_D3D->GetDevice());
+	if (!result) return false;
+	models.push_back(myModel);
+
+	myModel = new Sprite2D(D3DXVECTOR3(0.0f, -3.0f, 0.0f));
+	if (!myModel) return false;
+	result = myModel->Initialize(m_D3D->GetDevice());
+	if (!result) return false;
+	models.push_back(myModel);
+
+	return true;
+}
+
+void Graphics::RelaseModels()
+{
+	for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
+	{
+		if (*it) (*it)->Shutdown();
+		delete (*it);
+		(*it) = nullptr;
+	}
+	models.clear();
 }

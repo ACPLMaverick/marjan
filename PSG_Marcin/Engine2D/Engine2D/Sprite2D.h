@@ -3,8 +3,11 @@
 class Sprite2D :
 	public Model
 {
+private:
+	virtual VertexIndex LoadGeometry();
 public:
 	Sprite2D();
+	Sprite2D(D3DXVECTOR3 position);
 	~Sprite2D();
 };
 
