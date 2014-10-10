@@ -146,6 +146,11 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	return true;
 }
 
+void Model::UpdateBuffers(ID3D11Device* device)
+{
+	// tba
+}
+
 void Model::ShutdownBuffers()
 {
 	if (m_indexBuffer)

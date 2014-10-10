@@ -30,6 +30,7 @@ protected:
 	Texture* m_texture;
 
 	bool InitializeBuffers(ID3D11Device*);
+	void UpdateBuffers(ID3D11Device*);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
 

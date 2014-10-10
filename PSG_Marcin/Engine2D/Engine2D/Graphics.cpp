@@ -137,7 +137,7 @@ bool Graphics::InitializeModels()
 	if (!result) return false;
 	models.push_back(myModel);
 
-	myModel = new Model(D3DXVECTOR3(3.0f, 2.0f, 0.0f));
+	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f));
 	if (!myModel) return false;
 	result = myModel->Initialize(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
 	if (!result) return false;
