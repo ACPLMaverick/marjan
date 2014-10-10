@@ -5,7 +5,7 @@ Graphics::Graphics()
 {
 	m_D3D = nullptr;
 	m_Camera = nullptr;
-	m_ColorShader = nullptr;
+	m_TextureShader = nullptr;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -42,12 +42,12 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_ColorShader = new ColorShader();
-	if (!m_ColorShader) return false;
-	result = m_ColorShader->Initialize(m_D3D->GetDevice(), hwnd);
+	m_TextureShader = new TextureShader();
+	if (!m_TextureShader) return false;
+	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, "Could not initialize the color shader", "Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize the texture shader", "Error", MB_OK);
 		return false;
 	}
 	
@@ -68,11 +68,11 @@ void Graphics::Shutdown()
 		m_Camera = nullptr;
 	}
 	RelaseModels();
-	if (m_ColorShader)
+	if (m_TextureShader)
 	{
-		m_ColorShader->Shutdown();
-		delete m_ColorShader;
-		m_ColorShader = nullptr;
+		m_TextureShader->Shutdown();
+		delete m_TextureShader;
+		m_TextureShader = nullptr;
 	}
 }
 
@@ -88,7 +88,7 @@ bool Graphics::Frame()
 
 bool Graphics::Render()
 {
-	if (m_D3D && m_Camera && m_ColorShader)
+	if (m_D3D && m_Camera && m_TextureShader)
 	{
 		D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
 		bool result;
@@ -104,7 +104,7 @@ bool Graphics::Render()
 		for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
 		{
 			(*it)->Render(m_D3D->GetDeviceContext());
-			result = m_ColorShader->Render(m_D3D->GetDeviceContext(), (*it)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+			result = m_TextureShader->Render(m_D3D->GetDeviceContext(), (*it)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, (*it)->GetTexture());
 			if (!result) return false;
 		}
 
@@ -133,19 +133,19 @@ bool Graphics::InitializeModels()
 	bool result;
 	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice());
+	result = myModel->Initialize(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
 	if (!result) return false;
 	models.push_back(myModel);
 
-	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f));
+	myModel = new Model(D3DXVECTOR3(3.0f, 2.0f, 0.0f));
 	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice());
+	result = myModel->Initialize(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
 	if (!result) return false;
 	models.push_back(myModel);
 
 	myModel = new Sprite2D(D3DXVECTOR3(0.0f, -3.0f, 0.0f));
 	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice());
+	result = myModel->Initialize(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
 	if (!result) return false;
 	models.push_back(myModel);
 

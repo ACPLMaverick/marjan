@@ -12,7 +12,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Sprite2D.h"
-#include "ColorShader.h"
+#include "TextureShader.h"
 
 // globals
 const bool FULL_SCREEN = false;
@@ -28,7 +28,7 @@ private:
 	Direct3D* m_D3D;
 	Camera* m_Camera;
 	vector<Model*> models;
-	ColorShader* m_ColorShader;
+	TextureShader* m_TextureShader;
 
 	bool Render();
 	bool InitializeModels();

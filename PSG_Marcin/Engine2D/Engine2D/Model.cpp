@@ -6,6 +6,7 @@ Model::Model()
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
 	position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_texture = nullptr;
 }
 
 Model::Model(D3DXVECTOR3 position)
@@ -13,6 +14,7 @@ Model::Model(D3DXVECTOR3 position)
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
 	this->position = position;
+	m_texture = nullptr;
 }
 
 Model::Model(const Model& other)
@@ -24,16 +26,22 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device)
+bool Model::Initialize(ID3D11Device* device, LPCSTR texFilename)
 {
 	bool result;
 	result = InitializeBuffers(device);
 	if (!result) return false;
+
+	// loading texture
+	result = LoadTexture(device, texFilename);
+	if (!result) return false;
+
 	return true;
 }
 
 void Model::Shutdown()
 {
+	ReleaseTexture();
 	ShutdownBuffers();
 }
 
@@ -48,6 +56,11 @@ int Model::GetIndexCount()
 	return m_indexCount;
 }
 
+ID3D11ShaderResourceView* Model::GetTexture()
+{
+	return m_texture->GetTexture();
+}
+
 Model::VertexIndex Model::LoadGeometry()
 {
 	Vertex* vertices;
@@ -60,12 +73,13 @@ Model::VertexIndex Model::LoadGeometry()
 	indices = new unsigned long[m_indexCount];
 
 	// load vertex array with data
+	// texture coords
 	vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f) + position; // BL
-	vertices[0].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[0].texture = D3DXVECTOR2(0.0f, 0.0f);
 	vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f) + position; // TL
-	vertices[1].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[1].texture = D3DXVECTOR2(0.0f, 1.0f);
 	vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f) + position; // BR
-	vertices[2].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[2].texture = D3DXVECTOR2(1.0f, 0.0f);
 
 	// load index array with data
 	indices[0] = 0; // BL
@@ -162,4 +176,26 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	// set type of a primitive that should be drawn !!!!!!!!!!!!!
 	deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+bool Model::LoadTexture(ID3D11Device* device, LPCSTR filename)
+{
+	bool result;
+
+	m_texture = new Texture();
+	if (!m_texture) return false;
+
+	result = m_texture->Initialize(device, filename);
+	if (!result) return false;
+	return true;
+}
+
+void Model::ReleaseTexture()
+{
+	if (m_texture)
+	{
+		m_texture->Shutdown();
+		delete m_texture;
+		m_texture = nullptr;
+	}
 }

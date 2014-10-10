@@ -26,13 +26,13 @@ Sprite2D::VertexIndex Sprite2D::LoadGeometry()
 
 	// load vertex array with data
 	vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f) + position; // BL
-	vertices[0].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[0].texture = D3DXVECTOR2(0.0f, 1.0f);
 	vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f) + position; // TL
-	vertices[1].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[1].texture = D3DXVECTOR2(0.0f, 0.0f);
 	vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f) + position; // BR
-	vertices[2].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[2].texture = D3DXVECTOR2(1.0f, 1.0f);
 	vertices[3].position = D3DXVECTOR3(1.0f, 1.0f, 0.0f) + position; // TR
-	vertices[3].color = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[3].texture = D3DXVECTOR2(1.0f, 0.0f);
 
 	// load index array with data
 	indices[0] = 0; // BL
