@@ -9,12 +9,14 @@ Model::Model()
 	m_texture = nullptr;
 }
 
-Model::Model(D3DXVECTOR3 position)
+Model::Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, Texture* texture)
 {
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
 	this->position = position;
-	m_texture = nullptr;
+	this->rotation = rotation;
+	this->scale = scale;
+	m_texture = texture;
 }
 
 Model::Model(const Model& other)

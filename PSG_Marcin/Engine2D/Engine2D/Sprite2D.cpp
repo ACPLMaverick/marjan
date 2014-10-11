@@ -5,7 +5,7 @@ Sprite2D::Sprite2D() : Model()
 {
 }
 
-Sprite2D::Sprite2D(D3DXVECTOR3 position) : Model(position)
+Sprite2D::Sprite2D(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, Texture* texture) : Model(position, rotation, scale, texture)
 {
 }
 

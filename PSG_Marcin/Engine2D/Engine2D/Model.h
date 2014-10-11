@@ -25,8 +25,6 @@ protected:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount;
 
-	D3DXVECTOR3 position;
-
 	Texture* m_texture;
 
 	bool InitializeBuffers(ID3D11Device*);
@@ -39,8 +37,12 @@ protected:
 
 	virtual VertexIndex LoadGeometry();
 public:
+	D3DXVECTOR3 position;
+	D3DXVECTOR3 rotation;
+	D3DXVECTOR3 scale;
+
 	Model();
-	Model(D3DXVECTOR3 position);
+	Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, Texture* texture);
 	Model(const Model&);
 	~Model();
 

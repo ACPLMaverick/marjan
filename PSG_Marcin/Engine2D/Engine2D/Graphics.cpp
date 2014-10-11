@@ -131,19 +131,19 @@ bool Graphics::InitializeModels()
 	// tu dodajemy nowe modele;
 	Model* myModel;
 	bool result;
-	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), nullptr);
 	if (!myModel) return false;
 	result = myModel->Initialize(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
 	if (!result) return false;
 	models.push_back(myModel);
 
-	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f));
+	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), nullptr);
 	if (!myModel) return false;
 	result = myModel->Initialize(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
 	if (!result) return false;
 	models.push_back(myModel);
 
-	myModel = new Sprite2D(D3DXVECTOR3(0.0f, -3.0f, 0.0f));
+	myModel = new Sprite2D(D3DXVECTOR3(0.0f, -3.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), nullptr);
 	if (!myModel) return false;
 	result = myModel->Initialize(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
 	if (!result) return false;

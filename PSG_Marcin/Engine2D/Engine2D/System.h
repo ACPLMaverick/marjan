@@ -6,10 +6,14 @@
 
 // INCLUDES
 #include <Windows.h>
+#include <vector>
 
 // MY CLASS INCLUDES
 #include "Graphics.h"
 #include "Input.h"
+#include "GameObject.h"
+#include "ShaderManager.h"
+#include "TextureManager.h"
 
 class System
 {
@@ -20,6 +24,10 @@ private:
 
 	Input* myInput;
 	Graphics* myGraphics;
+	ShaderManager* shaderManager;
+	TextureManager* textureManager;
+
+	vector<GameObject*> gameObjects;
 
 	bool Frame();
 	void InitializeWindows(int&, int&);
