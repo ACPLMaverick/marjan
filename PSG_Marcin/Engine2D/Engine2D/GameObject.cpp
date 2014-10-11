@@ -32,9 +32,9 @@ GameObject::~GameObject()
 bool GameObject::InitializeModel(ID3D11Device* device)
 {
 	bool result;
-	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), nullptr);
+	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	if (!myModel) return false;
-	result = myModel->Initialize(device, "./Assets/Textures/noTexture.dds");
+	result = myModel->Initialize(device, myTexture);
 	if (!result) return false;
 }
 

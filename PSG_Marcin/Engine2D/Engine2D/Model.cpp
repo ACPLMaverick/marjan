@@ -9,14 +9,13 @@ Model::Model()
 	m_texture = nullptr;
 }
 
-Model::Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, Texture* texture)
+Model::Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale)
 {
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
 	this->position = position;
 	this->rotation = rotation;
 	this->scale = scale;
-	m_texture = texture;
 }
 
 Model::Model(const Model& other)
@@ -28,22 +27,23 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device, LPCSTR texFilename)
+bool Model::Initialize(ID3D11Device* device, Texture* texture)
 {
 	bool result;
 	result = InitializeBuffers(device);
 	if (!result) return false;
 
 	// loading texture
-	result = LoadTexture(device, texFilename);
-	if (!result) return false;
+	/*result = LoadTexture(device, texFilename);
+	if (!result) return false;*/
+	m_texture = texture;
 
 	return true;
 }
 
 void Model::Shutdown()
 {
-	ReleaseTexture();
+	//ReleaseTexture();
 	ShutdownBuffers();
 }
 

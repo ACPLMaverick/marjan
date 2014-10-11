@@ -29,6 +29,8 @@ private:
 	Camera* m_Camera;
 	vector<Model*> models;
 	TextureShader* m_TextureShader;
+	Texture* TEMP_texture;
+	Texture* TEMP_texture2;
 
 	bool Render();
 	bool InitializeModels();

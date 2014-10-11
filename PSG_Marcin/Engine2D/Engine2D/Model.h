@@ -42,11 +42,11 @@ public:
 	D3DXVECTOR3 scale;
 
 	Model();
-	Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, Texture* texture);
+	Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	Model(const Model&);
 	~Model();
 
-	bool Initialize(ID3D11Device*, LPCSTR texFilename);
+	bool Initialize(ID3D11Device*, Texture* texture);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
