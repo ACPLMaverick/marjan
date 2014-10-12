@@ -24,8 +24,6 @@ private:
 
 	Input* myInput;
 	Graphics* myGraphics;
-	ShaderManager* shaderManager;
-	TextureManager* textureManager;
 
 	vector<GameObject*> gameObjects;
 

@@ -13,6 +13,8 @@
 #include "Model.h"
 #include "Sprite2D.h"
 #include "TextureShader.h"
+#include "TextureManager.h"
+#include "ShaderManager.h"
 
 // globals
 const bool FULL_SCREEN = false;
@@ -29,11 +31,13 @@ private:
 	Camera* m_Camera;
 	vector<Model*> models;
 	TextureShader* m_TextureShader;
-	Texture* TEMP_texture;
-	Texture* TEMP_texture2;
+
+	TextureManager* textureManager;
+	ShaderManager* shaderManager;
 
 	bool Render();
 	bool InitializeModels();
+	bool InitializeManagers();
 	void RelaseModels();
 public:
 	Graphics();

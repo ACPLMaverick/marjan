@@ -5,8 +5,6 @@ System::System()
 {
 	myInput = nullptr;
 	myGraphics = nullptr;
-	shaderManager = nullptr;
-	textureManager = nullptr;
 }
 
 
@@ -31,9 +29,6 @@ bool System::Initialize()
 	result = myGraphics->Initialize(screenWidth, screenHeight, m_hwnd);
 	if (!result) return false;
 
-	textureManager = new TextureManager();
-	shaderManager = new ShaderManager();
-
 	return true;
 }
 
@@ -50,16 +45,6 @@ void System::Shutdown()
 	{
 		delete myInput;
 		myInput = nullptr;
-	}
-	if (textureManager)
-	{
-		delete textureManager;
-		textureManager = nullptr;
-	}
-	if (shaderManager)
-	{
-		delete shaderManager;
-		shaderManager = nullptr;
 	}
 
 	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)

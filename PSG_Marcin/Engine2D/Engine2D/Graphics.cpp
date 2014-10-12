@@ -35,10 +35,10 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Camera) return false;
 	m_Camera->SetPosition(0.0f, 0.0f, -30.0f);
 
-	TEMP_texture = new Texture();
-	TEMP_texture->Initialize(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
-	TEMP_texture2 = new Texture();
-	TEMP_texture2->Initialize(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
+	//TEMP_texture = new Texture();
+	//TEMP_texture->Initialize(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
+
+	InitializeManagers();
 
 	result = InitializeModels();
 	if (!result)
@@ -79,17 +79,16 @@ void Graphics::Shutdown()
 		delete m_TextureShader;
 		m_TextureShader = nullptr;
 	}
-	if (TEMP_texture)
+	if (textureManager)
 	{
-		TEMP_texture->Shutdown();
-		delete TEMP_texture;
-		TEMP_texture = nullptr;
+		textureManager->Shutdown();
+		delete textureManager;
+		textureManager = nullptr;
 	}
-	if (TEMP_texture2)
+	if (shaderManager)
 	{
-		TEMP_texture2->Shutdown();
-		delete TEMP_texture2;
-		TEMP_texture2 = nullptr;
+		delete shaderManager;
+		shaderManager = nullptr;
 	}
 }
 
@@ -150,19 +149,19 @@ bool Graphics::InitializeModels()
 	bool result;
 	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice(), TEMP_texture);
+	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 0));
 	if (!result) return false;
 	models.push_back(myModel);
 
 	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice(), TEMP_texture);
+	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 1));
 	if (!result) return false;
 	models.push_back(myModel);
 
 	myModel = new Sprite2D(D3DXVECTOR3(0.0f, -3.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice(), TEMP_texture2);
+	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 1));
 	if (!result) return false;
 	models.push_back(myModel);
 
@@ -178,4 +177,16 @@ void Graphics::RelaseModels()
 		(*it) = nullptr;
 	}
 	models.clear();
+}
+
+bool Graphics::InitializeManagers()
+{
+	textureManager = new TextureManager();
+
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
+
+	shaderManager = new ShaderManager();
+
+	return true;
 }
