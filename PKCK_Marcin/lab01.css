@@ -1,21 +1,68 @@
-ksiegarnia
+﻿księgarnia
 {
-    background-color:#F1F1A6;
+    background-color:#FEF4C1;
     font-family:Calibri;
     font-size:large;
-}
-
-dzial
-{
-    display:block;
-}
-
-ksiazka
-{
     display:table;
+    /*border:solid;
+    border-color:black;
+    border-width:3px;*/
+    width:1600px;
 }
 
-tytul,autor,rok_wydania,isbn,cena
+header
 {
+    font-size:large;
+    font-weight:bold;
+    display:block;
+    border:solid;
+    border-color:gray;
+    border-width:2px;
+    background-color:#FFE145;
+}
+
+header_author, header_title, header_yr, header_isbn, header_price
+{
+    display:table-cell;
+    width:350px;
+    border-color:inherit;
+    border-style:inherit;
+    border-width:inherit;
+    margin-left:5px;
+}
+
+dział
+{
+    list-style:upper-roman;
+    list-style-position:initial;
+    display:list-item;
+    margin-left: 2em;
+    /*border:solid;
+    border-color:black;
+    border-width:2px;*/
+    font-size:larger;
+    font-weight:bold;
+    /*background-color:lightgray;*/
+}
+
+książka
+{
+    font-size:large;
+    font-weight:normal;
+    background-color:#F1F1A6;
     display:table-row;
+    border:solid;
+    border-color:darkgrey;
+    border-width:1px;
+    width:inherit;
+    align-content:center;
+}
+
+tytuł,autor,rok_wydania,isbn,cena
+{
+    display:table-cell;
+    width:350px;
+    border:inherit;
+    border-color:inherit;
+    border-width:inherit;
 }
