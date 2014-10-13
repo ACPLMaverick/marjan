@@ -30,14 +30,14 @@ private:
 	Direct3D* m_D3D;
 	Camera* m_Camera;
 	vector<Model*> models;
-	TextureShader* m_TextureShader;
+	HWND myHwnd;
 
 	TextureManager* textureManager;
 	ShaderManager* shaderManager;
 
 	bool Render();
 	bool InitializeModels();
-	bool InitializeManagers();
+	bool InitializeManagers(HWND hwnd);
 	void RelaseModels();
 public:
 	Graphics();

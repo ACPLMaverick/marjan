@@ -22,6 +22,12 @@ autor_dokumentu, desc
     width:250px;
 }
 
+autor_dokumentu:first-letter, desc:first-letter
+{
+    color:red;
+    font-size:larger;
+}
+
 header
 {
     font-size:large;

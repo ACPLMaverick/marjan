@@ -5,7 +5,6 @@ Graphics::Graphics()
 {
 	m_D3D = nullptr;
 	m_Camera = nullptr;
-	m_TextureShader = nullptr;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -20,6 +19,7 @@ Graphics::~Graphics()
 bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
+	myHwnd = hwnd;
 
 	m_D3D = new Direct3D();
 	if (!m_D3D) return false;
@@ -38,21 +38,12 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//TEMP_texture = new Texture();
 	//TEMP_texture->Initialize(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
 
-	InitializeManagers();
+	InitializeManagers(myHwnd);
 
 	result = InitializeModels();
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize models!", "Error", MB_OK);
-		return false;
-	}
-
-	m_TextureShader = new TextureShader();
-	if (!m_TextureShader) return false;
-	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
-	if (!result)
-	{
-		MessageBox(hwnd, "Could not initialize the texture shader", "Error", MB_OK);
 		return false;
 	}
 	
@@ -73,12 +64,6 @@ void Graphics::Shutdown()
 		m_Camera = nullptr;
 	}
 	RelaseModels();
-	if (m_TextureShader)
-	{
-		m_TextureShader->Shutdown();
-		delete m_TextureShader;
-		m_TextureShader = nullptr;
-	}
 	if (textureManager)
 	{
 		textureManager->Shutdown();
@@ -87,6 +72,7 @@ void Graphics::Shutdown()
 	}
 	if (shaderManager)
 	{
+		shaderManager->Shutdown();
 		delete shaderManager;
 		shaderManager = nullptr;
 	}
@@ -104,7 +90,7 @@ bool Graphics::Frame()
 
 bool Graphics::Render()
 {
-	if (m_D3D && m_Camera && m_TextureShader)
+	if (m_D3D && m_Camera)
 	{
 		D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix;
 		bool result;
@@ -120,7 +106,8 @@ bool Graphics::Render()
 		for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
 		{
 			(*it)->Render(m_D3D->GetDeviceContext());
-			result = m_TextureShader->Render(m_D3D->GetDeviceContext(), (*it)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, (*it)->GetTexture());
+			TextureShader* myShader = shaderManager->LoadShader(m_D3D->GetDevice(), myHwnd, 0);
+			result = myShader->Render(m_D3D->GetDeviceContext(), (*it)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, (*it)->GetTexture());
 			if (!result) return false;
 		}
 
@@ -179,7 +166,7 @@ void Graphics::RelaseModels()
 	models.clear();
 }
 
-bool Graphics::InitializeManagers()
+bool Graphics::InitializeManagers(HWND hwnd)
 {
 	textureManager = new TextureManager();
 
@@ -187,6 +174,12 @@ bool Graphics::InitializeManagers()
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
 
 	shaderManager = new ShaderManager();
+	bool result = shaderManager->AddShader(m_D3D->GetDevice(), hwnd, "TextureShader");
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the texture shader", "Error", MB_OK);
+		return false;
+	}
 
 	return true;
 }
