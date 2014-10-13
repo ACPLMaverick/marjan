@@ -2,15 +2,23 @@
 <?xml-stylesheet href="lab01.css" type="text/css"?>
 
 <!DOCTYPE księgarnia [
-  <!ELEMENT księgarnia (author, desc?) >
-  <!ELEMENT dział (nazwa) >
-  <!ELEMENT header (#PCDATA)>
+  <!ELEMENT księgarnia (#PCDATA | autor_dokumentu | desc | dział)* >
+  <!ATTLIST księgarnia 
+      author CDATA #REQUIRED
+      desc CDATA #REQUIRED>
+  <!ELEMENT autor_dokumentu (#PCDATA)>
+  <!ELEMENT desc (#PCDATA)>
+  <!ELEMENT dział (#PCDATA | header | książka)* >
+  <!ATTLIST dział
+      nazwa (fantasy | sci-fi | biografie | historyczne | poradniki | naukowe | kryminały | horrory | romansidła) #REQUIRED>
+  <!ELEMENT header (header_title, header_author, header_yr, header_isbn, header_price)>
   <!ELEMENT header_title (#PCDATA) >
   <!ELEMENT header_author (#PCDATA) >
   <!ELEMENT header_yr (#PCDATA) >
   <!ELEMENT header_isbn (#PCDATA) >
   <!ELEMENT header_price (#PCDATA) >
-  <!ELEMENT książka (id) >
+  <!ELEMENT książka (tytuł, autor, rok_wydania?, isbn?, cena?) >
+  <!ATTLIST książka id ID #REQUIRED>
   <!ELEMENT tytuł (#PCDATA) >
   <!ELEMENT autor (#PCDATA) >
   <!ELEMENT rok_wydania (#PCDATA) >
@@ -20,6 +28,12 @@
   
 
 <księgarnia author="Marcin Wawrzonowski" desc="Księgarnia">
+  <autor_dokumentu>
+    Marcin Wawrzonowski
+  </autor_dokumentu>
+  <desc>
+    Księgarnia
+  </desc>
   <dział nazwa="fantasy">
     Fantasy
     <header>
@@ -39,7 +53,7 @@
         CENA DET.
       </header_price>
      </header>
-    <książka id="1">
+    <książka id="id1">
       <tytuł>
         Miecz przeznaczenia
       </tytuł>
@@ -56,7 +70,7 @@
         20.00 zł
       </cena>
     </książka>
-    <książka id="2">
+    <książka id="id2">
       <tytuł>
         Żmija
       </tytuł>
@@ -73,7 +87,7 @@
         33.99 zł
       </cena>
     </książka>
-  <książka id="3">
+  <książka id="id3">
       <tytuł>
         Dzieci H&#250;rina
       </tytuł>
@@ -90,7 +104,7 @@
         39.80 zł
       </cena>
     </książka>
-    <książka id="4">
+    <książka id="id4">
       <tytuł>
         Metro 2033
       </tytuł>
@@ -107,7 +121,7 @@
         39.90 zł
       </cena>
     </książka>
-    <książka id="5">
+    <książka id="id5">
       <tytuł>
         Piter
       </tytuł>
@@ -144,7 +158,7 @@
       CENA DET.
     </header_price>
   </header>
-    <książka id="6">
+    <książka id="id6">
       <tytuł>
         Przestrzeń objawienia
       </tytuł>
@@ -161,7 +175,7 @@
         59.99 zł
       </cena>
     </książka>
-    <książka id="7">
+    <książka id="id7">
       <tytuł>
         Atalaya: Wojownicy
       </tytuł>
@@ -178,7 +192,7 @@
         39.99 zł
       </cena>
     </książka>
-  <książka id="8">
+  <książka id="id8">
       <tytuł>
         Piknik na skraju drogi
       </tytuł>
@@ -195,7 +209,7 @@
         19.90 zł
       </cena>
     </książka>
-    <książka id="9">
+    <książka id="id9">
       <tytuł>
         Czas Horusa
       </tytuł>
@@ -212,7 +226,7 @@
         39.90 zł
       </cena>
     </książka>
-    <książka id="10">
+    <książka id="id10">
       <tytuł>
         Darth Bane. Droga zagłady
       </tytuł>
@@ -249,7 +263,7 @@
       CENA DET.
     </header_price>
   </header>
-    <książka id ="11">
+    <książka id ="id11">
       <tytuł>
         Sztuka wojenna
       </tytuł>
@@ -266,7 +280,7 @@
         60.00 zł
       </cena>
     </książka>
-    <książka id ="12">
+    <książka id ="id12">
       <tytuł>
         Archipelag GUŁag
       </tytuł>
@@ -283,7 +297,7 @@
         85.00 zł
       </cena>
     </książka>
-  <książka id ="13">
+  <książka id ="id13">
       <tytuł>
         Życie i los
       </tytuł>
@@ -300,7 +314,7 @@
         69.00 zł
       </cena>
     </książka>
-  <książka id ="14">
+  <książka id ="id14">
       <tytuł>
         Specnaz
       </tytuł>
@@ -317,7 +331,7 @@
         42.00 zł
       </cena>
     </książka>
-  <książka id ="15">
+  <książka id ="id15">
       <tytuł>
         Afgańcy: Ostatnia wojna imperium
       </tytuł>
@@ -354,7 +368,7 @@
       CENA DET.
     </header_price>
   </header>
-    <książka id ="16">
+    <książka id ="id16">
       <tytuł>
         Colin McRae: Autobiografia legendy WRC
       </tytuł>
@@ -371,7 +385,7 @@
         39.90 zł
       </cena>
     </książka>
-    <książka id ="17">
+    <książka id ="id17">
       <tytuł>
         Mój styl jazdy
       </tytuł>
@@ -388,7 +402,7 @@
         85.00 zł
       </cena>
     </książka>
-  <książka id ="18">
+  <książka id ="id18">
       <tytuł>
         Tajna wojna Chruszczowa
       </tytuł>
@@ -405,7 +419,7 @@
         59.00 zł
       </cena>
     </książka>
-  <książka id ="19">
+  <książka id ="id19">
       <tytuł>
         Stalin. Dwór czerwonego cara
       </tytuł>
@@ -422,7 +436,7 @@
         70.00 zł
       </cena>
     </książka>
-  <książka id ="20">
+  <książka id ="id20">
       <tytuł>
         Hitler. Studium tyranii
       </tytuł>
