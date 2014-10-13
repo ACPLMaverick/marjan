@@ -76,11 +76,11 @@ Model::VertexIndex Model::LoadGeometry()
 
 	// load vertex array with data
 	// texture coords
-	vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f) + position; // BL
+	vertices[0].position = D3DXVECTOR3(-1.0f*scale.x, -1.0f*scale.y, 0.0f*scale.z) + position; // BL
 	vertices[0].texture = D3DXVECTOR2(0.0f, 0.0f);
-	vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f) + position; // TL
+	vertices[1].position = D3DXVECTOR3(-1.0f*scale.x, 1.0f*scale.y, 0.0f*scale.z) + position; // TL
 	vertices[1].texture = D3DXVECTOR2(0.0f, 1.0f);
-	vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f) + position; // BR
+	vertices[2].position = D3DXVECTOR3(1.0f*scale.x, -1.0f*scale.y, 0.0f*scale.z) + position; // BR
 	vertices[2].texture = D3DXVECTOR2(1.0f, 0.0f);
 
 	// load index array with data

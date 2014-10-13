@@ -27,7 +27,7 @@ public:
 	D3DXVECTOR3 scale;
 
 	GameObject();
-	GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device*);
+	GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	GameObject(const GameObject&);
 	~GameObject();
 

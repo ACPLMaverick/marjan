@@ -5,34 +5,34 @@ GameObject::GameObject()
 {
 	position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	scale = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	myModel = nullptr;
 	myTexture = nullptr;
 	myShader = nullptr;
 }
 
-GameObject::GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device* device) : GameObject()
+GameObject::GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale) : GameObject()
 {
 	myName = name;
 	myTag = tag;
-	
-	myTexture = texture;
-	InitializeModel(device);
-	myShader = shader;
-	position = myModel->position;
-	rotation = myModel->rotation;
-	scale = myModel->scale;
-}
+	this->position = position;
+	this->rotation = rotation;
+	this->scale = scale;
 
+	myTexture = texture;
+	myShader = shader;
+	InitializeModel(device);
+}
 GameObject::~GameObject()
 {
-
+	//Destroy();
+	// possible memory leak?
 }
 
 bool GameObject::InitializeModel(ID3D11Device* device)
 {
 	bool result;
-	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	myModel = new Sprite2D(this->position, this->rotation, this->scale);
 	if (!myModel) return false;
 	result = myModel->Initialize(device, myTexture);
 	if (!result) return false;

@@ -15,6 +15,7 @@
 #include "TextureShader.h"
 #include "TextureManager.h"
 #include "ShaderManager.h"
+#include "GameObject.h"
 
 // globals
 const bool FULL_SCREEN = false;
@@ -35,10 +36,10 @@ private:
 	TextureManager* textureManager;
 	ShaderManager* shaderManager;
 
-	bool Render();
-	bool InitializeModels();
+	bool Render(GameObject* objects[], unsigned int objectCount);
+	//bool InitializeModels();
 	bool InitializeManagers(HWND hwnd);
-	void RelaseModels();
+	//void RelaseModels();
 public:
 	Graphics();
 	Graphics(const Graphics&);
@@ -46,7 +47,11 @@ public:
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
-	bool Frame();
+	bool Frame(GameObject* objects[], unsigned int objectCount);
+
+	TextureManager* GetTextures();
+	ShaderManager* GetShaders();
+	Direct3D* GetD3D();
 };
 
 #endif

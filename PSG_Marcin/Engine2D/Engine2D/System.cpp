@@ -29,6 +29,8 @@ bool System::Initialize()
 	result = myGraphics->Initialize(screenWidth, screenHeight, m_hwnd);
 	if (!result) return false;
 
+	InitializeGameObjects();
+
 	return true;
 }
 
@@ -97,9 +99,79 @@ bool System::Frame()
 
 	if (myInput->IsKeyDown(VK_ESCAPE)) return false;
 
-	result = myGraphics->Frame();
+	GameObject** goTab = new GameObject*[gameObjects.size()];
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		goTab[i] = gameObjects.at(i);
+	}
+	result = myGraphics->Frame(goTab, gameObjects.size());
 	if (!result) return false;
 	return true;
+}
+
+void System::InitializeGameObjects()
+{
+	GameObject* go01 = new GameObject(
+		"player", 
+		"player", 
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/noTexture.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	gameObjects.push_back(go01);
+
+	GameObject* go02 = new GameObject(
+		"enemy",
+		"enemies",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(-5.0f, 5.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	gameObjects.push_back(go02);
+
+	GameObject* go03 = new GameObject(
+		"board",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(15.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go03);
+}
+
+GameObject* System::GetGameObjectByName(LPCSTR name)
+{
+	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if ((*it)->GetName() == name) return (*it);
+	}
+	return nullptr;
+}
+
+void System::GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count)
+{
+	unsigned int c = 0;
+	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if ((*it)->GetTag() == tag) c++;
+	}
+	ptr = new GameObject*[c];
+	c = 0;
+	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if ((*it)->GetTag() == tag)
+		{
+			ptr[c] = (*it);
+			c++;
+		}
+	}
+	count = c;
 }
 
 LRESULT CALLBACK System::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)

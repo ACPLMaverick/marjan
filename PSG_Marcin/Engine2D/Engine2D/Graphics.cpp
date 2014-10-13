@@ -40,12 +40,12 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	InitializeManagers(myHwnd);
 
-	result = InitializeModels();
-	if (!result)
-	{
-		MessageBox(hwnd, "Could not initialize models!", "Error", MB_OK);
-		return false;
-	}
+	//result = InitializeModels();
+	//if (!result)
+	//{
+	//	MessageBox(hwnd, "Could not initialize models!", "Error", MB_OK);
+	//	return false;
+	//}
 	
 	return true;
 }
@@ -63,7 +63,7 @@ void Graphics::Shutdown()
 		delete m_Camera;
 		m_Camera = nullptr;
 	}
-	RelaseModels();
+	//RelaseModels();
 	if (textureManager)
 	{
 		textureManager->Shutdown();
@@ -78,17 +78,17 @@ void Graphics::Shutdown()
 	}
 }
 
-bool Graphics::Frame()
+bool Graphics::Frame(GameObject* objects[], unsigned int objectCount)
 {
 	bool result;
 
-	result = Render();
+	result = Render(objects, objectCount);
 	if (!result) return false;
 	
 	return true;
 }
 
-bool Graphics::Render()
+bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 {
 	if (m_D3D && m_Camera)
 	{
@@ -103,14 +103,18 @@ bool Graphics::Render()
 		m_D3D->GetWorldnMatrix(worldMatrix);
 		m_D3D->GetProjectionMatrix(projectionMatrix);
 
-		for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
+		//for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
+		//{
+		//	(*it)->Render(m_D3D->GetDeviceContext());
+		//	TextureShader* myShader = shaderManager->LoadShader(m_D3D->GetDevice(), myHwnd, 0);
+		//	result = myShader->Render(m_D3D->GetDeviceContext(), (*it)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, (*it)->GetTexture());
+		//	if (!result) return false;
+		//}
+		for (int i = 0; i < objectCount; i++)
 		{
-			(*it)->Render(m_D3D->GetDeviceContext());
-			TextureShader* myShader = shaderManager->LoadShader(m_D3D->GetDevice(), myHwnd, 0);
-			result = myShader->Render(m_D3D->GetDeviceContext(), (*it)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, (*it)->GetTexture());
-			if (!result) return false;
+			objects[i]->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
 		}
-
+		delete[] objects;
 		// put the model vertex and index buffers on the graphics pipeline to prepare them for drawing
 		//m_Model->Render(m_D3D->GetDeviceContext());
 
@@ -129,42 +133,42 @@ bool Graphics::Render()
 	else return false;
 }
 
-bool Graphics::InitializeModels()
-{
-	// tu dodajemy nowe modele;
-	Model* myModel;
-	bool result;
-	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 0));
-	if (!result) return false;
-	models.push_back(myModel);
-
-	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 1));
-	if (!result) return false;
-	models.push_back(myModel);
-
-	myModel = new Sprite2D(D3DXVECTOR3(0.0f, -3.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	if (!myModel) return false;
-	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 1));
-	if (!result) return false;
-	models.push_back(myModel);
-
-	return true;
-}
-
-void Graphics::RelaseModels()
-{
-	for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
-	{
-		if (*it) (*it)->Shutdown();
-		delete (*it);
-		(*it) = nullptr;
-	}
-	models.clear();
-}
+//bool Graphics::InitializeModels()
+//{
+//	// tu dodajemy nowe modele;
+//	Model* myModel;
+//	bool result;
+//	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+//	if (!myModel) return false;
+//	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 0));
+//	if (!result) return false;
+//	models.push_back(myModel);
+//
+//	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+//	if (!myModel) return false;
+//	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 1));
+//	if (!result) return false;
+//	models.push_back(myModel);
+//
+//	myModel = new Sprite2D(D3DXVECTOR3(0.0f, -3.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+//	if (!myModel) return false;
+//	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 1));
+//	if (!result) return false;
+//	models.push_back(myModel);
+//
+//	return true;
+//}
+//
+//void Graphics::RelaseModels()
+//{
+//	for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
+//	{
+//		if (*it) (*it)->Shutdown();
+//		delete (*it);
+//		(*it) = nullptr;
+//	}
+//	models.clear();
+//}
 
 bool Graphics::InitializeManagers(HWND hwnd)
 {
@@ -172,6 +176,7 @@ bool Graphics::InitializeManagers(HWND hwnd)
 
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/moss_01_d.dds");
 
 	shaderManager = new ShaderManager();
 	bool result = shaderManager->AddShader(m_D3D->GetDevice(), hwnd, "TextureShader");
@@ -182,4 +187,19 @@ bool Graphics::InitializeManagers(HWND hwnd)
 	}
 
 	return true;
+}
+
+TextureManager* Graphics::GetTextures()
+{
+	return textureManager;
+}
+
+ShaderManager* Graphics::GetShaders()
+{
+	return shaderManager;
+}
+
+Direct3D* Graphics::GetD3D()
+{
+	return m_D3D;
 }

@@ -30,6 +30,9 @@ private:
 	bool Frame();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
+	void InitializeGameObjects();
+	GameObject* GetGameObjectByName(LPCSTR name);
+	void GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count);
 public:
 	System();
 	System(const System&);
