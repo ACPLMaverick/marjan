@@ -3,6 +3,8 @@
 // includes
 #include <d3d11.h>
 #include <d3dx10math.h>
+#include <string>
+using namespace std;
 
 // my classes
 #include "Texture.h"
@@ -22,8 +24,11 @@ protected:
 		unsigned long* indexArrayPtr;
 	};
 
+	ID3D11Device* myDevice;
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount;
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 
 	Texture* m_texture;
 
@@ -35,7 +40,7 @@ protected:
 	bool LoadTexture(ID3D11Device*, LPCSTR);
 	void ReleaseTexture();
 
-	virtual VertexIndex LoadGeometry();
+	virtual VertexIndex* LoadGeometry();
 public:
 	D3DXVECTOR3 position;
 	D3DXVECTOR3 rotation;

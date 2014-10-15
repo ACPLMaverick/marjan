@@ -29,6 +29,7 @@ Model::~Model()
 
 bool Model::Initialize(ID3D11Device* device, Texture* texture)
 {
+	myDevice = device;
 	bool result;
 	result = InitializeBuffers(device);
 	if (!result) return false;
@@ -49,6 +50,7 @@ void Model::Shutdown()
 
 void Model::Render(ID3D11DeviceContext* deviceContext)
 {
+	UpdateBuffers(myDevice);
 	// put the vertex and index buffers on a graphics pipeline to prepare them for drawing
 	RenderBuffers(deviceContext);
 }
@@ -63,7 +65,7 @@ ID3D11ShaderResourceView* Model::GetTexture()
 	return m_texture->GetTexture();
 }
 
-Model::VertexIndex Model::LoadGeometry()
+Model::VertexIndex* Model::LoadGeometry()
 {
 	Vertex* vertices;
 	unsigned long* indices;
@@ -88,9 +90,9 @@ Model::VertexIndex Model::LoadGeometry()
 	indices[1] = 1; // TL
 	indices[2] = 2; // BR
 
-	VertexIndex toReturn;
-	toReturn.vertexArrayPtr = vertices;
-	toReturn.indexArrayPtr = indices;
+	VertexIndex* toReturn = new VertexIndex;
+	toReturn->vertexArrayPtr = vertices;
+	toReturn->indexArrayPtr = indices;
 	return toReturn;
 }
 
@@ -98,13 +100,11 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 {
 	Vertex* vertices = nullptr;
 	unsigned long* indices = nullptr;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
 
-	VertexIndex set = LoadGeometry();
-	vertices = set.vertexArrayPtr;
-	indices = set.indexArrayPtr;
+	VertexIndex* set = LoadGeometry();
+	vertices = set->vertexArrayPtr;
+	indices = set->indexArrayPtr;
 
 	// setup description of static vertex buffer
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -144,13 +144,51 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	vertices = nullptr;
 	delete[] indices;
 	indices = nullptr;
-	
+	delete set;
+
 	return true;
 }
 
 void Model::UpdateBuffers(ID3D11Device* device)
 {
 	// tba
+	//InitializeBuffers(device);
+
+	//string debug = to_string(position.x) + " " + to_string(position.y) + "\n";
+	//OutputDebugString(debug.c_str());
+	m_indexBuffer->Release();
+	m_vertexBuffer->Release();
+
+	Vertex* vertices = nullptr;
+	unsigned long* indices = nullptr;
+	
+	HRESULT result;
+
+	VertexIndex* set = LoadGeometry();
+	vertices = set->vertexArrayPtr;
+	indices = set->indexArrayPtr;
+
+	// give the subresource structure a pointer to the vertex data
+	vertexData.pSysMem = vertices;
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	// create vertex buffer
+	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer);
+
+	indexData.pSysMem = indices;
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+
+	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
+
+	/////
+
+	delete[] vertices;
+	vertices = nullptr;
+	delete[] indices;
+	indices = nullptr;
+	delete set;
 }
 
 void Model::ShutdownBuffers()
@@ -183,6 +221,8 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	// set type of a primitive that should be drawn !!!!!!!!!!!!!
 	deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	string debug = to_string(rotation.z) + "\n";
 }
 
 bool Model::LoadTexture(ID3D11Device* device, LPCSTR filename)

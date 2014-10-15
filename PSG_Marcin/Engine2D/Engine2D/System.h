@@ -1,6 +1,4 @@
-#ifndef _SYSTEM_H_
-#define _SYSTEM_H_
-
+#pragma once
 // PREPROCESSOR
 #define WIN32_LEAN_AND_MEAN
 
@@ -15,6 +13,9 @@
 #include "ShaderManager.h"
 #include "TextureManager.h"
 
+class GameObject;
+class Graphics;
+
 class System
 {
 private:
@@ -26,14 +27,18 @@ private:
 	Graphics* myGraphics;
 
 	vector<GameObject*> gameObjects;
+	GameObject* player;
 
 	bool Frame();
+	bool ProcessKeys();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 	void InitializeGameObjects();
 	GameObject* GetGameObjectByName(LPCSTR name);
 	void GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count);
 public:
+	static unsigned int frameCount;
+
 	System();
 	System(const System&);
 	~System();
@@ -50,5 +55,3 @@ static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 // GLOBALS
 static System* ApplicationHandle = 0;
-
-#endif

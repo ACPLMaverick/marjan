@@ -24,4 +24,35 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>efsl_src</name>
+			<type>2</type>
+			<location>E:/_INF/5SEM/SW/software.mp3.player.lpc2148/efsl/inc</location>
+		</link>
+		<link>
+			<name>libmad</name>
+			<type>2</type>
+			<location>E:/_INF/5SEM/SW/software.mp3.player.lpc2148/libmad</location>
+		</link>
+		<link>
+			<name>render</name>
+			<type>2</type>
+			<location>E:/_INF/5SEM/SW/software.mp3.player.lpc2148/render-driver</location>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>MP3PLAYER</name>
+			<value>file:/E:/_INF/5SEM/SW/software.mp3.player.lpc2148/efsl</value>
+		</variable>
+		<variable>
+			<name>aaaa</name>
+			<value>file:/E:/_INF/5SEM/SW/software.mp3.player.lpc2148/libmad</value>
+		</variable>
+		<variable>
+			<name>bbbb</name>
+			<value>file:/E:/_INF/5SEM/SW/software.mp3.player.lpc2148/render-driver</value>
+		</variable>
+	</variableList>
 </projectDescription>

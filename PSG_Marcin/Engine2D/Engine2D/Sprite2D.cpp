@@ -13,7 +13,7 @@ Sprite2D::~Sprite2D()
 {
 }
 
-Sprite2D::VertexIndex Sprite2D::LoadGeometry()
+Sprite2D::VertexIndex* Sprite2D::LoadGeometry()
 {
 	Vertex* vertices;
 	unsigned long* indices;
@@ -42,8 +42,8 @@ Sprite2D::VertexIndex Sprite2D::LoadGeometry()
 	indices[4] = 1;
 	indices[5] = 3;
 
-	VertexIndex toReturn;
-	toReturn.vertexArrayPtr = vertices;
-	toReturn.indexArrayPtr = indices;
+	VertexIndex* toReturn = new VertexIndex();
+	toReturn->vertexArrayPtr = vertices;
+	toReturn->indexArrayPtr = indices;
 	return toReturn;
 }

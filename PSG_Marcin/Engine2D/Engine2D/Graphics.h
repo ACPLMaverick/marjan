@@ -1,6 +1,4 @@
-#ifndef _GRAPHICS_H_
-#define _GRAPHICS_H_
-
+#pragma once
 //defines
 #define DKGRAY_BRUSH 3
 #define GRAY_BRUSH 2
@@ -20,10 +18,12 @@
 // globals
 const bool FULL_SCREEN = false;
 const bool SHOW_CURSOR = false;
-const bool VSYNC_ENABLED = false;
+const bool VSYNC_ENABLED = true;
 const unsigned int BACKGROUND_COLOR = BLACK_BRUSH;
 const float SCREEN_FAR = 1000.0f;
 const float SCREEN_DEPTH = 0.1f;
+
+class GameObject;
 
 class Graphics
 {
@@ -53,6 +53,3 @@ public:
 	ShaderManager* GetShaders();
 	Direct3D* GetD3D();
 };
-
-#endif
-
