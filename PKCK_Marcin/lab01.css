@@ -1,21 +1,92 @@
-ksiegarnia
+﻿księgarnia
 {
-    background-color:#F1F1A6;
+    background-color:#FEF4C1;
     font-family:Calibri;
     font-size:large;
-}
-
-dzial
-{
     display:block;
+    /*display:table;*/
+    /*border:solid;
+    border-color:black;
+    border-width:3px;*/
+    /*width:1600px;*/
 }
 
-ksiazka
+autor_dokumentu, desc
 {
-    display:table;
+    display:table-cell;
+    font-family:'Courier New';
+    font-size:large;
+    font-weight:bold;
+    padding-bottom:20px;
+    padding-left:20px;
+    width:250px;
 }
 
-tytul,autor,rok_wydania,isbn,cena
+autor_dokumentu:first-letter, desc:first-letter
 {
+    color:red;
+    font-size:larger;
+}
+
+header
+{
+    font-size:large;
+    font-weight:bold;
+    display:block;
+    /*border:solid;
+    border-color:gray;
+    border-width:2px;*/
+    background-color:#FFE145;
+    width:1614px;
+}
+
+header_author, header_title, header_yr, header_isbn, header_price
+{
+    display:table-cell;
+    width:320px;
+    border-color:black;
+    border-style:solid;
+    border-width:1px;
+    margin-left:5px;
+}
+
+dział
+{
+    list-style:upper-roman;
+    list-style-position:initial;
+    display:list-item;
+    margin-left: 2em;
+    /*border:solid;
+    border-color:black;
+    border-width:2px;*/
+    font-size:larger;
+    font-weight:bold;
+    /*background-color:lightgray;*/
+}
+
+książka
+{
+    font-size:large;
+    font-weight:normal;
+    background-color:#F1F1A6;
     display:table-row;
+    border:solid;
+    border-color:darkgrey;
+    border-width:1px;
+    width:inherit;
+    align-content:center;
 }
+
+tytuł,autor,rok_wydania,isbn,cena
+{
+    display:table-cell;
+    width:320px;
+    border:inherit;
+    border-color:inherit;
+    border-width:inherit;
+}
+
+/*#id8
+{
+    background-color:red;
+}*/

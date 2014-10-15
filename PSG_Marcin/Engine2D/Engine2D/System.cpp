@@ -1,5 +1,6 @@
 #include "System.h"
 
+unsigned int System::frameCount;
 
 System::System()
 {
@@ -17,6 +18,7 @@ bool System::Initialize()
 	int screenWidth = 0;
 	int screenHeight = 0;
 	bool result;
+	frameCount = 0;
 
 	InitializeWindows(screenWidth, screenHeight);
 
@@ -28,6 +30,8 @@ bool System::Initialize()
 	if (!myGraphics) return false;
 	result = myGraphics->Initialize(screenWidth, screenHeight, m_hwnd);
 	if (!result) return false;
+
+	InitializeGameObjects();
 
 	return true;
 }
@@ -46,6 +50,14 @@ void System::Shutdown()
 		delete myInput;
 		myInput = nullptr;
 	}
+
+	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if (*it) (*it)->Destroy();
+		delete (*it);
+		(*it) = nullptr;
+	}
+	gameObjects.clear();
 
 	ShutdownWindows();
 }
@@ -77,6 +89,7 @@ void System::Run()
 		else // if not then continue loop and do frame proc
 		{
 			result = Frame();
+			frameCount++;
 			if (!result) done = true;
 		}
 	}
@@ -87,11 +100,128 @@ bool System::Frame()
 {
 	bool result;
 
-	if (myInput->IsKeyDown(VK_ESCAPE)) return false;
+	if (!ProcessKeys()) return false;
 
-	result = myGraphics->Frame();
+	GameObject** goTab = new GameObject*[gameObjects.size()];
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		goTab[i] = gameObjects.at(i);
+	}
+	result = myGraphics->Frame(goTab, gameObjects.size());
 	if (!result) return false;
 	return true;
+}
+
+bool System::ProcessKeys()
+{
+	//string debug = to_string(player->position.x) + " " + to_string(player->position.y) + "\n";
+	//OutputDebugString(debug.c_str());
+	if (myInput->IsKeyDown(VK_ESCAPE)) return false;
+	if (myInput->IsKeyDown(VK_LEFT))
+	{
+		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(-myInput->movementDistance, 0.0f, 0.0f));
+		player->SetPosition(newVec);
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 270.0f));
+		myInput->KeyUp(VK_LEFT);
+	}
+	if (myInput->IsKeyDown(VK_RIGHT))
+	{
+		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(myInput->movementDistance, 0.0f, 0.0f));
+		player->SetPosition(newVec);
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 90.0f));
+		myInput->KeyUp(VK_RIGHT);
+	}
+	if (myInput->IsKeyDown(VK_UP))
+	{
+		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(0.0f, myInput->movementDistance, 0.0f));
+		player->SetPosition(newVec);
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		myInput->KeyUp(VK_UP);
+	}
+	if (myInput->IsKeyDown(VK_DOWN))
+	{
+		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(0.0f, -myInput->movementDistance, 0.0f));
+		player->SetPosition(newVec);
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 180.0f));
+		myInput->KeyUp(VK_DOWN);
+	}
+	if (myInput->IsKeyDown(VK_SPACE))
+	{
+		myInput->KeyUp(VK_SPACE);
+		return false;
+	}
+	return true;
+}
+
+void System::InitializeGameObjects()
+{
+	Texture* g01Tex[3];
+	g01Tex[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/noTexture.dds");
+	g01Tex[1] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds");
+	g01Tex[2] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds");
+	GameObject* go01 = new GameObject(
+		"player", 
+		"player", 
+		g01Tex,
+		3,
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	gameObjects.push_back(go01);
+	player = go01;
+
+	//GameObject* go02 = new GameObject(
+	//	"enemy",
+	//	"enemies",
+	//	(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds"),
+	//	(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+	//	myGraphics->GetD3D()->GetDevice(),
+	//	D3DXVECTOR3(-5.0f, 5.0f, 0.0f),
+	//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+	//	D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	//gameObjects.push_back(go02);
+
+	//GameObject* go03 = new GameObject(
+	//	"board",
+	//	"map_nocollid",
+	//	(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds"),
+	//	(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+	//	myGraphics->GetD3D()->GetDevice(),
+	//	D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+	//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+	//	D3DXVECTOR3(15.0f, 10.0f, 1.0f));
+	//gameObjects.push_back(go03);
+}
+
+GameObject* System::GetGameObjectByName(LPCSTR name)
+{
+	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if ((*it)->GetName() == name) return (*it);
+	}
+	return nullptr;
+}
+
+void System::GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count)
+{
+	unsigned int c = 0;
+	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if ((*it)->GetTag() == tag) c++;
+	}
+	ptr = new GameObject*[c];
+	c = 0;
+	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	{
+		if ((*it)->GetTag() == tag)
+		{
+			ptr[c] = (*it);
+			c++;
+		}
+	}
+	count = c;
 }
 
 LRESULT CALLBACK System::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)

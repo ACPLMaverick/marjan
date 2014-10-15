@@ -1,11 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet href="lab01.css" type="text/css"?>
-<ksiegarnia>
-  <dzial nazwa="fantasy">
-    <ksiazka tytul="" autor="" rok_wydania="" isbn="" cena="">
-      <tytul>
+
+<!DOCTYPE księgarnia [
+  <!ELEMENT księgarnia (#PCDATA | autor_dokumentu | desc | dział)* >
+  <!ATTLIST księgarnia 
+      author CDATA #REQUIRED
+      desc CDATA #REQUIRED>
+  <!ELEMENT autor_dokumentu (#PCDATA)>
+  <!ELEMENT desc (#PCDATA)>
+  <!ELEMENT dział (#PCDATA | header | książka)* >
+  <!ATTLIST dział
+      nazwa (fantasy | sci-fi | biografie | historyczne | poradniki | naukowe | kryminały | horrory | romansidła) #REQUIRED>
+  <!ELEMENT header (header_title, header_author, header_yr, header_isbn, header_price)>
+  <!ELEMENT header_title (#PCDATA) >
+  <!ELEMENT header_author (#PCDATA) >
+  <!ELEMENT header_yr (#PCDATA) >
+  <!ELEMENT header_isbn (#PCDATA) >
+  <!ELEMENT header_price (#PCDATA) >
+  <!ELEMENT książka (tytuł, autor, rok_wydania?, isbn?, cena?) >
+  <!ATTLIST książka id ID #REQUIRED>
+  <!ELEMENT tytuł (#PCDATA) >
+  <!ELEMENT autor (#PCDATA) >
+  <!ELEMENT rok_wydania (#PCDATA) >
+  <!ELEMENT isbn (#PCDATA) >
+  <!ELEMENT cena (#PCDATA) >
+]>
+  
+
+<księgarnia author="Marcin Wawrzonowski" desc="Księgarnia">
+  <autor_dokumentu>
+    Marcin Wawrzonowski
+  </autor_dokumentu>
+  <desc>
+    Księgarnia
+  </desc>
+  <dział nazwa="fantasy">
+    Fantasy
+    <header>
+      <header_title>
+        TYTUŁ
+      </header_title>
+      <header_author>
+        AUTOR
+      </header_author>
+      <header_yr>
+        ROK WYDANIA
+      </header_yr>
+      <header_isbn>
+        ISBN
+      </header_isbn>
+      <header_price>
+        CENA DET.
+      </header_price>
+     </header>
+    <książka id="id1">
+      <tytuł>
         Miecz przeznaczenia
-      </tytul>
+      </tytuł>
       <autor>
         Andrzej Sapkowski
       </autor>
@@ -18,32 +69,389 @@
       <cena>
         20.00 zł
       </cena>
-    </ksiazka>
-    <ksiazka tytul="" autor="" rok_wydania="" isbn="" cena="">
-      <tytul>
-        Miecz przeznaczenia
-      </tytul>
+    </książka>
+    <książka id="id2">
+      <tytuł>
+        Żmija
+      </tytuł>
       <autor>
         Andrzej Sapkowski
       </autor>
       <rok_wydania>
-        1992
+        2009
       </rok_wydania>
       <isbn>
-        83-7054-037-6
+        978-83-7578-021-5
       </isbn>
       <cena>
-        20.00 zł
+        33.99 zł
       </cena>
-    </ksiazka>
-  </dzial>
-  <dzial nazwa ="sci-fi">
-    
-  </dzial>
-  <dzial nazwa ="historyczne">
-
-  </dzial>
-  <dzial nazwa ="biografie">
-
-  </dzial>
-</ksiegarnia>
+    </książka>
+  <książka id="id3">
+      <tytuł>
+        Dzieci H&#250;rina
+      </tytuł>
+      <autor>
+        J. R. R. Tolkien
+      </autor>
+      <rok_wydania>
+        2007
+      </rok_wydania>
+      <isbn>
+        978-83-241-2815-0
+      </isbn>
+      <cena>
+        39.80 zł
+      </cena>
+    </książka>
+    <książka id="id4">
+      <tytuł>
+        Metro 2033
+      </tytuł>
+      <autor>
+        Dimitry Glukhovsky
+      </autor>
+      <rok_wydania>
+        2007
+      </rok_wydania>
+      <isbn>
+        978-83-61428-17-6
+      </isbn>
+      <cena>
+        39.90 zł
+      </cena>
+    </książka>
+    <książka id="id5">
+      <tytuł>
+        Piter
+      </tytuł>
+      <autor>
+        Szymun Wroczek
+      </autor>
+      <rok_wydania>
+        2010
+      </rok_wydania>
+      <isbn>
+        978-83-61428-46-6
+      </isbn>
+      <cena>
+        39.99 zł
+      </cena>
+    </książka>
+  </dział>
+  <dział nazwa ="sci-fi">
+    Sci-fi
+    <header>
+    <header_title>
+      TYTUŁ
+    </header_title>
+    <header_author>
+      AUTOR
+    </header_author>
+    <header_yr>
+      ROK WYDANIA
+    </header_yr>
+    <header_isbn>
+      ISBN
+    </header_isbn>
+    <header_price>
+      CENA DET.
+    </header_price>
+  </header>
+    <książka id="id6">
+      <tytuł>
+        Przestrzeń objawienia
+      </tytuł>
+      <autor>
+        Allastair Reynolds
+      </autor>
+      <rok_wydania>
+        2000
+      </rok_wydania>
+      <isbn>
+        1-85798-748-9
+      </isbn>
+      <cena>
+        59.99 zł
+      </cena>
+    </książka>
+    <książka id="id7">
+      <tytuł>
+        Atalaya: Wojownicy
+      </tytuł>
+      <autor>
+        Jaga Rydzewska
+      </autor>
+      <rok_wydania>
+        2005
+      </rok_wydania>
+      <isbn>
+        83-7054-173-9
+      </isbn>
+      <cena>
+        39.99 zł
+      </cena>
+    </książka>
+  <książka id="id8">
+      <tytuł>
+        Piknik na skraju drogi
+      </tytuł>
+      <autor>
+        Arkadij i Borys Strugaccy
+      </autor>
+      <rok_wydania>
+        2009
+      </rok_wydania>
+      <isbn>
+        978-83-7648-064-0
+      </isbn>
+      <cena>
+        19.90 zł
+      </cena>
+    </książka>
+    <książka id="id9">
+      <tytuł>
+        Czas Horusa
+      </tytuł>
+      <autor>
+        Dan Abnett
+      </autor>
+      <rok_wydania>
+        2012
+      </rok_wydania>
+      <isbn>
+        978-83-7574-619-8
+      </isbn>
+      <cena>
+        39.90 zł
+      </cena>
+    </książka>
+    <książka id="id10">
+      <tytuł>
+        Darth Bane. Droga zagłady
+      </tytuł>
+      <autor>
+        Drew Karpyshyn
+      </autor>
+      <rok_wydania>
+        2007
+      </rok_wydania>
+      <isbn>
+        978-83-61428-46-6
+      </isbn>
+      <cena>
+        34.80 zł
+      </cena>
+    </książka>
+  </dział>
+  <dział nazwa ="historyczne">
+    Historyczne
+    <header>
+    <header_title>
+      TYTUŁ
+    </header_title>
+    <header_author>
+      AUTOR
+    </header_author>
+    <header_yr>
+      ROK WYDANIA
+    </header_yr>
+    <header_isbn>
+      ISBN
+    </header_isbn>
+    <header_price>
+      CENA DET.
+    </header_price>
+  </header>
+    <książka id ="id11">
+      <tytuł>
+        Sztuka wojenna
+      </tytuł>
+      <autor>
+        Sun Tzu
+      </autor>
+      <rok_wydania>
+        2012
+      </rok_wydania>
+      <isbn>
+        978-83-7844-294-3
+      </isbn>
+      <cena>
+        60.00 zł
+      </cena>
+    </książka>
+    <książka id ="id12">
+      <tytuł>
+        Archipelag GUŁag
+      </tytuł>
+      <autor>
+        Aleksander Sołżenicyn
+      </autor>
+      <rok_wydania>
+        1990
+      </rok_wydania>
+      <isbn>
+        83-85135-00-6
+      </isbn>
+      <cena>
+        85.00 zł
+      </cena>
+    </książka>
+  <książka id ="id13">
+      <tytuł>
+        Życie i los
+      </tytuł>
+      <autor>
+        Wasilij Grossmann
+      </autor>
+      <rok_wydania>
+        2009
+      </rok_wydania>
+      <isbn>
+        978-83-7414-582-4
+      </isbn>
+      <cena>
+        69.00 zł
+      </cena>
+    </książka>
+  <książka id ="id14">
+      <tytuł>
+        Specnaz
+      </tytuł>
+      <autor>
+        Wiktor Suworow
+      </autor>
+      <rok_wydania>
+        2003
+      </rok_wydania>
+      <isbn>
+        83-89187-23-X
+      </isbn>
+      <cena>
+        42.00 zł
+      </cena>
+    </książka>
+  <książka id ="id15">
+      <tytuł>
+        Afgańcy: Ostatnia wojna imperium
+      </tytuł>
+      <autor>
+        Rodric Braithwaite
+      </autor>
+      <rok_wydania>
+        2012
+      </rok_wydania>
+      <isbn>
+        978-83-240-1890-1
+      </isbn>
+      <cena>
+        49.90 zł
+      </cena>
+    </książka>
+  </dział>
+  <dział nazwa ="biografie">
+    Biografie
+    <header>
+    <header_title>
+      TYTUŁ
+    </header_title>
+    <header_author>
+      AUTOR
+    </header_author>
+    <header_yr>
+      ROK WYDANIA
+    </header_yr>
+    <header_isbn>
+      ISBN
+    </header_isbn>
+    <header_price>
+      CENA DET.
+    </header_price>
+  </header>
+    <książka id ="id16">
+      <tytuł>
+        Colin McRae: Autobiografia legendy WRC
+      </tytuł>
+      <autor>
+        Colin McRae, Derrick Allsop
+      </autor>
+      <rok_wydania>
+        2014
+      </rok_wydania>
+      <isbn>
+        978-83-7924-233-8
+      </isbn>
+      <cena>
+        39.90 zł
+      </cena>
+    </książka>
+    <książka id ="id17">
+      <tytuł>
+        Mój styl jazdy
+      </tytuł>
+      <autor>
+        S&#233;bastien Loeb
+      </autor>
+      <rok_wydania>
+        2013
+      </rok_wydania>
+      <isbn>
+        83-85135-00-6
+      </isbn>
+      <cena>
+        85.00 zł
+      </cena>
+    </książka>
+  <książka id ="id18">
+      <tytuł>
+        Tajna wojna Chruszczowa
+      </tytuł>
+      <autor>
+        Aleksandr Fursenko, Timothy Naftali
+      </autor>
+      <rok_wydania>
+        2007
+      </rok_wydania>
+      <isbn>
+        978-83-11-83-10872-1
+      </isbn>
+      <cena>
+        59.00 zł
+      </cena>
+    </książka>
+  <książka id ="id19">
+      <tytuł>
+        Stalin. Dwór czerwonego cara
+      </tytuł>
+      <autor>
+        Simon Sebag Montefiore
+      </autor>
+      <rok_wydania>
+        2004
+      </rok_wydania>
+      <isbn>
+        83-89656-06-X
+      </isbn>
+      <cena>
+        70.00 zł
+      </cena>
+    </książka>
+  <książka id ="id20">
+      <tytuł>
+        Hitler. Studium tyranii
+      </tytuł>
+      <autor>
+        Alan Bullock
+      </autor>
+      <rok_wydania>
+        2004
+      </rok_wydania>
+      <isbn>
+        83-207-1746-9
+      </isbn>
+      <cena>
+        60.90 zł
+      </cena>
+    </książka>
+  </dział>
+</księgarnia>

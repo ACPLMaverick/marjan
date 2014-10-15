@@ -8,6 +8,8 @@ class Input
 private:
 	bool m_keys[256];
 public:
+	const float movementDistance = 0.25f;
+
 	Input();
 	Input(const Input&);
 	~Input();
