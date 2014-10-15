@@ -5,7 +5,14 @@ public class BlockController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        //this.GetComponentInChildren<BrickController>().renderer.material.color = Color.red;
+        //GameObject current = GameObject.Find(this.ToString());
+        //Debug.Log(current);
+        //foreach (var child in this.GetComponentsInChildren<BrickController>())
+        //{
+        //    //Debug.Log(child);
+        //    child.renderer.material.color = Color.red;
+        //}
 	}
 	
 	// Update is called once per frame
