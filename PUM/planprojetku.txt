@@ -14,3 +14,43 @@ Technologia: Android
 
 
 // ogarn¹æ wszystkie technologie czy daj¹ nam to co mo¿emy zrobiæ i sk¹d
+
+- google maps
+http://www.w3schools.com/googleAPI
+https://developers.google.com/maps/documentation/android/start
+keytool -list -v -keystore mystore.keystore
+AIzaSyBzZlnZiCgux165dEiVXh7M8JHjuDzblmY
+https://console.developers.google.com/project/141725850977/apiui/credential?authuser=0
+
+- OK -
+
+- regiony miasto/trasa
+https://developers.google.com/maps/documentation/geocoding/
+http://stackoverflow.com/questions/9991224/google-maps-get-country-region-and-city-name-from-longitude-and-latitude-php
+http://stackoverflow.com/questions/14368529/determine-if-gps-location-is-within-city-limits
+
+- SPRAWDZANIE PO NAZWIE MIASTA, KONIECZNOŒÆ ONLINE -
+- CHYBA NIE DA SIÊ TEGO ZROBIÆ INACZEJ, JEŒLI W OGÓLE -
+
+- ceny paliw
+http://www.mygasfeed.com/keys/api - TYLKO USA/KANADA
+http://www.e-petrol.pl/notowania/rynek-krajowy/ceny-stacje-paliw
+POTRZEBNY PARSER HTML
+http://java-source.net/open-source/html-parsers
+Jsoup
+TagSoup
+
+- REZYGNUJEMY Z KILKU RODZAJÓW CEN -
+- OK -
+
+- Android GPS
+http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial/
+http://androidexample.com/GPS_Basic__-__Android_Example/index.php?view=article_discription&aid=68&aaid=93
+http://developer.android.com/guide/topics/location/strategies.html
+
+- OK -
+
+- rysowanie wykresu
+http://www.achartengine.org/
+
+- OK -
