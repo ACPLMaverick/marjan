@@ -167,7 +167,7 @@ void System::InitializeGameObjects()
 		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
 		myGraphics->GetD3D()->GetDevice(),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 45.0f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	gameObjects.push_back(go01);
 	player = go01;
@@ -261,7 +261,7 @@ void System::InitializeWindows(int& screenWidth, int& screenHeight)
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = m_hinstance;
-	wc.hIcon = LoadIcon(NULL, IDI_WARNING);
+	wc.hIcon = LoadIcon(NULL, IDI_SHIELD);
 	wc.hIconSm = wc.hIcon;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BACKGROUND_COLOR);

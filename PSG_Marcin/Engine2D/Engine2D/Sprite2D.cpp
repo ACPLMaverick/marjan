@@ -34,6 +34,20 @@ Sprite2D::VertexIndex* Sprite2D::LoadGeometry()
 	vertices[3].position = D3DXVECTOR3(1.0f*scale.x, 1.0f*scale.y, 0.0f*scale.z) + position; // TR
 	vertices[3].texture = D3DXVECTOR2(1.0f, 0.0f);
 
+	// rotation
+	D3DXMATRIX rotateX;
+	D3DXMATRIX rotateY;
+	D3DXMATRIX rotateZ;
+	D3DXMatrixRotationX(&rotateX, rotation.x);
+	D3DXMatrixRotationY(&rotateY, rotation.y);
+	D3DXMatrixRotationZ(&rotateZ, rotation.z);
+	D3DXMATRIX rotationMatrix = rotateX*rotateY*rotateZ;
+
+	for (int i = 0; i < 4; i++)
+	{
+		D3DXVec3Transform();
+	}
+
 	// load index array with data
 	indices[0] = 0; // BL
 	indices[1] = 1; // TL

@@ -1,0 +1,16 @@
+CarTracker
+
+Technologia: Android
+- pokazywanie pokonywanej / pokonanej trasy na mapie (synchronizacja z GPS)
+- wyœwietlanie pokonanego dystansu, œredniej prêdkoœci, czasu jazdy
+- wyœwietlanie iloœci spalonego paliwa na bazie wartoœci podanych przez u¿ytkownika
+- automatyczne prze³¹czanie pomiêdzy 3 trybami, zale¿nie od lokalizacji - trasa, miasto dla których mo¿emy podaæ osobne œrednie zu¿ycie paliwa
+- wyœwietlanie statystyki wszystkich przejazdów, podsumowanie
+- wykres prêdkoœci od czasu dla danej trasy i zaznaczanie na czerwono gdzie przekroczy³eœ
+- obliczanie kosztów paliwa dla danej trasy i ca³kowitych, wzglêdem cennika paliw pobranego z internetu, podawanie najni¿szego, œredniego i najwy¿szego kosztu, osobno dla benzyny i diesla // tankujtanio.pl
+- wyœwietlanie na mapie wszystkich przejazdów z zaznaczonym "natê¿eniem ruchu"
+-? zapisywanie przejazdów w archiwum, mo¿liwoœæ przegl¹dania go i sortowania
+-? wyswietlanie procenta jazdy z przekroczon¹ prêdkoœci¹ (na sztywno: 50/60 dla miasta, 90 dla trasy, 120 dla dr. eks, 140 dla autostrady)
+
+
+// ogarn¹æ wszystkie technologie czy daj¹ nam to co mo¿emy zrobiæ i sk¹d
