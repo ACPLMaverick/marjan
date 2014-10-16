@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour {
     public static Vector3 previewPos = new Vector3(3.917794f, 4.342112f, 0.0f);
     public static Vector3 wpizdu = new Vector3(100f, 100f, 0.0f);
     public static float falldownSpeed = 4.0f;
+    private float multiplier = 1.0f;
     float refTime;
     bool collision;
     int score = 0;
@@ -21,6 +22,8 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		brickColors = new Color[7] { Color.blue, Color.yellow, Color.red, Color.magenta, Color.cyan, Color.green, Color.gray}; 
+
         createBlock();
         brickPile = GameObject.Find("BrickPile");
         refTime = Time.time;
@@ -28,8 +31,7 @@ public class GameController : MonoBehaviour {
 
         UITextScore = GameObject.Find("UITextScore");
         UITextScore.guiText.text = "Score: " + score.ToString();
-
-        brickColors = new Color[7] { Color.blue, Color.yellow, Color.red, Color.magenta, Color.cyan, Color.green, Color.clear }; 
+	
         //colorIshape = Color.blue;
         //colorJshape = Color.yellow;
         //colorLshape = Color.red;
@@ -45,7 +47,7 @@ public class GameController : MonoBehaviour {
         {
             if(!collision)
             {
-                if (Time.time - refTime > (1.0f/falldownSpeed))
+                if (Time.time - refTime > (1.0f/(multiplier*falldownSpeed)))
                 {
                     refTime = Time.time;
                     Vector3 newPos = new Vector3(currentBlock.transform.position.x, currentBlock.transform.position.y - distance,
@@ -73,6 +75,14 @@ public class GameController : MonoBehaviour {
                     Vector3 rotationVector = new Vector3(0.0f, 0.0f, -90.0f);
                     if (!checkForEdgeCollisionsRotation(rotationVector)) currentBlock.GetComponent<BlockController>().BlockRotate(rotationVector);
                 }
+
+                if(Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    multiplier *= 4;
+                    Vector3 newPos = new Vector3(currentBlock.transform.position.x, currentBlock.transform.position.y - distance,
+                        currentBlock.transform.position.z);
+                    currentBlock.transform.position = newPos;
+                }
             }
             else
             {
@@ -97,6 +107,7 @@ public class GameController : MonoBehaviour {
         string typeCurrent, typeNext;
         int randomCurrent = Random.Range(0, 7);
         int randomNext = Random.Range(0, 7);
+        multiplier = 1.0f;
         //Debug.Log(randomCurrent + " " + randomNext);
 
         if(currentBlock == null)
@@ -129,7 +140,7 @@ public class GameController : MonoBehaviour {
                     break;
             }
             currentBlock = (GameObject)Instantiate(GameObject.Find(typeCurrent), startPos, Quaternion.identity);
-            ChangeColor(currentBlock, Color.red);
+            ChangeColor(currentBlock, brickColors[randomCurrent]);
             switch (randomNext)
             {
                 case 0:
@@ -158,7 +169,7 @@ public class GameController : MonoBehaviour {
                     break;
             }
             nextBlock = (GameObject)Instantiate(GameObject.Find(typeNext), previewPos, Quaternion.identity);
-            //ChangeColor(nextBlock, brickColors[randomNext]);
+            ChangeColor(nextBlock, brickColors[randomNext]);
         }
         else
         {
@@ -192,7 +203,7 @@ public class GameController : MonoBehaviour {
                     break;
             }
             nextBlock = (GameObject)Instantiate(GameObject.Find(typeNext), previewPos, Quaternion.identity);
-            //ChangeColor(nextBlock, brickColors[randomNext]);
+            ChangeColor(nextBlock, brickColors[randomNext]);
         }
     }
 
@@ -301,16 +312,22 @@ public class GameController : MonoBehaviour {
 
     void ChangeColor(GameObject block, Color color)
     {
-        BrickController[] bricks = block.GetComponent<BlockController>().GetMyBricks();
-        int i = 0;
-        foreach(BrickController brick in bricks)
+        //BrickController[] bricks = block.GetComponent<BlockController>().GetMyBricks();
+        //int i = 0;
+        //foreach(BrickController brick in bricks)
+        //{
+        //    if(brick.renderer.material.color != null)
+        //    {
+        //        Debug.Log(i.ToString() + " " + brick.gameObject.renderer.material.color.ToString());
+        //        //brick.renderer.material.color = color;
+        //        i++;
+        //    }
+        //}
+
+        foreach (var child in block.GetComponentsInChildren<BrickController>())
         {
-            if(brick.renderer.material.color != null)
-            {
-                Debug.Log(i.ToString() + " " + brick.gameObject.renderer.material.color.ToString());
-                //brick.renderer.material.color = color;
-                i++;
-            }
+            //Debug.Log(child);
+            child.renderer.material.color = color;
         }
     }
 }
