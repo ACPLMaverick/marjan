@@ -38,6 +38,7 @@ private:
 	void GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count);
 public:
 	static unsigned int frameCount;
+	static bool playerAnimation;
 
 	System();
 	System(const System&);

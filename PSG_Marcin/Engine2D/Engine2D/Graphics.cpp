@@ -177,6 +177,25 @@ bool Graphics::InitializeManagers(HWND hwnd)
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/moss_01_d.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/metal01_d.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_01.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_02.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_03.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_04.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_05.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_06.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_07.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_08.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_09.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_01.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_02.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_03.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_04.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_05.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_06.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_07.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_08.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_09.dds");
 
 	shaderManager = new ShaderManager();
 	bool result = shaderManager->AddShader(m_D3D->GetDevice(), hwnd, "TextureShader");

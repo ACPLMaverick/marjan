@@ -41,6 +41,8 @@ GameObject::~GameObject()
 
 bool GameObject::InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale)
 {
+	if (myTag == "player") canAnimate = true;
+	else canAnimate = false;
 	bool result;
 	myModel = new Sprite2D(position, rotation, scale);
 	if (!myModel) return false;
@@ -50,7 +52,8 @@ bool GameObject::InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3D
 
 bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
 {
-	if(animationTextures.size() > 0)AnimateTexture();
+	if(myTag == "player") canAnimate = System::playerAnimation;
+	if(animationTextures.size() > 0 && canAnimate)AnimateTexture();
 	bool result;
 	myModel->Render(deviceContext);
 	result = myShader->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture());
@@ -66,7 +69,7 @@ void GameObject::Destroy()
 
 void GameObject::AnimateTexture()
 {
-	if (System::frameCount - animationLastFrame >= 600)
+	if (System::frameCount - animationLastFrame >= 30)
 	{
 		animationLastFrame = System::frameCount;
 		currentTextureID = (currentTextureID + 1) % animationTextures.size();

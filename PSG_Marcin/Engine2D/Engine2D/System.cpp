@@ -1,11 +1,13 @@
 #include "System.h"
 
 unsigned int System::frameCount;
+bool System::playerAnimation;
 
 System::System()
 {
 	myInput = nullptr;
 	myGraphics = nullptr;
+	playerAnimation = false;
 }
 
 
@@ -121,15 +123,19 @@ bool System::ProcessKeys()
 	{
 		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(-myInput->movementDistance, 0.0f, 0.0f));
 		player->SetPosition(newVec);
-		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 270.0f));
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 1.57079632679f));
 		myInput->KeyUp(VK_LEFT);
+		playerAnimation = true;
+		return true;
 	}
 	if (myInput->IsKeyDown(VK_RIGHT))
 	{
 		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(myInput->movementDistance, 0.0f, 0.0f));
 		player->SetPosition(newVec);
-		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 90.0f));
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 4.71238898038f));
 		myInput->KeyUp(VK_RIGHT);
+		playerAnimation = true;
+		return true;
 	}
 	if (myInput->IsKeyDown(VK_UP))
 	{
@@ -137,62 +143,106 @@ bool System::ProcessKeys()
 		player->SetPosition(newVec);
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 		myInput->KeyUp(VK_UP);
+		playerAnimation = true;
+		return true;
 	}
 	if (myInput->IsKeyDown(VK_DOWN))
 	{
 		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(0.0f, -myInput->movementDistance, 0.0f));
 		player->SetPosition(newVec);
-		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 180.0f));
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f));
 		myInput->KeyUp(VK_DOWN);
+		playerAnimation = true;
+		return true;
 	}
 	if (myInput->IsKeyDown(VK_SPACE))
 	{
 		myInput->KeyUp(VK_SPACE);
 		return false;
 	}
+	playerAnimation = false;
 	return true;
 }
 
 void System::InitializeGameObjects()
 {
-	Texture* g01Tex[3];
-	g01Tex[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/noTexture.dds");
-	g01Tex[1] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds");
-	g01Tex[2] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds");
+	Texture* g01Tex[9];
+	g01Tex[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_01.dds");
+	g01Tex[1] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_02.dds");
+	g01Tex[2] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_03.dds");
+	g01Tex[3] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_04.dds");
+	g01Tex[4] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_05.dds");
+	g01Tex[5] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_06.dds");
+	g01Tex[6] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_07.dds");
+	g01Tex[7] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_08.dds");
+	g01Tex[8] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_player_FR_09.dds");
 	GameObject* go01 = new GameObject(
 		"player", 
 		"player", 
 		g01Tex,
-		3,
+		9,
 		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
 		myGraphics->GetD3D()->GetDevice(),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 45.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	gameObjects.push_back(go01);
 	player = go01;
 
-	//GameObject* go02 = new GameObject(
-	//	"enemy",
-	//	"enemies",
-	//	(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds"),
-	//	(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-	//	myGraphics->GetD3D()->GetDevice(),
-	//	D3DXVECTOR3(-5.0f, 5.0f, 0.0f),
-	//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-	//	D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	//gameObjects.push_back(go02);
+	Texture* enemyTex[9];
+	enemyTex[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_01.dds");
+	enemyTex[1] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_02.dds");
+	enemyTex[2] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_03.dds");
+	enemyTex[3] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_04.dds");
+	enemyTex[4] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_05.dds");
+	enemyTex[5] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_06.dds");
+	enemyTex[6] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_07.dds");
+	enemyTex[7] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_08.dds");
+	enemyTex[8] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_09.dds");
+	GameObject* go02 = new GameObject(
+		"enemy01",
+		"enemies",
+		enemyTex,
+		9,
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(-5.0f, 5.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f),
+		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	gameObjects.push_back(go02);
+	GameObject* go02b = new GameObject(
+		"enemy02",
+		"enemies",
+		enemyTex,
+		9,
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(0.0f, 5.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f),
+		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	gameObjects.push_back(go02b);
+	GameObject* go02c = new GameObject(
+		"enemy03",
+		"enemies",
+		enemyTex,
+		9,
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(3.0f, 5.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f),
+		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	gameObjects.push_back(go02c);
 
-	//GameObject* go03 = new GameObject(
-	//	"board",
-	//	"map_nocollid",
-	//	(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds"),
-	//	(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-	//	myGraphics->GetD3D()->GetDevice(),
-	//	D3DXVECTOR3(0.0f, 0.0f, -1.0f),
-	//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-	//	D3DXVECTOR3(15.0f, 10.0f, 1.0f));
-	//gameObjects.push_back(go03);
+	GameObject* go03 = new GameObject(
+		"board",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(0.0f, 0.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(15.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go03);
 }
 
 GameObject* System::GetGameObjectByName(LPCSTR name)

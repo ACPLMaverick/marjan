@@ -25,6 +25,7 @@ protected:
 	unsigned int animationLastFrame;
 	unsigned int currentTextureID;
 	vector<Texture*> animationTextures;
+	bool canAnimate;
 
 	virtual bool InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	virtual void AnimateTexture();

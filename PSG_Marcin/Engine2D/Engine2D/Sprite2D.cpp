@@ -24,16 +24,6 @@ Sprite2D::VertexIndex* Sprite2D::LoadGeometry()
 	vertices = new Vertex[m_vertexCount];
 	indices = new unsigned long[m_indexCount];
 
-	// load vertex array with data
-	vertices[0].position = D3DXVECTOR3(-1.0f*scale.x, -1.0f*scale.y, 0.0f*scale.z) + position; // BL
-	vertices[0].texture = D3DXVECTOR2(0.0f, 1.0f);
-	vertices[1].position = D3DXVECTOR3(-1.0f*scale.x, 1.0f*scale.y, 0.0f*scale.z) + position; // TL
-	vertices[1].texture = D3DXVECTOR2(0.0f, 0.0f);
-	vertices[2].position = D3DXVECTOR3(1.0f*scale.x, -1.0f*scale.y, 0.0f*scale.z) + position; // BR
-	vertices[2].texture = D3DXVECTOR2(1.0f, 1.0f);
-	vertices[3].position = D3DXVECTOR3(1.0f*scale.x, 1.0f*scale.y, 0.0f*scale.z) + position; // TR
-	vertices[3].texture = D3DXVECTOR2(1.0f, 0.0f);
-
 	// rotation
 	D3DXMATRIX rotateX;
 	D3DXMATRIX rotateY;
@@ -42,10 +32,26 @@ Sprite2D::VertexIndex* Sprite2D::LoadGeometry()
 	D3DXMatrixRotationY(&rotateY, rotation.y);
 	D3DXMatrixRotationZ(&rotateZ, rotation.z);
 	D3DXMATRIX rotationMatrix = rotateX*rotateY*rotateZ;
+	D3DXVECTOR4 outputVec[4];
+
+
+
+	// load vertex array with data
+	vertices[0].position = D3DXVECTOR3(-1.0f, -1.0f, 0.0f); // BL
+	vertices[0].texture = D3DXVECTOR2(0.0f, 1.0f);
+	vertices[1].position = D3DXVECTOR3(-1.0f, 1.0f, 0.0f); // TL
+	vertices[1].texture = D3DXVECTOR2(0.0f, 0.0f);
+	vertices[2].position = D3DXVECTOR3(1.0f, -1.0f, 0.0f); // BR
+	vertices[2].texture = D3DXVECTOR2(1.0f, 1.0f);
+	vertices[3].position = D3DXVECTOR3(1.0f, 1.0f, 0.0f); // TR
+	vertices[3].texture = D3DXVECTOR2(1.0f, 0.0f);
 
 	for (int i = 0; i < 4; i++)
 	{
-		D3DXVec3Transform();
+		D3DXVec3Transform(&outputVec[i], &vertices[i].position, &rotationMatrix);
+		vertices[i].position.x = (outputVec[i].x*scale.x + position.x);
+		vertices[i].position.y = (outputVec[i].y*scale.y + position.y);
+		vertices[i].position.z = (outputVec[i].z*scale.z + position.z);
 	}
 
 	// load index array with data
