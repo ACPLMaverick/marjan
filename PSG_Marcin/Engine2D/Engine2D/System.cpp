@@ -1,13 +1,16 @@
 #include "System.h"
+#include "Bullet.h"
 
 unsigned int System::frameCount;
 bool System::playerAnimation;
+unsigned int System::checkGameObjects;
 
 System::System()
 {
 	myInput = nullptr;
 	myGraphics = nullptr;
 	playerAnimation = false;
+	checkGameObjects = false;
 }
 
 
@@ -104,6 +107,7 @@ bool System::Frame()
 
 	if (!ProcessKeys()) return false;
 
+	CheckGameObjects();
 	ProcessCamera();
 
 	GameObject** goTab = new GameObject*[gameObjects.size()];
@@ -159,8 +163,9 @@ bool System::ProcessKeys()
 	}
 	if (myInput->IsKeyDown(VK_SPACE))
 	{
+		PlayerShoot();
 		myInput->KeyUp(VK_SPACE);
-		return false;
+		return true;
 	}
 	playerAnimation = false;
 	return true;
@@ -202,8 +207,8 @@ void System::InitializeGameObjects()
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	gameObjects.push_back(go01);
 	player = go01;
+	gameObjects.push_back(go01);
 
 	Texture* enemyTex[9];
 	enemyTex[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_01.dds");
@@ -353,10 +358,46 @@ void System::InitializeGameObjects()
 		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/bullet.dds"),
 		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
 		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(-5.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(-4.5f, 5.5f, 0.1f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	gameObjects.push_back(go12);
+	//player = go12;
+}
+
+void System::CheckGameObjects()
+{
+	while (checkGameObjects > 0)
+	{
+		for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+		{
+			if ((*it)->GetDestroySignal())
+			{
+				(*it)->Destroy();
+				delete (*it);
+				(*it) = nullptr;
+				gameObjects.erase(it);
+				break;
+			}
+		}
+		checkGameObjects--;
+	}
+}
+
+void System::PlayerShoot()
+{
+	Bullet* newBullet = new Bullet(
+		"test_bullet",
+		"bullets",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/bullet.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		(player->GetPosition() + D3DXVECTOR3(0.0f,0.0f,0.1f)),
+		player->GetRotation(),
+		D3DXVECTOR3(0.3f, 0.3f, 0.3f),
+		5.0f,
+		10.0f);
+	gameObjects.push_back(newBullet);
 }
 
 GameObject* System::GetGameObjectByName(LPCSTR name)

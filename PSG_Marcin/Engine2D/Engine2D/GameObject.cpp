@@ -56,7 +56,7 @@ bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatr
 	if(animationTextures.size() > 0 && canAnimate)AnimateTexture();
 	bool result;
 	myModel->Render(deviceContext);
-	result = myShader->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture());
+	result = myShader->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), transparency);
 	if (!result) return false;
 	return true;
 }
@@ -121,3 +121,12 @@ D3DXVECTOR3 GameObject::GetScale()
 	return myModel->scale;
 }
 
+void GameObject::SetTransparency(float tr)
+{
+	transparency = tr;
+}
+
+bool GameObject::GetDestroySignal()
+{
+	return destroySignal;
+}
