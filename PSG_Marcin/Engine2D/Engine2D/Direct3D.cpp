@@ -10,6 +10,7 @@ Direct3D::Direct3D()
 	m_depthStencilState = nullptr;
 	m_depthStencilView = nullptr;
 	m_rasterState = nullptr;
+	m_blendState = nullptr;
 }
 
 Direct3D::Direct3D(const Direct3D &other)
@@ -39,6 +40,8 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
 	D3D11_VIEWPORT viewport;
+	ID3D11BlendState* blendState;
+	D3D11_BLEND_DESC blendStateDescription;
 	float fieldOfView, screenAspect;
 
 	///////////////////////////////// GETTING REFRESH RATE
@@ -238,6 +241,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//////// EXTRA STUFF
 
 	// raster description - how polygons will be drawn
+	ZeroMemory(&rasterDesc, sizeof(rasterDesc));
 	rasterDesc.AntialiasedLineEnable = false;
 	rasterDesc.CullMode = D3D11_CULL_BACK;
 	rasterDesc.DepthBias = 0;
@@ -253,6 +257,23 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	if (FAILED(result)) return false;
 
 	m_deviceContext->RSSetState(m_rasterState);
+
+	 //blending description
+	ZeroMemory(&blendStateDescription, sizeof(blendStateDescription));
+	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	result = m_device->CreateBlendState(&blendStateDescription, &m_blendState);
+	if (FAILED(result)) return false;
+
+	const FLOAT blendFactor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_deviceContext->OMSetBlendState(m_blendState, blendFactor, 0xffffffff);
 
 	// viewport description
 	viewport.Width = (float)screenWidth;
@@ -334,6 +355,11 @@ void Direct3D::Shutdown()
 	{
 		m_swapChain->Release();
 		m_swapChain = 0;
+	}
+	if (m_blendState)
+	{
+		m_blendState->Release();
+		m_blendState = 0;
 	}
 }
 

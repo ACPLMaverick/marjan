@@ -33,7 +33,7 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	m_Camera = new Camera();
 	if (!m_Camera) return false;
-	m_Camera->SetPosition(0.0f, 0.0f, -30.0f);
+	m_Camera->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -30.0f));
 
 	//TEMP_texture = new Texture();
 	//TEMP_texture->Initialize(m_D3D->GetDevice(), "./Assets/Textures/noTexture.dds");
@@ -97,7 +97,6 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 
 		m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-		if (CAMERA_FOLLOW_PLAYER) UpdateCameraToPlayer();
 		m_Camera->Render();
 		
 		m_Camera->GetViewMatrix(viewMatrix);
@@ -132,11 +131,6 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 		return true;
 	}
 	else return false;
-}
-
-void Graphics::UpdateCameraToPlayer()
-{
-	m_Camera->SetPosition()
 }
 
 //bool Graphics::InitializeModels()
@@ -184,6 +178,7 @@ bool Graphics::InitializeManagers(HWND hwnd)
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/test.dds");
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/moss_01_d.dds");
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/metal01_d.dds");
+	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/bullet.dds");
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_01.dds");
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_02.dds");
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_player_FR_03.dds");
@@ -227,4 +222,9 @@ ShaderManager* Graphics::GetShaders()
 Direct3D* Graphics::GetD3D()
 {
 	return m_D3D;
+}
+
+Camera* Graphics::GetCamera()
+{
+	return m_Camera;
 }

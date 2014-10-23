@@ -2,6 +2,11 @@
 Texture2D shaderTexture;
 SamplerState sampleType;
 
+cbuffer TransparentBuffer
+{
+	float blendAmount;
+};
+
 // structs
 struct PixelInput
 {
@@ -15,5 +20,6 @@ float4 TexturePixelShader(PixelInput input) : SV_TARGET
 
 	// sample pixel color from texture using sampler at this texture coordinate location
 	textureColor = shaderTexture.Sample(sampleType, input.tex);
+	//textureColor.a = blendAmount;
 	return textureColor;
 }

@@ -31,6 +31,7 @@ private:
 
 	bool Frame();
 	bool ProcessKeys();
+	void ProcessCamera();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 	void InitializeGameObjects();
