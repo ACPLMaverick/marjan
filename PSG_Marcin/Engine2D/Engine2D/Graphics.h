@@ -52,4 +52,5 @@ public:
 	TextureManager* GetTextures();
 	ShaderManager* GetShaders();
 	Direct3D* GetD3D();
+	Camera* GetCamera();
 };

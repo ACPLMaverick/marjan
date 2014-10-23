@@ -3,13 +3,9 @@
 
 Camera::Camera()
 {
-	m_positionX = 0.0f;
-	m_positionY = 0.0f;
-	m_positionZ = 0.0f;
-
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
+	m_position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_target = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 }
 
 Camera::Camera(const Camera& other)
@@ -21,28 +17,34 @@ Camera::~Camera()
 {
 }
 
-void Camera::SetPosition(float x, float y, float z)
+void Camera::SetPosition(D3DXVECTOR3 vec)
 {
-	m_positionX = x;
-	m_positionY = y;
-	m_positionZ = z;
+	m_position = vec;
 }
 
-void Camera::SetRotation(float x, float y, float z)
+void Camera::SetRotation(D3DXVECTOR3 vec)
 {
-	m_rotationX = x;
-	m_rotationY = y;
-	m_rotationZ = z;
+	m_rotation = vec;
+}
+
+void Camera::SetTarget(D3DXVECTOR3 vec)
+{
+	m_target = vec;
 }
 
 D3DXVECTOR3 Camera::GetPosition()
 {
-	return D3DXVECTOR3(m_positionX, m_positionY, m_positionZ);
+	return m_position;
 }
 
 D3DXVECTOR3 Camera::GetRotation()
 {
-	return D3DXVECTOR3(m_positionX, m_positionY, m_positionZ);
+	return m_rotation;
+}
+
+D3DXVECTOR3 Camera::GetTarget()
+{
+	return m_target;
 }
 
 void Camera::Render()
@@ -58,19 +60,15 @@ void Camera::Render()
 	up.z = 0.0f;
 
 	// position of camera in world
-	position.x = m_positionX;
-	position.y = m_positionY;
-	position.z = m_positionZ;
+	position = m_position;
 
 	// look at default position
-	lookAt.x = 0.0f;
-	lookAt.y = 0.0f;
-	lookAt.z = 1.0f;
+	lookAt = m_target;
 
 	// set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians
-	pitch = m_rotationX * rad;
-	yaw = m_rotationY * rad;
-	roll = m_rotationZ * rad;
+	pitch = m_rotation.x * rad;
+	yaw = m_rotation.y * rad;
+	roll = m_rotation.z * rad;
 
 	//create rotation matrix
 	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);

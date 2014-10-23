@@ -3,7 +3,7 @@
 class Sprite2D :
 	public Model
 {
-private:
+protected:
 	virtual VertexIndex* LoadGeometry();
 public:
 	Sprite2D();

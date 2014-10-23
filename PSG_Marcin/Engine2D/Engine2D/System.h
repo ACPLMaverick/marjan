@@ -31,14 +31,18 @@ private:
 
 	bool Frame();
 	bool ProcessKeys();
+	void ProcessCamera();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 	void InitializeGameObjects();
+	void CheckGameObjects();
+	void PlayerShoot();
 	GameObject* GetGameObjectByName(LPCSTR name);
 	void GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count);
 public:
 	static unsigned int frameCount;
 	static bool playerAnimation;
+	static unsigned int checkGameObjects;
 
 	System();
 	System(const System&);

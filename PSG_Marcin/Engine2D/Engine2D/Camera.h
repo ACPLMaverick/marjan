@@ -6,8 +6,9 @@
 class Camera
 {
 private:
-	float m_positionX, m_positionY, m_positionZ;
-	float m_rotationX, m_rotationY, m_rotationZ;
+	D3DXVECTOR3 m_position;
+	D3DXVECTOR3 m_rotation;
+	D3DXVECTOR3 m_target;
 
 	D3DXMATRIX m_viewMatrix;
 public:
@@ -15,11 +16,13 @@ public:
 	Camera(const Camera&);
 	~Camera();
 
-	void SetPosition(float, float, float);
-	void SetRotation(float, float, float);
+	void SetPosition(D3DXVECTOR3 vec);
+	void SetRotation(D3DXVECTOR3 vec);
+	void SetTarget(D3DXVECTOR3 vec);
 
 	D3DXVECTOR3 GetPosition();
 	D3DXVECTOR3 GetRotation();
+	D3DXVECTOR3 GetTarget();
 
 	void Render();
 	void GetViewMatrix(D3DXMATRIX&);

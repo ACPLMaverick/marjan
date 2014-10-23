@@ -1,5 +1,5 @@
 #pragma once
-
+#pragma message ("gameobject")
 // includes
 #include <d3d11.h>
 #include <d3dx10math.h>
@@ -15,6 +15,7 @@
 class GameObject
 {
 protected:
+	bool destroySignal = false;
 	string myName;
 	string myTag;
 
@@ -27,6 +28,8 @@ protected:
 	vector<Texture*> animationTextures;
 	bool canAnimate;
 
+	float transparency = 1.0f;
+
 	virtual bool InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	virtual void AnimateTexture();
 public:
@@ -36,9 +39,10 @@ public:
 	GameObject(const GameObject&);
 	~GameObject();
 
-	bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix);
+	virtual bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix);
 	void Destroy();
 
+	bool GetDestroySignal();
 	string GetName();
 	string GetTag();
 
@@ -48,5 +52,7 @@ public:
 	D3DXVECTOR3 GetPosition();
 	D3DXVECTOR3 GetRotation();
 	D3DXVECTOR3 GetScale();
+
+	void SetTransparency(float);
 };
 

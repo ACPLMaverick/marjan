@@ -1,13 +1,16 @@
 #include "System.h"
+#include "Bullet.h"
 
 unsigned int System::frameCount;
 bool System::playerAnimation;
+unsigned int System::checkGameObjects;
 
 System::System()
 {
 	myInput = nullptr;
 	myGraphics = nullptr;
 	playerAnimation = false;
+	checkGameObjects = false;
 }
 
 
@@ -104,6 +107,9 @@ bool System::Frame()
 
 	if (!ProcessKeys()) return false;
 
+	CheckGameObjects();
+	ProcessCamera();
+
 	GameObject** goTab = new GameObject*[gameObjects.size()];
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
@@ -157,11 +163,26 @@ bool System::ProcessKeys()
 	}
 	if (myInput->IsKeyDown(VK_SPACE))
 	{
+		PlayerShoot();
 		myInput->KeyUp(VK_SPACE);
-		return false;
+		return true;
 	}
 	playerAnimation = false;
 	return true;
+}
+
+void System::ProcessCamera()
+{
+	Camera* cam = myGraphics->GetCamera();
+	D3DXVECTOR3 newPos;
+	newPos.x = player->GetPosition().x;
+	newPos.y = player->GetPosition().y;
+	newPos.z = cam->GetPosition().z;
+	D3DXVECTOR3 targetPos = player->GetPosition();
+	targetPos.z += 1.0f;
+	
+	cam->SetPosition(newPos);
+	//cam->SetTarget(targetPos);
 }
 
 void System::InitializeGameObjects()
@@ -186,8 +207,8 @@ void System::InitializeGameObjects()
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	gameObjects.push_back(go01);
 	player = go01;
+	gameObjects.push_back(go01);
 
 	Texture* enemyTex[9];
 	enemyTex[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/tank_enemy_FR_01.dds");
@@ -234,15 +255,149 @@ void System::InitializeGameObjects()
 	gameObjects.push_back(go02c);
 
 	GameObject* go03 = new GameObject(
-		"board",
+		"board01",
 		"map_nocollid",
 		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
 		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
 		myGraphics->GetD3D()->GetDevice(),
 		D3DXVECTOR3(0.0f, 0.0f, -1.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(15.0f, 10.0f, 1.0f));
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
 	gameObjects.push_back(go03);
+
+	GameObject* go04 = new GameObject(
+		"board02",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(-20.0f, 0.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go04);
+
+	GameObject* go05 = new GameObject(
+		"board03",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(-20.0f, 20.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go05);
+
+	GameObject* go06 = new GameObject(
+		"board04",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(0.0f, 20.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go06);
+
+	GameObject* go07 = new GameObject(
+		"board05",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(20.0f, 20.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go07);
+
+	GameObject* go08 = new GameObject(
+		"board06",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(20.0f, 0.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go08);
+
+	GameObject* go09 = new GameObject(
+		"board07",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(20.0f, -20.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go09);
+
+	GameObject* go10 = new GameObject(
+		"board08",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(0.0f, -20.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go10);
+
+	GameObject* go11 = new GameObject(
+		"board09",
+		"map_nocollid",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(-20.0f, -20.0f, -1.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
+	gameObjects.push_back(go11);
+	GameObject* go12 = new GameObject(
+		"test_bullet",
+		"bullets",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/bullet.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		D3DXVECTOR3(-4.5f, 5.5f, 0.1f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	gameObjects.push_back(go12);
+	//player = go12;
+}
+
+void System::CheckGameObjects()
+{
+	while (checkGameObjects > 0)
+	{
+		for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+		{
+			if ((*it)->GetDestroySignal())
+			{
+				(*it)->Destroy();
+				delete (*it);
+				(*it) = nullptr;
+				gameObjects.erase(it);
+				break;
+			}
+		}
+		checkGameObjects--;
+	}
+}
+
+void System::PlayerShoot()
+{
+	Bullet* newBullet = new Bullet(
+		"test_bullet",
+		"bullets",
+		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/bullet.dds"),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		myGraphics->GetD3D()->GetDevice(),
+		(player->GetPosition() + D3DXVECTOR3(0.0f,0.0f,0.1f)),
+		player->GetRotation(),
+		D3DXVECTOR3(0.3f, 0.3f, 0.3f),
+		5.0f,
+		10.0f);
+	gameObjects.push_back(newBullet);
 }
 
 GameObject* System::GetGameObjectByName(LPCSTR name)
