@@ -19,6 +19,7 @@
 const bool FULL_SCREEN = false;
 const bool SHOW_CURSOR = false;
 const bool VSYNC_ENABLED = true;
+const bool CAMERA_FOLLOW_PLAYER = true;
 const unsigned int BACKGROUND_COLOR = BLACK_BRUSH;
 const float SCREEN_FAR = 1000.0f;
 const float SCREEN_DEPTH = 0.1f;
@@ -40,6 +41,7 @@ private:
 	//bool InitializeModels();
 	bool InitializeManagers(HWND hwnd);
 	//void RelaseModels();
+	void UpdateCameraToPlayer();
 public:
 	Graphics();
 	Graphics(const Graphics&);

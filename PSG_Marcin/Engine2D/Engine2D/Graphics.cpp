@@ -97,6 +97,7 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 
 		m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
+		if (CAMERA_FOLLOW_PLAYER) UpdateCameraToPlayer();
 		m_Camera->Render();
 		
 		m_Camera->GetViewMatrix(viewMatrix);
@@ -131,6 +132,11 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 		return true;
 	}
 	else return false;
+}
+
+void Graphics::UpdateCameraToPlayer()
+{
+	m_Camera->SetPosition()
 }
 
 //bool Graphics::InitializeModels()
