@@ -4,7 +4,6 @@ GraphicsClass::GraphicsClass() /*initialize the pointer to null for safety reaso
 {
 	m_D3D = 0;
 	m_Camera = 0;
-	m_Bitmap = 0;
 	m_TextureShader = 0;
 }
 
@@ -38,14 +37,14 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Camera->SetPosition(0.0f, 0.0f, -10.f);
 
 	//Create the bitmap object
-	m_Bitmap = new BitmapClass;
-	if (!m_Bitmap)
+	m_Bitmaps.push_back(new BitmapClass);
+	if (!m_Bitmaps.at(0))
 	{
 		return false;
 	}
 
 	//Initialize the bitmap object
-	result = m_Bitmap->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"../DirectXEngine/Data/Grass0129_9_S.dds", 256, 256);
+	result = m_Bitmaps.at(0)->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"../DirectXEngine/Data/Grass0129_9_S.dds", 256, 256);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the bitmap object", L"Error", MB_OK);
@@ -70,13 +69,50 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	return true;
 }
 
+bool GraphicsClass::InitializeTerrain(int screenWidth, int screenHeight, HWND hwnd, int bitmapWidth, int bitmapHeight)
+{
+	bool result;
+	int tilesCountHeight = (int)(screenHeight / bitmapHeight);
+	int tilesCountWidth = (int)(screenWidth / bitmapWidth);
+	int tilesCount = tilesCountHeight*tilesCountWidth;
+	for (int i = 0; i < tilesCount; i++)
+	{
+		m_Terrain.push_back(new BitmapClass);
+		if (!m_Bitmaps.at(i))
+		{
+			return false;
+		}
+
+		result = m_Terrain.at(i)->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"../DirectXEngine/Data/Grass0129_9_S.dds", bitmapWidth, bitmapHeight);
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void GraphicsClass::Shutdown() /* Shut down of all graphics objects occur here */
 {
-	if (m_Bitmap)
+	if (m_Bitmaps.size() >= 1)
 	{
-		m_Bitmap->Shutdown();
-		delete m_Bitmap;
-		m_Bitmap = 0;
+		for (int i = 0; i < m_Bitmaps.size(); i++)
+		{
+			m_Bitmaps.at(i)->Shutdown();
+			delete m_Bitmaps.at(i);
+			m_Bitmaps.at(i) = 0;
+		}
+	}
+
+	if (m_Terrain.size() >= 1)
+	{
+		for (int i = 0; i < m_Terrain.size(); i++)
+		{
+			m_Terrain.at(i)->Shutdown();
+			delete m_Terrain.at(i);
+			m_Terrain.at(i) = 0;
+		}
 	}
 
 	if (m_TextureShader)
@@ -102,7 +138,7 @@ void GraphicsClass::Shutdown() /* Shut down of all graphics objects occur here *
 	return;
 }
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(int positionX, int positionY)
 {
 	bool result;
 	static float rotation = 0.0f;
@@ -115,7 +151,7 @@ bool GraphicsClass::Frame()
 	}
 
 	//Render the graphics scene
-	result = Render(rotation);
+	result = Render(positionX, positionY);
 	if (!result)
 	{
 		return false;
@@ -124,7 +160,7 @@ bool GraphicsClass::Frame()
 	return true;
 }
 
-bool GraphicsClass::Render(float rotation)
+bool GraphicsClass::Render(int positionX, int positionY)
 {
 	D3DXMATRIX viewMatrix, worldMatrix, projectionMatrix, orthoMatrix;
 	bool result;
@@ -148,15 +184,15 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->TurnZBufferOff();
 
 	//Put the bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing
-	result = m_Bitmap->Render(m_D3D->GetDeviceContext(), 100, 100);
+	result = m_Bitmaps.at(0)->Render(m_D3D->GetDeviceContext(), positionX, positionY);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Render the model using the texture shader.
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
-		m_Bitmap->GetTexture());
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), m_Bitmaps.at(0)->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
+		m_Bitmaps.at(0)->GetTexture());
 	if (!result)
 	{
 		return false;
@@ -169,4 +205,14 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->EndScene();
 
 	return true;
+}
+
+bool GraphicsClass::RenderTerrain(int bitmapWidth, int bitmapHeight, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX orthoMatrix)
+{
+	return true;
+}
+
+BitmapClass* GraphicsClass::GetPlayer()
+{
+	return m_Bitmaps.at(0);
 }
