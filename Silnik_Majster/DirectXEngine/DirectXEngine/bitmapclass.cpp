@@ -51,12 +51,12 @@ void BitmapClass::Shutdown()
 	return;
 }
 
-bool BitmapClass::Render(ID3D11DeviceContext* deviceContext, int positionX, int positionY)
+bool BitmapClass::Render(ID3D11DeviceContext* deviceContext, int positionX, int positionY, D3DXMATRIX worldMatrix, float rotation)
 {
 	bool result;
 
 	//Re-build the dynamic vertex buffer for rendering to possibly a different location on the screen
-	result = UpdateBuffers(deviceContext, positionX, positionY);
+	result = UpdateBuffers(deviceContext, positionX, positionY, worldMatrix, rotation);
 	if (!result)
 	{
 		return false;
@@ -185,7 +185,7 @@ void BitmapClass::ShutdownBuffers()
 	return;
 }
 
-bool BitmapClass::UpdateBuffers(ID3D11DeviceContext* deviceContext, int positionX, int positionY)
+bool BitmapClass::UpdateBuffers(ID3D11DeviceContext* deviceContext, int positionX, int positionY, D3DXMATRIX worldMatrix, float rotation)
 {
 	float left, right, top, bottom;
 	VertexType* vertices;
