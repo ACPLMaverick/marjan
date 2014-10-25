@@ -6,6 +6,7 @@ SystemClass::SystemClass()
 	then the Shutdown function further on will attempt to clean up those objects.*/
 	m_Input = 0;
 	m_Graphics = 0;
+	m_Player = 0;
 }
 
 bool SystemClass::Initialize() /*does all the setup for the application.*/
@@ -44,12 +45,14 @@ bool SystemClass::Initialize() /*does all the setup for the application.*/
 		return false;
 	}
 
+	m_Player = m_Graphics->GetPlayer();
+
 	return true;
 }
 
 void SystemClass::Shutdown() /*shuts down and releases everything associated with the graphics and input object. 
 							 As well it also shuts down the window and cleans up the handles associated with it.*/
-{
+{	
 	// Release the graphics object.
 	if (m_Graphics)
 	{
@@ -119,8 +122,51 @@ bool SystemClass::Frame() /*Function where all the processing for our applicatio
 		return false;
 	}
 
+	if (m_Input->IsKeyDown(VK_RIGHT))
+	{
+		positionX += 25;
+		m_Input->KeyUp(VK_RIGHT);
+		currentTexture = m_Graphics->textures.at(1);
+		return true;
+	}
+
+	if (m_Input->IsKeyDown(VK_LEFT))
+	{
+		positionX -= 25;
+		m_Input->KeyUp(VK_LEFT);
+		currentTexture = m_Graphics->textures.at(1);
+		return true;
+	}
+
+	if (m_Input->IsKeyDown(VK_UP))
+	{
+		positionY -= 25;
+		m_Input->KeyUp(VK_UP);
+		currentTexture = m_Graphics->textures.at(0);
+		return true;
+	}
+
+	if (m_Input->IsKeyDown(VK_DOWN))
+	{
+		positionY += 25;
+		currentTexture = m_Graphics->textures.at(0);
+		m_Input->KeyUp(VK_DOWN);
+		return true;
+	}
+
+	if (m_Input->IsKeyDown(VK_SPACE))
+	{
+		rotation += 30.0f;
+		if (rotation > 360.0f)
+		{
+			rotation -= 360.0f;
+		}
+		m_Input->KeyUp(VK_SPACE);
+		return true;
+	}
+
 	// Do the frame processing for the graphics object
-	result = m_Graphics->Frame();
+	result = m_Graphics->Frame(positionX, positionY, rotation, currentTexture);
 	if (!result)
 	{
 		return false;

@@ -10,6 +10,9 @@
 // INCLUDES //
 //////////////
 #include <windows.h>
+#include <vector>
+
+#include "d3dclass.h"
 #include "inputclass.h"
 #include "graphicsclass.h"
 
@@ -25,8 +28,14 @@ public:
 	/*to handle the windows system messages that will get sent to the application while it is running.*/
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
+	int positionX = 256;
+	int positionY = 256;
+	float rotation = 0;
+	WCHAR* currentTexture = L"../DirectXEngine/Data/Grass0129_9_S.dds";
+
 private:
 	bool Frame();
+	bool ProcessKeys();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 
@@ -37,6 +46,7 @@ private:
 	/*pointers to the two objects that will handle graphics and input.*/
 	InputClass* m_Input;
 	GraphicsClass* m_Graphics;
+	BitmapClass* m_Player;
 };
 
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
