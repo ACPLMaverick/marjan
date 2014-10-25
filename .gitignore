@@ -303,3 +303,4 @@ Silnik_Majster/DirectXEngine/DirectXEngine/Debug/DirectXEngine.tlog/link.command
 *.cso
 Silnik_Majster/DirectXEngine/DirectXEngine.opensdf
 Silnik_Majster/DirectXEngine/DirectXEngine.sdf
+SW/test/filesys/fatfs.h
