@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
   34:testLcd.c     **** 	IOCLR0  = LCD_RW;
   35:testLcd.c     **** 	
   36:testLcd.c     ****   IODIR0 |= LCD_BACKLIGHT;
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 2
 
 
   37:testLcd.c     ****   IOCLR0  = LCD_BACKLIGHT;
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
   54              	writeLCD:
   55              	.LFB4:
   55:testLcd.c     **** 
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 3
 
 
   56:testLcd.c     **** /*****************************************************************************
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
   92 004a 1A60     		str	r2, [r3]
   74:testLcd.c     **** 	IOSET1 = ((tU32)data << 16) & LCD_DATA;
   93              		.loc 1 74 0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 4
 
 
   94 004c 0B04     		lsl	r3, r1, #16
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  139 0086 05E0     		b	.L16
  140              	.LVL12:
  141              	.L17:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 5
 
 
   84:testLcd.c     ****     asm volatile (" nop"); //delay 15 ns x 16 = about 250 ns delay
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  101:testLcd.c     **** 
  102:testLcd.c     **** /*****************************************************************************
  103:testLcd.c     ****  *
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 6
 
 
  104:testLcd.c     ****  * Description:
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  158:testLcd.c     **** //    writeLCD(1, 'i');
  159:testLcd.c     **** //    delay37us();
  160:testLcd.c     **** //    writeLCD(1, 'e');
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 7
 
 
  161:testLcd.c     **** //    delay37us();
@@ -418,7 +418,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  215:testLcd.c     **** 
  216:testLcd.c     **** //		lcdBacklight(FALSE);
  217:testLcd.c     **** //    osSleep(50);
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 8
 
 
  218:testLcd.c     **** //		lcdBacklight(TRUE);
@@ -478,7 +478,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  204 00cc 0047     		bx	r0
  205              	.LFE7:
  206              		.size	WriteString, .-WriteString
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 9
 
 
  207              		.section	.rodata.str1.4,"aMS",%progbits,1
@@ -538,7 +538,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  258              	.LBB11:
  259              		.loc 1 99 0
  260 00fc 0B60     		str	r3, [r1]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 10
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 10
 
 
  261              	.LBE11:
@@ -598,7 +598,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  315 0158 0120     		mov	r0, #1
  316 015a FFF7FEFF 		bl	osSleep
  317              		.loc 1 141 0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 11
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 11
 
 
  318 015e 0621     		mov	r1, #6
@@ -658,7 +658,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  372 01ca 0120     		mov	r0, #1
  373 01cc FFF728FF 		bl	writeLCD
  374              		.loc 1 190 0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 12
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 12
 
 
  375 01d0 1420     		mov	r0, #20
@@ -718,7 +718,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  429 023c FFF7F0FE 		bl	writeLCD
  430              		.loc 1 206 0
  431 0240 1420     		mov	r0, #20
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 13
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 13
 
 
  432 0242 FFF7FEFF 		bl	osSleep
@@ -778,7 +778,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  486 000d 0C       		.byte	0xc
  487 000e 0D       		.uleb128 0xd
  488 000f 00       		.uleb128 0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 14
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 14
 
 
  489              		.align	2
@@ -838,7 +838,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  543 0065 000000   		.align	2
  544              	.LEFDE6:
  545              		.file 2 "./startup/../pre_emptive_os/api/../api/general.h"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 15
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 15
 
 
  546              		.text
@@ -898,7 +898,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  600 0084 73       		.byte	0x73
  601 0085 00       		.sleb128 0
  602 0086 64000000 		.4byte	.LVL6-.Ltext0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 16
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 16
 
 
  603 008a 6A000000 		.4byte	.LVL7-.Ltext0
@@ -958,7 +958,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  657              	.LLST6:
  658 0115 B2000000 		.4byte	.LVL16-.Ltext0
  659 0119 B8000000 		.4byte	.LVL17-.Ltext0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 17
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 17
 
 
  660 011d 0100     		.2byte	0x1
@@ -1018,7 +1018,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  714 004f 07       		.byte	0x7
  715 0050 03       		.uleb128 0x3
  716 0051 D5000000 		.4byte	.LASF4
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 18
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 18
 
 
  717 0055 01       		.byte	0x1
@@ -1078,7 +1078,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  771 00c8 51000000 		.4byte	.LLST3
  772 00cc 0B       		.uleb128 0xb
  773 00cd 6900     		.ascii	"i\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 19
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 19
 
 
  774 00cf 01       		.byte	0x1
@@ -1138,7 +1138,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  828 013f 5E       		.byte	0x5e
  829 0140 25000000 		.4byte	0x25
  830 0144 00       		.byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 20
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 20
 
 
  831 0145 13       		.uleb128 0x13
@@ -1198,7 +1198,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  885 0011 00       		.byte	0x0
  886 0012 00       		.byte	0x0
  887 0013 02       		.uleb128 0x2
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 21
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 21
 
 
  888 0014 16       		.uleb128 0x16
@@ -1258,7 +1258,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  942 004a 3A       		.uleb128 0x3a
  943 004b 0B       		.uleb128 0xb
  944 004c 3B       		.uleb128 0x3b
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 22
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 22
 
 
  945 004d 0B       		.uleb128 0xb
@@ -1318,7 +1318,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  999 0083 0B       		.uleb128 0xb
  1000 0084 3B       		.uleb128 0x3b
  1001 0085 0B       		.uleb128 0xb
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 23
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 23
 
 
  1002 0086 49       		.uleb128 0x49
@@ -1378,7 +1378,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  1056 00bc 13       		.uleb128 0x13
  1057 00bd 00       		.byte	0x0
  1058 00be 00       		.byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 24
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 24
 
 
  1059 00bf 0E       		.uleb128 0xe
@@ -1438,7 +1438,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  1113 00f5 0B       		.uleb128 0xb
  1114 00f6 3B       		.uleb128 0x3b
  1115 00f7 0B       		.uleb128 0xb
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 25
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 25
 
 
  1116 00f8 49       		.uleb128 0x49
@@ -1498,7 +1498,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  1170 012e 0B       		.uleb128 0xb
  1171 012f 00       		.byte	0x0
  1172 0130 00       		.byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 26
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 26
 
 
  1173 0131 16       		.uleb128 0x16
@@ -1558,7 +1558,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  1222      61636B6C 
  1222      69676874 
  1222      00
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 27
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 27
 
 
  1223              	.LASF8:
@@ -1618,7 +1618,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  1248 00b7 74553332 		.ascii	"tU32\000"
  1248      00
  1249              	.LASF10:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 28
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 28
 
 
  1250 00bc 63686172 		.ascii	"char\000"
@@ -1636,21 +1636,21 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 1
  1256      65642063 
  1256      68617200 
  1257              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s 			page 29
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s 			page 29
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 testLcd.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:15     .text:00000000 delay37us
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:47     .text:0000001c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:51     .text:00000020 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:54     .text:00000020 writeLCD
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:167    .text:000000a4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:177    .text:000000b0 WriteString
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:174    .text:000000b0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:217    .text:000000d0 testLcd
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccV8HBvb.s:467    .text:00000284 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:15     .text:00000000 delay37us
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:47     .text:0000001c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:51     .text:00000020 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:54     .text:00000020 writeLCD
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:167    .text:000000a4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:177    .text:000000b0 WriteString
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:174    .text:000000b0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:217    .text:000000d0 testLcd
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccvC2JBL.s:467    .text:00000284 $d
 
 UNDEFINED SYMBOLS
 osSleep

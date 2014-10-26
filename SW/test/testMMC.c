@@ -6,173 +6,71 @@
  *****************************************************************************/
 
 
-#include "../pre_emptive_os/api/osapi.h"
-#include "../pre_emptive_os/api/general.h"
-#include <printf_P.h>
+#include <stdio.h>
+#include <efs.h>
+#include <ls.h>
+#include <string.h>
 #include <lpc2xxx.h>
 #include <consol.h>
-#include "../filesys/fatfs.h"
 
-/*****************************************************************************
- *
- * Description:
- *    Print the result code 
- *
- ****************************************************************************/
-static void
-printFatError(tFatResult result)
+EmbeddedFileSystem  efs;
+EmbeddedFile        file;
+DirList             list;
+unsigned char       file_name[13];
+unsigned int        size;
+
+void format_file_name(unsigned char *dest, unsigned char *src)
 {
+	unsigned char i, k;
 
-  printf("File result code = ");
-  switch(result) {
-  case FAT_OK:
-    printf("FAT_OK");
-    break;
-  case FAT_ERROR_INV_HAND:
-    printf("FAT_ERROR_INV_HAND");
-    break;
-  case FAT_ERROR_TOO_MANY_OPEN:
-    printf("FAT_ERROR_TOO_MANY_OPEN");
-    break;
-  case FAT_ERROR_EOF:
-    printf("FAT_ERROR_EOF");
-    break;
-  case FAT_ERROR_READ:
-    printf("FAT_ERROR_READ");
-    break;
-  case FAT_ERROR_WRITE:
-    printf("FAT_ERROR_WRITE");
-    break;
-  case FAT_ERROR_NOT_EXIST:
-    printf("FAT_ERROR_NOT_EXIST");
-    break;
-  case FAT_ERROR_A_FOLDER:
-    printf("FAT_ERROR_A_FOLDER");
-    break;
-  case FAT_ERROR_NOT_EMPTY:
-    printf("FAT_ERROR_NOT_EMPTY");
-    break;
-  case FAT_ERROR_EXISTS:
-    printf("FAT_ERROR_EXISTS");
-    break;
-  case FAT_ERROR_A_FILE:
-    printf("FAT_ERROR_A_FILE");
-    break;
-  case FAT_ERROR_INV_MODE:
-    printf("FAT_ERROR_INV_MODE");
-    break;
-  case FAT_ERROR_INV_PARAM:
-    printf("FAT_ERROR_INV_PARAM");
-    break;
-  case FAT_ERROR_INTERNAL:
-    printf("FAT_ERROR_INTERNAL");
-    break;
-  case FAT_ERROR_INVALID_PATH:
-    printf("FAT_ERROR_INVALID_PATH");
-    break;
-  case FAT_ERROR_NO_VALID_PART:
-    printf("FAT_ERROR_NO_VALID_PART");
-    break;
-  case FAT_ERROR_FAT12_NOT_IMPL:
-    printf("FAT_ERROR_FAT12_NOT_IMPL");
-    break;
-  case FAT_ERROR_FAT32_NOT_IMPL:
-    printf("FAT_ERROR_FAT32_NOT_IMPL");
-    break;
-  case FAT_ERROR_NO_MORE_CLUSTERS:
-    printf("FAT_ERROR_NO_MORE_CLUSTERS");
-    break;
-  case FAT_ERROR_END_CLUSTER_CHAIN:
-    printf("FAT_ERROR_END_CLUSTER_CHAIN");
-    break;
-  case FAT_ERROR_SEEK_FAILED:
-    printf("FAT_ERROR_SEEK_FAILED");
-    break;
-  case FAT_ERROR_ROOT_SOMETHING:
-    printf("FAT_ERROR_ROOT_SOMETHING");
-    break;
-  case FAT_ERROR_NO_MEDIA:
-    printf("FAT_ERROR_NO_MEDIA");
-    break;
-  case FAT_ERROR_READ_ONLY:
-    printf("FAT_ERROR_READ_ONLY");
-    break;
-  case FAT_ERROR_FS_NOT_INITIALIZED:
-    printf("FAT_ERROR_FS_NOT_INITIALIZED");
-    break;
-  default:
-    printf("UNKNOWN %d", result);
-    break;
-  }
-  printf("\r\n");
+	for (i = 7; i>0 && (src[i] == 0x20); i--);
+
+	strncpy(dest, src, i + 1);
+	dest[i + 1] = '.';
+
+	for (k = 2; k>0 && (src[8 + k] == 0x20); k--);
+
+	strncpy(&dest[i + 2], &src[8], k + 1);
+	dest[i + 5] = '\0';
 }
 
 
-/*****************************************************************************
- *
- * Description:
- *    A process entry function. 
- *
- ****************************************************************************/
-void
-testMMC(void)
+void testMMC(void)
 {
-  tFatResult fsResult = 0;
-  tFatHandle rootHandle;
- 	tU32       fileSize;
-  tBool      isDir;
-  tU8*       pName;
-static tU8 fileName[256];
-static tFatDirEntry dirEntry;
-  tU32 i;
+	if (efs_init(&efs, "\\") != 0)
+	{
+		//DBG((TXT("Could not open filesystem.\n")));
+		return(-1);
+	}
 
+	if (ls_openDir(&list, &(efs.myFs), "/") != 0)
+	{
+		//DBG((TXT("Could not open the selected directory.\n")));			//Trzeba to zmieniæ na coœ innego bo to jest w debug.h a tego nie ma
+		return(-2);
+	}
 
-  printf("\n\n*******************************************************\n");
-  printf("*                                                     *\n");
-  printf("* The MMC/SD card interface is tested...              *\n");
-  printf("*                                                     *\n");
-  printf("*******************************************************\n\n\n");
+	while (ls_getNext(&list) == 0)
+	{
+		if ((list.currentEntry.FileName[8] == 'M') &&
+			(list.currentEntry.FileName[9] == 'P') &&
+			(list.currentEntry.FileName[10] == '3'))
+		{
+			//DBG((TXT("Filename: %.11s (%li bytes)\n"), list.currentEntry.FileName,
+				list.currentEntry.FileSize));
 
-  fsResult = fatInit();
-  printFatError(fsResult);
-  
-  if(fsResult == FAT_OK)
-  {
-    fsResult = fatOpen("/", "r", &rootHandle);
-    if (fsResult == FAT_OK)
-    {
-  	  fsResult = fatReadDirEntry(rootHandle, &dirEntry);
-  	
-      printf("\nContent on MMC/SD card:");
+			format_file_name(file_name, list.currentEntry.FileName);
 
-      while(fsResult == FAT_OK)
-      {
-        fatGetEntryName(&dirEntry, &pName);
-        fatGetEntrySize(&dirEntry, &fileSize);
-        fatGetEntryIsDir(&dirEntry, &isDir);
+			if (file_fopen(&file, &efs.myFs, file_name, 'r') == 0)
+			{
+				file_fclose(&file);
+				TOGGLE_LIVE_LED1();
+			}
+			//else
+				//DBG((TXT("Could not open file.\n")));
+		}
+	}
 
-     		i = 0;
-      	if(pName != NULL)
-       	{
-     	  	while(*pName != '\0')
-     		  {
-     			  fileName[i++] = *pName;
-       			pName += 2;
-       		}
-       	}
-     	  fileName[i] = '\0';
+	fs_umount(&(efs.myFs));
 
-        if (FALSE == isDir)
-          printf("\n  '%s'  %d bytes", fileName, fileSize);
-        else
-          printf("\n  '%s'  Is a subdirectory", fileName);
-      
-        fsResult = fatReadDirEntry(rootHandle, &dirEntry);
-      }
-    }
-    else
-      printFatError(fsResult);
-  
-    fatClose(&rootHandle);
-  }
+	return 0;
 }

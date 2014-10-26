@@ -154,4 +154,20 @@
 #define STK_SIZE     (stackSize_SYS+stackSize_SVC+stackSize_UND+stackSize_ABT+stackSize_IRQ+stackSize_FIQ)
 #define STK_SADDR    (SRAM_EADDR+1-STK_SIZE)  /* Stack start address */
 
+/*ADDED*/
+
+#define HW_ENDPOINT_LPC2000_SD
+#define HW_ENDPOINT_LPC2000_SPINUM  (1)
+
+#define IOMAN_NUMBUFFER 1 /* 32kB RAM on the LPC2138 - let's use 3 kB */
+#define IOMAN_NUMITERATIONS 3
+#define IOMAN_DO_MEMALLOC
+
+#define CLUSTER_PREALLOC_FILE 0
+#define CLUSTER_PREALLOC_DIRECTORY 0
+
+#define LITTLE_ENDIAN
+#define FULL_ERROR_SUPPORT
+#define LIST_MAXLENFILENAME 12
+
 #endif  /* _config_h_ */

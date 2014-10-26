@@ -1,0 +1,376 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s 			page 1
+
+
+   1              		.file	"time.c"
+   2              		.section	.debug_abbrev,"",%progbits
+   3              	.Ldebug_abbrev0:
+   4              		.section	.debug_info,"",%progbits
+   5              	.Ldebug_info0:
+   6              		.section	.debug_line,"",%progbits
+   7              	.Ldebug_line0:
+   8 0000 3B000000 		.text
+   8      02001D00 
+   8      00000201 
+   8      FB0E0D00 
+   8      01010101 
+   9              	.Ltext0:
+  10              		.align	2
+  11              		.global	fs_makeDate
+  12              		.type	fs_makeDate, %function
+  13              	fs_makeDate:
+  14              	.LFB2:
+  15              		.file 1 "time.c"
+   1:time.c        **** /*****************************************************************************/
+   2:time.c        **** #include "time.h"
+   3:time.c        **** /*****************************************************************************/
+   4:time.c        **** 
+   5:time.c        **** unsigned short fs_makeDate(void)
+   6:time.c        **** {
+  16              		.loc 1 6 0
+  17              		@ Function supports interworking.
+  18              		@ args = 0, pretend = 0, frame = 0
+  19              		@ frame_needed = 0, uses_anonymous_args = 0
+  20              		@ link register save eliminated.
+   7:time.c        **** #ifndef DATE_TIME_SUPPORT
+   8:time.c        **** 	return(0);
+   9:time.c        **** #else
+  10:time.c        **** 	unsigned char m,d;
+  11:time.c        **** 	unsigned short y;
+  12:time.c        **** 	
+  13:time.c        **** 	y = time_getYear()-1980;
+  14:time.c        **** 	m = time_getMonth();
+  15:time.c        **** 	d = time_getDay();
+  16:time.c        **** 	
+  17:time.c        **** 	return(
+  18:time.c        **** 		(y>127?127<<9:(y&0x3F)<<9)   |
+  19:time.c        **** 		((m==0||m>12)?1:(m&0xF)<<5)  |
+  20:time.c        **** 		((d==0||d>31)?1:(d&0x1F))
+  21:time.c        **** 	);
+  22:time.c        **** #endif
+  23:time.c        **** }
+  21              		.loc 1 23 0
+  22 0000 0000A0E3 		mov	r0, #0
+  23              		.loc 1 6 0
+  24              		@ lr needed for prologue
+  25              		.loc 1 23 0
+  26 0004 1EFF2FE1 		bx	lr
+  27              	.LFE2:
+  28              		.size	fs_makeDate, .-fs_makeDate
+  29              		.align	2
+  30              		.global	fs_makeTime
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s 			page 2
+
+
+  31              		.type	fs_makeTime, %function
+  32              	fs_makeTime:
+  33              	.LFB3:
+  24:time.c        **** /*****************************************************************************/
+  25:time.c        **** 
+  26:time.c        **** unsigned short fs_makeTime(void)
+  27:time.c        **** {
+  34              		.loc 1 27 0
+  35              		@ Function supports interworking.
+  36              		@ args = 0, pretend = 0, frame = 0
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+  38              		@ link register save eliminated.
+  28:time.c        **** #ifndef DATE_TIME_SUPPORT
+  29:time.c        **** 	return(0);
+  30:time.c        **** #else
+  31:time.c        **** 	unsigned char s,m,h;
+  32:time.c        **** 	
+  33:time.c        **** 	s = time_getSecond();
+  34:time.c        **** 	m = time_getMinute();
+  35:time.c        **** 	h = time_getHour();
+  36:time.c        **** 	
+  37:time.c        **** 	return(
+  38:time.c        **** 		(h>23?0:(h&0x1F)<<11) |
+  39:time.c        **** 		(m>59?0:(m&0x3F)<<5)  |
+  40:time.c        **** 		(s>59?0:(s-s%2)/2)
+  41:time.c        **** 	);
+  42:time.c        **** #endif
+  43:time.c        **** }
+  39              		.loc 1 43 0
+  40 0008 0000A0E3 		mov	r0, #0
+  41              		.loc 1 27 0
+  42              		@ lr needed for prologue
+  43              		.loc 1 43 0
+  44 000c 1EFF2FE1 		bx	lr
+  45              	.LFE3:
+  46              		.size	fs_makeTime, .-fs_makeTime
+  47              		.align	2
+  48              		.global	fs_hasTimeSupport
+  49              		.type	fs_hasTimeSupport, %function
+  50              	fs_hasTimeSupport:
+  51              	.LFB4:
+  44:time.c        **** /*****************************************************************************/
+  45:time.c        **** 
+  46:time.c        **** unsigned char fs_hasTimeSupport(void)
+  47:time.c        **** {
+  52              		.loc 1 47 0
+  53              		@ Function supports interworking.
+  54              		@ args = 0, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56              		@ link register save eliminated.
+  48:time.c        **** #ifdef DATE_TIME_SUPPORT
+  49:time.c        **** 	return(1);
+  50:time.c        **** #else
+  51:time.c        **** 	return(0);
+  52:time.c        **** #endif
+  53:time.c        **** }
+  57              		.loc 1 53 0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s 			page 3
+
+
+  58 0010 0000A0E3 		mov	r0, #0
+  59              		.loc 1 47 0
+  60              		@ lr needed for prologue
+  61              		.loc 1 53 0
+  62 0014 1EFF2FE1 		bx	lr
+  63              	.LFE4:
+  64              		.size	fs_hasTimeSupport, .-fs_hasTimeSupport
+  65              		.section	.debug_frame,"",%progbits
+  66              	.Lframe0:
+  67 0000 0C000000 		.4byte	.LECIE0-.LSCIE0
+  68              	.LSCIE0:
+  69 0004 FFFFFFFF 		.4byte	0xffffffff
+  70 0008 01       		.byte	0x1
+  71 0009 00       		.ascii	"\000"
+  72 000a 01       		.uleb128 0x1
+  73 000b 7C       		.sleb128 -4
+  74 000c 0E       		.byte	0xe
+  75 000d 0C       		.byte	0xc
+  76 000e 0D       		.uleb128 0xd
+  77 000f 00       		.uleb128 0x0
+  78              		.align	2
+  79              	.LECIE0:
+  80              	.LSFDE0:
+  81 0010 0C000000 		.4byte	.LEFDE0-.LASFDE0
+  82              	.LASFDE0:
+  83 0014 00000000 		.4byte	.Lframe0
+  84 0018 00000000 		.4byte	.LFB2
+  85 001c 08000000 		.4byte	.LFE2-.LFB2
+  86              		.align	2
+  87              	.LEFDE0:
+  88              	.LSFDE2:
+  89 0020 0C000000 		.4byte	.LEFDE2-.LASFDE2
+  90              	.LASFDE2:
+  91 0024 00000000 		.4byte	.Lframe0
+  92 0028 08000000 		.4byte	.LFB3
+  93 002c 08000000 		.4byte	.LFE3-.LFB3
+  94              		.align	2
+  95              	.LEFDE2:
+  96              	.LSFDE4:
+  97 0030 0C000000 		.4byte	.LEFDE4-.LASFDE4
+  98              	.LASFDE4:
+  99 0034 00000000 		.4byte	.Lframe0
+ 100 0038 10000000 		.4byte	.LFB4
+ 101 003c 08000000 		.4byte	.LFE4-.LFB4
+ 102              		.align	2
+ 103              	.LEFDE4:
+ 104              		.text
+ 105              	.Letext0:
+ 106              		.section	.debug_info
+ 107 0000 75000000 		.4byte	0x75
+ 108 0004 0200     		.2byte	0x2
+ 109 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 110 000a 04       		.byte	0x4
+ 111 000b 01       		.uleb128 0x1
+ 112 000c 00000000 		.4byte	.Ldebug_line0
+ 113 0010 18000000 		.4byte	.Letext0
+ 114 0014 00000000 		.4byte	.Ltext0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s 			page 4
+
+
+ 115 0018 21000000 		.4byte	.LASF5
+ 116 001c 01       		.byte	0x1
+ 117 001d 77000000 		.4byte	.LASF6
+ 118 0021 2D000000 		.4byte	.LASF7
+ 119 0025 02       		.uleb128 0x2
+ 120 0026 01       		.byte	0x1
+ 121 0027 59000000 		.4byte	.LASF0
+ 122 002b 01       		.byte	0x1
+ 123 002c 06       		.byte	0x6
+ 124 002d 01       		.byte	0x1
+ 125 002e 3C000000 		.4byte	0x3c
+ 126 0032 00000000 		.4byte	.LFB2
+ 127 0036 08000000 		.4byte	.LFE2
+ 128 003a 01       		.byte	0x1
+ 129 003b 5D       		.byte	0x5d
+ 130 003c 03       		.uleb128 0x3
+ 131 003d 00000000 		.4byte	.LASF3
+ 132 0041 02       		.byte	0x2
+ 133 0042 07       		.byte	0x7
+ 134 0043 02       		.uleb128 0x2
+ 135 0044 01       		.byte	0x1
+ 136 0045 7E000000 		.4byte	.LASF1
+ 137 0049 01       		.byte	0x1
+ 138 004a 1B       		.byte	0x1b
+ 139 004b 01       		.byte	0x1
+ 140 004c 3C000000 		.4byte	0x3c
+ 141 0050 08000000 		.4byte	.LFB3
+ 142 0054 10000000 		.4byte	.LFE3
+ 143 0058 01       		.byte	0x1
+ 144 0059 5D       		.byte	0x5d
+ 145 005a 02       		.uleb128 0x2
+ 146 005b 01       		.byte	0x1
+ 147 005c 65000000 		.4byte	.LASF2
+ 148 0060 01       		.byte	0x1
+ 149 0061 2F       		.byte	0x2f
+ 150 0062 01       		.byte	0x1
+ 151 0063 71000000 		.4byte	0x71
+ 152 0067 10000000 		.4byte	.LFB4
+ 153 006b 18000000 		.4byte	.LFE4
+ 154 006f 01       		.byte	0x1
+ 155 0070 5D       		.byte	0x5d
+ 156 0071 03       		.uleb128 0x3
+ 157 0072 13000000 		.4byte	.LASF4
+ 158 0076 01       		.byte	0x1
+ 159 0077 08       		.byte	0x8
+ 160 0078 00       		.byte	0x0
+ 161              		.section	.debug_abbrev
+ 162 0000 01       		.uleb128 0x1
+ 163 0001 11       		.uleb128 0x11
+ 164 0002 01       		.byte	0x1
+ 165 0003 10       		.uleb128 0x10
+ 166 0004 06       		.uleb128 0x6
+ 167 0005 12       		.uleb128 0x12
+ 168 0006 01       		.uleb128 0x1
+ 169 0007 11       		.uleb128 0x11
+ 170 0008 01       		.uleb128 0x1
+ 171 0009 25       		.uleb128 0x25
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s 			page 5
+
+
+ 172 000a 0E       		.uleb128 0xe
+ 173 000b 13       		.uleb128 0x13
+ 174 000c 0B       		.uleb128 0xb
+ 175 000d 03       		.uleb128 0x3
+ 176 000e 0E       		.uleb128 0xe
+ 177 000f 1B       		.uleb128 0x1b
+ 178 0010 0E       		.uleb128 0xe
+ 179 0011 00       		.byte	0x0
+ 180 0012 00       		.byte	0x0
+ 181 0013 02       		.uleb128 0x2
+ 182 0014 2E       		.uleb128 0x2e
+ 183 0015 00       		.byte	0x0
+ 184 0016 3F       		.uleb128 0x3f
+ 185 0017 0C       		.uleb128 0xc
+ 186 0018 03       		.uleb128 0x3
+ 187 0019 0E       		.uleb128 0xe
+ 188 001a 3A       		.uleb128 0x3a
+ 189 001b 0B       		.uleb128 0xb
+ 190 001c 3B       		.uleb128 0x3b
+ 191 001d 0B       		.uleb128 0xb
+ 192 001e 27       		.uleb128 0x27
+ 193 001f 0C       		.uleb128 0xc
+ 194 0020 49       		.uleb128 0x49
+ 195 0021 13       		.uleb128 0x13
+ 196 0022 11       		.uleb128 0x11
+ 197 0023 01       		.uleb128 0x1
+ 198 0024 12       		.uleb128 0x12
+ 199 0025 01       		.uleb128 0x1
+ 200 0026 40       		.uleb128 0x40
+ 201 0027 0A       		.uleb128 0xa
+ 202 0028 00       		.byte	0x0
+ 203 0029 00       		.byte	0x0
+ 204 002a 03       		.uleb128 0x3
+ 205 002b 24       		.uleb128 0x24
+ 206 002c 00       		.byte	0x0
+ 207 002d 03       		.uleb128 0x3
+ 208 002e 0E       		.uleb128 0xe
+ 209 002f 0B       		.uleb128 0xb
+ 210 0030 0B       		.uleb128 0xb
+ 211 0031 3E       		.uleb128 0x3e
+ 212 0032 0B       		.uleb128 0xb
+ 213 0033 00       		.byte	0x0
+ 214 0034 00       		.byte	0x0
+ 215 0035 00       		.byte	0x0
+ 216              		.section	.debug_pubnames,"",%progbits
+ 217 0000 44000000 		.4byte	0x44
+ 218 0004 0200     		.2byte	0x2
+ 219 0006 00000000 		.4byte	.Ldebug_info0
+ 220 000a 79000000 		.4byte	0x79
+ 221 000e 25000000 		.4byte	0x25
+ 222 0012 66735F6D 		.ascii	"fs_makeDate\000"
+ 222      616B6544 
+ 222      61746500 
+ 223 001e 43000000 		.4byte	0x43
+ 224 0022 66735F6D 		.ascii	"fs_makeTime\000"
+ 224      616B6554 
+ 224      696D6500 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s 			page 6
+
+
+ 225 002e 5A000000 		.4byte	0x5a
+ 226 0032 66735F68 		.ascii	"fs_hasTimeSupport\000"
+ 226      61735469 
+ 226      6D655375 
+ 226      70706F72 
+ 226      7400
+ 227 0044 00000000 		.4byte	0x0
+ 228              		.section	.debug_aranges,"",%progbits
+ 229 0000 1C000000 		.4byte	0x1c
+ 230 0004 0200     		.2byte	0x2
+ 231 0006 00000000 		.4byte	.Ldebug_info0
+ 232 000a 04       		.byte	0x4
+ 233 000b 00       		.byte	0x0
+ 234 000c 0000     		.2byte	0x0
+ 235 000e 0000     		.2byte	0x0
+ 236 0010 00000000 		.4byte	.Ltext0
+ 237 0014 18000000 		.4byte	.Letext0-.Ltext0
+ 238 0018 00000000 		.4byte	0x0
+ 239 001c 00000000 		.4byte	0x0
+ 240              		.section	.debug_str,"MS",%progbits,1
+ 241              	.LASF3:
+ 242 0000 73686F72 		.ascii	"short unsigned int\000"
+ 242      7420756E 
+ 242      7369676E 
+ 242      65642069 
+ 242      6E7400
+ 243              	.LASF4:
+ 244 0013 756E7369 		.ascii	"unsigned char\000"
+ 244      676E6564 
+ 244      20636861 
+ 244      7200
+ 245              	.LASF5:
+ 246 0021 474E5520 		.ascii	"GNU C 4.1.1\000"
+ 246      4320342E 
+ 246      312E3100 
+ 247              	.LASF7:
+ 248 002d 2F637967 		.ascii	"/cygdrive/c/Embedded/workspace/test/filesys\000"
+ 248      64726976 
+ 248      652F632F 
+ 248      456D6265 
+ 248      64646564 
+ 249              	.LASF0:
+ 250 0059 66735F6D 		.ascii	"fs_makeDate\000"
+ 250      616B6544 
+ 250      61746500 
+ 251              	.LASF2:
+ 252 0065 66735F68 		.ascii	"fs_hasTimeSupport\000"
+ 252      61735469 
+ 252      6D655375 
+ 252      70706F72 
+ 252      7400
+ 253              	.LASF6:
+ 254 0077 74696D65 		.ascii	"time.c\000"
+ 254      2E6300
+ 255              	.LASF1:
+ 256 007e 66735F6D 		.ascii	"fs_makeTime\000"
+ 256      616B6554 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s 			page 7
+
+
+ 256      696D6500 
+ 257              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 time.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s:13     .text:00000000 fs_makeDate
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s:22     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s:32     .text:00000008 fs_makeTime
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cciU6gBo.s:50     .text:00000010 fs_hasTimeSupport
+
+NO UNDEFINED SYMBOLS

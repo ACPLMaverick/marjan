@@ -62,7 +62,7 @@ CSRCS   = main.c          \
           testI2C.c       \
           testAdc.c       \
           testXBee.c      \
-          startupSound.c
+          startupSound.c  
 
 # List assembler source files here
 ASRCS   = 
@@ -70,7 +70,9 @@ ASRCS   =
 # List subdirectories to recursively invoke make in 
 SUBDIRS = ./startup \
           usb \
-          irq
+          irq \
+          mmc \
+          filesys
 
 # List additional libraries to link with
 LIBS    = irq/irq_code.a \
