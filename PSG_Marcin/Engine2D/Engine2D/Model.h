@@ -40,7 +40,7 @@ protected:
 	bool LoadTexture(ID3D11Device*, LPCSTR);
 	void ReleaseTexture();
 
-	virtual VertexIndex* LoadGeometry();
+	virtual VertexIndex* LoadGeometry() = 0;
 public:
 	D3DXVECTOR3 position;
 	D3DXVECTOR3 rotation;

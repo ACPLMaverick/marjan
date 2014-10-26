@@ -29,8 +29,8 @@ https://developers.google.com/maps/documentation/geocoding/
 http://stackoverflow.com/questions/9991224/google-maps-get-country-region-and-city-name-from-longitude-and-latitude-php
 http://stackoverflow.com/questions/14368529/determine-if-gps-location-is-within-city-limits
 
-- SPRAWDZANIE PO NAZWIE MIASTA, KONIECZNOŒÆ ONLINE -
-- CHYBA NIE DA SIÊ TEGO ZROBIÆ INACZEJ, JEŒLI W OGÓLE -
+ - administrative ordery 0 - kraj 9 - dzielnica - 
+roadClass - atrybut drogi
 
 - ceny paliw
 http://www.mygasfeed.com/keys/api - TYLKO USA/KANADA
@@ -39,6 +39,8 @@ POTRZEBNY PARSER HTML
 http://java-source.net/open-source/html-parsers
 Jsoup
 TagSoup
+gie³da papierów wartoœciowych
+serwis restowy - kod strony siê odwo³uje
 
 - REZYGNUJEMY Z KILKU RODZAJÓW CEN -
 - OK -

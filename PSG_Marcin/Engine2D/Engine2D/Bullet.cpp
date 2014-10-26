@@ -51,7 +51,24 @@ bool Bullet::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, 
 
 void Bullet::UpdatePosition()
 {
-	myModel->position += (speed/200.0f*(D3DXVECTOR3(0.0f, 1.0f, 0.0f)));
+	D3DXVECTOR3 rotationVector(0.0f, 1.0f, 0.0f);
+
+	// rotation
+	D3DXMATRIX rotateX;
+	D3DXMATRIX rotateY;
+	D3DXMATRIX rotateZ;
+	D3DXMatrixRotationX(&rotateX, myModel->rotation.x);
+	D3DXMatrixRotationY(&rotateY, myModel->rotation.y);
+	D3DXMatrixRotationZ(&rotateZ, myModel->rotation.z);
+	D3DXMATRIX rotationMatrix = rotateX*rotateY*rotateZ;
+	D3DXVECTOR4 outputVec;
+
+	D3DXVec3Transform(&outputVec, &rotationVector, &rotationMatrix);
+	rotationVector.x = outputVec.x;
+	rotationVector.y = outputVec.y;
+	rotationVector.z = outputVec.z;
+
+	myModel->position += (speed/200.0f*rotationVector);
 	currentDistance = sqrt(pow(myModel->position.x - originPos.x, 2) + pow(myModel->position.y - originPos.y, 2));
 }
 

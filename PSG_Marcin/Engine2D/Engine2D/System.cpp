@@ -4,6 +4,8 @@
 unsigned int System::frameCount;
 bool System::playerAnimation;
 unsigned int System::checkGameObjects;
+float System::time;
+unsigned long System::systemTime;
 
 System::System()
 {
@@ -11,6 +13,9 @@ System::System()
 	myGraphics = nullptr;
 	playerAnimation = false;
 	checkGameObjects = false;
+	m_CPU = nullptr;
+	m_FPS = nullptr;
+	m_Timer = nullptr;
 }
 
 
@@ -38,6 +43,16 @@ bool System::Initialize()
 
 	InitializeGameObjects();
 
+	m_FPS = new FPSCounter();
+	m_FPS->Initialize();
+
+	m_CPU = new CPUCounter();
+	m_CPU->Initialize();
+
+	m_Timer = new Timer();
+	m_Timer->Initialize();
+	time = m_Timer->GetTime();
+
 	return true;
 }
 
@@ -54,6 +69,25 @@ void System::Shutdown()
 	{
 		delete myInput;
 		myInput = nullptr;
+	}
+
+	if (m_CPU)
+	{
+		m_CPU->Shutdown();
+		delete m_CPU;
+		m_CPU = nullptr;
+	}
+
+	if (m_FPS)
+	{
+		delete m_FPS;
+		m_FPS = nullptr;
+	}
+
+	if (m_Timer)
+	{
+		delete m_Timer;
+		m_Timer = nullptr;
 	}
 
 	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
@@ -105,6 +139,13 @@ bool System::Frame()
 {
 	bool result;
 
+	systemTime = timeGetTime();
+	m_Timer->Frame();
+	m_FPS->Frame();
+	m_CPU->Frame();
+
+	time = m_Timer->GetTime();
+
 	if (!ProcessKeys()) return false;
 
 	CheckGameObjects();
@@ -117,6 +158,7 @@ bool System::Frame()
 	}
 	result = myGraphics->Frame(goTab, gameObjects.size());
 	if (!result) return false;
+
 	return true;
 }
 
@@ -127,37 +169,37 @@ bool System::ProcessKeys()
 	if (myInput->IsKeyDown(VK_ESCAPE)) return false;
 	if (myInput->IsKeyDown(VK_LEFT))
 	{
-		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(-myInput->movementDistance, 0.0f, 0.0f));
+		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3((-myInput->movementDistance)*(m_Timer->GetTime()), 0.0f, 0.0f));
 		player->SetPosition(newVec);
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 1.57079632679f));
-		myInput->KeyUp(VK_LEFT);
+		//myInput->KeyUp(VK_LEFT);
 		playerAnimation = true;
 		return true;
 	}
 	if (myInput->IsKeyDown(VK_RIGHT))
 	{
-		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(myInput->movementDistance, 0.0f, 0.0f));
+		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3((myInput->movementDistance)*(m_Timer->GetTime()), 0.0f, 0.0f));
 		player->SetPosition(newVec);
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 4.71238898038f));
-		myInput->KeyUp(VK_RIGHT);
+		//myInput->KeyUp(VK_RIGHT);
 		playerAnimation = true;
 		return true;
 	}
 	if (myInput->IsKeyDown(VK_UP))
 	{
-		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(0.0f, myInput->movementDistance, 0.0f));
+		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(0.0f, (myInput->movementDistance)*(m_Timer->GetTime()), 0.0f));
 		player->SetPosition(newVec);
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		myInput->KeyUp(VK_UP);
+		//myInput->KeyUp(VK_UP);
 		playerAnimation = true;
 		return true;
 	}
 	if (myInput->IsKeyDown(VK_DOWN))
 	{
-		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(0.0f, -myInput->movementDistance, 0.0f));
+		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3(0.0f, (-myInput->movementDistance)*(m_Timer->GetTime()), 0.0f));
 		player->SetPosition(newVec);
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f));
-		myInput->KeyUp(VK_DOWN);
+		//myInput->KeyUp(VK_DOWN);
 		playerAnimation = true;
 		return true;
 	}
@@ -362,6 +404,7 @@ void System::InitializeGameObjects()
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	gameObjects.push_back(go12);
+	go12->SetTransparency(0.6f);
 	//player = go12;
 }
 

@@ -65,37 +65,6 @@ ID3D11ShaderResourceView* Model::GetTexture()
 	return m_texture->GetTexture();
 }
 
-Model::VertexIndex* Model::LoadGeometry()
-{
-	Vertex* vertices;
-	unsigned long* indices;
-	
-	m_vertexCount = 3;
-	m_indexCount = 3;
-
-	vertices = new Vertex[m_vertexCount];
-	indices = new unsigned long[m_indexCount];
-
-	// load vertex array with data
-	// texture coords
-	vertices[0].position = D3DXVECTOR3(-1.0f*scale.x, -1.0f*scale.y, 0.0f*scale.z) + position; // BL
-	vertices[0].texture = D3DXVECTOR2(0.0f, 0.0f);
-	vertices[1].position = D3DXVECTOR3(-1.0f*scale.x, 1.0f*scale.y, 0.0f*scale.z) + position; // TL
-	vertices[1].texture = D3DXVECTOR2(0.0f, 1.0f);
-	vertices[2].position = D3DXVECTOR3(1.0f*scale.x, -1.0f*scale.y, 0.0f*scale.z) + position; // BR
-	vertices[2].texture = D3DXVECTOR2(1.0f, 0.0f);
-
-	// load index array with data
-	indices[0] = 0; // BL
-	indices[1] = 1; // TL
-	indices[2] = 2; // BR
-
-	VertexIndex* toReturn = new VertexIndex;
-	toReturn->vertexArrayPtr = vertices;
-	toReturn->indexArrayPtr = indices;
-	return toReturn;
-}
-
 bool Model::InitializeBuffers(ID3D11Device* device)
 {
 	Vertex* vertices = nullptr;

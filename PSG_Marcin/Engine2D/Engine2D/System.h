@@ -12,6 +12,9 @@
 #include "GameObject.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
+#include "FPSCounter.h"
+#include "CPUCounter.h"
+#include "Timer.h"
 
 class GameObject;
 class Graphics;
@@ -22,6 +25,10 @@ private:
 	LPCSTR applicationName;
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
+
+	FPSCounter* m_FPS;
+	CPUCounter* m_CPU;
+	Timer* m_Timer;
 
 	Input* myInput;
 	Graphics* myGraphics;
@@ -43,6 +50,8 @@ public:
 	static unsigned int frameCount;
 	static bool playerAnimation;
 	static unsigned int checkGameObjects;
+	static float time;
+	static unsigned long systemTime;
 
 	System();
 	System(const System&);
@@ -51,6 +60,10 @@ public:
 	bool Initialize();
 	void Shutdown();
 	void Run();
+
+	int GetCPUPercentage();
+	int GetFPS();
+	int GetTime();
 
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 };

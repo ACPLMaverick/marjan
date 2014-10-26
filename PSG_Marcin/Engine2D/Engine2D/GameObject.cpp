@@ -69,9 +69,9 @@ void GameObject::Destroy()
 
 void GameObject::AnimateTexture()
 {
-	if (System::frameCount - animationLastFrame >= 30)
+	if (System::systemTime - animationLastFrame % 15*System::time)
 	{
-		animationLastFrame = System::frameCount;
+		animationLastFrame = System::systemTime;
 		currentTextureID = (currentTextureID + 1) % animationTextures.size();
 		myTexture = animationTextures[currentTextureID];
 	}

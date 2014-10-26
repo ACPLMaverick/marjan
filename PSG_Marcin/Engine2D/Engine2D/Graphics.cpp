@@ -103,28 +103,11 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 		m_D3D->GetWorldnMatrix(worldMatrix);
 		m_D3D->GetProjectionMatrix(projectionMatrix);
 
-		//for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
-		//{
-		//	(*it)->Render(m_D3D->GetDeviceContext());
-		//	TextureShader* myShader = shaderManager->LoadShader(m_D3D->GetDevice(), myHwnd, 0);
-		//	result = myShader->Render(m_D3D->GetDeviceContext(), (*it)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, (*it)->GetTexture());
-		//	if (!result) return false;
-		//}
 		for (int i = 0; i < objectCount; i++)
 		{
 			objects[i]->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
 		}
 		delete[] objects;
-		// put the model vertex and index buffers on the graphics pipeline to prepare them for drawing
-		//m_Model->Render(m_D3D->GetDeviceContext());
-
-		//// render the model using color shader
-		//result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-		//if (!result) return false;
-
-		//m_Model02->Render(m_D3D->GetDeviceContext());
-		//result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model02->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-		//if (!result) return false;
 
 		m_D3D->EndScene();
 
@@ -132,43 +115,6 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 	}
 	else return false;
 }
-
-//bool Graphics::InitializeModels()
-//{
-//	// tu dodajemy nowe modele;
-//	Model* myModel;
-//	bool result;
-//	myModel = new Sprite2D(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-//	if (!myModel) return false;
-//	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 0));
-//	if (!result) return false;
-//	models.push_back(myModel);
-//
-//	myModel = new Sprite2D(D3DXVECTOR3(3.0f, 2.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-//	if (!myModel) return false;
-//	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 1));
-//	if (!result) return false;
-//	models.push_back(myModel);
-//
-//	myModel = new Sprite2D(D3DXVECTOR3(0.0f, -3.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-//	if (!myModel) return false;
-//	result = myModel->Initialize(m_D3D->GetDevice(), textureManager->LoadTexture(m_D3D->GetDevice(), 1));
-//	if (!result) return false;
-//	models.push_back(myModel);
-//
-//	return true;
-//}
-//
-//void Graphics::RelaseModels()
-//{
-//	for (std::vector<Model*>::iterator it = models.begin(); it != models.end(); ++it)
-//	{
-//		if (*it) (*it)->Shutdown();
-//		delete (*it);
-//		(*it) = nullptr;
-//	}
-//	models.clear();
-//}
 
 bool Graphics::InitializeManagers(HWND hwnd)
 {

@@ -50,6 +50,7 @@
      <Compile Include="Assets\BrickController.cs" />
      <Compile Include="Assets\BrickPileController.cs" />
      <Compile Include="Assets\GameController.cs" />
+     <Compile Include="Assets\UpperColliderController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

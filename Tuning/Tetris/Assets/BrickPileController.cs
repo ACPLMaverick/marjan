@@ -21,7 +21,24 @@ public class BrickPileController : MonoBehaviour {
         foreach(BrickController brick in bricks)
         {
             myBricks.Add(brick.gameObject);
+            if (brick.transform.position.y > 4.3)
+            {
+                Debug.Log("x");
+                UnityEditor.EditorApplication.isPlaying = false;
+            }
         }
+    }
+
+    public bool CheckForGameOver()
+    {
+        foreach(object obj in myBricks)
+        {
+            GameObject brick = (GameObject)obj;
+            if (brick.transform.position.y >= 1) return true;
+            Debug.Log(brick.transform.position.y);
+        }
+        
+        return false;
     }
 
     public int CheckAndRemove()

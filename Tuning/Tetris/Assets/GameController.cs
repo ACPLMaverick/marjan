@@ -4,7 +4,7 @@ using System.Collections;
 public class GameController : MonoBehaviour {
 
     public static float distance = 0.4f;
-    public static Vector3 startPos = new Vector3(-0.1989098f, 4.739200f - distance, 0.0f);
+    public static Vector3 startPos = new Vector3(-0.1989098f, 4.739200f, 0.0f);
     public static Vector3 previewPos = new Vector3(3.917794f, 4.342112f, 0.0f);
     public static Vector3 wpizdu = new Vector3(100f, 100f, 0.0f);
     public static float falldownSpeed = 4.0f;
@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour {
     GameObject currentBlock = null;
     GameObject nextBlock = null;
     GameObject brickPile = null;
+    GameObject upperCollider = null;
     GameObject UITextScore;
 
 	// Use this for initialization
@@ -26,6 +27,7 @@ public class GameController : MonoBehaviour {
 
         createBlock();
         brickPile = GameObject.Find("BrickPile");
+        upperCollider = GameObject.Find("UpperCollider");
         refTime = Time.time;
         collision = false;
 
@@ -56,14 +58,14 @@ public class GameController : MonoBehaviour {
                     collision = checkForCollisions();
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                if (Input.GetKey(KeyCode.LeftArrow))
                 {
                     Vector3 newPos = new Vector3(currentBlock.transform.position.x - distance, currentBlock.transform.position.y,
                         currentBlock.transform.position.z);
                     if (!checkForEdgeCollisions("L")) currentBlock.transform.position = newPos;
                 }
 
-                if (Input.GetKeyDown(KeyCode.RightArrow))
+                if (Input.GetKey(KeyCode.RightArrow))
                 {
                     Vector3 newPos = new Vector3(currentBlock.transform.position.x + distance, currentBlock.transform.position.y,
                         currentBlock.transform.position.z);
@@ -85,21 +87,32 @@ public class GameController : MonoBehaviour {
                 }
             }
             else
-            {
+            {  
                 //COLLISION!
                 //Debug.Log("kolizja " + Time.time.ToString());
 
                 collision = false;
 
                 brickPile.GetComponent<BrickPileController>().AddToPile(currentBlock.GetComponent<BlockController>().GetMyBricks());
+
                 int newScore = brickPile.GetComponent<BrickPileController>().CheckAndRemove();
                 score += 10*newScore; // tu dodajemy punkty
 
                 createBlock();
 
                 UITextScore.guiText.text = "Score: " + score.ToString();
+
+                
             }
         }
+
+        //GameObject[] pile = brickPile.GetComponent<BrickPileController>().GetMyBricks();
+        //RaycastHit2D hit = Physics2D.Raycast(startPos, new Vector2(Vector3.left.x, Vector3.left.y), 100f);
+        //foreach (GameObject obj in pile)
+        //{
+        //    Debug.Log(hit.collider);
+        //    if (hit.collider == obj.collider2D) Application.Quit();
+        //}
 	}
 
     void createBlock()
@@ -312,21 +325,8 @@ public class GameController : MonoBehaviour {
 
     void ChangeColor(GameObject block, Color color)
     {
-        //BrickController[] bricks = block.GetComponent<BlockController>().GetMyBricks();
-        //int i = 0;
-        //foreach(BrickController brick in bricks)
-        //{
-        //    if(brick.renderer.material.color != null)
-        //    {
-        //        Debug.Log(i.ToString() + " " + brick.gameObject.renderer.material.color.ToString());
-        //        //brick.renderer.material.color = color;
-        //        i++;
-        //    }
-        //}
-
         foreach (var child in block.GetComponentsInChildren<BrickController>())
         {
-            //Debug.Log(child);
             child.renderer.material.color = color;
         }
     }
