@@ -20,14 +20,17 @@ public:
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
-	bool Frame(int, int);
+	bool Frame(int, int, float, WCHAR*);
 	BitmapClass* GetPlayer();
+	vector<WCHAR*> textures;
 
 private:
 	//bool Render(); gdy bez œwiat³a
-	bool Render(int, int);
+	bool Render(int, int, float);
 	bool InitializeTerrain(int, int, HWND, int, int);
-	bool RenderTerrain(int, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
+	bool RenderTerrain(D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
+	void LoadTextures();
+	void DeleteTextures();
 	
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;

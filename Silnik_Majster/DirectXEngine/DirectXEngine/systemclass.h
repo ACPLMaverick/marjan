@@ -10,6 +10,8 @@
 // INCLUDES //
 //////////////
 #include <windows.h>
+#include <vector>
+
 #include "d3dclass.h"
 #include "inputclass.h"
 #include "graphicsclass.h"
@@ -26,8 +28,10 @@ public:
 	/*to handle the windows system messages that will get sent to the application while it is running.*/
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
-	int positionX = 0;
-	int positionY = 0;
+	int positionX = 256;
+	int positionY = 256;
+	float rotation = 0;
+	WCHAR* currentTexture = L"../DirectXEngine/Data/Grass0129_9_S.dds";
 
 private:
 	bool Frame();
