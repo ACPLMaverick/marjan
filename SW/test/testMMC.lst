@@ -1,0 +1,2575 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"testMMC.c"
+   3              		.section	.debug_abbrev,"",%progbits
+   4              	.Ldebug_abbrev0:
+   5              		.section	.debug_info,"",%progbits
+   6              	.Ldebug_info0:
+   7              		.section	.debug_line,"",%progbits
+   8              	.Ldebug_line0:
+   9 0000 CB000000 		.text
+   9      02009E00 
+   9      00000201 
+   9      FB0E0D00 
+   9      01010101 
+  10              	.Ltext0:
+  11              		.align	2
+  12              		.global	format_file_name
+  13              		.code 16
+  14              		.thumb_func
+  15              		.type	format_file_name, %function
+  16              	format_file_name:
+  17              	.LFB2:
+  18              		.file 1 "testMMC.c"
+   1:testMMC.c     **** /******************************************************************************
+   2:testMMC.c     ****  *
+   3:testMMC.c     ****  * Copyright:
+   4:testMMC.c     ****  *    (C) 2000 - 2005 Embedded Artists AB
+   5:testMMC.c     ****  *
+   6:testMMC.c     ****  *****************************************************************************/
+   7:testMMC.c     **** 
+   8:testMMC.c     **** 
+   9:testMMC.c     **** #include <stdio.h>
+  10:testMMC.c     **** #include <efs.h>
+  11:testMMC.c     **** #include <ls.h>
+  12:testMMC.c     **** #include <string.h>
+  13:testMMC.c     **** #include <lpc2xxx.h>
+  14:testMMC.c     **** #include <consol.h>
+  15:testMMC.c     **** 
+  16:testMMC.c     **** //extern signed char ls_openDir(DirList *dlist,FileSystem *fs,char* dirname);
+  17:testMMC.c     **** //extern signed char ls_getNext(DirList *dlist);
+  18:testMMC.c     **** //extern signed char ls_getDirEntry(DirList *dlist);
+  19:testMMC.c     **** //extern signed char ls_getRealDirEntry(DirList *dlist);
+  20:testMMC.c     **** //extern signed char ls_getRootAreaEntry(DirList *dlist);
+  21:testMMC.c     **** //extern signed char ls_isValidFileEntry(ListDirEntry *entry);
+  22:testMMC.c     **** //extern void   ls_fileEntryToDirListEntry(DirList *dlist, unsigned char* buf, unsigned short offse
+  23:testMMC.c     **** //extern signed int efs_init(EmbeddedFileSystem * efs, char* opts);
+  24:testMMC.c     **** 
+  25:testMMC.c     **** 
+  26:testMMC.c     **** EmbeddedFileSystem  efs;
+  27:testMMC.c     **** EmbeddedFile        file;
+  28:testMMC.c     **** DirList             list;
+  29:testMMC.c     **** unsigned char       file_name[13];
+  30:testMMC.c     **** unsigned int        size;
+  31:testMMC.c     **** 
+  32:testMMC.c     **** void format_file_name(unsigned char *dest, unsigned char *src)
+  33:testMMC.c     **** {
+  19              		.loc 1 33 0
+  20 0000 70B5     		push	{r4, r5, r6, lr}
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 2
+
+
+  21              	.LCFI0:
+  22              	.LVL0:
+  23              		.loc 1 33 0
+  24 0002 061C     		mov	r6, r0
+  25 0004 0D1C     		mov	r5, r1
+  26 0006 CA1D     		add	r2, r1, #7
+  27 0008 0724     		mov	r4, #7
+  28              	.LVL1:
+  29 000a 05E0     		b	.L2
+  30              	.LVL2:
+  31              	.L3:
+  34:testMMC.c     **** 	unsigned char i, k;
+  35:testMMC.c     **** 
+  36:testMMC.c     **** 	for (i = 7; i>0 && (src[i] == 0x20); i--);
+  32              		.loc 1 36 0
+  33 000c 631E     		sub	r3, r4, #1
+  34 000e 1B06     		lsl	r3, r3, #24
+  35 0010 1C0E     		lsr	r4, r3, #24
+  36 0012 013A     		sub	r2, r2, #1
+  37 0014 002C     		cmp	r4, #0
+  38 0016 02D0     		beq	.L4
+  39              	.L2:
+  40 0018 1378     		ldrb	r3, [r2]
+  41 001a 202B     		cmp	r3, #32
+  42 001c F6D0     		beq	.L3
+  43              	.L4:
+  37:testMMC.c     **** 
+  38:testMMC.c     **** 	strncpy(dest, src, i + 1);
+  44              		.loc 1 38 0
+  45 001e 621C     		add	r2, r4, #1
+  46 0020 301C     		mov	r0, r6
+  47 0022 291C     		mov	r1, r5
+  48 0024 FFF7FEFF 		bl	strncpy
+  49              	.LVL3:
+  39:testMMC.c     **** 	dest[i + 1] = '.';
+  50              		.loc 1 39 0
+  51 0028 3419     		add	r4, r6, r4
+  52              	.LVL4:
+  53 002a 2E23     		mov	r3, #46
+  54 002c 6370     		strb	r3, [r4, #1]
+  40:testMMC.c     **** 
+  41:testMMC.c     **** 	for (k = 2; k>0 && (src[8 + k] == 0x20); k--);
+  55              		.loc 1 41 0
+  56 002e AA7A     		ldrb	r2, [r5, #10]
+  57 0030 202A     		cmp	r2, #32
+  58 0032 01D0     		beq	.L5
+  59 0034 0222     		mov	r2, #2
+  60              	.LVL5:
+  61 0036 03E0     		b	.L7
+  62              	.LVL6:
+  63              	.L5:
+  64 0038 6B7A     		ldrb	r3, [r5, #9]
+  65 003a 5340     		eor	r3, r3, r2
+  66 003c 5B42     		neg	r3, r3
+  67 003e DA0F     		lsr	r2, r3, #31
+  68              	.LVL7:
+  69              	.L7:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 3
+
+
+  42:testMMC.c     **** 
+  43:testMMC.c     **** 	strncpy(&dest[i + 2], &src[8], k + 1);
+  70              		.loc 1 43 0
+  71 0040 291C     		mov	r1, r5
+  72 0042 A01C     		add	r0, r4, #2
+  73 0044 0831     		add	r1, r1, #8
+  74 0046 0132     		add	r2, r2, #1
+  75              	.LVL8:
+  76 0048 FFF7FEFF 		bl	strncpy
+  44:testMMC.c     **** 	dest[i + 5] = '\0';
+  77              		.loc 1 44 0
+  78 004c 0023     		mov	r3, #0
+  79 004e 6371     		strb	r3, [r4, #5]
+  45:testMMC.c     **** }
+  80              		.loc 1 45 0
+  81              		@ sp needed for prologue
+  82              	.LVL9:
+  83              	.LVL10:
+  84 0050 70BC     		pop	{r4, r5, r6}
+  85 0052 01BC     		pop	{r0}
+  86 0054 0047     		bx	r0
+  87              	.LFE2:
+  88              		.size	format_file_name, .-format_file_name
+  89              		.section	.rodata.str1.4,"aMS",%progbits,1
+  90              		.align	2
+  91              	.LC0:
+  92 0000 5C00     		.ascii	"\\\000"
+  93 0002 0000     		.align	2
+  94              	.LC2:
+  95 0004 2F00     		.ascii	"/\000"
+  96 0006 0000     		.text
+  97 0056 0000     		.align	2
+  98              		.global	testMMC
+  99              		.code 16
+ 100              		.thumb_func
+ 101              		.type	testMMC, %function
+ 102              	testMMC:
+ 103              	.LFB3:
+  46:testMMC.c     **** 
+  47:testMMC.c     **** 
+  48:testMMC.c     **** void testMMC(void)
+  49:testMMC.c     **** {
+ 104              		.loc 1 49 0
+ 105 0058 30B5     		push	{r4, r5, lr}
+ 106              	.LCFI1:
+ 107 005a 1C4C     		ldr	r4, .L34
+ 108 005c A544     		add	sp, sp, r4
+ 109              	.LCFI2:
+  50:testMMC.c     **** 	EmbeddedFileSystem  efs;
+  51:testMMC.c     **** 	EmbeddedFile        file;
+  52:testMMC.c     **** 	DirList             list;
+  53:testMMC.c     **** 	unsigned char       file_name[13];
+  54:testMMC.c     **** 	unsigned int        size;
+  55:testMMC.c     **** 
+  56:testMMC.c     **** 	if (efs_init(&efs, "\\") != 0)
+ 110              		.loc 1 56 0
+ 111 005e 1C49     		ldr	r1, .L34+4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 4
+
+
+ 112 0060 6846     		mov	r0, sp
+ 113 0062 FFF7FEFF 		bl	efs_init
+ 114 0066 0028     		cmp	r0, #0
+ 115 0068 2AD1     		bne	.L19
+  57:testMMC.c     **** 	{
+  58:testMMC.c     **** 		DBG((TXT("Could not open filesystem.\n")));
+  59:testMMC.c     **** 		return(-1);
+  60:testMMC.c     **** 	}
+  61:testMMC.c     **** 
+  62:testMMC.c     **** 	if (ls_openDir(&list, &(efs.myFs), "/") != 0)
+ 116              		.loc 1 62 0
+ 117 006a 1A4A     		ldr	r2, .L34+8
+ 118 006c C5A8     		add	r0, sp, #788
+ 119 006e A1A9     		add	r1, sp, #644
+ 120 0070 FFF7FEFF 		bl	ls_openDir
+ 121 0074 0006     		lsl	r0, r0, #24
+ 122 0076 0028     		cmp	r0, #0
+ 123 0078 19D0     		beq	.L32
+ 124 007a 21E0     		b	.L19
+ 125              	.L15:
+  63:testMMC.c     **** 	{
+  64:testMMC.c     **** 		DBG((TXT("Could not open the selected directory.\n")));
+  65:testMMC.c     **** 		return(-2);
+  66:testMMC.c     **** 	}
+  67:testMMC.c     **** 
+  68:testMMC.c     **** 	while (ls_getNext(&list) == 0)
+  69:testMMC.c     **** 	{
+  70:testMMC.c     **** 		if ((list.currentEntry.FileName[8] == 'M') &&
+ 126              		.loc 1 70 0
+ 127 007c 164A     		ldr	r2, .L34+12
+ 128 007e C99B     		ldr	r3, [sp, #804]
+ 129 0080 1340     		and	r3, r3, r2
+ 130 0082 164A     		ldr	r2, .L34+16
+ 131 0084 9342     		cmp	r3, r2
+ 132 0086 12D1     		bne	.L32
+  71:testMMC.c     **** 			(list.currentEntry.FileName[9] == 'P') &&
+  72:testMMC.c     **** 			(list.currentEntry.FileName[10] == '3'))
+  73:testMMC.c     **** 		{
+  74:testMMC.c     **** 			DBG((TXT("Filename: %.11s (%li bytes)\n"), list.currentEntry.FileName, list.currentEntry.FileSiz
+  75:testMMC.c     **** 
+  76:testMMC.c     **** 			format_file_name(file_name, list.currentEntry.FileName);
+ 133              		.loc 1 76 0
+ 134 0088 154C     		ldr	r4, .L34+20
+ 135 008a 6C44     		add	r4, r4, sp
+ 136 008c 201C     		mov	r0, r4
+ 137 008e C7A9     		add	r1, sp, #796
+  77:testMMC.c     **** 
+  78:testMMC.c     **** 			if (file_fopen(&file, &efs.myFs, file_name, 'r') == 0)
+ 138              		.loc 1 78 0
+ 139 0090 B1AD     		add	r5, sp, #708
+ 140              		.loc 1 76 0
+ 141 0092 FFF7FEFF 		bl	format_file_name
+ 142              		.loc 1 78 0
+ 143 0096 281C     		mov	r0, r5
+ 144 0098 A1A9     		add	r1, sp, #644
+ 145 009a 221C     		mov	r2, r4
+ 146 009c 7223     		mov	r3, #114
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 5
+
+
+ 147 009e FFF7FEFF 		bl	file_fopen
+ 148 00a2 0006     		lsl	r0, r0, #24
+ 149 00a4 0028     		cmp	r0, #0
+ 150 00a6 02D1     		bne	.L32
+  79:testMMC.c     **** 			{
+  80:testMMC.c     **** 				file_fclose(&file);
+ 151              		.loc 1 80 0
+ 152 00a8 281C     		mov	r0, r5
+ 153 00aa FFF7FEFF 		bl	file_fclose
+ 154              	.L32:
+ 155              		.loc 1 68 0
+ 156 00ae C5A8     		add	r0, sp, #788
+ 157 00b0 FFF7FEFF 		bl	ls_getNext
+ 158 00b4 0006     		lsl	r0, r0, #24
+ 159 00b6 0028     		cmp	r0, #0
+ 160 00b8 E0D0     		beq	.L15
+  81:testMMC.c     **** 				DBG((TXT("File successfully opened!.\n")));
+  82:testMMC.c     **** 				//TOGGLE_LIVE_LED1();
+  83:testMMC.c     **** 			}
+  84:testMMC.c     **** 			else
+  85:testMMC.c     **** 				DBG((TXT("Could not open file.\n")));
+  86:testMMC.c     **** 		}
+  87:testMMC.c     **** 	}
+  88:testMMC.c     **** 
+  89:testMMC.c     **** 	fs_umount(&(efs.myFs));
+ 161              		.loc 1 89 0
+ 162 00ba A1A8     		add	r0, sp, #644
+ 163 00bc FFF7FEFF 		bl	fs_umount
+ 164              	.L19:
+  90:testMMC.c     **** 
+  91:testMMC.c     **** 	return 0;
+  92:testMMC.c     **** }
+ 165              		.loc 1 92 0
+ 166 00c0 D623     		mov	r3, #214
+ 167 00c2 9B00     		lsl	r3, r3, #2
+ 168 00c4 9D44     		add	sp, sp, r3
+ 169              		@ sp needed for prologue
+ 170 00c6 30BC     		pop	{r4, r5}
+ 171 00c8 01BC     		pop	{r0}
+ 172 00ca 0047     		bx	r0
+ 173              	.L35:
+ 174              		.align	2
+ 175              	.L34:
+ 176 00cc A8FCFFFF 		.word	-856
+ 177 00d0 00000000 		.word	.LC0
+ 178 00d4 04000000 		.word	.LC2
+ 179 00d8 FFFFFF00 		.word	16777215
+ 180 00dc 4D503300 		.word	3362893
+ 181 00e0 4B030000 		.word	843
+ 182              	.LFE3:
+ 183              		.size	testMMC, .-testMMC
+ 184              		.comm	efs,708,4
+ 185              		.comm	file,80,4
+ 186              		.comm	list,52,4
+ 187              		.comm	file_name,13,1
+ 188              		.comm	size,4,4
+ 189              		.section	.debug_frame,"",%progbits
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 6
+
+
+ 190              	.Lframe0:
+ 191 0000 0C000000 		.4byte	.LECIE0-.LSCIE0
+ 192              	.LSCIE0:
+ 193 0004 FFFFFFFF 		.4byte	0xffffffff
+ 194 0008 01       		.byte	0x1
+ 195 0009 00       		.ascii	"\000"
+ 196 000a 01       		.uleb128 0x1
+ 197 000b 7C       		.sleb128 -4
+ 198 000c 0E       		.byte	0xe
+ 199 000d 0C       		.byte	0xc
+ 200 000e 0D       		.uleb128 0xd
+ 201 000f 00       		.uleb128 0x0
+ 202              		.align	2
+ 203              	.LECIE0:
+ 204              	.LSFDE0:
+ 205 0010 18000000 		.4byte	.LEFDE0-.LASFDE0
+ 206              	.LASFDE0:
+ 207 0014 00000000 		.4byte	.Lframe0
+ 208 0018 00000000 		.4byte	.LFB2
+ 209 001c 56000000 		.4byte	.LFE2-.LFB2
+ 210 0020 42       		.byte	0x4
+ 211              		.4byte	.LCFI0-.LFB2
+ 212 0021 0E       		.byte	0xe
+ 213 0022 10       		.uleb128 0x10
+ 214 0023 84       		.byte	0x84
+ 215 0024 04       		.uleb128 0x4
+ 216 0025 85       		.byte	0x85
+ 217 0026 03       		.uleb128 0x3
+ 218 0027 86       		.byte	0x86
+ 219 0028 02       		.uleb128 0x2
+ 220 0029 8E       		.byte	0x8e
+ 221 002a 01       		.uleb128 0x1
+ 222 002b 00       		.align	2
+ 223              	.LEFDE0:
+ 224              	.LSFDE2:
+ 225 002c 1C000000 		.4byte	.LEFDE2-.LASFDE2
+ 226              	.LASFDE2:
+ 227 0030 00000000 		.4byte	.Lframe0
+ 228 0034 58000000 		.4byte	.LFB3
+ 229 0038 8C000000 		.4byte	.LFE3-.LFB3
+ 230 003c 42       		.byte	0x4
+ 231              		.4byte	.LCFI1-.LFB3
+ 232 003d 0E       		.byte	0xe
+ 233 003e 0C       		.uleb128 0xc
+ 234 003f 84       		.byte	0x84
+ 235 0040 03       		.uleb128 0x3
+ 236 0041 85       		.byte	0x85
+ 237 0042 02       		.uleb128 0x2
+ 238 0043 8E       		.byte	0x8e
+ 239 0044 01       		.uleb128 0x1
+ 240 0045 44       		.byte	0x4
+ 241              		.4byte	.LCFI2-.LCFI1
+ 242 0046 0E       		.byte	0xe
+ 243 0047 E406     		.uleb128 0x364
+ 244 0049 000000   		.align	2
+ 245              	.LEFDE2:
+ 246              		.file 2 "./filesys/efs.h"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 7
+
+
+ 247              		.file 3 "./filesys/../mmc/hwinterface.h"
+ 248              		.file 4 "./filesys/ioman.h"
+ 249              		.file 5 "./filesys/../mmc/types.h"
+ 250              		.file 6 "./filesys/disc.h"
+ 251              		.file 7 "./filesys/partition.h"
+ 252              		.file 8 "./filesys/fs.h"
+ 253              		.file 9 "./filesys/file.h"
+ 254              		.file 10 "./filesys/ls.h"
+ 255              		.text
+ 256              	.Letext0:
+ 257              		.section	.debug_loc,"",%progbits
+ 258              	.Ldebug_loc0:
+ 259              	.LLST0:
+ 260 0000 00000000 		.4byte	.LFB2-.Ltext0
+ 261 0004 02000000 		.4byte	.LCFI0-.Ltext0
+ 262 0008 0100     		.2byte	0x1
+ 263 000a 5D       		.byte	0x5d
+ 264 000b 02000000 		.4byte	.LCFI0-.Ltext0
+ 265 000f 56000000 		.4byte	.LFE2-.Ltext0
+ 266 0013 0200     		.2byte	0x2
+ 267 0015 7D       		.byte	0x7d
+ 268 0016 10       		.sleb128 16
+ 269 0017 00000000 		.4byte	0x0
+ 270 001b 00000000 		.4byte	0x0
+ 271              	.LLST1:
+ 272 001f 02000000 		.4byte	.LVL0-.Ltext0
+ 273 0023 0C000000 		.4byte	.LVL2-.Ltext0
+ 274 0027 0100     		.2byte	0x1
+ 275 0029 50       		.byte	0x50
+ 276 002a 0C000000 		.4byte	.LVL2-.Ltext0
+ 277 002e 50000000 		.4byte	.LVL10-.Ltext0
+ 278 0032 0100     		.2byte	0x1
+ 279 0034 56       		.byte	0x56
+ 280 0035 00000000 		.4byte	0x0
+ 281 0039 00000000 		.4byte	0x0
+ 282              	.LLST2:
+ 283 003d 02000000 		.4byte	.LVL0-.Ltext0
+ 284 0041 28000000 		.4byte	.LVL3-.Ltext0
+ 285 0045 0100     		.2byte	0x1
+ 286 0047 51       		.byte	0x51
+ 287 0048 28000000 		.4byte	.LVL3-.Ltext0
+ 288 004c 50000000 		.4byte	.LVL9-.Ltext0
+ 289 0050 0100     		.2byte	0x1
+ 290 0052 55       		.byte	0x55
+ 291 0053 00000000 		.4byte	0x0
+ 292 0057 00000000 		.4byte	0x0
+ 293              	.LLST3:
+ 294 005b 0A000000 		.4byte	.LVL1-.Ltext0
+ 295 005f 2A000000 		.4byte	.LVL4-.Ltext0
+ 296 0063 0100     		.2byte	0x1
+ 297 0065 54       		.byte	0x54
+ 298 0066 00000000 		.4byte	0x0
+ 299 006a 00000000 		.4byte	0x0
+ 300              	.LLST4:
+ 301 006e 36000000 		.4byte	.LVL5-.Ltext0
+ 302 0072 38000000 		.4byte	.LVL6-.Ltext0
+ 303 0076 0100     		.2byte	0x1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 8
+
+
+ 304 0078 52       		.byte	0x52
+ 305 0079 40000000 		.4byte	.LVL7-.Ltext0
+ 306 007d 48000000 		.4byte	.LVL8-.Ltext0
+ 307 0081 0100     		.2byte	0x1
+ 308 0083 52       		.byte	0x52
+ 309 0084 00000000 		.4byte	0x0
+ 310 0088 00000000 		.4byte	0x0
+ 311              	.LLST5:
+ 312 008c 58000000 		.4byte	.LFB3-.Ltext0
+ 313 0090 5A000000 		.4byte	.LCFI1-.Ltext0
+ 314 0094 0100     		.2byte	0x1
+ 315 0096 5D       		.byte	0x5d
+ 316 0097 5A000000 		.4byte	.LCFI1-.Ltext0
+ 317 009b 5E000000 		.4byte	.LCFI2-.Ltext0
+ 318 009f 0200     		.2byte	0x2
+ 319 00a1 7D       		.byte	0x7d
+ 320 00a2 0C       		.sleb128 12
+ 321 00a3 5E000000 		.4byte	.LCFI2-.Ltext0
+ 322 00a7 E4000000 		.4byte	.LFE3-.Ltext0
+ 323 00ab 0300     		.2byte	0x3
+ 324 00ad 7D       		.byte	0x7d
+ 325 00ae E406     		.sleb128 868
+ 326 00b0 00000000 		.4byte	0x0
+ 327 00b4 00000000 		.4byte	0x0
+ 328              		.section	.debug_info
+ 329 0000 86080000 		.4byte	0x886
+ 330 0004 0200     		.2byte	0x2
+ 331 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 332 000a 04       		.byte	0x4
+ 333 000b 01       		.uleb128 0x1
+ 334 000c 00000000 		.4byte	.Ldebug_line0
+ 335 0010 E4000000 		.4byte	.Letext0
+ 336 0014 00000000 		.4byte	.Ltext0
+ 337 0018 9C030000 		.4byte	.LASF110
+ 338 001c 01       		.byte	0x1
+ 339 001d 40020000 		.4byte	.LASF111
+ 340 0021 7B010000 		.4byte	.LASF112
+ 341 0025 02       		.uleb128 0x2
+ 342 0026 03020000 		.4byte	.LASF0
+ 343 002a 04       		.byte	0x4
+ 344 002b 07       		.byte	0x7
+ 345 002c 03       		.uleb128 0x3
+ 346 002d 696E7400 		.ascii	"int\000"
+ 347 0031 04       		.byte	0x4
+ 348 0032 05       		.byte	0x5
+ 349 0033 02       		.uleb128 0x2
+ 350 0034 10010000 		.4byte	.LASF1
+ 351 0038 04       		.byte	0x4
+ 352 0039 05       		.byte	0x5
+ 353 003a 02       		.uleb128 0x2
+ 354 003b C5000000 		.4byte	.LASF2
+ 355 003f 08       		.byte	0x8
+ 356 0040 05       		.byte	0x5
+ 357 0041 02       		.uleb128 0x2
+ 358 0042 E7010000 		.4byte	.LASF3
+ 359 0046 04       		.byte	0x4
+ 360 0047 07       		.byte	0x7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 9
+
+
+ 361 0048 02       		.uleb128 0x2
+ 362 0049 03020000 		.4byte	.LASF0
+ 363 004d 04       		.byte	0x4
+ 364 004e 07       		.byte	0x7
+ 365 004f 02       		.uleb128 0x2
+ 366 0050 7A030000 		.4byte	.LASF4
+ 367 0054 01       		.byte	0x1
+ 368 0055 08       		.byte	0x8
+ 369 0056 04       		.uleb128 0x4
+ 370 0057 04       		.byte	0x4
+ 371 0058 4F000000 		.4byte	0x4f
+ 372 005c 02       		.uleb128 0x2
+ 373 005d C5030000 		.4byte	.LASF5
+ 374 0061 02       		.byte	0x2
+ 375 0062 05       		.byte	0x5
+ 376 0063 02       		.uleb128 0x2
+ 377 0064 2D040000 		.4byte	.LASF6
+ 378 0068 01       		.byte	0x1
+ 379 0069 08       		.byte	0x8
+ 380 006a 05       		.uleb128 0x5
+ 381 006b 7A000000 		.4byte	0x7a
+ 382 006f 4F000000 		.4byte	0x4f
+ 383 0073 06       		.uleb128 0x6
+ 384 0074 48000000 		.4byte	0x48
+ 385 0078 02       		.byte	0x2
+ 386 0079 00       		.byte	0x0
+ 387 007a 05       		.uleb128 0x5
+ 388 007b 8A000000 		.4byte	0x8a
+ 389 007f 4F000000 		.4byte	0x4f
+ 390 0083 06       		.uleb128 0x6
+ 391 0084 48000000 		.4byte	0x48
+ 392 0088 00       		.byte	0x0
+ 393 0089 00       		.byte	0x0
+ 394 008a 02       		.uleb128 0x2
+ 395 008b 1A020000 		.4byte	.LASF7
+ 396 008f 02       		.byte	0x2
+ 397 0090 07       		.byte	0x7
+ 398 0091 02       		.uleb128 0x2
+ 399 0092 93000000 		.4byte	.LASF8
+ 400 0096 08       		.byte	0x8
+ 401 0097 07       		.byte	0x7
+ 402 0098 02       		.uleb128 0x2
+ 403 0099 D3000000 		.4byte	.LASF9
+ 404 009d 01       		.byte	0x1
+ 405 009e 06       		.byte	0x6
+ 406 009f 07       		.uleb128 0x7
+ 407 00a0 D2020000 		.4byte	.LASF10
+ 408 00a4 05       		.byte	0x5
+ 409 00a5 61       		.byte	0x61
+ 410 00a6 4F000000 		.4byte	0x4f
+ 411 00aa 08       		.uleb128 0x8
+ 412 00ab C5000000 		.4byte	0xc5
+ 413 00af D9020000 		.4byte	.LASF11
+ 414 00b3 04       		.byte	0x4
+ 415 00b4 03       		.byte	0x3
+ 416 00b5 13       		.byte	0x13
+ 417 00b6 09       		.uleb128 0x9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 10
+
+
+ 418 00b7 61020000 		.4byte	.LASF13
+ 419 00bb 03       		.byte	0x3
+ 420 00bc 15       		.byte	0x15
+ 421 00bd 33000000 		.4byte	0x33
+ 422 00c1 02       		.byte	0x2
+ 423 00c2 23       		.byte	0x23
+ 424 00c3 00       		.uleb128 0x0
+ 425 00c4 00       		.byte	0x0
+ 426 00c5 07       		.uleb128 0x7
+ 427 00c6 D9020000 		.4byte	.LASF11
+ 428 00ca 03       		.byte	0x3
+ 429 00cb 17       		.byte	0x17
+ 430 00cc AA000000 		.4byte	0xaa
+ 431 00d0 08       		.uleb128 0x8
+ 432 00d1 07010000 		.4byte	0x107
+ 433 00d5 BC020000 		.4byte	.LASF12
+ 434 00d9 08       		.byte	0x8
+ 435 00da 04       		.byte	0x4
+ 436 00db 13       		.byte	0x13
+ 437 00dc 09       		.uleb128 0x9
+ 438 00dd FC010000 		.4byte	.LASF14
+ 439 00e1 04       		.byte	0x4
+ 440 00e2 14       		.byte	0x14
+ 441 00e3 25000000 		.4byte	0x25
+ 442 00e7 02       		.byte	0x2
+ 443 00e8 23       		.byte	0x23
+ 444 00e9 00       		.uleb128 0x0
+ 445 00ea 09       		.uleb128 0x9
+ 446 00eb 82040000 		.4byte	.LASF15
+ 447 00ef 04       		.byte	0x4
+ 448 00f0 15       		.byte	0x15
+ 449 00f1 4F000000 		.4byte	0x4f
+ 450 00f5 02       		.byte	0x2
+ 451 00f6 23       		.byte	0x23
+ 452 00f7 04       		.uleb128 0x4
+ 453 00f8 09       		.uleb128 0x9
+ 454 00f9 51040000 		.4byte	.LASF16
+ 455 00fd 04       		.byte	0x4
+ 456 00fe 16       		.byte	0x16
+ 457 00ff 4F000000 		.4byte	0x4f
+ 458 0103 02       		.byte	0x2
+ 459 0104 23       		.byte	0x23
+ 460 0105 05       		.uleb128 0x5
+ 461 0106 00       		.byte	0x0
+ 462 0107 07       		.uleb128 0x7
+ 463 0108 BC020000 		.4byte	.LASF12
+ 464 010c 04       		.byte	0x4
+ 465 010d 18       		.byte	0x18
+ 466 010e D0000000 		.4byte	0xd0
+ 467 0112 0A       		.uleb128 0xa
+ 468 0113 C8010000 		.4byte	0x1c8
+ 469 0117 9B020000 		.4byte	.LASF17
+ 470 011b 3002     		.2byte	0x230
+ 471 011d 04       		.byte	0x4
+ 472 011e 1A       		.byte	0x1a
+ 473 011f 09       		.uleb128 0x9
+ 474 0120 95040000 		.4byte	.LASF18
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 11
+
+
+ 475 0124 04       		.byte	0x4
+ 476 0125 1B       		.byte	0x1b
+ 477 0126 C8010000 		.4byte	0x1c8
+ 478 012a 02       		.byte	0x2
+ 479 012b 23       		.byte	0x23
+ 480 012c 00       		.uleb128 0x0
+ 481 012d 09       		.uleb128 0x9
+ 482 012e BC040000 		.4byte	.LASF19
+ 483 0132 04       		.byte	0x4
+ 484 0133 1D       		.byte	0x1d
+ 485 0134 56000000 		.4byte	0x56
+ 486 0138 02       		.byte	0x2
+ 487 0139 23       		.byte	0x23
+ 488 013a 04       		.uleb128 0x4
+ 489 013b 09       		.uleb128 0x9
+ 490 013c A5020000 		.4byte	.LASF20
+ 491 0140 04       		.byte	0x4
+ 492 0141 1E       		.byte	0x1e
+ 493 0142 8A000000 		.4byte	0x8a
+ 494 0146 02       		.byte	0x2
+ 495 0147 23       		.byte	0x23
+ 496 0148 08       		.uleb128 0x8
+ 497 0149 09       		.uleb128 0x9
+ 498 014a 61000000 		.4byte	.LASF21
+ 499 014e 04       		.byte	0x4
+ 500 014f 1F       		.byte	0x1f
+ 501 0150 8A000000 		.4byte	0x8a
+ 502 0154 02       		.byte	0x2
+ 503 0155 23       		.byte	0x23
+ 504 0156 0A       		.uleb128 0xa
+ 505 0157 09       		.uleb128 0x9
+ 506 0158 35030000 		.4byte	.LASF22
+ 507 015c 04       		.byte	0x4
+ 508 015d 21       		.byte	0x21
+ 509 015e 9F000000 		.4byte	0x9f
+ 510 0162 02       		.byte	0x2
+ 511 0163 23       		.byte	0x23
+ 512 0164 0C       		.uleb128 0xc
+ 513 0165 09       		.uleb128 0x9
+ 514 0166 9B040000 		.4byte	.LASF23
+ 515 016a 04       		.byte	0x4
+ 516 016b 23       		.byte	0x23
+ 517 016c CE010000 		.4byte	0x1ce
+ 518 0170 02       		.byte	0x2
+ 519 0171 23       		.byte	0x23
+ 520 0172 10       		.uleb128 0x10
+ 521 0173 09       		.uleb128 0x9
+ 522 0174 FC010000 		.4byte	.LASF14
+ 523 0178 04       		.byte	0x4
+ 524 0179 25       		.byte	0x25
+ 525 017a E4010000 		.4byte	0x1e4
+ 526 017e 02       		.byte	0x2
+ 527 017f 23       		.byte	0x23
+ 528 0180 28       		.uleb128 0x28
+ 529 0181 09       		.uleb128 0x9
+ 530 0182 82040000 		.4byte	.LASF15
+ 531 0186 04       		.byte	0x4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 12
+
+
+ 532 0187 26       		.byte	0x26
+ 533 0188 7A000000 		.4byte	0x7a
+ 534 018c 02       		.byte	0x2
+ 535 018d 23       		.byte	0x23
+ 536 018e 2C       		.uleb128 0x2c
+ 537 018f 09       		.uleb128 0x9
+ 538 0190 51040000 		.4byte	.LASF16
+ 539 0194 04       		.byte	0x4
+ 540 0195 27       		.byte	0x27
+ 541 0196 7A000000 		.4byte	0x7a
+ 542 019a 02       		.byte	0x2
+ 543 019b 23       		.byte	0x23
+ 544 019c 2D       		.uleb128 0x2d
+ 545 019d 09       		.uleb128 0x9
+ 546 019e 78020000 		.4byte	.LASF24
+ 547 01a2 04       		.byte	0x4
+ 548 01a3 28       		.byte	0x28
+ 549 01a4 7A000000 		.4byte	0x7a
+ 550 01a8 02       		.byte	0x2
+ 551 01a9 23       		.byte	0x23
+ 552 01aa 2E       		.uleb128 0x2e
+ 553 01ab 09       		.uleb128 0x9
+ 554 01ac A1040000 		.4byte	.LASF25
+ 555 01b0 04       		.byte	0x4
+ 556 01b1 29       		.byte	0x29
+ 557 01b2 7A000000 		.4byte	0x7a
+ 558 01b6 02       		.byte	0x2
+ 559 01b7 23       		.byte	0x23
+ 560 01b8 2F       		.uleb128 0x2f
+ 561 01b9 09       		.uleb128 0x9
+ 562 01ba 24010000 		.4byte	.LASF26
+ 563 01be 04       		.byte	0x4
+ 564 01bf 2B       		.byte	0x2b
+ 565 01c0 F4010000 		.4byte	0x1f4
+ 566 01c4 02       		.byte	0x2
+ 567 01c5 23       		.byte	0x23
+ 568 01c6 30       		.uleb128 0x30
+ 569 01c7 00       		.byte	0x0
+ 570 01c8 04       		.uleb128 0x4
+ 571 01c9 04       		.byte	0x4
+ 572 01ca C5000000 		.4byte	0xc5
+ 573 01ce 05       		.uleb128 0x5
+ 574 01cf E4010000 		.4byte	0x1e4
+ 575 01d3 07010000 		.4byte	0x107
+ 576 01d7 06       		.uleb128 0x6
+ 577 01d8 48000000 		.4byte	0x48
+ 578 01dc 00       		.byte	0x0
+ 579 01dd 06       		.uleb128 0x6
+ 580 01de 48000000 		.4byte	0x48
+ 581 01e2 02       		.byte	0x2
+ 582 01e3 00       		.byte	0x0
+ 583 01e4 05       		.uleb128 0x5
+ 584 01e5 F4010000 		.4byte	0x1f4
+ 585 01e9 25000000 		.4byte	0x25
+ 586 01ed 06       		.uleb128 0x6
+ 587 01ee 48000000 		.4byte	0x48
+ 588 01f2 00       		.byte	0x0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 13
+
+
+ 589 01f3 00       		.byte	0x0
+ 590 01f4 05       		.uleb128 0x5
+ 591 01f5 05020000 		.4byte	0x205
+ 592 01f9 4F000000 		.4byte	0x4f
+ 593 01fd 0B       		.uleb128 0xb
+ 594 01fe 48000000 		.4byte	0x48
+ 595 0202 FF01     		.2byte	0x1ff
+ 596 0204 00       		.byte	0x0
+ 597 0205 07       		.uleb128 0x7
+ 598 0206 9B020000 		.4byte	.LASF17
+ 599 020a 04       		.byte	0x4
+ 600 020b 2E       		.byte	0x2e
+ 601 020c 12010000 		.4byte	0x112
+ 602 0210 08       		.uleb128 0x8
+ 603 0211 71020000 		.4byte	0x271
+ 604 0215 06030000 		.4byte	.LASF27
+ 605 0219 10       		.byte	0x10
+ 606 021a 06       		.byte	0x6
+ 607 021b 0E       		.byte	0xe
+ 608 021c 09       		.uleb128 0x9
+ 609 021d 24040000 		.4byte	.LASF28
+ 610 0221 06       		.byte	0x6
+ 611 0222 0F       		.byte	0xf
+ 612 0223 4F000000 		.4byte	0x4f
+ 613 0227 02       		.byte	0x2
+ 614 0228 23       		.byte	0x23
+ 615 0229 00       		.uleb128 0x0
+ 616 022a 09       		.uleb128 0x9
+ 617 022b 4D030000 		.4byte	.LASF29
+ 618 022f 06       		.byte	0x6
+ 619 0230 10       		.byte	0x10
+ 620 0231 6A000000 		.4byte	0x6a
+ 621 0235 02       		.byte	0x2
+ 622 0236 23       		.byte	0x23
+ 623 0237 01       		.uleb128 0x1
+ 624 0238 09       		.uleb128 0x9
+ 625 0239 78000000 		.4byte	.LASF30
+ 626 023d 06       		.byte	0x6
+ 627 023e 11       		.byte	0x11
+ 628 023f 4F000000 		.4byte	0x4f
+ 629 0243 02       		.byte	0x2
+ 630 0244 23       		.byte	0x23
+ 631 0245 04       		.uleb128 0x4
+ 632 0246 09       		.uleb128 0x9
+ 633 0247 F4010000 		.4byte	.LASF31
+ 634 024b 06       		.byte	0x6
+ 635 024c 12       		.byte	0x12
+ 636 024d 6A000000 		.4byte	0x6a
+ 637 0251 02       		.byte	0x2
+ 638 0252 23       		.byte	0x23
+ 639 0253 05       		.uleb128 0x5
+ 640 0254 09       		.uleb128 0x9
+ 641 0255 CB040000 		.4byte	.LASF32
+ 642 0259 06       		.byte	0x6
+ 643 025a 13       		.byte	0x13
+ 644 025b 25000000 		.4byte	0x25
+ 645 025f 02       		.byte	0x2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 14
+
+
+ 646 0260 23       		.byte	0x23
+ 647 0261 08       		.uleb128 0x8
+ 648 0262 09       		.uleb128 0x9
+ 649 0263 6D020000 		.4byte	.LASF33
+ 650 0267 06       		.byte	0x6
+ 651 0268 14       		.byte	0x14
+ 652 0269 25000000 		.4byte	0x25
+ 653 026d 02       		.byte	0x2
+ 654 026e 23       		.byte	0x23
+ 655 026f 0C       		.uleb128 0xc
+ 656 0270 00       		.byte	0x0
+ 657 0271 07       		.uleb128 0x7
+ 658 0272 06030000 		.4byte	.LASF27
+ 659 0276 06       		.byte	0x6
+ 660 0277 16       		.byte	0x16
+ 661 0278 10020000 		.4byte	0x210
+ 662 027c 0C       		.uleb128 0xc
+ 663 027d AF020000 		.4byte	0x2af
+ 664 0281 48       		.byte	0x48
+ 665 0282 06       		.byte	0x6
+ 666 0283 1A       		.byte	0x1a
+ 667 0284 09       		.uleb128 0x9
+ 668 0285 00000000 		.4byte	.LASF34
+ 669 0289 06       		.byte	0x6
+ 670 028a 1B       		.byte	0x1b
+ 671 028b AF020000 		.4byte	0x2af
+ 672 028f 02       		.byte	0x2
+ 673 0290 23       		.byte	0x23
+ 674 0291 00       		.uleb128 0x0
+ 675 0292 09       		.uleb128 0x9
+ 676 0293 35030000 		.4byte	.LASF22
+ 677 0297 06       		.byte	0x6
+ 678 0298 1C       		.byte	0x1c
+ 679 0299 9F000000 		.4byte	0x9f
+ 680 029d 02       		.byte	0x2
+ 681 029e 23       		.byte	0x23
+ 682 029f 04       		.uleb128 0x4
+ 683 02a0 09       		.uleb128 0x9
+ 684 02a1 CF030000 		.4byte	.LASF35
+ 685 02a5 06       		.byte	0x6
+ 686 02a6 1D       		.byte	0x1d
+ 687 02a7 B5020000 		.4byte	0x2b5
+ 688 02ab 02       		.byte	0x2
+ 689 02ac 23       		.byte	0x23
+ 690 02ad 08       		.uleb128 0x8
+ 691 02ae 00       		.byte	0x0
+ 692 02af 04       		.uleb128 0x4
+ 693 02b0 04       		.byte	0x4
+ 694 02b1 05020000 		.4byte	0x205
+ 695 02b5 05       		.uleb128 0x5
+ 696 02b6 C5020000 		.4byte	0x2c5
+ 697 02ba 71020000 		.4byte	0x271
+ 698 02be 06       		.uleb128 0x6
+ 699 02bf 48000000 		.4byte	0x48
+ 700 02c3 03       		.byte	0x3
+ 701 02c4 00       		.byte	0x0
+ 702 02c5 07       		.uleb128 0x7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 15
+
+
+ 703 02c6 DA030000 		.4byte	.LASF36
+ 704 02ca 06       		.byte	0x6
+ 705 02cb 1E       		.byte	0x1e
+ 706 02cc 7C020000 		.4byte	0x27c
+ 707 02d0 08       		.uleb128 0x8
+ 708 02d1 F9020000 		.4byte	0x2f9
+ 709 02d5 6E000000 		.4byte	.LASF37
+ 710 02d9 08       		.byte	0x8
+ 711 02da 07       		.byte	0x7
+ 712 02db 12       		.byte	0x12
+ 713 02dc 09       		.uleb128 0x9
+ 714 02dd 32040000 		.4byte	.LASF38
+ 715 02e1 07       		.byte	0x7
+ 716 02e2 13       		.byte	0x13
+ 717 02e3 F9020000 		.4byte	0x2f9
+ 718 02e7 02       		.byte	0x2
+ 719 02e8 23       		.byte	0x23
+ 720 02e9 00       		.uleb128 0x0
+ 721 02ea 09       		.uleb128 0x9
+ 722 02eb F1020000 		.4byte	.LASF39
+ 723 02ef 07       		.byte	0x7
+ 724 02f0 14       		.byte	0x14
+ 725 02f1 98000000 		.4byte	0x98
+ 726 02f5 02       		.byte	0x2
+ 727 02f6 23       		.byte	0x23
+ 728 02f7 04       		.uleb128 0x4
+ 729 02f8 00       		.byte	0x0
+ 730 02f9 04       		.uleb128 0x4
+ 731 02fa 04       		.byte	0x4
+ 732 02fb C5020000 		.4byte	0x2c5
+ 733 02ff 07       		.uleb128 0x7
+ 734 0300 6E000000 		.4byte	.LASF37
+ 735 0304 07       		.byte	0x7
+ 736 0305 16       		.byte	0x16
+ 737 0306 D0020000 		.4byte	0x2d0
+ 738 030a 08       		.uleb128 0x8
+ 739 030b A3030000 		.4byte	0x3a3
+ 740 030f 5E040000 		.4byte	.LASF40
+ 741 0313 1C       		.byte	0x1c
+ 742 0314 08       		.byte	0x8
+ 743 0315 14       		.byte	0x14
+ 744 0316 09       		.uleb128 0x9
+ 745 0317 06000000 		.4byte	.LASF41
+ 746 031b 08       		.byte	0x8
+ 747 031c 15       		.byte	0x15
+ 748 031d 8A000000 		.4byte	0x8a
+ 749 0321 02       		.byte	0x2
+ 750 0322 23       		.byte	0x23
+ 751 0323 00       		.uleb128 0x0
+ 752 0324 09       		.uleb128 0x9
+ 753 0325 15000000 		.4byte	.LASF42
+ 754 0329 08       		.byte	0x8
+ 755 032a 16       		.byte	0x16
+ 756 032b 4F000000 		.4byte	0x4f
+ 757 032f 02       		.byte	0x2
+ 758 0330 23       		.byte	0x23
+ 759 0331 02       		.uleb128 0x2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 16
+
+
+ 760 0332 09       		.uleb128 0x9
+ 761 0333 27000000 		.4byte	.LASF43
+ 762 0337 08       		.byte	0x8
+ 763 0338 17       		.byte	0x17
+ 764 0339 8A000000 		.4byte	0x8a
+ 765 033d 02       		.byte	0x2
+ 766 033e 23       		.byte	0x23
+ 767 033f 04       		.uleb128 0x4
+ 768 0340 09       		.uleb128 0x9
+ 769 0341 88030000 		.4byte	.LASF44
+ 770 0345 08       		.byte	0x8
+ 771 0346 18       		.byte	0x18
+ 772 0347 4F000000 		.4byte	0x4f
+ 773 034b 02       		.byte	0x2
+ 774 034c 23       		.byte	0x23
+ 775 034d 06       		.uleb128 0x6
+ 776 034e 09       		.uleb128 0x9
+ 777 034f A7040000 		.4byte	.LASF45
+ 778 0353 08       		.byte	0x8
+ 779 0354 19       		.byte	0x19
+ 780 0355 8A000000 		.4byte	0x8a
+ 781 0359 02       		.byte	0x2
+ 782 035a 23       		.byte	0x23
+ 783 035b 08       		.uleb128 0x8
+ 784 035c 09       		.uleb128 0x9
+ 785 035d 53000000 		.4byte	.LASF46
+ 786 0361 08       		.byte	0x8
+ 787 0362 1A       		.byte	0x1a
+ 788 0363 8A000000 		.4byte	0x8a
+ 789 0367 02       		.byte	0x2
+ 790 0368 23       		.byte	0x23
+ 791 0369 0A       		.uleb128 0xa
+ 792 036a 09       		.uleb128 0x9
+ 793 036b 2E010000 		.4byte	.LASF47
+ 794 036f 08       		.byte	0x8
+ 795 0370 1B       		.byte	0x1b
+ 796 0371 8A000000 		.4byte	0x8a
+ 797 0375 02       		.byte	0x2
+ 798 0376 23       		.byte	0x23
+ 799 0377 0C       		.uleb128 0xc
+ 800 0378 09       		.uleb128 0x9
+ 801 0379 37040000 		.4byte	.LASF48
+ 802 037d 08       		.byte	0x8
+ 803 037e 1C       		.byte	0x1c
+ 804 037f 25000000 		.4byte	0x25
+ 805 0383 02       		.byte	0x2
+ 806 0384 23       		.byte	0x23
+ 807 0385 10       		.uleb128 0x10
+ 808 0386 09       		.uleb128 0x9
+ 809 0387 13040000 		.4byte	.LASF49
+ 810 038b 08       		.byte	0x8
+ 811 038c 1D       		.byte	0x1d
+ 812 038d 25000000 		.4byte	0x25
+ 813 0391 02       		.byte	0x2
+ 814 0392 23       		.byte	0x23
+ 815 0393 14       		.uleb128 0x14
+ 816 0394 09       		.uleb128 0x9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 17
+
+
+ 817 0395 15030000 		.4byte	.LASF50
+ 818 0399 08       		.byte	0x8
+ 819 039a 1E       		.byte	0x1e
+ 820 039b 25000000 		.4byte	0x25
+ 821 039f 02       		.byte	0x2
+ 822 03a0 23       		.byte	0x23
+ 823 03a1 18       		.uleb128 0x18
+ 824 03a2 00       		.byte	0x0
+ 825 03a3 07       		.uleb128 0x7
+ 826 03a4 5E040000 		.4byte	.LASF40
+ 827 03a8 08       		.byte	0x8
+ 828 03a9 20       		.byte	0x20
+ 829 03aa 0A030000 		.4byte	0x30a
+ 830 03ae 08       		.uleb128 0x8
+ 831 03af 47040000 		.4byte	0x447
+ 832 03b3 58010000 		.4byte	.LASF51
+ 833 03b7 40       		.byte	0x40
+ 834 03b8 08       		.byte	0x8
+ 835 03b9 22       		.byte	0x22
+ 836 03ba 09       		.uleb128 0x9
+ 837 03bb 45040000 		.4byte	.LASF52
+ 838 03bf 08       		.byte	0x8
+ 839 03c0 23       		.byte	0x23
+ 840 03c1 47040000 		.4byte	0x447
+ 841 03c5 02       		.byte	0x2
+ 842 03c6 23       		.byte	0x23
+ 843 03c7 00       		.uleb128 0x0
+ 844 03c8 09       		.uleb128 0x9
+ 845 03c9 7D000000 		.4byte	.LASF53
+ 846 03cd 08       		.byte	0x8
+ 847 03ce 24       		.byte	0x24
+ 848 03cf A3030000 		.4byte	0x3a3
+ 849 03d3 02       		.byte	0x2
+ 850 03d4 23       		.byte	0x23
+ 851 03d5 04       		.uleb128 0x4
+ 852 03d6 09       		.uleb128 0x9
+ 853 03d7 BC010000 		.4byte	.LASF54
+ 854 03db 08       		.byte	0x8
+ 855 03dc 25       		.byte	0x25
+ 856 03dd 25000000 		.4byte	0x25
+ 857 03e1 02       		.byte	0x2
+ 858 03e2 23       		.byte	0x23
+ 859 03e3 20       		.uleb128 0x20
+ 860 03e4 09       		.uleb128 0x9
+ 861 03e5 F2030000 		.4byte	.LASF55
+ 862 03e9 08       		.byte	0x8
+ 863 03ea 26       		.byte	0x26
+ 864 03eb 25000000 		.4byte	0x25
+ 865 03ef 02       		.byte	0x2
+ 866 03f0 23       		.byte	0x23
+ 867 03f1 24       		.uleb128 0x24
+ 868 03f2 09       		.uleb128 0x9
+ 869 03f3 89040000 		.4byte	.LASF56
+ 870 03f7 08       		.byte	0x8
+ 871 03f8 27       		.byte	0x27
+ 872 03f9 25000000 		.4byte	0x25
+ 873 03fd 02       		.byte	0x2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 18
+
+
+ 874 03fe 23       		.byte	0x23
+ 875 03ff 28       		.uleb128 0x28
+ 876 0400 09       		.uleb128 0x9
+ 877 0401 DF030000 		.4byte	.LASF57
+ 878 0405 08       		.byte	0x8
+ 879 0406 28       		.byte	0x28
+ 880 0407 25000000 		.4byte	0x25
+ 881 040b 02       		.byte	0x2
+ 882 040c 23       		.byte	0x23
+ 883 040d 2C       		.uleb128 0x2c
+ 884 040e 09       		.uleb128 0x9
+ 885 040f 4A020000 		.4byte	.LASF58
+ 886 0413 08       		.byte	0x8
+ 887 0414 29       		.byte	0x29
+ 888 0415 25000000 		.4byte	0x25
+ 889 0419 02       		.byte	0x2
+ 890 041a 23       		.byte	0x23
+ 891 041b 30       		.uleb128 0x30
+ 892 041c 09       		.uleb128 0x9
+ 893 041d 71040000 		.4byte	.LASF59
+ 894 0421 08       		.byte	0x8
+ 895 0422 2A       		.byte	0x2a
+ 896 0423 25000000 		.4byte	0x25
+ 897 0427 02       		.byte	0x2
+ 898 0428 23       		.byte	0x23
+ 899 0429 34       		.uleb128 0x34
+ 900 042a 09       		.uleb128 0x9
+ 901 042b B5030000 		.4byte	.LASF60
+ 902 042f 08       		.byte	0x8
+ 903 0430 2B       		.byte	0x2b
+ 904 0431 25000000 		.4byte	0x25
+ 905 0435 02       		.byte	0x2
+ 906 0436 23       		.byte	0x23
+ 907 0437 38       		.uleb128 0x38
+ 908 0438 09       		.uleb128 0x9
+ 909 0439 78000000 		.4byte	.LASF30
+ 910 043d 08       		.byte	0x8
+ 911 043e 2C       		.byte	0x2c
+ 912 043f 4F000000 		.4byte	0x4f
+ 913 0443 02       		.byte	0x2
+ 914 0444 23       		.byte	0x23
+ 915 0445 3C       		.uleb128 0x3c
+ 916 0446 00       		.byte	0x0
+ 917 0447 04       		.uleb128 0x4
+ 918 0448 04       		.byte	0x4
+ 919 0449 FF020000 		.4byte	0x2ff
+ 920 044d 07       		.uleb128 0x7
+ 921 044e 58010000 		.4byte	.LASF51
+ 922 0452 08       		.byte	0x8
+ 923 0453 2E       		.byte	0x2e
+ 924 0454 AE030000 		.4byte	0x3ae
+ 925 0458 08       		.uleb128 0x8
+ 926 0459 8F040000 		.4byte	0x48f
+ 927 045d 63010000 		.4byte	.LASF61
+ 928 0461 08       		.byte	0x8
+ 929 0462 08       		.byte	0x8
+ 930 0463 30       		.byte	0x30
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 19
+
+
+ 931 0464 09       		.uleb128 0x9
+ 932 0465 B5020000 		.4byte	.LASF62
+ 933 0469 08       		.byte	0x8
+ 934 046a 31       		.byte	0x31
+ 935 046b 25000000 		.4byte	0x25
+ 936 046f 02       		.byte	0x2
+ 937 0470 23       		.byte	0x23
+ 938 0471 00       		.uleb128 0x0
+ 939 0472 09       		.uleb128 0x9
+ 940 0473 4A040000 		.4byte	.LASF63
+ 941 0477 08       		.byte	0x8
+ 942 0478 32       		.byte	0x32
+ 943 0479 4F000000 		.4byte	0x4f
+ 944 047d 02       		.byte	0x2
+ 945 047e 23       		.byte	0x23
+ 946 047f 04       		.uleb128 0x4
+ 947 0480 09       		.uleb128 0x9
+ 948 0481 9F010000 		.4byte	.LASF64
+ 949 0485 08       		.byte	0x8
+ 950 0486 33       		.byte	0x33
+ 951 0487 4F000000 		.4byte	0x4f
+ 952 048b 02       		.byte	0x2
+ 953 048c 23       		.byte	0x23
+ 954 048d 05       		.uleb128 0x5
+ 955 048e 00       		.byte	0x0
+ 956 048f 07       		.uleb128 0x7
+ 957 0490 63010000 		.4byte	.LASF61
+ 958 0494 08       		.byte	0x8
+ 959 0495 35       		.byte	0x35
+ 960 0496 58040000 		.4byte	0x458
+ 961 049a 08       		.uleb128 0x8
+ 962 049b FB040000 		.4byte	0x4fb
+ 963 049f DA010000 		.4byte	.LASF65
+ 964 04a3 18       		.byte	0x18
+ 965 04a4 08       		.byte	0x8
+ 966 04a5 37       		.byte	0x37
+ 967 04a6 09       		.uleb128 0x9
+ 968 04a7 51010000 		.4byte	.LASF66
+ 969 04ab 08       		.byte	0x8
+ 970 04ac 38       		.byte	0x38
+ 971 04ad 4F000000 		.4byte	0x4f
+ 972 04b1 02       		.byte	0x2
+ 973 04b2 23       		.byte	0x23
+ 974 04b3 00       		.uleb128 0x0
+ 975 04b4 09       		.uleb128 0x9
+ 976 04b5 CD010000 		.4byte	.LASF67
+ 977 04b9 08       		.byte	0x8
+ 978 04ba 39       		.byte	0x39
+ 979 04bb 33000000 		.4byte	0x33
+ 980 04bf 02       		.byte	0x2
+ 981 04c0 23       		.byte	0x23
+ 982 04c1 04       		.uleb128 0x4
+ 983 04c2 09       		.uleb128 0x9
+ 984 04c3 FA000000 		.4byte	.LASF68
+ 985 04c7 08       		.byte	0x8
+ 986 04c8 3A       		.byte	0x3a
+ 987 04c9 25000000 		.4byte	0x25
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 20
+
+
+ 988 04cd 02       		.byte	0x2
+ 989 04ce 23       		.byte	0x23
+ 990 04cf 08       		.uleb128 0x8
+ 991 04d0 09       		.uleb128 0x9
+ 992 04d1 21030000 		.4byte	.LASF69
+ 993 04d5 08       		.byte	0x8
+ 994 04d6 3B       		.byte	0x3b
+ 995 04d7 25000000 		.4byte	0x25
+ 996 04db 02       		.byte	0x2
+ 997 04dc 23       		.byte	0x23
+ 998 04dd 0C       		.uleb128 0xc
+ 999 04de 09       		.uleb128 0x9
+ 1000 04df E5020000 		.4byte	.LASF70
+ 1001 04e3 08       		.byte	0x8
+ 1002 04e4 3C       		.byte	0x3c
+ 1003 04e5 25000000 		.4byte	0x25
+ 1004 04e9 02       		.byte	0x2
+ 1005 04ea 23       		.byte	0x23
+ 1006 04eb 10       		.uleb128 0x10
+ 1007 04ec 09       		.uleb128 0x9
+ 1008 04ed 57030000 		.4byte	.LASF71
+ 1009 04f1 08       		.byte	0x8
+ 1010 04f2 3D       		.byte	0x3d
+ 1011 04f3 25000000 		.4byte	0x25
+ 1012 04f7 02       		.byte	0x2
+ 1013 04f8 23       		.byte	0x23
+ 1014 04f9 14       		.uleb128 0x14
+ 1015 04fa 00       		.byte	0x0
+ 1016 04fb 07       		.uleb128 0x7
+ 1017 04fc DA010000 		.4byte	.LASF65
+ 1018 0500 08       		.byte	0x8
+ 1019 0501 3F       		.byte	0x3f
+ 1020 0502 9A040000 		.4byte	0x49a
+ 1021 0506 08       		.uleb128 0x8
+ 1022 0507 BB050000 		.4byte	0x5bb
+ 1023 050b 70010000 		.4byte	.LASF72
+ 1024 050f 20       		.byte	0x20
+ 1025 0510 08       		.byte	0x8
+ 1026 0511 41       		.byte	0x41
+ 1027 0512 09       		.uleb128 0x9
+ 1028 0513 AC020000 		.4byte	.LASF73
+ 1029 0517 08       		.byte	0x8
+ 1030 0518 42       		.byte	0x42
+ 1031 0519 BB050000 		.4byte	0x5bb
+ 1032 051d 02       		.byte	0x2
+ 1033 051e 23       		.byte	0x23
+ 1034 051f 00       		.uleb128 0x0
+ 1035 0520 09       		.uleb128 0x9
+ 1036 0521 67040000 		.4byte	.LASF74
+ 1037 0525 08       		.byte	0x8
+ 1038 0526 43       		.byte	0x43
+ 1039 0527 4F000000 		.4byte	0x4f
+ 1040 052b 02       		.byte	0x2
+ 1041 052c 23       		.byte	0x23
+ 1042 052d 0B       		.uleb128 0xb
+ 1043 052e 09       		.uleb128 0x9
+ 1044 052f 19010000 		.4byte	.LASF75
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 21
+
+
+ 1045 0533 08       		.byte	0x8
+ 1046 0534 44       		.byte	0x44
+ 1047 0535 4F000000 		.4byte	0x4f
+ 1048 0539 02       		.byte	0x2
+ 1049 053a 23       		.byte	0x23
+ 1050 053b 0C       		.uleb128 0xc
+ 1051 053c 09       		.uleb128 0x9
+ 1052 053d DF000000 		.4byte	.LASF76
+ 1053 0541 08       		.byte	0x8
+ 1054 0542 45       		.byte	0x45
+ 1055 0543 4F000000 		.4byte	0x4f
+ 1056 0547 02       		.byte	0x2
+ 1057 0548 23       		.byte	0x23
+ 1058 0549 0D       		.uleb128 0xd
+ 1059 054a 09       		.uleb128 0x9
+ 1060 054b 2D020000 		.4byte	.LASF77
+ 1061 054f 08       		.byte	0x8
+ 1062 0550 46       		.byte	0x46
+ 1063 0551 8A000000 		.4byte	0x8a
+ 1064 0555 02       		.byte	0x2
+ 1065 0556 23       		.byte	0x23
+ 1066 0557 0E       		.uleb128 0xe
+ 1067 0558 09       		.uleb128 0x9
+ 1068 0559 A6010000 		.4byte	.LASF78
+ 1069 055d 08       		.byte	0x8
+ 1070 055e 47       		.byte	0x47
+ 1071 055f 8A000000 		.4byte	0x8a
+ 1072 0563 02       		.byte	0x2
+ 1073 0564 23       		.byte	0x23
+ 1074 0565 10       		.uleb128 0x10
+ 1075 0566 09       		.uleb128 0x9
+ 1076 0567 AA000000 		.4byte	.LASF79
+ 1077 056b 08       		.byte	0x8
+ 1078 056c 48       		.byte	0x48
+ 1079 056d 8A000000 		.4byte	0x8a
+ 1080 0571 02       		.byte	0x2
+ 1081 0572 23       		.byte	0x23
+ 1082 0573 12       		.uleb128 0x12
+ 1083 0574 09       		.uleb128 0x9
+ 1084 0575 8A020000 		.4byte	.LASF80
+ 1085 0579 08       		.byte	0x8
+ 1086 057a 49       		.byte	0x49
+ 1087 057b 8A000000 		.4byte	0x8a
+ 1088 057f 02       		.byte	0x2
+ 1089 0580 23       		.byte	0x23
+ 1090 0581 14       		.uleb128 0x14
+ 1091 0582 09       		.uleb128 0x9
+ 1092 0583 43030000 		.4byte	.LASF81
+ 1093 0587 08       		.byte	0x8
+ 1094 0588 4A       		.byte	0x4a
+ 1095 0589 8A000000 		.4byte	0x8a
+ 1096 058d 02       		.byte	0x2
+ 1097 058e 23       		.byte	0x23
+ 1098 058f 16       		.uleb128 0x16
+ 1099 0590 09       		.uleb128 0x9
+ 1100 0591 09040000 		.4byte	.LASF82
+ 1101 0595 08       		.byte	0x8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 22
+
+
+ 1102 0596 4B       		.byte	0x4b
+ 1103 0597 8A000000 		.4byte	0x8a
+ 1104 059b 02       		.byte	0x2
+ 1105 059c 23       		.byte	0x23
+ 1106 059d 18       		.uleb128 0x18
+ 1107 059e 09       		.uleb128 0x9
+ 1108 059f B5000000 		.4byte	.LASF83
+ 1109 05a3 08       		.byte	0x8
+ 1110 05a4 4C       		.byte	0x4c
+ 1111 05a5 8A000000 		.4byte	0x8a
+ 1112 05a9 02       		.byte	0x2
+ 1113 05aa 23       		.byte	0x23
+ 1114 05ab 1A       		.uleb128 0x1a
+ 1115 05ac 09       		.uleb128 0x9
+ 1116 05ad 48010000 		.4byte	.LASF84
+ 1117 05b1 08       		.byte	0x8
+ 1118 05b2 4D       		.byte	0x4d
+ 1119 05b3 25000000 		.4byte	0x25
+ 1120 05b7 02       		.byte	0x2
+ 1121 05b8 23       		.byte	0x23
+ 1122 05b9 1C       		.uleb128 0x1c
+ 1123 05ba 00       		.byte	0x0
+ 1124 05bb 05       		.uleb128 0x5
+ 1125 05bc CB050000 		.4byte	0x5cb
+ 1126 05c0 4F000000 		.4byte	0x4f
+ 1127 05c4 06       		.uleb128 0x6
+ 1128 05c5 48000000 		.4byte	0x48
+ 1129 05c9 0A       		.byte	0xa
+ 1130 05ca 00       		.byte	0x0
+ 1131 05cb 07       		.uleb128 0x7
+ 1132 05cc 70010000 		.4byte	.LASF72
+ 1133 05d0 08       		.byte	0x8
+ 1134 05d1 4F       		.byte	0x4f
+ 1135 05d2 06050000 		.4byte	0x506
+ 1136 05d6 08       		.uleb128 0x8
+ 1137 05d7 44060000 		.4byte	0x644
+ 1138 05db 0B010000 		.4byte	.LASF85
+ 1139 05df 50       		.byte	0x50
+ 1140 05e0 09       		.byte	0x9
+ 1141 05e1 15       		.byte	0x15
+ 1142 05e2 09       		.uleb128 0x9
+ 1143 05e3 F1000000 		.4byte	.LASF86
+ 1144 05e7 09       		.byte	0x9
+ 1145 05e8 16       		.byte	0x16
+ 1146 05e9 CB050000 		.4byte	0x5cb
+ 1147 05ed 02       		.byte	0x2
+ 1148 05ee 23       		.byte	0x23
+ 1149 05ef 00       		.uleb128 0x0
+ 1150 05f0 09       		.uleb128 0x9
+ 1151 05f1 3F010000 		.4byte	.LASF87
+ 1152 05f5 09       		.byte	0x9
+ 1153 05f6 17       		.byte	0x17
+ 1154 05f7 8F040000 		.4byte	0x48f
+ 1155 05fb 02       		.byte	0x2
+ 1156 05fc 23       		.byte	0x23
+ 1157 05fd 20       		.uleb128 0x20
+ 1158 05fe 0D       		.uleb128 0xd
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 23
+
+
+ 1159 05ff 667300   		.ascii	"fs\000"
+ 1160 0602 09       		.byte	0x9
+ 1161 0603 18       		.byte	0x18
+ 1162 0604 44060000 		.4byte	0x644
+ 1163 0608 02       		.byte	0x2
+ 1164 0609 23       		.byte	0x23
+ 1165 060a 28       		.uleb128 0x28
+ 1166 060b 09       		.uleb128 0x9
+ 1167 060c B6040000 		.4byte	.LASF88
+ 1168 0610 09       		.byte	0x9
+ 1169 0611 19       		.byte	0x19
+ 1170 0612 FB040000 		.4byte	0x4fb
+ 1171 0616 02       		.byte	0x2
+ 1172 0617 23       		.byte	0x23
+ 1173 0618 2C       		.uleb128 0x2c
+ 1174 0619 09       		.uleb128 0x9
+ 1175 061a C7020000 		.4byte	.LASF89
+ 1176 061e 09       		.byte	0x9
+ 1177 061f 1A       		.byte	0x1a
+ 1178 0620 4F000000 		.4byte	0x4f
+ 1179 0624 02       		.byte	0x2
+ 1180 0625 23       		.byte	0x23
+ 1181 0626 44       		.uleb128 0x44
+ 1182 0627 09       		.uleb128 0x9
+ 1183 0628 01040000 		.4byte	.LASF90
+ 1184 062c 09       		.byte	0x9
+ 1185 062d 1B       		.byte	0x1b
+ 1186 062e 25000000 		.4byte	0x25
+ 1187 0632 02       		.byte	0x2
+ 1188 0633 23       		.byte	0x23
+ 1189 0634 48       		.uleb128 0x48
+ 1190 0635 09       		.uleb128 0x9
+ 1191 0636 48010000 		.4byte	.LASF84
+ 1192 063a 09       		.byte	0x9
+ 1193 063b 1C       		.byte	0x1c
+ 1194 063c 25000000 		.4byte	0x25
+ 1195 0640 02       		.byte	0x2
+ 1196 0641 23       		.byte	0x23
+ 1197 0642 4C       		.uleb128 0x4c
+ 1198 0643 00       		.byte	0x0
+ 1199 0644 04       		.uleb128 0x4
+ 1200 0645 04       		.byte	0x4
+ 1201 0646 4D040000 		.4byte	0x44d
+ 1202 064a 07       		.uleb128 0x7
+ 1203 064b 0B010000 		.4byte	.LASF85
+ 1204 064f 09       		.byte	0x9
+ 1205 0650 1E       		.byte	0x1e
+ 1206 0651 D6050000 		.4byte	0x5d6
+ 1207 0655 07       		.uleb128 0x7
+ 1208 0656 D5040000 		.4byte	.LASF91
+ 1209 065a 02       		.byte	0x2
+ 1210 065b 0F       		.byte	0xf
+ 1211 065c 4A060000 		.4byte	0x64a
+ 1212 0660 0E       		.uleb128 0xe
+ 1213 0661 B3060000 		.4byte	0x6b3
+ 1214 0665 C402     		.2byte	0x2c4
+ 1215 0667 02       		.byte	0x2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 24
+
+
+ 1216 0668 11       		.byte	0x11
+ 1217 0669 09       		.uleb128 0x9
+ 1218 066a 57040000 		.4byte	.LASF92
+ 1219 066e 02       		.byte	0x2
+ 1220 066f 12       		.byte	0x12
+ 1221 0670 C5000000 		.4byte	0xc5
+ 1222 0674 02       		.byte	0x2
+ 1223 0675 23       		.byte	0x23
+ 1224 0676 00       		.uleb128 0x0
+ 1225 0677 09       		.uleb128 0x9
+ 1226 0678 C3040000 		.4byte	.LASF93
+ 1227 067c 02       		.byte	0x2
+ 1228 067d 13       		.byte	0x13
+ 1229 067e 05020000 		.4byte	0x205
+ 1230 0682 02       		.byte	0x2
+ 1231 0683 23       		.byte	0x23
+ 1232 0684 04       		.uleb128 0x4
+ 1233 0685 09       		.uleb128 0x9
+ 1234 0686 95030000 		.4byte	.LASF94
+ 1235 068a 02       		.byte	0x2
+ 1236 068b 14       		.byte	0x14
+ 1237 068c C5020000 		.4byte	0x2c5
+ 1238 0690 03       		.byte	0x3
+ 1239 0691 23       		.byte	0x23
+ 1240 0692 B404     		.uleb128 0x234
+ 1241 0694 09       		.uleb128 0x9
+ 1242 0695 2E030000 		.4byte	.LASF95
+ 1243 0699 02       		.byte	0x2
+ 1244 069a 15       		.byte	0x15
+ 1245 069b FF020000 		.4byte	0x2ff
+ 1246 069f 03       		.byte	0x3
+ 1247 06a0 23       		.byte	0x23
+ 1248 06a1 FC04     		.uleb128 0x27c
+ 1249 06a3 09       		.uleb128 0x9
+ 1250 06a4 3B000000 		.4byte	.LASF96
+ 1251 06a8 02       		.byte	0x2
+ 1252 06a9 16       		.byte	0x16
+ 1253 06aa 4D040000 		.4byte	0x44d
+ 1254 06ae 03       		.byte	0x3
+ 1255 06af 23       		.byte	0x23
+ 1256 06b0 8405     		.uleb128 0x284
+ 1257 06b2 00       		.byte	0x0
+ 1258 06b3 07       		.uleb128 0x7
+ 1259 06b4 40000000 		.4byte	.LASF97
+ 1260 06b8 02       		.byte	0x2
+ 1261 06b9 17       		.byte	0x17
+ 1262 06ba 60060000 		.4byte	0x660
+ 1263 06be 08       		.uleb128 0x8
+ 1264 06bf F5060000 		.4byte	0x6f5
+ 1265 06c3 A8030000 		.4byte	.LASF98
+ 1266 06c7 14       		.byte	0x14
+ 1267 06c8 0A       		.byte	0xa
+ 1268 06c9 0B       		.byte	0xb
+ 1269 06ca 09       		.uleb128 0x9
+ 1270 06cb AC020000 		.4byte	.LASF73
+ 1271 06cf 0A       		.byte	0xa
+ 1272 06d0 0C       		.byte	0xc
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 25
+
+
+ 1273 06d1 F5060000 		.4byte	0x6f5
+ 1274 06d5 02       		.byte	0x2
+ 1275 06d6 23       		.byte	0x23
+ 1276 06d7 00       		.uleb128 0x0
+ 1277 06d8 09       		.uleb128 0x9
+ 1278 06d9 48010000 		.4byte	.LASF84
+ 1279 06dd 0A       		.byte	0xa
+ 1280 06de 0D       		.byte	0xd
+ 1281 06df 25000000 		.4byte	0x25
+ 1282 06e3 02       		.byte	0x2
+ 1283 06e4 23       		.byte	0x23
+ 1284 06e5 0C       		.uleb128 0xc
+ 1285 06e6 09       		.uleb128 0x9
+ 1286 06e7 67040000 		.4byte	.LASF74
+ 1287 06eb 0A       		.byte	0xa
+ 1288 06ec 0E       		.byte	0xe
+ 1289 06ed 4F000000 		.4byte	0x4f
+ 1290 06f1 02       		.byte	0x2
+ 1291 06f2 23       		.byte	0x23
+ 1292 06f3 10       		.uleb128 0x10
+ 1293 06f4 00       		.byte	0x0
+ 1294 06f5 05       		.uleb128 0x5
+ 1295 06f6 05070000 		.4byte	0x705
+ 1296 06fa 4F000000 		.4byte	0x4f
+ 1297 06fe 06       		.uleb128 0x6
+ 1298 06ff 48000000 		.4byte	0x48
+ 1299 0703 0B       		.byte	0xb
+ 1300 0704 00       		.byte	0x0
+ 1301 0705 07       		.uleb128 0x7
+ 1302 0706 A8030000 		.4byte	.LASF98
+ 1303 070a 0A       		.byte	0xa
+ 1304 070b 10       		.byte	0x10
+ 1305 070c BE060000 		.4byte	0x6be
+ 1306 0710 08       		.uleb128 0x8
+ 1307 0711 62070000 		.4byte	0x762
+ 1308 0715 3B030000 		.4byte	.LASF99
+ 1309 0719 34       		.byte	0x34
+ 1310 071a 0A       		.byte	0xa
+ 1311 071b 12       		.byte	0x12
+ 1312 071c 0D       		.uleb128 0xd
+ 1313 071d 667300   		.ascii	"fs\000"
+ 1314 0720 0A       		.byte	0xa
+ 1315 0721 13       		.byte	0x13
+ 1316 0722 44060000 		.4byte	0x644
+ 1317 0726 02       		.byte	0x2
+ 1318 0727 23       		.byte	0x23
+ 1319 0728 00       		.uleb128 0x0
+ 1320 0729 09       		.uleb128 0x9
+ 1321 072a 67000000 		.4byte	.LASF100
+ 1322 072e 0A       		.byte	0xa
+ 1323 072f 14       		.byte	0x14
+ 1324 0730 8A000000 		.4byte	0x8a
+ 1325 0734 02       		.byte	0x2
+ 1326 0735 23       		.byte	0x23
+ 1327 0736 04       		.uleb128 0x4
+ 1328 0737 09       		.uleb128 0x9
+ 1329 0738 39020000 		.4byte	.LASF101
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 26
+
+
+ 1330 073c 0A       		.byte	0xa
+ 1331 073d 14       		.byte	0x14
+ 1332 073e 8A000000 		.4byte	0x8a
+ 1333 0742 02       		.byte	0x2
+ 1334 0743 23       		.byte	0x23
+ 1335 0744 06       		.uleb128 0x6
+ 1336 0745 09       		.uleb128 0x9
+ 1337 0746 86000000 		.4byte	.LASF102
+ 1338 074a 0A       		.byte	0xa
+ 1339 074b 16       		.byte	0x16
+ 1340 074c 05070000 		.4byte	0x705
+ 1341 0750 02       		.byte	0x2
+ 1342 0751 23       		.byte	0x23
+ 1343 0752 08       		.uleb128 0x8
+ 1344 0753 09       		.uleb128 0x9
+ 1345 0754 B6040000 		.4byte	.LASF88
+ 1346 0758 0A       		.byte	0xa
+ 1347 0759 17       		.byte	0x17
+ 1348 075a FB040000 		.4byte	0x4fb
+ 1349 075e 02       		.byte	0x2
+ 1350 075f 23       		.byte	0x23
+ 1351 0760 1C       		.uleb128 0x1c
+ 1352 0761 00       		.byte	0x0
+ 1353 0762 07       		.uleb128 0x7
+ 1354 0763 3B030000 		.4byte	.LASF99
+ 1355 0767 0A       		.byte	0xa
+ 1356 0768 19       		.byte	0x19
+ 1357 0769 10070000 		.4byte	0x710
+ 1358 076d 0F       		.uleb128 0xf
+ 1359 076e BF070000 		.4byte	0x7bf
+ 1360 0772 01       		.byte	0x1
+ 1361 0773 69030000 		.4byte	.LASF104
+ 1362 0777 01       		.byte	0x1
+ 1363 0778 21       		.byte	0x21
+ 1364 0779 01       		.byte	0x1
+ 1365 077a 00000000 		.4byte	.LFB2
+ 1366 077e 56000000 		.4byte	.LFE2
+ 1367 0782 00000000 		.4byte	.LLST0
+ 1368 0786 10       		.uleb128 0x10
+ 1369 0787 01030000 		.4byte	.LASF103
+ 1370 078b 01       		.byte	0x1
+ 1371 078c 20       		.byte	0x20
+ 1372 078d 56000000 		.4byte	0x56
+ 1373 0791 1F000000 		.4byte	.LLST1
+ 1374 0795 11       		.uleb128 0x11
+ 1375 0796 73726300 		.ascii	"src\000"
+ 1376 079a 01       		.byte	0x1
+ 1377 079b 20       		.byte	0x20
+ 1378 079c 56000000 		.4byte	0x56
+ 1379 07a0 3D000000 		.4byte	.LLST2
+ 1380 07a4 12       		.uleb128 0x12
+ 1381 07a5 6900     		.ascii	"i\000"
+ 1382 07a7 01       		.byte	0x1
+ 1383 07a8 22       		.byte	0x22
+ 1384 07a9 4F000000 		.4byte	0x4f
+ 1385 07ad 5B000000 		.4byte	.LLST3
+ 1386 07b1 12       		.uleb128 0x12
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 27
+
+
+ 1387 07b2 6B00     		.ascii	"k\000"
+ 1388 07b4 01       		.byte	0x1
+ 1389 07b5 22       		.byte	0x22
+ 1390 07b6 4F000000 		.4byte	0x4f
+ 1391 07ba 6E000000 		.4byte	.LLST4
+ 1392 07be 00       		.byte	0x0
+ 1393 07bf 0F       		.uleb128 0xf
+ 1394 07c0 1F080000 		.4byte	0x81f
+ 1395 07c4 01       		.byte	0x1
+ 1396 07c5 82020000 		.4byte	.LASF105
+ 1397 07c9 01       		.byte	0x1
+ 1398 07ca 31       		.byte	0x31
+ 1399 07cb 01       		.byte	0x1
+ 1400 07cc 58000000 		.4byte	.LFB3
+ 1401 07d0 E4000000 		.4byte	.LFE3
+ 1402 07d4 8C000000 		.4byte	.LLST5
+ 1403 07d8 13       		.uleb128 0x13
+ 1404 07d9 65667300 		.ascii	"efs\000"
+ 1405 07dd 01       		.byte	0x1
+ 1406 07de 32       		.byte	0x32
+ 1407 07df B3060000 		.4byte	0x6b3
+ 1408 07e3 03       		.byte	0x3
+ 1409 07e4 91       		.byte	0x91
+ 1410 07e5 9C79     		.sleb128 -868
+ 1411 07e7 14       		.uleb128 0x14
+ 1412 07e8 64030000 		.4byte	.LASF106
+ 1413 07ec 01       		.byte	0x1
+ 1414 07ed 33       		.byte	0x33
+ 1415 07ee 55060000 		.4byte	0x655
+ 1416 07f2 03       		.byte	0x3
+ 1417 07f3 91       		.byte	0x91
+ 1418 07f4 E07E     		.sleb128 -160
+ 1419 07f6 14       		.uleb128 0x14
+ 1420 07f7 06010000 		.4byte	.LASF107
+ 1421 07fb 01       		.byte	0x1
+ 1422 07fc 34       		.byte	0x34
+ 1423 07fd 62070000 		.4byte	0x762
+ 1424 0801 03       		.byte	0x3
+ 1425 0802 91       		.byte	0x91
+ 1426 0803 B07F     		.sleb128 -80
+ 1427 0805 14       		.uleb128 0x14
+ 1428 0806 B2010000 		.4byte	.LASF108
+ 1429 080a 01       		.byte	0x1
+ 1430 080b 35       		.byte	0x35
+ 1431 080c 1F080000 		.4byte	0x81f
+ 1432 0810 02       		.byte	0x2
+ 1433 0811 91       		.byte	0x91
+ 1434 0812 67       		.sleb128 -25
+ 1435 0813 15       		.uleb128 0x15
+ 1436 0814 15020000 		.4byte	.LASF109
+ 1437 0818 01       		.byte	0x1
+ 1438 0819 36       		.byte	0x36
+ 1439 081a 41000000 		.4byte	0x41
+ 1440 081e 00       		.byte	0x0
+ 1441 081f 05       		.uleb128 0x5
+ 1442 0820 2F080000 		.4byte	0x82f
+ 1443 0824 4F000000 		.4byte	0x4f
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 28
+
+
+ 1444 0828 06       		.uleb128 0x6
+ 1445 0829 48000000 		.4byte	0x48
+ 1446 082d 0C       		.byte	0xc
+ 1447 082e 00       		.byte	0x0
+ 1448 082f 16       		.uleb128 0x16
+ 1449 0830 65667300 		.ascii	"efs\000"
+ 1450 0834 01       		.byte	0x1
+ 1451 0835 1A       		.byte	0x1a
+ 1452 0836 B3060000 		.4byte	0x6b3
+ 1453 083a 01       		.byte	0x1
+ 1454 083b 05       		.byte	0x5
+ 1455 083c 03       		.byte	0x3
+ 1456 083d 00000000 		.4byte	efs
+ 1457 0841 17       		.uleb128 0x17
+ 1458 0842 64030000 		.4byte	.LASF106
+ 1459 0846 01       		.byte	0x1
+ 1460 0847 1B       		.byte	0x1b
+ 1461 0848 55060000 		.4byte	0x655
+ 1462 084c 01       		.byte	0x1
+ 1463 084d 05       		.byte	0x5
+ 1464 084e 03       		.byte	0x3
+ 1465 084f 00000000 		.4byte	file
+ 1466 0853 17       		.uleb128 0x17
+ 1467 0854 06010000 		.4byte	.LASF107
+ 1468 0858 01       		.byte	0x1
+ 1469 0859 1C       		.byte	0x1c
+ 1470 085a 62070000 		.4byte	0x762
+ 1471 085e 01       		.byte	0x1
+ 1472 085f 05       		.byte	0x5
+ 1473 0860 03       		.byte	0x3
+ 1474 0861 00000000 		.4byte	list
+ 1475 0865 17       		.uleb128 0x17
+ 1476 0866 B2010000 		.4byte	.LASF108
+ 1477 086a 01       		.byte	0x1
+ 1478 086b 1D       		.byte	0x1d
+ 1479 086c 1F080000 		.4byte	0x81f
+ 1480 0870 01       		.byte	0x1
+ 1481 0871 05       		.byte	0x5
+ 1482 0872 03       		.byte	0x3
+ 1483 0873 00000000 		.4byte	file_name
+ 1484 0877 17       		.uleb128 0x17
+ 1485 0878 15020000 		.4byte	.LASF109
+ 1486 087c 01       		.byte	0x1
+ 1487 087d 1E       		.byte	0x1e
+ 1488 087e 41000000 		.4byte	0x41
+ 1489 0882 01       		.byte	0x1
+ 1490 0883 05       		.byte	0x5
+ 1491 0884 03       		.byte	0x3
+ 1492 0885 00000000 		.4byte	size
+ 1493 0889 00       		.byte	0x0
+ 1494              		.section	.debug_abbrev
+ 1495 0000 01       		.uleb128 0x1
+ 1496 0001 11       		.uleb128 0x11
+ 1497 0002 01       		.byte	0x1
+ 1498 0003 10       		.uleb128 0x10
+ 1499 0004 06       		.uleb128 0x6
+ 1500 0005 12       		.uleb128 0x12
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 29
+
+
+ 1501 0006 01       		.uleb128 0x1
+ 1502 0007 11       		.uleb128 0x11
+ 1503 0008 01       		.uleb128 0x1
+ 1504 0009 25       		.uleb128 0x25
+ 1505 000a 0E       		.uleb128 0xe
+ 1506 000b 13       		.uleb128 0x13
+ 1507 000c 0B       		.uleb128 0xb
+ 1508 000d 03       		.uleb128 0x3
+ 1509 000e 0E       		.uleb128 0xe
+ 1510 000f 1B       		.uleb128 0x1b
+ 1511 0010 0E       		.uleb128 0xe
+ 1512 0011 00       		.byte	0x0
+ 1513 0012 00       		.byte	0x0
+ 1514 0013 02       		.uleb128 0x2
+ 1515 0014 24       		.uleb128 0x24
+ 1516 0015 00       		.byte	0x0
+ 1517 0016 03       		.uleb128 0x3
+ 1518 0017 0E       		.uleb128 0xe
+ 1519 0018 0B       		.uleb128 0xb
+ 1520 0019 0B       		.uleb128 0xb
+ 1521 001a 3E       		.uleb128 0x3e
+ 1522 001b 0B       		.uleb128 0xb
+ 1523 001c 00       		.byte	0x0
+ 1524 001d 00       		.byte	0x0
+ 1525 001e 03       		.uleb128 0x3
+ 1526 001f 24       		.uleb128 0x24
+ 1527 0020 00       		.byte	0x0
+ 1528 0021 03       		.uleb128 0x3
+ 1529 0022 08       		.uleb128 0x8
+ 1530 0023 0B       		.uleb128 0xb
+ 1531 0024 0B       		.uleb128 0xb
+ 1532 0025 3E       		.uleb128 0x3e
+ 1533 0026 0B       		.uleb128 0xb
+ 1534 0027 00       		.byte	0x0
+ 1535 0028 00       		.byte	0x0
+ 1536 0029 04       		.uleb128 0x4
+ 1537 002a 0F       		.uleb128 0xf
+ 1538 002b 00       		.byte	0x0
+ 1539 002c 0B       		.uleb128 0xb
+ 1540 002d 0B       		.uleb128 0xb
+ 1541 002e 49       		.uleb128 0x49
+ 1542 002f 13       		.uleb128 0x13
+ 1543 0030 00       		.byte	0x0
+ 1544 0031 00       		.byte	0x0
+ 1545 0032 05       		.uleb128 0x5
+ 1546 0033 01       		.uleb128 0x1
+ 1547 0034 01       		.byte	0x1
+ 1548 0035 01       		.uleb128 0x1
+ 1549 0036 13       		.uleb128 0x13
+ 1550 0037 49       		.uleb128 0x49
+ 1551 0038 13       		.uleb128 0x13
+ 1552 0039 00       		.byte	0x0
+ 1553 003a 00       		.byte	0x0
+ 1554 003b 06       		.uleb128 0x6
+ 1555 003c 21       		.uleb128 0x21
+ 1556 003d 00       		.byte	0x0
+ 1557 003e 49       		.uleb128 0x49
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 30
+
+
+ 1558 003f 13       		.uleb128 0x13
+ 1559 0040 2F       		.uleb128 0x2f
+ 1560 0041 0B       		.uleb128 0xb
+ 1561 0042 00       		.byte	0x0
+ 1562 0043 00       		.byte	0x0
+ 1563 0044 07       		.uleb128 0x7
+ 1564 0045 16       		.uleb128 0x16
+ 1565 0046 00       		.byte	0x0
+ 1566 0047 03       		.uleb128 0x3
+ 1567 0048 0E       		.uleb128 0xe
+ 1568 0049 3A       		.uleb128 0x3a
+ 1569 004a 0B       		.uleb128 0xb
+ 1570 004b 3B       		.uleb128 0x3b
+ 1571 004c 0B       		.uleb128 0xb
+ 1572 004d 49       		.uleb128 0x49
+ 1573 004e 13       		.uleb128 0x13
+ 1574 004f 00       		.byte	0x0
+ 1575 0050 00       		.byte	0x0
+ 1576 0051 08       		.uleb128 0x8
+ 1577 0052 13       		.uleb128 0x13
+ 1578 0053 01       		.byte	0x1
+ 1579 0054 01       		.uleb128 0x1
+ 1580 0055 13       		.uleb128 0x13
+ 1581 0056 03       		.uleb128 0x3
+ 1582 0057 0E       		.uleb128 0xe
+ 1583 0058 0B       		.uleb128 0xb
+ 1584 0059 0B       		.uleb128 0xb
+ 1585 005a 3A       		.uleb128 0x3a
+ 1586 005b 0B       		.uleb128 0xb
+ 1587 005c 3B       		.uleb128 0x3b
+ 1588 005d 0B       		.uleb128 0xb
+ 1589 005e 00       		.byte	0x0
+ 1590 005f 00       		.byte	0x0
+ 1591 0060 09       		.uleb128 0x9
+ 1592 0061 0D       		.uleb128 0xd
+ 1593 0062 00       		.byte	0x0
+ 1594 0063 03       		.uleb128 0x3
+ 1595 0064 0E       		.uleb128 0xe
+ 1596 0065 3A       		.uleb128 0x3a
+ 1597 0066 0B       		.uleb128 0xb
+ 1598 0067 3B       		.uleb128 0x3b
+ 1599 0068 0B       		.uleb128 0xb
+ 1600 0069 49       		.uleb128 0x49
+ 1601 006a 13       		.uleb128 0x13
+ 1602 006b 38       		.uleb128 0x38
+ 1603 006c 0A       		.uleb128 0xa
+ 1604 006d 00       		.byte	0x0
+ 1605 006e 00       		.byte	0x0
+ 1606 006f 0A       		.uleb128 0xa
+ 1607 0070 13       		.uleb128 0x13
+ 1608 0071 01       		.byte	0x1
+ 1609 0072 01       		.uleb128 0x1
+ 1610 0073 13       		.uleb128 0x13
+ 1611 0074 03       		.uleb128 0x3
+ 1612 0075 0E       		.uleb128 0xe
+ 1613 0076 0B       		.uleb128 0xb
+ 1614 0077 05       		.uleb128 0x5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 31
+
+
+ 1615 0078 3A       		.uleb128 0x3a
+ 1616 0079 0B       		.uleb128 0xb
+ 1617 007a 3B       		.uleb128 0x3b
+ 1618 007b 0B       		.uleb128 0xb
+ 1619 007c 00       		.byte	0x0
+ 1620 007d 00       		.byte	0x0
+ 1621 007e 0B       		.uleb128 0xb
+ 1622 007f 21       		.uleb128 0x21
+ 1623 0080 00       		.byte	0x0
+ 1624 0081 49       		.uleb128 0x49
+ 1625 0082 13       		.uleb128 0x13
+ 1626 0083 2F       		.uleb128 0x2f
+ 1627 0084 05       		.uleb128 0x5
+ 1628 0085 00       		.byte	0x0
+ 1629 0086 00       		.byte	0x0
+ 1630 0087 0C       		.uleb128 0xc
+ 1631 0088 13       		.uleb128 0x13
+ 1632 0089 01       		.byte	0x1
+ 1633 008a 01       		.uleb128 0x1
+ 1634 008b 13       		.uleb128 0x13
+ 1635 008c 0B       		.uleb128 0xb
+ 1636 008d 0B       		.uleb128 0xb
+ 1637 008e 3A       		.uleb128 0x3a
+ 1638 008f 0B       		.uleb128 0xb
+ 1639 0090 3B       		.uleb128 0x3b
+ 1640 0091 0B       		.uleb128 0xb
+ 1641 0092 00       		.byte	0x0
+ 1642 0093 00       		.byte	0x0
+ 1643 0094 0D       		.uleb128 0xd
+ 1644 0095 0D       		.uleb128 0xd
+ 1645 0096 00       		.byte	0x0
+ 1646 0097 03       		.uleb128 0x3
+ 1647 0098 08       		.uleb128 0x8
+ 1648 0099 3A       		.uleb128 0x3a
+ 1649 009a 0B       		.uleb128 0xb
+ 1650 009b 3B       		.uleb128 0x3b
+ 1651 009c 0B       		.uleb128 0xb
+ 1652 009d 49       		.uleb128 0x49
+ 1653 009e 13       		.uleb128 0x13
+ 1654 009f 38       		.uleb128 0x38
+ 1655 00a0 0A       		.uleb128 0xa
+ 1656 00a1 00       		.byte	0x0
+ 1657 00a2 00       		.byte	0x0
+ 1658 00a3 0E       		.uleb128 0xe
+ 1659 00a4 13       		.uleb128 0x13
+ 1660 00a5 01       		.byte	0x1
+ 1661 00a6 01       		.uleb128 0x1
+ 1662 00a7 13       		.uleb128 0x13
+ 1663 00a8 0B       		.uleb128 0xb
+ 1664 00a9 05       		.uleb128 0x5
+ 1665 00aa 3A       		.uleb128 0x3a
+ 1666 00ab 0B       		.uleb128 0xb
+ 1667 00ac 3B       		.uleb128 0x3b
+ 1668 00ad 0B       		.uleb128 0xb
+ 1669 00ae 00       		.byte	0x0
+ 1670 00af 00       		.byte	0x0
+ 1671 00b0 0F       		.uleb128 0xf
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 32
+
+
+ 1672 00b1 2E       		.uleb128 0x2e
+ 1673 00b2 01       		.byte	0x1
+ 1674 00b3 01       		.uleb128 0x1
+ 1675 00b4 13       		.uleb128 0x13
+ 1676 00b5 3F       		.uleb128 0x3f
+ 1677 00b6 0C       		.uleb128 0xc
+ 1678 00b7 03       		.uleb128 0x3
+ 1679 00b8 0E       		.uleb128 0xe
+ 1680 00b9 3A       		.uleb128 0x3a
+ 1681 00ba 0B       		.uleb128 0xb
+ 1682 00bb 3B       		.uleb128 0x3b
+ 1683 00bc 0B       		.uleb128 0xb
+ 1684 00bd 27       		.uleb128 0x27
+ 1685 00be 0C       		.uleb128 0xc
+ 1686 00bf 11       		.uleb128 0x11
+ 1687 00c0 01       		.uleb128 0x1
+ 1688 00c1 12       		.uleb128 0x12
+ 1689 00c2 01       		.uleb128 0x1
+ 1690 00c3 40       		.uleb128 0x40
+ 1691 00c4 06       		.uleb128 0x6
+ 1692 00c5 00       		.byte	0x0
+ 1693 00c6 00       		.byte	0x0
+ 1694 00c7 10       		.uleb128 0x10
+ 1695 00c8 05       		.uleb128 0x5
+ 1696 00c9 00       		.byte	0x0
+ 1697 00ca 03       		.uleb128 0x3
+ 1698 00cb 0E       		.uleb128 0xe
+ 1699 00cc 3A       		.uleb128 0x3a
+ 1700 00cd 0B       		.uleb128 0xb
+ 1701 00ce 3B       		.uleb128 0x3b
+ 1702 00cf 0B       		.uleb128 0xb
+ 1703 00d0 49       		.uleb128 0x49
+ 1704 00d1 13       		.uleb128 0x13
+ 1705 00d2 02       		.uleb128 0x2
+ 1706 00d3 06       		.uleb128 0x6
+ 1707 00d4 00       		.byte	0x0
+ 1708 00d5 00       		.byte	0x0
+ 1709 00d6 11       		.uleb128 0x11
+ 1710 00d7 05       		.uleb128 0x5
+ 1711 00d8 00       		.byte	0x0
+ 1712 00d9 03       		.uleb128 0x3
+ 1713 00da 08       		.uleb128 0x8
+ 1714 00db 3A       		.uleb128 0x3a
+ 1715 00dc 0B       		.uleb128 0xb
+ 1716 00dd 3B       		.uleb128 0x3b
+ 1717 00de 0B       		.uleb128 0xb
+ 1718 00df 49       		.uleb128 0x49
+ 1719 00e0 13       		.uleb128 0x13
+ 1720 00e1 02       		.uleb128 0x2
+ 1721 00e2 06       		.uleb128 0x6
+ 1722 00e3 00       		.byte	0x0
+ 1723 00e4 00       		.byte	0x0
+ 1724 00e5 12       		.uleb128 0x12
+ 1725 00e6 34       		.uleb128 0x34
+ 1726 00e7 00       		.byte	0x0
+ 1727 00e8 03       		.uleb128 0x3
+ 1728 00e9 08       		.uleb128 0x8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 33
+
+
+ 1729 00ea 3A       		.uleb128 0x3a
+ 1730 00eb 0B       		.uleb128 0xb
+ 1731 00ec 3B       		.uleb128 0x3b
+ 1732 00ed 0B       		.uleb128 0xb
+ 1733 00ee 49       		.uleb128 0x49
+ 1734 00ef 13       		.uleb128 0x13
+ 1735 00f0 02       		.uleb128 0x2
+ 1736 00f1 06       		.uleb128 0x6
+ 1737 00f2 00       		.byte	0x0
+ 1738 00f3 00       		.byte	0x0
+ 1739 00f4 13       		.uleb128 0x13
+ 1740 00f5 34       		.uleb128 0x34
+ 1741 00f6 00       		.byte	0x0
+ 1742 00f7 03       		.uleb128 0x3
+ 1743 00f8 08       		.uleb128 0x8
+ 1744 00f9 3A       		.uleb128 0x3a
+ 1745 00fa 0B       		.uleb128 0xb
+ 1746 00fb 3B       		.uleb128 0x3b
+ 1747 00fc 0B       		.uleb128 0xb
+ 1748 00fd 49       		.uleb128 0x49
+ 1749 00fe 13       		.uleb128 0x13
+ 1750 00ff 02       		.uleb128 0x2
+ 1751 0100 0A       		.uleb128 0xa
+ 1752 0101 00       		.byte	0x0
+ 1753 0102 00       		.byte	0x0
+ 1754 0103 14       		.uleb128 0x14
+ 1755 0104 34       		.uleb128 0x34
+ 1756 0105 00       		.byte	0x0
+ 1757 0106 03       		.uleb128 0x3
+ 1758 0107 0E       		.uleb128 0xe
+ 1759 0108 3A       		.uleb128 0x3a
+ 1760 0109 0B       		.uleb128 0xb
+ 1761 010a 3B       		.uleb128 0x3b
+ 1762 010b 0B       		.uleb128 0xb
+ 1763 010c 49       		.uleb128 0x49
+ 1764 010d 13       		.uleb128 0x13
+ 1765 010e 02       		.uleb128 0x2
+ 1766 010f 0A       		.uleb128 0xa
+ 1767 0110 00       		.byte	0x0
+ 1768 0111 00       		.byte	0x0
+ 1769 0112 15       		.uleb128 0x15
+ 1770 0113 34       		.uleb128 0x34
+ 1771 0114 00       		.byte	0x0
+ 1772 0115 03       		.uleb128 0x3
+ 1773 0116 0E       		.uleb128 0xe
+ 1774 0117 3A       		.uleb128 0x3a
+ 1775 0118 0B       		.uleb128 0xb
+ 1776 0119 3B       		.uleb128 0x3b
+ 1777 011a 0B       		.uleb128 0xb
+ 1778 011b 49       		.uleb128 0x49
+ 1779 011c 13       		.uleb128 0x13
+ 1780 011d 00       		.byte	0x0
+ 1781 011e 00       		.byte	0x0
+ 1782 011f 16       		.uleb128 0x16
+ 1783 0120 34       		.uleb128 0x34
+ 1784 0121 00       		.byte	0x0
+ 1785 0122 03       		.uleb128 0x3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 34
+
+
+ 1786 0123 08       		.uleb128 0x8
+ 1787 0124 3A       		.uleb128 0x3a
+ 1788 0125 0B       		.uleb128 0xb
+ 1789 0126 3B       		.uleb128 0x3b
+ 1790 0127 0B       		.uleb128 0xb
+ 1791 0128 49       		.uleb128 0x49
+ 1792 0129 13       		.uleb128 0x13
+ 1793 012a 3F       		.uleb128 0x3f
+ 1794 012b 0C       		.uleb128 0xc
+ 1795 012c 02       		.uleb128 0x2
+ 1796 012d 0A       		.uleb128 0xa
+ 1797 012e 00       		.byte	0x0
+ 1798 012f 00       		.byte	0x0
+ 1799 0130 17       		.uleb128 0x17
+ 1800 0131 34       		.uleb128 0x34
+ 1801 0132 00       		.byte	0x0
+ 1802 0133 03       		.uleb128 0x3
+ 1803 0134 0E       		.uleb128 0xe
+ 1804 0135 3A       		.uleb128 0x3a
+ 1805 0136 0B       		.uleb128 0xb
+ 1806 0137 3B       		.uleb128 0x3b
+ 1807 0138 0B       		.uleb128 0xb
+ 1808 0139 49       		.uleb128 0x49
+ 1809 013a 13       		.uleb128 0x13
+ 1810 013b 3F       		.uleb128 0x3f
+ 1811 013c 0C       		.uleb128 0xc
+ 1812 013d 02       		.uleb128 0x2
+ 1813 013e 0A       		.uleb128 0xa
+ 1814 013f 00       		.byte	0x0
+ 1815 0140 00       		.byte	0x0
+ 1816 0141 00       		.byte	0x0
+ 1817              		.section	.debug_pubnames,"",%progbits
+ 1818 0000 60000000 		.4byte	0x60
+ 1819 0004 0200     		.2byte	0x2
+ 1820 0006 00000000 		.4byte	.Ldebug_info0
+ 1821 000a 8A080000 		.4byte	0x88a
+ 1822 000e 6D070000 		.4byte	0x76d
+ 1823 0012 666F726D 		.ascii	"format_file_name\000"
+ 1823      61745F66 
+ 1823      696C655F 
+ 1823      6E616D65 
+ 1823      00
+ 1824 0023 BF070000 		.4byte	0x7bf
+ 1825 0027 74657374 		.ascii	"testMMC\000"
+ 1825      4D4D4300 
+ 1826 002f 2F080000 		.4byte	0x82f
+ 1827 0033 65667300 		.ascii	"efs\000"
+ 1828 0037 41080000 		.4byte	0x841
+ 1829 003b 66696C65 		.ascii	"file\000"
+ 1829      00
+ 1830 0040 53080000 		.4byte	0x853
+ 1831 0044 6C697374 		.ascii	"list\000"
+ 1831      00
+ 1832 0049 65080000 		.4byte	0x865
+ 1833 004d 66696C65 		.ascii	"file_name\000"
+ 1833      5F6E616D 
+ 1833      6500
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 35
+
+
+ 1834 0057 77080000 		.4byte	0x877
+ 1835 005b 73697A65 		.ascii	"size\000"
+ 1835      00
+ 1836 0060 00000000 		.4byte	0x0
+ 1837              		.section	.debug_aranges,"",%progbits
+ 1838 0000 1C000000 		.4byte	0x1c
+ 1839 0004 0200     		.2byte	0x2
+ 1840 0006 00000000 		.4byte	.Ldebug_info0
+ 1841 000a 04       		.byte	0x4
+ 1842 000b 00       		.byte	0x0
+ 1843 000c 0000     		.2byte	0x0
+ 1844 000e 0000     		.2byte	0x0
+ 1845 0010 00000000 		.4byte	.Ltext0
+ 1846 0014 E4000000 		.4byte	.Letext0-.Ltext0
+ 1847 0018 00000000 		.4byte	0x0
+ 1848 001c 00000000 		.4byte	0x0
+ 1849              		.section	.debug_str,"MS",%progbits,1
+ 1850              	.LASF34:
+ 1851 0000 696F6D61 		.ascii	"ioman\000"
+ 1851      6E00
+ 1852              	.LASF41:
+ 1853 0006 42797465 		.ascii	"BytesPerSector\000"
+ 1853      73506572 
+ 1853      53656374 
+ 1853      6F7200
+ 1854              	.LASF42:
+ 1855 0015 53656374 		.ascii	"SectorsPerCluster\000"
+ 1855      6F727350 
+ 1855      6572436C 
+ 1855      75737465 
+ 1855      7200
+ 1856              	.LASF43:
+ 1857 0027 52657365 		.ascii	"ReservedSectorCount\000"
+ 1857      72766564 
+ 1857      53656374 
+ 1857      6F72436F 
+ 1857      756E7400 
+ 1858              	.LASF96:
+ 1859 003b 6D794673 		.ascii	"myFs\000"
+ 1859      00
+ 1860              	.LASF97:
+ 1861 0040 456D6265 		.ascii	"EmbeddedFileSystem\000"
+ 1861      64646564 
+ 1861      46696C65 
+ 1861      53797374 
+ 1861      656D00
+ 1862              	.LASF46:
+ 1863 0053 53656374 		.ascii	"SectorCount16\000"
+ 1863      6F72436F 
+ 1863      756E7431 
+ 1863      3600
+ 1864              	.LASF21:
+ 1865 0061 6E756D69 		.ascii	"numit\000"
+ 1865      7400
+ 1866              	.LASF100:
+ 1867 0067 63456E74 		.ascii	"cEntry\000"
+ 1867      727900
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 36
+
+
+ 1868              	.LASF37:
+ 1869 006e 50617274 		.ascii	"Partition\000"
+ 1869      6974696F 
+ 1869      6E00
+ 1870              	.LASF30:
+ 1871 0078 74797065 		.ascii	"type\000"
+ 1871      00
+ 1872              	.LASF53:
+ 1873 007d 766F6C75 		.ascii	"volumeId\000"
+ 1873      6D654964 
+ 1873      00
+ 1874              	.LASF102:
+ 1875 0086 63757272 		.ascii	"currentEntry\000"
+ 1875      656E7445 
+ 1875      6E747279 
+ 1875      00
+ 1876              	.LASF8:
+ 1877 0093 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1877      206C6F6E 
+ 1877      6720756E 
+ 1877      7369676E 
+ 1877      65642069 
+ 1878              	.LASF79:
+ 1879 00aa 41636365 		.ascii	"AccessDate\000"
+ 1879      73734461 
+ 1879      746500
+ 1880              	.LASF83:
+ 1881 00b5 46697273 		.ascii	"FirstClusterLow\000"
+ 1881      74436C75 
+ 1881      73746572 
+ 1881      4C6F7700 
+ 1882              	.LASF2:
+ 1883 00c5 6C6F6E67 		.ascii	"long long int\000"
+ 1883      206C6F6E 
+ 1883      6720696E 
+ 1883      7400
+ 1884              	.LASF9:
+ 1885 00d3 7369676E 		.ascii	"signed char\000"
+ 1885      65642063 
+ 1885      68617200 
+ 1886              	.LASF76:
+ 1887 00df 4D696C6C 		.ascii	"MilliSecTimeStamp\000"
+ 1887      69536563 
+ 1887      54696D65 
+ 1887      5374616D 
+ 1887      7000
+ 1888              	.LASF86:
+ 1889 00f1 44697245 		.ascii	"DirEntry\000"
+ 1889      6E747279 
+ 1889      00
+ 1890              	.LASF68:
+ 1891 00fa 44697363 		.ascii	"DiscCluster\000"
+ 1891      436C7573 
+ 1891      74657200 
+ 1892              	.LASF107:
+ 1893 0106 6C697374 		.ascii	"list\000"
+ 1893      00
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 37
+
+
+ 1894              	.LASF85:
+ 1895 010b 46696C65 		.ascii	"File\000"
+ 1895      00
+ 1896              	.LASF1:
+ 1897 0110 6C6F6E67 		.ascii	"long int\000"
+ 1897      20696E74 
+ 1897      00
+ 1898              	.LASF75:
+ 1899 0119 4E545265 		.ascii	"NTReserved\000"
+ 1899      73657276 
+ 1899      656400
+ 1900              	.LASF26:
+ 1901 0124 63616368 		.ascii	"cache_mem\000"
+ 1901      655F6D65 
+ 1901      6D00
+ 1902              	.LASF47:
+ 1903 012e 46617453 		.ascii	"FatSectorCount16\000"
+ 1903      6563746F 
+ 1903      72436F75 
+ 1903      6E743136 
+ 1903      00
+ 1904              	.LASF87:
+ 1905 013f 4C6F6361 		.ascii	"Location\000"
+ 1905      74696F6E 
+ 1905      00
+ 1906              	.LASF84:
+ 1907 0148 46696C65 		.ascii	"FileSize\000"
+ 1907      53697A65 
+ 1907      00
+ 1908              	.LASF66:
+ 1909 0151 4C696E65 		.ascii	"Linear\000"
+ 1909      617200
+ 1910              	.LASF51:
+ 1911 0158 46696C65 		.ascii	"FileSystem\000"
+ 1911      53797374 
+ 1911      656D00
+ 1912              	.LASF61:
+ 1913 0163 46696C65 		.ascii	"FileLocation\000"
+ 1913      4C6F6361 
+ 1913      74696F6E 
+ 1913      00
+ 1914              	.LASF72:
+ 1915 0170 46696C65 		.ascii	"FileRecord\000"
+ 1915      5265636F 
+ 1915      726400
+ 1916              	.LASF112:
+ 1917 017b 2F637967 		.ascii	"/cygdrive/c/Embedded/workspace/test\000"
+ 1917      64726976 
+ 1917      652F632F 
+ 1917      456D6265 
+ 1917      64646564 
+ 1918              	.LASF64:
+ 1919 019f 61747472 		.ascii	"attrib\000"
+ 1919      696200
+ 1920              	.LASF78:
+ 1921 01a6 43726561 		.ascii	"CreatedDate\000"
+ 1921      74656444 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 38
+
+
+ 1921      61746500 
+ 1922              	.LASF108:
+ 1923 01b2 66696C65 		.ascii	"file_name\000"
+ 1923      5F6E616D 
+ 1923      6500
+ 1924              	.LASF54:
+ 1925 01bc 44617461 		.ascii	"DataClusterCount\000"
+ 1925      436C7573 
+ 1925      74657243 
+ 1925      6F756E74 
+ 1925      00
+ 1926              	.LASF67:
+ 1927 01cd 4C6F6769 		.ascii	"LogicCluster\000"
+ 1927      63436C75 
+ 1927      73746572 
+ 1927      00
+ 1928              	.LASF65:
+ 1929 01da 436C7573 		.ascii	"ClusterChain\000"
+ 1929      74657243 
+ 1929      6861696E 
+ 1929      00
+ 1930              	.LASF3:
+ 1931 01e7 756E7369 		.ascii	"unsigned int\000"
+ 1931      676E6564 
+ 1931      20696E74 
+ 1931      00
+ 1932              	.LASF31:
+ 1933 01f4 4348535F 		.ascii	"CHS_end\000"
+ 1933      656E6400 
+ 1934              	.LASF14:
+ 1935 01fc 73656374 		.ascii	"sector\000"
+ 1935      6F7200
+ 1936              	.LASF0:
+ 1937 0203 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1937      20756E73 
+ 1937      69676E65 
+ 1937      6420696E 
+ 1937      7400
+ 1938              	.LASF109:
+ 1939 0215 73697A65 		.ascii	"size\000"
+ 1939      00
+ 1940              	.LASF7:
+ 1941 021a 73686F72 		.ascii	"short unsigned int\000"
+ 1941      7420756E 
+ 1941      7369676E 
+ 1941      65642069 
+ 1941      6E7400
+ 1942              	.LASF77:
+ 1943 022d 43726561 		.ascii	"CreatedTime\000"
+ 1943      74656454 
+ 1943      696D6500 
+ 1944              	.LASF101:
+ 1945 0239 72456E74 		.ascii	"rEntry\000"
+ 1945      727900
+ 1946              	.LASF111:
+ 1947 0240 74657374 		.ascii	"testMMC.c\000"
+ 1947      4D4D432E 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 39
+
+
+ 1947      6300
+ 1948              	.LASF58:
+ 1949 024a 46697273 		.ascii	"FirstClusterCurrentDir\000"
+ 1949      74436C75 
+ 1949      73746572 
+ 1949      43757272 
+ 1949      656E7444 
+ 1950              	.LASF13:
+ 1951 0261 73656374 		.ascii	"sectorCount\000"
+ 1951      6F72436F 
+ 1951      756E7400 
+ 1952              	.LASF33:
+ 1953 026d 6E756D53 		.ascii	"numSectors\000"
+ 1953      6563746F 
+ 1953      727300
+ 1954              	.LASF24:
+ 1955 0278 72656665 		.ascii	"reference\000"
+ 1955      72656E63 
+ 1955      6500
+ 1956              	.LASF105:
+ 1957 0282 74657374 		.ascii	"testMMC\000"
+ 1957      4D4D4300 
+ 1958              	.LASF80:
+ 1959 028a 46697273 		.ascii	"FirstClusterHigh\000"
+ 1959      74436C75 
+ 1959      73746572 
+ 1959      48696768 
+ 1959      00
+ 1960              	.LASF17:
+ 1961 029b 494F4D61 		.ascii	"IOManager\000"
+ 1961      6E616765 
+ 1961      7200
+ 1962              	.LASF20:
+ 1963 02a5 6E756D62 		.ascii	"numbuf\000"
+ 1963      756600
+ 1964              	.LASF73:
+ 1965 02ac 46696C65 		.ascii	"FileName\000"
+ 1965      4E616D65 
+ 1965      00
+ 1966              	.LASF62:
+ 1967 02b5 53656374 		.ascii	"Sector\000"
+ 1967      6F7200
+ 1968              	.LASF12:
+ 1969 02bc 494F4D61 		.ascii	"IOManStack\000"
+ 1969      6E537461 
+ 1969      636B00
+ 1970              	.LASF89:
+ 1971 02c7 46696C65 		.ascii	"FileStatus\000"
+ 1971      53746174 
+ 1971      757300
+ 1972              	.LASF10:
+ 1973 02d2 6575696E 		.ascii	"euint8\000"
+ 1973      743800
+ 1974              	.LASF11:
+ 1975 02d9 6877496E 		.ascii	"hwInterface\000"
+ 1975      74657266 
+ 1975      61636500 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 40
+
+
+ 1976              	.LASF70:
+ 1977 02e5 4C617374 		.ascii	"LastCluster\000"
+ 1977      436C7573 
+ 1977      74657200 
+ 1978              	.LASF39:
+ 1979 02f1 61637469 		.ascii	"activePartition\000"
+ 1979      76655061 
+ 1979      72746974 
+ 1979      696F6E00 
+ 1980              	.LASF103:
+ 1981 0301 64657374 		.ascii	"dest\000"
+ 1981      00
+ 1982              	.LASF27:
+ 1983 0306 50617274 		.ascii	"PartitionField\000"
+ 1983      6974696F 
+ 1983      6E466965 
+ 1983      6C6400
+ 1984              	.LASF50:
+ 1985 0315 526F6F74 		.ascii	"RootCluster\000"
+ 1985      436C7573 
+ 1985      74657200 
+ 1986              	.LASF69:
+ 1987 0321 46697273 		.ascii	"FirstCluster\000"
+ 1987      74436C75 
+ 1987      73746572 
+ 1987      00
+ 1988              	.LASF95:
+ 1989 032e 6D795061 		.ascii	"myPart\000"
+ 1989      727400
+ 1990              	.LASF22:
+ 1991 0335 6572726F 		.ascii	"error\000"
+ 1991      7200
+ 1992              	.LASF99:
+ 1993 033b 4469724C 		.ascii	"DirList\000"
+ 1993      69737400 
+ 1994              	.LASF81:
+ 1995 0343 57726974 		.ascii	"WriteTime\000"
+ 1995      6554696D 
+ 1995      6500
+ 1996              	.LASF29:
+ 1997 034d 4348535F 		.ascii	"CHS_begin\000"
+ 1997      62656769 
+ 1997      6E00
+ 1998              	.LASF71:
+ 1999 0357 436C7573 		.ascii	"ClusterCount\000"
+ 1999      74657243 
+ 1999      6F756E74 
+ 1999      00
+ 2000              	.LASF106:
+ 2001 0364 66696C65 		.ascii	"file\000"
+ 2001      00
+ 2002              	.LASF104:
+ 2003 0369 666F726D 		.ascii	"format_file_name\000"
+ 2003      61745F66 
+ 2003      696C655F 
+ 2003      6E616D65 
+ 2003      00
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 41
+
+
+ 2004              	.LASF4:
+ 2005 037a 756E7369 		.ascii	"unsigned char\000"
+ 2005      676E6564 
+ 2005      20636861 
+ 2005      7200
+ 2006              	.LASF44:
+ 2007 0388 4E756D62 		.ascii	"NumberOfFats\000"
+ 2007      65724F66 
+ 2007      46617473 
+ 2007      00
+ 2008              	.LASF94:
+ 2009 0395 6D794469 		.ascii	"myDisc\000"
+ 2009      736300
+ 2010              	.LASF110:
+ 2011 039c 474E5520 		.ascii	"GNU C 4.1.1\000"
+ 2011      4320342E 
+ 2011      312E3100 
+ 2012              	.LASF98:
+ 2013 03a8 4C697374 		.ascii	"ListDirEntry\000"
+ 2013      44697245 
+ 2013      6E747279 
+ 2013      00
+ 2014              	.LASF60:
+ 2015 03b5 4E657874 		.ascii	"NextFreeCluster\000"
+ 2015      46726565 
+ 2015      436C7573 
+ 2015      74657200 
+ 2016              	.LASF5:
+ 2017 03c5 73686F72 		.ascii	"short int\000"
+ 2017      7420696E 
+ 2017      7400
+ 2018              	.LASF35:
+ 2019 03cf 70617274 		.ascii	"partitions\000"
+ 2019      6974696F 
+ 2019      6E7300
+ 2020              	.LASF36:
+ 2021 03da 44697363 		.ascii	"Disc\000"
+ 2021      00
+ 2022              	.LASF57:
+ 2023 03df 46697273 		.ascii	"FirstSectorRootDir\000"
+ 2023      74536563 
+ 2023      746F7252 
+ 2023      6F6F7444 
+ 2023      697200
+ 2024              	.LASF55:
+ 2025 03f2 46617453 		.ascii	"FatSectorCount\000"
+ 2025      6563746F 
+ 2025      72436F75 
+ 2025      6E7400
+ 2026              	.LASF90:
+ 2027 0401 46696C65 		.ascii	"FilePtr\000"
+ 2027      50747200 
+ 2028              	.LASF82:
+ 2029 0409 57726974 		.ascii	"WriteDate\000"
+ 2029      65446174 
+ 2029      6500
+ 2030              	.LASF49:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 42
+
+
+ 2031 0413 46617453 		.ascii	"FatSectorCount32\000"
+ 2031      6563746F 
+ 2031      72436F75 
+ 2031      6E743332 
+ 2031      00
+ 2032              	.LASF28:
+ 2033 0424 626F6F74 		.ascii	"bootFlag\000"
+ 2033      466C6167 
+ 2033      00
+ 2034              	.LASF6:
+ 2035 042d 63686172 		.ascii	"char\000"
+ 2035      00
+ 2036              	.LASF38:
+ 2037 0432 64697363 		.ascii	"disc\000"
+ 2037      00
+ 2038              	.LASF48:
+ 2039 0437 53656374 		.ascii	"SectorCount32\000"
+ 2039      6F72436F 
+ 2039      756E7433 
+ 2039      3200
+ 2040              	.LASF52:
+ 2041 0445 70617274 		.ascii	"part\000"
+ 2041      00
+ 2042              	.LASF63:
+ 2043 044a 4F666673 		.ascii	"Offset\000"
+ 2043      657400
+ 2044              	.LASF16:
+ 2045 0451 75736167 		.ascii	"usage\000"
+ 2045      6500
+ 2046              	.LASF92:
+ 2047 0457 6D794361 		.ascii	"myCard\000"
+ 2047      726400
+ 2048              	.LASF40:
+ 2049 045e 566F6C75 		.ascii	"VolumeId\000"
+ 2049      6D654964 
+ 2049      00
+ 2050              	.LASF74:
+ 2051 0467 41747472 		.ascii	"Attribute\000"
+ 2051      69627574 
+ 2051      6500
+ 2052              	.LASF59:
+ 2053 0471 46726565 		.ascii	"FreeClusterCount\000"
+ 2053      436C7573 
+ 2053      74657243 
+ 2053      6F756E74 
+ 2053      00
+ 2054              	.LASF15:
+ 2055 0482 73746174 		.ascii	"status\000"
+ 2055      757300
+ 2056              	.LASF56:
+ 2057 0489 53656374 		.ascii	"SectorCount\000"
+ 2057      6F72436F 
+ 2057      756E7400 
+ 2058              	.LASF18:
+ 2059 0495 69666163 		.ascii	"iface\000"
+ 2059      6500
+ 2060              	.LASF23:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 43
+
+
+ 2061 049b 73746163 		.ascii	"stack\000"
+ 2061      6B00
+ 2062              	.LASF25:
+ 2063 04a1 69747074 		.ascii	"itptr\000"
+ 2063      7200
+ 2064              	.LASF45:
+ 2065 04a7 526F6F74 		.ascii	"RootEntryCount\000"
+ 2065      456E7472 
+ 2065      79436F75 
+ 2065      6E7400
+ 2066              	.LASF88:
+ 2067 04b6 43616368 		.ascii	"Cache\000"
+ 2067      6500
+ 2068              	.LASF19:
+ 2069 04bc 62756670 		.ascii	"bufptr\000"
+ 2069      747200
+ 2070              	.LASF93:
+ 2071 04c3 6D79494F 		.ascii	"myIOman\000"
+ 2071      6D616E00 
+ 2072              	.LASF32:
+ 2073 04cb 4C42415F 		.ascii	"LBA_begin\000"
+ 2073      62656769 
+ 2073      6E00
+ 2074              	.LASF91:
+ 2075 04d5 456D6265 		.ascii	"EmbeddedFile\000"
+ 2075      64646564 
+ 2075      46696C65 
+ 2075      00
+ 2076              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s 			page 44
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 testMMC.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s:16     .text:00000000 format_file_name
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s:102    .text:00000058 testMMC
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2ovzDh.s:176    .text:000000cc $d
+                            *COM*:000002c4 efs
+                            *COM*:00000050 file
+                            *COM*:00000034 list
+                            *COM*:0000000d file_name
+                            *COM*:00000004 size
+
+UNDEFINED SYMBOLS
+strncpy
+efs_init
+ls_openDir
+file_fopen
+file_fclose
+ls_getNext
+fs_umount

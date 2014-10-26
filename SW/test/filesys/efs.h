@@ -14,14 +14,14 @@
 
 typedef File EmbeddedFile;
 
-struct EmbeddedFileSystem{
+typedef struct {
 	hwInterface myCard;
 	IOManager myIOman;
 	Disc myDisc;
 	Partition myPart;
 	FileSystem myFs;
-};
-typedef struct  EmbeddedFileSystem EmbeddedFileSystem;
+} EmbeddedFileSystem;
+//typedef struct  EmbeddedFileSystem EmbeddedFileSystem;
 
 signed int efs_init(EmbeddedFileSystem * efs, char* opts);
 

@@ -7,7 +7,7 @@
 ##########################################################
 
 # Name of target (executable program or library) 
-#NAME      = libusb
+NAME      = mmc
 
 # Link program to RAM or ROM (possible values for LD_RAMROM is RAM or ROM,
 # if not specified = ROM)

@@ -57,6 +57,7 @@ CSRCS   = main.c          \
           uart.c          \
           testLedMatrix.c \
           testLcd.c       \
+          testMMC.c		  \
           testMotor.c     \
           testRGB.c       \
           testI2C.c       \
@@ -78,10 +79,14 @@ SUBDIRS = ./startup \
 LIBS    = irq/irq_code.a \
           ./startup/libea_startup_thumb.a \
           ./pre_emptive_os/pre_emptive_os.a \
-          usb/libusb.a
+          usb/libusb.a \
+          ./filesys/filesys.a \
+          ./mmc/mmc.a
 
 # Add include search paths
-INC     = -I ./startup
+INC     = -I ./startup \
+			-I ./filesys \
+			-I ./mmc
 
 # Select if an executable program or a library shall be created
 PROGRAM_MK  = true

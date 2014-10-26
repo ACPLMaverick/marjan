@@ -7,7 +7,7 @@
 ##########################################################
 
 # Name of target (executable program or library) 
-#NAME      = libusb
+NAME      = filesys
 
 # Link program to RAM or ROM (possible values for LD_RAMROM is RAM or ROM,
 # if not specified = ROM)
@@ -53,6 +53,7 @@ CODE    = ARM
 CSRCS   = dir.c \
 			disc.c \
 			efs.c \
+			extract.c \
 			fat.c \
 			file.c \
 			fs.c 	\

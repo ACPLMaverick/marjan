@@ -6,6 +6,7 @@
 #include "error.h"
 #include "partition.h"
 #include "time.h"
+#include "extract.h"
 /*****************************************************************************/
 
 #define FAT12 1

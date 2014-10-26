@@ -9,6 +9,9 @@ efs.o: efs.c efs.h ../startup/config.h ../mmc/interface.h ../mmc/types.h \
   ../startup/config.h disc.h error.h ../mmc/hwinterface.h ../mmc/debug.h \
   ioman.h libc.h partition.h extract.h ../mmc/types.h fs.h time.h file.h \
   dir.h fat.h ui.h fs.h ../mmc/types.h fat.h dir.h ../startup/config.h
+extract.o: extract.c extract.h ../startup/config.h disc.h error.h \
+  ../mmc/interface.h ../mmc/types.h ../startup/config.h \
+  ../mmc/hwinterface.h ../mmc/debug.h ioman.h libc.h ../mmc/types.h
 fat.o: fat.c fs.h ../startup/config.h error.h ../mmc/interface.h \
   ../mmc/types.h ../startup/config.h partition.h ../mmc/hwinterface.h \
   ../mmc/debug.h disc.h ioman.h libc.h extract.h ../mmc/types.h time.h

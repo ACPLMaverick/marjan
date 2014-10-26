@@ -15,7 +15,8 @@
 #include <ea_init.h>
 #include <lpc2xxx.h>
 #include <consol.h>
-
+#include "filesys/fs.h"
+#include "filesys/ls.h"
 #include "usb/lpc_usb.h"
 #include "usb/lpc_hid.h"
 
@@ -51,7 +52,7 @@ void testLcd(void);
 void testMotor(void);
 void testRGB(void);
 void testI2C(void);
-//void testMMC(void);
+void testMMC(void);
 void testAdc(void);
 tU8  testXBee(void);
 
@@ -204,7 +205,7 @@ proc1(void* arg)
     //
     //Test MMC/SD via SPI
     //
-    //testMMC();
+    testMMC();
     
 
     //
