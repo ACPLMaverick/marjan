@@ -15,9 +15,11 @@
 #include "FPSCounter.h"
 #include "CPUCounter.h"
 #include "Timer.h"
+#include "Terrain.h"
 
 class GameObject;
 class Graphics;
+class Terrain;
 
 class System
 {
@@ -34,6 +36,7 @@ private:
 	Graphics* myGraphics;
 
 	vector<GameObject*> gameObjects;
+	Terrain* terrain;
 	GameObject* player;
 
 	bool Frame();
@@ -42,6 +45,7 @@ private:
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 	void InitializeGameObjects();
+	void InitializeTerrain();
 	void CheckGameObjects();
 	void PlayerShoot();
 	GameObject* GetGameObjectByName(LPCSTR name);

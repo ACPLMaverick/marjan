@@ -42,6 +42,7 @@ bool System::Initialize()
 	if (!result) return false;
 
 	InitializeGameObjects();
+	InitializeTerrain();
 
 	m_FPS = new FPSCounter();
 	m_FPS->Initialize();
@@ -98,6 +99,13 @@ void System::Shutdown()
 	}
 	gameObjects.clear();
 
+	if (terrain)
+	{
+		terrain->Shutdown();
+		delete terrain;
+		terrain = nullptr;
+	}
+
 	ShutdownWindows();
 }
 
@@ -152,12 +160,19 @@ bool System::Frame()
 	CheckGameObjects();
 	ProcessCamera();
 
-	GameObject** goTab = new GameObject*[gameObjects.size()];
-	for (int i = 0; i < gameObjects.size(); i++)
+	vector<GameObject*> terVec = terrain->GetTiles();
+	GameObject** goTab = new GameObject*[gameObjects.size() + terVec.size()];
+	int i = 0;
+	for (; i < terVec.size(); i++)
 	{
-		goTab[i] = gameObjects.at(i);
+		goTab[i] = terVec.at(i);
 	}
-	result = myGraphics->Frame(goTab, gameObjects.size());
+	for (int j = 0; j < gameObjects.size(); i++, j++)
+	{
+		goTab[i] = gameObjects.at(j);
+	}
+	GameObject* dupa = goTab[10];
+	result = myGraphics->Frame(goTab, gameObjects.size() + terVec.size());
 	if (!result) return false;
 
 	return true;
@@ -313,7 +328,7 @@ void System::InitializeGameObjects()
 		D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	gameObjects.push_back(go02c);
-
+/*
 	GameObject* go03 = new GameObject(
 		"board01",
 		"map_nocollid",
@@ -411,7 +426,7 @@ void System::InitializeGameObjects()
 		D3DXVECTOR3(-20.0f, -20.0f, -1.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go11);
+	gameObjects.push_back(go11);*/
 	GameObject* go12 = new GameObject(
 		"test_bullet",
 		"bullets",
@@ -424,6 +439,16 @@ void System::InitializeGameObjects()
 	gameObjects.push_back(go12);
 	go12->SetTransparency(0.6f);
 	//player = go12;
+}
+
+void System::InitializeTerrain()
+{
+	Texture* terrainTextures[3];
+	terrainTextures[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds");
+	terrainTextures[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds");
+	terrainTextures[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds");
+	terrain = new Terrain(30, 30, 1.5f, -1.0f, terrainTextures, 3, (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
+	terrain->Initialize();
 }
 
 void System::CheckGameObjects()

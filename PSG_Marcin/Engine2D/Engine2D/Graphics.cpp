@@ -103,9 +103,11 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 		m_D3D->GetWorldnMatrix(worldMatrix);
 		m_D3D->GetProjectionMatrix(projectionMatrix);
 
+		GameObject* obj;
 		for (int i = 0; i < objectCount; i++)
 		{
-			objects[i]->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+			obj = objects[i];
+			obj->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
 		}
 		delete[] objects;
 
