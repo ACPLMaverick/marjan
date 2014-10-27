@@ -23,7 +23,7 @@ protected:
 	Texture* myTexture;
 	TextureShader* myShader;
 
-	unsigned int animationLastFrame;
+	unsigned long animationLastFrame;
 	unsigned int currentTextureID;
 	vector<Texture*> animationTextures;
 	bool canAnimate;

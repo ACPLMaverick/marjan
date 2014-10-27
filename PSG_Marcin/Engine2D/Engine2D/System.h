@@ -47,7 +47,7 @@ private:
 	GameObject* GetGameObjectByName(LPCSTR name);
 	void GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count);
 public:
-	static unsigned int frameCount;
+	static unsigned long frameCount;
 	static bool playerAnimation;
 	static unsigned int checkGameObjects;
 	static float time;

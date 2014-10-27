@@ -68,7 +68,7 @@ void Bullet::UpdatePosition()
 	rotationVector.y = outputVec.y;
 	rotationVector.z = outputVec.z;
 
-	myModel->position += (speed/200.0f*rotationVector);
+	myModel->position += (speed/200.0f*rotationVector*System::time);
 	currentDistance = sqrt(pow(myModel->position.x - originPos.x, 2) + pow(myModel->position.y - originPos.y, 2));
 }
 

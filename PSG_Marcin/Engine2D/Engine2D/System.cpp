@@ -1,7 +1,7 @@
 #include "System.h"
 #include "Bullet.h"
 
-unsigned int System::frameCount;
+unsigned long System::frameCount;
 bool System::playerAnimation;
 unsigned int System::checkGameObjects;
 float System::time;
@@ -143,6 +143,7 @@ bool System::Frame()
 	m_Timer->Frame();
 	m_FPS->Frame();
 	m_CPU->Frame();
+	frameCount++;
 
 	time = m_Timer->GetTime();
 
@@ -166,7 +167,9 @@ bool System::ProcessKeys()
 {
 	//string debug = to_string(player->position.x) + " " + to_string(player->position.y) + "\n";
 	//OutputDebugString(debug.c_str());
-	if (myInput->IsKeyDown(VK_ESCAPE)) return false;
+	bool toReturn = true;
+	playerAnimation = false;
+	if (myInput->IsKeyDown(VK_ESCAPE)) toReturn = false;
 	if (myInput->IsKeyDown(VK_LEFT))
 	{
 		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3((-myInput->movementDistance)*(m_Timer->GetTime()), 0.0f, 0.0f));
@@ -174,7 +177,7 @@ bool System::ProcessKeys()
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 1.57079632679f));
 		//myInput->KeyUp(VK_LEFT);
 		playerAnimation = true;
-		return true;
+		toReturn = true;
 	}
 	if (myInput->IsKeyDown(VK_RIGHT))
 	{
@@ -183,7 +186,7 @@ bool System::ProcessKeys()
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 4.71238898038f));
 		//myInput->KeyUp(VK_RIGHT);
 		playerAnimation = true;
-		return true;
+		toReturn = true;
 	}
 	if (myInput->IsKeyDown(VK_UP))
 	{
@@ -192,7 +195,7 @@ bool System::ProcessKeys()
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 		//myInput->KeyUp(VK_UP);
 		playerAnimation = true;
-		return true;
+		toReturn = true;
 	}
 	if (myInput->IsKeyDown(VK_DOWN))
 	{
@@ -201,16 +204,31 @@ bool System::ProcessKeys()
 		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f));
 		//myInput->KeyUp(VK_DOWN);
 		playerAnimation = true;
-		return true;
+		toReturn = true;
+	}
+	if (myInput->IsKeyDown(VK_DOWN) && myInput->IsKeyDown(VK_LEFT))
+	{
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 2.35619449019f));
+	}
+	if (myInput->IsKeyDown(VK_DOWN) && myInput->IsKeyDown(VK_RIGHT))
+	{
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 3.92699081699f));
+	}
+	if (myInput->IsKeyDown(VK_UP) && myInput->IsKeyDown(VK_LEFT))
+	{
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.78539816339f));
+	}
+	if (myInput->IsKeyDown(VK_UP) && myInput->IsKeyDown(VK_RIGHT))
+	{
+		player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 5.49778714378f));
 	}
 	if (myInput->IsKeyDown(VK_SPACE))
 	{
 		PlayerShoot();
 		myInput->KeyUp(VK_SPACE);
-		return true;
+		toReturn = true;
 	}
-	playerAnimation = false;
-	return true;
+	return toReturn;
 }
 
 void System::ProcessCamera()
@@ -439,7 +457,7 @@ void System::PlayerShoot()
 		player->GetRotation(),
 		D3DXVECTOR3(0.3f, 0.3f, 0.3f),
 		5.0f,
-		10.0f);
+		50.0f);
 	gameObjects.push_back(newBullet);
 }
 
