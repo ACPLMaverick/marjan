@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 1
 
 
    1              		.file	"extract.c"
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
   36:extract.c     **** /*****************************************************************************/
   37:extract.c     **** 
   38:extract.c     **** /*****************************************************************************/
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 2
 
 
   39:extract.c     **** #ifdef BYTE_ALIGNMENT
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
   18              		@ args = 0, pretend = 0, frame = 0
   19              		@ frame_needed = 0, uses_anonymous_args = 0
   20              		@ link register save eliminated.
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 3
 
 
   21              	.LVL0:
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
   64              		.loc 1 96 0
   65              		@ lr needed for prologue
   66              		.loc 1 101 0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 4
 
 
   67 0044 1EFF2FE1 		bx	lr
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  105              	.LCFI0:
  118:extract.c     **** #ifdef BIG_ENDIAN
  119:extract.c     **** 	*(buf+offset+3) = data>> 0;
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 5
 
 
  120:extract.c     **** 	*(buf+offset+2) = data>> 8;
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  144 0098 0130D4E5 		ldrb	r3, [r4, #1]	@ zero_extendqisi2
  145 009c 0130C1E5 		strb	r3, [r1, #1]
  136:extract.c     **** 	pf->CHS_begin[1]   = *(buf + offset + 2);
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 6
 
 
  146              		.loc 1 136 0
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  145:extract.c     **** /*****************************************************************************/
  146:extract.c     **** 
  147:extract.c     **** void ex_setPartitionField(euint8* buf,PartitionField* pf, euint32 offset)
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 7
 
 
  148:extract.c     **** {
@@ -418,7 +418,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  243 0040 14000000 		.4byte	.LEFDE6-.LASFDE6
  244              	.LASFDE6:
  245 0044 00000000 		.4byte	.Lframe0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 8
 
 
  246 0048 5C000000 		.4byte	.LFB5
@@ -478,7 +478,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  300 001b 0100     		.2byte	0x1
  301 001d 50       		.byte	0x50
  302 001e 28000000 		.4byte	.LVL3-.Ltext0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 9
 
 
  303 0022 48000000 		.4byte	.LFE3-.Ltext0
@@ -538,7 +538,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  357              	.LLST10:
  358 00b3 88000000 		.4byte	.LVL7-.Ltext0
  359 00b7 E0000000 		.4byte	.LVL10-.Ltext0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 10
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 10
 
 
  360 00bb 0100     		.2byte	0x1
@@ -598,7 +598,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  414 006b 67       		.byte	0x67
  415 006c 70000000 		.4byte	0x70
  416 0070 02       		.uleb128 0x2
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 11
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 11
 
 
  417 0071 7F000000 		.4byte	.LASF9
@@ -658,7 +658,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  471 00d1 AD000000 		.4byte	.LASF15
  472 00d5 03       		.byte	0x3
  473 00d6 14       		.byte	0x14
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 12
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 12
 
 
  474 00d7 70000000 		.4byte	0x70
@@ -718,7 +718,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  528 0149 1C000000 		.4byte	.LFB3
  529 014d 48000000 		.4byte	.LFE3
  530 0151 01       		.byte	0x1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 13
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 13
 
 
  531 0152 5D       		.byte	0x5d
@@ -778,7 +778,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  585 01be 5C000000 		.4byte	.LFB5
  586 01c2 88000000 		.4byte	.LFE5
  587 01c6 44000000 		.4byte	.LLST6
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 14
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 14
 
 
  588 01ca 0E       		.uleb128 0xe
@@ -838,7 +838,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  642 023e 10       		.uleb128 0x10
  643 023f 01       		.byte	0x1
  644 0240 23000000 		.4byte	.LASF27
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 15
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 15
 
 
  645 0244 01       		.byte	0x1
@@ -898,7 +898,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  699 0017 0E       		.uleb128 0xe
  700 0018 0B       		.uleb128 0xb
  701 0019 0B       		.uleb128 0xb
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 16
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 16
 
 
  702 001a 3E       		.uleb128 0x3e
@@ -958,7 +958,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  756 0050 00       		.byte	0x0
  757 0051 00       		.byte	0x0
  758 0052 07       		.uleb128 0x7
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 17
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 17
 
 
  759 0053 21       		.uleb128 0x21
@@ -1018,7 +1018,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  813 0089 0B       		.uleb128 0xb
  814 008a 3B       		.uleb128 0x3b
  815 008b 0B       		.uleb128 0xb
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 18
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 18
 
 
  816 008c 49       		.uleb128 0x49
@@ -1078,7 +1078,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  870 00c2 05       		.uleb128 0x5
  871 00c3 00       		.byte	0x0
  872 00c4 03       		.uleb128 0x3
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 19
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 19
 
 
  873 00c5 08       		.uleb128 0x8
@@ -1138,7 +1138,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  927 00fb 00       		.byte	0x0
  928 00fc 00       		.byte	0x0
  929              		.section	.debug_pubnames,"",%progbits
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 20
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 20
 
 
  930 0000 78000000 		.4byte	0x78
@@ -1198,7 +1198,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  963      6C6400
  964              	.LASF14:
  965 0019 4C42415F 		.ascii	"LBA_begin\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 21
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 21
 
 
  965      62656769 
@@ -1258,7 +1258,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  989      74333200 
  990              	.LASF0:
  991 00d2 63686172 		.ascii	"char\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 22
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 22
 
 
  991      00
@@ -1310,17 +1310,17 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 1
  1015      696F6E46 
  1015      69656C64 
  1016              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s 			page 23
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s 			page 23
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 extract.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s:13     .text:00000000 ex_getb16
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s:23     .text:00000000 $a
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s:40     .text:0000001c ex_getb32
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s:73     .text:00000048 ex_setb16
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s:97     .text:0000005c ex_setb32
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s:130    .text:00000088 ex_getPartitionField
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc2fyJat.s:190    .text:000000fc ex_setPartitionField
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s:13     .text:00000000 ex_getb16
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s:23     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s:40     .text:0000001c ex_getb32
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s:73     .text:00000048 ex_setb16
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s:97     .text:0000005c ex_setb32
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s:130    .text:00000088 ex_getPartitionField
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNwu4Tg.s:190    .text:000000fc ex_setPartitionField
 
 NO UNDEFINED SYMBOLS

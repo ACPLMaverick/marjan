@@ -20,8 +20,8 @@ signed char sd_Init(hwInterface *iface)
 			return(-1);
 		}
 		else{
-			sd_Resp8bError(iface,resp);
-			return(-2);
+			return sd_Resp8bError(iface,resp);
+			//return(-2);
 		}
 	}
 
@@ -89,33 +89,41 @@ unsigned short sd_Resp16b(hwInterface *iface)
 }
 /*****************************************************************************/
 
-void sd_Resp8bError(hwInterface *iface,unsigned char value)
+signed short sd_Resp8bError(hwInterface *iface,unsigned char value)
 {
 	switch(value)
 	{
 		case 0x40:
 			DBG((TXT("Argument out of bounds.\n")));
+			return -10;
 			break;
 		case 0x20:
 			DBG((TXT("Address out of bounds.\n")));
+			return -11;
 			break;
 		case 0x10:
 			DBG((TXT("Error during erase sequence.\n")));
+			return -12;
 			break;
 		case 0x08:
 			DBG((TXT("CRC failed.\n")));
+			return -13;
 			break;
 		case 0x04:
 			DBG((TXT("Illegal command.\n")));
+			return -14;
 			break;
 		case 0x02:
 			DBG((TXT("Erase reset (see SanDisk docs p5-13).\n")));
+			return -15;
 			break;
 		case 0x01:
 			DBG((TXT("Card is initialising.\n")));
+			return -16;
 			break;
 		default:
 			DBG((TXT("Unknown error 0x%x (see SanDisk docs p5-13).\n"),value));
+			return -17;
 			break;
 	}
 }

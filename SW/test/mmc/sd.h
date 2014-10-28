@@ -17,7 +17,7 @@
 signed char  sd_Init(hwInterface *iface);
 void sd_Command(hwInterface *iface,unsigned char cmd, unsigned short paramx, unsigned short paramy);
 unsigned char sd_Resp8b(hwInterface *iface);
-void sd_Resp8bError(hwInterface *iface,unsigned char value);
+signed short sd_Resp8bError(hwInterface *iface,unsigned char value);
 unsigned short sd_Resp16b(hwInterface *iface);
 signed char sd_State(hwInterface *iface);
 

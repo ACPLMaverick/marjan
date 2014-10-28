@@ -23,7 +23,7 @@
 #define SPI_SCK_PIN    4   /* Clock       P0.4  out */
 #define SPI_MISO_PIN   5   /* from Card   P0.5  in  */
 #define SPI_MOSI_PIN   6   /* to Card     P0.6  out */
-#define SPI_SS_PIN	   7   /* Card-Select P0.7 - GPIO out */
+#define SPI_SS_PIN	   11   /* Card-Select P0.7 - GPIO out */
 
 #define SPI_PINSEL     PINSEL0
 #define SPI_SCK_FUNCBIT   8
@@ -87,10 +87,11 @@ signed char if_initInterface(hwInterface* file, char* opts)
 	unsigned long sc;
 	
 	if_spiInit(file); /* init at low speed */
+	signed char returnValue = sd_Init(file);
 	
-	if(sd_Init(file)<0)	{
+	if(returnValue<0)	{
 		DBG((TXT("Card failed to init, breaking up...\n")));
-		return(-1);
+		return returnValue;
 	}
 	if(sd_State(file)<0){
 		DBG((TXT("Card didn't return the ready state, breaking up...\n")));

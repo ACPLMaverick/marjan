@@ -11,7 +11,9 @@
 */
 signed int efs_init(EmbeddedFileSystem * efs,char* opts)
 {
-	if(if_initInterface(&efs->myCard, opts)==0)
+	signed char returnValue;
+	returnValue = if_initInterface(&efs->myCard, opts);
+	if(returnValue == 0)
 	{
 		ioman_init(&efs->myIOman,&efs->myCard,0);
 		disc_initDisc(&efs->myDisc, &efs->myIOman);
@@ -29,7 +31,9 @@ signed int efs_init(EmbeddedFileSystem * efs,char* opts)
 			return(-2);
 		return(0);
 	}
-	return(-1);
+	else if(returnValue == -1) return -3;
+	else if(returnValue == -2) return -4;
+	else return returnValue;
 }
 /*****************************************************************************/
 

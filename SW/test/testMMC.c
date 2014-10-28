@@ -45,24 +45,100 @@ void format_file_name(unsigned char *dest, unsigned char *src)
 }
 
 
-void testMMC(void)
+char* testMMC(void)
 {
-	EmbeddedFileSystem  efs;
-	EmbeddedFile        file;
-	DirList             list;
-	unsigned char       file_name[13];
-	unsigned int        size;
+//	EmbeddedFileSystem  efs;
+//	EmbeddedFile        file;
+//	DirList             list;
+//	unsigned char       file_name[13];
+//	unsigned int        size;
+	char* toReturn;
+	char* error01 = "ERR:filesys-1";
+	char* error01b = "ERR:filesys-2";
+	char* error01c = "ERR:filesys-3";
+	char* error01d = "ERR:filesys-4";
 
-	if (efs_init(&efs, "\\") != 0)
+	char* error010 = "ERR:filesys-10";
+	char* error011 = "ERR:filesys-11";
+	char* error012 = "ERR:filesys-12";
+	char* error013 = "ERR:filesys-13";
+	char* error014 = "ERR:filesys-14";
+	char* error015 = "ERR:filesys-15";
+	char* error016 = "ERR:filesys-16";
+	char* error017 = "ERR:filesys-17";
+
+	char* error02 = "ERR:dir";
+	char* error03 = "ERR:file";
+	signed int returnValue;
+	//initialize SPI?
+	returnValue = efs_init(&efs, "\\");
+
+	if (returnValue == -1)
 	{
 		DBG((TXT("Could not open filesystem.\n")));
-		return(-1);
+		return error01;
 	}
+	if (returnValue == -2)
+		{
+			DBG((TXT("Could not open filesystem.\n")));
+			return error01b;
+		}
+	if (returnValue == -3)
+		{
+			DBG((TXT("Could not open filesystem.\n")));
+			return error01c;
+		}
+	if (returnValue == -4)
+		{
+			DBG((TXT("Could not open filesystem.\n")));
+			return error01d;
+		}
+
+	if (returnValue == -10)
+			{
+				DBG((TXT("Could not open filesystem.\n")));
+				return error010;
+			}
+	if (returnValue == -11)
+			{
+				DBG((TXT("Could not open filesystem.\n")));
+				return error011;
+			}
+	if (returnValue == -12)
+			{
+				DBG((TXT("Could not open filesystem.\n")));
+				return error012;
+			}
+	if (returnValue == -13)
+			{
+				DBG((TXT("Could not open filesystem.\n")));
+				return error013;
+			}
+	if (returnValue == -14)
+			{
+				DBG((TXT("Could not open filesystem.\n")));
+				return error014;
+			}
+	if (returnValue == -15)
+			{
+				DBG((TXT("Could not open filesystem.\n")));
+				return error015;
+			}
+	if (returnValue == -16)
+			{
+				DBG((TXT("Could not open filesystem.\n")));
+				return error016;
+			}
+	if (returnValue == -17)
+			{
+				DBG((TXT("Could not open filesystem.\n")));
+				return error017;
+			}
 
 	if (ls_openDir(&list, &(efs.myFs), "/") != 0)
 	{
 		DBG((TXT("Could not open the selected directory.\n")));
-		return(-2);
+		return error02;
 	}
 
 	while (ls_getNext(&list) == 0)
@@ -80,9 +156,13 @@ void testMMC(void)
 				file_fclose(&file);
 				DBG((TXT("File successfully opened!.\n")));
 				//TOGGLE_LIVE_LED1();
+				return file_name;
 			}
 			else
+			{
 				DBG((TXT("Could not open file.\n")));
+				return error03;
+			}
 		}
 	}
 

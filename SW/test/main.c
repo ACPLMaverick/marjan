@@ -19,6 +19,8 @@
 #include "filesys/ls.h"
 #include "usb/lpc_usb.h"
 #include "usb/lpc_hid.h"
+//#include <stdio.h>
+//#include <string.h>
 
 #define PROC1_STACK_SIZE 2048
 #define PROC2_STACK_SIZE 2048
@@ -48,17 +50,18 @@ static void proc5(void* arg);
 static void initProc(void* arg);
 
 void testLedMatrix(void);
-void testLcd(void);
+void testLcd(const char* str);
 void testMotor(void);
 void testRGB(void);
 void testI2C(void);
-void testMMC(void);
+char* testMMC(void);
 void testAdc(void);
 tU8  testXBee(void);
 
 tU8 xbeePresent;
 volatile tU32 msClock = 0;
 extern char startupSound[];
+char* fileName;
 
 
 /*****************************************************************************
@@ -205,18 +208,18 @@ proc1(void* arg)
     //
     //Test MMC/SD via SPI
     //
-    testMMC();
+    fileName = testMMC();
     
 
     //
     //Start the rest of the processes
     //
-    osCreateProcess(proc2, proc2Stack, PROC2_STACK_SIZE, &pid2, 3, NULL, &error);
-    osStartProcess(pid2, &error);
+//    osCreateProcess(proc2, proc2Stack, PROC2_STACK_SIZE, &pid2, 3, NULL, &error);
+//    osStartProcess(pid2, &error);
     osCreateProcess(proc3, proc3Stack, PROC3_STACK_SIZE, &pid3, 3, NULL, &error);
     osStartProcess(pid3, &error);
-    osCreateProcess(proc4, proc4Stack, PROC4_STACK_SIZE, &pid4, 3, NULL, &error);
-    osStartProcess(pid4, &error);
+//    osCreateProcess(proc4, proc4Stack, PROC4_STACK_SIZE, &pid4, 3, NULL, &error);
+//    osStartProcess(pid4, &error);
     osCreateProcess(proc5, proc5Stack, PROC5_STACK_SIZE, &pid5, 3, NULL, &error);
     osStartProcess(pid5, &error);
 
@@ -283,7 +286,7 @@ proc2(void* arg)
 static void
 proc3(void* arg)
 {
-	testLcd();
+	testLcd(fileName);
 }
 
 /*****************************************************************************

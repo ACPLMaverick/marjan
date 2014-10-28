@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 1
 
 
    1              		.file	"disc.c"
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
   24 0004 0010A0E3 		mov	r1, #0
   25              		.loc 1 23 0
   26 0008 0050A0E1 		mov	r5, r0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 2
 
 
   27              		.loc 1 27 0
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
   76              		@ lr needed for prologue
   77              		.loc 1 13 0
   78 0068 0430C0E5 		strb	r3, [r0, #4]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 3
 
 
   79              		.loc 1 12 0
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  133              	.LEFDE2:
  134              		.file 2 "disc.h"
  135              		.file 3 "ioman.h"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 4
 
 
  136              		.file 4 "../mmc/hwinterface.h"
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  190 001d 50000000 		.4byte	.LASF36
  191 0021 91000000 		.4byte	.LASF37
  192 0025 02       		.uleb128 0x2
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 5
 
 
  193 0026 24010000 		.4byte	.LASF0
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  247 008c 65000000 		.4byte	.LASF9
  248 0090 08       		.byte	0x8
  249 0091 03       		.byte	0x3
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 6
 
 
  250 0092 13       		.byte	0x13
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  304 00f3 00000000 		.4byte	.LASF17
  305 00f7 03       		.byte	0x3
  306 00f8 1E       		.byte	0x1e
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 7
 
 
  307 00f9 4C000000 		.4byte	0x4c
@@ -418,7 +418,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  361 0159 03       		.byte	0x3
  362 015a 28       		.byte	0x28
  363 015b B8010000 		.4byte	0x1b8
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 8
 
 
  364 015f 02       		.byte	0x2
@@ -478,7 +478,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  418 01c8 08       		.uleb128 0x8
  419 01c9 D9010000 		.4byte	0x1d9
  420 01cd 3E000000 		.4byte	0x3e
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 9
 
 
  421 01d1 0A       		.uleb128 0xa
@@ -538,7 +538,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  475 0235 08       		.uleb128 0x8
  476 0236 05       		.uleb128 0x5
  477 0237 F6000000 		.4byte	.LASF30
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 10
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 10
 
 
  478 023b 02       		.byte	0x2
@@ -598,7 +598,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  532 029e 55020000 		.4byte	0x255
  533 02a2 09       		.uleb128 0x9
  534 02a3 A1010000 		.4byte	0x1a1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 11
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 11
 
 
  535 02a7 03       		.byte	0x3
@@ -658,7 +658,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  589 0317 3D000000 		.4byte	.LLST3
  590 031b 0D       		.uleb128 0xd
  591 031c 7C010000 		.4byte	.LASF31
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 12
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 12
 
 
  592 0320 01       		.byte	0x1
@@ -718,7 +718,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  646 002f 13       		.uleb128 0x13
  647 0030 03       		.uleb128 0x3
  648 0031 0E       		.uleb128 0xe
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 13
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 13
 
 
  649 0032 0B       		.uleb128 0xb
@@ -778,7 +778,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  703 0068 00       		.byte	0x0
  704 0069 00       		.byte	0x0
  705 006a 09       		.uleb128 0x9
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 14
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 14
 
 
  706 006b 21       		.uleb128 0x21
@@ -838,7 +838,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  760 00a1 05       		.uleb128 0x5
  761 00a2 00       		.byte	0x0
  762 00a3 03       		.uleb128 0x3
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 15
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 15
 
 
  763 00a4 0E       		.uleb128 0xe
@@ -898,7 +898,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  817 00da 12       		.uleb128 0x12
  818 00db 01       		.uleb128 0x1
  819 00dc 40       		.uleb128 0x40
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 16
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 16
 
 
  820 00dd 0A       		.uleb128 0xa
@@ -958,7 +958,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  858 0034 72656665 		.ascii	"reference\000"
  858      72656E63 
  858      6500
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 17
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 17
 
 
  859              	.LASF23:
@@ -1018,7 +1018,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  884      6E7300
  885              	.LASF25:
  886 00ed 626F6F74 		.ascii	"bootFlag\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 18
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 18
 
 
  886      466C6167 
@@ -1078,7 +1078,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  918      62656769 
  918      6E00
  919              	.LASF5:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 19
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 19
 
 
  920 0173 6C6F6E67 		.ascii	"long int\000"
@@ -1096,16 +1096,16 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 1
  926      6E616765 
  926      7200
  927              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s 			page 20
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s 			page 20
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 disc.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s:13     .text:00000000 disc_loadMBR
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s:21     .text:00000000 $a
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s:59     .text:00000060 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s:65     .text:00000064 disc_initDisc
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckiSUa3.s:74     .text:00000064 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s:13     .text:00000000 disc_loadMBR
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s:21     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s:59     .text:00000060 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s:65     .text:00000064 disc_initDisc
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaAt921.s:74     .text:00000064 $a
 
 UNDEFINED SYMBOLS
 ioman_getSector

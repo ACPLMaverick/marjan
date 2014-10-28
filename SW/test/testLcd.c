@@ -106,7 +106,7 @@ lcdBacklight(tU8 onOff)
  *
  ****************************************************************************/
 void
-testLcd(void)
+testLcd(const char* str)
 {
   initLCD();
 	lcdBacklight(FALSE);
@@ -173,7 +173,7 @@ osSleep(1);
 //    delay37us();
 //    writeLCD(1, 'i');
 //    delay37us();
-	WriteString("Lubie czolgi");
+	WriteString(str);
 
     //move curstor to second row
     writeLCD(0, 0x80 | 0x40);
