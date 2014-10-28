@@ -37,7 +37,7 @@ bool Terrain::Initialize()
 		{
 			float xPos = ((float)i - (float)(width / 2))*tileSize*2;
 			float yPos = ((float)j - (float)(height / 2))*tileSize*2;
-			Texture* texture = myTextures[1];
+			Texture* texture = myTextures[rand() % textureCount];
 
 			GameObject* tile = new GameObject(
 				"tile",

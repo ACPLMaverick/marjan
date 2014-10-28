@@ -328,105 +328,6 @@ void System::InitializeGameObjects()
 		D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	gameObjects.push_back(go02c);
-/*
-	GameObject* go03 = new GameObject(
-		"board01",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(0.0f, 0.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go03);
-
-	GameObject* go04 = new GameObject(
-		"board02",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(-20.0f, 0.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go04);
-
-	GameObject* go05 = new GameObject(
-		"board03",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(-20.0f, 20.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go05);
-
-	GameObject* go06 = new GameObject(
-		"board04",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(0.0f, 20.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go06);
-
-	GameObject* go07 = new GameObject(
-		"board05",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(20.0f, 20.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go07);
-
-	GameObject* go08 = new GameObject(
-		"board06",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(20.0f, 0.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go08);
-
-	GameObject* go09 = new GameObject(
-		"board07",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(20.0f, -20.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go09);
-
-	GameObject* go10 = new GameObject(
-		"board08",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(0.0f, -20.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go10);
-
-	GameObject* go11 = new GameObject(
-		"board09",
-		"map_nocollid",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(-20.0f, -20.0f, -1.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(10.0f, 10.0f, 1.0f));
-	gameObjects.push_back(go11);*/
 	GameObject* go12 = new GameObject(
 		"test_bullet",
 		"bullets",
@@ -445,9 +346,9 @@ void System::InitializeTerrain()
 {
 	Texture* terrainTextures[3];
 	terrainTextures[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds");
-	terrainTextures[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds");
-	terrainTextures[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds");
-	terrain = new Terrain(30, 30, 1.5f, -1.0f, terrainTextures, 3, (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
+	terrainTextures[1] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds");
+	terrainTextures[2] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds");
+	terrain = new Terrain(30, 30, 2.0f, -1.0f, terrainTextures, 3, (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
 	terrain->Initialize();
 }
 
