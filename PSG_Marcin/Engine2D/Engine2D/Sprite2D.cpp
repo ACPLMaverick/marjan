@@ -5,7 +5,7 @@ Sprite2D::Sprite2D() : Model()
 {
 }
 
-Sprite2D::Sprite2D(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale) : Model(position, rotation, scale)
+Sprite2D::Sprite2D(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D11_USAGE usage) : Model(position, rotation, scale, usage)
 {
 }
 
@@ -13,16 +13,19 @@ Sprite2D::~Sprite2D()
 {
 }
 
-Sprite2D::VertexIndex* Sprite2D::LoadGeometry()
+Sprite2D::VertexIndex* Sprite2D::LoadGeometry(bool ind)
 {
-	Vertex* vertices;
-	unsigned long* indices;
-	
 	m_vertexCount = 4;
 	m_indexCount = 6;
-
+	Vertex* vertices;
+	unsigned long* indices;
 	vertices = new Vertex[m_vertexCount];
-	indices = new unsigned long[m_indexCount];
+	
+	if (ind)
+	{
+		indices = new unsigned long[m_indexCount];
+	}
+	else indices = nullptr;
 
 	// rotation
 	D3DXMATRIX rotateX;
@@ -54,13 +57,16 @@ Sprite2D::VertexIndex* Sprite2D::LoadGeometry()
 		vertices[i].position.z = (outputVec[i].z*scale.z + position.z);
 	}
 
-	// load index array with data
-	indices[0] = 0; // BL
-	indices[1] = 1; // TL
-	indices[2] = 2; // BR
-	indices[3] = 2;
-	indices[4] = 1;
-	indices[5] = 3;
+	if (ind)
+	{
+		// load index array with data
+		indices[0] = 0; // BL
+		indices[1] = 1; // TL
+		indices[2] = 2; // BR
+		indices[3] = 2;
+		indices[4] = 1;
+		indices[5] = 3;
+	}
 
 	VertexIndex* toReturn = new VertexIndex();
 	toReturn->vertexArrayPtr = vertices;

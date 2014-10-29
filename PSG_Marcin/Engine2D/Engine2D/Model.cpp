@@ -6,16 +6,25 @@ Model::Model()
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
 	position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	prevPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	prevRotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	prevScale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	m_texture = nullptr;
 }
 
-Model::Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale)
+Model::Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D11_USAGE usage) : Model()
 {
-	m_vertexBuffer = nullptr;
-	m_indexBuffer = nullptr;
+	this->prevPosition = position;
+	this->prevRotation = rotation;
+	this->prevScale = scale;
 	this->position = position;
 	this->rotation = rotation;
 	this->scale = scale;
+	this->usage = usage;
+	if (usage == D3D11_USAGE_DYNAMIC) cpuFlag = D3D11_CPU_ACCESS_WRITE;
+	else cpuFlag = 0;
 }
 
 Model::Model(const Model& other)
@@ -50,7 +59,7 @@ void Model::Shutdown()
 
 void Model::Render(ID3D11DeviceContext* deviceContext)
 {
-	UpdateBuffers(myDevice);
+	UpdateBuffers(deviceContext);
 	// put the vertex and index buffers on a graphics pipeline to prepare them for drawing
 	RenderBuffers(deviceContext);
 }
@@ -71,15 +80,15 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	unsigned long* indices = nullptr;
 	HRESULT result;
 
-	VertexIndex* set = LoadGeometry();
+	VertexIndex* set = LoadGeometry(true);
 	vertices = set->vertexArrayPtr;
 	indices = set->indexArrayPtr;
 
 	// setup description of static vertex buffer
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.Usage = usage;
 	vertexBufferDesc.ByteWidth = sizeof(Vertex)*m_vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.CPUAccessFlags = cpuFlag;
 	vertexBufferDesc.MiscFlags = 0;
 	vertexBufferDesc.StructureByteStride = 0;
 
@@ -118,45 +127,33 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	return true;
 }
 
-void Model::UpdateBuffers(ID3D11Device* device)
+void Model::UpdateBuffers(ID3D11DeviceContext* deviceContext)
 {
-	// tba
-	//InitializeBuffers(device);
-
-	//string debug = to_string(position.x) + " " + to_string(position.y) + "\n";
-	//OutputDebugString(debug.c_str());
-	m_indexBuffer->Release();
-	m_vertexBuffer->Release();
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	if (position == prevPosition && rotation == prevRotation && scale == prevScale)
+	{
+		return;
+	}
+	prevPosition = position;
+	prevRotation = rotation;
+	prevScale = scale;
 
 	Vertex* vertices = nullptr;
-	unsigned long* indices = nullptr;
-	
-	HRESULT result;
 
-	VertexIndex* set = LoadGeometry();
+	VertexIndex* set = LoadGeometry(false);
 	vertices = set->vertexArrayPtr;
-	indices = set->indexArrayPtr;
 
 	// give the subresource structure a pointer to the vertex data
-	vertexData.pSysMem = vertices;
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
 
-	// create vertex buffer
-	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer);
+	deviceContext->Map(m_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
-	indexData.pSysMem = indices;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
-
-	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
-
-	/////
+	Vertex* verticesPtr = (Vertex*)mappedResource.pData;
+	memcpy(verticesPtr, (void*)vertices, (sizeof(Vertex)*m_vertexCount));
+	deviceContext->Unmap(m_vertexBuffer, 0);
 
 	delete[] vertices;
 	vertices = nullptr;
-	delete[] indices;
-	indices = nullptr;
+
 	delete set;
 }
 
@@ -190,8 +187,6 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	// set type of a primitive that should be drawn !!!!!!!!!!!!!
 	deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	string debug = to_string(rotation.z) + "\n";
 }
 
 bool Model::LoadTexture(ID3D11Device* device, LPCSTR filename)
