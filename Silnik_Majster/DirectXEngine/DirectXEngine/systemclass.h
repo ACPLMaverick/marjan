@@ -31,7 +31,7 @@ public:
 	int positionX = 256;
 	int positionY = 256;
 	float rotation = 0;
-	WCHAR* currentTexture = L"../DirectXEngine/Data/Grass0129_9_S.dds";
+	WCHAR* currentTexture = L"../DirectXEngine/Data/Fruit0001_1_S.dds";
 
 private:
 	bool Frame();

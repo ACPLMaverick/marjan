@@ -126,7 +126,9 @@ bool SystemClass::Frame() /*Function where all the processing for our applicatio
 	{
 		positionX += 25;
 		m_Input->KeyUp(VK_RIGHT);
-		currentTexture = m_Graphics->textures.at(1);
+		if (currentTexture == m_Graphics->textures.at(0))
+			currentTexture = m_Graphics->textures.at(4);
+		else currentTexture = m_Graphics->textures.at(0);
 		return true;
 	}
 
@@ -134,7 +136,9 @@ bool SystemClass::Frame() /*Function where all the processing for our applicatio
 	{
 		positionX -= 25;
 		m_Input->KeyUp(VK_LEFT);
-		currentTexture = m_Graphics->textures.at(1);
+		if (currentTexture == m_Graphics->textures.at(0))
+			currentTexture = m_Graphics->textures.at(4);
+		else currentTexture = m_Graphics->textures.at(0);
 		return true;
 	}
 
@@ -142,14 +146,18 @@ bool SystemClass::Frame() /*Function where all the processing for our applicatio
 	{
 		positionY -= 25;
 		m_Input->KeyUp(VK_UP);
-		currentTexture = m_Graphics->textures.at(0);
+		if (currentTexture == m_Graphics->textures.at(0))
+			currentTexture = m_Graphics->textures.at(4);
+		else currentTexture = m_Graphics->textures.at(0);
 		return true;
 	}
 
 	if (m_Input->IsKeyDown(VK_DOWN))
 	{
 		positionY += 25;
-		currentTexture = m_Graphics->textures.at(0);
+		if (currentTexture == m_Graphics->textures.at(0))
+			currentTexture = m_Graphics->textures.at(4);
+		else currentTexture = m_Graphics->textures.at(0);
 		m_Input->KeyUp(VK_DOWN);
 		return true;
 	}
@@ -164,6 +172,9 @@ bool SystemClass::Frame() /*Function where all the processing for our applicatio
 		m_Input->KeyUp(VK_SPACE);
 		return true;
 	}
+
+	if (positionX < -100.0f || positionX > 950.0f) return false;
+	if (positionY < -100.0f || positionY > 773.0f) return false;
 
 	// Do the frame processing for the graphics object
 	result = m_Graphics->Frame(positionX, positionY, rotation, currentTexture);
