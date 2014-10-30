@@ -11,6 +11,7 @@ D3DClass::D3DClass()
 	m_depthDisabledStencilState = 0;
 	m_depthStencilView = 0;
 	m_rasterState = 0;
+	m_blendState = 0;
 }
 
 bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd,
@@ -33,6 +34,8 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
 	D3D11_VIEWPORT viewport;
+	ID3D11BlendState* blendState;
+	D3D11_BLEND_DESC blendStateDesc;
 	float fieldOfView, screenAspect;
 
 	//Store the vsync settings
@@ -318,6 +321,26 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//Now set the rasterizer state
 	m_deviceContext->RSSetState(m_rasterState);
+
+	//Blending
+	ZeroMemory(&blendStateDesc, sizeof(blendStateDesc));
+	blendStateDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
+
+	result = m_device->CreateBlendState(&blendStateDesc, &m_blendState);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	const float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_deviceContext->OMSetBlendState(m_blendState, blendFactor, 0xFFFFFFFF);
 
 	//Setup the viewport for rendering (so that Direct3D can map clip space coordinates
 	//to the render target space)
