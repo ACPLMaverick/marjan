@@ -31,5 +31,9 @@ public:
 	void Shutdown();
 
 	vector<GameObject*> GetTiles();
+
+	unsigned int GetWidth();
+	unsigned int GetHeight();
+	float GetSize();
 };
 

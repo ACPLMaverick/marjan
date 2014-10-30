@@ -44,7 +44,11 @@ bool GameObject::InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3D
 	if (myTag == "player") canAnimate = true;
 	else canAnimate = false;
 	bool result;
-	myModel = new Sprite2D(position, rotation, scale);
+
+	D3D11_USAGE usage;
+	if (myTag == "terrain_nocollid" || myTag == "terrain_collid") usage = D3D11_USAGE_IMMUTABLE;
+	else usage = D3D11_USAGE_DYNAMIC;
+	myModel = new Sprite2D(position, rotation, scale, usage);
 	if (!myModel) return false;
 	result = myModel->Initialize(device, myTexture);
 	if (!result) return false;

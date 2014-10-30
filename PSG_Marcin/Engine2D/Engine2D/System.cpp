@@ -185,7 +185,7 @@ bool System::ProcessKeys()
 	bool toReturn = true;
 	playerAnimation = false;
 	if (myInput->IsKeyDown(VK_ESCAPE)) toReturn = false;
-	if (myInput->IsKeyDown(VK_LEFT))
+	if (myInput->IsKeyDown(VK_LEFT) /*&& player->GetPosition().x > -(signed int)(terrain->GetWidth()*terrain->GetSize())*/)
 	{
 		D3DXVECTOR3 newVec = (player->GetPosition() + D3DXVECTOR3((-myInput->movementDistance)*(m_Timer->GetTime()), 0.0f, 0.0f));
 		player->SetPosition(newVec);
@@ -348,7 +348,7 @@ void System::InitializeTerrain()
 	terrainTextures[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds");
 	terrainTextures[1] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds");
 	terrainTextures[2] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds");
-	terrain = new Terrain(10, 10, 3.0f, -1.0f, terrainTextures, 3, (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
+	terrain = new Terrain(100, 100, 0.5f, -1.0f, terrainTextures, 3, (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
 	terrain->Initialize();
 }
 

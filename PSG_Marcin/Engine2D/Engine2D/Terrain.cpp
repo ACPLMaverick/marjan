@@ -37,7 +37,15 @@ bool Terrain::Initialize()
 		{
 			float xPos = ((float)i - (float)(width / 2))*tileSize*2;
 			float yPos = ((float)j - (float)(height / 2))*tileSize*2;
-			Texture* texture = myTextures[rand() % textureCount];
+			Texture* texture;
+			if ((i == 0) || (i == width - 1) || (j == 0) || (j == height - 1))
+			{
+				texture = myTextures[textureCount - 1];
+			}
+			else
+			{
+				texture = myTextures[rand() % (textureCount - 1)];
+			}
 
 			GameObject* tile = new GameObject(
 				"tile",
@@ -69,4 +77,18 @@ void Terrain::Shutdown()
 vector<GameObject*> Terrain::GetTiles()
 {
 	return myTiles;
+}
+
+unsigned int Terrain::GetWidth()
+{
+	return width;
+}
+unsigned int Terrain::GetHeight()
+{
+	return height;
+}
+
+float Terrain::GetSize()
+{
+	return tileSize;
 }
