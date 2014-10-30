@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="col_font_main">#111</color>
+    <color name="col_bg_main">#E8D349</color>
+    <color name="col_button_main">#EE9828</color>
+    
+</resources>

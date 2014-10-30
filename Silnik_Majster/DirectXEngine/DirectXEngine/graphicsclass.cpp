@@ -51,7 +51,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the bitmap object
-	result = m_Bitmaps.at(0)->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"../DirectXEngine/Data/Grass0129_9_S.dds", 256, 256);
+	result = m_Bitmaps.at(0)->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, textures.at(0), 256, 256);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the bitmap object", L"Error", MB_OK);
@@ -80,6 +80,7 @@ bool GraphicsClass::InitializeTerrain(int screenWidth, int screenHeight, HWND hw
 {
 	bool result;
 	int tilesCount = 12;
+	int j = 0;
 	for (int i = 0; i < tilesCount; i++)
 	{
 		m_Terrain.push_back(new BitmapClass);
@@ -88,7 +89,9 @@ bool GraphicsClass::InitializeTerrain(int screenWidth, int screenHeight, HWND hw
 			return false;
 		}
 
-		result = m_Terrain.at(i)->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"../DirectXEngine/Data/FloorsCheckerboard0017_9_S.dds", bitmapWidth, bitmapHeight);
+		j = (rand() % 3) + 1;
+
+		result = m_Terrain.at(i)->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, textures.at(j), bitmapWidth, bitmapHeight);
 		if (!result)
 		{
 			return false;
@@ -262,12 +265,18 @@ void GraphicsClass::LoadTextures()	//Dodaæ wczytywanie z xmla
 {
 	textures.push_back(L"../DirectXEngine/Data/Fruit0001_1_S.dds");
 	textures.push_back(L"../DirectXEngine/Data/Grass0129_9_S.dds");
+	textures.push_back(L"../DirectXEngine/Data/FloorsCheckerboard0017_9_S.dds");
+	textures.push_back(L"../DirectXEngine/Data/RocksArid0048_11_S.dds");
+	textures.push_back(L"../DirectXEngine/Data/Fruit0001_1_S_revert.dds");
 
 	return;
 }
 
 void GraphicsClass::DeleteTextures()
 {
+	textures.pop_back();
+	textures.pop_back();
+	textures.pop_back();
 	textures.pop_back();
 	textures.pop_back();
 
