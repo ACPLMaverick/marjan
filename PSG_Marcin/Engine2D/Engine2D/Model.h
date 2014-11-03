@@ -57,8 +57,8 @@ public:
 	Model(const Model&);
 	~Model();
 
-	bool Initialize(ID3D11Device*, Texture* texture);
-	void Shutdown();
+	virtual bool Initialize(ID3D11Device*, Texture* texture);
+	virtual void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();

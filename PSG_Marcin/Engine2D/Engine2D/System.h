@@ -77,3 +77,8 @@ static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 // GLOBALS
 static System* ApplicationHandle = 0;
+
+/*
+zamiast modyfikacji vertexów w buforze modyfikowaæ macierz
+sortowanie obiektów ¿eby nie prze³¹czaæ tekstury
+*/

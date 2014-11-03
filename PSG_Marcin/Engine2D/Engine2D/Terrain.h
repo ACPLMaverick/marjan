@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <random>
+#include <boost\property_tree\ptree.hpp>
+#include <boost\property_tree\xml_parser.hpp>
 #include "Texture.h"
 #include "GameObject.h"
 #include "Direct3D.h"
@@ -13,6 +15,7 @@ class Terrain
 private:
 	unsigned int width;
 	unsigned int height;
+	unsigned int borderWidth;
 	float tileSize;
 	float zPos;
 	unsigned int textureCount;
@@ -21,9 +24,13 @@ private:
 
 	vector<Texture*> myTextures;
 	vector<GameObject*> myTiles;
+
+	void loadFromXML(string path);
 public:
 	Terrain();
-	Terrain(unsigned int width, unsigned int height, float tileSize, float zPos, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D);
+	Terrain(unsigned int width, unsigned int height, unsigned int borderWidth, float tileSize, 
+		float zPos, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D);
+	Terrain(string filePath, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D);
 	Terrain(const Terrain&);
 	~Terrain();
 

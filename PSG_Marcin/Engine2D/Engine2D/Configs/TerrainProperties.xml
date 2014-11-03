@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TerrainProperties>
+  <Width>
+    20
+  </Width>
+  <Height>
+    20
+  </Height>
+  <BorderWidth>
+    2
+  </BorderWidth>
+  <TileSize>
+    2.0f
+  </TileSize>
+  <ZPos>
+    -1.0f
+  </ZPos>
+</TerrainProperties>
