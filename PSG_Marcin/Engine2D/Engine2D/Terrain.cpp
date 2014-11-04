@@ -9,10 +9,12 @@ Terrain::Terrain(const Terrain& other)
 {
 }
 
-Terrain::Terrain(unsigned int width, unsigned int height, float tileSize, float zPos, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D)
+Terrain::Terrain(unsigned int width, unsigned int height, unsigned int borderWidth, float tileSize, float zPos, 
+	Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D)
 {
 	this->width = width;
 	this->height = height;
+	this->borderWidth = borderWidth;
 	this->tileSize = tileSize;
 	this->zPos = zPos;
 	this->textureCount = textureCount;
@@ -20,6 +22,17 @@ Terrain::Terrain(unsigned int width, unsigned int height, float tileSize, float 
 	this->myD3D = myD3D;
 
 	for (int i = 0; i < textureCount; i++) myTextures.push_back(textures[i]);
+}
+
+Terrain::Terrain(string filePath, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D)
+{
+	this->textureCount = textureCount;
+	this->terrainShader = terrainShader;
+	this->myD3D = myD3D;
+
+	for (int i = 0; i < textureCount; i++) myTextures.push_back(textures[i]);
+
+	loadFromXML(filePath);
 }
 
 
@@ -31,14 +44,15 @@ bool Terrain::Initialize()
 {
 	srand(0);
 
-	for (int i = 0; i < width; i++)
+	for (unsigned int i = 0; i < width; i++)
 	{
-		for (int j = 0; j < height; j++)
+		for (unsigned int j = 0; j < height; j++)
 		{
 			float xPos = ((float)i - (float)(width / 2))*tileSize*2;
 			float yPos = ((float)j - (float)(height / 2))*tileSize*2;
 			Texture* texture;
-			if ((i == 0) || (i == width - 1) || (j == 0) || (j == height - 1))
+			if ((i >= 0 && i < borderWidth) || (i > (width - 1 - borderWidth)) || 
+				(j >= 0 && j < borderWidth) || (j > (height - 1 - borderWidth)))
 			{
 				texture = myTextures[textureCount - 1];
 			}
@@ -91,4 +105,31 @@ unsigned int Terrain::GetHeight()
 float Terrain::GetSize()
 {
 	return tileSize;
+}
+
+void Terrain::loadFromXML(string path)
+{
+	using boost::property_tree::ptree;
+	using boost::property_tree::read_xml;
+
+	string strWidth;
+	string strHeight;
+	string strBorderWidth;
+	string strTileSize;
+	string strZPos;
+
+	ptree pt;
+	read_xml(path, pt);
+
+	strWidth = pt.get<string>("TerrainProperties.Width");
+	strHeight = pt.get<string>("TerrainProperties.Height");
+	strBorderWidth = pt.get<string>("TerrainProperties.BorderWidth");
+	strTileSize = pt.get<string>("TerrainProperties.TileSize");
+	strZPos = pt.get<string>("TerrainProperties.ZPos");
+
+	this->width = stoi(strWidth);
+	this->height = stoi(strHeight);
+	this->borderWidth = stoi(strBorderWidth);
+	this->tileSize = stof(strTileSize);
+	this->zPos = stof(strZPos);
 }

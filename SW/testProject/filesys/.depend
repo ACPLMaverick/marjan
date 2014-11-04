@@ -1,0 +1,38 @@
+dir.o: dir.c dir.h ../startup/config.h error.h ../mmc/interface.h \
+  ../mmc/types.h ../startup/config.h fat.h file.h time.h fs.h partition.h \
+  ../mmc/hwinterface.h ../mmc/debug.h disc.h ioman.h libc.h extract.h \
+  ../mmc/types.h
+disc.o: disc.c disc.h ../startup/config.h error.h ../mmc/interface.h \
+  ../mmc/types.h ../startup/config.h ../mmc/hwinterface.h ../mmc/debug.h \
+  ioman.h libc.h
+efs.o: efs.c efs.h ../startup/config.h ../mmc/interface.h ../mmc/types.h \
+  ../startup/config.h disc.h error.h ../mmc/hwinterface.h ../mmc/debug.h \
+  ioman.h libc.h partition.h extract.h ../mmc/types.h fs.h time.h file.h \
+  dir.h fat.h ui.h fs.h ../mmc/types.h fat.h dir.h ../startup/config.h
+extract.o: extract.c extract.h ../startup/config.h disc.h error.h \
+  ../mmc/interface.h ../mmc/types.h ../startup/config.h \
+  ../mmc/hwinterface.h ../mmc/debug.h ioman.h libc.h ../mmc/types.h
+fat.o: fat.c fs.h ../startup/config.h error.h ../mmc/interface.h \
+  ../mmc/types.h ../startup/config.h partition.h ../mmc/hwinterface.h \
+  ../mmc/debug.h disc.h ioman.h libc.h extract.h ../mmc/types.h time.h
+file.o: file.c file.h ../startup/config.h error.h ../mmc/interface.h \
+  ../mmc/types.h ../startup/config.h time.h fs.h partition.h \
+  ../mmc/hwinterface.h ../mmc/debug.h disc.h ioman.h libc.h extract.h \
+  ../mmc/types.h dir.h fat.h
+fs.o: fs.c fs.h ../startup/config.h error.h ../mmc/interface.h \
+  ../mmc/types.h ../startup/config.h partition.h ../mmc/hwinterface.h \
+  ../mmc/debug.h disc.h ioman.h libc.h extract.h ../mmc/types.h time.h \
+  fat.h file.h dir.h
+ioman.o: ioman.c ioman.h ../mmc/interface.h ../mmc/types.h \
+  ../startup/config.h error.h ../startup/config.h ../mmc/hwinterface.h \
+  ../mmc/debug.h libc.h
+libc.o: libc.c libc.h ../startup/config.h
+ls.o: ls.c ls.h ../startup/config.h fs.h error.h ../mmc/interface.h \
+  ../mmc/types.h ../startup/config.h partition.h ../mmc/hwinterface.h \
+  ../mmc/debug.h disc.h ioman.h libc.h extract.h ../mmc/types.h time.h \
+  dir.h fat.h file.h
+partition.o: partition.c partition.h ../startup/config.h error.h \
+  ../mmc/interface.h ../mmc/types.h ../startup/config.h \
+  ../mmc/hwinterface.h ../mmc/debug.h disc.h ioman.h libc.h extract.h \
+  ../mmc/types.h
+time.o: time.c time.h

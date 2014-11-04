@@ -171,7 +171,6 @@ bool System::Frame()
 	{
 		goTab[i] = gameObjects.at(j);
 	}
-	GameObject* dupa = goTab[10];
 	result = myGraphics->Frame(goTab, gameObjects.size() + terVec.size());
 	if (!result) return false;
 
@@ -348,7 +347,7 @@ void System::InitializeTerrain()
 	terrainTextures[0] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/metal01_d.dds");
 	terrainTextures[1] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/moss_01_d.dds");
 	terrainTextures[2] = (myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/test.dds");
-	terrain = new Terrain(100, 100, 0.5f, -1.0f, terrainTextures, 3, (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
+	terrain = new Terrain("Configs/TerrainProperties.xml", terrainTextures, 3, (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
 	terrain->Initialize();
 }
 
