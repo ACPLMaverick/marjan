@@ -17,4 +17,13 @@ public class TrackActivity extends Activity {
 		
 		controller = new TrackingController(this);
 	}
+	
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		controller.initialize();
+	}
+	
+	public void startTracking() { controller.startTracking(); }
 }

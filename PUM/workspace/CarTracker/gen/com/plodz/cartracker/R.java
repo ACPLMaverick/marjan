@@ -2315,6 +2315,9 @@ containing a value of this type.
         public static final int hello_world=0x7f060033;
         public static final int store_picture_message=0x7f060001;
         public static final int store_picture_title=0x7f060000;
+        public static final int str_button_beginTrack=0x7f060036;
+        public static final int str_button_endTrack=0x7f060038;
+        public static final int str_button_pauseTrack=0x7f060037;
         public static final int str_button_start=0x7f060034;
         public static final int title_activity_track=0x7f060035;
         /**  Text on a placeholder buy button when Google Play services is not

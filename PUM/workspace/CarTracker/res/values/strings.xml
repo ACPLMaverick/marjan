@@ -5,5 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="str_button_start">Start tracking!</string>
     <string name="title_activity_track">TrackActivity</string>
+    <string name="str_button_beginTrack">Begin</string>
+    <string name="str_button_pauseTrack">Pause</string>
+    <string name="str_button_endTrack">End</string>
 
 </resources>
