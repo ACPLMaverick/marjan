@@ -306,3 +306,5 @@ Silnik_Majster/DirectXEngine/DirectXEngine.sdf
 Tuning/Tetris/Library/metadata/4b/4bdff28d2049a4e41823ae84b1874835
 Tuning/Tetris/obj/Debug/Assembly-CSharp-vs.csproj.FileListAbsolute.txt
 PUM/workspace/.metadata/
+PUM/google-play-services_lib/
+PUM/workspace/appcompat_v7/
