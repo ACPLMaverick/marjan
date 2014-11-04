@@ -14,6 +14,9 @@
 #include <consol.h>
 #include "mp3shared.h"
 
+#define JOYSTICK_RIGHT 18
+#define JOYSTICK_GND 16
+
 SongInfo currentSongInfo;
 unsigned char mmcInitialized;
 unsigned char changeLeft;
@@ -30,7 +33,7 @@ unsigned char id3TagSize = 128;
 				unsigned char myName[13];
 				unsigned char myAuthor[13];
 				unsigned long titleOffset = 3;
-				unsigned long authorOffset = 34;
+				unsigned long authorOffset = 33;
 //////////////////////////////
 
 EmbeddedFileSystem  efs;
@@ -175,40 +178,6 @@ void getFileNames(void)
 
 }
 
-unsigned long getTitleOffset()
-{
-	int loop = 1;
-	unsigned long counter = 0;
-	unsigned char buffer[1];
-	unsigned long fs = file.FileSize;
-
-	while(loop && counter < fs)
-	{
-		file_fread(&file,counter, 1,buffer);
-		if(buffer[0] == 'T')
-		{
-			counter++;
-			file_fread(&file,counter, 1,buffer);
-			if(buffer[0] == 'I')
-			{
-				counter++;
-				file_fread(&file,counter, 1,buffer);
-				if(buffer[0] == 'T')
-				{
-					counter++;
-					file_fread(&file,counter, 1,buffer);
-					if(buffer[0] == '2')
-					{
-						counter++;
-						return counter;
-					}
-				}
-			}
-		}
-		counter++;
-	}
-}
-
 void testMMC(char* name)
 {
 	unsigned char* error03 = "ERR:file";
@@ -219,21 +188,17 @@ void testMMC(char* name)
 				int i;
 				for(i = 0; i < readSize; i++)
 				{
-					myName[i] = 'X';
-					myAuthor[i] = 'X';
+					myName[i] = '\0';
+					myAuthor[i] = '\0';
 				}
 				myName[12] = '\0';
 				myAuthor[12] = '\0';
-				currentSongInfo.name = myName;
-
 				fileSize = file.FileSize;
-				titleOffset = getTitleOffset() + 7;
-				file_fread(&file,/*(fileSize - id3TagSize) + */titleOffset, readSize,myName);
-				//file_fread(&file,/*(fileSize - id3TagSize) + */ authorOffset, readSize, myAuthor);
-
+				file_fread(&file,(fileSize - id3TagSize) + titleOffset, readSize,myName);
+				file_fread(&file,(fileSize - id3TagSize) +  authorOffset, readSize, myAuthor);
 
 				currentSongInfo.name = myName;
-				//currentSongInfo.author = myAuthor;
+				currentSongInfo.author = myAuthor;
 				file_fclose(&file);
 			}
 			else
@@ -262,14 +227,19 @@ void MMCproc(void)
 	}
 	getFileNames();
 	testMMC(&files[currentSongInfo.ID][0]);
+
+	IODIR0 &= ~(1<<JOYSTICK_RIGHT);
+	IOCLR0 |= (1<<JOYSTICK_RIGHT);
+	currentSongInfo.name = "test1";
 	while(1)
 	{
 		if(changeLeft == 1)
 		{
 			changeLeft = 0;
 		}
-		if(changeRight == 1)
+		if(/*(IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0*/1)
 		{
+			currentSongInfo.name = "test2";
 			changeRight = 0;
 		}
 		if(rewindForward == 1)
