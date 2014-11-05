@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -18,7 +19,10 @@ public class TrackingController {
 	ArrayList<LatLng> routePoints;
 	double lastLat;
 	double lastLon;
-	double distCheckRes = 0.0001;
+	double distCheckRes = 0.00005;
+	Thread checkThread;
+	
+	TextView dbgTxt1;
 	
 	public TrackingController(TrackActivity activity)
 	{
@@ -30,6 +34,7 @@ public class TrackingController {
 		mc = new MapController(activity);
 		mc.centerOnUser();
 		routePoints = new ArrayList<LatLng>();
+		dbgTxt1 = (TextView) activity.findViewById(R.id.dbgTxt1);
 	}
 	
 	public void startTracking()
@@ -38,7 +43,7 @@ public class TrackingController {
 		mc.initializePolyline();
 		lastLat = mc.getMyLocation().getLatitude();
 		lastLon = mc.getMyLocation().getLongitude();
-		Thread thread = new Thread(new Runnable()
+		checkThread = new Thread(new Runnable()
 		{
 
 			@Override
@@ -52,6 +57,15 @@ public class TrackingController {
 						e.printStackTrace();
 						break;
 					}
+					
+					activity.runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							dbgTxt1.setText("NODE COUNT: " + String.valueOf(routePoints.size()));
+						}
+					});
 					
 					if(Math.abs(lastLat - mc.getMyLocation().getLatitude()) > distCheckRes ||
 							Math.abs(lastLon - mc.getMyLocation().getLongitude()) > distCheckRes)
@@ -77,6 +91,11 @@ public class TrackingController {
 			}
 			
 		});
-		thread.start();
+		checkThread.start();
+	}
+	
+	public void endTracking()
+	{
+		
 	}
 }

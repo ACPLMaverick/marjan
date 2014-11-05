@@ -26,4 +26,6 @@ public class TrackActivity extends Activity {
 	}
 	
 	public void startTracking() { controller.startTracking(); }
+	
+	public void endTrackingButtonClick() { controller.endTracking(); }
 }

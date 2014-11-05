@@ -2030,6 +2030,7 @@ containing a value of this type.
         public static final int beginning=0x7f080023;
         public static final int book_now=0x7f080010;
         public static final int bottom=0x7f080027;
+        public static final int buttonEndTrack=0x7f08005b;
         public static final int button_start=0x7f080053;
         public static final int buyButton=0x7f08000a;
         public static final int buy_now=0x7f08000f;
@@ -2037,6 +2038,7 @@ containing a value of this type.
         public static final int checkbox=0x7f08003c;
         public static final int classic=0x7f080011;
         public static final int collapseActionView=0x7f080020;
+        public static final int dbgTxt1=0x7f08005a;
         public static final int decor_content_parent=0x7f080042;
         public static final int default_activity_button=0x7f080037;
         public static final int dialog=0x7f080021;
@@ -2090,6 +2092,10 @@ containing a value of this type.
         public static final int strict_sandbox=0x7f080009;
         public static final int submit_area=0x7f08004f;
         public static final int tabMode=0x7f080015;
+        public static final int tableRow1=0x7f080056;
+        public static final int tableRow2=0x7f080057;
+        public static final int tableRow3=0x7f080058;
+        public static final int tableRow4=0x7f080059;
         public static final int terrain=0x7f080003;
         public static final int textView1=0x7f080052;
         public static final int title=0x7f08003a;
