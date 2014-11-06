@@ -3,50 +3,155 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <TableLayout
+	
+    <LinearLayout 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+    	android:layout_height="wrap_content"
+    	android:baselineAligned="false"
+    	android:orientation="horizontal" >
+    	
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_weight="5" >
 
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
+            <TextView
+        		android:id="@+id/statConsumedFuelTxt"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        style="@style/StatisticStyle"
+		        android:text="@string/str_stat_consumed" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
+            
+            <TextView
+                        android:id="@+id/statCostTxt"
+                        style="@style/StatisticStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="@string/str_stat_cost" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
+      
+            <TextView
+        		android:id="@+id/statDistanceTxt"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        style="@style/StatisticStyle"
+		        android:text="@string/str_stat_distance" />
         </TableRow>
-
+        
         <TableRow
-            android:id="@+id/tableRow4"
+            android:id="@+id/tableRowdbg1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
+      
+            <TextView
+		        android:id="@+id/dbgTxt1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:text="dbg"
+		        android:layout_weight="6"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
-    </TableLayout>
+     </TableLayout>
+     
+    <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="5" >
 
-    <TextView
-        android:id="@+id/dbgTxt1"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:text=""
-        android:layout_weight="6"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+                <TableRow
+                    android:id="@+id/tableRow4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+            <TextView
+        		android:id="@+id/statSpeedAvgTxt"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        style="@style/StatisticStyle"
+		        android:text="@string/str_stat_speedAvg" />
+					
+                </TableRow>
 
-    <Button
-        android:id="@+id/buttonEndTrack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:onClick="endTrackingButtonClick"
-        android:text="@string/str_button_endTrack" />
+                <TableRow
+                    android:id="@+id/tableRow5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+            	<TextView
+                        android:id="@+id/statSpeedCurrentTxt"
+                        style="@style/StatisticStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="@string/str_stat_speedCurr" />
+
+                    
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+				<TextView
+                        android:id="@+id/statTimeStartedTxt"
+                        style="@style/StatisticStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="@string/str_stat_timeStart" />
+                    
+                </TableRow>
+                
+                <TableRow
+                    android:id="@+id/tableRow7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/statTimeCurrentTxt"
+                        style="@style/StatisticStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="@string/str_stat_timeCurr" />
+                </TableRow>
+            </TableLayout>
+	</LinearLayout>
+
+    <LinearLayout
+			android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:baselineAligned="false"
+	    	android:orientation="horizontal" >
+        <Button
+	        android:id="@+id/buttonEndTrack"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        style="@style/MainButtonStyle"
+	        android:onClick="endTrackingButtonClick"
+	        android:text="@string/str_button_endTrack" />
+         <Button
+	        android:id="@+id/buttonPauseTrack"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        style="@style/MainButtonStyle"
+	        android:onClick="pauseTrackingButtonClick"
+	        android:text="@string/str_button_pauseTrack" />
+    </LinearLayout>
+   
 
 </LinearLayout>
