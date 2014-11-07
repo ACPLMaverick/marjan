@@ -167,13 +167,13 @@ bool FontShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFile
 
 	// setup the constant buffer in the transparency pixel shader
 	transparentBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	transparentBufferDesc.ByteWidth = sizeof(TransparentBuffer);
+	transparentBufferDesc.ByteWidth = sizeof(PixelBuffer);
 	transparentBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	transparentBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	transparentBufferDesc.MiscFlags = 0;
 	transparentBufferDesc.StructureByteStride = 0;
 
-	result = device->CreateBuffer(&transparentBufferDesc, NULL, &m_transparentBuffer);
+	result = device->CreateBuffer(&transparentBufferDesc, NULL, &m_pixelBuffer);
 	if (FAILED(result)) return false;
 
 	return true;
@@ -207,10 +207,10 @@ void FontShader::ShutdownShader()
 		m_sampleState->Release();
 		m_sampleState = nullptr;
 	}
-	if (m_transparentBuffer)
+	if (m_pixelBuffer)
 	{
-		m_transparentBuffer->Release();
-		m_transparentBuffer = nullptr;
+		m_pixelBuffer->Release();
+		m_pixelBuffer = nullptr;
 	}
 }
 
@@ -244,7 +244,7 @@ bool FontShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMAT
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBuffer* dataPtr;
 	unsigned int bufferNumber;
-	TransparentBuffer* dataPtr02;
+	PixelBuffer* dataPtr02;
 
 	// TRANSPOSING MATRICES!!!!!! REQUIREMENT IN DX11
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
@@ -274,15 +274,15 @@ bool FontShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMAT
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
 	// setting the blendAmount value inside pixel shader before rendering same as above
-	result = deviceContext->Map(m_transparentBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(m_pixelBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result)) return false;
 
-	dataPtr02 = (TransparentBuffer*)mappedResource.pData;
-	dataPtr02->blendAmount = blend;
-	deviceContext->Unmap(m_transparentBuffer, 0);
+	dataPtr02 = (PixelBuffer*)mappedResource.pData;
+	dataPtr02->pixelColor = pixelColor;
+	deviceContext->Unmap(m_pixelBuffer, 0);
 
 	bufferNumber = 0;
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_transparentBuffer);
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_pixelBuffer);
 
 	return true;
 }

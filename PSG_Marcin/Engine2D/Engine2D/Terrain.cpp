@@ -135,8 +135,8 @@ void Terrain::loadFromXML(string path, TextureManager* textureManager, Direct3D*
 
 	for (int i = 0; i < tileCount; i++)
 	{
-		tilePaths.push_back(pathPrefix + children.get<string>("TilePath"));
 		children.pop_front();
+		tilePaths.push_back(pathPrefix + children.get<string>("TilePath"));
 	}
 
 	this->width = stoi(strWidth);
