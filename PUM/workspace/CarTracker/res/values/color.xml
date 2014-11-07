@@ -3,5 +3,7 @@
     <color name="col_font_main">#111</color>
     <color name="col_bg_main">#E8D349</color>
     <color name="col_button_main">#EE9828</color>
+    <color name="col_bg_settings">#FFF271</color>
+    <color name="col_bg_textInput">#FFF9B7</color>
     
 </resources>

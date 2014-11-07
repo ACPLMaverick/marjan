@@ -4,9 +4,42 @@
     <string name="app_name">CarTracker</string>
     <string name="hello_world">Hello world!</string>
     <string name="str_button_start">Start tracking!</string>
+    <string name="str_button_startBack">Back to tracking</string>
+    <string name="str_button_log">Trip log</string>
+    <string name="str_button_chart">Draw chart</string>
+    
     <string name="title_activity_track">TrackActivity</string>
-    <string name="str_button_beginTrack">Begin</string>
+    <string name="str_button_resumeTrack">Resume</string>
     <string name="str_button_pauseTrack">Pause</string>
     <string name="str_button_endTrack">End</string>
+    
+    <string name="str_stat_consumed">FCON:&#160;</string>
+    <string name="str_stat_cost">COST:&#160;</string>
+    <string name="str_stat_distance">DIST:&#160;</string>
+    <string name="str_stat_speedAvg">SPDA:&#160;</string>
+    <string name="str_stat_speedCurr">SPDC:&#160;</string>
+    <string name="str_stat_timeStart">TIMS:&#160;</string>
+    <string name="str_stat_timeCurr">TIMC:&#160;</string>
+    <string name="str_stat_timeEnd">TIMF:&#160;</string>
+    <string name="str_stat_consumedVal">&#160;l</string>
+    <string name="str_stat_costVal">&#160;zl</string>
+    <string name="str_stat_distanceVal">&#160;km</string>
+    <string name="str_stat_speedAvgVal">&#160;km\\h</string>
+    <string name="str_stat_speedCurrVal">&#160;km\\h</string>
+    <string name="str_stat_timeStartVal"></string>
+    <string name="str_stat_timeCurrVal"></string>
+    <string name="str_stat_timeEndVal"></string>
+    <string name="str_stat_empty">---</string>
+    
+    <string name="str_set_title">Settings</string>
+    <string name="str_set_fuelConsumption">Fuel consumption:&#160;</string>
+    <string name="str_set_fuelConsumptionVal">&#160;l//100 km</string>
+    <string name="str_set_fuelType">Engine type:&#160;</string>
+    <string name="str_set_fuelTypeGasoline">Petrol</string>
+    <string name="str_set_fuelTypeDiesel">Diesel</string>
+    <string name="str_set_fuelTypePB95">PB 95</string>
+    <string name="str_set_fuelTypePB98">PB 98</string>
+    <string name="str_set_fuelTypeON">Diesel</string>
+    <string name="str_set_fuelTypeONUltimate">Diesel Ultimate</string>
 
 </resources>
