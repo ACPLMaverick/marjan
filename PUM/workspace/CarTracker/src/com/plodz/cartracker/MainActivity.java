@@ -34,4 +34,14 @@ public class MainActivity extends Activity {
     	Intent intent = new Intent(this, TrackActivity.class);
     	startActivity(intent);
     }
+    
+    public void onLogButtonClick(View v)
+    {
+    	//TODO: implement
+    }
+    
+    public void onChartButtonClick(View v)
+    {
+    	//TODO: implement
+    }
 }

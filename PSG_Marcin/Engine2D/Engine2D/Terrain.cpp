@@ -24,15 +24,15 @@ Terrain::Terrain(unsigned int width, unsigned int height, unsigned int borderWid
 	for (int i = 0; i < textureCount; i++) myTextures.push_back(textures[i]);
 }
 
-Terrain::Terrain(string filePath, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D)
+Terrain::Terrain(string filePath, TextureManager* textureManager, TextureShader* terrainShader, Direct3D* myD3D)
 {
 	this->textureCount = textureCount;
 	this->terrainShader = terrainShader;
 	this->myD3D = myD3D;
 
-	for (int i = 0; i < textureCount; i++) myTextures.push_back(textures[i]);
+	//for (int i = 0; i < textureCount; i++) myTextures.push_back(textures[i]);
 
-	loadFromXML(filePath);
+	loadFromXML(filePath, textureManager, myD3D);
 }
 
 
@@ -107,7 +107,7 @@ float Terrain::GetSize()
 	return tileSize;
 }
 
-void Terrain::loadFromXML(string path)
+void Terrain::loadFromXML(string path, TextureManager* textureManager, Direct3D* myD3D)
 {
 	using boost::property_tree::ptree;
 	using boost::property_tree::read_xml;
@@ -117,6 +117,8 @@ void Terrain::loadFromXML(string path)
 	string strBorderWidth;
 	string strTileSize;
 	string strZPos;
+	vector<string> tilePaths;
+	string pathPrefix = "./Assets/Textures/";
 
 	ptree pt;
 	read_xml(path, pt);
@@ -127,9 +129,24 @@ void Terrain::loadFromXML(string path)
 	strTileSize = pt.get<string>("TerrainProperties.TileSize");
 	strZPos = pt.get<string>("TerrainProperties.ZPos");
 
+	ptree children = pt.get_child("TerrainProperties.TerrainTiles");
+	int tileCount = children.count("TilePath");
+	this->textureCount = tileCount;
+
+	for (int i = 0; i < tileCount; i++)
+	{
+		children.pop_front();
+		tilePaths.push_back(pathPrefix + children.get<string>("TilePath"));
+	}
+
 	this->width = stoi(strWidth);
 	this->height = stoi(strHeight);
 	this->borderWidth = stoi(strBorderWidth);
 	this->tileSize = stof(strTileSize);
 	this->zPos = stof(strZPos);
+
+	for (vector<string>::iterator it = tilePaths.begin(); it != tilePaths.end(); ++it)
+	{
+		myTextures.push_back(textureManager->LoadTexture(myD3D->GetDevice(), (*it).c_str()));
+	}
 }

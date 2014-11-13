@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "GameObject.h"
 #include "Direct3D.h"
+#include "TextureManager.h"
 
 class GameObject;
 
@@ -25,12 +26,12 @@ private:
 	vector<Texture*> myTextures;
 	vector<GameObject*> myTiles;
 
-	void loadFromXML(string path);
+	void loadFromXML(string path, TextureManager* textureManager, Direct3D* myD3D);
 public:
 	Terrain();
 	Terrain(unsigned int width, unsigned int height, unsigned int borderWidth, float tileSize, 
 		float zPos, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D);
-	Terrain(string filePath, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D);
+	Terrain(string filePath, TextureManager* textureManager, TextureShader* terrainShader, Direct3D* myD3D);
 	Terrain(const Terrain&);
 	~Terrain();
 
