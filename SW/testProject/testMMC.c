@@ -14,7 +14,10 @@
 #include <consol.h>
 #include "mp3shared.h"
 
+#define JOYSTICK_UP 17
 #define JOYSTICK_RIGHT 18
+#define JOYSTICK_LEFT 19
+#define JOYSTICK_DOWN 20
 #define JOYSTICK_GND 16
 
 SongInfo currentSongInfo;
@@ -227,21 +230,32 @@ void MMCproc(void)
 	}
 	getFileNames();
 	testMMC(&files[currentSongInfo.ID][0]);
-
+/*
 	IODIR0 &= ~(1<<JOYSTICK_RIGHT);
-	IOCLR0 |= (1<<JOYSTICK_RIGHT);
-	currentSongInfo.name = "test1";
+	IOCLR0 |= (1<<JOYSTICK_RIGHT);*/
 	while(1)
 	{
 		if(changeLeft == 1)
 		{
 			changeLeft = 0;
 		}
-		if(/*(IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0*/1)
+		if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
 		{
-			currentSongInfo.name = "test2";
-			changeRight = 0;
+			 //kurwa modulo
+			 file_fclose(&file);
+			 currentSongInfo.ID = (currentSongInfo.ID++ % 3);
+			 testMMC(&files[currentSongInfo.ID][0]);
+			 changeRight=1;
 		}
+
+		if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
+				{
+					 //modulo
+					 file_fclose(&file);
+					 currentSongInfo.ID = (currentSongInfo.ID-- % 3);
+					 testMMC(&files[currentSongInfo.ID][0]);
+					 changeLeft=1;
+				}
 		if(rewindForward == 1)
 		{
 			rewindForward = 0;
@@ -250,5 +264,7 @@ void MMCproc(void)
 		{
 			rewindBackward = 0;
 		}
+
+		 osSleep(50);
 	}
 }
