@@ -32,9 +32,9 @@ char* error;
 /////////////////////////////
 unsigned char id3TagSize = 128;
 				unsigned long fileSize;
-				unsigned char readSize = 12;
-				unsigned char myName[13];
-				unsigned char myAuthor[13];
+				unsigned char readSize = 30;
+				unsigned char myName[30];
+				unsigned char myAuthor[30];
 				unsigned long titleOffset = 3;
 				unsigned long authorOffset = 33;
 //////////////////////////////
@@ -194,8 +194,8 @@ void testMMC(char* name)
 					myName[i] = '\0';
 					myAuthor[i] = '\0';
 				}
-				myName[12] = '\0';
-				myAuthor[12] = '\0';
+				myName[readSize - 1] = '\0';
+				myAuthor[readSize - 1] = '\0';
 				fileSize = file.FileSize;
 				file_fread(&file,(fileSize - id3TagSize) + titleOffset, readSize,myName);
 				file_fread(&file,(fileSize - id3TagSize) +  authorOffset, readSize, myAuthor);
@@ -241,21 +241,20 @@ void MMCproc(void)
 		}
 		if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
 		{
-			 //kurwa modulo
 			 file_fclose(&file);
-			 currentSongInfo.ID = (currentSongInfo.ID++ % 3);
+			 currentSongInfo.ID = ((currentSongInfo.ID + 1) % 3);
 			 testMMC(&files[currentSongInfo.ID][0]);
 			 changeRight=1;
 		}
 
 		if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
-				{
-					 //modulo
-					 file_fclose(&file);
-					 currentSongInfo.ID = (currentSongInfo.ID-- % 3);
-					 testMMC(&files[currentSongInfo.ID][0]);
-					 changeLeft=1;
-				}
+		{
+			file_fclose(&file);
+			currentSongInfo.ID = ((currentSongInfo.ID - 1) % 3);
+			if(currentSongInfo.ID < 0) currentSongInfo.ID = -currentSongInfo.ID;
+			testMMC(&files[currentSongInfo.ID][0]);
+			changeLeft=1;
+		}
 		if(rewindForward == 1)
 		{
 			rewindForward = 0;

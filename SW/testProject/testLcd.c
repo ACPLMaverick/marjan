@@ -19,6 +19,17 @@
 #define LCD_RS        0x01000000  //P1.24
 #define LCD_BACKLIGHT 0x40000000  //P0.30
 
+#define LCD_FC_8BIT_1LINE_5x7 0x30
+#define LCD_FC_8BIT_2LINE_5x7 0x38
+#define LCD_CURSOR_OFF_NOCLEAR 0x08
+#define LCD_DISPLAY_CLEAR 0x01
+#define LCD_ENTRY_MODE 0x06
+#define LCD_CURSOR_OFF 0x0c
+#define LCD_CURSOR_HOME 0x02
+#define LCD_DISPLAY_OFF 0x80
+#define LCD_CURSOR_2ROW 0xC0
+#define LCD_SHIFT_LEFT 0x18
+
 /////////////////////////////
 extern SongInfo currentSongInfo;
 extern unsigned char mmcInitialized;
@@ -31,6 +42,8 @@ extern unsigned char volumeDown;
 extern unsigned int isError;
 extern char* error;
 extern unsigned char currentVolume;
+////////////////////////////
+void ScreenShiftLeft(void);
 ////////////////////////////
 
 /*****************************************************************************
@@ -133,35 +146,35 @@ testLcd(void)
     osSleep(50);
 
     //function set
-    writeLCD(0, 0x30);
+    writeLCD(0, LCD_FC_8BIT_1LINE_5x7);
     osSleep(1);
-    writeLCD(0, 0x30);
+    writeLCD(0, LCD_FC_8BIT_1LINE_5x7);
     delay37us();
-    writeLCD(0, 0x30);
+    writeLCD(0, LCD_FC_8BIT_1LINE_5x7);
     delay37us();
 
     //function set
-    writeLCD(0, 0x38);
+    writeLCD(0, LCD_FC_8BIT_2LINE_5x7);
     delay37us();
 
     //display off
-    writeLCD(0, 0x08);
+    writeLCD(0, LCD_CURSOR_OFF_NOCLEAR);
     delay37us();
 
     //display clear
-    writeLCD(0, 0x01);
+    writeLCD(0, LCD_DISPLAY_CLEAR);
     osSleep(1); //actually only 1.52 mS needed
       
     //display control set
-    writeLCD(0, 0x06);
+    writeLCD(0, LCD_ENTRY_MODE);
     osSleep(1);
 
     //display control set
-    writeLCD(0, 0x0c);
+    writeLCD(0, LCD_CURSOR_OFF);
     delay37us();
 
     //cursor home
-    writeLCD(0, 0x02);
+    writeLCD(0, LCD_CURSOR_HOME);
 osSleep(1);
 
 	if(isError == 0)
@@ -183,19 +196,23 @@ osSleep(1);
     osSleep(1); //actually only 1.52 mS needed
 
     // awaiting command from joystick
-//    for(;;)
-//    {
-//    	if(changeLeft != 0 ||
-//    		changeRight != 0 ||
-//    		volumeUp != 0 ||
-//    		volumeDown != 0 ||
-//    		rewindForward != 0 ||
-//    		rewindBackward != 0 ||
-//    		isError != 0)
-//    	{
-//    		break;
-//    	}
-//    }
+    for(;;)
+    {
+    	if(changeLeft != 0 ||
+    		changeRight != 0 ||
+    		volumeUp != 0 ||
+    		volumeDown != 0 ||
+    		rewindForward != 0 ||
+    		rewindBackward != 0 ||
+    		isError != 0)
+    	{
+    		changeLeft = 0;
+    		changeRight = 0;
+    		break;
+    	}
+    	osSleep(100);
+    	ScreenShiftLeft();
+    }
   }
 	//lcdBacklight(FALSE);
 }
@@ -208,4 +225,15 @@ void WriteString(const char* str)
 		writeLCD(1, str[i]);
 		delay37us();
 	}
+}
+
+
+void ScreenShiftLeft(void)
+{
+	writeLCD(0, LCD_FC_8BIT_2LINE_5x7);
+	delay37us();
+	writeLCD(0, LCD_SHIFT_LEFT);
+	osSleep(1);
+	writeLCD(0, LCD_ENTRY_MODE);
+	osSleep(1);
 }
