@@ -35,6 +35,7 @@ public class GameController : MonoBehaviour {
 		backgrounds.RemoveAt (0);
 		backgrounds.Insert (2, thisItem0);
 	}
+
 }
 
 //22.95219f, 0.007607499f

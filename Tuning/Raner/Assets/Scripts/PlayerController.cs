@@ -11,12 +11,16 @@ public class PlayerController : MonoBehaviour {
 	private Vector2 dashVector;
 
 	public GameObject star;
+	public GUIText scoreText;
+	private int score;
 
 	// Use this for initialization
 	void Start () {
 		speed = 25.0f;
 		dashVector = new Vector2(25000.0f, 0.0f);
 		star = GetComponent<PlayerController> ().star;
+		score = 0;
+		UpdateScore ();
 	}
 	
 	// Update is called once per frame
@@ -38,6 +42,18 @@ public class PlayerController : MonoBehaviour {
 		if(col.gameObject.tag == "Star")
 		{
 			Destroy(star);
+			AddScore(1);
 		}
+	}
+
+	public void AddScore(int newScoreValue)
+	{
+		score += newScoreValue;
+		UpdateScore ();
+	}
+	
+	void UpdateScore()
+	{
+		scoreText.text = "Score: " + score.ToString();
 	}
 }
