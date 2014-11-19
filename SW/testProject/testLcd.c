@@ -127,22 +127,14 @@ lcdBacklight(tU8 onOff)
 	  IOCLR0 = LCD_BACKLIGHT;
 }
 
-/*****************************************************************************
- *
- * Description:
- *    A process entry function 
- *
- ****************************************************************************/
-void
-testLcd(void)
+unsigned char numberToChar(unsigned char number)
 {
-  initLCD();
-	lcdBacklight(FALSE);
-  osSleep(10);
-  
-  for(;;)
-  {
- 		lcdBacklight(TRUE);
+	return number + 48;
+}
+
+void clearScr()
+{
+	lcdBacklight(TRUE);
     osSleep(50);
 
     //function set
@@ -175,9 +167,28 @@ testLcd(void)
 
     //cursor home
     writeLCD(0, LCD_CURSOR_HOME);
-osSleep(1);
+    osSleep(1);
+}
 
-	if(isError == 0)
+void
+testLcd(void)
+{
+  initLCD();
+  lcdBacklight(FALSE);
+  osSleep(10);
+  unsigned char awaitLoop = 1;
+  for(;;)
+  {
+ 	clearScr();
+
+ 	if(volumeUp != 0 || volumeDown != 0)
+ 	{
+ 		writeLCD(1, numberToChar(currentVolume));
+ 		if(volumeUp != 0) volumeUp = 0;
+ 		if(volumeDown != 0) volumeDown = 0;
+ 		awaitLoop = 0;
+ 	}
+ 	else if(isError == 0)
 	{
 		WriteString(currentSongInfo.name);
 
@@ -196,23 +207,41 @@ osSleep(1);
     osSleep(1); //actually only 1.52 mS needed
 
     // awaiting command from joystick
-    for(;;)
+    if(awaitLoop != 0)
     {
-    	if(changeLeft != 0 ||
-    		changeRight != 0 ||
-    		volumeUp != 0 ||
-    		volumeDown != 0 ||
-    		rewindForward != 0 ||
-    		rewindBackward != 0 ||
-    		isError != 0)
-    	{
-    		changeLeft = 0;
-    		changeRight = 0;
-    		break;
-    	}
-    	osSleep(100);
-    	ScreenShiftLeft();
+    	for(;;)
+    	    {
+    	    	if(changeLeft != 0)
+    	    	{
+    	    		changeLeft = 0;
+    	    		break;
+    	    	}
+    	    	if(changeRight != 0)
+    	    	{
+    	    	    changeRight = 0;
+    	    	    break;
+    	    	}
+    	    	if(volumeUp != 0)
+    	    	{
+    	    		break;
+    	    	}
+    	    	if(volumeDown != 0)
+    	    	{
+    	    		break;
+    	    	}
+    	    	if(isError != 0)
+    	    	{
+    	    		break;
+    	    	}
+
+    	    	osSleep(100);
+    	    	if(currentSongInfo.nameLength > 16 || currentSongInfo.authorLength > 16)
+    	    	{
+    	    		ScreenShiftLeft();
+    	    	}
+    	    }
     }
+    if(awaitLoop == 0) awaitLoop = 1;
   }
 	//lcdBacklight(FALSE);
 }

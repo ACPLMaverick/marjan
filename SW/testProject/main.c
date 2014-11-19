@@ -135,25 +135,6 @@ proc1(void* arg)
     //
     PINSEL1 &= ~0x000C0000;
     PINSEL1 |=  0x00080000;
-
-    cnt = 0;
-    while(cnt++ < 0xF890)
-    {
-      tS32 val;
-      
-      val = startupSound[cnt] - 128;
-      val = val * 2;
-      if (val > 127) val = 127;
-      else if (val < -127) val = -127;
-
-      DACR = ((val+128) << 8) |  //actual value to output
-             (1 << 16);         //BIAS = 1, 2.5uS settling time
-
-      //delay 125 us = 850 for 8kHz, 600 for 11 kHz
-      for(i=0; i<850; i++)
-        asm volatile (" nop");
-    }
-
   }
 
 	for(;;)
@@ -386,6 +367,8 @@ void InitializeSharedData()
 	currentSongInfo.author = "---";
 	currentSongInfo.time = 0;
 	currentSongInfo.ID = 0;
+	currentSongInfo.nameLength = 0;
+	currentSongInfo.authorLength = 0;
 	mmcInitialized = 0;
 	changeLeft = 0;
 	changeRight = 0;
@@ -395,5 +378,5 @@ void InitializeSharedData()
 	volumeDown = 0;
 	isError = 0;
 	error = "";
-	currentVolume = 0;
+	currentVolume = 5;
 }

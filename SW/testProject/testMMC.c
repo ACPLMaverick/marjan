@@ -7,6 +7,7 @@
 
 
 #include <stdio.h>
+#include "./pre_emptive_os/api/general.h"
 #include <efs.h>
 #include <ls.h>
 #include <string.h>
@@ -18,7 +19,7 @@
 #define JOYSTICK_RIGHT 18
 #define JOYSTICK_LEFT 19
 #define JOYSTICK_DOWN 20
-#define JOYSTICK_GND 16
+#define JOYSTICK_GND 14
 
 SongInfo currentSongInfo;
 unsigned char mmcInitialized;
@@ -26,8 +27,12 @@ unsigned char changeLeft;
 unsigned char changeRight;
 unsigned char rewindForward;
 unsigned char rewindBackward;
+unsigned char volumeUp;
+unsigned char volumeDown;
 unsigned int isError;
 char* error;
+
+extern char startupSound[];
 
 /////////////////////////////
 unsigned char id3TagSize = 128;
@@ -202,6 +207,10 @@ void testMMC(char* name)
 
 				currentSongInfo.name = myName;
 				currentSongInfo.author = myAuthor;
+				for(i = 0; myName[i] != '\0'; i++);
+				currentSongInfo.nameLength = i;
+				for(i = 0; myAuthor[i] != '\0'; i++);
+				currentSongInfo.authorLength = i;
 				file_fclose(&file);
 			}
 			else
@@ -210,6 +219,28 @@ void testMMC(char* name)
 				currentSongInfo.name = error03;
 			}
 	//fs_umount(&(efs.myFs));
+}
+
+void playTestSound(void)
+{
+	tU32 cnt = 0;
+	int i = 0;
+	while(cnt++ < 0xF890)
+	{
+		tS32 val;
+		float volumeMultiplier = (float)currentVolume / 10;
+		val = startupSound[cnt] - 128;
+	    val = val * 2 * volumeMultiplier;
+	    if (val > 127) val = 127;
+	    else if (val < -127) val = -127;
+
+	    DACR = ((val+128) << 8) |  //actual value to output
+	            (1 << 16);         //BIAS = 1, 2.5uS settling time
+
+	    //delay 125 us = 850 for 8kHz, 600 for 11 kHz
+	    for(i=0; i<850; i++)
+	      asm volatile (" nop");
+	    }
 }
 
 void MMCproc(void)
@@ -255,6 +286,20 @@ void MMCproc(void)
 			testMMC(&files[currentSongInfo.ID][0]);
 			changeLeft=1;
 		}
+		if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
+		{
+			volumeUp = 1;
+			if(currentVolume < 9) currentVolume++;
+		}
+		if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
+		{
+			volumeDown = 1;
+			if(currentVolume > 0) currentVolume--;
+		}
+		if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
+		{
+			playTestSound();
+		}
 		if(rewindForward == 1)
 		{
 			rewindForward = 0;
@@ -264,6 +309,6 @@ void MMCproc(void)
 			rewindBackward = 0;
 		}
 
-		 osSleep(50);
+		 osSleep(25);
 	}
 }

@@ -7,6 +7,8 @@ typedef struct {
 	unsigned char* author;
 	unsigned long time;
 	unsigned char ID;
+	unsigned char nameLength;
+	unsigned char authorLength;
 } SongInfo;
 
 extern SongInfo currentSongInfo;
