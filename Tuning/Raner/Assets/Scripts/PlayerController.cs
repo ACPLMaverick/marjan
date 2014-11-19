@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour {
 		movement = new Vector2 (moveHorizontal, moveVertical);
 		this.rigidbody2D.velocity = movement * speed;
 
-		this.rigidbody2D.position = new Vector2(Mathf.Clamp(rigidbody2D.position.x, Camera.main.gameObject.transform.position.x - 8.0f, Camera.main.gameObject.transform.position.x + 8.0f), Mathf.Clamp (rigidbody2D.position.y, -3.5f, 3.5f));
+		this.rigidbody2D.position = new Vector2(Mathf.Clamp(rigidbody2D.position.x, Camera.main.gameObject.transform.position.x - 12.0f, Camera.main.gameObject.transform.position.x + 8.0f), Mathf.Clamp (rigidbody2D.position.y, -3.5f, 3.5f));
 		if(Input.GetKeyUp(KeyCode.Space))
 		{
 			this.rigidbody2D.AddForceAtPosition(dashVector, rigidbody2D.position);
