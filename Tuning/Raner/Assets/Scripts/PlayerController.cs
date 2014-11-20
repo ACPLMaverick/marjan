@@ -44,6 +44,10 @@ public class PlayerController : MonoBehaviour {
 			Destroy(star);
 			AddScore(1);
 		}
+        if (col.gameObject.tag == "Enemy")
+        {
+            Application.LoadLevel(Application.loadedLevel);
+        }
 	}
 
 	public void AddScore(int newScoreValue)
