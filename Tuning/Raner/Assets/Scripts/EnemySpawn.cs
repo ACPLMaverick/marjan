@@ -28,7 +28,6 @@ public class EnemySpawn : MonoBehaviour {
     void Spawn()
     {
         isSpawned = Random.Range(0.0f, 1.0f);
-        Debug.Log(isSpawned);
         spawnPoint = new Vector3(player.transform.position.x + 20.0f, player.transform.position.y, -1.5f);
         if (isSpawned > 0.5f)
         {
