@@ -1,3 +1,0 @@
-sd.o: sd.c sd.h ../startup/config.h types.h debug.h hwinterface.h
-hwinterface.o: hwinterface.c ../startup/lpc2xxx.h hwinterface.h \
-  ../startup/config.h debug.h types.h sd.h

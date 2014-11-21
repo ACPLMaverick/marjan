@@ -1,4761 +1,822 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 1
 
 
    1              		.code	16
    2              		.file	"testMMC.c"
-   3              		.section	.debug_abbrev,"",%progbits
-   4              	.Ldebug_abbrev0:
-   5              		.section	.debug_info,"",%progbits
-   6              	.Ldebug_info0:
-   7              		.section	.debug_line,"",%progbits
-   8              	.Ldebug_line0:
-   9 0000 87010000 		.text
-   9      0200CF00 
-   9      00000201 
-   9      FB0E0D00 
-   9      01010101 
-  10              	.Ltext0:
-  11              		.global	__floatsisf
-  12              		.global	__addsf3
-  13              		.global	__divsf3
-  14              		.global	__mulsf3
-  15              		.global	__fixsfsi
-  16              		.align	2
-  17              		.global	playTestSound
-  18              		.code 16
-  19              		.thumb_func
-  20              		.type	playTestSound, %function
-  21              	playTestSound:
-  22              	.LFB6:
-  23              		.file 1 "testMMC.c"
-   1:testMMC.c     **** /******************************************************************************
-   2:testMMC.c     ****  *
-   3:testMMC.c     ****  * Copyright:
-   4:testMMC.c     ****  *    (C) 2000 - 2005 Embedded Artists AB
-   5:testMMC.c     ****  *
-   6:testMMC.c     ****  *****************************************************************************/
-   7:testMMC.c     **** 
-   8:testMMC.c     **** 
-   9:testMMC.c     **** #include <stdio.h>
-  10:testMMC.c     **** #include "./pre_emptive_os/api/general.h"
-  11:testMMC.c     **** #include <efs.h>
-  12:testMMC.c     **** #include <ls.h>
-  13:testMMC.c     **** #include <string.h>
-  14:testMMC.c     **** #include <lpc2xxx.h>
-  15:testMMC.c     **** #include <consol.h>
-  16:testMMC.c     **** #include "mp3shared.h"
-  17:testMMC.c     **** 
-  18:testMMC.c     **** #define JOYSTICK_UP 17
-  19:testMMC.c     **** #define JOYSTICK_RIGHT 18
-  20:testMMC.c     **** #define JOYSTICK_LEFT 19
-  21:testMMC.c     **** #define JOYSTICK_DOWN 20
-  22:testMMC.c     **** #define JOYSTICK_GND 14
-  23:testMMC.c     **** 
-  24:testMMC.c     **** SongInfo currentSongInfo;
-  25:testMMC.c     **** unsigned char mmcInitialized;
-  26:testMMC.c     **** unsigned char changeLeft;
-  27:testMMC.c     **** unsigned char changeRight;
-  28:testMMC.c     **** unsigned char rewindForward;
-  29:testMMC.c     **** unsigned char rewindBackward;
-  30:testMMC.c     **** unsigned char volumeUp;
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 2
-
-
-  31:testMMC.c     **** unsigned char volumeDown;
-  32:testMMC.c     **** unsigned int isError;
-  33:testMMC.c     **** char* error;
-  34:testMMC.c     **** 
-  35:testMMC.c     **** extern char startupSound[];
-  36:testMMC.c     **** 
-  37:testMMC.c     **** /////////////////////////////
-  38:testMMC.c     **** unsigned char id3TagSize = 128;
-  39:testMMC.c     **** 				unsigned long fileSize;
-  40:testMMC.c     **** 				unsigned char readSize = 30;
-  41:testMMC.c     **** 				unsigned char myName[30];
-  42:testMMC.c     **** 				unsigned char myAuthor[30];
-  43:testMMC.c     **** 				unsigned long titleOffset = 3;
-  44:testMMC.c     **** 				unsigned long authorOffset = 33;
-  45:testMMC.c     **** //////////////////////////////
-  46:testMMC.c     **** 
-  47:testMMC.c     **** EmbeddedFileSystem  efs;
-  48:testMMC.c     **** EmbeddedFile        file;
-  49:testMMC.c     **** DirList             list;
-  50:testMMC.c     **** unsigned char       file_name[13];
-  51:testMMC.c     **** unsigned int        size;
-  52:testMMC.c     **** 
-  53:testMMC.c     **** unsigned char files[256][13];
-  54:testMMC.c     **** 
-  55:testMMC.c     **** void format_file_name(unsigned char *dest, unsigned char *src)
-  56:testMMC.c     **** {
-  57:testMMC.c     **** 	unsigned char i, k;
-  58:testMMC.c     **** 
-  59:testMMC.c     **** 	for (i = 7; i>0 && (src[i] == 0x20); i--);
-  60:testMMC.c     **** 
-  61:testMMC.c     **** 	strncpy(dest, src, i + 1);
-  62:testMMC.c     **** 	dest[i + 1] = '.';
-  63:testMMC.c     **** 
-  64:testMMC.c     **** 	for (k = 2; k>0 && (src[8 + k] == 0x20); k--);
-  65:testMMC.c     **** 
-  66:testMMC.c     **** 	strncpy(&dest[i + 2], &src[8], k + 1);
-  67:testMMC.c     **** 	dest[i + 5] = '\0';
-  68:testMMC.c     **** }
-  69:testMMC.c     **** 
-  70:testMMC.c     **** char* initMMC(void)
-  71:testMMC.c     **** {
-  72:testMMC.c     **** 		char* error01 = "ERR:filesys-1";
-  73:testMMC.c     **** 		char* error01b = "ERR:filesys-2";
-  74:testMMC.c     **** 		char* error01c = "ERR:filesys-3";
-  75:testMMC.c     **** 		char* error01d = "ERR:filesys-4";
-  76:testMMC.c     **** 
-  77:testMMC.c     **** 		char* error010 = "ERR:filesys-10";
-  78:testMMC.c     **** 		char* error011 = "ERR:filesys-11";
-  79:testMMC.c     **** 		char* error012 = "ERR:filesys-12";
-  80:testMMC.c     **** 		char* error013 = "ERR:filesys-13";
-  81:testMMC.c     **** 		char* error014 = "ERR:filesys-14";
-  82:testMMC.c     **** 		char* error015 = "ERR:filesys-15";
-  83:testMMC.c     **** 		char* error016 = "ERR:filesys-16";
-  84:testMMC.c     **** 		char* error017 = "ERR:filesys-17";
-  85:testMMC.c     **** 
-  86:testMMC.c     **** 		char* error02 = "ERR:dir";
-  87:testMMC.c     **** 		signed int returnValue;
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 3
-
-
-  88:testMMC.c     **** 		//initialize SPI?
-  89:testMMC.c     **** 		returnValue = efs_init(&efs, "\\");
-  90:testMMC.c     **** 
-  91:testMMC.c     **** 		if (returnValue == -1)
-  92:testMMC.c     **** 		{
-  93:testMMC.c     **** 			DBG((TXT("Could not open filesystem.\n")));
-  94:testMMC.c     **** 			return error01;
-  95:testMMC.c     **** 		}
-  96:testMMC.c     **** 		if (returnValue == -2)
-  97:testMMC.c     **** 			{
-  98:testMMC.c     **** 				DBG((TXT("Could not open filesystem.\n")));
-  99:testMMC.c     **** 				return error01b;
- 100:testMMC.c     **** 			}
- 101:testMMC.c     **** 		if (returnValue == -3)
- 102:testMMC.c     **** 			{
- 103:testMMC.c     **** 				DBG((TXT("Could not open filesystem.\n")));
- 104:testMMC.c     **** 				return error01c;
- 105:testMMC.c     **** 			}
- 106:testMMC.c     **** 		if (returnValue == -4)
- 107:testMMC.c     **** 			{
- 108:testMMC.c     **** 				DBG((TXT("Could not open filesystem.\n")));
- 109:testMMC.c     **** 				return error01d;
- 110:testMMC.c     **** 			}
- 111:testMMC.c     **** 
- 112:testMMC.c     **** 		if (returnValue == -10)
- 113:testMMC.c     **** 				{
- 114:testMMC.c     **** 					DBG((TXT("Could not open filesystem.\n")));
- 115:testMMC.c     **** 					return error010;
- 116:testMMC.c     **** 				}
- 117:testMMC.c     **** 		if (returnValue == -11)
- 118:testMMC.c     **** 				{
- 119:testMMC.c     **** 					DBG((TXT("Could not open filesystem.\n")));
- 120:testMMC.c     **** 					return error011;
- 121:testMMC.c     **** 				}
- 122:testMMC.c     **** 		if (returnValue == -12)
- 123:testMMC.c     **** 				{
- 124:testMMC.c     **** 					DBG((TXT("Could not open filesystem.\n")));
- 125:testMMC.c     **** 					return error012;
- 126:testMMC.c     **** 				}
- 127:testMMC.c     **** 		if (returnValue == -13)
- 128:testMMC.c     **** 				{
- 129:testMMC.c     **** 					DBG((TXT("Could not open filesystem.\n")));
- 130:testMMC.c     **** 					return error013;
- 131:testMMC.c     **** 				}
- 132:testMMC.c     **** 		if (returnValue == -14)
- 133:testMMC.c     **** 				{
- 134:testMMC.c     **** 					DBG((TXT("Could not open filesystem.\n")));
- 135:testMMC.c     **** 					return error014;
- 136:testMMC.c     **** 				}
- 137:testMMC.c     **** 		if (returnValue == -15)
- 138:testMMC.c     **** 				{
- 139:testMMC.c     **** 					DBG((TXT("Could not open filesystem.\n")));
- 140:testMMC.c     **** 					return error015;
- 141:testMMC.c     **** 				}
- 142:testMMC.c     **** 		if (returnValue == -16)
- 143:testMMC.c     **** 				{
- 144:testMMC.c     **** 					DBG((TXT("Could not open filesystem.\n")));
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 4
-
-
- 145:testMMC.c     **** 					return error016;
- 146:testMMC.c     **** 				}
- 147:testMMC.c     **** 		if (returnValue == -17)
- 148:testMMC.c     **** 				{
- 149:testMMC.c     **** 					DBG((TXT("Could not open filesystem.\n")));
- 150:testMMC.c     **** 					return error017;
- 151:testMMC.c     **** 				}
- 152:testMMC.c     **** 
- 153:testMMC.c     **** 		if (ls_openDir(&list, &(efs.myFs), "/") != 0)
- 154:testMMC.c     **** 		{
- 155:testMMC.c     **** 			DBG((TXT("Could not open the selected directory.\n")));
- 156:testMMC.c     **** 			return error02;
- 157:testMMC.c     **** 		}
- 158:testMMC.c     **** 	mmcInitialized = 1;
- 159:testMMC.c     **** 	return "OK";
- 160:testMMC.c     **** }
- 161:testMMC.c     **** 
- 162:testMMC.c     **** void getFileNames(void)
- 163:testMMC.c     **** {
- 164:testMMC.c     **** //		if(mmcInitialized == 0)
- 165:testMMC.c     **** //		{
- 166:testMMC.c     **** //			char* toReturn = initMMC();
- 167:testMMC.c     **** //			if(!(toReturn[0] == 'O' && toReturn[1] == 'K')) return;
- 168:testMMC.c     **** //		}
- 169:testMMC.c     **** 
- 170:testMMC.c     **** 		//unsigned char       file_name[13];
- 171:testMMC.c     **** 		int i = 0;
- 172:testMMC.c     **** 		while (ls_getNext(&list) == 0)
- 173:testMMC.c     **** 		{
- 174:testMMC.c     **** 			if ((list.currentEntry.FileName[8] == 'M') &&
- 175:testMMC.c     **** 				(list.currentEntry.FileName[9] == 'P') &&
- 176:testMMC.c     **** 				(list.currentEntry.FileName[10] == '3'))
- 177:testMMC.c     **** 			{
- 178:testMMC.c     **** 				DBG((TXT("Filename: %.11s (%li bytes)\n"), list.currentEntry.FileName, list.currentEntry.FileSi
- 179:testMMC.c     **** 
- 180:testMMC.c     **** 				format_file_name(file_name, list.currentEntry.FileName);
- 181:testMMC.c     **** 				int j;
- 182:testMMC.c     **** 				for(j = 0; j < 13; j++) files[i][j] = file_name[j];
- 183:testMMC.c     **** 				i++;
- 184:testMMC.c     **** 			}
- 185:testMMC.c     **** 		}
- 186:testMMC.c     **** 
- 187:testMMC.c     **** }
- 188:testMMC.c     **** 
- 189:testMMC.c     **** void testMMC(char* name)
- 190:testMMC.c     **** {
- 191:testMMC.c     **** 	unsigned char* error03 = "ERR:file";
- 192:testMMC.c     **** 			if (file_fopen(&file, &efs.myFs, name, 'r') == 0)
- 193:testMMC.c     **** 			{
- 194:testMMC.c     **** 				// stream data to playback?
- 195:testMMC.c     **** 				DBG((TXT("File successfully opened!.\n")));
- 196:testMMC.c     **** 				int i;
- 197:testMMC.c     **** 				for(i = 0; i < readSize; i++)
- 198:testMMC.c     **** 				{
- 199:testMMC.c     **** 					myName[i] = '\0';
- 200:testMMC.c     **** 					myAuthor[i] = '\0';
- 201:testMMC.c     **** 				}
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 5
-
-
- 202:testMMC.c     **** 				myName[readSize - 1] = '\0';
- 203:testMMC.c     **** 				myAuthor[readSize - 1] = '\0';
- 204:testMMC.c     **** 				fileSize = file.FileSize;
- 205:testMMC.c     **** 				file_fread(&file,(fileSize - id3TagSize) + titleOffset, readSize,myName);
- 206:testMMC.c     **** 				file_fread(&file,(fileSize - id3TagSize) +  authorOffset, readSize, myAuthor);
- 207:testMMC.c     **** 
- 208:testMMC.c     **** 				currentSongInfo.name = myName;
- 209:testMMC.c     **** 				currentSongInfo.author = myAuthor;
- 210:testMMC.c     **** 				for(i = 0; myName[i] != '\0'; i++);
- 211:testMMC.c     **** 				currentSongInfo.nameLength = i;
- 212:testMMC.c     **** 				for(i = 0; myAuthor[i] != '\0'; i++);
- 213:testMMC.c     **** 				currentSongInfo.authorLength = i;
- 214:testMMC.c     **** 				file_fclose(&file);
- 215:testMMC.c     **** 			}
- 216:testMMC.c     **** 			else
- 217:testMMC.c     **** 			{
- 218:testMMC.c     **** 				DBG((TXT("Could not open file.\n")));
- 219:testMMC.c     **** 				currentSongInfo.name = error03;
- 220:testMMC.c     **** 			}
- 221:testMMC.c     **** 	//fs_umount(&(efs.myFs));
- 222:testMMC.c     **** }
- 223:testMMC.c     **** 
- 224:testMMC.c     **** void playTestSound(void)
- 225:testMMC.c     **** {
-  24              		.loc 1 225 0
-  25 0000 F0B5     		push	{r4, r5, r6, r7, lr}
-  26              	.LCFI0:
-  27              		.loc 1 225 0
-  28 0002 1C4D     		ldr	r5, .L14
-  29 0004 1C4F     		ldr	r7, .L14+4
-  30              	.LVL0:
-  31              	.L2:
-  32              	.LBB2:
- 226:testMMC.c     **** 	tU32 cnt = 0;
- 227:testMMC.c     **** 	int i = 0;
- 228:testMMC.c     **** 	while(cnt++ < 0xF890)
- 229:testMMC.c     **** 	{
- 230:testMMC.c     **** 		tS32 val;
- 231:testMMC.c     **** 		float volumeMultiplier = (float)currentVolume / 10;
- 232:testMMC.c     **** 		val = startupSound[cnt] - 128;
- 233:testMMC.c     **** 	    val = val * 2 * volumeMultiplier;
-  33              		.loc 1 233 0
-  34 0006 2878     		ldrb	r0, [r5]
-  35              	.LVL1:
-  36 0008 8038     		sub	r0, r0, #128
-  37 000a 4000     		lsl	r0, r0, #1
-  38 000c FFF7FEFF 		bl	__floatsisf
-  39              	.LVL2:
-  40 0010 0024     		mov	r4, #0
-  41 0012 3C57     		ldrsb	r4, [r7, r4]
-  42 0014 061C     		add	r6, r0, #0
-  43 0016 201C     		mov	r0, r4
-  44 0018 FFF7FEFF 		bl	__floatsisf
-  45 001c 002C     		cmp	r4, #0
-  46 001e 02DA     		bge	.L3
-  47 0020 1649     		ldr	r1, .L14+8
-  48 0022 FFF7FEFF 		bl	__addsf3
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 6
-
-
-  49              	.L3:
-  50 0026 1649     		ldr	r1, .L14+12
-  51 0028 FFF7FEFF 		bl	__divsf3
-  52 002c 011C     		add	r1, r0, #0
-  53 002e 301C     		add	r0, r6, #0
-  54 0030 FFF7FEFF 		bl	__mulsf3
-  55 0034 FFF7FEFF 		bl	__fixsfsi
-  56              	.LVL3:
-  57 0038 031C     		mov	r3, r0
-  58 003a 7F33     		add	r3, r3, #127
-  59 003c 02DA     		bge	.L4
-  60 003e 7F20     		mov	r0, #127
-  61 0040 4042     		neg	r0, r0
-  62 0042 02E0     		b	.L5
-  63              	.L4:
- 234:testMMC.c     **** 	    if (val > 127) val = 127;
- 235:testMMC.c     **** 	    else if (val < -127) val = -127;
- 236:testMMC.c     **** 
- 237:testMMC.c     **** 	    DACR = ((val+128) << 8) |  //actual value to output
-  64              		.loc 1 237 0
-  65 0044 7F28     		cmp	r0, #127
-  66 0046 00DD     		ble	.L5
-  67 0048 7F20     		mov	r0, #127
-  68              	.L5:
-  69 004a 031C     		mov	r3, r0
-  70 004c 8033     		add	r3, r3, #128
-  71 004e 8022     		mov	r2, #128
-  72 0050 5202     		lsl	r2, r2, #9
-  73 0052 1B02     		lsl	r3, r3, #8
-  74 0054 1343     		orr	r3, r3, r2
-  75 0056 0B4A     		ldr	r2, .L14+16
-  76 0058 1360     		str	r3, [r2]
-  77 005a 0022     		mov	r2, #0
-  78              	.LVL4:
-  79              	.L6:
- 238:testMMC.c     **** 	            (1 << 16);         //BIAS = 1, 2.5uS settling time
- 239:testMMC.c     **** 
- 240:testMMC.c     **** 	    //delay 125 us = 850 for 8kHz, 600 for 11 kHz
- 241:testMMC.c     **** 	    for(i=0; i<850; i++)
- 242:testMMC.c     **** 	      asm volatile (" nop");
-  80              		.loc 1 242 0
-  81 005c C046     		 nop
-  82              		.loc 1 241 0
-  83              		.code	16
-  84 005e 0A4B     		ldr	r3, .L14+20
-  85 0060 0132     		add	r2, r2, #1
-  86 0062 9A42     		cmp	r2, r3
-  87 0064 FAD1     		bne	.L6
-  88              	.LBE2:
-  89              		.loc 1 228 0
-  90 0066 094B     		ldr	r3, .L14+24
-  91              	.LBB3:
-  92              		.loc 1 241 0
-  93 0068 0135     		add	r5, r5, #1
-  94              	.LBE3:
-  95              		.loc 1 228 0
-  96 006a 9D42     		cmp	r5, r3
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 7
-
-
-  97 006c CBD1     		bne	.L2
- 243:testMMC.c     **** 	    }
- 244:testMMC.c     **** }
-  98              		.loc 1 244 0
-  99              		@ sp needed for prologue
- 100 006e F0BC     		pop	{r4, r5, r6, r7}
- 101 0070 01BC     		pop	{r0}
- 102 0072 0047     		bx	r0
- 103              	.L15:
- 104              		.align	2
- 105              	.L14:
- 106 0074 01000000 		.word	startupSound+1
- 107 0078 00000000 		.word	currentVolume
- 108 007c 00008043 		.word	1132462080
- 109 0080 00002041 		.word	1092616192
- 110 0084 00C006E0 		.word	-536428544
- 111 0088 52030000 		.word	850
- 112 008c 91F80000 		.word	startupSound+63633
- 113              	.LFE6:
- 114              		.size	playTestSound, .-playTestSound
- 115              		.section	.rodata.str1.4,"aMS",%progbits,1
- 116 0001 000000   		.align	2
- 117              	.LC14:
- 118 0004 4552523A 		.ascii	"ERR:file\000"
- 118      66696C65 
- 118      00
- 119              		.text
- 120              		.align	2
- 121              		.global	testMMC
- 122              		.code 16
- 123              		.thumb_func
- 124              		.type	testMMC, %function
- 125              	testMMC:
- 126              	.LFB5:
- 127              		.loc 1 190 0
- 128 0090 F0B5     		push	{r4, r5, r6, r7, lr}
- 129              	.LCFI1:
- 130              	.LVL5:
- 131              		.loc 1 190 0
- 132 0092 021C     		mov	r2, r0
- 133              		.loc 1 192 0
- 134 0094 2B49     		ldr	r1, .L30
- 135 0096 2C48     		ldr	r0, .L30+4
- 136              	.LVL6:
- 137 0098 7223     		mov	r3, #114
- 138 009a FFF7FEFF 		bl	file_fopen
- 139              	.LVL7:
- 140 009e 0006     		lsl	r0, r0, #24
- 141 00a0 0028     		cmp	r0, #0
- 142 00a2 49D1     		bne	.L17
- 143              	.LBB4:
- 144              		.loc 1 197 0
- 145 00a4 294B     		ldr	r3, .L30+8
- 146 00a6 1F78     		ldrb	r7, [r3]
- 147 00a8 0021     		mov	r1, #0
- 148              	.LVL8:
- 149 00aa 06E0     		b	.L19
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 8
-
-
- 150              	.L20:
- 151              		.loc 1 199 0
- 152 00ac 284B     		ldr	r3, .L30+12
- 153              		.loc 1 200 0
- 154 00ae 294D     		ldr	r5, .L30+16
- 155              		.loc 1 199 0
- 156 00b0 0022     		mov	r2, #0
- 157 00b2 CA54     		strb	r2, [r1, r3]
- 158              		.loc 1 200 0
- 159 00b4 4B19     		add	r3, r1, r5
- 160 00b6 1A70     		strb	r2, [r3]
- 161              		.loc 1 197 0
- 162 00b8 0131     		add	r1, r1, #1
- 163              	.L19:
- 164 00ba B942     		cmp	r1, r7
- 165 00bc F6DB     		blt	.L20
- 166              		.loc 1 203 0
- 167 00be 254D     		ldr	r5, .L30+16
- 168              		.loc 1 202 0
- 169 00c0 7A1E     		sub	r2, r7, #1
- 170 00c2 0023     		mov	r3, #0
- 171              		.loc 1 203 0
- 172 00c4 AB54     		strb	r3, [r5, r2]
- 173              		.loc 1 204 0
- 174 00c6 204C     		ldr	r4, .L30+4
- 175              		.loc 1 202 0
- 176 00c8 2149     		ldr	r1, .L30+12
- 177              	.LVL9:
- 178              		.loc 1 205 0
- 179 00ca 234D     		ldr	r5, .L30+20
- 180              		.loc 1 202 0
- 181 00cc 8B54     		strb	r3, [r1, r2]
- 182              		.loc 1 204 0
- 183 00ce 234E     		ldr	r6, .L30+24
- 184 00d0 E16C     		ldr	r1, [r4, #76]
- 185              		.loc 1 205 0
- 186 00d2 2B78     		ldrb	r3, [r5]
- 187              		.loc 1 204 0
- 188 00d4 3160     		str	r1, [r6]
- 189              		.loc 1 205 0
- 190 00d6 C91A     		sub	r1, r1, r3
- 191 00d8 214B     		ldr	r3, .L30+28
- 192 00da 1B68     		ldr	r3, [r3]
- 193 00dc 3A1C     		mov	r2, r7
- 194 00de C918     		add	r1, r1, r3
- 195 00e0 201C     		mov	r0, r4
- 196 00e2 1B4B     		ldr	r3, .L30+12
- 197 00e4 FFF7FEFF 		bl	file_fread
- 198              		.loc 1 206 0
- 199 00e8 2B78     		ldrb	r3, [r5]
- 200 00ea 3168     		ldr	r1, [r6]
- 201 00ec C91A     		sub	r1, r1, r3
- 202 00ee 1D4B     		ldr	r3, .L30+32
- 203 00f0 1B68     		ldr	r3, [r3]
- 204 00f2 C918     		add	r1, r1, r3
- 205 00f4 154B     		ldr	r3, .L30+8
- 206 00f6 201C     		mov	r0, r4
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 9
-
-
- 207 00f8 1A78     		ldrb	r2, [r3]
- 208 00fa 164B     		ldr	r3, .L30+16
- 209 00fc FFF7FEFF 		bl	file_fread
- 210              		.loc 1 208 0
- 211 0100 194B     		ldr	r3, .L30+36
- 212 0102 1349     		ldr	r1, .L30+12
- 213              		.loc 1 209 0
- 214 0104 134A     		ldr	r2, .L30+16
- 215              		.loc 1 208 0
- 216 0106 1960     		str	r1, [r3]
- 217              		.loc 1 209 0
- 218 0108 5A60     		str	r2, [r3, #4]
- 219 010a 00E0     		b	.L22
- 220              	.L23:
- 221              		.loc 1 210 0
- 222 010c 0131     		add	r1, r1, #1
- 223              	.L22:
- 224 010e 0B78     		ldrb	r3, [r1]
- 225 0110 002B     		cmp	r3, #0
- 226 0112 FBD1     		bne	.L23
- 227              		.loc 1 190 0
- 228 0114 0E4B     		ldr	r3, .L30+12
- 229              		.loc 1 211 0
- 230 0116 144A     		ldr	r2, .L30+36
- 231 0118 CB1A     		sub	r3, r1, r3
- 232 011a 0E49     		ldr	r1, .L30+16
- 233 011c 5373     		strb	r3, [r2, #13]
- 234 011e 00E0     		b	.L25
- 235              	.L26:
- 236              		.loc 1 212 0
- 237 0120 0131     		add	r1, r1, #1
- 238              	.L25:
- 239 0122 0B78     		ldrb	r3, [r1]
- 240 0124 002B     		cmp	r3, #0
- 241 0126 FBD1     		bne	.L26
- 242              		.loc 1 190 0
- 243 0128 0A4B     		ldr	r3, .L30+16
- 244              		.loc 1 213 0
- 245 012a 0F4A     		ldr	r2, .L30+36
- 246 012c CB1A     		sub	r3, r1, r3
- 247 012e 9373     		strb	r3, [r2, #14]
- 248              		.loc 1 214 0
- 249 0130 0548     		ldr	r0, .L30+4
- 250 0132 FFF7FEFF 		bl	file_fclose
- 251 0136 02E0     		b	.L29
- 252              	.L17:
- 253              	.LBE4:
- 254              		.loc 1 191 0
- 255 0138 0C4A     		ldr	r2, .L30+40
- 256              	.LVL10:
- 257              		.loc 1 219 0
- 258 013a 0B4B     		ldr	r3, .L30+36
- 259 013c 1A60     		str	r2, [r3]
- 260              	.L29:
- 261              		.loc 1 222 0
- 262              		@ sp needed for prologue
- 263 013e F0BC     		pop	{r4, r5, r6, r7}
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 10
-
-
- 264 0140 01BC     		pop	{r0}
- 265 0142 0047     		bx	r0
- 266              	.L31:
- 267              		.align	2
- 268              	.L30:
- 269 0144 84020000 		.word	efs+644
- 270 0148 00000000 		.word	file
- 271 014c 00000000 		.word	readSize
- 272 0150 00000000 		.word	myName
- 273 0154 00000000 		.word	myAuthor
- 274 0158 00000000 		.word	id3TagSize
- 275 015c 00000000 		.word	fileSize
- 276 0160 00000000 		.word	titleOffset
- 277 0164 00000000 		.word	authorOffset
- 278 0168 00000000 		.word	currentSongInfo
- 279 016c 04000000 		.word	.LC14
- 280              	.LFE5:
- 281              		.size	testMMC, .-testMMC
- 282              		.section	.rodata.str1.4
- 283 000d 000000   		.align	2
- 284              	.LC17:
- 285 0010 5C00     		.ascii	"\\\000"
- 286 0012 0000     		.align	2
- 287              	.LC19:
- 288 0014 4552523A 		.ascii	"ERR:filesys-1\000"
- 288      66696C65 
- 288      7379732D 
- 288      3100
- 289 0022 0000     		.align	2
- 290              	.LC21:
- 291 0024 4552523A 		.ascii	"ERR:filesys-2\000"
- 291      66696C65 
- 291      7379732D 
- 291      3200
- 292 0032 0000     		.align	2
- 293              	.LC23:
- 294 0034 4552523A 		.ascii	"ERR:filesys-3\000"
- 294      66696C65 
- 294      7379732D 
- 294      3300
- 295 0042 0000     		.align	2
- 296              	.LC25:
- 297 0044 4552523A 		.ascii	"ERR:filesys-4\000"
- 297      66696C65 
- 297      7379732D 
- 297      3400
- 298 0052 0000     		.align	2
- 299              	.LC27:
- 300 0054 4552523A 		.ascii	"ERR:filesys-10\000"
- 300      66696C65 
- 300      7379732D 
- 300      313000
- 301 0063 00       		.align	2
- 302              	.LC29:
- 303 0064 4552523A 		.ascii	"ERR:filesys-11\000"
- 303      66696C65 
- 303      7379732D 
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 11
-
-
- 303      313100
- 304 0073 00       		.align	2
- 305              	.LC31:
- 306 0074 4552523A 		.ascii	"ERR:filesys-12\000"
- 306      66696C65 
- 306      7379732D 
- 306      313200
- 307 0083 00       		.align	2
- 308              	.LC33:
- 309 0084 4552523A 		.ascii	"ERR:filesys-13\000"
- 309      66696C65 
- 309      7379732D 
- 309      313300
- 310 0093 00       		.align	2
- 311              	.LC35:
- 312 0094 4552523A 		.ascii	"ERR:filesys-14\000"
- 312      66696C65 
- 312      7379732D 
- 312      313400
- 313 00a3 00       		.align	2
- 314              	.LC37:
- 315 00a4 4552523A 		.ascii	"ERR:filesys-15\000"
- 315      66696C65 
- 315      7379732D 
- 315      313500
- 316 00b3 00       		.align	2
- 317              	.LC39:
- 318 00b4 4552523A 		.ascii	"ERR:filesys-16\000"
- 318      66696C65 
- 318      7379732D 
- 318      313600
- 319 00c3 00       		.align	2
- 320              	.LC41:
- 321 00c4 4552523A 		.ascii	"ERR:filesys-17\000"
- 321      66696C65 
- 321      7379732D 
- 321      313700
- 322 00d3 00       		.align	2
- 323              	.LC45:
- 324 00d4 2F00     		.ascii	"/\000"
- 325 00d6 0000     		.align	2
- 326              	.LC47:
- 327 00d8 4552523A 		.ascii	"ERR:dir\000"
- 327      64697200 
- 328              		.align	2
- 329              	.LC50:
- 330 00e0 4F4B00   		.ascii	"OK\000"
- 331              		.text
- 332              		.align	2
- 333              		.global	initMMC
- 334              		.code 16
- 335              		.thumb_func
- 336              		.type	initMMC, %function
- 337              	initMMC:
- 338              	.LFB3:
- 339              		.loc 1 71 0
- 340 0170 00B5     		push	{lr}
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 12
-
-
- 341              	.LCFI2:
- 342              		.loc 1 89 0
- 343 0172 2548     		ldr	r0, .L61
- 344 0174 2549     		ldr	r1, .L61+4
- 345 0176 FFF7FEFF 		bl	efs_init
- 346              	.LVL11:
- 347              		.loc 1 91 0
- 348 017a 431C     		add	r3, r0, #1
- 349 017c 01D1     		bne	.L33
- 350 017e 2448     		ldr	r0, .L61+8
- 351              	.LVL12:
- 352 0180 40E0     		b	.L35
- 353              	.LVL13:
- 354              	.L33:
- 355              		.loc 1 96 0
- 356 0182 831C     		add	r3, r0, #2
- 357 0184 01D1     		bne	.L36
- 358 0186 2348     		ldr	r0, .L61+12
- 359              	.LVL14:
- 360 0188 3CE0     		b	.L35
- 361              	.LVL15:
- 362              	.L36:
- 363              		.loc 1 101 0
- 364 018a C31C     		add	r3, r0, #3
- 365 018c 01D1     		bne	.L38
- 366 018e 2248     		ldr	r0, .L61+16
- 367              	.LVL16:
- 368 0190 38E0     		b	.L35
- 369              	.LVL17:
- 370              	.L38:
- 371              		.loc 1 106 0
- 372 0192 031D     		add	r3, r0, #4
- 373 0194 01D1     		bne	.L40
- 374 0196 2148     		ldr	r0, .L61+20
- 375              	.LVL18:
- 376 0198 34E0     		b	.L35
- 377              	.LVL19:
- 378              	.L40:
- 379              		.loc 1 112 0
- 380 019a 031C     		mov	r3, r0
- 381 019c 0A33     		add	r3, r3, #10
- 382 019e 01D1     		bne	.L42
- 383 01a0 1F48     		ldr	r0, .L61+24
- 384              	.LVL20:
- 385 01a2 2FE0     		b	.L35
- 386              	.LVL21:
- 387              	.L42:
- 388              		.loc 1 117 0
- 389 01a4 031C     		mov	r3, r0
- 390 01a6 0B33     		add	r3, r3, #11
- 391 01a8 01D1     		bne	.L44
- 392 01aa 1E48     		ldr	r0, .L61+28
- 393              	.LVL22:
- 394 01ac 2AE0     		b	.L35
- 395              	.LVL23:
- 396              	.L44:
- 397              		.loc 1 122 0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 13
-
-
- 398 01ae 031C     		mov	r3, r0
- 399 01b0 0C33     		add	r3, r3, #12
- 400 01b2 01D1     		bne	.L46
- 401 01b4 1C48     		ldr	r0, .L61+32
- 402              	.LVL24:
- 403 01b6 25E0     		b	.L35
- 404              	.LVL25:
- 405              	.L46:
- 406              		.loc 1 127 0
- 407 01b8 031C     		mov	r3, r0
- 408 01ba 0D33     		add	r3, r3, #13
- 409 01bc 01D1     		bne	.L48
- 410 01be 1B48     		ldr	r0, .L61+36
- 411              	.LVL26:
- 412 01c0 20E0     		b	.L35
- 413              	.LVL27:
- 414              	.L48:
- 415              		.loc 1 132 0
- 416 01c2 031C     		mov	r3, r0
- 417 01c4 0E33     		add	r3, r3, #14
- 418 01c6 01D1     		bne	.L50
- 419 01c8 1948     		ldr	r0, .L61+40
- 420              	.LVL28:
- 421 01ca 1BE0     		b	.L35
- 422              	.LVL29:
- 423              	.L50:
- 424              		.loc 1 137 0
- 425 01cc 031C     		mov	r3, r0
- 426 01ce 0F33     		add	r3, r3, #15
- 427 01d0 01D1     		bne	.L52
- 428 01d2 1848     		ldr	r0, .L61+44
- 429              	.LVL30:
- 430 01d4 16E0     		b	.L35
- 431              	.LVL31:
- 432              	.L52:
- 433              		.loc 1 142 0
- 434 01d6 031C     		mov	r3, r0
- 435 01d8 1033     		add	r3, r3, #16
- 436 01da 01D1     		bne	.L54
- 437 01dc 1648     		ldr	r0, .L61+48
- 438              	.LVL32:
- 439 01de 11E0     		b	.L35
- 440              	.LVL33:
- 441              	.L54:
- 442              		.loc 1 147 0
- 443 01e0 1130     		add	r0, r0, #17
- 444 01e2 01D1     		bne	.L56
- 445              	.LVL34:
- 446 01e4 1548     		ldr	r0, .L61+52
- 447              	.LVL35:
- 448 01e6 0DE0     		b	.L35
- 449              	.LVL36:
- 450              	.L56:
- 451              		.loc 1 153 0
- 452 01e8 1548     		ldr	r0, .L61+56
- 453 01ea 1649     		ldr	r1, .L61+60
- 454 01ec 164A     		ldr	r2, .L61+64
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 14
-
-
- 455 01ee FFF7FEFF 		bl	ls_openDir
- 456 01f2 0006     		lsl	r0, r0, #24
- 457 01f4 0028     		cmp	r0, #0
- 458 01f6 01D0     		beq	.L58
- 459 01f8 1448     		ldr	r0, .L61+68
- 460              	.LVL37:
- 461 01fa 03E0     		b	.L35
- 462              	.LVL38:
- 463              	.L58:
- 464              		.loc 1 158 0
- 465 01fc 144A     		ldr	r2, .L61+72
- 466 01fe 0123     		mov	r3, #1
- 467 0200 1370     		strb	r3, [r2]
- 468 0202 1448     		ldr	r0, .L61+76
- 469              	.LVL39:
- 470              	.L35:
- 471              	.LVL40:
- 472              		.loc 1 160 0
- 473              		@ sp needed for prologue
- 474 0204 02BC     		pop	{r1}
- 475 0206 0847     		bx	r1
- 476              	.L62:
- 477              		.align	2
- 478              	.L61:
- 479 0208 00000000 		.word	efs
- 480 020c 10000000 		.word	.LC17
- 481 0210 14000000 		.word	.LC19
- 482 0214 24000000 		.word	.LC21
- 483 0218 34000000 		.word	.LC23
- 484 021c 44000000 		.word	.LC25
- 485 0220 54000000 		.word	.LC27
- 486 0224 64000000 		.word	.LC29
- 487 0228 74000000 		.word	.LC31
- 488 022c 84000000 		.word	.LC33
- 489 0230 94000000 		.word	.LC35
- 490 0234 A4000000 		.word	.LC37
- 491 0238 B4000000 		.word	.LC39
- 492 023c C4000000 		.word	.LC41
- 493 0240 00000000 		.word	list
- 494 0244 84020000 		.word	efs+644
- 495 0248 D4000000 		.word	.LC45
- 496 024c D8000000 		.word	.LC47
- 497 0250 00000000 		.word	mmcInitialized
- 498 0254 E0000000 		.word	.LC50
- 499              	.LFE3:
- 500              		.size	initMMC, .-initMMC
- 501              		.align	2
- 502              		.global	format_file_name
- 503              		.code 16
- 504              		.thumb_func
- 505              		.type	format_file_name, %function
- 506              	format_file_name:
- 507              	.LFB2:
- 508              		.loc 1 56 0
- 509 0258 70B5     		push	{r4, r5, r6, lr}
- 510              	.LCFI3:
- 511              	.LVL41:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 15
-
-
- 512              		.loc 1 56 0
- 513 025a 061C     		mov	r6, r0
- 514 025c 0D1C     		mov	r5, r1
- 515 025e CA1D     		add	r2, r1, #7
- 516 0260 0724     		mov	r4, #7
- 517              	.LVL42:
- 518 0262 05E0     		b	.L64
- 519              	.LVL43:
- 520              	.L65:
- 521              		.loc 1 59 0
- 522 0264 631E     		sub	r3, r4, #1
- 523 0266 1B06     		lsl	r3, r3, #24
- 524 0268 1C0E     		lsr	r4, r3, #24
- 525 026a 013A     		sub	r2, r2, #1
- 526 026c 002C     		cmp	r4, #0
- 527 026e 02D0     		beq	.L66
- 528              	.L64:
- 529 0270 1378     		ldrb	r3, [r2]
- 530 0272 202B     		cmp	r3, #32
- 531 0274 F6D0     		beq	.L65
- 532              	.L66:
- 533              		.loc 1 61 0
- 534 0276 621C     		add	r2, r4, #1
- 535 0278 301C     		mov	r0, r6
- 536 027a 291C     		mov	r1, r5
- 537 027c FFF7FEFF 		bl	strncpy
- 538              	.LVL44:
- 539              		.loc 1 62 0
- 540 0280 3419     		add	r4, r6, r4
- 541              	.LVL45:
- 542 0282 2E23     		mov	r3, #46
- 543 0284 6370     		strb	r3, [r4, #1]
- 544              		.loc 1 64 0
- 545 0286 AA7A     		ldrb	r2, [r5, #10]
- 546 0288 202A     		cmp	r2, #32
- 547 028a 01D0     		beq	.L67
- 548 028c 0222     		mov	r2, #2
- 549              	.LVL46:
- 550 028e 03E0     		b	.L69
- 551              	.LVL47:
- 552              	.L67:
- 553 0290 6B7A     		ldrb	r3, [r5, #9]
- 554 0292 5340     		eor	r3, r3, r2
- 555 0294 5B42     		neg	r3, r3
- 556 0296 DA0F     		lsr	r2, r3, #31
- 557              	.LVL48:
- 558              	.L69:
- 559              		.loc 1 66 0
- 560 0298 291C     		mov	r1, r5
- 561 029a A01C     		add	r0, r4, #2
- 562 029c 0831     		add	r1, r1, #8
- 563 029e 0132     		add	r2, r2, #1
- 564              	.LVL49:
- 565 02a0 FFF7FEFF 		bl	strncpy
- 566              		.loc 1 67 0
- 567 02a4 0023     		mov	r3, #0
- 568 02a6 6371     		strb	r3, [r4, #5]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 16
-
-
- 569              		.loc 1 68 0
- 570              		@ sp needed for prologue
- 571              	.LVL50:
- 572              	.LVL51:
- 573 02a8 70BC     		pop	{r4, r5, r6}
- 574 02aa 01BC     		pop	{r0}
- 575 02ac 0047     		bx	r0
- 576              	.LFE2:
- 577              		.size	format_file_name, .-format_file_name
- 578 02ae 0000     		.align	2
- 579              		.global	getFileNames
- 580              		.code 16
- 581              		.thumb_func
- 582              		.type	getFileNames, %function
- 583              	getFileNames:
- 584              	.LFB4:
- 585              		.loc 1 163 0
- 586 02b0 70B5     		push	{r4, r5, r6, lr}
- 587              	.LCFI4:
- 588 02b2 0026     		mov	r6, #0
- 589 02b4 16E0     		b	.L88
- 590              	.L75:
- 591              		.loc 1 174 0
- 592 02b6 104A     		ldr	r2, .L89
- 593 02b8 2B69     		ldr	r3, [r5, #16]
- 594 02ba 1340     		and	r3, r3, r2
- 595 02bc 0F4A     		ldr	r2, .L89+4
- 596 02be 9342     		cmp	r3, r2
- 597 02c0 10D1     		bne	.L88
- 598              	.LBB5:
- 599              		.loc 1 180 0
- 600 02c2 0F4C     		ldr	r4, .L89+8
- 601 02c4 291C     		mov	r1, r5
- 602 02c6 0831     		add	r1, r1, #8
- 603 02c8 201C     		mov	r0, r4
- 604 02ca FFF7FEFF 		bl	format_file_name
- 605 02ce 0D4B     		ldr	r3, .L89+12
- 606 02d0 211C     		mov	r1, r4
- 607 02d2 F218     		add	r2, r6, r3
- 608 02d4 0D31     		add	r1, r1, #13
- 609              	.L77:
- 610              		.loc 1 182 0
- 611 02d6 2378     		ldrb	r3, [r4]
- 612 02d8 0134     		add	r4, r4, #1
- 613 02da 1370     		strb	r3, [r2]
- 614 02dc 0132     		add	r2, r2, #1
- 615 02de 8C42     		cmp	r4, r1
- 616 02e0 F9D1     		bne	.L77
- 617 02e2 0D36     		add	r6, r6, #13
- 618              	.L88:
- 619              	.LBE5:
- 620              		.loc 1 172 0
- 621 02e4 084D     		ldr	r5, .L89+16
- 622 02e6 281C     		mov	r0, r5
- 623 02e8 FFF7FEFF 		bl	ls_getNext
- 624 02ec 0006     		lsl	r0, r0, #24
- 625 02ee 0028     		cmp	r0, #0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 17
-
-
- 626 02f0 E1D0     		beq	.L75
- 627              		.loc 1 187 0
- 628              		@ sp needed for prologue
- 629 02f2 70BC     		pop	{r4, r5, r6}
- 630 02f4 01BC     		pop	{r0}
- 631 02f6 0047     		bx	r0
- 632              	.L90:
- 633              		.align	2
- 634              	.L89:
- 635 02f8 FFFFFF00 		.word	16777215
- 636 02fc 4D503300 		.word	3362893
- 637 0300 00000000 		.word	file_name
- 638 0304 00000000 		.word	files
- 639 0308 00000000 		.word	list
- 640              	.LFE4:
- 641              		.size	getFileNames, .-getFileNames
- 642              		.section	.rodata.str1.4
- 643 00e3 00       		.subsection	-1
- 644              		.align	2
- 645              	.LC61:
- 646 0000 00       		.ascii	"\000"
- 647              		.global	__modsi3
- 648              		.text
- 649              		.align	2
- 650              		.global	MMCproc
- 651              		.code 16
- 652              		.thumb_func
- 653              		.type	MMCproc, %function
- 654              	MMCproc:
- 655              	.LFB7:
- 245:testMMC.c     **** 
- 246:testMMC.c     **** void MMCproc(void)
- 247:testMMC.c     **** {
- 656              		.loc 1 247 0
- 657 030c 70B5     		push	{r4, r5, r6, lr}
- 658              	.LCFI5:
- 248:testMMC.c     **** 			char* toReturn;
- 249:testMMC.c     **** 			toReturn = initMMC();
- 659              		.loc 1 249 0
- 660 030e FFF7FEFF 		bl	initMMC
- 250:testMMC.c     **** 			mmcInitialized = 1;
- 661              		.loc 1 250 0
- 662 0312 464A     		ldr	r2, .L119
- 663 0314 0121     		mov	r1, #1
- 664 0316 1170     		strb	r1, [r2]
- 665              	.LVL52:
- 251:testMMC.c     **** 			if(!(toReturn[0] == 'O' && toReturn[1] == 'K'))
- 666              		.loc 1 251 0
- 667 0318 0378     		ldrb	r3, [r0]
- 668 031a 4F2B     		cmp	r3, #79
- 669 031c 02D1     		bne	.L92
- 670 031e 4378     		ldrb	r3, [r0, #1]
- 671 0320 4B2B     		cmp	r3, #75
- 672 0322 05D0     		beq	.L94
- 673              	.L92:
- 252:testMMC.c     **** 			{
- 253:testMMC.c     **** 				isError = 1;
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 18
-
-
- 674              		.loc 1 253 0
- 675 0324 424B     		ldr	r3, .L119+4
- 676 0326 1960     		str	r1, [r3]
- 254:testMMC.c     **** 				error = toReturn;
- 677              		.loc 1 254 0
- 678 0328 424B     		ldr	r3, .L119+8
- 679 032a 1860     		str	r0, [r3]
- 255:testMMC.c     **** 				mmcInitialized = 0;
- 680              		.loc 1 255 0
- 681 032c 0023     		mov	r3, #0
- 682 032e 1370     		strb	r3, [r2]
- 683              	.L94:
- 684 0330 414C     		ldr	r4, .L119+12
- 685 0332 4249     		ldr	r1, .L119+16
- 686 0334 424B     		ldr	r3, .L119+20
- 687 0336 6218     		add	r2, r4, r1
- 688              	.L95:
- 256:testMMC.c     **** 			}
- 257:testMMC.c     **** 	int i;
- 258:testMMC.c     **** 	for(i = 0; i < 99; i++)
- 259:testMMC.c     **** 	{
- 260:testMMC.c     **** 		files[i][0] = "";
- 689              		.loc 1 260 0
- 690 0338 2370     		strb	r3, [r4]
- 691 033a 0D34     		add	r4, r4, #13
- 692              		.loc 1 258 0
- 693 033c 9442     		cmp	r4, r2
- 694 033e FBD1     		bne	.L95
- 261:testMMC.c     **** 	}
- 262:testMMC.c     **** 	getFileNames();
- 695              		.loc 1 262 0
- 696 0340 FFF7FEFF 		bl	getFileNames
- 697              	.LVL53:
- 263:testMMC.c     **** 	testMMC(&files[currentSongInfo.ID][0]);
- 698              		.loc 1 263 0
- 699 0344 3F4B     		ldr	r3, .L119+24
- 700 0346 1B7B     		ldrb	r3, [r3, #12]
- 701 0348 5800     		lsl	r0, r3, #1
- 702 034a C018     		add	r0, r0, r3
- 703 034c 3E4A     		ldr	r2, .L119+28
- 704 034e 8000     		lsl	r0, r0, #2
- 705 0350 C018     		add	r0, r0, r3
- 706 0352 A318     		add	r3, r4, r2
- 707 0354 C018     		add	r0, r0, r3
- 708 0356 FFF7FEFF 		bl	testMMC
- 709              	.L97:
- 264:testMMC.c     **** /*
- 265:testMMC.c     **** 	IODIR0 &= ~(1<<JOYSTICK_RIGHT);
- 266:testMMC.c     **** 	IOCLR0 |= (1<<JOYSTICK_RIGHT);*/
- 267:testMMC.c     **** 	while(1)
- 268:testMMC.c     **** 	{
- 269:testMMC.c     **** 		if(changeLeft == 1)
- 710              		.loc 1 269 0
- 711 035a 3C4D     		ldr	r5, .L119+32
- 712 035c 2B78     		ldrb	r3, [r5]
- 713 035e 012B     		cmp	r3, #1
- 714 0360 01D1     		bne	.L98
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 19
-
-
- 270:testMMC.c     **** 		{
- 271:testMMC.c     **** 			changeLeft = 0;
- 715              		.loc 1 271 0
- 716 0362 0023     		mov	r3, #0
- 717 0364 2B70     		strb	r3, [r5]
- 718              	.L98:
- 272:testMMC.c     **** 		}
- 273:testMMC.c     **** 		if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
- 719              		.loc 1 273 0
- 720 0366 3A4E     		ldr	r6, .L119+36
- 721 0368 3368     		ldr	r3, [r6]
- 722 036a 5903     		lsl	r1, r3, #13
- 723 036c 16D4     		bmi	.L100
- 274:testMMC.c     **** 		{
- 275:testMMC.c     **** 			 file_fclose(&file);
- 724              		.loc 1 275 0
- 725 036e 3948     		ldr	r0, .L119+40
- 726 0370 FFF7FEFF 		bl	file_fclose
- 276:testMMC.c     **** 			 currentSongInfo.ID = ((currentSongInfo.ID + 1) % 3);
- 727              		.loc 1 276 0
- 728 0374 334C     		ldr	r4, .L119+24
- 729 0376 207B     		ldrb	r0, [r4, #12]
- 730 0378 0321     		mov	r1, #3
- 731 037a 0130     		add	r0, r0, #1
- 732 037c FFF7FEFF 		bl	__modsi3
- 733 0380 0306     		lsl	r3, r0, #24
- 734 0382 1B0E     		lsr	r3, r3, #24
- 277:testMMC.c     **** 			 testMMC(&files[currentSongInfo.ID][0]);
- 735              		.loc 1 277 0
- 736 0384 5800     		lsl	r0, r3, #1
- 737 0386 C018     		add	r0, r0, r3
- 738 0388 8000     		lsl	r0, r0, #2
- 739              		.loc 1 276 0
- 740 038a 2373     		strb	r3, [r4, #12]
- 741              		.loc 1 277 0
- 742 038c C018     		add	r0, r0, r3
- 743 038e 2A4B     		ldr	r3, .L119+12
- 744 0390 C018     		add	r0, r0, r3
- 745 0392 FFF7FEFF 		bl	testMMC
- 278:testMMC.c     **** 			 changeRight=1;
- 746              		.loc 1 278 0
- 747 0396 304A     		ldr	r2, .L119+44
- 748 0398 0123     		mov	r3, #1
- 749 039a 1370     		strb	r3, [r2]
- 750              	.L100:
- 279:testMMC.c     **** 		}
- 280:testMMC.c     **** 
- 281:testMMC.c     **** 		if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
- 751              		.loc 1 281 0
- 752 039c 3368     		ldr	r3, [r6]
- 753 039e 1A03     		lsl	r2, r3, #12
- 754 03a0 15D4     		bmi	.L102
- 282:testMMC.c     **** 		{
- 283:testMMC.c     **** 			file_fclose(&file);
- 755              		.loc 1 283 0
- 756 03a2 2C48     		ldr	r0, .L119+40
- 757 03a4 FFF7FEFF 		bl	file_fclose
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 20
-
-
- 284:testMMC.c     **** 			currentSongInfo.ID = ((currentSongInfo.ID - 1) % 3);
- 758              		.loc 1 284 0
- 759 03a8 264C     		ldr	r4, .L119+24
- 760 03aa 207B     		ldrb	r0, [r4, #12]
- 761 03ac 0321     		mov	r1, #3
- 762 03ae 0138     		sub	r0, r0, #1
- 763 03b0 FFF7FEFF 		bl	__modsi3
- 764 03b4 0306     		lsl	r3, r0, #24
- 765 03b6 1B0E     		lsr	r3, r3, #24
- 285:testMMC.c     **** 			if(currentSongInfo.ID < 0) currentSongInfo.ID = -currentSongInfo.ID;
- 286:testMMC.c     **** 			testMMC(&files[currentSongInfo.ID][0]);
- 766              		.loc 1 286 0
- 767 03b8 5800     		lsl	r0, r3, #1
- 768 03ba C018     		add	r0, r0, r3
- 769 03bc 8000     		lsl	r0, r0, #2
- 770              		.loc 1 284 0
- 771 03be 2373     		strb	r3, [r4, #12]
- 772              		.loc 1 286 0
- 773 03c0 C018     		add	r0, r0, r3
- 774 03c2 1D4B     		ldr	r3, .L119+12
- 775 03c4 C018     		add	r0, r0, r3
- 776 03c6 FFF7FEFF 		bl	testMMC
- 287:testMMC.c     **** 			changeLeft=1;
- 777              		.loc 1 287 0
- 778 03ca 0123     		mov	r3, #1
- 779 03cc 2B70     		strb	r3, [r5]
- 780              	.L102:
- 288:testMMC.c     **** 		}
- 289:testMMC.c     **** 		if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
- 781              		.loc 1 289 0
- 782 03ce 3368     		ldr	r3, [r6]
- 783 03d0 9903     		lsl	r1, r3, #14
- 784 03d2 08D4     		bmi	.L104
- 290:testMMC.c     **** 		{
- 291:testMMC.c     **** 			volumeUp = 1;
- 785              		.loc 1 291 0
- 786 03d4 214A     		ldr	r2, .L119+48
- 787 03d6 0123     		mov	r3, #1
- 788 03d8 1370     		strb	r3, [r2]
- 292:testMMC.c     **** 			if(currentVolume < 9) currentVolume++;
- 789              		.loc 1 292 0
- 790 03da 214A     		ldr	r2, .L119+52
- 791 03dc 1378     		ldrb	r3, [r2]
- 792 03de 082B     		cmp	r3, #8
- 793 03e0 01D8     		bhi	.L104
- 794 03e2 0133     		add	r3, r3, #1
- 795 03e4 1370     		strb	r3, [r2]
- 796              	.L104:
- 293:testMMC.c     **** 		}
- 294:testMMC.c     **** 		if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
- 797              		.loc 1 294 0
- 798 03e6 1A4B     		ldr	r3, .L119+36
- 799 03e8 1B68     		ldr	r3, [r3]
- 800 03ea DA02     		lsl	r2, r3, #11
- 801 03ec 08D4     		bmi	.L107
- 295:testMMC.c     **** 		{
- 296:testMMC.c     **** 			volumeDown = 1;
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 21
-
-
- 802              		.loc 1 296 0
- 803 03ee 1D4A     		ldr	r2, .L119+56
- 804 03f0 0123     		mov	r3, #1
- 805 03f2 1370     		strb	r3, [r2]
- 297:testMMC.c     **** 			if(currentVolume > 0) currentVolume--;
- 806              		.loc 1 297 0
- 807 03f4 1A4A     		ldr	r2, .L119+52
- 808 03f6 1378     		ldrb	r3, [r2]
- 809 03f8 002B     		cmp	r3, #0
- 810 03fa 01D0     		beq	.L107
- 811 03fc 013B     		sub	r3, r3, #1
- 812 03fe 1370     		strb	r3, [r2]
- 813              	.L107:
- 298:testMMC.c     **** 		}
- 299:testMMC.c     **** 		if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
- 814              		.loc 1 299 0
- 815 0400 134B     		ldr	r3, .L119+36
- 816 0402 1B68     		ldr	r3, [r3]
- 817 0404 5904     		lsl	r1, r3, #17
- 818 0406 01D4     		bmi	.L110
- 300:testMMC.c     **** 		{
- 301:testMMC.c     **** 			playTestSound();
- 819              		.loc 1 301 0
- 820 0408 FFF7FEFF 		bl	playTestSound
- 821              	.L110:
- 302:testMMC.c     **** 		}
- 303:testMMC.c     **** 		if(rewindForward == 1)
- 822              		.loc 1 303 0
- 823 040c 164A     		ldr	r2, .L119+60
- 824 040e 1378     		ldrb	r3, [r2]
- 825 0410 012B     		cmp	r3, #1
- 826 0412 01D1     		bne	.L112
- 304:testMMC.c     **** 		{
- 305:testMMC.c     **** 			rewindForward = 0;
- 827              		.loc 1 305 0
- 828 0414 0023     		mov	r3, #0
- 829 0416 1370     		strb	r3, [r2]
- 830              	.L112:
- 306:testMMC.c     **** 		}
- 307:testMMC.c     **** 		if(rewindBackward == 1)
- 831              		.loc 1 307 0
- 832 0418 144A     		ldr	r2, .L119+64
- 833 041a 1378     		ldrb	r3, [r2]
- 834 041c 012B     		cmp	r3, #1
- 835 041e 01D1     		bne	.L114
- 308:testMMC.c     **** 		{
- 309:testMMC.c     **** 			rewindBackward = 0;
- 836              		.loc 1 309 0
- 837 0420 0023     		mov	r3, #0
- 838 0422 1370     		strb	r3, [r2]
- 839              	.L114:
- 310:testMMC.c     **** 		}
- 311:testMMC.c     **** 
- 312:testMMC.c     **** 		 osSleep(25);
- 840              		.loc 1 312 0
- 841 0424 1920     		mov	r0, #25
- 842 0426 FFF7FEFF 		bl	osSleep
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 22
-
-
- 843 042a 96E7     		b	.L97
- 844              	.L120:
- 845              		.align	2
- 846              	.L119:
- 847 042c 00000000 		.word	mmcInitialized
- 848 0430 00000000 		.word	isError
- 849 0434 00000000 		.word	error
- 850 0438 00000000 		.word	files
- 851 043c 07050000 		.word	1287
- 852 0440 00000000 		.word	.LC61
- 853 0444 00000000 		.word	currentSongInfo
- 854 0448 F9FAFFFF 		.word	-1287
- 855 044c 00000000 		.word	changeLeft
- 856 0450 008002E0 		.word	-536707072
- 857 0454 00000000 		.word	file
- 858 0458 00000000 		.word	changeRight
- 859 045c 00000000 		.word	volumeUp
- 860 0460 00000000 		.word	currentVolume
- 861 0464 00000000 		.word	volumeDown
- 862 0468 00000000 		.word	rewindForward
- 863 046c 00000000 		.word	rewindBackward
- 864              	.LFE7:
- 865              		.size	MMCproc, .-MMCproc
- 866              		.global	id3TagSize
- 867              		.data
- 868              		.type	id3TagSize, %object
- 869              		.size	id3TagSize, 1
- 870              	id3TagSize:
- 871 0000 80       		.byte	-128
- 872              		.global	readSize
- 873              		.type	readSize, %object
- 874              		.size	readSize, 1
- 875              	readSize:
- 876 0001 1E       		.byte	30
- 877              		.global	titleOffset
- 878 0002 0000     		.align	2
- 879              		.type	titleOffset, %object
- 880              		.size	titleOffset, 4
- 881              	titleOffset:
- 882 0004 03000000 		.word	3
- 883              		.global	authorOffset
- 884              		.align	2
- 885              		.type	authorOffset, %object
- 886              		.size	authorOffset, 4
- 887              	authorOffset:
- 888 0008 21000000 		.word	33
- 889              		.comm	currentSongInfo,16,4
- 890              		.comm	mmcInitialized,1,1
- 891              		.comm	changeLeft,1,1
- 892              		.comm	changeRight,1,1
- 893              		.comm	rewindForward,1,1
- 894              		.comm	rewindBackward,1,1
- 895              		.comm	volumeUp,1,1
- 896              		.comm	volumeDown,1,1
- 897              		.comm	isError,4,4
- 898              		.comm	error,4,4
- 899              		.comm	fileSize,4,4
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 23
-
-
- 900              		.comm	myName,30,1
- 901              		.comm	myAuthor,30,1
- 902              		.comm	efs,708,4
- 903              		.comm	file,80,4
- 904              		.comm	list,52,4
- 905              		.comm	file_name,13,1
- 906              		.comm	size,4,4
- 907              		.comm	files,3328,1
- 908              		.section	.debug_frame,"",%progbits
- 909              	.Lframe0:
- 910 0000 0C000000 		.4byte	.LECIE0-.LSCIE0
- 911              	.LSCIE0:
- 912 0004 FFFFFFFF 		.4byte	0xffffffff
- 913 0008 01       		.byte	0x1
- 914 0009 00       		.ascii	"\000"
- 915 000a 01       		.uleb128 0x1
- 916 000b 7C       		.sleb128 -4
- 917 000c 0E       		.byte	0xe
- 918 000d 0C       		.byte	0xc
- 919 000e 0D       		.uleb128 0xd
- 920 000f 00       		.uleb128 0x0
- 921              		.align	2
- 922              	.LECIE0:
- 923              	.LSFDE0:
- 924 0010 1C000000 		.4byte	.LEFDE0-.LASFDE0
- 925              	.LASFDE0:
- 926 0014 00000000 		.4byte	.Lframe0
- 927 0018 00000000 		.4byte	.LFB6
- 928 001c 90000000 		.4byte	.LFE6-.LFB6
- 929 0020 42       		.byte	0x4
- 930              		.4byte	.LCFI0-.LFB6
- 931 0021 0E       		.byte	0xe
- 932 0022 14       		.uleb128 0x14
- 933 0023 84       		.byte	0x84
- 934 0024 05       		.uleb128 0x5
- 935 0025 85       		.byte	0x85
- 936 0026 04       		.uleb128 0x4
- 937 0027 86       		.byte	0x86
- 938 0028 03       		.uleb128 0x3
- 939 0029 87       		.byte	0x87
- 940 002a 02       		.uleb128 0x2
- 941 002b 8E       		.byte	0x8e
- 942 002c 01       		.uleb128 0x1
- 943 002d 000000   		.align	2
- 944              	.LEFDE0:
- 945              	.LSFDE2:
- 946 0030 1C000000 		.4byte	.LEFDE2-.LASFDE2
- 947              	.LASFDE2:
- 948 0034 00000000 		.4byte	.Lframe0
- 949 0038 90000000 		.4byte	.LFB5
- 950 003c E0000000 		.4byte	.LFE5-.LFB5
- 951 0040 42       		.byte	0x4
- 952              		.4byte	.LCFI1-.LFB5
- 953 0041 0E       		.byte	0xe
- 954 0042 14       		.uleb128 0x14
- 955 0043 84       		.byte	0x84
- 956 0044 05       		.uleb128 0x5
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 24
-
-
- 957 0045 85       		.byte	0x85
- 958 0046 04       		.uleb128 0x4
- 959 0047 86       		.byte	0x86
- 960 0048 03       		.uleb128 0x3
- 961 0049 87       		.byte	0x87
- 962 004a 02       		.uleb128 0x2
- 963 004b 8E       		.byte	0x8e
- 964 004c 01       		.uleb128 0x1
- 965 004d 000000   		.align	2
- 966              	.LEFDE2:
- 967              	.LSFDE4:
- 968 0050 14000000 		.4byte	.LEFDE4-.LASFDE4
- 969              	.LASFDE4:
- 970 0054 00000000 		.4byte	.Lframe0
- 971 0058 70010000 		.4byte	.LFB3
- 972 005c E8000000 		.4byte	.LFE3-.LFB3
- 973 0060 42       		.byte	0x4
- 974              		.4byte	.LCFI2-.LFB3
- 975 0061 0E       		.byte	0xe
- 976 0062 04       		.uleb128 0x4
- 977 0063 8E       		.byte	0x8e
- 978 0064 01       		.uleb128 0x1
- 979 0065 000000   		.align	2
- 980              	.LEFDE4:
- 981              	.LSFDE6:
- 982 0068 18000000 		.4byte	.LEFDE6-.LASFDE6
- 983              	.LASFDE6:
- 984 006c 00000000 		.4byte	.Lframe0
- 985 0070 58020000 		.4byte	.LFB2
- 986 0074 56000000 		.4byte	.LFE2-.LFB2
- 987 0078 42       		.byte	0x4
- 988              		.4byte	.LCFI3-.LFB2
- 989 0079 0E       		.byte	0xe
- 990 007a 10       		.uleb128 0x10
- 991 007b 84       		.byte	0x84
- 992 007c 04       		.uleb128 0x4
- 993 007d 85       		.byte	0x85
- 994 007e 03       		.uleb128 0x3
- 995 007f 86       		.byte	0x86
- 996 0080 02       		.uleb128 0x2
- 997 0081 8E       		.byte	0x8e
- 998 0082 01       		.uleb128 0x1
- 999 0083 00       		.align	2
- 1000              	.LEFDE6:
- 1001              	.LSFDE8:
- 1002 0084 18000000 		.4byte	.LEFDE8-.LASFDE8
- 1003              	.LASFDE8:
- 1004 0088 00000000 		.4byte	.Lframe0
- 1005 008c B0020000 		.4byte	.LFB4
- 1006 0090 5C000000 		.4byte	.LFE4-.LFB4
- 1007 0094 42       		.byte	0x4
- 1008              		.4byte	.LCFI4-.LFB4
- 1009 0095 0E       		.byte	0xe
- 1010 0096 10       		.uleb128 0x10
- 1011 0097 84       		.byte	0x84
- 1012 0098 04       		.uleb128 0x4
- 1013 0099 85       		.byte	0x85
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 25
-
-
- 1014 009a 03       		.uleb128 0x3
- 1015 009b 86       		.byte	0x86
- 1016 009c 02       		.uleb128 0x2
- 1017 009d 8E       		.byte	0x8e
- 1018 009e 01       		.uleb128 0x1
- 1019 009f 00       		.align	2
- 1020              	.LEFDE8:
- 1021              	.LSFDE10:
- 1022 00a0 18000000 		.4byte	.LEFDE10-.LASFDE10
- 1023              	.LASFDE10:
- 1024 00a4 00000000 		.4byte	.Lframe0
- 1025 00a8 0C030000 		.4byte	.LFB7
- 1026 00ac 64010000 		.4byte	.LFE7-.LFB7
- 1027 00b0 42       		.byte	0x4
- 1028              		.4byte	.LCFI5-.LFB7
- 1029 00b1 0E       		.byte	0xe
- 1030 00b2 10       		.uleb128 0x10
- 1031 00b3 84       		.byte	0x84
- 1032 00b4 04       		.uleb128 0x4
- 1033 00b5 85       		.byte	0x85
- 1034 00b6 03       		.uleb128 0x3
- 1035 00b7 86       		.byte	0x86
- 1036 00b8 02       		.uleb128 0x2
- 1037 00b9 8E       		.byte	0x8e
- 1038 00ba 01       		.uleb128 0x1
- 1039 00bb 00       		.align	2
- 1040              	.LEFDE10:
- 1041              		.file 2 "./pre_emptive_os/api/general.h"
- 1042              		.file 3 "mp3shared.h"
- 1043              		.file 4 "./filesys/efs.h"
- 1044              		.file 5 "./filesys/../mmc/hwinterface.h"
- 1045              		.file 6 "./filesys/ioman.h"
- 1046              		.file 7 "./filesys/../mmc/types.h"
- 1047              		.file 8 "./filesys/disc.h"
- 1048              		.file 9 "./filesys/partition.h"
- 1049              		.file 10 "./filesys/fs.h"
- 1050              		.file 11 "./filesys/file.h"
- 1051              		.file 12 "./filesys/ls.h"
- 1052              		.text
- 1053              	.Letext0:
- 1054              		.section	.debug_loc,"",%progbits
- 1055              	.Ldebug_loc0:
- 1056              	.LLST0:
- 1057 0000 00000000 		.4byte	.LFB6-.Ltext0
- 1058 0004 02000000 		.4byte	.LCFI0-.Ltext0
- 1059 0008 0100     		.2byte	0x1
- 1060 000a 5D       		.byte	0x5d
- 1061 000b 02000000 		.4byte	.LCFI0-.Ltext0
- 1062 000f 90000000 		.4byte	.LFE6-.Ltext0
- 1063 0013 0200     		.2byte	0x2
- 1064 0015 7D       		.byte	0x7d
- 1065 0016 14       		.sleb128 20
- 1066 0017 00000000 		.4byte	0x0
- 1067 001b 00000000 		.4byte	0x0
- 1068              	.LLST1:
- 1069 001f 06000000 		.4byte	.LVL0-.Ltext0
- 1070 0023 10000000 		.4byte	.LVL2-.Ltext0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 26
-
-
- 1071 0027 0100     		.2byte	0x1
- 1072 0029 52       		.byte	0x52
- 1073 002a 5C000000 		.4byte	.LVL4-.Ltext0
- 1074 002e 90000000 		.4byte	.LFE6-.Ltext0
- 1075 0032 0100     		.2byte	0x1
- 1076 0034 52       		.byte	0x52
- 1077 0035 00000000 		.4byte	0x0
- 1078 0039 00000000 		.4byte	0x0
- 1079              	.LLST2:
- 1080 003d 06000000 		.4byte	.LVL0-.Ltext0
- 1081 0041 08000000 		.4byte	.LVL1-.Ltext0
- 1082 0045 0100     		.2byte	0x1
- 1083 0047 50       		.byte	0x50
- 1084 0048 38000000 		.4byte	.LVL3-.Ltext0
- 1085 004c 90000000 		.4byte	.LFE6-.Ltext0
- 1086 0050 0100     		.2byte	0x1
- 1087 0052 50       		.byte	0x50
- 1088 0053 00000000 		.4byte	0x0
- 1089 0057 00000000 		.4byte	0x0
- 1090              	.LLST3:
- 1091 005b 90000000 		.4byte	.LFB5-.Ltext0
- 1092 005f 92000000 		.4byte	.LCFI1-.Ltext0
- 1093 0063 0100     		.2byte	0x1
- 1094 0065 5D       		.byte	0x5d
- 1095 0066 92000000 		.4byte	.LCFI1-.Ltext0
- 1096 006a 70010000 		.4byte	.LFE5-.Ltext0
- 1097 006e 0200     		.2byte	0x2
- 1098 0070 7D       		.byte	0x7d
- 1099 0071 14       		.sleb128 20
- 1100 0072 00000000 		.4byte	0x0
- 1101 0076 00000000 		.4byte	0x0
- 1102              	.LLST4:
- 1103 007a 92000000 		.4byte	.LVL5-.Ltext0
- 1104 007e 98000000 		.4byte	.LVL6-.Ltext0
- 1105 0082 0100     		.2byte	0x1
- 1106 0084 50       		.byte	0x50
- 1107 0085 98000000 		.4byte	.LVL6-.Ltext0
- 1108 0089 9E000000 		.4byte	.LVL7-.Ltext0
- 1109 008d 0100     		.2byte	0x1
- 1110 008f 52       		.byte	0x52
- 1111 0090 00000000 		.4byte	0x0
- 1112 0094 00000000 		.4byte	0x0
- 1113              	.LLST5:
- 1114 0098 AA000000 		.4byte	.LVL8-.Ltext0
- 1115 009c CA000000 		.4byte	.LVL9-.Ltext0
- 1116 00a0 0100     		.2byte	0x1
- 1117 00a2 51       		.byte	0x51
- 1118 00a3 00000000 		.4byte	0x0
- 1119 00a7 00000000 		.4byte	0x0
- 1120              	.LLST6:
- 1121 00ab 70010000 		.4byte	.LFB3-.Ltext0
- 1122 00af 72010000 		.4byte	.LCFI2-.Ltext0
- 1123 00b3 0100     		.2byte	0x1
- 1124 00b5 5D       		.byte	0x5d
- 1125 00b6 72010000 		.4byte	.LCFI2-.Ltext0
- 1126 00ba 58020000 		.4byte	.LFE3-.Ltext0
- 1127 00be 0200     		.2byte	0x2
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 27
-
-
- 1128 00c0 7D       		.byte	0x7d
- 1129 00c1 04       		.sleb128 4
- 1130 00c2 00000000 		.4byte	0x0
- 1131 00c6 00000000 		.4byte	0x0
- 1132              	.LLST7:
- 1133 00ca 80010000 		.4byte	.LVL12-.Ltext0
- 1134 00ce 82010000 		.4byte	.LVL13-.Ltext0
- 1135 00d2 0100     		.2byte	0x1
- 1136 00d4 50       		.byte	0x50
- 1137 00d5 88010000 		.4byte	.LVL14-.Ltext0
- 1138 00d9 8A010000 		.4byte	.LVL15-.Ltext0
- 1139 00dd 0100     		.2byte	0x1
- 1140 00df 50       		.byte	0x50
- 1141 00e0 90010000 		.4byte	.LVL16-.Ltext0
- 1142 00e4 92010000 		.4byte	.LVL17-.Ltext0
- 1143 00e8 0100     		.2byte	0x1
- 1144 00ea 50       		.byte	0x50
- 1145 00eb 98010000 		.4byte	.LVL18-.Ltext0
- 1146 00ef 9A010000 		.4byte	.LVL19-.Ltext0
- 1147 00f3 0100     		.2byte	0x1
- 1148 00f5 50       		.byte	0x50
- 1149 00f6 A2010000 		.4byte	.LVL20-.Ltext0
- 1150 00fa A4010000 		.4byte	.LVL21-.Ltext0
- 1151 00fe 0100     		.2byte	0x1
- 1152 0100 50       		.byte	0x50
- 1153 0101 AC010000 		.4byte	.LVL22-.Ltext0
- 1154 0105 AE010000 		.4byte	.LVL23-.Ltext0
- 1155 0109 0100     		.2byte	0x1
- 1156 010b 50       		.byte	0x50
- 1157 010c B6010000 		.4byte	.LVL24-.Ltext0
- 1158 0110 B8010000 		.4byte	.LVL25-.Ltext0
- 1159 0114 0100     		.2byte	0x1
- 1160 0116 50       		.byte	0x50
- 1161 0117 C0010000 		.4byte	.LVL26-.Ltext0
- 1162 011b C2010000 		.4byte	.LVL27-.Ltext0
- 1163 011f 0100     		.2byte	0x1
- 1164 0121 50       		.byte	0x50
- 1165 0122 CA010000 		.4byte	.LVL28-.Ltext0
- 1166 0126 CC010000 		.4byte	.LVL29-.Ltext0
- 1167 012a 0100     		.2byte	0x1
- 1168 012c 50       		.byte	0x50
- 1169 012d D4010000 		.4byte	.LVL30-.Ltext0
- 1170 0131 D6010000 		.4byte	.LVL31-.Ltext0
- 1171 0135 0100     		.2byte	0x1
- 1172 0137 50       		.byte	0x50
- 1173 0138 DE010000 		.4byte	.LVL32-.Ltext0
- 1174 013c E0010000 		.4byte	.LVL33-.Ltext0
- 1175 0140 0100     		.2byte	0x1
- 1176 0142 50       		.byte	0x50
- 1177 0143 E6010000 		.4byte	.LVL35-.Ltext0
- 1178 0147 E8010000 		.4byte	.LVL36-.Ltext0
- 1179 014b 0100     		.2byte	0x1
- 1180 014d 50       		.byte	0x50
- 1181 014e FA010000 		.4byte	.LVL37-.Ltext0
- 1182 0152 FC010000 		.4byte	.LVL38-.Ltext0
- 1183 0156 0100     		.2byte	0x1
- 1184 0158 50       		.byte	0x50
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 28
-
-
- 1185 0159 04020000 		.4byte	.LVL39-.Ltext0
- 1186 015d 04020000 		.4byte	.LVL40-.Ltext0
- 1187 0161 0100     		.2byte	0x1
- 1188 0163 50       		.byte	0x50
- 1189 0164 00000000 		.4byte	0x0
- 1190 0168 00000000 		.4byte	0x0
- 1191              	.LLST8:
- 1192 016c 7A010000 		.4byte	.LVL11-.Ltext0
- 1193 0170 80010000 		.4byte	.LVL12-.Ltext0
- 1194 0174 0100     		.2byte	0x1
- 1195 0176 50       		.byte	0x50
- 1196 0177 82010000 		.4byte	.LVL13-.Ltext0
- 1197 017b 88010000 		.4byte	.LVL14-.Ltext0
- 1198 017f 0100     		.2byte	0x1
- 1199 0181 50       		.byte	0x50
- 1200 0182 8A010000 		.4byte	.LVL15-.Ltext0
- 1201 0186 90010000 		.4byte	.LVL16-.Ltext0
- 1202 018a 0100     		.2byte	0x1
- 1203 018c 50       		.byte	0x50
- 1204 018d 92010000 		.4byte	.LVL17-.Ltext0
- 1205 0191 98010000 		.4byte	.LVL18-.Ltext0
- 1206 0195 0100     		.2byte	0x1
- 1207 0197 50       		.byte	0x50
- 1208 0198 9A010000 		.4byte	.LVL19-.Ltext0
- 1209 019c A2010000 		.4byte	.LVL20-.Ltext0
- 1210 01a0 0100     		.2byte	0x1
- 1211 01a2 50       		.byte	0x50
- 1212 01a3 A4010000 		.4byte	.LVL21-.Ltext0
- 1213 01a7 AC010000 		.4byte	.LVL22-.Ltext0
- 1214 01ab 0100     		.2byte	0x1
- 1215 01ad 50       		.byte	0x50
- 1216 01ae AE010000 		.4byte	.LVL23-.Ltext0
- 1217 01b2 B6010000 		.4byte	.LVL24-.Ltext0
- 1218 01b6 0100     		.2byte	0x1
- 1219 01b8 50       		.byte	0x50
- 1220 01b9 B8010000 		.4byte	.LVL25-.Ltext0
- 1221 01bd C0010000 		.4byte	.LVL26-.Ltext0
- 1222 01c1 0100     		.2byte	0x1
- 1223 01c3 50       		.byte	0x50
- 1224 01c4 C2010000 		.4byte	.LVL27-.Ltext0
- 1225 01c8 CA010000 		.4byte	.LVL28-.Ltext0
- 1226 01cc 0100     		.2byte	0x1
- 1227 01ce 50       		.byte	0x50
- 1228 01cf CC010000 		.4byte	.LVL29-.Ltext0
- 1229 01d3 D4010000 		.4byte	.LVL30-.Ltext0
- 1230 01d7 0100     		.2byte	0x1
- 1231 01d9 50       		.byte	0x50
- 1232 01da D6010000 		.4byte	.LVL31-.Ltext0
- 1233 01de DE010000 		.4byte	.LVL32-.Ltext0
- 1234 01e2 0100     		.2byte	0x1
- 1235 01e4 50       		.byte	0x50
- 1236 01e5 E0010000 		.4byte	.LVL33-.Ltext0
- 1237 01e9 E4010000 		.4byte	.LVL34-.Ltext0
- 1238 01ed 0100     		.2byte	0x1
- 1239 01ef 50       		.byte	0x50
- 1240 01f0 00000000 		.4byte	0x0
- 1241 01f4 00000000 		.4byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 29
-
-
- 1242              	.LLST9:
- 1243 01f8 58020000 		.4byte	.LFB2-.Ltext0
- 1244 01fc 5A020000 		.4byte	.LCFI3-.Ltext0
- 1245 0200 0100     		.2byte	0x1
- 1246 0202 5D       		.byte	0x5d
- 1247 0203 5A020000 		.4byte	.LCFI3-.Ltext0
- 1248 0207 AE020000 		.4byte	.LFE2-.Ltext0
- 1249 020b 0200     		.2byte	0x2
- 1250 020d 7D       		.byte	0x7d
- 1251 020e 10       		.sleb128 16
- 1252 020f 00000000 		.4byte	0x0
- 1253 0213 00000000 		.4byte	0x0
- 1254              	.LLST10:
- 1255 0217 5A020000 		.4byte	.LVL41-.Ltext0
- 1256 021b 64020000 		.4byte	.LVL43-.Ltext0
- 1257 021f 0100     		.2byte	0x1
- 1258 0221 50       		.byte	0x50
- 1259 0222 64020000 		.4byte	.LVL43-.Ltext0
- 1260 0226 A8020000 		.4byte	.LVL51-.Ltext0
- 1261 022a 0100     		.2byte	0x1
- 1262 022c 56       		.byte	0x56
- 1263 022d 00000000 		.4byte	0x0
- 1264 0231 00000000 		.4byte	0x0
- 1265              	.LLST11:
- 1266 0235 5A020000 		.4byte	.LVL41-.Ltext0
- 1267 0239 80020000 		.4byte	.LVL44-.Ltext0
- 1268 023d 0100     		.2byte	0x1
- 1269 023f 51       		.byte	0x51
- 1270 0240 80020000 		.4byte	.LVL44-.Ltext0
- 1271 0244 A8020000 		.4byte	.LVL50-.Ltext0
- 1272 0248 0100     		.2byte	0x1
- 1273 024a 55       		.byte	0x55
- 1274 024b 00000000 		.4byte	0x0
- 1275 024f 00000000 		.4byte	0x0
- 1276              	.LLST12:
- 1277 0253 62020000 		.4byte	.LVL42-.Ltext0
- 1278 0257 82020000 		.4byte	.LVL45-.Ltext0
- 1279 025b 0100     		.2byte	0x1
- 1280 025d 54       		.byte	0x54
- 1281 025e 00000000 		.4byte	0x0
- 1282 0262 00000000 		.4byte	0x0
- 1283              	.LLST13:
- 1284 0266 8E020000 		.4byte	.LVL46-.Ltext0
- 1285 026a 90020000 		.4byte	.LVL47-.Ltext0
- 1286 026e 0100     		.2byte	0x1
- 1287 0270 52       		.byte	0x52
- 1288 0271 98020000 		.4byte	.LVL48-.Ltext0
- 1289 0275 A0020000 		.4byte	.LVL49-.Ltext0
- 1290 0279 0100     		.2byte	0x1
- 1291 027b 52       		.byte	0x52
- 1292 027c 00000000 		.4byte	0x0
- 1293 0280 00000000 		.4byte	0x0
- 1294              	.LLST14:
- 1295 0284 B0020000 		.4byte	.LFB4-.Ltext0
- 1296 0288 B2020000 		.4byte	.LCFI4-.Ltext0
- 1297 028c 0100     		.2byte	0x1
- 1298 028e 5D       		.byte	0x5d
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 30
-
-
- 1299 028f B2020000 		.4byte	.LCFI4-.Ltext0
- 1300 0293 0C030000 		.4byte	.LFE4-.Ltext0
- 1301 0297 0200     		.2byte	0x2
- 1302 0299 7D       		.byte	0x7d
- 1303 029a 10       		.sleb128 16
- 1304 029b 00000000 		.4byte	0x0
- 1305 029f 00000000 		.4byte	0x0
- 1306              	.LLST15:
- 1307 02a3 0C030000 		.4byte	.LFB7-.Ltext0
- 1308 02a7 0E030000 		.4byte	.LCFI5-.Ltext0
- 1309 02ab 0100     		.2byte	0x1
- 1310 02ad 5D       		.byte	0x5d
- 1311 02ae 0E030000 		.4byte	.LCFI5-.Ltext0
- 1312 02b2 70040000 		.4byte	.LFE7-.Ltext0
- 1313 02b6 0200     		.2byte	0x2
- 1314 02b8 7D       		.byte	0x7d
- 1315 02b9 10       		.sleb128 16
- 1316 02ba 00000000 		.4byte	0x0
- 1317 02be 00000000 		.4byte	0x0
- 1318              	.LLST16:
- 1319 02c2 18030000 		.4byte	.LVL52-.Ltext0
- 1320 02c6 44030000 		.4byte	.LVL53-.Ltext0
- 1321 02ca 0100     		.2byte	0x1
- 1322 02cc 50       		.byte	0x50
- 1323 02cd 00000000 		.4byte	0x0
- 1324 02d1 00000000 		.4byte	0x0
- 1325              		.section	.debug_info
- 1326 0000 070C0000 		.4byte	0xc07
- 1327 0004 0200     		.2byte	0x2
- 1328 0006 00000000 		.4byte	.Ldebug_abbrev0
- 1329 000a 04       		.byte	0x4
- 1330 000b 01       		.uleb128 0x1
- 1331 000c 00000000 		.4byte	.Ldebug_line0
- 1332 0010 70040000 		.4byte	.Letext0
- 1333 0014 00000000 		.4byte	.Ltext0
- 1334 0018 07050000 		.4byte	.LASF159
- 1335 001c 01       		.byte	0x1
- 1336 001d FE020000 		.4byte	.LASF160
- 1337 0021 45020000 		.4byte	.LASF161
- 1338 0025 02       		.uleb128 0x2
- 1339 0026 A1020000 		.4byte	.LASF0
- 1340 002a 04       		.byte	0x4
- 1341 002b 07       		.byte	0x7
- 1342 002c 03       		.uleb128 0x3
- 1343 002d 696E7400 		.ascii	"int\000"
- 1344 0031 04       		.byte	0x4
- 1345 0032 05       		.byte	0x5
- 1346 0033 02       		.uleb128 0x2
- 1347 0034 5E010000 		.4byte	.LASF1
- 1348 0038 04       		.byte	0x4
- 1349 0039 05       		.byte	0x5
- 1350 003a 02       		.uleb128 0x2
- 1351 003b FF000000 		.4byte	.LASF2
- 1352 003f 08       		.byte	0x8
- 1353 0040 05       		.byte	0x5
- 1354 0041 02       		.uleb128 0x2
- 1355 0042 7D020000 		.4byte	.LASF3
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 31
-
-
- 1356 0046 04       		.byte	0x4
- 1357 0047 07       		.byte	0x7
- 1358 0048 02       		.uleb128 0x2
- 1359 0049 A1020000 		.4byte	.LASF0
- 1360 004d 04       		.byte	0x4
- 1361 004e 07       		.byte	0x7
- 1362 004f 02       		.uleb128 0x2
- 1363 0050 E5040000 		.4byte	.LASF4
- 1364 0054 01       		.byte	0x1
- 1365 0055 08       		.byte	0x8
- 1366 0056 04       		.uleb128 0x4
- 1367 0057 04       		.byte	0x4
- 1368 0058 4F000000 		.4byte	0x4f
- 1369 005c 02       		.uleb128 0x2
- 1370 005d 30050000 		.4byte	.LASF5
- 1371 0061 02       		.byte	0x2
- 1372 0062 05       		.byte	0x5
- 1373 0063 04       		.uleb128 0x4
- 1374 0064 04       		.byte	0x4
- 1375 0065 69000000 		.4byte	0x69
- 1376 0069 02       		.uleb128 0x2
- 1377 006a AA050000 		.4byte	.LASF6
- 1378 006e 01       		.byte	0x1
- 1379 006f 08       		.byte	0x8
- 1380 0070 05       		.uleb128 0x5
- 1381 0071 80000000 		.4byte	0x80
- 1382 0075 4F000000 		.4byte	0x4f
- 1383 0079 06       		.uleb128 0x6
- 1384 007a 48000000 		.4byte	0x48
- 1385 007e 02       		.byte	0x2
- 1386 007f 00       		.byte	0x0
- 1387 0080 05       		.uleb128 0x5
- 1388 0081 90000000 		.4byte	0x90
- 1389 0085 4F000000 		.4byte	0x4f
- 1390 0089 06       		.uleb128 0x6
- 1391 008a 48000000 		.4byte	0x48
- 1392 008e 00       		.byte	0x0
- 1393 008f 00       		.byte	0x0
- 1394 0090 02       		.uleb128 0x2
- 1395 0091 D2020000 		.4byte	.LASF7
- 1396 0095 02       		.byte	0x2
- 1397 0096 07       		.byte	0x7
- 1398 0097 02       		.uleb128 0x2
- 1399 0098 A7000000 		.4byte	.LASF8
- 1400 009c 08       		.byte	0x8
- 1401 009d 07       		.byte	0x7
- 1402 009e 02       		.uleb128 0x2
- 1403 009f 0D010000 		.4byte	.LASF9
- 1404 00a3 01       		.byte	0x1
- 1405 00a4 06       		.byte	0x6
- 1406 00a5 07       		.uleb128 0x7
- 1407 00a6 4E030000 		.4byte	.LASF10
- 1408 00aa 02       		.byte	0x2
- 1409 00ab 49       		.byte	0x49
- 1410 00ac 41000000 		.4byte	0x41
- 1411 00b0 07       		.uleb128 0x7
- 1412 00b1 B8050000 		.4byte	.LASF11
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 32
-
-
- 1413 00b5 02       		.byte	0x2
- 1414 00b6 4C       		.byte	0x4c
- 1415 00b7 2C000000 		.4byte	0x2c
- 1416 00bb 07       		.uleb128 0x7
- 1417 00bc 02040000 		.4byte	.LASF12
- 1418 00c0 07       		.byte	0x7
- 1419 00c1 61       		.byte	0x61
- 1420 00c2 4F000000 		.4byte	0x4f
- 1421 00c6 08       		.uleb128 0x8
- 1422 00c7 E1000000 		.4byte	0xe1
- 1423 00cb 09040000 		.4byte	.LASF13
- 1424 00cf 04       		.byte	0x4
- 1425 00d0 05       		.byte	0x5
- 1426 00d1 13       		.byte	0x13
- 1427 00d2 09       		.uleb128 0x9
- 1428 00d3 37030000 		.4byte	.LASF15
- 1429 00d7 05       		.byte	0x5
- 1430 00d8 15       		.byte	0x15
- 1431 00d9 33000000 		.4byte	0x33
- 1432 00dd 02       		.byte	0x2
- 1433 00de 23       		.byte	0x23
- 1434 00df 00       		.uleb128 0x0
- 1435 00e0 00       		.byte	0x0
- 1436 00e1 07       		.uleb128 0x7
- 1437 00e2 09040000 		.4byte	.LASF13
- 1438 00e6 05       		.byte	0x5
- 1439 00e7 17       		.byte	0x17
- 1440 00e8 C6000000 		.4byte	0xc6
- 1441 00ec 08       		.uleb128 0x8
- 1442 00ed 23010000 		.4byte	0x123
- 1443 00f1 E3030000 		.4byte	.LASF14
- 1444 00f5 08       		.byte	0x8
- 1445 00f6 06       		.byte	0x6
- 1446 00f7 13       		.byte	0x13
- 1447 00f8 09       		.uleb128 0x9
- 1448 00f9 9A020000 		.4byte	.LASF16
- 1449 00fd 06       		.byte	0x6
- 1450 00fe 14       		.byte	0x14
- 1451 00ff 25000000 		.4byte	0x25
- 1452 0103 02       		.byte	0x2
- 1453 0104 23       		.byte	0x23
- 1454 0105 00       		.uleb128 0x0
- 1455 0106 09       		.uleb128 0x9
- 1456 0107 38060000 		.4byte	.LASF17
- 1457 010b 06       		.byte	0x6
- 1458 010c 15       		.byte	0x15
- 1459 010d 4F000000 		.4byte	0x4f
- 1460 0111 02       		.byte	0x2
- 1461 0112 23       		.byte	0x23
- 1462 0113 04       		.uleb128 0x4
- 1463 0114 09       		.uleb128 0x9
- 1464 0115 E8050000 		.4byte	.LASF18
- 1465 0119 06       		.byte	0x6
- 1466 011a 16       		.byte	0x16
- 1467 011b 4F000000 		.4byte	0x4f
- 1468 011f 02       		.byte	0x2
- 1469 0120 23       		.byte	0x23
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 33
-
-
- 1470 0121 05       		.uleb128 0x5
- 1471 0122 00       		.byte	0x0
- 1472 0123 07       		.uleb128 0x7
- 1473 0124 E3030000 		.4byte	.LASF14
- 1474 0128 06       		.byte	0x6
- 1475 0129 18       		.byte	0x18
- 1476 012a EC000000 		.4byte	0xec
- 1477 012e 0A       		.uleb128 0xa
- 1478 012f E4010000 		.4byte	0x1e4
- 1479 0133 B9030000 		.4byte	.LASF19
- 1480 0137 3002     		.2byte	0x230
- 1481 0139 06       		.byte	0x6
- 1482 013a 1A       		.byte	0x1a
- 1483 013b 09       		.uleb128 0x9
- 1484 013c 63060000 		.4byte	.LASF20
- 1485 0140 06       		.byte	0x6
- 1486 0141 1B       		.byte	0x1b
- 1487 0142 E4010000 		.4byte	0x1e4
- 1488 0146 02       		.byte	0x2
- 1489 0147 23       		.byte	0x23
- 1490 0148 00       		.uleb128 0x0
- 1491 0149 09       		.uleb128 0x9
- 1492 014a AB060000 		.4byte	.LASF21
- 1493 014e 06       		.byte	0x6
- 1494 014f 1D       		.byte	0x1d
- 1495 0150 56000000 		.4byte	0x56
- 1496 0154 02       		.byte	0x2
- 1497 0155 23       		.byte	0x23
- 1498 0156 04       		.uleb128 0x4
- 1499 0157 09       		.uleb128 0x9
- 1500 0158 C3030000 		.4byte	.LASF22
- 1501 015c 06       		.byte	0x6
- 1502 015d 1E       		.byte	0x1e
- 1503 015e 90000000 		.4byte	0x90
- 1504 0162 02       		.byte	0x2
- 1505 0163 23       		.byte	0x23
- 1506 0164 08       		.uleb128 0x8
- 1507 0165 09       		.uleb128 0x9
- 1508 0166 4D000000 		.4byte	.LASF23
- 1509 016a 06       		.byte	0x6
- 1510 016b 1F       		.byte	0x1f
- 1511 016c 90000000 		.4byte	0x90
- 1512 0170 02       		.byte	0x2
- 1513 0171 23       		.byte	0x23
- 1514 0172 0A       		.uleb128 0xa
- 1515 0173 09       		.uleb128 0x9
- 1516 0174 7A040000 		.4byte	.LASF24
- 1517 0178 06       		.byte	0x6
- 1518 0179 21       		.byte	0x21
- 1519 017a BB000000 		.4byte	0xbb
- 1520 017e 02       		.byte	0x2
- 1521 017f 23       		.byte	0x23
- 1522 0180 0C       		.uleb128 0xc
- 1523 0181 09       		.uleb128 0x9
- 1524 0182 69060000 		.4byte	.LASF25
- 1525 0186 06       		.byte	0x6
- 1526 0187 23       		.byte	0x23
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 34
-
-
- 1527 0188 EA010000 		.4byte	0x1ea
- 1528 018c 02       		.byte	0x2
- 1529 018d 23       		.byte	0x23
- 1530 018e 10       		.uleb128 0x10
- 1531 018f 09       		.uleb128 0x9
- 1532 0190 9A020000 		.4byte	.LASF16
- 1533 0194 06       		.byte	0x6
- 1534 0195 25       		.byte	0x25
- 1535 0196 00020000 		.4byte	0x200
- 1536 019a 02       		.byte	0x2
- 1537 019b 23       		.byte	0x23
- 1538 019c 28       		.uleb128 0x28
- 1539 019d 09       		.uleb128 0x9
- 1540 019e 38060000 		.4byte	.LASF17
- 1541 01a2 06       		.byte	0x6
- 1542 01a3 26       		.byte	0x26
- 1543 01a4 80000000 		.4byte	0x80
- 1544 01a8 02       		.byte	0x2
- 1545 01a9 23       		.byte	0x23
- 1546 01aa 2C       		.uleb128 0x2c
- 1547 01ab 09       		.uleb128 0x9
- 1548 01ac E8050000 		.4byte	.LASF18
- 1549 01b0 06       		.byte	0x6
- 1550 01b1 27       		.byte	0x27
- 1551 01b2 80000000 		.4byte	0x80
- 1552 01b6 02       		.byte	0x2
- 1553 01b7 23       		.byte	0x23
- 1554 01b8 2D       		.uleb128 0x2d
- 1555 01b9 09       		.uleb128 0x9
- 1556 01ba 69030000 		.4byte	.LASF26
- 1557 01be 06       		.byte	0x6
- 1558 01bf 28       		.byte	0x28
- 1559 01c0 80000000 		.4byte	0x80
- 1560 01c4 02       		.byte	0x2
- 1561 01c5 23       		.byte	0x23
- 1562 01c6 2E       		.uleb128 0x2e
- 1563 01c7 09       		.uleb128 0x9
- 1564 01c8 80060000 		.4byte	.LASF27
- 1565 01cc 06       		.byte	0x6
- 1566 01cd 29       		.byte	0x29
- 1567 01ce 80000000 		.4byte	0x80
- 1568 01d2 02       		.byte	0x2
- 1569 01d3 23       		.byte	0x23
- 1570 01d4 2F       		.uleb128 0x2f
- 1571 01d5 09       		.uleb128 0x9
- 1572 01d6 72010000 		.4byte	.LASF28
- 1573 01da 06       		.byte	0x6
- 1574 01db 2B       		.byte	0x2b
- 1575 01dc 10020000 		.4byte	0x210
- 1576 01e0 02       		.byte	0x2
- 1577 01e1 23       		.byte	0x23
- 1578 01e2 30       		.uleb128 0x30
- 1579 01e3 00       		.byte	0x0
- 1580 01e4 04       		.uleb128 0x4
- 1581 01e5 04       		.byte	0x4
- 1582 01e6 E1000000 		.4byte	0xe1
- 1583 01ea 05       		.uleb128 0x5
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 35
-
-
- 1584 01eb 00020000 		.4byte	0x200
- 1585 01ef 23010000 		.4byte	0x123
- 1586 01f3 06       		.uleb128 0x6
- 1587 01f4 48000000 		.4byte	0x48
- 1588 01f8 00       		.byte	0x0
- 1589 01f9 06       		.uleb128 0x6
- 1590 01fa 48000000 		.4byte	0x48
- 1591 01fe 02       		.byte	0x2
- 1592 01ff 00       		.byte	0x0
- 1593 0200 05       		.uleb128 0x5
- 1594 0201 10020000 		.4byte	0x210
- 1595 0205 25000000 		.4byte	0x25
- 1596 0209 06       		.uleb128 0x6
- 1597 020a 48000000 		.4byte	0x48
- 1598 020e 00       		.byte	0x0
- 1599 020f 00       		.byte	0x0
- 1600 0210 05       		.uleb128 0x5
- 1601 0211 21020000 		.4byte	0x221
- 1602 0215 4F000000 		.4byte	0x4f
- 1603 0219 0B       		.uleb128 0xb
- 1604 021a 48000000 		.4byte	0x48
- 1605 021e FF01     		.2byte	0x1ff
- 1606 0220 00       		.byte	0x0
- 1607 0221 07       		.uleb128 0x7
- 1608 0222 B9030000 		.4byte	.LASF19
- 1609 0226 06       		.byte	0x6
- 1610 0227 2E       		.byte	0x2e
- 1611 0228 2E010000 		.4byte	0x12e
- 1612 022c 08       		.uleb128 0x8
- 1613 022d 8D020000 		.4byte	0x28d
- 1614 0231 3B040000 		.4byte	.LASF29
- 1615 0235 10       		.byte	0x10
- 1616 0236 08       		.byte	0x8
- 1617 0237 0E       		.byte	0xe
- 1618 0238 09       		.uleb128 0x9
- 1619 0239 A1050000 		.4byte	.LASF30
- 1620 023d 08       		.byte	0x8
- 1621 023e 0F       		.byte	0xf
- 1622 023f 4F000000 		.4byte	0x4f
- 1623 0243 02       		.byte	0x2
- 1624 0244 23       		.byte	0x23
- 1625 0245 00       		.uleb128 0x0
- 1626 0246 09       		.uleb128 0x9
- 1627 0247 92040000 		.4byte	.LASF31
- 1628 024b 08       		.byte	0x8
- 1629 024c 10       		.byte	0x10
- 1630 024d 70000000 		.4byte	0x70
- 1631 0251 02       		.byte	0x2
- 1632 0252 23       		.byte	0x23
- 1633 0253 01       		.uleb128 0x1
- 1634 0254 09       		.uleb128 0x9
- 1635 0255 7D000000 		.4byte	.LASF32
- 1636 0259 08       		.byte	0x8
- 1637 025a 11       		.byte	0x11
- 1638 025b 4F000000 		.4byte	0x4f
- 1639 025f 02       		.byte	0x2
- 1640 0260 23       		.byte	0x23
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 36
-
-
- 1641 0261 04       		.uleb128 0x4
- 1642 0262 09       		.uleb128 0x9
- 1643 0263 92020000 		.4byte	.LASF33
- 1644 0267 08       		.byte	0x8
- 1645 0268 12       		.byte	0x12
- 1646 0269 70000000 		.4byte	0x70
- 1647 026d 02       		.byte	0x2
- 1648 026e 23       		.byte	0x23
- 1649 026f 05       		.uleb128 0x5
- 1650 0270 09       		.uleb128 0x9
- 1651 0271 59060000 		.4byte	.LASF34
- 1652 0275 08       		.byte	0x8
- 1653 0276 13       		.byte	0x13
- 1654 0277 25000000 		.4byte	0x25
- 1655 027b 02       		.byte	0x2
- 1656 027c 23       		.byte	0x23
- 1657 027d 08       		.uleb128 0x8
- 1658 027e 09       		.uleb128 0x9
- 1659 027f 43030000 		.4byte	.LASF35
- 1660 0283 08       		.byte	0x8
- 1661 0284 14       		.byte	0x14
- 1662 0285 25000000 		.4byte	0x25
- 1663 0289 02       		.byte	0x2
- 1664 028a 23       		.byte	0x23
- 1665 028b 0C       		.uleb128 0xc
- 1666 028c 00       		.byte	0x0
- 1667 028d 07       		.uleb128 0x7
- 1668 028e 3B040000 		.4byte	.LASF29
- 1669 0292 08       		.byte	0x8
- 1670 0293 16       		.byte	0x16
- 1671 0294 2C020000 		.4byte	0x22c
- 1672 0298 0C       		.uleb128 0xc
- 1673 0299 CB020000 		.4byte	0x2cb
- 1674 029d 48       		.byte	0x48
- 1675 029e 08       		.byte	0x8
- 1676 029f 1A       		.byte	0x1a
- 1677 02a0 09       		.uleb128 0x9
- 1678 02a1 00000000 		.4byte	.LASF36
- 1679 02a5 08       		.byte	0x8
- 1680 02a6 1B       		.byte	0x1b
- 1681 02a7 CB020000 		.4byte	0x2cb
- 1682 02ab 02       		.byte	0x2
- 1683 02ac 23       		.byte	0x23
- 1684 02ad 00       		.uleb128 0x0
- 1685 02ae 09       		.uleb128 0x9
- 1686 02af 7A040000 		.4byte	.LASF24
- 1687 02b3 08       		.byte	0x8
- 1688 02b4 1C       		.byte	0x1c
- 1689 02b5 BB000000 		.4byte	0xbb
- 1690 02b9 02       		.byte	0x2
- 1691 02ba 23       		.byte	0x23
- 1692 02bb 04       		.uleb128 0x4
- 1693 02bc 09       		.uleb128 0x9
- 1694 02bd 3A050000 		.4byte	.LASF37
- 1695 02c1 08       		.byte	0x8
- 1696 02c2 1D       		.byte	0x1d
- 1697 02c3 D1020000 		.4byte	0x2d1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 37
-
-
- 1698 02c7 02       		.byte	0x2
- 1699 02c8 23       		.byte	0x23
- 1700 02c9 08       		.uleb128 0x8
- 1701 02ca 00       		.byte	0x0
- 1702 02cb 04       		.uleb128 0x4
- 1703 02cc 04       		.byte	0x4
- 1704 02cd 21020000 		.4byte	0x221
- 1705 02d1 05       		.uleb128 0x5
- 1706 02d2 E1020000 		.4byte	0x2e1
- 1707 02d6 8D020000 		.4byte	0x28d
- 1708 02da 06       		.uleb128 0x6
- 1709 02db 48000000 		.4byte	0x48
- 1710 02df 03       		.byte	0x3
- 1711 02e0 00       		.byte	0x0
- 1712 02e1 07       		.uleb128 0x7
- 1713 02e2 45050000 		.4byte	.LASF38
- 1714 02e6 08       		.byte	0x8
- 1715 02e7 1E       		.byte	0x1e
- 1716 02e8 98020000 		.4byte	0x298
- 1717 02ec 08       		.uleb128 0x8
- 1718 02ed 15030000 		.4byte	0x315
- 1719 02f1 5A000000 		.4byte	.LASF39
- 1720 02f5 08       		.byte	0x8
- 1721 02f6 09       		.byte	0x9
- 1722 02f7 12       		.byte	0x12
- 1723 02f8 09       		.uleb128 0x9
- 1724 02f9 BD050000 		.4byte	.LASF40
- 1725 02fd 09       		.byte	0x9
- 1726 02fe 13       		.byte	0x13
- 1727 02ff 15030000 		.4byte	0x315
- 1728 0303 02       		.byte	0x2
- 1729 0304 23       		.byte	0x23
- 1730 0305 00       		.uleb128 0x0
- 1731 0306 09       		.uleb128 0x9
- 1732 0307 64000000 		.4byte	.LASF41
- 1733 030b 09       		.byte	0x9
- 1734 030c 14       		.byte	0x14
- 1735 030d 9E000000 		.4byte	0x9e
- 1736 0311 02       		.byte	0x2
- 1737 0312 23       		.byte	0x23
- 1738 0313 04       		.uleb128 0x4
- 1739 0314 00       		.byte	0x0
- 1740 0315 04       		.uleb128 0x4
- 1741 0316 04       		.byte	0x4
- 1742 0317 E1020000 		.4byte	0x2e1
- 1743 031b 07       		.uleb128 0x7
- 1744 031c 5A000000 		.4byte	.LASF39
- 1745 0320 09       		.byte	0x9
- 1746 0321 16       		.byte	0x16
- 1747 0322 EC020000 		.4byte	0x2ec
- 1748 0326 08       		.uleb128 0x8
- 1749 0327 BF030000 		.4byte	0x3bf
- 1750 032b F5050000 		.4byte	.LASF42
- 1751 032f 1C       		.byte	0x1c
- 1752 0330 0A       		.byte	0xa
- 1753 0331 14       		.byte	0x14
- 1754 0332 09       		.uleb128 0x9
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 38
-
-
- 1755 0333 06000000 		.4byte	.LASF43
- 1756 0337 0A       		.byte	0xa
- 1757 0338 15       		.byte	0x15
- 1758 0339 90000000 		.4byte	0x90
- 1759 033d 02       		.byte	0x2
- 1760 033e 23       		.byte	0x23
- 1761 033f 00       		.uleb128 0x0
- 1762 0340 09       		.uleb128 0x9
- 1763 0341 15000000 		.4byte	.LASF44
- 1764 0345 0A       		.byte	0xa
- 1765 0346 16       		.byte	0x16
- 1766 0347 4F000000 		.4byte	0x4f
- 1767 034b 02       		.byte	0x2
- 1768 034c 23       		.byte	0x23
- 1769 034d 02       		.uleb128 0x2
- 1770 034e 09       		.uleb128 0x9
- 1771 034f FB010000 		.4byte	.LASF45
- 1772 0353 0A       		.byte	0xa
- 1773 0354 17       		.byte	0x17
- 1774 0355 90000000 		.4byte	0x90
- 1775 0359 02       		.byte	0x2
- 1776 035a 23       		.byte	0x23
- 1777 035b 04       		.uleb128 0x4
- 1778 035c 09       		.uleb128 0x9
- 1779 035d F3040000 		.4byte	.LASF46
- 1780 0361 0A       		.byte	0xa
- 1781 0362 18       		.byte	0x18
- 1782 0363 4F000000 		.4byte	0x4f
- 1783 0367 02       		.byte	0x2
- 1784 0368 23       		.byte	0x23
- 1785 0369 06       		.uleb128 0x6
- 1786 036a 09       		.uleb128 0x9
- 1787 036b 96060000 		.4byte	.LASF47
- 1788 036f 0A       		.byte	0xa
- 1789 0370 19       		.byte	0x19
- 1790 0371 90000000 		.4byte	0x90
- 1791 0375 02       		.byte	0x2
- 1792 0376 23       		.byte	0x23
- 1793 0377 08       		.uleb128 0x8
- 1794 0378 09       		.uleb128 0x9
- 1795 0379 3F000000 		.4byte	.LASF48
- 1796 037d 0A       		.byte	0xa
- 1797 037e 1A       		.byte	0x1a
- 1798 037f 90000000 		.4byte	0x90
- 1799 0383 02       		.byte	0x2
- 1800 0384 23       		.byte	0x23
- 1801 0385 0A       		.uleb128 0xa
- 1802 0386 09       		.uleb128 0x9
- 1803 0387 84010000 		.4byte	.LASF49
- 1804 038b 0A       		.byte	0xa
- 1805 038c 1B       		.byte	0x1b
- 1806 038d 90000000 		.4byte	0x90
- 1807 0391 02       		.byte	0x2
- 1808 0392 23       		.byte	0x23
- 1809 0393 0C       		.uleb128 0xc
- 1810 0394 09       		.uleb128 0x9
- 1811 0395 C2050000 		.4byte	.LASF50
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 39
-
-
- 1812 0399 0A       		.byte	0xa
- 1813 039a 1C       		.byte	0x1c
- 1814 039b 25000000 		.4byte	0x25
- 1815 039f 02       		.byte	0x2
- 1816 03a0 23       		.byte	0x23
- 1817 03a1 10       		.uleb128 0x10
- 1818 03a2 09       		.uleb128 0x9
- 1819 03a3 90050000 		.4byte	.LASF51
- 1820 03a7 0A       		.byte	0xa
- 1821 03a8 1D       		.byte	0x1d
- 1822 03a9 25000000 		.4byte	0x25
- 1823 03ad 02       		.byte	0x2
- 1824 03ae 23       		.byte	0x23
- 1825 03af 14       		.uleb128 0x14
- 1826 03b0 09       		.uleb128 0x9
- 1827 03b1 4A040000 		.4byte	.LASF52
- 1828 03b5 0A       		.byte	0xa
- 1829 03b6 1E       		.byte	0x1e
- 1830 03b7 25000000 		.4byte	0x25
- 1831 03bb 02       		.byte	0x2
- 1832 03bc 23       		.byte	0x23
- 1833 03bd 18       		.uleb128 0x18
- 1834 03be 00       		.byte	0x0
- 1835 03bf 07       		.uleb128 0x7
- 1836 03c0 F5050000 		.4byte	.LASF42
- 1837 03c4 0A       		.byte	0xa
- 1838 03c5 20       		.byte	0x20
- 1839 03c6 26030000 		.4byte	0x326
- 1840 03ca 08       		.uleb128 0x8
- 1841 03cb 63040000 		.4byte	0x463
- 1842 03cf AE010000 		.4byte	.LASF53
- 1843 03d3 40       		.byte	0x40
- 1844 03d4 0A       		.byte	0xa
- 1845 03d5 22       		.byte	0x22
- 1846 03d6 09       		.uleb128 0x9
- 1847 03d7 DC050000 		.4byte	.LASF54
- 1848 03db 0A       		.byte	0xa
- 1849 03dc 23       		.byte	0x23
- 1850 03dd 63040000 		.4byte	0x463
- 1851 03e1 02       		.byte	0x2
- 1852 03e2 23       		.byte	0x23
- 1853 03e3 00       		.uleb128 0x0
- 1854 03e4 09       		.uleb128 0x9
- 1855 03e5 91000000 		.4byte	.LASF55
- 1856 03e9 0A       		.byte	0xa
- 1857 03ea 24       		.byte	0x24
- 1858 03eb BF030000 		.4byte	0x3bf
- 1859 03ef 02       		.byte	0x2
- 1860 03f0 23       		.byte	0x23
- 1861 03f1 04       		.uleb128 0x4
- 1862 03f2 09       		.uleb128 0x9
- 1863 03f3 27020000 		.4byte	.LASF56
- 1864 03f7 0A       		.byte	0xa
- 1865 03f8 25       		.byte	0x25
- 1866 03f9 25000000 		.4byte	0x25
- 1867 03fd 02       		.byte	0x2
- 1868 03fe 23       		.byte	0x23
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 40
-
-
- 1869 03ff 20       		.uleb128 0x20
- 1870 0400 09       		.uleb128 0x9
- 1871 0401 62050000 		.4byte	.LASF57
- 1872 0405 0A       		.byte	0xa
- 1873 0406 26       		.byte	0x26
- 1874 0407 25000000 		.4byte	0x25
- 1875 040b 02       		.byte	0x2
- 1876 040c 23       		.byte	0x23
- 1877 040d 24       		.uleb128 0x24
- 1878 040e 09       		.uleb128 0x9
- 1879 040f 3F060000 		.4byte	.LASF58
- 1880 0413 0A       		.byte	0xa
- 1881 0414 27       		.byte	0x27
- 1882 0415 25000000 		.4byte	0x25
- 1883 0419 02       		.byte	0x2
- 1884 041a 23       		.byte	0x23
- 1885 041b 28       		.uleb128 0x28
- 1886 041c 09       		.uleb128 0x9
- 1887 041d 4A050000 		.4byte	.LASF59
- 1888 0421 0A       		.byte	0xa
- 1889 0422 28       		.byte	0x28
- 1890 0423 25000000 		.4byte	0x25
- 1891 0427 02       		.byte	0x2
- 1892 0428 23       		.byte	0x23
- 1893 0429 2C       		.uleb128 0x2c
- 1894 042a 09       		.uleb128 0x9
- 1895 042b 13030000 		.4byte	.LASF60
- 1896 042f 0A       		.byte	0xa
- 1897 0430 29       		.byte	0x29
- 1898 0431 25000000 		.4byte	0x25
- 1899 0435 02       		.byte	0x2
- 1900 0436 23       		.byte	0x23
- 1901 0437 30       		.uleb128 0x30
- 1902 0438 09       		.uleb128 0x9
- 1903 0439 27060000 		.4byte	.LASF61
- 1904 043d 0A       		.byte	0xa
- 1905 043e 2A       		.byte	0x2a
- 1906 043f 25000000 		.4byte	0x25
- 1907 0443 02       		.byte	0x2
- 1908 0444 23       		.byte	0x23
- 1909 0445 34       		.uleb128 0x34
- 1910 0446 09       		.uleb128 0x9
- 1911 0447 20050000 		.4byte	.LASF62
- 1912 044b 0A       		.byte	0xa
- 1913 044c 2B       		.byte	0x2b
- 1914 044d 25000000 		.4byte	0x25
- 1915 0451 02       		.byte	0x2
- 1916 0452 23       		.byte	0x23
- 1917 0453 38       		.uleb128 0x38
- 1918 0454 09       		.uleb128 0x9
- 1919 0455 7D000000 		.4byte	.LASF32
- 1920 0459 0A       		.byte	0xa
- 1921 045a 2C       		.byte	0x2c
- 1922 045b 4F000000 		.4byte	0x4f
- 1923 045f 02       		.byte	0x2
- 1924 0460 23       		.byte	0x23
- 1925 0461 3C       		.uleb128 0x3c
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 41
-
-
- 1926 0462 00       		.byte	0x0
- 1927 0463 04       		.uleb128 0x4
- 1928 0464 04       		.byte	0x4
- 1929 0465 1B030000 		.4byte	0x31b
- 1930 0469 07       		.uleb128 0x7
- 1931 046a AE010000 		.4byte	.LASF53
- 1932 046e 0A       		.byte	0xa
- 1933 046f 2E       		.byte	0x2e
- 1934 0470 CA030000 		.4byte	0x3ca
- 1935 0474 08       		.uleb128 0x8
- 1936 0475 AB040000 		.4byte	0x4ab
- 1937 0479 B9010000 		.4byte	.LASF63
- 1938 047d 08       		.byte	0x8
- 1939 047e 0A       		.byte	0xa
- 1940 047f 30       		.byte	0x30
- 1941 0480 09       		.uleb128 0x9
- 1942 0481 DC030000 		.4byte	.LASF64
- 1943 0485 0A       		.byte	0xa
- 1944 0486 31       		.byte	0x31
- 1945 0487 25000000 		.4byte	0x25
- 1946 048b 02       		.byte	0x2
- 1947 048c 23       		.byte	0x23
- 1948 048d 00       		.uleb128 0x0
- 1949 048e 09       		.uleb128 0x9
- 1950 048f E1050000 		.4byte	.LASF65
- 1951 0493 0A       		.byte	0xa
- 1952 0494 32       		.byte	0x32
- 1953 0495 4F000000 		.4byte	0x4f
- 1954 0499 02       		.byte	0x2
- 1955 049a 23       		.byte	0x23
- 1956 049b 04       		.uleb128 0x4
- 1957 049c 09       		.uleb128 0x9
- 1958 049d DA010000 		.4byte	.LASF66
- 1959 04a1 0A       		.byte	0xa
- 1960 04a2 33       		.byte	0x33
- 1961 04a3 4F000000 		.4byte	0x4f
- 1962 04a7 02       		.byte	0x2
- 1963 04a8 23       		.byte	0x23
- 1964 04a9 05       		.uleb128 0x5
- 1965 04aa 00       		.byte	0x0
- 1966 04ab 07       		.uleb128 0x7
- 1967 04ac B9010000 		.4byte	.LASF63
- 1968 04b0 0A       		.byte	0xa
- 1969 04b1 35       		.byte	0x35
- 1970 04b2 74040000 		.4byte	0x474
- 1971 04b6 08       		.uleb128 0x8
- 1972 04b7 17050000 		.4byte	0x517
- 1973 04bb 70020000 		.4byte	.LASF67
- 1974 04bf 18       		.byte	0x18
- 1975 04c0 0A       		.byte	0xa
- 1976 04c1 37       		.byte	0x37
- 1977 04c2 09       		.uleb128 0x9
- 1978 04c3 A7010000 		.4byte	.LASF68
- 1979 04c7 0A       		.byte	0xa
- 1980 04c8 38       		.byte	0x38
- 1981 04c9 4F000000 		.4byte	0x4f
- 1982 04cd 02       		.byte	0x2
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 42
-
-
- 1983 04ce 23       		.byte	0x23
- 1984 04cf 00       		.uleb128 0x0
- 1985 04d0 09       		.uleb128 0x9
- 1986 04d1 38020000 		.4byte	.LASF69
- 1987 04d5 0A       		.byte	0xa
- 1988 04d6 39       		.byte	0x39
- 1989 04d7 33000000 		.4byte	0x33
- 1990 04db 02       		.byte	0x2
- 1991 04dc 23       		.byte	0x23
- 1992 04dd 04       		.uleb128 0x4
- 1993 04de 09       		.uleb128 0x9
- 1994 04df 48010000 		.4byte	.LASF70
- 1995 04e3 0A       		.byte	0xa
- 1996 04e4 3A       		.byte	0x3a
- 1997 04e5 25000000 		.4byte	0x25
- 1998 04e9 02       		.byte	0x2
- 1999 04ea 23       		.byte	0x23
- 2000 04eb 08       		.uleb128 0x8
- 2001 04ec 09       		.uleb128 0x9
- 2002 04ed 5F040000 		.4byte	.LASF71
- 2003 04f1 0A       		.byte	0xa
- 2004 04f2 3B       		.byte	0x3b
- 2005 04f3 25000000 		.4byte	0x25
- 2006 04f7 02       		.byte	0x2
- 2007 04f8 23       		.byte	0x23
- 2008 04f9 0C       		.uleb128 0xc
- 2009 04fa 09       		.uleb128 0x9
- 2010 04fb 1D040000 		.4byte	.LASF72
- 2011 04ff 0A       		.byte	0xa
- 2012 0500 3C       		.byte	0x3c
- 2013 0501 25000000 		.4byte	0x25
- 2014 0505 02       		.byte	0x2
- 2015 0506 23       		.byte	0x23
- 2016 0507 10       		.uleb128 0x10
- 2017 0508 09       		.uleb128 0x9
- 2018 0509 9C040000 		.4byte	.LASF73
- 2019 050d 0A       		.byte	0xa
- 2020 050e 3D       		.byte	0x3d
- 2021 050f 25000000 		.4byte	0x25
- 2022 0513 02       		.byte	0x2
- 2023 0514 23       		.byte	0x23
- 2024 0515 14       		.uleb128 0x14
- 2025 0516 00       		.byte	0x0
- 2026 0517 07       		.uleb128 0x7
- 2027 0518 70020000 		.4byte	.LASF67
- 2028 051c 0A       		.byte	0xa
- 2029 051d 3F       		.byte	0x3f
- 2030 051e B6040000 		.4byte	0x4b6
- 2031 0522 08       		.uleb128 0x8
- 2032 0523 D7050000 		.4byte	0x5d7
- 2033 0527 C6010000 		.4byte	.LASF74
- 2034 052b 20       		.byte	0x20
- 2035 052c 0A       		.byte	0xa
- 2036 052d 41       		.byte	0x41
- 2037 052e 09       		.uleb128 0x9
- 2038 052f D3030000 		.4byte	.LASF75
- 2039 0533 0A       		.byte	0xa
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 43
-
-
- 2040 0534 42       		.byte	0x42
- 2041 0535 D7050000 		.4byte	0x5d7
- 2042 0539 02       		.byte	0x2
- 2043 053a 23       		.byte	0x23
- 2044 053b 00       		.uleb128 0x0
- 2045 053c 09       		.uleb128 0x9
- 2046 053d 10060000 		.4byte	.LASF76
- 2047 0541 0A       		.byte	0xa
- 2048 0542 43       		.byte	0x43
- 2049 0543 4F000000 		.4byte	0x4f
- 2050 0547 02       		.byte	0x2
- 2051 0548 23       		.byte	0x23
- 2052 0549 0B       		.uleb128 0xb
- 2053 054a 09       		.uleb128 0x9
- 2054 054b 67010000 		.4byte	.LASF77
- 2055 054f 0A       		.byte	0xa
- 2056 0550 44       		.byte	0x44
- 2057 0551 4F000000 		.4byte	0x4f
- 2058 0555 02       		.byte	0x2
- 2059 0556 23       		.byte	0x23
- 2060 0557 0C       		.uleb128 0xc
- 2061 0558 09       		.uleb128 0x9
- 2062 0559 19010000 		.4byte	.LASF78
- 2063 055d 0A       		.byte	0xa
- 2064 055e 45       		.byte	0x45
- 2065 055f 4F000000 		.4byte	0x4f
- 2066 0563 02       		.byte	0x2
- 2067 0564 23       		.byte	0x23
- 2068 0565 0D       		.uleb128 0xd
- 2069 0566 09       		.uleb128 0x9
- 2070 0567 E5020000 		.4byte	.LASF79
- 2071 056b 0A       		.byte	0xa
- 2072 056c 46       		.byte	0x46
- 2073 056d 90000000 		.4byte	0x90
- 2074 0571 02       		.byte	0x2
- 2075 0572 23       		.byte	0x23
- 2076 0573 0E       		.uleb128 0xe
- 2077 0574 09       		.uleb128 0x9
- 2078 0575 EF010000 		.4byte	.LASF80
- 2079 0579 0A       		.byte	0xa
- 2080 057a 47       		.byte	0x47
- 2081 057b 90000000 		.4byte	0x90
- 2082 057f 02       		.byte	0x2
- 2083 0580 23       		.byte	0x23
- 2084 0581 10       		.uleb128 0x10
- 2085 0582 09       		.uleb128 0x9
- 2086 0583 BE000000 		.4byte	.LASF81
- 2087 0587 0A       		.byte	0xa
- 2088 0588 48       		.byte	0x48
- 2089 0589 90000000 		.4byte	0x90
- 2090 058d 02       		.byte	0x2
- 2091 058e 23       		.byte	0x23
- 2092 058f 12       		.uleb128 0x12
- 2093 0590 09       		.uleb128 0x9
- 2094 0591 84030000 		.4byte	.LASF82
- 2095 0595 0A       		.byte	0xa
- 2096 0596 49       		.byte	0x49
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 44
-
-
- 2097 0597 90000000 		.4byte	0x90
- 2098 059b 02       		.byte	0x2
- 2099 059c 23       		.byte	0x23
- 2100 059d 14       		.uleb128 0x14
- 2101 059e 09       		.uleb128 0x9
- 2102 059f 88040000 		.4byte	.LASF83
- 2103 05a3 0A       		.byte	0xa
- 2104 05a4 4A       		.byte	0x4a
- 2105 05a5 90000000 		.4byte	0x90
- 2106 05a9 02       		.byte	0x2
- 2107 05aa 23       		.byte	0x23
- 2108 05ab 16       		.uleb128 0x16
- 2109 05ac 09       		.uleb128 0x9
- 2110 05ad 86050000 		.4byte	.LASF84
- 2111 05b1 0A       		.byte	0xa
- 2112 05b2 4B       		.byte	0x4b
- 2113 05b3 90000000 		.4byte	0x90
- 2114 05b7 02       		.byte	0x2
- 2115 05b8 23       		.byte	0x23
- 2116 05b9 18       		.uleb128 0x18
- 2117 05ba 09       		.uleb128 0x9
- 2118 05bb C9000000 		.4byte	.LASF85
- 2119 05bf 0A       		.byte	0xa
- 2120 05c0 4C       		.byte	0x4c
- 2121 05c1 90000000 		.4byte	0x90
- 2122 05c5 02       		.byte	0x2
- 2123 05c6 23       		.byte	0x23
- 2124 05c7 1A       		.uleb128 0x1a
- 2125 05c8 09       		.uleb128 0x9
- 2126 05c9 9E010000 		.4byte	.LASF86
- 2127 05cd 0A       		.byte	0xa
- 2128 05ce 4D       		.byte	0x4d
- 2129 05cf 25000000 		.4byte	0x25
- 2130 05d3 02       		.byte	0x2
- 2131 05d4 23       		.byte	0x23
- 2132 05d5 1C       		.uleb128 0x1c
- 2133 05d6 00       		.byte	0x0
- 2134 05d7 05       		.uleb128 0x5
- 2135 05d8 E7050000 		.4byte	0x5e7
- 2136 05dc 4F000000 		.4byte	0x4f
- 2137 05e0 06       		.uleb128 0x6
- 2138 05e1 48000000 		.4byte	0x48
- 2139 05e5 0A       		.byte	0xa
- 2140 05e6 00       		.byte	0x0
- 2141 05e7 07       		.uleb128 0x7
- 2142 05e8 C6010000 		.4byte	.LASF74
- 2143 05ec 0A       		.byte	0xa
- 2144 05ed 4F       		.byte	0x4f
- 2145 05ee 22050000 		.4byte	0x522
- 2146 05f2 08       		.uleb128 0x8
- 2147 05f3 60060000 		.4byte	0x660
- 2148 05f7 59010000 		.4byte	.LASF87
- 2149 05fb 50       		.byte	0x50
- 2150 05fc 0B       		.byte	0xb
- 2151 05fd 15       		.byte	0x15
- 2152 05fe 09       		.uleb128 0x9
- 2153 05ff 2B010000 		.4byte	.LASF88
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 45
-
-
- 2154 0603 0B       		.byte	0xb
- 2155 0604 16       		.byte	0x16
- 2156 0605 E7050000 		.4byte	0x5e7
- 2157 0609 02       		.byte	0x2
- 2158 060a 23       		.byte	0x23
- 2159 060b 00       		.uleb128 0x0
- 2160 060c 09       		.uleb128 0x9
- 2161 060d 95010000 		.4byte	.LASF89
- 2162 0611 0B       		.byte	0xb
- 2163 0612 17       		.byte	0x17
- 2164 0613 AB040000 		.4byte	0x4ab
- 2165 0617 02       		.byte	0x2
- 2166 0618 23       		.byte	0x23
- 2167 0619 20       		.uleb128 0x20
- 2168 061a 0D       		.uleb128 0xd
- 2169 061b 667300   		.ascii	"fs\000"
- 2170 061e 0B       		.byte	0xb
- 2171 061f 18       		.byte	0x18
- 2172 0620 60060000 		.4byte	0x660
- 2173 0624 02       		.byte	0x2
- 2174 0625 23       		.byte	0x23
- 2175 0626 28       		.uleb128 0x28
- 2176 0627 09       		.uleb128 0x9
- 2177 0628 A5060000 		.4byte	.LASF90
- 2178 062c 0B       		.byte	0xb
- 2179 062d 19       		.byte	0x19
- 2180 062e 17050000 		.4byte	0x517
- 2181 0632 02       		.byte	0x2
- 2182 0633 23       		.byte	0x23
- 2183 0634 2C       		.uleb128 0x2c
- 2184 0635 09       		.uleb128 0x9
- 2185 0636 EE030000 		.4byte	.LASF91
- 2186 063a 0B       		.byte	0xb
- 2187 063b 1A       		.byte	0x1a
- 2188 063c 4F000000 		.4byte	0x4f
- 2189 0640 02       		.byte	0x2
- 2190 0641 23       		.byte	0x23
- 2191 0642 44       		.uleb128 0x44
- 2192 0643 09       		.uleb128 0x9
- 2193 0644 71050000 		.4byte	.LASF92
- 2194 0648 0B       		.byte	0xb
- 2195 0649 1B       		.byte	0x1b
- 2196 064a 25000000 		.4byte	0x25
- 2197 064e 02       		.byte	0x2
- 2198 064f 23       		.byte	0x23
- 2199 0650 48       		.uleb128 0x48
- 2200 0651 09       		.uleb128 0x9
- 2201 0652 9E010000 		.4byte	.LASF86
- 2202 0656 0B       		.byte	0xb
- 2203 0657 1C       		.byte	0x1c
- 2204 0658 25000000 		.4byte	0x25
- 2205 065c 02       		.byte	0x2
- 2206 065d 23       		.byte	0x23
- 2207 065e 4C       		.uleb128 0x4c
- 2208 065f 00       		.byte	0x0
- 2209 0660 04       		.uleb128 0x4
- 2210 0661 04       		.byte	0x4
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 46
-
-
- 2211 0662 69040000 		.4byte	0x469
- 2212 0666 07       		.uleb128 0x7
- 2213 0667 59010000 		.4byte	.LASF87
- 2214 066b 0B       		.byte	0xb
- 2215 066c 1E       		.byte	0x1e
- 2216 066d F2050000 		.4byte	0x5f2
- 2217 0671 07       		.uleb128 0x7
- 2218 0672 BA060000 		.4byte	.LASF93
- 2219 0676 04       		.byte	0x4
- 2220 0677 0F       		.byte	0xf
- 2221 0678 66060000 		.4byte	0x666
- 2222 067c 0E       		.uleb128 0xe
- 2223 067d CF060000 		.4byte	0x6cf
- 2224 0681 C402     		.2byte	0x2c4
- 2225 0683 04       		.byte	0x4
- 2226 0684 11       		.byte	0x11
- 2227 0685 09       		.uleb128 0x9
- 2228 0686 EE050000 		.4byte	.LASF94
- 2229 068a 04       		.byte	0x4
- 2230 068b 12       		.byte	0x12
- 2231 068c E1000000 		.4byte	0xe1
- 2232 0690 02       		.byte	0x2
- 2233 0691 23       		.byte	0x23
- 2234 0692 00       		.uleb128 0x0
- 2235 0693 09       		.uleb128 0x9
- 2236 0694 B2060000 		.4byte	.LASF95
- 2237 0698 04       		.byte	0x4
- 2238 0699 13       		.byte	0x13
- 2239 069a 21020000 		.4byte	0x221
- 2240 069e 02       		.byte	0x2
- 2241 069f 23       		.byte	0x23
- 2242 06a0 04       		.uleb128 0x4
- 2243 06a1 09       		.uleb128 0x9
- 2244 06a2 00050000 		.4byte	.LASF96
- 2245 06a6 04       		.byte	0x4
- 2246 06a7 14       		.byte	0x14
- 2247 06a8 E1020000 		.4byte	0x2e1
- 2248 06ac 03       		.byte	0x3
- 2249 06ad 23       		.byte	0x23
- 2250 06ae B404     		.uleb128 0x234
- 2251 06b0 09       		.uleb128 0x9
- 2252 06b1 73040000 		.4byte	.LASF97
- 2253 06b5 04       		.byte	0x4
- 2254 06b6 15       		.byte	0x15
- 2255 06b7 1B030000 		.4byte	0x31b
- 2256 06bb 03       		.byte	0x3
- 2257 06bc 23       		.byte	0x23
- 2258 06bd FC04     		.uleb128 0x27c
- 2259 06bf 09       		.uleb128 0x9
- 2260 06c0 27000000 		.4byte	.LASF98
- 2261 06c4 04       		.byte	0x4
- 2262 06c5 16       		.byte	0x16
- 2263 06c6 69040000 		.4byte	0x469
- 2264 06ca 03       		.byte	0x3
- 2265 06cb 23       		.byte	0x23
- 2266 06cc 8405     		.uleb128 0x284
- 2267 06ce 00       		.byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 47
-
-
- 2268 06cf 07       		.uleb128 0x7
- 2269 06d0 2C000000 		.4byte	.LASF99
- 2270 06d4 04       		.byte	0x4
- 2271 06d5 17       		.byte	0x17
- 2272 06d6 7C060000 		.4byte	0x67c
- 2273 06da 08       		.uleb128 0x8
- 2274 06db 11070000 		.4byte	0x711
- 2275 06df 13050000 		.4byte	.LASF100
- 2276 06e3 14       		.byte	0x14
- 2277 06e4 0C       		.byte	0xc
- 2278 06e5 0B       		.byte	0xb
- 2279 06e6 09       		.uleb128 0x9
- 2280 06e7 D3030000 		.4byte	.LASF75
- 2281 06eb 0C       		.byte	0xc
- 2282 06ec 0C       		.byte	0xc
- 2283 06ed 11070000 		.4byte	0x711
- 2284 06f1 02       		.byte	0x2
- 2285 06f2 23       		.byte	0x23
- 2286 06f3 00       		.uleb128 0x0
- 2287 06f4 09       		.uleb128 0x9
- 2288 06f5 9E010000 		.4byte	.LASF86
- 2289 06f9 0C       		.byte	0xc
- 2290 06fa 0D       		.byte	0xd
- 2291 06fb 25000000 		.4byte	0x25
- 2292 06ff 02       		.byte	0x2
- 2293 0700 23       		.byte	0x23
- 2294 0701 0C       		.uleb128 0xc
- 2295 0702 09       		.uleb128 0x9
- 2296 0703 10060000 		.4byte	.LASF76
- 2297 0707 0C       		.byte	0xc
- 2298 0708 0E       		.byte	0xe
- 2299 0709 4F000000 		.4byte	0x4f
- 2300 070d 02       		.byte	0x2
- 2301 070e 23       		.byte	0x23
- 2302 070f 10       		.uleb128 0x10
- 2303 0710 00       		.byte	0x0
- 2304 0711 05       		.uleb128 0x5
- 2305 0712 21070000 		.4byte	0x721
- 2306 0716 4F000000 		.4byte	0x4f
- 2307 071a 06       		.uleb128 0x6
- 2308 071b 48000000 		.4byte	0x48
- 2309 071f 0B       		.byte	0xb
- 2310 0720 00       		.byte	0x0
- 2311 0721 07       		.uleb128 0x7
- 2312 0722 13050000 		.4byte	.LASF100
- 2313 0726 0C       		.byte	0xc
- 2314 0727 10       		.byte	0x10
- 2315 0728 DA060000 		.4byte	0x6da
- 2316 072c 08       		.uleb128 0x8
- 2317 072d 7E070000 		.4byte	0x77e
- 2318 0731 80040000 		.4byte	.LASF101
- 2319 0735 34       		.byte	0x34
- 2320 0736 0C       		.byte	0xc
- 2321 0737 12       		.byte	0x12
- 2322 0738 0D       		.uleb128 0xd
- 2323 0739 667300   		.ascii	"fs\000"
- 2324 073c 0C       		.byte	0xc
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 48
-
-
- 2325 073d 13       		.byte	0x13
- 2326 073e 60060000 		.4byte	0x660
- 2327 0742 02       		.byte	0x2
- 2328 0743 23       		.byte	0x23
- 2329 0744 00       		.uleb128 0x0
- 2330 0745 09       		.uleb128 0x9
- 2331 0746 53000000 		.4byte	.LASF102
- 2332 074a 0C       		.byte	0xc
- 2333 074b 14       		.byte	0x14
- 2334 074c 90000000 		.4byte	0x90
- 2335 0750 02       		.byte	0x2
- 2336 0751 23       		.byte	0x23
- 2337 0752 04       		.uleb128 0x4
- 2338 0753 09       		.uleb128 0x9
- 2339 0754 F1020000 		.4byte	.LASF103
- 2340 0758 0C       		.byte	0xc
- 2341 0759 14       		.byte	0x14
- 2342 075a 90000000 		.4byte	0x90
- 2343 075e 02       		.byte	0x2
- 2344 075f 23       		.byte	0x23
- 2345 0760 06       		.uleb128 0x6
- 2346 0761 09       		.uleb128 0x9
- 2347 0762 9A000000 		.4byte	.LASF104
- 2348 0766 0C       		.byte	0xc
- 2349 0767 16       		.byte	0x16
- 2350 0768 21070000 		.4byte	0x721
- 2351 076c 02       		.byte	0x2
- 2352 076d 23       		.byte	0x23
- 2353 076e 08       		.uleb128 0x8
- 2354 076f 09       		.uleb128 0x9
- 2355 0770 A5060000 		.4byte	.LASF90
- 2356 0774 0C       		.byte	0xc
- 2357 0775 17       		.byte	0x17
- 2358 0776 17050000 		.4byte	0x517
- 2359 077a 02       		.byte	0x2
- 2360 077b 23       		.byte	0x23
- 2361 077c 1C       		.uleb128 0x1c
- 2362 077d 00       		.byte	0x0
- 2363 077e 07       		.uleb128 0x7
- 2364 077f 80040000 		.4byte	.LASF101
- 2365 0783 0C       		.byte	0xc
- 2366 0784 19       		.byte	0x19
- 2367 0785 2C070000 		.4byte	0x72c
- 2368 0789 0C       		.uleb128 0xc
- 2369 078a E5070000 		.4byte	0x7e5
- 2370 078e 10       		.byte	0x10
- 2371 078f 03       		.byte	0x3
- 2372 0790 05       		.byte	0x5
- 2373 0791 09       		.uleb128 0x9
- 2374 0792 BF020000 		.4byte	.LASF105
- 2375 0796 03       		.byte	0x3
- 2376 0797 06       		.byte	0x6
- 2377 0798 56000000 		.4byte	0x56
- 2378 079c 02       		.byte	0x2
- 2379 079d 23       		.byte	0x23
- 2380 079e 00       		.uleb128 0x0
- 2381 079f 09       		.uleb128 0x9
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 49
-
-
- 2382 07a0 6C040000 		.4byte	.LASF106
- 2383 07a4 03       		.byte	0x3
- 2384 07a5 07       		.byte	0x7
- 2385 07a6 56000000 		.4byte	0x56
- 2386 07aa 02       		.byte	0x2
- 2387 07ab 23       		.byte	0x23
- 2388 07ac 04       		.uleb128 0x4
- 2389 07ad 09       		.uleb128 0x9
- 2390 07ae 29040000 		.4byte	.LASF107
- 2391 07b2 03       		.byte	0x3
- 2392 07b3 08       		.byte	0x8
- 2393 07b4 25000000 		.4byte	0x25
- 2394 07b8 02       		.byte	0x2
- 2395 07b9 23       		.byte	0x23
- 2396 07ba 08       		.uleb128 0x8
- 2397 07bb 0D       		.uleb128 0xd
- 2398 07bc 494400   		.ascii	"ID\000"
- 2399 07bf 03       		.byte	0x3
- 2400 07c0 09       		.byte	0x9
- 2401 07c1 4F000000 		.4byte	0x4f
- 2402 07c5 02       		.byte	0x2
- 2403 07c6 23       		.byte	0x23
- 2404 07c7 0C       		.uleb128 0xc
- 2405 07c8 09       		.uleb128 0x9
- 2406 07c9 53030000 		.4byte	.LASF108
- 2407 07cd 03       		.byte	0x3
- 2408 07ce 0A       		.byte	0xa
- 2409 07cf 4F000000 		.4byte	0x4f
- 2410 07d3 02       		.byte	0x2
- 2411 07d4 23       		.byte	0x23
- 2412 07d5 0D       		.uleb128 0xd
- 2413 07d6 09       		.uleb128 0x9
- 2414 07d7 79050000 		.4byte	.LASF109
- 2415 07db 03       		.byte	0x3
- 2416 07dc 0B       		.byte	0xb
- 2417 07dd 4F000000 		.4byte	0x4f
- 2418 07e1 02       		.byte	0x2
- 2419 07e2 23       		.byte	0x23
- 2420 07e3 0E       		.uleb128 0xe
- 2421 07e4 00       		.byte	0x0
- 2422 07e5 07       		.uleb128 0x7
- 2423 07e6 C4020000 		.4byte	.LASF110
- 2424 07ea 03       		.byte	0x3
- 2425 07eb 0C       		.byte	0xc
- 2426 07ec 89070000 		.4byte	0x789
- 2427 07f0 0F       		.uleb128 0xf
- 2428 07f1 42080000 		.4byte	0x842
- 2429 07f5 01       		.byte	0x1
- 2430 07f6 4B060000 		.4byte	.LASF113
- 2431 07fa 01       		.byte	0x1
- 2432 07fb E1       		.byte	0xe1
- 2433 07fc 01       		.byte	0x1
- 2434 07fd 00000000 		.4byte	.LFB6
- 2435 0801 90000000 		.4byte	.LFE6
- 2436 0805 00000000 		.4byte	.LLST0
- 2437 0809 10       		.uleb128 0x10
- 2438 080a 636E7400 		.ascii	"cnt\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 50
-
-
- 2439 080e 01       		.byte	0x1
- 2440 080f E2       		.byte	0xe2
- 2441 0810 A5000000 		.4byte	0xa5
- 2442 0814 11       		.uleb128 0x11
- 2443 0815 6900     		.ascii	"i\000"
- 2444 0817 01       		.byte	0x1
- 2445 0818 E3       		.byte	0xe3
- 2446 0819 2C000000 		.4byte	0x2c
- 2447 081d 1F000000 		.4byte	.LLST1
- 2448 0821 12       		.uleb128 0x12
- 2449 0822 00000000 		.4byte	.Ldebug_ranges0+0x0
- 2450 0826 11       		.uleb128 0x11
- 2451 0827 76616C00 		.ascii	"val\000"
- 2452 082b 01       		.byte	0x1
- 2453 082c E6       		.byte	0xe6
- 2454 082d B0000000 		.4byte	0xb0
- 2455 0831 3D000000 		.4byte	.LLST2
- 2456 0835 13       		.uleb128 0x13
- 2457 0836 6F060000 		.4byte	.LASF111
- 2458 083a 01       		.byte	0x1
- 2459 083b E7       		.byte	0xe7
- 2460 083c 42080000 		.4byte	0x842
- 2461 0840 00       		.byte	0x0
- 2462 0841 00       		.byte	0x0
- 2463 0842 02       		.uleb128 0x2
- 2464 0843 F8020000 		.4byte	.LASF112
- 2465 0847 04       		.byte	0x4
- 2466 0848 04       		.byte	0x4
- 2467 0849 0F       		.uleb128 0xf
- 2468 084a 96080000 		.4byte	0x896
- 2469 084e 01       		.byte	0x1
- 2470 084f 73030000 		.4byte	.LASF114
- 2471 0853 01       		.byte	0x1
- 2472 0854 BE       		.byte	0xbe
- 2473 0855 01       		.byte	0x1
- 2474 0856 90000000 		.4byte	.LFB5
- 2475 085a 70010000 		.4byte	.LFE5
- 2476 085e 5B000000 		.4byte	.LLST3
- 2477 0862 14       		.uleb128 0x14
- 2478 0863 BF020000 		.4byte	.LASF105
- 2479 0867 01       		.byte	0x1
- 2480 0868 BD       		.byte	0xbd
- 2481 0869 63000000 		.4byte	0x63
- 2482 086d 7A000000 		.4byte	.LLST4
- 2483 0871 15       		.uleb128 0x15
- 2484 0872 DD040000 		.4byte	.LASF115
- 2485 0876 01       		.byte	0x1
- 2486 0877 BF       		.byte	0xbf
- 2487 0878 56000000 		.4byte	0x56
- 2488 087c 01       		.byte	0x1
- 2489 087d 52       		.byte	0x52
- 2490 087e 16       		.uleb128 0x16
- 2491 087f A4000000 		.4byte	.LBB4
- 2492 0883 38010000 		.4byte	.LBE4
- 2493 0887 11       		.uleb128 0x11
- 2494 0888 6900     		.ascii	"i\000"
- 2495 088a 01       		.byte	0x1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 51
-
-
- 2496 088b C4       		.byte	0xc4
- 2497 088c 2C000000 		.4byte	0x2c
- 2498 0890 98000000 		.4byte	.LLST5
- 2499 0894 00       		.byte	0x0
- 2500 0895 00       		.byte	0x0
- 2501 0896 17       		.uleb128 0x17
- 2502 0897 56090000 		.4byte	0x956
- 2503 089b 01       		.byte	0x1
- 2504 089c 7C010000 		.4byte	.LASF116
- 2505 08a0 01       		.byte	0x1
- 2506 08a1 47       		.byte	0x47
- 2507 08a2 01       		.byte	0x1
- 2508 08a3 63000000 		.4byte	0x63
- 2509 08a7 70010000 		.4byte	.LFB3
- 2510 08ab 58020000 		.4byte	.LFE3
- 2511 08af AB000000 		.4byte	.LLST6
- 2512 08b3 18       		.uleb128 0x18
- 2513 08b4 CC040000 		.4byte	.LASF117
- 2514 08b8 01       		.byte	0x1
- 2515 08b9 48       		.byte	0x48
- 2516 08ba 63000000 		.4byte	0x63
- 2517 08be CA000000 		.4byte	.LLST7
- 2518 08c2 13       		.uleb128 0x13
- 2519 08c3 56040000 		.4byte	.LASF118
- 2520 08c7 01       		.byte	0x1
- 2521 08c8 49       		.byte	0x49
- 2522 08c9 63000000 		.4byte	0x63
- 2523 08cd 13       		.uleb128 0x13
- 2524 08ce FE050000 		.4byte	.LASF119
- 2525 08d2 01       		.byte	0x1
- 2526 08d3 4A       		.byte	0x4a
- 2527 08d4 63000000 		.4byte	0x63
- 2528 08d8 13       		.uleb128 0x13
- 2529 08d9 D1010000 		.4byte	.LASF120
- 2530 08dd 01       		.byte	0x1
- 2531 08de 4B       		.byte	0x4b
- 2532 08df 63000000 		.4byte	0x63
- 2533 08e3 13       		.uleb128 0x13
- 2534 08e4 9E030000 		.4byte	.LASF121
- 2535 08e8 01       		.byte	0x1
- 2536 08e9 4D       		.byte	0x4d
- 2537 08ea 63000000 		.4byte	0x63
- 2538 08ee 13       		.uleb128 0x13
- 2539 08ef A7030000 		.4byte	.LASF122
- 2540 08f3 01       		.byte	0x1
- 2541 08f4 4E       		.byte	0x4e
- 2542 08f5 63000000 		.4byte	0x63
- 2543 08f9 13       		.uleb128 0x13
- 2544 08fa B0030000 		.4byte	.LASF123
- 2545 08fe 01       		.byte	0x1
- 2546 08ff 4F       		.byte	0x4f
- 2547 0900 63000000 		.4byte	0x63
- 2548 0904 13       		.uleb128 0x13
- 2549 0905 A9040000 		.4byte	.LASF124
- 2550 0909 01       		.byte	0x1
- 2551 090a 50       		.byte	0x50
- 2552 090b 63000000 		.4byte	0x63
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 52
-
-
- 2553 090f 13       		.uleb128 0x13
- 2554 0910 B2040000 		.4byte	.LASF125
- 2555 0914 01       		.byte	0x1
- 2556 0915 51       		.byte	0x51
- 2557 0916 63000000 		.4byte	0x63
- 2558 091a 13       		.uleb128 0x13
- 2559 091b 74000000 		.4byte	.LASF126
- 2560 091f 01       		.byte	0x1
- 2561 0920 52       		.byte	0x52
- 2562 0921 63000000 		.4byte	0x63
- 2563 0925 13       		.uleb128 0x13
- 2564 0926 D4040000 		.4byte	.LASF127
- 2565 092a 01       		.byte	0x1
- 2566 092b 53       		.byte	0x53
- 2567 092c 63000000 		.4byte	0x63
- 2568 0930 13       		.uleb128 0x13
- 2569 0931 CA030000 		.4byte	.LASF128
- 2570 0935 01       		.byte	0x1
- 2571 0936 54       		.byte	0x54
- 2572 0937 63000000 		.4byte	0x63
- 2573 093b 13       		.uleb128 0x13
- 2574 093c 15040000 		.4byte	.LASF129
- 2575 0940 01       		.byte	0x1
- 2576 0941 56       		.byte	0x56
- 2577 0942 63000000 		.4byte	0x63
- 2578 0946 18       		.uleb128 0x18
- 2579 0947 34010000 		.4byte	.LASF130
- 2580 094b 01       		.byte	0x1
- 2581 094c 57       		.byte	0x57
- 2582 094d 2C000000 		.4byte	0x2c
- 2583 0951 6C010000 		.4byte	.LLST8
- 2584 0955 00       		.byte	0x0
- 2585 0956 0F       		.uleb128 0xf
- 2586 0957 A8090000 		.4byte	0x9a8
- 2587 095b 01       		.byte	0x1
- 2588 095c BB040000 		.4byte	.LASF131
- 2589 0960 01       		.byte	0x1
- 2590 0961 38       		.byte	0x38
- 2591 0962 01       		.byte	0x1
- 2592 0963 58020000 		.4byte	.LFB2
- 2593 0967 AE020000 		.4byte	.LFE2
- 2594 096b F8010000 		.4byte	.LLST9
- 2595 096f 14       		.uleb128 0x14
- 2596 0970 5D050000 		.4byte	.LASF132
- 2597 0974 01       		.byte	0x1
- 2598 0975 37       		.byte	0x37
- 2599 0976 56000000 		.4byte	0x56
- 2600 097a 17020000 		.4byte	.LLST10
- 2601 097e 19       		.uleb128 0x19
- 2602 097f 73726300 		.ascii	"src\000"
- 2603 0983 01       		.byte	0x1
- 2604 0984 37       		.byte	0x37
- 2605 0985 56000000 		.4byte	0x56
- 2606 0989 35020000 		.4byte	.LLST11
- 2607 098d 11       		.uleb128 0x11
- 2608 098e 6900     		.ascii	"i\000"
- 2609 0990 01       		.byte	0x1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 53
-
-
- 2610 0991 39       		.byte	0x39
- 2611 0992 4F000000 		.4byte	0x4f
- 2612 0996 53020000 		.4byte	.LLST12
- 2613 099a 11       		.uleb128 0x11
- 2614 099b 6B00     		.ascii	"k\000"
- 2615 099d 01       		.byte	0x1
- 2616 099e 39       		.byte	0x39
- 2617 099f 4F000000 		.4byte	0x4f
- 2618 09a3 66020000 		.4byte	.LLST13
- 2619 09a7 00       		.byte	0x0
- 2620 09a8 0F       		.uleb128 0xf
- 2621 09a9 DE090000 		.4byte	0x9de
- 2622 09ad 01       		.byte	0x1
- 2623 09ae 2A030000 		.4byte	.LASF133
- 2624 09b2 01       		.byte	0x1
- 2625 09b3 A3       		.byte	0xa3
- 2626 09b4 01       		.byte	0x1
- 2627 09b5 B0020000 		.4byte	.LFB4
- 2628 09b9 0C030000 		.4byte	.LFE4
- 2629 09bd 84020000 		.4byte	.LLST14
- 2630 09c1 10       		.uleb128 0x10
- 2631 09c2 6900     		.ascii	"i\000"
- 2632 09c4 01       		.byte	0x1
- 2633 09c5 AB       		.byte	0xab
- 2634 09c6 2C000000 		.4byte	0x2c
- 2635 09ca 16       		.uleb128 0x16
- 2636 09cb C2020000 		.4byte	.LBB5
- 2637 09cf E4020000 		.4byte	.LBE5
- 2638 09d3 10       		.uleb128 0x10
- 2639 09d4 6A00     		.ascii	"j\000"
- 2640 09d6 01       		.byte	0x1
- 2641 09d7 B5       		.byte	0xb5
- 2642 09d8 2C000000 		.4byte	0x2c
- 2643 09dc 00       		.byte	0x0
- 2644 09dd 00       		.byte	0x0
- 2645 09de 0F       		.uleb128 0xf
- 2646 09df 110A0000 		.4byte	0xa11
- 2647 09e3 01       		.byte	0x1
- 2648 09e4 8A020000 		.4byte	.LASF134
- 2649 09e8 01       		.byte	0x1
- 2650 09e9 F7       		.byte	0xf7
- 2651 09ea 01       		.byte	0x1
- 2652 09eb 0C030000 		.4byte	.LFB7
- 2653 09ef 70040000 		.4byte	.LFE7
- 2654 09f3 A3020000 		.4byte	.LLST15
- 2655 09f7 18       		.uleb128 0x18
- 2656 09f8 AF050000 		.4byte	.LASF135
- 2657 09fc 01       		.byte	0x1
- 2658 09fd F8       		.byte	0xf8
- 2659 09fe 63000000 		.4byte	0x63
- 2660 0a02 C2020000 		.4byte	.LLST16
- 2661 0a06 1A       		.uleb128 0x1a
- 2662 0a07 6900     		.ascii	"i\000"
- 2663 0a09 01       		.byte	0x1
- 2664 0a0a 0101     		.2byte	0x101
- 2665 0a0c 2C000000 		.4byte	0x2c
- 2666 0a10 00       		.byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 54
-
-
- 2667 0a11 1B       		.uleb128 0x1b
- 2668 0a12 86060000 		.4byte	.LASF136
- 2669 0a16 01       		.byte	0x1
- 2670 0a17 18       		.byte	0x18
- 2671 0a18 E5070000 		.4byte	0x7e5
- 2672 0a1c 01       		.byte	0x1
- 2673 0a1d 05       		.byte	0x5
- 2674 0a1e 03       		.byte	0x3
- 2675 0a1f 00000000 		.4byte	currentSongInfo
- 2676 0a23 1B       		.uleb128 0x1b
- 2677 0a24 82000000 		.4byte	.LASF137
- 2678 0a28 01       		.byte	0x1
- 2679 0a29 19       		.byte	0x19
- 2680 0a2a 4F000000 		.4byte	0x4f
- 2681 0a2e 01       		.byte	0x1
- 2682 0a2f 05       		.byte	0x5
- 2683 0a30 03       		.byte	0x3
- 2684 0a31 00000000 		.4byte	mmcInitialized
- 2685 0a35 1B       		.uleb128 0x1b
- 2686 0a36 08030000 		.4byte	.LASF138
- 2687 0a3a 01       		.byte	0x1
- 2688 0a3b 1A       		.byte	0x1a
- 2689 0a3c 4F000000 		.4byte	0x4f
- 2690 0a40 01       		.byte	0x1
- 2691 0a41 05       		.byte	0x5
- 2692 0a42 03       		.byte	0x3
- 2693 0a43 00000000 		.4byte	changeLeft
- 2694 0a47 1B       		.uleb128 0x1b
- 2695 0a48 B3020000 		.4byte	.LASF139
- 2696 0a4c 01       		.byte	0x1
- 2697 0a4d 1B       		.byte	0x1b
- 2698 0a4e 4F000000 		.4byte	0x4f
- 2699 0a52 01       		.byte	0x1
- 2700 0a53 05       		.byte	0x5
- 2701 0a54 03       		.byte	0x3
- 2702 0a55 00000000 		.4byte	changeRight
- 2703 0a59 1B       		.uleb128 0x1b
- 2704 0a5a E1010000 		.4byte	.LASF140
- 2705 0a5e 01       		.byte	0x1
- 2706 0a5f 1C       		.byte	0x1c
- 2707 0a60 4F000000 		.4byte	0x4f
- 2708 0a64 01       		.byte	0x1
- 2709 0a65 05       		.byte	0x5
- 2710 0a66 03       		.byte	0x3
- 2711 0a67 00000000 		.4byte	rewindForward
- 2712 0a6b 1B       		.uleb128 0x1b
- 2713 0a6c D9000000 		.4byte	.LASF141
- 2714 0a70 01       		.byte	0x1
- 2715 0a71 1D       		.byte	0x1d
- 2716 0a72 4F000000 		.4byte	0x4f
- 2717 0a76 01       		.byte	0x1
- 2718 0a77 05       		.byte	0x5
- 2719 0a78 03       		.byte	0x3
- 2720 0a79 00000000 		.4byte	rewindBackward
- 2721 0a7d 1B       		.uleb128 0x1b
- 2722 0a7e 07060000 		.4byte	.LASF142
- 2723 0a82 01       		.byte	0x1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 55
-
-
- 2724 0a83 1E       		.byte	0x1e
- 2725 0a84 4F000000 		.4byte	0x4f
- 2726 0a88 01       		.byte	0x1
- 2727 0a89 05       		.byte	0x5
- 2728 0a8a 03       		.byte	0x3
- 2729 0a8b 00000000 		.4byte	volumeUp
- 2730 0a8f 1B       		.uleb128 0x1b
- 2731 0a90 5E030000 		.4byte	.LASF143
- 2732 0a94 01       		.byte	0x1
- 2733 0a95 1F       		.byte	0x1f
- 2734 0a96 4F000000 		.4byte	0x4f
- 2735 0a9a 01       		.byte	0x1
- 2736 0a9b 05       		.byte	0x5
- 2737 0a9c 03       		.byte	0x3
- 2738 0a9d 00000000 		.4byte	volumeDown
- 2739 0aa1 1B       		.uleb128 0x1b
- 2740 0aa2 40010000 		.4byte	.LASF144
- 2741 0aa6 01       		.byte	0x1
- 2742 0aa7 20       		.byte	0x20
- 2743 0aa8 41000000 		.4byte	0x41
- 2744 0aac 01       		.byte	0x1
- 2745 0aad 05       		.byte	0x5
- 2746 0aae 03       		.byte	0x3
- 2747 0aaf 00000000 		.4byte	isError
- 2748 0ab3 1B       		.uleb128 0x1b
- 2749 0ab4 7A040000 		.4byte	.LASF24
- 2750 0ab8 01       		.byte	0x1
- 2751 0ab9 21       		.byte	0x21
- 2752 0aba 63000000 		.4byte	0x63
- 2753 0abe 01       		.byte	0x1
- 2754 0abf 05       		.byte	0x5
- 2755 0ac0 03       		.byte	0x3
- 2756 0ac1 00000000 		.4byte	error
- 2757 0ac5 1C       		.uleb128 0x1c
- 2758 0ac6 19020000 		.4byte	.LASF145
- 2759 0aca 03       		.byte	0x3
- 2760 0acb 18       		.byte	0x18
- 2761 0acc 4F000000 		.4byte	0x4f
- 2762 0ad0 01       		.byte	0x1
- 2763 0ad1 01       		.byte	0x1
- 2764 0ad2 05       		.uleb128 0x5
- 2765 0ad3 DD0A0000 		.4byte	0xadd
- 2766 0ad7 69000000 		.4byte	0x69
- 2767 0adb 1D       		.uleb128 0x1d
- 2768 0adc 00       		.byte	0x0
- 2769 0add 1C       		.uleb128 0x1c
- 2770 0ade 1A060000 		.4byte	.LASF146
- 2771 0ae2 01       		.byte	0x1
- 2772 0ae3 23       		.byte	0x23
- 2773 0ae4 D20A0000 		.4byte	0xad2
- 2774 0ae8 01       		.byte	0x1
- 2775 0ae9 01       		.byte	0x1
- 2776 0aea 1B       		.uleb128 0x1b
- 2777 0aeb E8000000 		.4byte	.LASF147
- 2778 0aef 01       		.byte	0x1
- 2779 0af0 26       		.byte	0x26
- 2780 0af1 4F000000 		.4byte	0x4f
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 56
-
-
- 2781 0af5 01       		.byte	0x1
- 2782 0af6 05       		.byte	0x5
- 2783 0af7 03       		.byte	0x3
- 2784 0af8 00000000 		.4byte	id3TagSize
- 2785 0afc 1B       		.uleb128 0x1b
- 2786 0afd F9030000 		.4byte	.LASF148
- 2787 0b01 01       		.byte	0x1
- 2788 0b02 27       		.byte	0x27
- 2789 0b03 25000000 		.4byte	0x25
- 2790 0b07 01       		.byte	0x1
- 2791 0b08 05       		.byte	0x5
- 2792 0b09 03       		.byte	0x3
- 2793 0b0a 00000000 		.4byte	fileSize
- 2794 0b0e 1B       		.uleb128 0x1b
- 2795 0b0f 7B030000 		.4byte	.LASF149
- 2796 0b13 01       		.byte	0x1
- 2797 0b14 28       		.byte	0x28
- 2798 0b15 4F000000 		.4byte	0x4f
- 2799 0b19 01       		.byte	0x1
- 2800 0b1a 05       		.byte	0x5
- 2801 0b1b 03       		.byte	0x3
- 2802 0b1c 00000000 		.4byte	readSize
- 2803 0b20 05       		.uleb128 0x5
- 2804 0b21 300B0000 		.4byte	0xb30
- 2805 0b25 4F000000 		.4byte	0x4f
- 2806 0b29 06       		.uleb128 0x6
- 2807 0b2a 48000000 		.4byte	0x48
- 2808 0b2e 1D       		.byte	0x1d
- 2809 0b2f 00       		.byte	0x0
- 2810 0b30 1B       		.uleb128 0x1b
- 2811 0b31 F3000000 		.4byte	.LASF150
- 2812 0b35 01       		.byte	0x1
- 2813 0b36 29       		.byte	0x29
- 2814 0b37 200B0000 		.4byte	0xb20
- 2815 0b3b 01       		.byte	0x1
- 2816 0b3c 05       		.byte	0x5
- 2817 0b3d 03       		.byte	0x3
- 2818 0b3e 00000000 		.4byte	myName
- 2819 0b42 1B       		.uleb128 0x1b
- 2820 0b43 95030000 		.4byte	.LASF151
- 2821 0b47 01       		.byte	0x1
- 2822 0b48 2A       		.byte	0x2a
- 2823 0b49 200B0000 		.4byte	0xb20
- 2824 0b4d 01       		.byte	0x1
- 2825 0b4e 05       		.byte	0x5
- 2826 0b4f 03       		.byte	0x3
- 2827 0b50 00000000 		.4byte	myAuthor
- 2828 0b54 1B       		.uleb128 0x1b
- 2829 0b55 D0050000 		.4byte	.LASF152
- 2830 0b59 01       		.byte	0x1
- 2831 0b5a 2B       		.byte	0x2b
- 2832 0b5b 25000000 		.4byte	0x25
- 2833 0b5f 01       		.byte	0x1
- 2834 0b60 05       		.byte	0x5
- 2835 0b61 03       		.byte	0x3
- 2836 0b62 00000000 		.4byte	titleOffset
- 2837 0b66 1B       		.uleb128 0x1b
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 57
-
-
- 2838 0b67 2E040000 		.4byte	.LASF153
- 2839 0b6b 01       		.byte	0x1
- 2840 0b6c 2C       		.byte	0x2c
- 2841 0b6d 25000000 		.4byte	0x25
- 2842 0b71 01       		.byte	0x1
- 2843 0b72 05       		.byte	0x5
- 2844 0b73 03       		.byte	0x3
- 2845 0b74 00000000 		.4byte	authorOffset
- 2846 0b78 1E       		.uleb128 0x1e
- 2847 0b79 65667300 		.ascii	"efs\000"
- 2848 0b7d 01       		.byte	0x1
- 2849 0b7e 2F       		.byte	0x2f
- 2850 0b7f CF060000 		.4byte	0x6cf
- 2851 0b83 01       		.byte	0x1
- 2852 0b84 05       		.byte	0x5
- 2853 0b85 03       		.byte	0x3
- 2854 0b86 00000000 		.4byte	efs
- 2855 0b8a 1B       		.uleb128 0x1b
- 2856 0b8b FA000000 		.4byte	.LASF154
- 2857 0b8f 01       		.byte	0x1
- 2858 0b90 30       		.byte	0x30
- 2859 0b91 71060000 		.4byte	0x671
- 2860 0b95 01       		.byte	0x1
- 2861 0b96 05       		.byte	0x5
- 2862 0b97 03       		.byte	0x3
- 2863 0b98 00000000 		.4byte	file
- 2864 0b9c 1B       		.uleb128 0x1b
- 2865 0b9d 54010000 		.4byte	.LASF155
- 2866 0ba1 01       		.byte	0x1
- 2867 0ba2 31       		.byte	0x31
- 2868 0ba3 7E070000 		.4byte	0x77e
- 2869 0ba7 01       		.byte	0x1
- 2870 0ba8 05       		.byte	0x5
- 2871 0ba9 03       		.byte	0x3
- 2872 0baa 00000000 		.4byte	list
- 2873 0bae 05       		.uleb128 0x5
- 2874 0baf BE0B0000 		.4byte	0xbbe
- 2875 0bb3 4F000000 		.4byte	0x4f
- 2876 0bb7 06       		.uleb128 0x6
- 2877 0bb8 48000000 		.4byte	0x48
- 2878 0bbc 0C       		.byte	0xc
- 2879 0bbd 00       		.byte	0x0
- 2880 0bbe 1B       		.uleb128 0x1b
- 2881 0bbf 0F020000 		.4byte	.LASF156
- 2882 0bc3 01       		.byte	0x1
- 2883 0bc4 32       		.byte	0x32
- 2884 0bc5 AE0B0000 		.4byte	0xbae
- 2885 0bc9 01       		.byte	0x1
- 2886 0bca 05       		.byte	0x5
- 2887 0bcb 03       		.byte	0x3
- 2888 0bcc 00000000 		.4byte	file_name
- 2889 0bd0 1B       		.uleb128 0x1b
- 2890 0bd1 CD020000 		.4byte	.LASF157
- 2891 0bd5 01       		.byte	0x1
- 2892 0bd6 33       		.byte	0x33
- 2893 0bd7 41000000 		.4byte	0x41
- 2894 0bdb 01       		.byte	0x1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 58
-
-
- 2895 0bdc 05       		.byte	0x5
- 2896 0bdd 03       		.byte	0x3
- 2897 0bde 00000000 		.4byte	size
- 2898 0be2 05       		.uleb128 0x5
- 2899 0be3 F80B0000 		.4byte	0xbf8
- 2900 0be7 4F000000 		.4byte	0x4f
- 2901 0beb 06       		.uleb128 0x6
- 2902 0bec 48000000 		.4byte	0x48
- 2903 0bf0 FF       		.byte	0xff
- 2904 0bf1 06       		.uleb128 0x6
- 2905 0bf2 48000000 		.4byte	0x48
- 2906 0bf6 0C       		.byte	0xc
- 2907 0bf7 00       		.byte	0x0
- 2908 0bf8 1B       		.uleb128 0x1b
- 2909 0bf9 C7060000 		.4byte	.LASF158
- 2910 0bfd 01       		.byte	0x1
- 2911 0bfe 35       		.byte	0x35
- 2912 0bff E20B0000 		.4byte	0xbe2
- 2913 0c03 01       		.byte	0x1
- 2914 0c04 05       		.byte	0x5
- 2915 0c05 03       		.byte	0x3
- 2916 0c06 00000000 		.4byte	files
- 2917 0c0a 00       		.byte	0x0
- 2918              		.section	.debug_abbrev
- 2919 0000 01       		.uleb128 0x1
- 2920 0001 11       		.uleb128 0x11
- 2921 0002 01       		.byte	0x1
- 2922 0003 10       		.uleb128 0x10
- 2923 0004 06       		.uleb128 0x6
- 2924 0005 12       		.uleb128 0x12
- 2925 0006 01       		.uleb128 0x1
- 2926 0007 11       		.uleb128 0x11
- 2927 0008 01       		.uleb128 0x1
- 2928 0009 25       		.uleb128 0x25
- 2929 000a 0E       		.uleb128 0xe
- 2930 000b 13       		.uleb128 0x13
- 2931 000c 0B       		.uleb128 0xb
- 2932 000d 03       		.uleb128 0x3
- 2933 000e 0E       		.uleb128 0xe
- 2934 000f 1B       		.uleb128 0x1b
- 2935 0010 0E       		.uleb128 0xe
- 2936 0011 00       		.byte	0x0
- 2937 0012 00       		.byte	0x0
- 2938 0013 02       		.uleb128 0x2
- 2939 0014 24       		.uleb128 0x24
- 2940 0015 00       		.byte	0x0
- 2941 0016 03       		.uleb128 0x3
- 2942 0017 0E       		.uleb128 0xe
- 2943 0018 0B       		.uleb128 0xb
- 2944 0019 0B       		.uleb128 0xb
- 2945 001a 3E       		.uleb128 0x3e
- 2946 001b 0B       		.uleb128 0xb
- 2947 001c 00       		.byte	0x0
- 2948 001d 00       		.byte	0x0
- 2949 001e 03       		.uleb128 0x3
- 2950 001f 24       		.uleb128 0x24
- 2951 0020 00       		.byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 59
-
-
- 2952 0021 03       		.uleb128 0x3
- 2953 0022 08       		.uleb128 0x8
- 2954 0023 0B       		.uleb128 0xb
- 2955 0024 0B       		.uleb128 0xb
- 2956 0025 3E       		.uleb128 0x3e
- 2957 0026 0B       		.uleb128 0xb
- 2958 0027 00       		.byte	0x0
- 2959 0028 00       		.byte	0x0
- 2960 0029 04       		.uleb128 0x4
- 2961 002a 0F       		.uleb128 0xf
- 2962 002b 00       		.byte	0x0
- 2963 002c 0B       		.uleb128 0xb
- 2964 002d 0B       		.uleb128 0xb
- 2965 002e 49       		.uleb128 0x49
- 2966 002f 13       		.uleb128 0x13
- 2967 0030 00       		.byte	0x0
- 2968 0031 00       		.byte	0x0
- 2969 0032 05       		.uleb128 0x5
- 2970 0033 01       		.uleb128 0x1
- 2971 0034 01       		.byte	0x1
- 2972 0035 01       		.uleb128 0x1
- 2973 0036 13       		.uleb128 0x13
- 2974 0037 49       		.uleb128 0x49
- 2975 0038 13       		.uleb128 0x13
- 2976 0039 00       		.byte	0x0
- 2977 003a 00       		.byte	0x0
- 2978 003b 06       		.uleb128 0x6
- 2979 003c 21       		.uleb128 0x21
- 2980 003d 00       		.byte	0x0
- 2981 003e 49       		.uleb128 0x49
- 2982 003f 13       		.uleb128 0x13
- 2983 0040 2F       		.uleb128 0x2f
- 2984 0041 0B       		.uleb128 0xb
- 2985 0042 00       		.byte	0x0
- 2986 0043 00       		.byte	0x0
- 2987 0044 07       		.uleb128 0x7
- 2988 0045 16       		.uleb128 0x16
- 2989 0046 00       		.byte	0x0
- 2990 0047 03       		.uleb128 0x3
- 2991 0048 0E       		.uleb128 0xe
- 2992 0049 3A       		.uleb128 0x3a
- 2993 004a 0B       		.uleb128 0xb
- 2994 004b 3B       		.uleb128 0x3b
- 2995 004c 0B       		.uleb128 0xb
- 2996 004d 49       		.uleb128 0x49
- 2997 004e 13       		.uleb128 0x13
- 2998 004f 00       		.byte	0x0
- 2999 0050 00       		.byte	0x0
- 3000 0051 08       		.uleb128 0x8
- 3001 0052 13       		.uleb128 0x13
- 3002 0053 01       		.byte	0x1
- 3003 0054 01       		.uleb128 0x1
- 3004 0055 13       		.uleb128 0x13
- 3005 0056 03       		.uleb128 0x3
- 3006 0057 0E       		.uleb128 0xe
- 3007 0058 0B       		.uleb128 0xb
- 3008 0059 0B       		.uleb128 0xb
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 60
-
-
- 3009 005a 3A       		.uleb128 0x3a
- 3010 005b 0B       		.uleb128 0xb
- 3011 005c 3B       		.uleb128 0x3b
- 3012 005d 0B       		.uleb128 0xb
- 3013 005e 00       		.byte	0x0
- 3014 005f 00       		.byte	0x0
- 3015 0060 09       		.uleb128 0x9
- 3016 0061 0D       		.uleb128 0xd
- 3017 0062 00       		.byte	0x0
- 3018 0063 03       		.uleb128 0x3
- 3019 0064 0E       		.uleb128 0xe
- 3020 0065 3A       		.uleb128 0x3a
- 3021 0066 0B       		.uleb128 0xb
- 3022 0067 3B       		.uleb128 0x3b
- 3023 0068 0B       		.uleb128 0xb
- 3024 0069 49       		.uleb128 0x49
- 3025 006a 13       		.uleb128 0x13
- 3026 006b 38       		.uleb128 0x38
- 3027 006c 0A       		.uleb128 0xa
- 3028 006d 00       		.byte	0x0
- 3029 006e 00       		.byte	0x0
- 3030 006f 0A       		.uleb128 0xa
- 3031 0070 13       		.uleb128 0x13
- 3032 0071 01       		.byte	0x1
- 3033 0072 01       		.uleb128 0x1
- 3034 0073 13       		.uleb128 0x13
- 3035 0074 03       		.uleb128 0x3
- 3036 0075 0E       		.uleb128 0xe
- 3037 0076 0B       		.uleb128 0xb
- 3038 0077 05       		.uleb128 0x5
- 3039 0078 3A       		.uleb128 0x3a
- 3040 0079 0B       		.uleb128 0xb
- 3041 007a 3B       		.uleb128 0x3b
- 3042 007b 0B       		.uleb128 0xb
- 3043 007c 00       		.byte	0x0
- 3044 007d 00       		.byte	0x0
- 3045 007e 0B       		.uleb128 0xb
- 3046 007f 21       		.uleb128 0x21
- 3047 0080 00       		.byte	0x0
- 3048 0081 49       		.uleb128 0x49
- 3049 0082 13       		.uleb128 0x13
- 3050 0083 2F       		.uleb128 0x2f
- 3051 0084 05       		.uleb128 0x5
- 3052 0085 00       		.byte	0x0
- 3053 0086 00       		.byte	0x0
- 3054 0087 0C       		.uleb128 0xc
- 3055 0088 13       		.uleb128 0x13
- 3056 0089 01       		.byte	0x1
- 3057 008a 01       		.uleb128 0x1
- 3058 008b 13       		.uleb128 0x13
- 3059 008c 0B       		.uleb128 0xb
- 3060 008d 0B       		.uleb128 0xb
- 3061 008e 3A       		.uleb128 0x3a
- 3062 008f 0B       		.uleb128 0xb
- 3063 0090 3B       		.uleb128 0x3b
- 3064 0091 0B       		.uleb128 0xb
- 3065 0092 00       		.byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 61
-
-
- 3066 0093 00       		.byte	0x0
- 3067 0094 0D       		.uleb128 0xd
- 3068 0095 0D       		.uleb128 0xd
- 3069 0096 00       		.byte	0x0
- 3070 0097 03       		.uleb128 0x3
- 3071 0098 08       		.uleb128 0x8
- 3072 0099 3A       		.uleb128 0x3a
- 3073 009a 0B       		.uleb128 0xb
- 3074 009b 3B       		.uleb128 0x3b
- 3075 009c 0B       		.uleb128 0xb
- 3076 009d 49       		.uleb128 0x49
- 3077 009e 13       		.uleb128 0x13
- 3078 009f 38       		.uleb128 0x38
- 3079 00a0 0A       		.uleb128 0xa
- 3080 00a1 00       		.byte	0x0
- 3081 00a2 00       		.byte	0x0
- 3082 00a3 0E       		.uleb128 0xe
- 3083 00a4 13       		.uleb128 0x13
- 3084 00a5 01       		.byte	0x1
- 3085 00a6 01       		.uleb128 0x1
- 3086 00a7 13       		.uleb128 0x13
- 3087 00a8 0B       		.uleb128 0xb
- 3088 00a9 05       		.uleb128 0x5
- 3089 00aa 3A       		.uleb128 0x3a
- 3090 00ab 0B       		.uleb128 0xb
- 3091 00ac 3B       		.uleb128 0x3b
- 3092 00ad 0B       		.uleb128 0xb
- 3093 00ae 00       		.byte	0x0
- 3094 00af 00       		.byte	0x0
- 3095 00b0 0F       		.uleb128 0xf
- 3096 00b1 2E       		.uleb128 0x2e
- 3097 00b2 01       		.byte	0x1
- 3098 00b3 01       		.uleb128 0x1
- 3099 00b4 13       		.uleb128 0x13
- 3100 00b5 3F       		.uleb128 0x3f
- 3101 00b6 0C       		.uleb128 0xc
- 3102 00b7 03       		.uleb128 0x3
- 3103 00b8 0E       		.uleb128 0xe
- 3104 00b9 3A       		.uleb128 0x3a
- 3105 00ba 0B       		.uleb128 0xb
- 3106 00bb 3B       		.uleb128 0x3b
- 3107 00bc 0B       		.uleb128 0xb
- 3108 00bd 27       		.uleb128 0x27
- 3109 00be 0C       		.uleb128 0xc
- 3110 00bf 11       		.uleb128 0x11
- 3111 00c0 01       		.uleb128 0x1
- 3112 00c1 12       		.uleb128 0x12
- 3113 00c2 01       		.uleb128 0x1
- 3114 00c3 40       		.uleb128 0x40
- 3115 00c4 06       		.uleb128 0x6
- 3116 00c5 00       		.byte	0x0
- 3117 00c6 00       		.byte	0x0
- 3118 00c7 10       		.uleb128 0x10
- 3119 00c8 34       		.uleb128 0x34
- 3120 00c9 00       		.byte	0x0
- 3121 00ca 03       		.uleb128 0x3
- 3122 00cb 08       		.uleb128 0x8
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 62
-
-
- 3123 00cc 3A       		.uleb128 0x3a
- 3124 00cd 0B       		.uleb128 0xb
- 3125 00ce 3B       		.uleb128 0x3b
- 3126 00cf 0B       		.uleb128 0xb
- 3127 00d0 49       		.uleb128 0x49
- 3128 00d1 13       		.uleb128 0x13
- 3129 00d2 00       		.byte	0x0
- 3130 00d3 00       		.byte	0x0
- 3131 00d4 11       		.uleb128 0x11
- 3132 00d5 34       		.uleb128 0x34
- 3133 00d6 00       		.byte	0x0
- 3134 00d7 03       		.uleb128 0x3
- 3135 00d8 08       		.uleb128 0x8
- 3136 00d9 3A       		.uleb128 0x3a
- 3137 00da 0B       		.uleb128 0xb
- 3138 00db 3B       		.uleb128 0x3b
- 3139 00dc 0B       		.uleb128 0xb
- 3140 00dd 49       		.uleb128 0x49
- 3141 00de 13       		.uleb128 0x13
- 3142 00df 02       		.uleb128 0x2
- 3143 00e0 06       		.uleb128 0x6
- 3144 00e1 00       		.byte	0x0
- 3145 00e2 00       		.byte	0x0
- 3146 00e3 12       		.uleb128 0x12
- 3147 00e4 0B       		.uleb128 0xb
- 3148 00e5 01       		.byte	0x1
- 3149 00e6 55       		.uleb128 0x55
- 3150 00e7 06       		.uleb128 0x6
- 3151 00e8 00       		.byte	0x0
- 3152 00e9 00       		.byte	0x0
- 3153 00ea 13       		.uleb128 0x13
- 3154 00eb 34       		.uleb128 0x34
- 3155 00ec 00       		.byte	0x0
- 3156 00ed 03       		.uleb128 0x3
- 3157 00ee 0E       		.uleb128 0xe
- 3158 00ef 3A       		.uleb128 0x3a
- 3159 00f0 0B       		.uleb128 0xb
- 3160 00f1 3B       		.uleb128 0x3b
- 3161 00f2 0B       		.uleb128 0xb
- 3162 00f3 49       		.uleb128 0x49
- 3163 00f4 13       		.uleb128 0x13
- 3164 00f5 00       		.byte	0x0
- 3165 00f6 00       		.byte	0x0
- 3166 00f7 14       		.uleb128 0x14
- 3167 00f8 05       		.uleb128 0x5
- 3168 00f9 00       		.byte	0x0
- 3169 00fa 03       		.uleb128 0x3
- 3170 00fb 0E       		.uleb128 0xe
- 3171 00fc 3A       		.uleb128 0x3a
- 3172 00fd 0B       		.uleb128 0xb
- 3173 00fe 3B       		.uleb128 0x3b
- 3174 00ff 0B       		.uleb128 0xb
- 3175 0100 49       		.uleb128 0x49
- 3176 0101 13       		.uleb128 0x13
- 3177 0102 02       		.uleb128 0x2
- 3178 0103 06       		.uleb128 0x6
- 3179 0104 00       		.byte	0x0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 63
-
-
- 3180 0105 00       		.byte	0x0
- 3181 0106 15       		.uleb128 0x15
- 3182 0107 34       		.uleb128 0x34
- 3183 0108 00       		.byte	0x0
- 3184 0109 03       		.uleb128 0x3
- 3185 010a 0E       		.uleb128 0xe
- 3186 010b 3A       		.uleb128 0x3a
- 3187 010c 0B       		.uleb128 0xb
- 3188 010d 3B       		.uleb128 0x3b
- 3189 010e 0B       		.uleb128 0xb
- 3190 010f 49       		.uleb128 0x49
- 3191 0110 13       		.uleb128 0x13
- 3192 0111 02       		.uleb128 0x2
- 3193 0112 0A       		.uleb128 0xa
- 3194 0113 00       		.byte	0x0
- 3195 0114 00       		.byte	0x0
- 3196 0115 16       		.uleb128 0x16
- 3197 0116 0B       		.uleb128 0xb
- 3198 0117 01       		.byte	0x1
- 3199 0118 11       		.uleb128 0x11
- 3200 0119 01       		.uleb128 0x1
- 3201 011a 12       		.uleb128 0x12
- 3202 011b 01       		.uleb128 0x1
- 3203 011c 00       		.byte	0x0
- 3204 011d 00       		.byte	0x0
- 3205 011e 17       		.uleb128 0x17
- 3206 011f 2E       		.uleb128 0x2e
- 3207 0120 01       		.byte	0x1
- 3208 0121 01       		.uleb128 0x1
- 3209 0122 13       		.uleb128 0x13
- 3210 0123 3F       		.uleb128 0x3f
- 3211 0124 0C       		.uleb128 0xc
- 3212 0125 03       		.uleb128 0x3
- 3213 0126 0E       		.uleb128 0xe
- 3214 0127 3A       		.uleb128 0x3a
- 3215 0128 0B       		.uleb128 0xb
- 3216 0129 3B       		.uleb128 0x3b
- 3217 012a 0B       		.uleb128 0xb
- 3218 012b 27       		.uleb128 0x27
- 3219 012c 0C       		.uleb128 0xc
- 3220 012d 49       		.uleb128 0x49
- 3221 012e 13       		.uleb128 0x13
- 3222 012f 11       		.uleb128 0x11
- 3223 0130 01       		.uleb128 0x1
- 3224 0131 12       		.uleb128 0x12
- 3225 0132 01       		.uleb128 0x1
- 3226 0133 40       		.uleb128 0x40
- 3227 0134 06       		.uleb128 0x6
- 3228 0135 00       		.byte	0x0
- 3229 0136 00       		.byte	0x0
- 3230 0137 18       		.uleb128 0x18
- 3231 0138 34       		.uleb128 0x34
- 3232 0139 00       		.byte	0x0
- 3233 013a 03       		.uleb128 0x3
- 3234 013b 0E       		.uleb128 0xe
- 3235 013c 3A       		.uleb128 0x3a
- 3236 013d 0B       		.uleb128 0xb
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 64
-
-
- 3237 013e 3B       		.uleb128 0x3b
- 3238 013f 0B       		.uleb128 0xb
- 3239 0140 49       		.uleb128 0x49
- 3240 0141 13       		.uleb128 0x13
- 3241 0142 02       		.uleb128 0x2
- 3242 0143 06       		.uleb128 0x6
- 3243 0144 00       		.byte	0x0
- 3244 0145 00       		.byte	0x0
- 3245 0146 19       		.uleb128 0x19
- 3246 0147 05       		.uleb128 0x5
- 3247 0148 00       		.byte	0x0
- 3248 0149 03       		.uleb128 0x3
- 3249 014a 08       		.uleb128 0x8
- 3250 014b 3A       		.uleb128 0x3a
- 3251 014c 0B       		.uleb128 0xb
- 3252 014d 3B       		.uleb128 0x3b
- 3253 014e 0B       		.uleb128 0xb
- 3254 014f 49       		.uleb128 0x49
- 3255 0150 13       		.uleb128 0x13
- 3256 0151 02       		.uleb128 0x2
- 3257 0152 06       		.uleb128 0x6
- 3258 0153 00       		.byte	0x0
- 3259 0154 00       		.byte	0x0
- 3260 0155 1A       		.uleb128 0x1a
- 3261 0156 34       		.uleb128 0x34
- 3262 0157 00       		.byte	0x0
- 3263 0158 03       		.uleb128 0x3
- 3264 0159 08       		.uleb128 0x8
- 3265 015a 3A       		.uleb128 0x3a
- 3266 015b 0B       		.uleb128 0xb
- 3267 015c 3B       		.uleb128 0x3b
- 3268 015d 05       		.uleb128 0x5
- 3269 015e 49       		.uleb128 0x49
- 3270 015f 13       		.uleb128 0x13
- 3271 0160 00       		.byte	0x0
- 3272 0161 00       		.byte	0x0
- 3273 0162 1B       		.uleb128 0x1b
- 3274 0163 34       		.uleb128 0x34
- 3275 0164 00       		.byte	0x0
- 3276 0165 03       		.uleb128 0x3
- 3277 0166 0E       		.uleb128 0xe
- 3278 0167 3A       		.uleb128 0x3a
- 3279 0168 0B       		.uleb128 0xb
- 3280 0169 3B       		.uleb128 0x3b
- 3281 016a 0B       		.uleb128 0xb
- 3282 016b 49       		.uleb128 0x49
- 3283 016c 13       		.uleb128 0x13
- 3284 016d 3F       		.uleb128 0x3f
- 3285 016e 0C       		.uleb128 0xc
- 3286 016f 02       		.uleb128 0x2
- 3287 0170 0A       		.uleb128 0xa
- 3288 0171 00       		.byte	0x0
- 3289 0172 00       		.byte	0x0
- 3290 0173 1C       		.uleb128 0x1c
- 3291 0174 34       		.uleb128 0x34
- 3292 0175 00       		.byte	0x0
- 3293 0176 03       		.uleb128 0x3
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 65
-
-
- 3294 0177 0E       		.uleb128 0xe
- 3295 0178 3A       		.uleb128 0x3a
- 3296 0179 0B       		.uleb128 0xb
- 3297 017a 3B       		.uleb128 0x3b
- 3298 017b 0B       		.uleb128 0xb
- 3299 017c 49       		.uleb128 0x49
- 3300 017d 13       		.uleb128 0x13
- 3301 017e 3F       		.uleb128 0x3f
- 3302 017f 0C       		.uleb128 0xc
- 3303 0180 3C       		.uleb128 0x3c
- 3304 0181 0C       		.uleb128 0xc
- 3305 0182 00       		.byte	0x0
- 3306 0183 00       		.byte	0x0
- 3307 0184 1D       		.uleb128 0x1d
- 3308 0185 21       		.uleb128 0x21
- 3309 0186 00       		.byte	0x0
- 3310 0187 00       		.byte	0x0
- 3311 0188 00       		.byte	0x0
- 3312 0189 1E       		.uleb128 0x1e
- 3313 018a 34       		.uleb128 0x34
- 3314 018b 00       		.byte	0x0
- 3315 018c 03       		.uleb128 0x3
- 3316 018d 08       		.uleb128 0x8
- 3317 018e 3A       		.uleb128 0x3a
- 3318 018f 0B       		.uleb128 0xb
- 3319 0190 3B       		.uleb128 0x3b
- 3320 0191 0B       		.uleb128 0xb
- 3321 0192 49       		.uleb128 0x49
- 3322 0193 13       		.uleb128 0x13
- 3323 0194 3F       		.uleb128 0x3f
- 3324 0195 0C       		.uleb128 0xc
- 3325 0196 02       		.uleb128 0x2
- 3326 0197 0A       		.uleb128 0xa
- 3327 0198 00       		.byte	0x0
- 3328 0199 00       		.byte	0x0
- 3329 019a 00       		.byte	0x0
- 3330              		.section	.debug_pubnames,"",%progbits
- 3331 0000 A4010000 		.4byte	0x1a4
- 3332 0004 0200     		.2byte	0x2
- 3333 0006 00000000 		.4byte	.Ldebug_info0
- 3334 000a 0B0C0000 		.4byte	0xc0b
- 3335 000e F0070000 		.4byte	0x7f0
- 3336 0012 706C6179 		.ascii	"playTestSound\000"
- 3336      54657374 
- 3336      536F756E 
- 3336      6400
- 3337 0020 49080000 		.4byte	0x849
- 3338 0024 74657374 		.ascii	"testMMC\000"
- 3338      4D4D4300 
- 3339 002c 96080000 		.4byte	0x896
- 3340 0030 696E6974 		.ascii	"initMMC\000"
- 3340      4D4D4300 
- 3341 0038 56090000 		.4byte	0x956
- 3342 003c 666F726D 		.ascii	"format_file_name\000"
- 3342      61745F66 
- 3342      696C655F 
- 3342      6E616D65 
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 66
-
-
- 3342      00
- 3343 004d A8090000 		.4byte	0x9a8
- 3344 0051 67657446 		.ascii	"getFileNames\000"
- 3344      696C654E 
- 3344      616D6573 
- 3344      00
- 3345 005e DE090000 		.4byte	0x9de
- 3346 0062 4D4D4370 		.ascii	"MMCproc\000"
- 3346      726F6300 
- 3347 006a 110A0000 		.4byte	0xa11
- 3348 006e 63757272 		.ascii	"currentSongInfo\000"
- 3348      656E7453 
- 3348      6F6E6749 
- 3348      6E666F00 
- 3349 007e 230A0000 		.4byte	0xa23
- 3350 0082 6D6D6349 		.ascii	"mmcInitialized\000"
- 3350      6E697469 
- 3350      616C697A 
- 3350      656400
- 3351 0091 350A0000 		.4byte	0xa35
- 3352 0095 6368616E 		.ascii	"changeLeft\000"
- 3352      67654C65 
- 3352      667400
- 3353 00a0 470A0000 		.4byte	0xa47
- 3354 00a4 6368616E 		.ascii	"changeRight\000"
- 3354      67655269 
- 3354      67687400 
- 3355 00b0 590A0000 		.4byte	0xa59
- 3356 00b4 72657769 		.ascii	"rewindForward\000"
- 3356      6E64466F 
- 3356      72776172 
- 3356      6400
- 3357 00c2 6B0A0000 		.4byte	0xa6b
- 3358 00c6 72657769 		.ascii	"rewindBackward\000"
- 3358      6E644261 
- 3358      636B7761 
- 3358      726400
- 3359 00d5 7D0A0000 		.4byte	0xa7d
- 3360 00d9 766F6C75 		.ascii	"volumeUp\000"
- 3360      6D655570 
- 3360      00
- 3361 00e2 8F0A0000 		.4byte	0xa8f
- 3362 00e6 766F6C75 		.ascii	"volumeDown\000"
- 3362      6D65446F 
- 3362      776E00
- 3363 00f1 A10A0000 		.4byte	0xaa1
- 3364 00f5 69734572 		.ascii	"isError\000"
- 3364      726F7200 
- 3365 00fd B30A0000 		.4byte	0xab3
- 3366 0101 6572726F 		.ascii	"error\000"
- 3366      7200
- 3367 0107 EA0A0000 		.4byte	0xaea
- 3368 010b 69643354 		.ascii	"id3TagSize\000"
- 3368      61675369 
- 3368      7A6500
- 3369 0116 FC0A0000 		.4byte	0xafc
- 3370 011a 66696C65 		.ascii	"fileSize\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 67
-
-
- 3370      53697A65 
- 3370      00
- 3371 0123 0E0B0000 		.4byte	0xb0e
- 3372 0127 72656164 		.ascii	"readSize\000"
- 3372      53697A65 
- 3372      00
- 3373 0130 300B0000 		.4byte	0xb30
- 3374 0134 6D794E61 		.ascii	"myName\000"
- 3374      6D6500
- 3375 013b 420B0000 		.4byte	0xb42
- 3376 013f 6D794175 		.ascii	"myAuthor\000"
- 3376      74686F72 
- 3376      00
- 3377 0148 540B0000 		.4byte	0xb54
- 3378 014c 7469746C 		.ascii	"titleOffset\000"
- 3378      654F6666 
- 3378      73657400 
- 3379 0158 660B0000 		.4byte	0xb66
- 3380 015c 61757468 		.ascii	"authorOffset\000"
- 3380      6F724F66 
- 3380      66736574 
- 3380      00
- 3381 0169 780B0000 		.4byte	0xb78
- 3382 016d 65667300 		.ascii	"efs\000"
- 3383 0171 8A0B0000 		.4byte	0xb8a
- 3384 0175 66696C65 		.ascii	"file\000"
- 3384      00
- 3385 017a 9C0B0000 		.4byte	0xb9c
- 3386 017e 6C697374 		.ascii	"list\000"
- 3386      00
- 3387 0183 BE0B0000 		.4byte	0xbbe
- 3388 0187 66696C65 		.ascii	"file_name\000"
- 3388      5F6E616D 
- 3388      6500
- 3389 0191 D00B0000 		.4byte	0xbd0
- 3390 0195 73697A65 		.ascii	"size\000"
- 3390      00
- 3391 019a F80B0000 		.4byte	0xbf8
- 3392 019e 66696C65 		.ascii	"files\000"
- 3392      7300
- 3393 01a4 00000000 		.4byte	0x0
- 3394              		.section	.debug_aranges,"",%progbits
- 3395 0000 1C000000 		.4byte	0x1c
- 3396 0004 0200     		.2byte	0x2
- 3397 0006 00000000 		.4byte	.Ldebug_info0
- 3398 000a 04       		.byte	0x4
- 3399 000b 00       		.byte	0x0
- 3400 000c 0000     		.2byte	0x0
- 3401 000e 0000     		.2byte	0x0
- 3402 0010 00000000 		.4byte	.Ltext0
- 3403 0014 70040000 		.4byte	.Letext0-.Ltext0
- 3404 0018 00000000 		.4byte	0x0
- 3405 001c 00000000 		.4byte	0x0
- 3406              		.section	.debug_ranges,"",%progbits
- 3407              	.Ldebug_ranges0:
- 3408 0000 06000000 		.4byte	.LBB2-.Ltext0
- 3409 0004 66000000 		.4byte	.LBE2-.Ltext0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 68
-
-
- 3410 0008 68000000 		.4byte	.LBB3-.Ltext0
- 3411 000c 6A000000 		.4byte	.LBE3-.Ltext0
- 3412 0010 00000000 		.4byte	0x0
- 3413 0014 00000000 		.4byte	0x0
- 3414              		.section	.debug_str,"MS",%progbits,1
- 3415              	.LASF36:
- 3416 0000 696F6D61 		.ascii	"ioman\000"
- 3416      6E00
- 3417              	.LASF43:
- 3418 0006 42797465 		.ascii	"BytesPerSector\000"
- 3418      73506572 
- 3418      53656374 
- 3418      6F7200
- 3419              	.LASF44:
- 3420 0015 53656374 		.ascii	"SectorsPerCluster\000"
- 3420      6F727350 
- 3420      6572436C 
- 3420      75737465 
- 3420      7200
- 3421              	.LASF98:
- 3422 0027 6D794673 		.ascii	"myFs\000"
- 3422      00
- 3423              	.LASF99:
- 3424 002c 456D6265 		.ascii	"EmbeddedFileSystem\000"
- 3424      64646564 
- 3424      46696C65 
- 3424      53797374 
- 3424      656D00
- 3425              	.LASF48:
- 3426 003f 53656374 		.ascii	"SectorCount16\000"
- 3426      6F72436F 
- 3426      756E7431 
- 3426      3600
- 3427              	.LASF23:
- 3428 004d 6E756D69 		.ascii	"numit\000"
- 3428      7400
- 3429              	.LASF102:
- 3430 0053 63456E74 		.ascii	"cEntry\000"
- 3430      727900
- 3431              	.LASF39:
- 3432 005a 50617274 		.ascii	"Partition\000"
- 3432      6974696F 
- 3432      6E00
- 3433              	.LASF41:
- 3434 0064 61637469 		.ascii	"activePartition\000"
- 3434      76655061 
- 3434      72746974 
- 3434      696F6E00 
- 3435              	.LASF126:
- 3436 0074 6572726F 		.ascii	"error015\000"
- 3436      72303135 
- 3436      00
- 3437              	.LASF32:
- 3438 007d 74797065 		.ascii	"type\000"
- 3438      00
- 3439              	.LASF137:
- 3440 0082 6D6D6349 		.ascii	"mmcInitialized\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 69
-
-
- 3440      6E697469 
- 3440      616C697A 
- 3440      656400
- 3441              	.LASF55:
- 3442 0091 766F6C75 		.ascii	"volumeId\000"
- 3442      6D654964 
- 3442      00
- 3443              	.LASF104:
- 3444 009a 63757272 		.ascii	"currentEntry\000"
- 3444      656E7445 
- 3444      6E747279 
- 3444      00
- 3445              	.LASF8:
- 3446 00a7 6C6F6E67 		.ascii	"long long unsigned int\000"
- 3446      206C6F6E 
- 3446      6720756E 
- 3446      7369676E 
- 3446      65642069 
- 3447              	.LASF81:
- 3448 00be 41636365 		.ascii	"AccessDate\000"
- 3448      73734461 
- 3448      746500
- 3449              	.LASF85:
- 3450 00c9 46697273 		.ascii	"FirstClusterLow\000"
- 3450      74436C75 
- 3450      73746572 
- 3450      4C6F7700 
- 3451              	.LASF141:
- 3452 00d9 72657769 		.ascii	"rewindBackward\000"
- 3452      6E644261 
- 3452      636B7761 
- 3452      726400
- 3453              	.LASF147:
- 3454 00e8 69643354 		.ascii	"id3TagSize\000"
- 3454      61675369 
- 3454      7A6500
- 3455              	.LASF150:
- 3456 00f3 6D794E61 		.ascii	"myName\000"
- 3456      6D6500
- 3457              	.LASF154:
- 3458 00fa 66696C65 		.ascii	"file\000"
- 3458      00
- 3459              	.LASF2:
- 3460 00ff 6C6F6E67 		.ascii	"long long int\000"
- 3460      206C6F6E 
- 3460      6720696E 
- 3460      7400
- 3461              	.LASF9:
- 3462 010d 7369676E 		.ascii	"signed char\000"
- 3462      65642063 
- 3462      68617200 
- 3463              	.LASF78:
- 3464 0119 4D696C6C 		.ascii	"MilliSecTimeStamp\000"
- 3464      69536563 
- 3464      54696D65 
- 3464      5374616D 
- 3464      7000
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 70
-
-
- 3465              	.LASF88:
- 3466 012b 44697245 		.ascii	"DirEntry\000"
- 3466      6E747279 
- 3466      00
- 3467              	.LASF130:
- 3468 0134 72657475 		.ascii	"returnValue\000"
- 3468      726E5661 
- 3468      6C756500 
- 3469              	.LASF144:
- 3470 0140 69734572 		.ascii	"isError\000"
- 3470      726F7200 
- 3471              	.LASF70:
- 3472 0148 44697363 		.ascii	"DiscCluster\000"
- 3472      436C7573 
- 3472      74657200 
- 3473              	.LASF155:
- 3474 0154 6C697374 		.ascii	"list\000"
- 3474      00
- 3475              	.LASF87:
- 3476 0159 46696C65 		.ascii	"File\000"
- 3476      00
- 3477              	.LASF1:
- 3478 015e 6C6F6E67 		.ascii	"long int\000"
- 3478      20696E74 
- 3478      00
- 3479              	.LASF77:
- 3480 0167 4E545265 		.ascii	"NTReserved\000"
- 3480      73657276 
- 3480      656400
- 3481              	.LASF28:
- 3482 0172 63616368 		.ascii	"cache_mem\000"
- 3482      655F6D65 
- 3482      6D00
- 3483              	.LASF116:
- 3484 017c 696E6974 		.ascii	"initMMC\000"
- 3484      4D4D4300 
- 3485              	.LASF49:
- 3486 0184 46617453 		.ascii	"FatSectorCount16\000"
- 3486      6563746F 
- 3486      72436F75 
- 3486      6E743136 
- 3486      00
- 3487              	.LASF89:
- 3488 0195 4C6F6361 		.ascii	"Location\000"
- 3488      74696F6E 
- 3488      00
- 3489              	.LASF86:
- 3490 019e 46696C65 		.ascii	"FileSize\000"
- 3490      53697A65 
- 3490      00
- 3491              	.LASF68:
- 3492 01a7 4C696E65 		.ascii	"Linear\000"
- 3492      617200
- 3493              	.LASF53:
- 3494 01ae 46696C65 		.ascii	"FileSystem\000"
- 3494      53797374 
- 3494      656D00
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 71
-
-
- 3495              	.LASF63:
- 3496 01b9 46696C65 		.ascii	"FileLocation\000"
- 3496      4C6F6361 
- 3496      74696F6E 
- 3496      00
- 3497              	.LASF74:
- 3498 01c6 46696C65 		.ascii	"FileRecord\000"
- 3498      5265636F 
- 3498      726400
- 3499              	.LASF120:
- 3500 01d1 6572726F 		.ascii	"error01d\000"
- 3500      72303164 
- 3500      00
- 3501              	.LASF66:
- 3502 01da 61747472 		.ascii	"attrib\000"
- 3502      696200
- 3503              	.LASF140:
- 3504 01e1 72657769 		.ascii	"rewindForward\000"
- 3504      6E64466F 
- 3504      72776172 
- 3504      6400
- 3505              	.LASF80:
- 3506 01ef 43726561 		.ascii	"CreatedDate\000"
- 3506      74656444 
- 3506      61746500 
- 3507              	.LASF45:
- 3508 01fb 52657365 		.ascii	"ReservedSectorCount\000"
- 3508      72766564 
- 3508      53656374 
- 3508      6F72436F 
- 3508      756E7400 
- 3509              	.LASF156:
- 3510 020f 66696C65 		.ascii	"file_name\000"
- 3510      5F6E616D 
- 3510      6500
- 3511              	.LASF145:
- 3512 0219 63757272 		.ascii	"currentVolume\000"
- 3512      656E7456 
- 3512      6F6C756D 
- 3512      6500
- 3513              	.LASF56:
- 3514 0227 44617461 		.ascii	"DataClusterCount\000"
- 3514      436C7573 
- 3514      74657243 
- 3514      6F756E74 
- 3514      00
- 3515              	.LASF69:
- 3516 0238 4C6F6769 		.ascii	"LogicCluster\000"
- 3516      63436C75 
- 3516      73746572 
- 3516      00
- 3517              	.LASF161:
- 3518 0245 2F637967 		.ascii	"/cygdrive/c/Embedded/workspace/testProject\000"
- 3518      64726976 
- 3518      652F632F 
- 3518      456D6265 
- 3518      64646564 
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 72
-
-
- 3519              	.LASF67:
- 3520 0270 436C7573 		.ascii	"ClusterChain\000"
- 3520      74657243 
- 3520      6861696E 
- 3520      00
- 3521              	.LASF3:
- 3522 027d 756E7369 		.ascii	"unsigned int\000"
- 3522      676E6564 
- 3522      20696E74 
- 3522      00
- 3523              	.LASF134:
- 3524 028a 4D4D4370 		.ascii	"MMCproc\000"
- 3524      726F6300 
- 3525              	.LASF33:
- 3526 0292 4348535F 		.ascii	"CHS_end\000"
- 3526      656E6400 
- 3527              	.LASF16:
- 3528 029a 73656374 		.ascii	"sector\000"
- 3528      6F7200
- 3529              	.LASF0:
- 3530 02a1 6C6F6E67 		.ascii	"long unsigned int\000"
- 3530      20756E73 
- 3530      69676E65 
- 3530      6420696E 
- 3530      7400
- 3531              	.LASF139:
- 3532 02b3 6368616E 		.ascii	"changeRight\000"
- 3532      67655269 
- 3532      67687400 
- 3533              	.LASF105:
- 3534 02bf 6E616D65 		.ascii	"name\000"
- 3534      00
- 3535              	.LASF110:
- 3536 02c4 536F6E67 		.ascii	"SongInfo\000"
- 3536      496E666F 
- 3536      00
- 3537              	.LASF157:
- 3538 02cd 73697A65 		.ascii	"size\000"
- 3538      00
- 3539              	.LASF7:
- 3540 02d2 73686F72 		.ascii	"short unsigned int\000"
- 3540      7420756E 
- 3540      7369676E 
- 3540      65642069 
- 3540      6E7400
- 3541              	.LASF79:
- 3542 02e5 43726561 		.ascii	"CreatedTime\000"
- 3542      74656454 
- 3542      696D6500 
- 3543              	.LASF103:
- 3544 02f1 72456E74 		.ascii	"rEntry\000"
- 3544      727900
- 3545              	.LASF112:
- 3546 02f8 666C6F61 		.ascii	"float\000"
- 3546      7400
- 3547              	.LASF160:
- 3548 02fe 74657374 		.ascii	"testMMC.c\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 73
-
-
- 3548      4D4D432E 
- 3548      6300
- 3549              	.LASF138:
- 3550 0308 6368616E 		.ascii	"changeLeft\000"
- 3550      67654C65 
- 3550      667400
- 3551              	.LASF60:
- 3552 0313 46697273 		.ascii	"FirstClusterCurrentDir\000"
- 3552      74436C75 
- 3552      73746572 
- 3552      43757272 
- 3552      656E7444 
- 3553              	.LASF133:
- 3554 032a 67657446 		.ascii	"getFileNames\000"
- 3554      696C654E 
- 3554      616D6573 
- 3554      00
- 3555              	.LASF15:
- 3556 0337 73656374 		.ascii	"sectorCount\000"
- 3556      6F72436F 
- 3556      756E7400 
- 3557              	.LASF35:
- 3558 0343 6E756D53 		.ascii	"numSectors\000"
- 3558      6563746F 
- 3558      727300
- 3559              	.LASF10:
- 3560 034e 74553332 		.ascii	"tU32\000"
- 3560      00
- 3561              	.LASF108:
- 3562 0353 6E616D65 		.ascii	"nameLength\000"
- 3562      4C656E67 
- 3562      746800
- 3563              	.LASF143:
- 3564 035e 766F6C75 		.ascii	"volumeDown\000"
- 3564      6D65446F 
- 3564      776E00
- 3565              	.LASF26:
- 3566 0369 72656665 		.ascii	"reference\000"
- 3566      72656E63 
- 3566      6500
- 3567              	.LASF114:
- 3568 0373 74657374 		.ascii	"testMMC\000"
- 3568      4D4D4300 
- 3569              	.LASF149:
- 3570 037b 72656164 		.ascii	"readSize\000"
- 3570      53697A65 
- 3570      00
- 3571              	.LASF82:
- 3572 0384 46697273 		.ascii	"FirstClusterHigh\000"
- 3572      74436C75 
- 3572      73746572 
- 3572      48696768 
- 3572      00
- 3573              	.LASF151:
- 3574 0395 6D794175 		.ascii	"myAuthor\000"
- 3574      74686F72 
- 3574      00
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 74
-
-
- 3575              	.LASF121:
- 3576 039e 6572726F 		.ascii	"error010\000"
- 3576      72303130 
- 3576      00
- 3577              	.LASF122:
- 3578 03a7 6572726F 		.ascii	"error011\000"
- 3578      72303131 
- 3578      00
- 3579              	.LASF123:
- 3580 03b0 6572726F 		.ascii	"error012\000"
- 3580      72303132 
- 3580      00
- 3581              	.LASF19:
- 3582 03b9 494F4D61 		.ascii	"IOManager\000"
- 3582      6E616765 
- 3582      7200
- 3583              	.LASF22:
- 3584 03c3 6E756D62 		.ascii	"numbuf\000"
- 3584      756600
- 3585              	.LASF128:
- 3586 03ca 6572726F 		.ascii	"error017\000"
- 3586      72303137 
- 3586      00
- 3587              	.LASF75:
- 3588 03d3 46696C65 		.ascii	"FileName\000"
- 3588      4E616D65 
- 3588      00
- 3589              	.LASF64:
- 3590 03dc 53656374 		.ascii	"Sector\000"
- 3590      6F7200
- 3591              	.LASF14:
- 3592 03e3 494F4D61 		.ascii	"IOManStack\000"
- 3592      6E537461 
- 3592      636B00
- 3593              	.LASF91:
- 3594 03ee 46696C65 		.ascii	"FileStatus\000"
- 3594      53746174 
- 3594      757300
- 3595              	.LASF148:
- 3596 03f9 66696C65 		.ascii	"fileSize\000"
- 3596      53697A65 
- 3596      00
- 3597              	.LASF12:
- 3598 0402 6575696E 		.ascii	"euint8\000"
- 3598      743800
- 3599              	.LASF13:
- 3600 0409 6877496E 		.ascii	"hwInterface\000"
- 3600      74657266 
- 3600      61636500 
- 3601              	.LASF129:
- 3602 0415 6572726F 		.ascii	"error02\000"
- 3602      72303200 
- 3603              	.LASF72:
- 3604 041d 4C617374 		.ascii	"LastCluster\000"
- 3604      436C7573 
- 3604      74657200 
- 3605              	.LASF107:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 75
-
-
- 3606 0429 74696D65 		.ascii	"time\000"
- 3606      00
- 3607              	.LASF153:
- 3608 042e 61757468 		.ascii	"authorOffset\000"
- 3608      6F724F66 
- 3608      66736574 
- 3608      00
- 3609              	.LASF29:
- 3610 043b 50617274 		.ascii	"PartitionField\000"
- 3610      6974696F 
- 3610      6E466965 
- 3610      6C6400
- 3611              	.LASF52:
- 3612 044a 526F6F74 		.ascii	"RootCluster\000"
- 3612      436C7573 
- 3612      74657200 
- 3613              	.LASF118:
- 3614 0456 6572726F 		.ascii	"error01b\000"
- 3614      72303162 
- 3614      00
- 3615              	.LASF71:
- 3616 045f 46697273 		.ascii	"FirstCluster\000"
- 3616      74436C75 
- 3616      73746572 
- 3616      00
- 3617              	.LASF106:
- 3618 046c 61757468 		.ascii	"author\000"
- 3618      6F7200
- 3619              	.LASF97:
- 3620 0473 6D795061 		.ascii	"myPart\000"
- 3620      727400
- 3621              	.LASF24:
- 3622 047a 6572726F 		.ascii	"error\000"
- 3622      7200
- 3623              	.LASF101:
- 3624 0480 4469724C 		.ascii	"DirList\000"
- 3624      69737400 
- 3625              	.LASF83:
- 3626 0488 57726974 		.ascii	"WriteTime\000"
- 3626      6554696D 
- 3626      6500
- 3627              	.LASF31:
- 3628 0492 4348535F 		.ascii	"CHS_begin\000"
- 3628      62656769 
- 3628      6E00
- 3629              	.LASF73:
- 3630 049c 436C7573 		.ascii	"ClusterCount\000"
- 3630      74657243 
- 3630      6F756E74 
- 3630      00
- 3631              	.LASF124:
- 3632 04a9 6572726F 		.ascii	"error013\000"
- 3632      72303133 
- 3632      00
- 3633              	.LASF125:
- 3634 04b2 6572726F 		.ascii	"error014\000"
- 3634      72303134 
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 76
-
-
- 3634      00
- 3635              	.LASF131:
- 3636 04bb 666F726D 		.ascii	"format_file_name\000"
- 3636      61745F66 
- 3636      696C655F 
- 3636      6E616D65 
- 3636      00
- 3637              	.LASF117:
- 3638 04cc 6572726F 		.ascii	"error01\000"
- 3638      72303100 
- 3639              	.LASF127:
- 3640 04d4 6572726F 		.ascii	"error016\000"
- 3640      72303136 
- 3640      00
- 3641              	.LASF115:
- 3642 04dd 6572726F 		.ascii	"error03\000"
- 3642      72303300 
- 3643              	.LASF4:
- 3644 04e5 756E7369 		.ascii	"unsigned char\000"
- 3644      676E6564 
- 3644      20636861 
- 3644      7200
- 3645              	.LASF46:
- 3646 04f3 4E756D62 		.ascii	"NumberOfFats\000"
- 3646      65724F66 
- 3646      46617473 
- 3646      00
- 3647              	.LASF96:
- 3648 0500 6D794469 		.ascii	"myDisc\000"
- 3648      736300
- 3649              	.LASF159:
- 3650 0507 474E5520 		.ascii	"GNU C 4.1.1\000"
- 3650      4320342E 
- 3650      312E3100 
- 3651              	.LASF100:
- 3652 0513 4C697374 		.ascii	"ListDirEntry\000"
- 3652      44697245 
- 3652      6E747279 
- 3652      00
- 3653              	.LASF62:
- 3654 0520 4E657874 		.ascii	"NextFreeCluster\000"
- 3654      46726565 
- 3654      436C7573 
- 3654      74657200 
- 3655              	.LASF5:
- 3656 0530 73686F72 		.ascii	"short int\000"
- 3656      7420696E 
- 3656      7400
- 3657              	.LASF37:
- 3658 053a 70617274 		.ascii	"partitions\000"
- 3658      6974696F 
- 3658      6E7300
- 3659              	.LASF38:
- 3660 0545 44697363 		.ascii	"Disc\000"
- 3660      00
- 3661              	.LASF59:
- 3662 054a 46697273 		.ascii	"FirstSectorRootDir\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 77
-
-
- 3662      74536563 
- 3662      746F7252 
- 3662      6F6F7444 
- 3662      697200
- 3663              	.LASF132:
- 3664 055d 64657374 		.ascii	"dest\000"
- 3664      00
- 3665              	.LASF57:
- 3666 0562 46617453 		.ascii	"FatSectorCount\000"
- 3666      6563746F 
- 3666      72436F75 
- 3666      6E7400
- 3667              	.LASF92:
- 3668 0571 46696C65 		.ascii	"FilePtr\000"
- 3668      50747200 
- 3669              	.LASF109:
- 3670 0579 61757468 		.ascii	"authorLength\000"
- 3670      6F724C65 
- 3670      6E677468 
- 3670      00
- 3671              	.LASF84:
- 3672 0586 57726974 		.ascii	"WriteDate\000"
- 3672      65446174 
- 3672      6500
- 3673              	.LASF51:
- 3674 0590 46617453 		.ascii	"FatSectorCount32\000"
- 3674      6563746F 
- 3674      72436F75 
- 3674      6E743332 
- 3674      00
- 3675              	.LASF30:
- 3676 05a1 626F6F74 		.ascii	"bootFlag\000"
- 3676      466C6167 
- 3676      00
- 3677              	.LASF6:
- 3678 05aa 63686172 		.ascii	"char\000"
- 3678      00
- 3679              	.LASF135:
- 3680 05af 746F5265 		.ascii	"toReturn\000"
- 3680      7475726E 
- 3680      00
- 3681              	.LASF11:
- 3682 05b8 74533332 		.ascii	"tS32\000"
- 3682      00
- 3683              	.LASF40:
- 3684 05bd 64697363 		.ascii	"disc\000"
- 3684      00
- 3685              	.LASF50:
- 3686 05c2 53656374 		.ascii	"SectorCount32\000"
- 3686      6F72436F 
- 3686      756E7433 
- 3686      3200
- 3687              	.LASF152:
- 3688 05d0 7469746C 		.ascii	"titleOffset\000"
- 3688      654F6666 
- 3688      73657400 
- 3689              	.LASF54:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 78
-
-
- 3690 05dc 70617274 		.ascii	"part\000"
- 3690      00
- 3691              	.LASF65:
- 3692 05e1 4F666673 		.ascii	"Offset\000"
- 3692      657400
- 3693              	.LASF18:
- 3694 05e8 75736167 		.ascii	"usage\000"
- 3694      6500
- 3695              	.LASF94:
- 3696 05ee 6D794361 		.ascii	"myCard\000"
- 3696      726400
- 3697              	.LASF42:
- 3698 05f5 566F6C75 		.ascii	"VolumeId\000"
- 3698      6D654964 
- 3698      00
- 3699              	.LASF119:
- 3700 05fe 6572726F 		.ascii	"error01c\000"
- 3700      72303163 
- 3700      00
- 3701              	.LASF142:
- 3702 0607 766F6C75 		.ascii	"volumeUp\000"
- 3702      6D655570 
- 3702      00
- 3703              	.LASF76:
- 3704 0610 41747472 		.ascii	"Attribute\000"
- 3704      69627574 
- 3704      6500
- 3705              	.LASF146:
- 3706 061a 73746172 		.ascii	"startupSound\000"
- 3706      74757053 
- 3706      6F756E64 
- 3706      00
- 3707              	.LASF61:
- 3708 0627 46726565 		.ascii	"FreeClusterCount\000"
- 3708      436C7573 
- 3708      74657243 
- 3708      6F756E74 
- 3708      00
- 3709              	.LASF17:
- 3710 0638 73746174 		.ascii	"status\000"
- 3710      757300
- 3711              	.LASF58:
- 3712 063f 53656374 		.ascii	"SectorCount\000"
- 3712      6F72436F 
- 3712      756E7400 
- 3713              	.LASF113:
- 3714 064b 706C6179 		.ascii	"playTestSound\000"
- 3714      54657374 
- 3714      536F756E 
- 3714      6400
- 3715              	.LASF34:
- 3716 0659 4C42415F 		.ascii	"LBA_begin\000"
- 3716      62656769 
- 3716      6E00
- 3717              	.LASF20:
- 3718 0663 69666163 		.ascii	"iface\000"
- 3718      6500
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 79
-
-
- 3719              	.LASF25:
- 3720 0669 73746163 		.ascii	"stack\000"
- 3720      6B00
- 3721              	.LASF111:
- 3722 066f 766F6C75 		.ascii	"volumeMultiplier\000"
- 3722      6D654D75 
- 3722      6C746970 
- 3722      6C696572 
- 3722      00
- 3723              	.LASF27:
- 3724 0680 69747074 		.ascii	"itptr\000"
- 3724      7200
- 3725              	.LASF136:
- 3726 0686 63757272 		.ascii	"currentSongInfo\000"
- 3726      656E7453 
- 3726      6F6E6749 
- 3726      6E666F00 
- 3727              	.LASF47:
- 3728 0696 526F6F74 		.ascii	"RootEntryCount\000"
- 3728      456E7472 
- 3728      79436F75 
- 3728      6E7400
- 3729              	.LASF90:
- 3730 06a5 43616368 		.ascii	"Cache\000"
- 3730      6500
- 3731              	.LASF21:
- 3732 06ab 62756670 		.ascii	"bufptr\000"
- 3732      747200
- 3733              	.LASF95:
- 3734 06b2 6D79494F 		.ascii	"myIOman\000"
- 3734      6D616E00 
- 3735              	.LASF93:
- 3736 06ba 456D6265 		.ascii	"EmbeddedFile\000"
- 3736      64646564 
- 3736      46696C65 
- 3736      00
- 3737              	.LASF158:
- 3738 06c7 66696C65 		.ascii	"files\000"
- 3738      7300
- 3739              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 80
+   3              		.global	__floatsisf
+   4              		.global	__addsf3
+   5              		.global	__divsf3
+   6              		.global	__mulsf3
+   7              		.global	__fixsfsi
+   8              		.text
+   9              		.align	2
+  10              		.global	playTestSound
+  11              		.code 16
+  12              		.thumb_func
+  13              		.type	playTestSound, %function
+  14              	playTestSound:
+  15 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  16 0002 1C4D     		ldr	r5, .L14
+  17 0004 1C4F     		ldr	r7, .L14+4
+  18              	.L2:
+  19 0006 2878     		ldrb	r0, [r5]
+  20 0008 8038     		sub	r0, r0, #128
+  21 000a 4000     		lsl	r0, r0, #1
+  22 000c FFF7FEFF 		bl	__floatsisf
+  23 0010 0024     		mov	r4, #0
+  24 0012 3C57     		ldrsb	r4, [r7, r4]
+  25 0014 061C     		add	r6, r0, #0
+  26 0016 201C     		mov	r0, r4
+  27 0018 FFF7FEFF 		bl	__floatsisf
+  28 001c 002C     		cmp	r4, #0
+  29 001e 02DA     		bge	.L3
+  30 0020 1649     		ldr	r1, .L14+8
+  31 0022 FFF7FEFF 		bl	__addsf3
+  32              	.L3:
+  33 0026 1649     		ldr	r1, .L14+12
+  34 0028 FFF7FEFF 		bl	__divsf3
+  35 002c 011C     		add	r1, r0, #0
+  36 002e 301C     		add	r0, r6, #0
+  37 0030 FFF7FEFF 		bl	__mulsf3
+  38 0034 FFF7FEFF 		bl	__fixsfsi
+  39 0038 031C     		mov	r3, r0
+  40 003a 7F33     		add	r3, r3, #127
+  41 003c 02DA     		bge	.L4
+  42 003e 7F20     		mov	r0, #127
+  43 0040 4042     		neg	r0, r0
+  44 0042 02E0     		b	.L5
+  45              	.L4:
+  46 0044 7F28     		cmp	r0, #127
+  47 0046 00DD     		ble	.L5
+  48 0048 7F20     		mov	r0, #127
+  49              	.L5:
+  50 004a 031C     		mov	r3, r0
+  51 004c 8033     		add	r3, r3, #128
+  52 004e 8022     		mov	r2, #128
+  53 0050 5202     		lsl	r2, r2, #9
+  54 0052 1B02     		lsl	r3, r3, #8
+  55 0054 1343     		orr	r3, r3, r2
+  56 0056 0B4A     		ldr	r2, .L14+16
+  57 0058 1360     		str	r3, [r2]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 2
+
+
+  58 005a 0022     		mov	r2, #0
+  59              	.L6:
+  60 005c C046     		 nop
+  61              		.code	16
+  62 005e 0A4B     		ldr	r3, .L14+20
+  63 0060 0132     		add	r2, r2, #1
+  64 0062 9A42     		cmp	r2, r3
+  65 0064 FAD1     		bne	.L6
+  66 0066 094B     		ldr	r3, .L14+24
+  67 0068 0135     		add	r5, r5, #1
+  68 006a 9D42     		cmp	r5, r3
+  69 006c CBD1     		bne	.L2
+  70              		@ sp needed for prologue
+  71 006e F0BC     		pop	{r4, r5, r6, r7}
+  72 0070 01BC     		pop	{r0}
+  73 0072 0047     		bx	r0
+  74              	.L15:
+  75              		.align	2
+  76              	.L14:
+  77 0074 01000000 		.word	startupSound+1
+  78 0078 00000000 		.word	currentVolume
+  79 007c 00008043 		.word	1132462080
+  80 0080 00002041 		.word	1092616192
+  81 0084 00C006E0 		.word	-536428544
+  82 0088 52030000 		.word	850
+  83 008c 91F80000 		.word	startupSound+63633
+  84              		.size	playTestSound, .-playTestSound
+  85              		.section	.rodata.str1.4,"aMS",%progbits,1
+  86 0001 000000   		.align	2
+  87              	.LC14:
+  88 0004 4552523A 		.ascii	"ERR:file\000"
+  88      66696C65 
+  88      00
+  89              		.text
+  90              		.align	2
+  91              		.global	testMMC
+  92              		.code 16
+  93              		.thumb_func
+  94              		.type	testMMC, %function
+  95              	testMMC:
+  96 0090 F0B5     		push	{r4, r5, r6, r7, lr}
+  97 0092 021C     		mov	r2, r0
+  98 0094 2B49     		ldr	r1, .L30
+  99 0096 2C48     		ldr	r0, .L30+4
+ 100 0098 7223     		mov	r3, #114
+ 101 009a FFF7FEFF 		bl	file_fopen
+ 102 009e 0006     		lsl	r0, r0, #24
+ 103 00a0 0028     		cmp	r0, #0
+ 104 00a2 49D1     		bne	.L17
+ 105 00a4 294B     		ldr	r3, .L30+8
+ 106 00a6 1F78     		ldrb	r7, [r3]
+ 107 00a8 0021     		mov	r1, #0
+ 108 00aa 06E0     		b	.L19
+ 109              	.L20:
+ 110 00ac 284B     		ldr	r3, .L30+12
+ 111 00ae 294D     		ldr	r5, .L30+16
+ 112 00b0 0022     		mov	r2, #0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 3
+
+
+ 113 00b2 CA54     		strb	r2, [r1, r3]
+ 114 00b4 4B19     		add	r3, r1, r5
+ 115 00b6 1A70     		strb	r2, [r3]
+ 116 00b8 0131     		add	r1, r1, #1
+ 117              	.L19:
+ 118 00ba B942     		cmp	r1, r7
+ 119 00bc F6DB     		blt	.L20
+ 120 00be 254D     		ldr	r5, .L30+16
+ 121 00c0 7A1E     		sub	r2, r7, #1
+ 122 00c2 0023     		mov	r3, #0
+ 123 00c4 AB54     		strb	r3, [r5, r2]
+ 124 00c6 204C     		ldr	r4, .L30+4
+ 125 00c8 2149     		ldr	r1, .L30+12
+ 126 00ca 234D     		ldr	r5, .L30+20
+ 127 00cc 8B54     		strb	r3, [r1, r2]
+ 128 00ce 234E     		ldr	r6, .L30+24
+ 129 00d0 E16C     		ldr	r1, [r4, #76]
+ 130 00d2 2B78     		ldrb	r3, [r5]
+ 131 00d4 3160     		str	r1, [r6]
+ 132 00d6 C91A     		sub	r1, r1, r3
+ 133 00d8 214B     		ldr	r3, .L30+28
+ 134 00da 1B68     		ldr	r3, [r3]
+ 135 00dc 3A1C     		mov	r2, r7
+ 136 00de C918     		add	r1, r1, r3
+ 137 00e0 201C     		mov	r0, r4
+ 138 00e2 1B4B     		ldr	r3, .L30+12
+ 139 00e4 FFF7FEFF 		bl	file_fread
+ 140 00e8 2B78     		ldrb	r3, [r5]
+ 141 00ea 3168     		ldr	r1, [r6]
+ 142 00ec C91A     		sub	r1, r1, r3
+ 143 00ee 1D4B     		ldr	r3, .L30+32
+ 144 00f0 1B68     		ldr	r3, [r3]
+ 145 00f2 C918     		add	r1, r1, r3
+ 146 00f4 154B     		ldr	r3, .L30+8
+ 147 00f6 201C     		mov	r0, r4
+ 148 00f8 1A78     		ldrb	r2, [r3]
+ 149 00fa 164B     		ldr	r3, .L30+16
+ 150 00fc FFF7FEFF 		bl	file_fread
+ 151 0100 194B     		ldr	r3, .L30+36
+ 152 0102 1349     		ldr	r1, .L30+12
+ 153 0104 134A     		ldr	r2, .L30+16
+ 154 0106 1960     		str	r1, [r3]
+ 155 0108 5A60     		str	r2, [r3, #4]
+ 156 010a 00E0     		b	.L22
+ 157              	.L23:
+ 158 010c 0131     		add	r1, r1, #1
+ 159              	.L22:
+ 160 010e 0B78     		ldrb	r3, [r1]
+ 161 0110 002B     		cmp	r3, #0
+ 162 0112 FBD1     		bne	.L23
+ 163 0114 0E4B     		ldr	r3, .L30+12
+ 164 0116 144A     		ldr	r2, .L30+36
+ 165 0118 CB1A     		sub	r3, r1, r3
+ 166 011a 0E49     		ldr	r1, .L30+16
+ 167 011c 5373     		strb	r3, [r2, #13]
+ 168 011e 00E0     		b	.L25
+ 169              	.L26:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 4
+
+
+ 170 0120 0131     		add	r1, r1, #1
+ 171              	.L25:
+ 172 0122 0B78     		ldrb	r3, [r1]
+ 173 0124 002B     		cmp	r3, #0
+ 174 0126 FBD1     		bne	.L26
+ 175 0128 0A4B     		ldr	r3, .L30+16
+ 176 012a 0F4A     		ldr	r2, .L30+36
+ 177 012c CB1A     		sub	r3, r1, r3
+ 178 012e 9373     		strb	r3, [r2, #14]
+ 179 0130 0548     		ldr	r0, .L30+4
+ 180 0132 FFF7FEFF 		bl	file_fclose
+ 181 0136 02E0     		b	.L29
+ 182              	.L17:
+ 183 0138 0C4A     		ldr	r2, .L30+40
+ 184 013a 0B4B     		ldr	r3, .L30+36
+ 185 013c 1A60     		str	r2, [r3]
+ 186              	.L29:
+ 187              		@ sp needed for prologue
+ 188 013e F0BC     		pop	{r4, r5, r6, r7}
+ 189 0140 01BC     		pop	{r0}
+ 190 0142 0047     		bx	r0
+ 191              	.L31:
+ 192              		.align	2
+ 193              	.L30:
+ 194 0144 84020000 		.word	efs+644
+ 195 0148 00000000 		.word	file
+ 196 014c 00000000 		.word	readSize
+ 197 0150 00000000 		.word	myName
+ 198 0154 00000000 		.word	myAuthor
+ 199 0158 00000000 		.word	id3TagSize
+ 200 015c 00000000 		.word	fileSize
+ 201 0160 00000000 		.word	titleOffset
+ 202 0164 00000000 		.word	authorOffset
+ 203 0168 00000000 		.word	currentSongInfo
+ 204 016c 04000000 		.word	.LC14
+ 205              		.size	testMMC, .-testMMC
+ 206              		.section	.rodata.str1.4
+ 207 000d 000000   		.align	2
+ 208              	.LC17:
+ 209 0010 5C00     		.ascii	"\\\000"
+ 210 0012 0000     		.align	2
+ 211              	.LC19:
+ 212 0014 4552523A 		.ascii	"ERR:filesys-1\000"
+ 212      66696C65 
+ 212      7379732D 
+ 212      3100
+ 213 0022 0000     		.align	2
+ 214              	.LC21:
+ 215 0024 4552523A 		.ascii	"ERR:filesys-2\000"
+ 215      66696C65 
+ 215      7379732D 
+ 215      3200
+ 216 0032 0000     		.align	2
+ 217              	.LC23:
+ 218 0034 4552523A 		.ascii	"ERR:filesys-3\000"
+ 218      66696C65 
+ 218      7379732D 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 5
+
+
+ 218      3300
+ 219 0042 0000     		.align	2
+ 220              	.LC25:
+ 221 0044 4552523A 		.ascii	"ERR:filesys-4\000"
+ 221      66696C65 
+ 221      7379732D 
+ 221      3400
+ 222 0052 0000     		.align	2
+ 223              	.LC27:
+ 224 0054 4552523A 		.ascii	"ERR:filesys-10\000"
+ 224      66696C65 
+ 224      7379732D 
+ 224      313000
+ 225 0063 00       		.align	2
+ 226              	.LC29:
+ 227 0064 4552523A 		.ascii	"ERR:filesys-11\000"
+ 227      66696C65 
+ 227      7379732D 
+ 227      313100
+ 228 0073 00       		.align	2
+ 229              	.LC31:
+ 230 0074 4552523A 		.ascii	"ERR:filesys-12\000"
+ 230      66696C65 
+ 230      7379732D 
+ 230      313200
+ 231 0083 00       		.align	2
+ 232              	.LC33:
+ 233 0084 4552523A 		.ascii	"ERR:filesys-13\000"
+ 233      66696C65 
+ 233      7379732D 
+ 233      313300
+ 234 0093 00       		.align	2
+ 235              	.LC35:
+ 236 0094 4552523A 		.ascii	"ERR:filesys-14\000"
+ 236      66696C65 
+ 236      7379732D 
+ 236      313400
+ 237 00a3 00       		.align	2
+ 238              	.LC37:
+ 239 00a4 4552523A 		.ascii	"ERR:filesys-15\000"
+ 239      66696C65 
+ 239      7379732D 
+ 239      313500
+ 240 00b3 00       		.align	2
+ 241              	.LC39:
+ 242 00b4 4552523A 		.ascii	"ERR:filesys-16\000"
+ 242      66696C65 
+ 242      7379732D 
+ 242      313600
+ 243 00c3 00       		.align	2
+ 244              	.LC41:
+ 245 00c4 4552523A 		.ascii	"ERR:filesys-17\000"
+ 245      66696C65 
+ 245      7379732D 
+ 245      313700
+ 246 00d3 00       		.align	2
+ 247              	.LC45:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 6
+
+
+ 248 00d4 2F00     		.ascii	"/\000"
+ 249 00d6 0000     		.align	2
+ 250              	.LC47:
+ 251 00d8 4552523A 		.ascii	"ERR:dir\000"
+ 251      64697200 
+ 252              		.align	2
+ 253              	.LC50:
+ 254 00e0 4F4B00   		.ascii	"OK\000"
+ 255              		.text
+ 256              		.align	2
+ 257              		.global	initMMC
+ 258              		.code 16
+ 259              		.thumb_func
+ 260              		.type	initMMC, %function
+ 261              	initMMC:
+ 262 0170 00B5     		push	{lr}
+ 263 0172 2548     		ldr	r0, .L61
+ 264 0174 2549     		ldr	r1, .L61+4
+ 265 0176 FFF7FEFF 		bl	efs_init
+ 266 017a 431C     		add	r3, r0, #1
+ 267 017c 01D1     		bne	.L33
+ 268 017e 2448     		ldr	r0, .L61+8
+ 269 0180 40E0     		b	.L35
+ 270              	.L33:
+ 271 0182 831C     		add	r3, r0, #2
+ 272 0184 01D1     		bne	.L36
+ 273 0186 2348     		ldr	r0, .L61+12
+ 274 0188 3CE0     		b	.L35
+ 275              	.L36:
+ 276 018a C31C     		add	r3, r0, #3
+ 277 018c 01D1     		bne	.L38
+ 278 018e 2248     		ldr	r0, .L61+16
+ 279 0190 38E0     		b	.L35
+ 280              	.L38:
+ 281 0192 031D     		add	r3, r0, #4
+ 282 0194 01D1     		bne	.L40
+ 283 0196 2148     		ldr	r0, .L61+20
+ 284 0198 34E0     		b	.L35
+ 285              	.L40:
+ 286 019a 031C     		mov	r3, r0
+ 287 019c 0A33     		add	r3, r3, #10
+ 288 019e 01D1     		bne	.L42
+ 289 01a0 1F48     		ldr	r0, .L61+24
+ 290 01a2 2FE0     		b	.L35
+ 291              	.L42:
+ 292 01a4 031C     		mov	r3, r0
+ 293 01a6 0B33     		add	r3, r3, #11
+ 294 01a8 01D1     		bne	.L44
+ 295 01aa 1E48     		ldr	r0, .L61+28
+ 296 01ac 2AE0     		b	.L35
+ 297              	.L44:
+ 298 01ae 031C     		mov	r3, r0
+ 299 01b0 0C33     		add	r3, r3, #12
+ 300 01b2 01D1     		bne	.L46
+ 301 01b4 1C48     		ldr	r0, .L61+32
+ 302 01b6 25E0     		b	.L35
+ 303              	.L46:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 7
+
+
+ 304 01b8 031C     		mov	r3, r0
+ 305 01ba 0D33     		add	r3, r3, #13
+ 306 01bc 01D1     		bne	.L48
+ 307 01be 1B48     		ldr	r0, .L61+36
+ 308 01c0 20E0     		b	.L35
+ 309              	.L48:
+ 310 01c2 031C     		mov	r3, r0
+ 311 01c4 0E33     		add	r3, r3, #14
+ 312 01c6 01D1     		bne	.L50
+ 313 01c8 1948     		ldr	r0, .L61+40
+ 314 01ca 1BE0     		b	.L35
+ 315              	.L50:
+ 316 01cc 031C     		mov	r3, r0
+ 317 01ce 0F33     		add	r3, r3, #15
+ 318 01d0 01D1     		bne	.L52
+ 319 01d2 1848     		ldr	r0, .L61+44
+ 320 01d4 16E0     		b	.L35
+ 321              	.L52:
+ 322 01d6 031C     		mov	r3, r0
+ 323 01d8 1033     		add	r3, r3, #16
+ 324 01da 01D1     		bne	.L54
+ 325 01dc 1648     		ldr	r0, .L61+48
+ 326 01de 11E0     		b	.L35
+ 327              	.L54:
+ 328 01e0 1130     		add	r0, r0, #17
+ 329 01e2 01D1     		bne	.L56
+ 330 01e4 1548     		ldr	r0, .L61+52
+ 331 01e6 0DE0     		b	.L35
+ 332              	.L56:
+ 333 01e8 1548     		ldr	r0, .L61+56
+ 334 01ea 1649     		ldr	r1, .L61+60
+ 335 01ec 164A     		ldr	r2, .L61+64
+ 336 01ee FFF7FEFF 		bl	ls_openDir
+ 337 01f2 0006     		lsl	r0, r0, #24
+ 338 01f4 0028     		cmp	r0, #0
+ 339 01f6 01D0     		beq	.L58
+ 340 01f8 1448     		ldr	r0, .L61+68
+ 341 01fa 03E0     		b	.L35
+ 342              	.L58:
+ 343 01fc 144A     		ldr	r2, .L61+72
+ 344 01fe 0123     		mov	r3, #1
+ 345 0200 1370     		strb	r3, [r2]
+ 346 0202 1448     		ldr	r0, .L61+76
+ 347              	.L35:
+ 348              		@ sp needed for prologue
+ 349 0204 02BC     		pop	{r1}
+ 350 0206 0847     		bx	r1
+ 351              	.L62:
+ 352              		.align	2
+ 353              	.L61:
+ 354 0208 00000000 		.word	efs
+ 355 020c 10000000 		.word	.LC17
+ 356 0210 14000000 		.word	.LC19
+ 357 0214 24000000 		.word	.LC21
+ 358 0218 34000000 		.word	.LC23
+ 359 021c 44000000 		.word	.LC25
+ 360 0220 54000000 		.word	.LC27
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 8
+
+
+ 361 0224 64000000 		.word	.LC29
+ 362 0228 74000000 		.word	.LC31
+ 363 022c 84000000 		.word	.LC33
+ 364 0230 94000000 		.word	.LC35
+ 365 0234 A4000000 		.word	.LC37
+ 366 0238 B4000000 		.word	.LC39
+ 367 023c C4000000 		.word	.LC41
+ 368 0240 00000000 		.word	list
+ 369 0244 84020000 		.word	efs+644
+ 370 0248 D4000000 		.word	.LC45
+ 371 024c D8000000 		.word	.LC47
+ 372 0250 00000000 		.word	mmcInitialized
+ 373 0254 E0000000 		.word	.LC50
+ 374              		.size	initMMC, .-initMMC
+ 375              		.align	2
+ 376              		.global	format_file_name
+ 377              		.code 16
+ 378              		.thumb_func
+ 379              		.type	format_file_name, %function
+ 380              	format_file_name:
+ 381 0258 70B5     		push	{r4, r5, r6, lr}
+ 382 025a 061C     		mov	r6, r0
+ 383 025c 0D1C     		mov	r5, r1
+ 384 025e CA1D     		add	r2, r1, #7
+ 385 0260 0724     		mov	r4, #7
+ 386 0262 05E0     		b	.L64
+ 387              	.L65:
+ 388 0264 631E     		sub	r3, r4, #1
+ 389 0266 1B06     		lsl	r3, r3, #24
+ 390 0268 1C0E     		lsr	r4, r3, #24
+ 391 026a 013A     		sub	r2, r2, #1
+ 392 026c 002C     		cmp	r4, #0
+ 393 026e 02D0     		beq	.L66
+ 394              	.L64:
+ 395 0270 1378     		ldrb	r3, [r2]
+ 396 0272 202B     		cmp	r3, #32
+ 397 0274 F6D0     		beq	.L65
+ 398              	.L66:
+ 399 0276 621C     		add	r2, r4, #1
+ 400 0278 301C     		mov	r0, r6
+ 401 027a 291C     		mov	r1, r5
+ 402 027c FFF7FEFF 		bl	strncpy
+ 403 0280 3419     		add	r4, r6, r4
+ 404 0282 2E23     		mov	r3, #46
+ 405 0284 6370     		strb	r3, [r4, #1]
+ 406 0286 AA7A     		ldrb	r2, [r5, #10]
+ 407 0288 202A     		cmp	r2, #32
+ 408 028a 01D0     		beq	.L67
+ 409 028c 0222     		mov	r2, #2
+ 410 028e 03E0     		b	.L69
+ 411              	.L67:
+ 412 0290 6B7A     		ldrb	r3, [r5, #9]
+ 413 0292 5340     		eor	r3, r3, r2
+ 414 0294 5B42     		neg	r3, r3
+ 415 0296 DA0F     		lsr	r2, r3, #31
+ 416              	.L69:
+ 417 0298 291C     		mov	r1, r5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 9
+
+
+ 418 029a A01C     		add	r0, r4, #2
+ 419 029c 0831     		add	r1, r1, #8
+ 420 029e 0132     		add	r2, r2, #1
+ 421 02a0 FFF7FEFF 		bl	strncpy
+ 422 02a4 0023     		mov	r3, #0
+ 423 02a6 6371     		strb	r3, [r4, #5]
+ 424              		@ sp needed for prologue
+ 425 02a8 70BC     		pop	{r4, r5, r6}
+ 426 02aa 01BC     		pop	{r0}
+ 427 02ac 0047     		bx	r0
+ 428              		.size	format_file_name, .-format_file_name
+ 429 02ae 0000     		.align	2
+ 430              		.global	getFileNames
+ 431              		.code 16
+ 432              		.thumb_func
+ 433              		.type	getFileNames, %function
+ 434              	getFileNames:
+ 435 02b0 70B5     		push	{r4, r5, r6, lr}
+ 436 02b2 0026     		mov	r6, #0
+ 437 02b4 16E0     		b	.L88
+ 438              	.L75:
+ 439 02b6 104A     		ldr	r2, .L89
+ 440 02b8 2B69     		ldr	r3, [r5, #16]
+ 441 02ba 1340     		and	r3, r3, r2
+ 442 02bc 0F4A     		ldr	r2, .L89+4
+ 443 02be 9342     		cmp	r3, r2
+ 444 02c0 10D1     		bne	.L88
+ 445 02c2 0F4C     		ldr	r4, .L89+8
+ 446 02c4 291C     		mov	r1, r5
+ 447 02c6 0831     		add	r1, r1, #8
+ 448 02c8 201C     		mov	r0, r4
+ 449 02ca FFF7FEFF 		bl	format_file_name
+ 450 02ce 0D4B     		ldr	r3, .L89+12
+ 451 02d0 211C     		mov	r1, r4
+ 452 02d2 F218     		add	r2, r6, r3
+ 453 02d4 0D31     		add	r1, r1, #13
+ 454              	.L77:
+ 455 02d6 2378     		ldrb	r3, [r4]
+ 456 02d8 0134     		add	r4, r4, #1
+ 457 02da 1370     		strb	r3, [r2]
+ 458 02dc 0132     		add	r2, r2, #1
+ 459 02de 8C42     		cmp	r4, r1
+ 460 02e0 F9D1     		bne	.L77
+ 461 02e2 0D36     		add	r6, r6, #13
+ 462              	.L88:
+ 463 02e4 084D     		ldr	r5, .L89+16
+ 464 02e6 281C     		mov	r0, r5
+ 465 02e8 FFF7FEFF 		bl	ls_getNext
+ 466 02ec 0006     		lsl	r0, r0, #24
+ 467 02ee 0028     		cmp	r0, #0
+ 468 02f0 E1D0     		beq	.L75
+ 469              		@ sp needed for prologue
+ 470 02f2 70BC     		pop	{r4, r5, r6}
+ 471 02f4 01BC     		pop	{r0}
+ 472 02f6 0047     		bx	r0
+ 473              	.L90:
+ 474              		.align	2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 10
+
+
+ 475              	.L89:
+ 476 02f8 FFFFFF00 		.word	16777215
+ 477 02fc 4D503300 		.word	3362893
+ 478 0300 00000000 		.word	file_name
+ 479 0304 00000000 		.word	files
+ 480 0308 00000000 		.word	list
+ 481              		.size	getFileNames, .-getFileNames
+ 482              		.section	.rodata.str1.4
+ 483 00e3 00       		.subsection	-1
+ 484              		.align	2
+ 485              	.LC61:
+ 486 0000 00       		.ascii	"\000"
+ 487              		.global	__modsi3
+ 488              		.text
+ 489              		.align	2
+ 490              		.global	MMCproc
+ 491              		.code 16
+ 492              		.thumb_func
+ 493              		.type	MMCproc, %function
+ 494              	MMCproc:
+ 495 030c 70B5     		push	{r4, r5, r6, lr}
+ 496 030e FFF7FEFF 		bl	initMMC
+ 497 0312 464A     		ldr	r2, .L119
+ 498 0314 0121     		mov	r1, #1
+ 499 0316 1170     		strb	r1, [r2]
+ 500 0318 0378     		ldrb	r3, [r0]
+ 501 031a 4F2B     		cmp	r3, #79
+ 502 031c 02D1     		bne	.L92
+ 503 031e 4378     		ldrb	r3, [r0, #1]
+ 504 0320 4B2B     		cmp	r3, #75
+ 505 0322 05D0     		beq	.L94
+ 506              	.L92:
+ 507 0324 424B     		ldr	r3, .L119+4
+ 508 0326 1960     		str	r1, [r3]
+ 509 0328 424B     		ldr	r3, .L119+8
+ 510 032a 1860     		str	r0, [r3]
+ 511 032c 0023     		mov	r3, #0
+ 512 032e 1370     		strb	r3, [r2]
+ 513              	.L94:
+ 514 0330 414C     		ldr	r4, .L119+12
+ 515 0332 4249     		ldr	r1, .L119+16
+ 516 0334 424B     		ldr	r3, .L119+20
+ 517 0336 6218     		add	r2, r4, r1
+ 518              	.L95:
+ 519 0338 2370     		strb	r3, [r4]
+ 520 033a 0D34     		add	r4, r4, #13
+ 521 033c 9442     		cmp	r4, r2
+ 522 033e FBD1     		bne	.L95
+ 523 0340 FFF7FEFF 		bl	getFileNames
+ 524 0344 3F4B     		ldr	r3, .L119+24
+ 525 0346 1B7B     		ldrb	r3, [r3, #12]
+ 526 0348 5800     		lsl	r0, r3, #1
+ 527 034a C018     		add	r0, r0, r3
+ 528 034c 3E4A     		ldr	r2, .L119+28
+ 529 034e 8000     		lsl	r0, r0, #2
+ 530 0350 C018     		add	r0, r0, r3
+ 531 0352 A318     		add	r3, r4, r2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 11
+
+
+ 532 0354 C018     		add	r0, r0, r3
+ 533 0356 FFF7FEFF 		bl	testMMC
+ 534              	.L97:
+ 535 035a 3C4D     		ldr	r5, .L119+32
+ 536 035c 2B78     		ldrb	r3, [r5]
+ 537 035e 012B     		cmp	r3, #1
+ 538 0360 01D1     		bne	.L98
+ 539 0362 0023     		mov	r3, #0
+ 540 0364 2B70     		strb	r3, [r5]
+ 541              	.L98:
+ 542 0366 3A4E     		ldr	r6, .L119+36
+ 543 0368 3368     		ldr	r3, [r6]
+ 544 036a 5903     		lsl	r1, r3, #13
+ 545 036c 16D4     		bmi	.L100
+ 546 036e 3948     		ldr	r0, .L119+40
+ 547 0370 FFF7FEFF 		bl	file_fclose
+ 548 0374 334C     		ldr	r4, .L119+24
+ 549 0376 207B     		ldrb	r0, [r4, #12]
+ 550 0378 0321     		mov	r1, #3
+ 551 037a 0130     		add	r0, r0, #1
+ 552 037c FFF7FEFF 		bl	__modsi3
+ 553 0380 0306     		lsl	r3, r0, #24
+ 554 0382 1B0E     		lsr	r3, r3, #24
+ 555 0384 5800     		lsl	r0, r3, #1
+ 556 0386 C018     		add	r0, r0, r3
+ 557 0388 8000     		lsl	r0, r0, #2
+ 558 038a 2373     		strb	r3, [r4, #12]
+ 559 038c C018     		add	r0, r0, r3
+ 560 038e 2A4B     		ldr	r3, .L119+12
+ 561 0390 C018     		add	r0, r0, r3
+ 562 0392 FFF7FEFF 		bl	testMMC
+ 563 0396 304A     		ldr	r2, .L119+44
+ 564 0398 0123     		mov	r3, #1
+ 565 039a 1370     		strb	r3, [r2]
+ 566              	.L100:
+ 567 039c 3368     		ldr	r3, [r6]
+ 568 039e 1A03     		lsl	r2, r3, #12
+ 569 03a0 15D4     		bmi	.L102
+ 570 03a2 2C48     		ldr	r0, .L119+40
+ 571 03a4 FFF7FEFF 		bl	file_fclose
+ 572 03a8 264C     		ldr	r4, .L119+24
+ 573 03aa 207B     		ldrb	r0, [r4, #12]
+ 574 03ac 0321     		mov	r1, #3
+ 575 03ae 0138     		sub	r0, r0, #1
+ 576 03b0 FFF7FEFF 		bl	__modsi3
+ 577 03b4 0306     		lsl	r3, r0, #24
+ 578 03b6 1B0E     		lsr	r3, r3, #24
+ 579 03b8 5800     		lsl	r0, r3, #1
+ 580 03ba C018     		add	r0, r0, r3
+ 581 03bc 8000     		lsl	r0, r0, #2
+ 582 03be 2373     		strb	r3, [r4, #12]
+ 583 03c0 C018     		add	r0, r0, r3
+ 584 03c2 1D4B     		ldr	r3, .L119+12
+ 585 03c4 C018     		add	r0, r0, r3
+ 586 03c6 FFF7FEFF 		bl	testMMC
+ 587 03ca 0123     		mov	r3, #1
+ 588 03cc 2B70     		strb	r3, [r5]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 12
+
+
+ 589              	.L102:
+ 590 03ce 3368     		ldr	r3, [r6]
+ 591 03d0 9903     		lsl	r1, r3, #14
+ 592 03d2 08D4     		bmi	.L104
+ 593 03d4 214A     		ldr	r2, .L119+48
+ 594 03d6 0123     		mov	r3, #1
+ 595 03d8 1370     		strb	r3, [r2]
+ 596 03da 214A     		ldr	r2, .L119+52
+ 597 03dc 1378     		ldrb	r3, [r2]
+ 598 03de 082B     		cmp	r3, #8
+ 599 03e0 01D8     		bhi	.L104
+ 600 03e2 0133     		add	r3, r3, #1
+ 601 03e4 1370     		strb	r3, [r2]
+ 602              	.L104:
+ 603 03e6 1A4B     		ldr	r3, .L119+36
+ 604 03e8 1B68     		ldr	r3, [r3]
+ 605 03ea DA02     		lsl	r2, r3, #11
+ 606 03ec 08D4     		bmi	.L107
+ 607 03ee 1D4A     		ldr	r2, .L119+56
+ 608 03f0 0123     		mov	r3, #1
+ 609 03f2 1370     		strb	r3, [r2]
+ 610 03f4 1A4A     		ldr	r2, .L119+52
+ 611 03f6 1378     		ldrb	r3, [r2]
+ 612 03f8 002B     		cmp	r3, #0
+ 613 03fa 01D0     		beq	.L107
+ 614 03fc 013B     		sub	r3, r3, #1
+ 615 03fe 1370     		strb	r3, [r2]
+ 616              	.L107:
+ 617 0400 134B     		ldr	r3, .L119+36
+ 618 0402 1B68     		ldr	r3, [r3]
+ 619 0404 5904     		lsl	r1, r3, #17
+ 620 0406 01D4     		bmi	.L110
+ 621 0408 FFF7FEFF 		bl	playTestSound
+ 622              	.L110:
+ 623 040c 164A     		ldr	r2, .L119+60
+ 624 040e 1378     		ldrb	r3, [r2]
+ 625 0410 012B     		cmp	r3, #1
+ 626 0412 01D1     		bne	.L112
+ 627 0414 0023     		mov	r3, #0
+ 628 0416 1370     		strb	r3, [r2]
+ 629              	.L112:
+ 630 0418 144A     		ldr	r2, .L119+64
+ 631 041a 1378     		ldrb	r3, [r2]
+ 632 041c 012B     		cmp	r3, #1
+ 633 041e 01D1     		bne	.L114
+ 634 0420 0023     		mov	r3, #0
+ 635 0422 1370     		strb	r3, [r2]
+ 636              	.L114:
+ 637 0424 1920     		mov	r0, #25
+ 638 0426 FFF7FEFF 		bl	osSleep
+ 639 042a 96E7     		b	.L97
+ 640              	.L120:
+ 641              		.align	2
+ 642              	.L119:
+ 643 042c 00000000 		.word	mmcInitialized
+ 644 0430 00000000 		.word	isError
+ 645 0434 00000000 		.word	error
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 13
+
+
+ 646 0438 00000000 		.word	files
+ 647 043c 07050000 		.word	1287
+ 648 0440 00000000 		.word	.LC61
+ 649 0444 00000000 		.word	currentSongInfo
+ 650 0448 F9FAFFFF 		.word	-1287
+ 651 044c 00000000 		.word	changeLeft
+ 652 0450 008002E0 		.word	-536707072
+ 653 0454 00000000 		.word	file
+ 654 0458 00000000 		.word	changeRight
+ 655 045c 00000000 		.word	volumeUp
+ 656 0460 00000000 		.word	currentVolume
+ 657 0464 00000000 		.word	volumeDown
+ 658 0468 00000000 		.word	rewindForward
+ 659 046c 00000000 		.word	rewindBackward
+ 660              		.size	MMCproc, .-MMCproc
+ 661              		.global	id3TagSize
+ 662              		.data
+ 663              		.type	id3TagSize, %object
+ 664              		.size	id3TagSize, 1
+ 665              	id3TagSize:
+ 666 0000 80       		.byte	-128
+ 667              		.global	readSize
+ 668              		.type	readSize, %object
+ 669              		.size	readSize, 1
+ 670              	readSize:
+ 671 0001 1E       		.byte	30
+ 672              		.global	titleOffset
+ 673 0002 0000     		.align	2
+ 674              		.type	titleOffset, %object
+ 675              		.size	titleOffset, 4
+ 676              	titleOffset:
+ 677 0004 03000000 		.word	3
+ 678              		.global	authorOffset
+ 679              		.align	2
+ 680              		.type	authorOffset, %object
+ 681              		.size	authorOffset, 4
+ 682              	authorOffset:
+ 683 0008 21000000 		.word	33
+ 684              		.comm	currentSongInfo,16,4
+ 685              		.comm	mmcInitialized,1,1
+ 686              		.comm	changeLeft,1,1
+ 687              		.comm	changeRight,1,1
+ 688              		.comm	rewindForward,1,1
+ 689              		.comm	rewindBackward,1,1
+ 690              		.comm	volumeUp,1,1
+ 691              		.comm	volumeDown,1,1
+ 692              		.comm	isError,4,4
+ 693              		.comm	error,4,4
+ 694              		.comm	fileSize,4,4
+ 695              		.comm	myName,30,1
+ 696              		.comm	myAuthor,30,1
+ 697              		.comm	efs,708,4
+ 698              		.comm	file,80,4
+ 699              		.comm	list,52,4
+ 700              		.comm	file_name,13,1
+ 701              		.comm	size,4,4
+ 702              		.comm	files,3328,1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 14
+
+
+ 703              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 15
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 testMMC.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:21     .text:00000000 playTestSound
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:106    .text:00000074 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:125    .text:00000090 testMMC
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:122    .text:00000090 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:269    .text:00000144 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:14     .text:00000000 playTestSound
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:77     .text:00000074 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:95     .text:00000090 testMMC
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:92     .text:00000090 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:194    .text:00000144 $d
                             *COM*:000002c4 efs
                             *COM*:00000050 file
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:875    .data:00000001 readSize
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:670    .data:00000001 readSize
                             *COM*:0000001e myName
                             *COM*:0000001e myAuthor
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:870    .data:00000000 id3TagSize
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:665    .data:00000000 id3TagSize
                             *COM*:00000004 fileSize
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:881    .data:00000004 titleOffset
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:887    .data:00000008 authorOffset
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:676    .data:00000004 titleOffset
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:682    .data:00000008 authorOffset
                             *COM*:00000010 currentSongInfo
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:337    .text:00000170 initMMC
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:334    .text:00000170 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:479    .text:00000208 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:261    .text:00000170 initMMC
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:258    .text:00000170 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:354    .text:00000208 $d
                             *COM*:00000034 list
                             *COM*:00000001 mmcInitialized
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:506    .text:00000258 format_file_name
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:503    .text:00000258 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:583    .text:000002b0 getFileNames
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:635    .text:000002f8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:380    .text:00000258 format_file_name
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:377    .text:00000258 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:434    .text:000002b0 getFileNames
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:476    .text:000002f8 $d
                             *COM*:0000000d file_name
                             *COM*:00000d00 files
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:654    .text:0000030c MMCproc
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:651    .text:0000030c $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:847    .text:0000042c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:494    .text:0000030c MMCproc
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:491    .text:0000030c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:643    .text:0000042c $d
                             *COM*:00000004 isError
                             *COM*:00000004 error
                             *COM*:00000001 changeLeft
@@ -4764,7 +825,7 @@ DEFINED SYMBOLS
                             *COM*:00000001 volumeDown
                             *COM*:00000001 rewindForward
                             *COM*:00000001 rewindBackward
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s:882    .data:00000004 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s:677    .data:00000004 $d
                             *COM*:00000004 size
 
 UNDEFINED SYMBOLS
@@ -4781,7 +842,7 @@ file_fclose
 efs_init
 ls_openDir
 strncpy
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccHIR7Yz.s 			page 81
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccE815Xs.s 			page 16
 
 
 ls_getNext

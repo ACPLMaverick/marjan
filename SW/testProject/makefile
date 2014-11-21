@@ -35,7 +35,7 @@ LD_SCRIPT_PATH = .
 # ELF-file contains debug information, or not
 # (possible values for DEBUG are 0 or 1)
 # Extra debug flags can be specified in DBFLAGS
-DEBUG   = 1
+DEBUG   = 0
 #DBFLAGS =
 
 # Optimization setting
@@ -63,6 +63,7 @@ CSRCS   = main.c          \
           testI2C.c       \
           testAdc.c       \
           testXBee.c      \
+          myTimer.c 	  \
           startupSound.c  
 
 # List assembler source files here
@@ -101,7 +102,7 @@ HEX_FORMAT  = ihex
 DOWNLOAD    = lpc21isp.exe
 
 # Configurations for download program
-DL_COMPORT  = com5
+DL_COMPORT  = com8
 DL_BAUDRATE = 38400
 DL_CRYSTAL  = 12000
 

@@ -127,9 +127,51 @@ lcdBacklight(tU8 onOff)
 	  IOCLR0 = LCD_BACKLIGHT;
 }
 
+/*****************************************************************************
+ *
+ * Description:
+ *    Returns one-digit number as char
+ *    Bigger numbers are "cut" by modulo operation
+ *
+ ****************************************************************************/
 unsigned char numberToChar(unsigned char number)
 {
-	return number + 48;
+	return (number % 10) + 48;
+}
+
+/*****************************************************************************
+ *
+ * Description:
+ *    Converts time to format MM:SS as string
+ *
+ ****************************************************************************/
+unsigned char* timeToString(unsigned long time)
+{
+	unsigned char str[6];
+	unsigned long maxTime = 3599;
+	while(time > maxTime) time -= maxTime;
+	int i = 0;
+	int b = 1000;
+	for(i = 0; i < 6; i++, b/10)
+	{
+		if(i == 2)
+		{
+			str[i] = ':';
+			continue;
+		}
+		else if(i == 5)
+		{
+			str[i] = '\0';
+			break;
+		}
+		else
+		{
+			str[i] = (time / b) + 48;
+			time = time - (time/b)*b;
+		}
+	}
+
+	return str;
 }
 
 void clearScr()
@@ -180,6 +222,14 @@ testLcd(void)
   for(;;)
   {
  	clearScr();
+
+ 	/// TIMER TEST!!!!!!
+ 	{
+ 		//writeLCD(1, numberToChar(currentSongInfo.time));
+ 		WriteString(timeToString(currentSongInfo.time));
+ 		osSleep(10);
+ 		continue;
+ 	}
 
  	if(volumeUp != 0 || volumeDown != 0)
  	{
