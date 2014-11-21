@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TerrainProperties>
+  <Width>
+    50
+  </Width>
+  <Height>
+    50
+  </Height>
+  <BorderWidth>
+    3
+  </BorderWidth>
+  <TileSize>
+    0.5f
+  </TileSize>
+  <ZPos>
+    1.0f
+  </ZPos>
+  <TerrainTiles>
+    <!-- LAST TilePath is the border texture -->
+    <TilePath>metal01_d.dds</TilePath>
+    <TilePath>moss_01_d.dds</TilePath>
+    <TilePath>test.dds</TilePath>
+  </TerrainTiles>
+</TerrainProperties>

@@ -58,6 +58,8 @@ void testI2C(void);
 void testAdc(void);
 tU8  testXBee(void);
 
+void myTimerExec(void);
+
 void MMCproc(void);
 
 tU8 xbeePresent;
@@ -217,10 +219,10 @@ proc1(void* arg)
     osStartProcess(pid2, &error);
     osCreateProcess(proc3, proc3Stack, PROC3_STACK_SIZE, &pid3, 3, NULL, &error);
     osStartProcess(pid3, &error);
-//    osCreateProcess(proc4, proc4Stack, PROC4_STACK_SIZE, &pid4, 3, NULL, &error);
-//    osStartProcess(pid4, &error);
-//    osCreateProcess(proc5, proc5Stack, PROC5_STACK_SIZE, &pid5, 3, NULL, &error);
-//    osStartProcess(pid5, &error);
+    osCreateProcess(proc4, proc4Stack, PROC4_STACK_SIZE, &pid4, 3, NULL, &error);
+    osStartProcess(pid4, &error);
+    osCreateProcess(proc5, proc5Stack, PROC5_STACK_SIZE, &pid5, 3, NULL, &error);
+    osStartProcess(pid5, &error);
 
 
     //wait for a short while
@@ -302,8 +304,7 @@ proc4(void* arg)
 {
 	for(;;)
 	{
-		testRGB();
-		testMotor();
+		testLedMatrix();
 	}
 }
 
@@ -319,7 +320,7 @@ proc4(void* arg)
 static void
 proc5(void* arg)
 {
-	testAdc();
+	myTimerExec();
 }
 
 /*****************************************************************************
