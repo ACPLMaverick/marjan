@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour {
 	private Vector2 movement;
 	private Vector2 dashVector;
 
-	public GameObject star;
 	public GUIText scoreText;
     public GUIText lengthText;
 	private int score;
@@ -20,9 +19,8 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		speed = 25.0f;
-		dashVector = new Vector2(25000.0f, 0.0f);
-		star = GetComponent<PlayerController> ().star;
-		score = 0;
+		dashVector = new Vector2(15000.0f, 0.0f);
+        score = 0;
         length = 0;
 		UpdateScore ();
         UpdateLength();
@@ -47,24 +45,19 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D col)
 	{
-		if(col.gameObject.tag == "Star")
-		{
-			Destroy(star);
-			AddScore(1);
-		}
-        if (col.gameObject.tag == "Enemy")
+        if (col.gameObject.tag == "Enemy" || col.gameObject.tag == "Obstacle")
         {
             Application.LoadLevel(Application.loadedLevel);
         }
 	}
 
-	public void AddScore(int newScoreValue)
-	{
-		score += newScoreValue;
-		UpdateScore ();
-	}
+    public void AddScore(int newScoreValue)
+    {
+        score += newScoreValue;
+        UpdateScore();
+    }
 	
-	void UpdateScore()
+	public void UpdateScore()
 	{
 		scoreText.text = "Score: " + score.ToString();
 	}
