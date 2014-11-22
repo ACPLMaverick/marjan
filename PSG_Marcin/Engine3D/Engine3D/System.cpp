@@ -35,7 +35,7 @@ bool System::Initialize()
 
 	myInput = new Input();
 	if (!myInput) return false;
-	myInput->Initialize();
+	myInput->Initialize(m_hinstance, m_hwnd, screenWidth, screenHeight);
 
 	myGraphics = new Graphics();
 	if (!myGraphics) return false;
@@ -69,6 +69,7 @@ void System::Shutdown()
 
 	if (myInput)
 	{
+		myInput->Shutdown();
 		delete myInput;
 		myInput = nullptr;
 	}
@@ -156,6 +157,8 @@ bool System::Frame()
 
 	time = m_Timer->GetTime();
 
+	if(!(myInput->Frame())) return false;
+
 	if (!ProcessKeys()) return false;
 
 	CheckGameObjects();
@@ -187,11 +190,12 @@ bool System::ProcessKeys()
 {
 	//string debug = to_string(player->position.x) + " " + to_string(player->position.y) + "\n";
 	//OutputDebugString(debug.c_str());
+
 	bool toReturn = true;
 	playerAnimation = false;
 	Camera* cam = myGraphics->GetCamera();
-	if (myInput->IsKeyDown(VK_ESCAPE)) toReturn = false;
-	if (myInput->IsKeyDown(VK_LETTER_A) /*&& player->GetPosition().x > -(signed int)(terrain->GetWidth()*terrain->GetSize())*/)
+	if (myInput->IsKeyDown(DIK_ESCAPE)) toReturn = false;
+	if (myInput->IsKeyDown(DIK_A) /*&& player->GetPosition().x > -(signed int)(terrain->GetWidth()*terrain->GetSize())*/)
 	{
 		D3DXVECTOR3 newVec = (cam->GetPosition() + D3DXVECTOR3((-myInput->movementDistance)*(m_Timer->GetTime()), 0.0f, 0.0f));
 		cam->SetPosition(newVec);
@@ -200,7 +204,7 @@ bool System::ProcessKeys()
 		playerAnimation = true;
 		toReturn = true;
 	}
-	if (myInput->IsKeyDown(VK_LETTER_D))
+	if (myInput->IsKeyDown(DIK_D))
 	{
 		D3DXVECTOR3 newVec = (cam->GetPosition() + D3DXVECTOR3((myInput->movementDistance)*(m_Timer->GetTime()), 0.0f, 0.0f));
 		cam->SetPosition(newVec);
@@ -209,7 +213,7 @@ bool System::ProcessKeys()
 		playerAnimation = true;
 		toReturn = true;
 	}
-	if (myInput->IsKeyDown(VK_LETTER_W))
+	if (myInput->IsKeyDown(DIK_W))
 	{
 		D3DXVECTOR3 newVec = (cam->GetPosition() + D3DXVECTOR3(0.0f, 0.0f, (myInput->movementDistance)*(m_Timer->GetTime())));
 		cam->SetPosition(newVec);
@@ -218,7 +222,7 @@ bool System::ProcessKeys()
 		playerAnimation = true;
 		toReturn = true;
 	}
-	if (myInput->IsKeyDown(VK_LETTER_S))
+	if (myInput->IsKeyDown(DIK_S))
 	{
 		D3DXVECTOR3 newVec = (cam->GetPosition() + D3DXVECTOR3(0.0f, 0.0f, (-myInput->movementDistance)*(m_Timer->GetTime())));
 		cam->SetPosition(newVec);
@@ -228,7 +232,7 @@ bool System::ProcessKeys()
 		toReturn = true;
 	}
 	
-	if (myInput->IsKeyDown(VK_SPACE))
+	if (myInput->IsKeyDown(DIK_SPACE))
 	{
 		/*PlayerShoot();
 		myInput->KeyUp(VK_SPACE);
@@ -339,23 +343,7 @@ void System::GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &cou
 
 LRESULT CALLBACK System::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	switch (umsg)
-	{
-			case WM_KEYDOWN:
-			{
-				myInput->KeyDown((unsigned int)wparam);
-				return 0;
-			}
-			case WM_KEYUP:
-			{
-				myInput->KeyUp((unsigned int)wparam);
-				return 0;
-			}
-			default:
-			{
-				return DefWindowProc(hwnd, umsg, wparam, lparam);
-			}
-	}
+	return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
 
 void System::InitializeWindows(int& screenWidth, int& screenHeight)
