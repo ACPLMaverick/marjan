@@ -17,7 +17,7 @@ private:
 	unsigned char m_keyboardState[256];
 	DIMOUSESTATE m_mouseState;
 	int m_screenWidth, m_screenHeight;
-	int m_mouseX, m_mouseY;
+	float m_mouseX, m_mouseY;
 
 	bool ReadKeyboard();
 	bool ReadMouse();

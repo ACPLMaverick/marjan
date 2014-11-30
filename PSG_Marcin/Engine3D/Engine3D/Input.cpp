@@ -150,6 +150,6 @@ bool Input::ReadMouse()
 
 void Input::ProcessInput()
 {
-	m_mouseX += m_mouseState.lX;
+	m_mouseX = m_mouseState.lX;
 	m_mouseY = m_mouseState.lY;
 }

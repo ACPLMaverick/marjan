@@ -75,6 +75,8 @@ public:
 	int GetFPS();
 	int GetTime();
 
+	static void RotateVector(D3DXVECTOR3&, D3DXVECTOR3);
+
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 };
 

@@ -162,7 +162,7 @@ bool System::Frame()
 	if (!ProcessKeys()) return false;
 
 	CheckGameObjects();
-	//ProcessCamera();
+	ProcessCamera();
 
 	/*vector<GameObject*> terVec = terrain->GetTiles();
 	GameObject** goTab = new GameObject*[gameObjects.size() + terVec.size()];
@@ -188,46 +188,52 @@ bool System::Frame()
 
 bool System::ProcessKeys()
 {
-	//string debug = to_string(player->position.x) + " " + to_string(player->position.y) + "\n";
-	//OutputDebugString(debug.c_str());
-
 	bool toReturn = true;
 	playerAnimation = false;
 	Camera* cam = myGraphics->GetCamera();
 	if (myInput->IsKeyDown(DIK_ESCAPE)) toReturn = false;
 	if (myInput->IsKeyDown(DIK_A) /*&& player->GetPosition().x > -(signed int)(terrain->GetWidth()*terrain->GetSize())*/)
 	{
-		D3DXVECTOR3 newVec = (cam->GetPosition() + D3DXVECTOR3((-myInput->movementDistance)*(m_Timer->GetTime()), 0.0f, 0.0f));
-		cam->SetPosition(newVec);
-		//cam->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 1.57079632679f));
-		//myInput->KeyUp(VK_LEFT);
+		D3DXVECTOR3 target = cam->GetTarget();
+		D3DXVECTOR3 newVec;
+		D3DXVec3Normalize(&newVec, &target);
+		RotateVector(newVec, D3DXVECTOR3(0.0f, 1.57079632679f, 0.0f));
+		newVec.y = 0;
+		D3DXVECTOR3 newerVec = cam->GetPosition() - (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
+		
+		cam->SetPosition(newerVec);
 		playerAnimation = true;
 		toReturn = true;
 	}
 	if (myInput->IsKeyDown(DIK_D))
 	{
-		D3DXVECTOR3 newVec = (cam->GetPosition() + D3DXVECTOR3((myInput->movementDistance)*(m_Timer->GetTime()), 0.0f, 0.0f));
-		cam->SetPosition(newVec);
-		//player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 4.71238898038f));
-		//myInput->KeyUp(VK_RIGHT);
+		D3DXVECTOR3 target = cam->GetTarget();
+		D3DXVECTOR3 newVec;
+		D3DXVec3Normalize(&newVec, &target);
+		RotateVector(newVec, D3DXVECTOR3(0.0f, 1.57079632679f, 0.0f));
+		newVec.y = 0;
+		D3DXVECTOR3 newerVec = cam->GetPosition() + (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
+		cam->SetPosition(newerVec);
 		playerAnimation = true;
 		toReturn = true;
 	}
 	if (myInput->IsKeyDown(DIK_W))
 	{
-		D3DXVECTOR3 newVec = (cam->GetPosition() + D3DXVECTOR3(0.0f, 0.0f, (myInput->movementDistance)*(m_Timer->GetTime())));
-		cam->SetPosition(newVec);
-		//player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		//myInput->KeyUp(VK_UP);
+		D3DXVECTOR3 target = cam->GetTarget();
+		D3DXVECTOR3 newVec;
+		D3DXVec3Normalize(&newVec, &target);
+		D3DXVECTOR3 newerVec = cam->GetPosition() + (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
+		cam->SetPosition(newerVec);
 		playerAnimation = true;
 		toReturn = true;
 	}
 	if (myInput->IsKeyDown(DIK_S))
 	{
-		D3DXVECTOR3 newVec = (cam->GetPosition() + D3DXVECTOR3(0.0f, 0.0f, (-myInput->movementDistance)*(m_Timer->GetTime())));
-		cam->SetPosition(newVec);
-		//player->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 3.14159265359f));
-		//myInput->KeyUp(VK_DOWN);
+		D3DXVECTOR3 target = cam->GetTarget();
+		D3DXVECTOR3 newVec;
+		D3DXVec3Normalize(&newVec, &target);
+		D3DXVECTOR3 newerVec = cam->GetPosition() - (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
+		cam->SetPosition(newerVec);
 		playerAnimation = true;
 		toReturn = true;
 	}
@@ -244,15 +250,34 @@ bool System::ProcessKeys()
 void System::ProcessCamera()
 {
 	Camera* cam = myGraphics->GetCamera();
-	D3DXVECTOR3 newPos;
-	newPos.x = player->GetPosition().x;
-	newPos.y = player->GetPosition().y;
-	newPos.z = cam->GetPosition().z;
-	D3DXVECTOR3 targetPos = player->GetPosition();
-	targetPos.z += 1.0f;
-	
-	cam->SetPosition(newPos);
-	//cam->SetTarget(targetPos);
+	D3DXVECTOR3 lookAt;
+	int mposx, mposy;
+	float scale = 0.01f;
+	myInput->GetMouseLocation(mposx, mposy);
+	string debug = to_string(mposx) + " " + to_string(mposy) + "\n";
+	OutputDebugString(debug.c_str());
+	//lookAt = D3DXVECTOR3(cam->GetTarget().x + (float)mposx*scale, cam->GetTarget().y - (float)mposy*scale, cam->GetTarget().z);
+	lookAt = cam->GetTarget();
+	float fposx, fposy;
+	fposx = mposx;
+	fposy = mposy;
+
+	// rotation
+	D3DXMATRIX rotateX;
+	D3DXMATRIX rotateY;
+	D3DXMATRIX rotateZ;
+	D3DXMatrixRotationX(&rotateX, mposy*scale*lookAt.z);
+	D3DXMatrixRotationY(&rotateY, mposx*scale);
+	D3DXMatrixRotationZ(&rotateZ, mposy*scale*(-lookAt.x));
+	D3DXMATRIX rotationMatrix = rotateX*rotateY*rotateZ;
+	D3DXVECTOR4 outputVec;
+
+	D3DXVec3Transform(&outputVec, &lookAt, &rotationMatrix);
+	lookAt.x = outputVec.x;
+	lookAt.y = outputVec.y;
+	lookAt.z = outputVec.z;
+
+	cam->SetTarget(lookAt);
 }
 
 void System::InitializeGameObjects()
@@ -264,7 +289,7 @@ void System::InitializeGameObjects()
 		(myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texPath.c_str())),
 		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
 		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.9f, 0.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	player = go01;
@@ -339,6 +364,24 @@ void System::GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &cou
 		}
 	}
 	count = c;
+}
+
+void System::RotateVector(D3DXVECTOR3& retVec, D3DXVECTOR3 rotationVector)
+{
+	// rotation
+	D3DXMATRIX rotateX;
+	D3DXMATRIX rotateY;
+	D3DXMATRIX rotateZ;
+	D3DXMatrixRotationX(&rotateX, rotationVector.x);
+	D3DXMatrixRotationY(&rotateY, rotationVector.y);
+	D3DXMatrixRotationZ(&rotateZ, rotationVector.z);
+	D3DXMATRIX rotationMatrix = rotateX*rotateY*rotateZ;
+	D3DXVECTOR4 outputVec;
+
+	D3DXVec3Transform(&outputVec, &retVec, &rotationMatrix);
+	retVec.x = outputVec.x;
+	retVec.y = outputVec.y;
+	retVec.z = outputVec.z;
 }
 
 LRESULT CALLBACK System::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
