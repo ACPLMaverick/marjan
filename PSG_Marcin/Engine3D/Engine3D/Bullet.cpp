@@ -42,7 +42,7 @@ bool Bullet::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, 
 
 	if (currentDistance >= distance)
 	{
-		System::checkGameObjects++;
+		Scene::checkGameObjects++;
 		destroySignal = true;
 	}
 

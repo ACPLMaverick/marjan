@@ -3,6 +3,7 @@
 #include "GameObject.h"
 
 class GameObject;
+class Scene;
 
 class Bullet :
 	public GameObject

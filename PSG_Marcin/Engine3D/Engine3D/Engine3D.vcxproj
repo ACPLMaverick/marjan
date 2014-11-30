@@ -85,6 +85,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="CPUCounter.cpp" />
     <ClCompile Include="Model3D.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Sprite2D.cpp" />
     <ClCompile Include="System.cpp" />
@@ -110,6 +111,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="CPUCounter.h" />
     <ClInclude Include="Model3D.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Sprite2D.h" />
     <ClInclude Include="System.h" />

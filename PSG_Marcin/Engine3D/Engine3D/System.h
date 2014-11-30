@@ -22,10 +22,12 @@
 #include "CPUCounter.h"
 #include "Timer.h"
 #include "Terrain.h"
+#include "Scene.h"
 
 class GameObject;
 class Graphics;
 class Terrain;
+class Scene;
 
 class System
 {
@@ -38,28 +40,20 @@ private:
 	CPUCounter* m_CPU;
 	Timer* m_Timer;
 
+	Scene* myScene;
+
 	Input* myInput;
 	Graphics* myGraphics;
-
-	vector<GameObject*> gameObjects;
-	Terrain* terrain;
-	GameObject* player;
 
 	bool Frame();
 	bool ProcessKeys();
 	void ProcessCamera();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
-	void InitializeGameObjects();
-	void InitializeTerrain();
-	void CheckGameObjects();
 	void PlayerShoot();
-	GameObject* GetGameObjectByName(LPCSTR name);
-	void GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count);
 public:
 	static unsigned long frameCount;
 	static bool playerAnimation;
-	static unsigned int checkGameObjects;
 	static float time;
 	static unsigned long systemTime;
 

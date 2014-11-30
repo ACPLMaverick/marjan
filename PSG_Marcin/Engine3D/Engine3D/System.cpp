@@ -3,7 +3,6 @@
 
 unsigned long System::frameCount;
 bool System::playerAnimation;
-unsigned int System::checkGameObjects;
 float System::time;
 unsigned long System::systemTime;
 
@@ -12,11 +11,9 @@ System::System()
 	myInput = nullptr;
 	myGraphics = nullptr;
 	playerAnimation = false;
-	checkGameObjects = false;
 	m_CPU = nullptr;
 	m_FPS = nullptr;
 	m_Timer = nullptr;
-	terrain = nullptr;
 }
 
 
@@ -42,8 +39,8 @@ bool System::Initialize()
 	result = myGraphics->Initialize(screenWidth, screenHeight, m_hwnd);
 	if (!result) return false;
 
-	InitializeGameObjects();
-	//InitializeTerrain();
+	myScene = new Scene();
+	myScene->Initialize(myGraphics, m_hwnd);
 
 	m_FPS = new FPSCounter();
 	m_FPS->Initialize();
@@ -93,19 +90,11 @@ void System::Shutdown()
 		m_Timer = nullptr;
 	}
 
-	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
+	if (myScene)
 	{
-		if (*it) (*it)->Destroy();
-		delete (*it);
-		(*it) = nullptr;
-	}
-	gameObjects.clear();
-
-	if (terrain)
-	{
-		terrain->Shutdown();
-		delete terrain;
-		terrain = nullptr;
+		myScene->Shutdown();
+		delete myScene;
+		myScene = nullptr;
 	}
 
 	ShutdownWindows();
@@ -161,7 +150,7 @@ bool System::Frame()
 
 	if (!ProcessKeys()) return false;
 
-	CheckGameObjects();
+	myScene->CheckGameObjects();
 	ProcessCamera();
 
 	/*vector<GameObject*> terVec = terrain->GetTiles();
@@ -175,12 +164,8 @@ bool System::Frame()
 	{
 		goTab[i] = gameObjects.at(j);
 	}*/
-	GameObject** goTab = new GameObject*[gameObjects.size()];
-	for (int i = 0; i < gameObjects.size(); i++)
-	{
-		goTab[i] = gameObjects.at(i);
-	}
-	result = myGraphics->Frame(goTab, gameObjects.size());
+	
+	result = myGraphics->Frame(myScene->GetGameObjectsAsArray(), myScene->GetGameObjectsSize());
 	if (!result) return false;
 
 	return true;
@@ -254,8 +239,6 @@ void System::ProcessCamera()
 	int mposx, mposy;
 	float scale = 0.01f;
 	myInput->GetMouseLocation(mposx, mposy);
-	string debug = to_string(mposx) + " " + to_string(mposy) + "\n";
-	OutputDebugString(debug.c_str());
 	//lookAt = D3DXVECTOR3(cam->GetTarget().x + (float)mposx*scale, cam->GetTarget().y - (float)mposy*scale, cam->GetTarget().z);
 	lookAt = cam->GetTarget();
 	float fposx, fposy;
@@ -280,49 +263,9 @@ void System::ProcessCamera()
 	cam->SetTarget(lookAt);
 }
 
-void System::InitializeGameObjects()
-{
-	string texPath = "./Assets/Textures/noTexture.dds";
-	GameObject* go01 = new GameObject(
-		"player",
-		"player",
-		(myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texPath.c_str())),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(0.0f, 0.9f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	player = go01;
-	gameObjects.push_back(go01);
-}
-
-void System::InitializeTerrain()
-{
-	terrain = new Terrain("Configs/TerrainProperties.xml", myGraphics->GetTextures(), (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
-	terrain->Initialize();
-}
-
-void System::CheckGameObjects()
-{
-	while (checkGameObjects > 0)
-	{
-		for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
-		{
-			if ((*it)->GetDestroySignal())
-			{
-				(*it)->Destroy();
-				delete (*it);
-				(*it) = nullptr;
-				gameObjects.erase(it);
-				break;
-			}
-		}
-		checkGameObjects--;
-	}
-}
-
 void System::PlayerShoot()
 {
+	GameObject* player = myScene->GetPlayer();
 	Bullet* newBullet = new Bullet(
 		"test_bullet",
 		"bullets",
@@ -334,36 +277,7 @@ void System::PlayerShoot()
 		D3DXVECTOR3(0.3f, 0.3f, 0.3f),
 		5.0f,
 		50.0f);
-	gameObjects.push_back(newBullet);
-}
-
-GameObject* System::GetGameObjectByName(LPCSTR name)
-{
-	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
-	{
-		if ((*it)->GetName() == name) return (*it);
-	}
-	return nullptr;
-}
-
-void System::GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count)
-{
-	unsigned int c = 0;
-	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
-	{
-		if ((*it)->GetTag() == tag) c++;
-	}
-	ptr = new GameObject*[c];
-	c = 0;
-	for (std::vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
-	{
-		if ((*it)->GetTag() == tag)
-		{
-			ptr[c] = (*it);
-			c++;
-		}
-	}
-	count = c;
+	myScene->Add(newBullet);
 }
 
 void System::RotateVector(D3DXVECTOR3& retVec, D3DXVECTOR3 rotationVector)
@@ -397,7 +311,7 @@ void System::InitializeWindows(int& screenWidth, int& screenHeight)
 
 	ApplicationHandle = this;
 	m_hinstance = GetModuleHandle(NULL);
-	applicationName = "Engine2D";
+	applicationName = "Engine3D";
 
 	//default settings
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -407,7 +321,7 @@ void System::InitializeWindows(int& screenWidth, int& screenHeight)
 	wc.hInstance = m_hinstance;
 	wc.hIcon = LoadIcon(NULL, IDI_SHIELD);
 	wc.hIconSm = wc.hIcon;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hCursor = LoadCursor(NULL, IDC_NO);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BACKGROUND_COLOR);
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = applicationName;
