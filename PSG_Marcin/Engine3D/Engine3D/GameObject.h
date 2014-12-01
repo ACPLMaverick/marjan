@@ -20,10 +20,6 @@ protected:
 	string myName;
 	string myTag;
 
-	Model* myModel;
-	Texture* myTexture;
-	TextureShader* myShader;
-
 	unsigned long animationLastFrame;
 	unsigned int currentTextureID;
 	vector<Texture*> animationTextures;
@@ -34,6 +30,10 @@ protected:
 	virtual bool InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	virtual void AnimateTexture();
 public:
+	Model* myModel;
+	Texture* myTexture;
+	TextureShader* myShader;
+
 	GameObject();
 	GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	GameObject(string name, string tag, Texture* animationTextures[], unsigned int textureCount, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);

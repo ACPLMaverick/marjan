@@ -13,7 +13,7 @@ public:
 
 	TextureShader* LoadShader(ID3D11Device* device, HWND hwnd, LPCSTR path);
 	TextureShader* LoadShader(ID3D11Device* device, HWND hwnd, int id);
-	bool AddShader(ID3D11Device* device, HWND hwnd, LPCSTR path);
+	bool AddShader(ID3D11Device* device, HWND hwnd, LPCSTR path, int id);
 	void Shutdown();
 };
 

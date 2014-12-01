@@ -37,11 +37,13 @@ private:
 	bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, float blend);
 	void RenderShader(ID3D11DeviceContext*, int);
 public:
+	int myID;
+
 	TextureShader();
 	TextureShader(const TextureShader&);
 	~TextureShader();
 
-	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize(ID3D11Device*, HWND, int);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, float);
 };

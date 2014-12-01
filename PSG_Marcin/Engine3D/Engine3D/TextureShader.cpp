@@ -19,9 +19,10 @@ TextureShader::~TextureShader()
 {
 }
 
-bool TextureShader::Initialize(ID3D11Device* device, HWND hwnd)
+bool TextureShader::Initialize(ID3D11Device* device, HWND hwnd, int id)
 {
 	bool result;
+	this->myID = id;
 	result = InitializeShader(device, hwnd, "TextureVertexShader.hlsl", "TexturePixelShader.hlsl");
 	if (!result) return false;
 	return true;

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <Windows.h>
+#include <string>
 
 #include "Graphics.h"
 #include "GameObject.h"
@@ -11,10 +12,13 @@ class GameObject;
 class Graphics;
 class Terrain;
 
+using namespace std;
+
 class Scene
 {
 private:
 	string name;
+	string filePath;
 	
 	Graphics* myGraphics;
 	HWND m_hwnd;
@@ -25,6 +29,7 @@ private:
 
 	void InitializeGameObjects();
 	void InitializeTerrain();
+	void LoadFromFile();
 public:
 	static unsigned int checkGameObjects;
 
@@ -32,7 +37,8 @@ public:
 	Scene(const Scene&);
 	~Scene();
 
-	void Initialize(Graphics* myGraphics, HWND hwnd);
+	void Initialize(string name, Graphics* myGraphics, HWND hwnd);
+	void Initialize(Graphics* myGraphics, HWND hwnd, string filePath);
 	void Shutdown();
 
 	void Add(GameObject* obj);
@@ -41,6 +47,7 @@ public:
 	void Remove(string tag, int count);
 
 	void CheckGameObjects();
+	void SaveToFile();
 
 	GameObject* GetPlayer();
 	GameObject** GetGameObjectsAsArray();

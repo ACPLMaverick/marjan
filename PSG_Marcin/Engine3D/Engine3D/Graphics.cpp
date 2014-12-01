@@ -162,7 +162,7 @@ bool Graphics::InitializeManagers(HWND hwnd)
 	textureManager->AddTexture(m_D3D->GetDevice(), "./Assets/Textures/tank_enemy_FR_09.dds");
 
 	shaderManager = new ShaderManager();
-	bool result = shaderManager->AddShader(m_D3D->GetDevice(), hwnd, "TextureShader");
+	bool result = shaderManager->AddShader(m_D3D->GetDevice(), hwnd, "TextureShader", 0);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the texture shader", "Error", MB_OK);

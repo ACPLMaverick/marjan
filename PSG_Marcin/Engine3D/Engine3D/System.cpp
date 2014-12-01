@@ -40,7 +40,7 @@ bool System::Initialize()
 	if (!result) return false;
 
 	myScene = new Scene();
-	myScene->Initialize(myGraphics, m_hwnd);
+	myScene->Initialize(myGraphics, m_hwnd, "./Scenes/TestScene.sc");
 
 	m_FPS = new FPSCounter();
 	m_FPS->Initialize();

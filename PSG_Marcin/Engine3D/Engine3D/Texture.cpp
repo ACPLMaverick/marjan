@@ -17,6 +17,7 @@ Texture::~Texture()
 bool Texture::Initialize(ID3D11Device* device, LPCSTR filename)
 {
 	HRESULT result;
+	myName = filename;
 	result = D3DX11CreateShaderResourceViewFromFile(device, filename,
 		NULL, NULL, &m_texture, NULL);
 	if (FAILED(result)) return false;

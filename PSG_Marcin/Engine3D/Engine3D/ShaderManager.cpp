@@ -21,7 +21,7 @@ TextureShader* ShaderManager::LoadShader(ID3D11Device* device, HWND hwnd, LPCSTR
 
 	// loading texture from drive and putting it into the map
 	TextureShader* myShader = new TextureShader();
-	myShader->Initialize(device, hwnd);
+	myShader->Initialize(device, hwnd, shaders.count(name));
 	shaders.insert(pair<LPCSTR, TextureShader*>(name, myShader));
 	return myShader;
 }
@@ -43,11 +43,11 @@ TextureShader* ShaderManager::LoadShader(ID3D11Device* device, HWND hwnd, int id
 	return shaders[lastElem];
 }
 
-bool ShaderManager::AddShader(ID3D11Device* device, HWND hwnd, LPCSTR name)
+bool ShaderManager::AddShader(ID3D11Device* device, HWND hwnd, LPCSTR name, int id)
 {
 	// loading texture from drive and putting it into the map
 	TextureShader* myShader = new TextureShader();
-	bool result = myShader->Initialize(device, hwnd);
+	bool result = myShader->Initialize(device, hwnd, id);
 	if (result) shaders.insert(pair<LPCSTR, TextureShader*>(name, myShader));
 	return result;
 }
