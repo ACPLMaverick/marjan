@@ -123,7 +123,6 @@ public class MapController implements
 	public void disconnectLocationClient()
 	{
 		if(myLocClient != null) myLocClient.disconnect();
-		else System.out.println("kutas");
 	}
 
 	@Override

@@ -3,6 +3,8 @@ package com.plodz.cartracker;
 import java.util.ArrayList;
 
 import android.location.Location;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -12,18 +14,18 @@ import com.google.android.gms.maps.model.Polyline;
 
 public class TrackingController {
 	
-	public static final int CHECK_DELAY = 1;
 	public static final int STAT_COUNT = 7;
-	public double distCheckRes = 0.00005;
 	
 	public boolean ifUpdate = true;
 	
 	private MapController mc;
 	private TrackActivity activity;
+	private DataSource data;
 	private Trip trip;
 	private double lastLat;
 	private double lastLon;
 	private Thread checkThread;
+	private boolean ifRunning = true;
 	
 	private TextView statConsTxt;
 	private TextView statCostTxt;
@@ -35,9 +37,10 @@ public class TrackingController {
 	
 	private TextView dbgTxt1;
 	
-	public TrackingController(TrackActivity activity)
+	public TrackingController(TrackActivity activity, DataSource data)
 	{
 		this.activity = activity;
+		this.data = data;
 	}
 	
 	public void initialize()
@@ -72,13 +75,12 @@ public class TrackingController {
 		lastLon = mc.getMyLocation().getLongitude();
 		checkThread = new Thread(new Runnable()
 		{
-
 			@Override
 			public void run() {
-				for(;;)
+				for(;ifRunning == true;)
 				{
 					try {
-						Thread.sleep(CHECK_DELAY*1000);
+						Thread.sleep(Globals.checkDelay*1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -86,12 +88,12 @@ public class TrackingController {
 					}
 					if(ifUpdate)
 					{
-						if(Math.abs(lastLat - mc.getMyLocation().getLatitude()) > distCheckRes ||
-								Math.abs(lastLon - mc.getMyLocation().getLongitude()) > distCheckRes)
+						if(Math.abs(lastLat - mc.getMyLocation().getLatitude()) > Globals.DBG_updateRatio ||
+								Math.abs(lastLon - mc.getMyLocation().getLongitude()) > Globals.DBG_updateRatio)
 						{
 							lastLat = mc.getMyLocation().getLatitude();
 							lastLon = mc.getMyLocation().getLongitude(); 
-							trip.update(mc.getMyLocation());
+							trip.update(mc.getMyLocation(), Globals.checkDelay*1000);
 							
 							activity.runOnUiThread(new Runnable(){
 
@@ -104,7 +106,7 @@ public class TrackingController {
 						}
 						else
 						{
-							trip.updateTimeOnly();
+							trip.updateTimeOnly(Globals.checkDelay*1000);
 						}
 						
 						activity.runOnUiThread(new Runnable()
@@ -126,11 +128,67 @@ public class TrackingController {
 	
 	public void endTracking()
 	{
-		//TODO: saving trip and passing it to mainActivity
+		saveTripToDB();
+		
+		ifRunning = false;
 		
 		mc.disconnectLocationClient();
 		
 		activity.finish();
+	}
+	
+	public void pauseTracking(View v)
+	{
+			if(ifUpdate)
+			{
+				Thread blocker = new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						synchronized(checkThread)
+						{
+							try {
+								checkThread.wait();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								return;
+							}
+						}
+					}
+					
+				});
+				ifUpdate = false;
+				Button b = (Button) v;
+				b.setText(R.string.str_button_resumeTrack);
+			}
+			else
+			{
+				Thread relaser = new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						synchronized(checkThread)
+						{
+							checkThread.notifyAll();
+						}
+					}
+					
+				});
+				ifUpdate = true;
+				Button b = (Button) v;
+				b.setText(R.string.str_button_pauseTrack);
+			}
+	}
+	
+	private void saveTripToDB()
+	{
+		TripModel tm = new TripModel(trip);
+		data.open();
+		data.addTripModel(tm);
+		data.close();
 	}
 	
 	private void updateStatsInView(String[] values)

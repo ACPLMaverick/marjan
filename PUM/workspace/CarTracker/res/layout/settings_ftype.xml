@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <TextView
+        	style="@style/SettingStyle"
+            android:id="@+id/tvFuelType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="18dp"
+            android:text="@string/str_set_fuelType" />
+
+    <Spinner
+        android:id="@+id/spFuelSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/tvFuelType"
+        android:layout_alignLeft="@+id/tvFuelType" />
+
+</RelativeLayout>

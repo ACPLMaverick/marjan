@@ -25,7 +25,11 @@
         android:layout_marginTop="36dp"
         android:onClick="onStartButtonClick"
         android:text="@string/str_button_start"
-        android:textColor="@color/col_font_main" />
+        android:textColor="@color/col_font_main"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <requestFocus/>
+        </Button>
     
     <Button
         android:id="@+id/button_log"
@@ -51,91 +55,29 @@
         android:text="@string/str_button_chart"
         android:textColor="@color/col_font_main" />
     
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <Button
+        android:id="@+id/button_prices"
+        style="@style/MainButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/button_chart"
-        android:layout_margin="10dp"
-        android:background="@color/col_bg_settings" >
-
-        <TextView
-            android:id="@+id/tvSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/str_set_title"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/tvFuelCons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/tvSettings"
-            android:layout_marginTop="18dp"
-            android:textSize="20sp"
-            android:text="@string/str_set_fuelConsumption"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/tvFuelType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/tvFuelCons"
-            android:layout_below="@+id/tvFuelCons"
-            android:layout_marginTop="18dp"
-            android:textSize="20sp"
-            android:text="@string/str_set_fuelType"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-        
-        <TextView
-            android:id="@+id/tvDBGupdateRatio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/tvFuelCons"
-            android:layout_below="@+id/tvFuelType"
-            android:layout_marginTop="18dp"
-            android:textSize="20sp"
-            android:text="DBG: Update radius: "
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <EditText
-            android:id="@+id/etFuelConsumption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tvFuelCons"
-            android:layout_alignBottom="@+id/tvFuelCons"
-            android:layout_toRightOf="@+id/tvFuelCons"
-            android:background="@color/col_bg_textInput"
-            android:ems="10"
-            android:inputType="numberDecimal"  >
-
-        </EditText>
-
-        <EditText
-            android:id="@+id/etDBGUpdateRatio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tvDBGupdateRatio"
-            android:layout_alignBottom="@+id/tvDBGupdateRatio"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/tvDBGupdateRatio"
-            android:background="@color/col_bg_textInput"
-            android:ems="10"
-            android:inputType="numberDecimal" />
-
-        <ExpandableListView
-            android:id="@+id/expandableListView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/tvFuelType"
-            android:layout_alignTop="@+id/tvFuelType"
-            android:layout_toRightOf="@+id/tvDBGupdateRatio" >
-
-        </ExpandableListView>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:onClick="onPricesButtonClick"
+        android:text="@string/str_button_prices"
+        android:textColor="@color/col_font_main" />
     
-    </RelativeLayout>
+    <Button
+        android:id="@+id/button_settings"
+        style="@style/MainButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_prices"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:onClick="onSettingsButtonClick"
+        android:text="@string/str_button_settings"
+        android:textColor="@color/col_font_main" />
+    
 
 </RelativeLayout>

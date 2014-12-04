@@ -1892,6 +1892,15 @@ containing a value of this type.
  Default text size for action bar title.
          */
         public static final int abc_text_size_title_material_toolbar=0x7f0b0012;
+        /**  Default screen margins, per the Android Design guidelines. 
+
+         Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
+    
+         */
+        public static final int activity_horizontal_margin=0x7f0b002b;
+        public static final int activity_vertical_margin=0x7f0b002c;
         /**  The platform's desired fixed height for a dialog along the major axis
          (the screen is in portrait). This may be either a fraction or a dimension.
  The platform's desired fixed height for a dialog along the major axis
@@ -2027,23 +2036,26 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f080041;
         public static final int action_mode_bar_stub=0x7f080040;
         public static final int action_mode_close_button=0x7f080033;
+        public static final int action_settings=0x7f08007a;
         public static final int activity_chooser_view_content=0x7f080034;
         public static final int always=0x7f08001e;
         public static final int beginning=0x7f080023;
         public static final int book_now=0x7f080010;
         public static final int bottom=0x7f080027;
-        public static final int buttonEndTrack=0x7f08006f;
-        public static final int buttonPauseTrack=0x7f080070;
-        public static final int button_chart=0x7f080055;
-        public static final int button_log=0x7f080054;
-        public static final int button_start=0x7f080053;
+        public static final int buttonEndTrack=0x7f080078;
+        public static final int buttonPauseTrack=0x7f080079;
+        public static final int button_chart=0x7f080056;
+        public static final int button_log=0x7f080055;
+        public static final int button_prices=0x7f080057;
+        public static final int button_settings=0x7f080058;
+        public static final int button_start=0x7f080054;
         public static final int buyButton=0x7f08000a;
         public static final int buy_now=0x7f08000f;
         public static final int buy_with_google=0x7f08000e;
         public static final int checkbox=0x7f08003c;
         public static final int classic=0x7f080011;
         public static final int collapseActionView=0x7f080020;
-        public static final int dbgTxt1=0x7f080066;
+        public static final int dbgTxt1=0x7f08006f;
         public static final int decor_content_parent=0x7f080042;
         public static final int default_activity_button=0x7f080037;
         public static final int dialog=0x7f080021;
@@ -2051,10 +2063,10 @@ containing a value of this type.
         public static final int dropdown=0x7f080022;
         public static final int edit_query=0x7f080046;
         public static final int end=0x7f080025;
-        public static final int etDBGUpdateRatio=0x7f08005b;
-        public static final int etFuelConsumption=0x7f08005a;
+        public static final int etDBGCheckRate=0x7f080064;
+        public static final int etDBGUpdateRatio=0x7f080062;
+        public static final int etFuelConsumption=0x7f08005c;
         public static final int expand_activities_button=0x7f080035;
-        public static final int expandableListView1=0x7f08005c;
         public static final int expanded_menu=0x7f08003b;
         public static final int grayscale=0x7f080012;
         public static final int holo_dark=0x7f080005;
@@ -2067,13 +2079,15 @@ containing a value of this type.
         public static final int image=0x7f080036;
         public static final int listMode=0x7f080014;
         public static final int list_item=0x7f080038;
-        public static final int map=0x7f08005d;
+        public static final int lvLog=0x7f080067;
+        public static final int map=0x7f080065;
         public static final int match_parent=0x7f08000c;
         public static final int middle=0x7f080024;
         public static final int monochrome=0x7f080013;
         public static final int never=0x7f08001c;
         public static final int none=0x7f080000;
         public static final int normal=0x7f080001;
+        public static final int pager=0x7f080052;
         public static final int production=0x7f080007;
         public static final int progress_circular=0x7f08002f;
         public static final int progress_horizontal=0x7f080030;
@@ -2095,34 +2109,39 @@ containing a value of this type.
         public static final int showCustom=0x7f08001a;
         public static final int showHome=0x7f080017;
         public static final int showTitle=0x7f080019;
+        public static final int spFuelSelection=0x7f08005e;
+        public static final int spFuelShowedSelection=0x7f080060;
         public static final int split_action_bar=0x7f08002c;
-        public static final int statConsumedFuelTxt=0x7f080060;
-        public static final int statCostTxt=0x7f080062;
-        public static final int statDistanceTxt=0x7f080064;
-        public static final int statSpeedAvgTxt=0x7f080068;
-        public static final int statSpeedCurrentTxt=0x7f08006a;
-        public static final int statTimeCurrentTxt=0x7f08006e;
-        public static final int statTimeStartedTxt=0x7f08006c;
-        public static final int stats=0x7f08005e;
+        public static final int statConsumedFuelTxt=0x7f080069;
+        public static final int statCostTxt=0x7f08006b;
+        public static final int statDistanceTxt=0x7f08006d;
+        public static final int statSpeedAvgTxt=0x7f080071;
+        public static final int statSpeedCurrentTxt=0x7f080073;
+        public static final int statTimeCurrentTxt=0x7f080077;
+        public static final int statTimeStartedTxt=0x7f080075;
+        public static final int stats=0x7f080066;
         public static final int strict_sandbox=0x7f080009;
         public static final int submit_area=0x7f08004f;
+        public static final int svSettings=0x7f08005a;
         public static final int tabMode=0x7f080015;
-        public static final int tableRow1=0x7f08005f;
-        public static final int tableRow2=0x7f080061;
-        public static final int tableRow3=0x7f080063;
-        public static final int tableRow4=0x7f080067;
-        public static final int tableRow5=0x7f080069;
-        public static final int tableRow6=0x7f08006b;
-        public static final int tableRow7=0x7f08006d;
-        public static final int tableRowdbg1=0x7f080065;
+        public static final int tableRow1=0x7f080068;
+        public static final int tableRow2=0x7f08006a;
+        public static final int tableRow3=0x7f08006c;
+        public static final int tableRow4=0x7f080070;
+        public static final int tableRow5=0x7f080072;
+        public static final int tableRow6=0x7f080074;
+        public static final int tableRow7=0x7f080076;
+        public static final int tableRowdbg1=0x7f08006e;
         public static final int terrain=0x7f080003;
-        public static final int textView1=0x7f080052;
+        public static final int textView1=0x7f080053;
         public static final int title=0x7f08003a;
         public static final int top=0x7f080026;
-        public static final int tvDBGupdateRatio=0x7f080059;
-        public static final int tvFuelCons=0x7f080057;
-        public static final int tvFuelType=0x7f080058;
-        public static final int tvSettings=0x7f080056;
+        public static final int tvDBGcheckRate=0x7f080063;
+        public static final int tvDBGupdateRatio=0x7f080061;
+        public static final int tvFuelCons=0x7f08005b;
+        public static final int tvFuelShowed=0x7f08005f;
+        public static final int tvFuelType=0x7f08005d;
+        public static final int tvSettingsTitle=0x7f080059;
         public static final int up=0x7f080029;
         public static final int useLogo=0x7f080016;
         public static final int withText=0x7f08001f;
@@ -2178,10 +2197,22 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030014;
         public static final int abc_search_view=0x7f030015;
         public static final int abc_simple_dropdown_hint=0x7f030016;
-        public static final int activity_main=0x7f030017;
-        public static final int activity_track=0x7f030018;
-        public static final int fragment_statistics=0x7f030019;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
+        public static final int activity_log=0x7f030017;
+        public static final int activity_main=0x7f030018;
+        public static final int activity_settings=0x7f030019;
+        public static final int activity_track=0x7f03001a;
+        public static final int fragment_log=0x7f03001b;
+        public static final int fragment_statistics=0x7f03001c;
+        public static final int settings_checkrate=0x7f03001d;
+        public static final int settings_fcons=0x7f03001e;
+        public static final int settings_fshowed=0x7f03001f;
+        public static final int settings_ftype=0x7f030020;
+        public static final int settings_listviewlayout=0x7f030021;
+        public static final int settings_radius=0x7f030022;
+        public static final int support_simple_spinner_dropdown_item=0x7f030023;
+    }
+    public static final class menu {
+        public static final int log=0x7f0c0000;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -2238,6 +2269,7 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f060030;
         public static final int accept=0x7f060002;
+        public static final int action_settings=0x7f060060;
         public static final int app_name=0x7f060032;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
          */
@@ -2345,40 +2377,49 @@ containing a value of this type.
         public static final int store_picture_message=0x7f060001;
         public static final int store_picture_title=0x7f060000;
         public static final int str_button_chart=0x7f060037;
-        public static final int str_button_endTrack=0x7f06003b;
+        public static final int str_button_endTrack=0x7f06003d;
         public static final int str_button_log=0x7f060036;
-        public static final int str_button_pauseTrack=0x7f06003a;
-        public static final int str_button_resumeTrack=0x7f060039;
+        public static final int str_button_pauseTrack=0x7f06003c;
+        public static final int str_button_prices=0x7f060038;
+        public static final int str_button_resumeTrack=0x7f06003b;
+        public static final int str_button_settings=0x7f060039;
         public static final int str_button_start=0x7f060034;
         public static final int str_button_startBack=0x7f060035;
-        public static final int str_set_fuelConsumption=0x7f06004e;
-        public static final int str_set_fuelConsumptionVal=0x7f06004f;
-        public static final int str_set_fuelType=0x7f060050;
-        public static final int str_set_fuelTypeDiesel=0x7f060052;
-        public static final int str_set_fuelTypeGasoline=0x7f060051;
-        public static final int str_set_fuelTypeON=0x7f060055;
-        public static final int str_set_fuelTypeONUltimate=0x7f060056;
-        public static final int str_set_fuelTypePB95=0x7f060053;
-        public static final int str_set_fuelTypePB98=0x7f060054;
-        public static final int str_set_title=0x7f06004d;
-        public static final int str_stat_consumed=0x7f06003c;
-        public static final int str_stat_consumedVal=0x7f060044;
-        public static final int str_stat_cost=0x7f06003d;
-        public static final int str_stat_costVal=0x7f060045;
-        public static final int str_stat_distance=0x7f06003e;
-        public static final int str_stat_distanceVal=0x7f060046;
-        public static final int str_stat_empty=0x7f06004c;
-        public static final int str_stat_speedAvg=0x7f06003f;
-        public static final int str_stat_speedAvgVal=0x7f060047;
-        public static final int str_stat_speedCurr=0x7f060040;
-        public static final int str_stat_speedCurrVal=0x7f060048;
-        public static final int str_stat_timeCurr=0x7f060042;
-        public static final int str_stat_timeCurrVal=0x7f06004a;
-        public static final int str_stat_timeEnd=0x7f060043;
-        public static final int str_stat_timeEndVal=0x7f06004b;
-        public static final int str_stat_timeStart=0x7f060041;
-        public static final int str_stat_timeStartVal=0x7f060049;
-        public static final int title_activity_track=0x7f060038;
+        public static final int str_set_fuelConsumption=0x7f060051;
+        public static final int str_set_fuelConsumptionVal=0x7f060053;
+        public static final int str_set_fuelShowed=0x7f060052;
+        public static final int str_set_fuelType=0x7f060054;
+        public static final int str_set_fuelTypeDiesel=0x7f060056;
+        public static final int str_set_fuelTypeGasoline=0x7f060055;
+        public static final int str_set_fuelTypeON=0x7f060059;
+        public static final int str_set_fuelTypeONUltimate=0x7f06005a;
+        public static final int str_set_fuelTypePB95=0x7f060057;
+        public static final int str_set_fuelTypePB98=0x7f060058;
+        public static final int str_set_title=0x7f060050;
+        public static final int str_stat_addressunknown=0x7f06004f;
+        public static final int str_stat_consumed=0x7f06003e;
+        public static final int str_stat_consumedVal=0x7f060046;
+        public static final int str_stat_cost=0x7f06003f;
+        public static final int str_stat_costVal=0x7f060047;
+        public static final int str_stat_distance=0x7f060040;
+        public static final int str_stat_distanceVal=0x7f060048;
+        public static final int str_stat_empty=0x7f06004e;
+        public static final int str_stat_speedAvg=0x7f060041;
+        public static final int str_stat_speedAvgVal=0x7f060049;
+        public static final int str_stat_speedCurr=0x7f060042;
+        public static final int str_stat_speedCurrVal=0x7f06004a;
+        public static final int str_stat_timeCurr=0x7f060044;
+        public static final int str_stat_timeCurrVal=0x7f06004c;
+        public static final int str_stat_timeEnd=0x7f060045;
+        public static final int str_stat_timeEndVal=0x7f06004d;
+        public static final int str_stat_timeStart=0x7f060043;
+        public static final int str_stat_timeStartVal=0x7f06004b;
+        public static final int title_activity_log=0x7f06005c;
+        public static final int title_activity_settings=0x7f06005b;
+        public static final int title_activity_track=0x7f06003a;
+        public static final int title_section1=0x7f06005d;
+        public static final int title_section2=0x7f06005e;
+        public static final int title_section3=0x7f06005f;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */
@@ -2571,7 +2612,8 @@ containing a value of this type.
         public static final int RtlOverlay_Widget_AppCompat_Search_DropDown_Query=0x7f0500b5;
         public static final int RtlOverlay_Widget_AppCompat_Search_DropDown_Text=0x7f0500b8;
         public static final int RtlOverlay_Widget_AppCompat_SearchView_MagIcon=0x7f0500b3;
-        public static final int StatisticStyle=0x7f0500f3;
+        public static final int SettingStyle=0x7f0500f3;
+        public static final int StatisticStyle=0x7f0500f4;
         /**  Text styles 
          */
         public static final int TextAppearance_AppCompat=0x7f05003d;

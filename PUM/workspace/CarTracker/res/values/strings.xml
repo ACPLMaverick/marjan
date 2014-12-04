@@ -7,12 +7,12 @@
     <string name="str_button_startBack">Back to tracking</string>
     <string name="str_button_log">Trip log</string>
     <string name="str_button_chart">Draw chart</string>
-    
+    <string name="str_button_prices">Fuel prices</string>
+    <string name="str_button_settings">Settings</string>
     <string name="title_activity_track">TrackActivity</string>
     <string name="str_button_resumeTrack">Resume</string>
     <string name="str_button_pauseTrack">Pause</string>
     <string name="str_button_endTrack">End</string>
-    
     <string name="str_stat_consumed">FCON:&#160;</string>
     <string name="str_stat_cost">COST:&#160;</string>
     <string name="str_stat_distance">DIST:&#160;</string>
@@ -30,9 +30,10 @@
     <string name="str_stat_timeCurrVal"></string>
     <string name="str_stat_timeEndVal"></string>
     <string name="str_stat_empty">---</string>
-    
+    <string name="str_stat_addressunknown">unknown</string>
     <string name="str_set_title">Settings</string>
     <string name="str_set_fuelConsumption">Fuel consumption:&#160;</string>
+    <string name="str_set_fuelShowed">During tracking calculate price based on fuel type:&#160;</string>
     <string name="str_set_fuelConsumptionVal">&#160;l//100 km</string>
     <string name="str_set_fuelType">Engine type:&#160;</string>
     <string name="str_set_fuelTypeGasoline">Petrol</string>
@@ -41,5 +42,11 @@
     <string name="str_set_fuelTypePB98">PB 98</string>
     <string name="str_set_fuelTypeON">Diesel</string>
     <string name="str_set_fuelTypeONUltimate">Diesel Ultimate</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_log">LogActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
