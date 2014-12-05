@@ -1,0 +1,180 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <TextView
+        android:id="@+id/tvSettingsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/str_button_settings"
+        android:textColor="@color/col_font_main"
+        android:textSize="40sp" >
+	</TextView>
+
+    <ScrollView
+        android:id="@+id/svSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/tvSettingsTitle"
+        android:layout_below="@+id/tvSettingsTitle"
+        style="@android:style/Widget.ListView" >
+        
+        <TableLayout
+            android:layout_width="match_parent"
+    		android:layout_height="wrap_content">
+
+	        <RelativeLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical" >
+			    
+			    <TextView
+			        	style="@style/SettingStyle"
+			            android:id="@+id/tvFuelCons"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_alignParentLeft="true"
+			            android:layout_marginTop="18dp"
+			            android:text="@string/str_set_fuelConsumption" />
+			
+			     <EditText
+			         style="@style/SettingStyle"
+			         android:id="@+id/etFuelConsumption"
+			         android:layout_width="wrap_content"
+			         android:layout_height="wrap_content"
+			         android:layout_alignParentRight="true"
+			         android:layout_alignTop="@+id/tvFuelCons"
+			         android:layout_alignRight="@+id/tvFuelCons"
+			         android:background="@color/col_bg_textInput"
+			         android:ems="4"
+			         android:inputType="numberDecimal" >
+			
+			         <requestFocus />
+			     </EditText>
+			
+			</RelativeLayout>
+	        
+	        <RelativeLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical"
+			    style="@android:style/Widget.GridView" >
+			    
+			    <TextView
+			        	style="@style/SettingStyle"
+			            android:id="@+id/tvFuelType"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_alignParentLeft="true"
+			            android:layout_marginTop="18dp"
+			            android:text="@string/str_set_fuelType" />
+			
+			    <Spinner
+			        android:id="@+id/spFuelSelection"
+			        android:layout_width="wrap_content"
+			        android:layout_height="match_parent"
+			        android:layout_alignParentRight="true"
+			        android:layout_alignTop="@+id/tvFuelType"
+			        android:layout_alignRight="@+id/tvFuelType"
+			        android:layout_toRightOf="@+id/tvFuelType" />
+	
+			</RelativeLayout>
+			
+			<RelativeLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical" >
+			    
+			    <TextView
+			        	style="@style/SettingStyle"
+			            android:id="@+id/tvFuelShowed"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_alignParentLeft="true"
+			            android:layout_marginTop="18dp"
+			            android:maxWidth="200dp"
+			            android:text="@string/str_set_fuelShowed" />
+			
+			    <Spinner
+			        android:id="@+id/spFuelShowedSelection"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_alignParentRight="true"
+			        android:layout_alignTop="@+id/tvFuelShowed"
+			        android:layout_alignRight="@+id/tvFuelShowed"
+			        android:layout_toRightOf="@+id/tvFuelShowed" />
+			</RelativeLayout>
+			
+			<RelativeLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical" >
+			    
+			    <TextView
+			        	style="@style/SettingStyle"
+			            android:id="@+id/tvDBGupdateRatio"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_alignParentLeft="true"
+			            android:layout_marginTop="18dp"
+			            android:text="DBG_UpdateRadius" />
+			    
+			    <EditText
+			            android:id="@+id/etDBGUpdateRatio"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_alignBaseline="@+id/tvDBGupdateRatio"
+			            android:layout_alignBottom="@+id/tvDBGupdateRatio"
+			            android:layout_alignParentRight="true"
+			            android:layout_toRightOf="@+id/tvDBGupdateRatio"
+			            android:background="@color/col_bg_textInput"
+			            android:ems="4"
+			            android:inputType="numberDecimal" />
+			    
+			
+			</RelativeLayout>
+			
+			<RelativeLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical" >
+			    
+			    <TextView
+			        	style="@style/SettingStyle"
+			            android:id="@+id/tvDBGcheckRate"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_alignParentLeft="true"
+			            android:layout_marginTop="18dp"
+			            android:text="DBG_CheckRate" />
+			    
+			    <EditText
+			            android:id="@+id/etDBGCheckRate"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_alignBaseline="@+id/tvDBGcheckRate"
+			            android:layout_alignBottom="@+id/tvDBGcheckRate"
+			            android:layout_alignParentRight="true"
+			            android:layout_toRightOf="@+id/tvDBGcheckRate"
+			            android:background="@color/col_bg_textInput"
+			            android:ems="4"
+			            android:inputType="number" />
+			
+			</RelativeLayout>
+			
+		</TableLayout>
+    </ScrollView>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+       	<requestFocus/>
+    </LinearLayout>
+
+</RelativeLayout>

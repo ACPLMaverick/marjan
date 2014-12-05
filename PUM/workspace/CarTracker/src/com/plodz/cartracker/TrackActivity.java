@@ -10,13 +10,15 @@ public class TrackActivity extends Activity {
 	
 	TrackingController controller;
 	Trip tripToSave;
+	DataSource data;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_track);
 		
-		controller = new TrackingController(this);
+		data = MainActivity.data;
+		controller = new TrackingController(this, data);
 		controller.initialize();
 	}
 	
@@ -51,5 +53,5 @@ public class TrackActivity extends Activity {
 	
 	public void endTrackingButtonClick(View v) { controller.endTracking(); }
 	
-	public void pauseTrackingButtonClick(View v) { }
+	public void pauseTrackingButtonClick(View v) { controller.pauseTracking(v); }
 }

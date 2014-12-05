@@ -27,6 +27,10 @@
         <item name="android:textSize">30sp</item>
     </style>
     
+    <style name="SettingStyle" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">22sp</item>
+    </style>
+    
     <style name="StatisticStyle" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">20sp</item>
     </style>
