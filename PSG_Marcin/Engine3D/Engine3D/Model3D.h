@@ -7,8 +7,7 @@ class Model3D :
 	public Model
 {
 private:
-	VertexIndex* LoadGeometry(bool ind);
-	string LoadFromFile(string filePath);
+	VertexIndex* LoadGeometry(bool ind, string filePath);
 public:
 	Model3D();
 	Model3D(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D11_USAGE usage, string filePath);

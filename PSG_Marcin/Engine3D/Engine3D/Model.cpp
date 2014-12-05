@@ -14,7 +14,7 @@ Model::Model()
 	m_texture = nullptr;
 }
 
-Model::Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D11_USAGE usage) : Model()
+Model::Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D11_USAGE usage, string filePath) : Model()
 {
 	this->prevPosition = position;
 	this->prevRotation = rotation;
@@ -23,6 +23,7 @@ Model::Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D1
 	this->rotation = rotation;
 	this->scale = scale;
 	this->usage = usage;
+	this->filePath = filePath;
 	if (usage == D3D11_USAGE_DYNAMIC) cpuFlag = D3D11_CPU_ACCESS_WRITE;
 	else cpuFlag = 0;
 }
@@ -140,7 +141,7 @@ void Model::UpdateBuffers(ID3D11DeviceContext* deviceContext)
 
 	Vertex* vertices = nullptr;
 
-	VertexIndex* set = LoadGeometry(false);
+	VertexIndex* set = LoadGeometry(false, this->filePath);
 	vertices = set->vertexArrayPtr;
 
 	// give the subresource structure a pointer to the vertex data

@@ -28,6 +28,7 @@ protected:
 	float transparency = 1.0f;
 
 	virtual bool InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
+	virtual bool InitializeModel(string modelPath, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	virtual void AnimateTexture();
 public:
 	Model* myModel;
@@ -36,6 +37,7 @@ public:
 
 	GameObject();
 	GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
+	GameObject(string name, string tag, string modelPath, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	GameObject(string name, string tag, Texture* animationTextures[], unsigned int textureCount, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	GameObject(const GameObject&);
 	~GameObject();

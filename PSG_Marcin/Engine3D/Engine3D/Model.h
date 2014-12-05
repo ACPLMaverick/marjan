@@ -37,6 +37,7 @@ protected:
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 
 	Texture* m_texture;
+	string filePath;
 
 	bool InitializeBuffers(ID3D11Device*);
 	void UpdateBuffers(ID3D11DeviceContext*);
@@ -46,14 +47,14 @@ protected:
 	bool LoadTexture(ID3D11Device*, LPCSTR);
 	void ReleaseTexture();
 
-	virtual VertexIndex* LoadGeometry(bool ind) = 0;
+	virtual VertexIndex* LoadGeometry(bool ind, string filePath) = 0;
 public:
 	D3DXVECTOR3 position;
 	D3DXVECTOR3 rotation;
 	D3DXVECTOR3 scale;
 
 	Model();
-	Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D11_USAGE usage);
+	Model(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D11_USAGE usage, string filePath);
 	Model(const Model&);
 	~Model();
 

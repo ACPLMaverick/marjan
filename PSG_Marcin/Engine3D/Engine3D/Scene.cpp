@@ -33,8 +33,8 @@ void Scene::Initialize(Graphics* myGraphics, HWND hwnd, string filePath)
 	this->m_hwnd = hwnd;
 	this->filePath = filePath;
 
-	this->LoadFromFile();
-	//InitializeGameObjects();
+	//this->LoadFromFile();
+	InitializeGameObjects();
 	//SaveToFile();
 }
 

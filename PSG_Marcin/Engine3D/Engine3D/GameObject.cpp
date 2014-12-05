@@ -19,6 +19,17 @@ GameObject::GameObject(string name, string tag, Texture* texture, TextureShader*
 	animationLastFrame = System::frameCount;
 }
 
+GameObject::GameObject(string name, string tag, string modelPath, Texture* texture, TextureShader* shader, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale) : GameObject()
+{
+	myName = name;
+	myTag = tag;
+
+	myTexture = texture;
+	myShader = shader;
+	InitializeModel(modelPath, device, position, rotation, scale);
+	animationLastFrame = System::frameCount;
+}
+
 GameObject::GameObject(string name, string tag, Texture* textures[], unsigned int textureCount, 
 	TextureShader* shader, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale) : GameObject()
 {
@@ -39,6 +50,17 @@ GameObject::~GameObject()
 	// possible memory leak?
 }
 
+bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
+{
+	if (myTag == "player") canAnimate = System::playerAnimation;
+	if (animationTextures.size() > 0 && canAnimate)AnimateTexture();
+	bool result;
+	myModel->Render(deviceContext);
+	result = myShader->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), transparency);
+	if (!result) return false;
+	return true;
+}
+
 bool GameObject::InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale)
 {
 	if (myTag == "player") canAnimate = true;
@@ -54,15 +76,19 @@ bool GameObject::InitializeModel(ID3D11Device* device, D3DXVECTOR3 position, D3D
 	if (!result) return false;
 }
 
-bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
+bool GameObject::InitializeModel(string modelPath, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale)
 {
-	if(myTag == "player") canAnimate = System::playerAnimation;
-	if(animationTextures.size() > 0 && canAnimate)AnimateTexture();
+	if (myTag == "player") canAnimate = true;
+	else canAnimate = false;
 	bool result;
-	myModel->Render(deviceContext);
-	result = myShader->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), transparency);
+
+	D3D11_USAGE usage;
+	if (myTag == "terrain_nocollid" || myTag == "terrain_collid") usage = D3D11_USAGE_IMMUTABLE;
+	else usage = D3D11_USAGE_DYNAMIC;
+	myModel = new Model3D(position, rotation, scale, usage, modelPath);
+	if (!myModel) return false;
+	result = myModel->Initialize(device, myTexture);
 	if (!result) return false;
-	return true;
 }
 
 void GameObject::Destroy()
