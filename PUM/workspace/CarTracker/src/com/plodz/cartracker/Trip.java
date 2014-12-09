@@ -142,8 +142,7 @@ public class Trip {
 	
 	public void end()
 	{
-		if(nodes.size() > 0) getAdddessFromLocation(nodes.get(nodes.size() - 1), endAddress);
-		else endAddress = startAddress;
+		getAdddessFromLocation(nodes.get(nodes.size() - 1), endAddress);
 		endTime.setTime(new Date());
 	}
 	

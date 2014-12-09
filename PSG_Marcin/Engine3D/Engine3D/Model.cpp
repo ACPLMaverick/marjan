@@ -81,7 +81,7 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	unsigned long* indices = nullptr;
 	HRESULT result;
 
-	VertexIndex* set = LoadGeometry(true, "");
+	VertexIndex* set = LoadGeometry(true);
 	vertices = set->vertexArrayPtr;
 	indices = set->indexArrayPtr;
 

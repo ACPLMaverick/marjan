@@ -6,7 +6,6 @@
     android:weightSum="100"
     android:baselineAligned="false"
     android:orientation="vertical"
-    android:keepScreenOn="true"
     tools:context="${relativePackage}.${activityClass}" >
     
     <fragment

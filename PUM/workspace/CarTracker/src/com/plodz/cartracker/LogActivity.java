@@ -8,11 +8,9 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer.I
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
@@ -22,13 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class LogActivity extends FragmentActivity {
+public class LogActivity extends ActionBarActivity {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -42,81 +38,50 @@ public class LogActivity extends FragmentActivity {
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	private ViewPager mViewPager;
-	public ArrayList<Fragment> myFragments;
-	private ArrayList<TripModel> tmList;
-	private ArrayAdapter<String> adapter;
-	
+	ViewPager mViewPager;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_log);
-		
-		myFragments = new ArrayList<Fragment>();
-		myFragments.add(TripLogFragment.newInstance(0));
-		myFragments.add(TripStatsFragment.newInstance(1));
 
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the activity.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager(), myFragments);
+				getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		mSectionsPagerAdapter.notifyDataSetChanged();
 	}
-	
-	@Override
-	protected void onStart()
-	{
-		super.onStart();
-		
-	}
-	
-	public void initializeListView()
-	{
-		MainActivity.data.open();
-    	this.tmList = MainActivity.data.getAllTripModels();
-    	MainActivity.data.close();
-    	
-    	ArrayList<String> tms = new ArrayList<String>();
-    	for(TripModel mod: tmList)
-    	{
-    		System.out.println(mod.toString());
-    		tms.add(mod.toString());
-    	}
-    	
-    	ListView lv = ((TripLogFragment)myFragments.get(0)).listView;
-    	adapter = new ArrayAdapter<String>(this, R.layout.settings_listviewlayout, tms);
-    	if(lv != null) lv.setAdapter(adapter);
-    	adapter.notifyDataSetChanged();
-    	
-    	lv.setOnItemClickListener(new OnItemClickListener(){
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				mViewPager.setCurrentItem(1, true);
-				TripStatsFragment tf = (TripStatsFragment)myFragments.get(1);
-				tf.loadTripData(tmList.get(arg2));
-			}
-    		
-    	});
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.log, menu);
+		return true;
 	}
-	
-	
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-		
-		private ArrayList<Fragment> list;
-		public static final int pos = 0;
-		
-		public SectionsPagerAdapter(FragmentManager fm, ArrayList<Fragment> list) {
+
+		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
-			this.list = list;
 		}
 
 		@Override
@@ -124,12 +89,13 @@ public class LogActivity extends FragmentActivity {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class
 			// below).
-			return list.get(position);
+			return PlaceholderFragment.newInstance(position + 1);
 		}
 
 		@Override
 		public int getCount() {
-			return list.size();
+			// Show 3 total pages.
+			return 3;
 		}
 
 		@Override
@@ -140,16 +106,63 @@ public class LogActivity extends FragmentActivity {
 				return getString(R.string.title_section1).toUpperCase(l);
 			case 1:
 				return getString(R.string.title_section2).toUpperCase(l);
+			case 2:
+				return getString(R.string.title_section3).toUpperCase(l);
 			}
 			return null;
 		}
-		
-		public int getPos() {
-		    return pos;
+	}
+
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
+	public static class PlaceholderFragment extends Fragment {
+		/**
+		 * The fragment argument representing the section number for this
+		 * fragment.
+		 */
+		private static final String ARG_SECTION_NUMBER = "section_number";
+		private ArrayList<TripModel> tmList;
+
+		/**
+		 * Returns a new instance of this fragment for the given section number.
+		 */
+		public static PlaceholderFragment newInstance(int sectionNumber) {
+			PlaceholderFragment fragment = new PlaceholderFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			fragment.setArguments(args);
+			return fragment;
 		}
 
-		 public void setPos(int pos) {
-			 //this.pos = pos;
-		 }
+		public PlaceholderFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_log, container,
+					false);
+			return rootView;
+		}
+		
+		private void initializeListView()
+		{
+			MainActivity.data.open();
+	    	this.tmList = MainActivity.data.getAllTripModels();
+	    	MainActivity.data.close();
+	    	
+	    	ArrayList<String> tms = new ArrayList<String>();
+	    	for(TripModel mod: tmList)
+	    	{
+	    		tms.add(mod.toString());
+	    	}
+	    	
+	    	ListView lv = (ListView) getActivity().findViewById(R.id.lvLog);
+	    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), 0, tms);
+	    	lv.setAdapter(adapter);
+	    	adapter.notifyDataSetChanged();
+		}
 	}
+
 }
