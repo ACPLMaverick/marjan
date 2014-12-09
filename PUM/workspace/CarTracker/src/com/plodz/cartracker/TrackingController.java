@@ -128,6 +128,7 @@ public class TrackingController {
 	
 	public void endTracking()
 	{
+		trip.end();
 		saveTripToDB();
 		
 		ifRunning = false;

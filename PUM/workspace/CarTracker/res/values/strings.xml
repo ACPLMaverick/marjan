@@ -21,6 +21,8 @@
     <string name="str_stat_timeStart">TIMS:&#160;</string>
     <string name="str_stat_timeCurr">TIMC:&#160;</string>
     <string name="str_stat_timeEnd">TIMF:&#160;</string>
+    <string name="str_stat_adrStart">FROM:&#160;</string>
+    <string name="str_stat_adrEnd">END:&#160;</string>
     <string name="str_stat_consumedVal">&#160;l</string>
     <string name="str_stat_costVal">&#160;zl</string>
     <string name="str_stat_distanceVal">&#160;km</string>
@@ -43,9 +45,9 @@
     <string name="str_set_fuelTypeON">Diesel</string>
     <string name="str_set_fuelTypeONUltimate">Diesel Ultimate</string>
     <string name="title_activity_settings">SettingsActivity</string>
-    <string name="title_activity_log">LogActivity</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
+    <string name="title_activity_log">Trip Log</string>
+    <string name="title_section1">Trip Log</string>
+    <string name="title_section2">Trip Stats</string>
     <string name="title_section3">Section 3</string>
     <string name="action_settings">Settings</string>
 

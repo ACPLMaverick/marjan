@@ -80,9 +80,9 @@ public class MainActivity extends Activity {
     
     public void onChartButtonClick(View v)
     {
-    	data.open();
-    	data.clearTripTable();
-    	data.close();
+//    	data.open();
+//    	data.clearTripTable();
+//    	data.close();
     }
     
     public void onPricesButtonClick(View v)
