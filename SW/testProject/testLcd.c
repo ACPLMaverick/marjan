@@ -224,12 +224,12 @@ testLcd(void)
  	clearScr();
 
  	/// TIMER TEST!!!!!!
- 	{
- 		//writeLCD(1, numberToChar(currentSongInfo.time));
- 		WriteString(timeToString(currentSongInfo.time));
- 		osSleep(10);
- 		continue;
- 	}
+// 	{
+// 		//writeLCD(1, numberToChar(currentSongInfo.time));
+// 		WriteString(timeToString(currentSongInfo.time));
+// 		osSleep(10);
+// 		continue;
+// 	}
 
  	if(volumeUp != 0 || volumeDown != 0)
  	{

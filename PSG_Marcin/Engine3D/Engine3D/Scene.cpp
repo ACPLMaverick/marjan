@@ -33,8 +33,8 @@ void Scene::Initialize(Graphics* myGraphics, HWND hwnd, string filePath)
 	this->m_hwnd = hwnd;
 	this->filePath = filePath;
 
-	//this->LoadFromFile();
-	InitializeGameObjects();
+	this->LoadFromFile();
+	//InitializeGameObjects();
 	//SaveToFile();
 }
 
@@ -191,8 +191,8 @@ void Scene::LoadFromFile()
 			else if (!tmp2.compare("}") && inGo)	// end of gameobject - create it
 			{
 				inGo = false;
-				string japierdolechuj = goTexture;
-				newTex = (myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), japierdolechuj.c_str()));
+				//string s = goTexture;
+				newTex = (myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), goTexture.c_str()));
 				newSh = (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, stoi(goShader));
 				D3DXVECTOR3 pos = D3DXVECTOR3(stof(goPos[0]), stof(goPos[1]), stof(goPos[2]));
 				D3DXVECTOR3 rot = D3DXVECTOR3(stof(goRot[0]), stof(goRot[1]), stof(goRot[2]));
