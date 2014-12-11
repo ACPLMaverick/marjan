@@ -81,7 +81,7 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	unsigned long* indices = nullptr;
 	HRESULT result;
 
-	VertexIndex* set = LoadGeometry(true, "");
+	VertexIndex* set = LoadGeometry(true, this->filePath);
 	vertices = set->vertexArrayPtr;
 	indices = set->indexArrayPtr;
 
@@ -210,4 +210,9 @@ void Model::ReleaseTexture()
 		delete m_texture;
 		m_texture = nullptr;
 	}
+}
+
+string Model::GetFilePath()
+{
+	return filePath;
 }

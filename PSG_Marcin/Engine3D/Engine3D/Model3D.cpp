@@ -12,25 +12,47 @@ Model3D::Model3D(const Model3D& other) : Model(other)
 Model3D::Model3D(D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, D3D11_USAGE usage, string filePath)
 	: Model(position, rotation, scale, usage, filePath)
 {
-
+	myGeometry = nullptr;
 }
 
 Model3D::~Model3D()
 {
+	if(myGeometry != nullptr) delete myGeometry;
 }
 
 Model3D::VertexIndex* Model3D::LoadGeometry(bool ind, string filePath)
 {
+	if (myGeometry != nullptr)
+	{
+		UpdateGeometry();
+		return myGeometry;
+	}
+
 	Vertex* vertices;
 	unsigned long* indices;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
 
-	m_vertexCount = 8;
-	m_indexCount = 36;
+	string error = tinyobj::LoadObj(shapes, materials, filePath.c_str(), NULL);
+
+	m_vertexCount = shapes.at(0).mesh.positions.size() / 3;
+	m_indexCount = shapes.at(0).mesh.indices.size();
 
 	vertices = new Vertex[m_vertexCount];
 	if (!vertices)
 	{
 		return false;
+	}
+	for (int i = 0, j = 0, k = 0; i < m_vertexCount; i++, j+=3, k+=2)
+	{
+		vertices[i].position.x = shapes.at(0).mesh.positions.at(j);
+		vertices[i].position.y = shapes.at(0).mesh.positions.at(j+1);
+		vertices[i].position.z = shapes.at(0).mesh.positions.at(j+2);
+		vertices[i].texture.x = shapes.at(0).mesh.texcoords.at(k);
+		vertices[i].texture.y = shapes.at(0).mesh.texcoords.at(k + 1);
+		vertices[i].normal.x = shapes.at(0).mesh.normals.at(j);
+		vertices[i].normal.y = shapes.at(0).mesh.normals.at(j + 1);
+		vertices[i].normal.z = shapes.at(0).mesh.normals.at(j + 2);
 	}
 
 	indices = new unsigned long[m_indexCount];
@@ -38,9 +60,29 @@ Model3D::VertexIndex* Model3D::LoadGeometry(bool ind, string filePath)
 	{
 		return false;
 	}
+	int i = 0;
+	for (std::vector<unsigned int>::iterator it = shapes.at(0).mesh.indices.begin(); it != shapes.at(0).mesh.indices.end(); ++it, i++)
+	{
+		indices[i] = (*it);
+	}
 
+	VertexIndex* toRet = new VertexIndex;
+	toRet->vertexArrayPtr = vertices;
+	toRet->indexArrayPtr = indices;
+
+	myGeometry = toRet;
+
+	UpdateGeometry();
+
+	return toRet;
+}
+
+void Model3D::UpdateGeometry()
+{
+	if (myGeometry == nullptr) return;
 
 	D3DXMATRIX rotationMatrix;
+	D3DXVECTOR3 tempPos;
 
 	float pitch = rotation.x * 0.0174532925f;
 	float yaw = rotation.y * 0.0174532925f;
@@ -48,93 +90,14 @@ Model3D::VertexIndex* Model3D::LoadGeometry(bool ind, string filePath)
 
 	D3DXMatrixRotationYawPitchRoll(&rotationMatrix, yaw, pitch, roll);
 
-	D3DXVECTOR3 pos;
-
-	if (filePath != "")
+	for (int i = 0; i < m_vertexCount; i++)
 	{
-
+		tempPos = myGeometry->vertexArrayPtr[i].position;
+		tempPos.x = tempPos.x*scale.x;
+		tempPos.y = tempPos.y*scale.y;
+		tempPos.z = tempPos.z*scale.z;
+		D3DXVec3TransformCoord(&tempPos, &tempPos, &rotationMatrix);
+		tempPos += position;
+		myGeometry->vertexArrayPtr[i].position = tempPos;
 	}
-	else
-	{
-		vertices[0].position = D3DXVECTOR3(-scale.x, scale.y, -scale.z);// +m_position;
-		vertices[0].texture = D3DXVECTOR2(0.0f, 0.5f);
-		/*vertices[0].normal = D3DXVECTOR3(-1.0f, 1.0f, 1.0f);*/
-
-		vertices[1].position = D3DXVECTOR3(scale.x, scale.y, -scale.z);// +m_position;
-		vertices[1].texture = D3DXVECTOR2(0.0f, 0.0f);
-		//vertices[1].normal = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-
-		vertices[2].position = D3DXVECTOR3(scale.x, scale.y, scale.z);// +m_position;
-		vertices[2].texture = D3DXVECTOR2(0.5f, 0.0f);
-		//vertices[2].normal = D3DXVECTOR3(1.0f, 1.0f, -1.0f);
-
-		vertices[3].position = D3DXVECTOR3(-scale.x, scale.y, scale.z);// +m_position;
-		vertices[3].texture = D3DXVECTOR2(0.5f, 0.5f);
-		//vertices[3].normal = D3DXVECTOR3(-1.0f, 1.0f, -1.0f);
-
-		vertices[4].position = D3DXVECTOR3(-scale.x, -scale.y, -scale.z);// +m_position;
-		vertices[4].texture = D3DXVECTOR2(0.5f, 1.0f);
-		//vertices[4].normal = D3DXVECTOR3(-1.0f, -1.0f, 1.0f);
-
-		vertices[5].position = D3DXVECTOR3(scale.x, -scale.y, -scale.z);// +m_position;
-		vertices[5].texture = D3DXVECTOR2(0.5f, 0.5f);
-		//vertices[5].normal = D3DXVECTOR3(1.0f, -1.0f, 1.0f);
-
-		vertices[6].position = D3DXVECTOR3(scale.x, -scale.y, scale.z);// +m_position;
-		vertices[6].texture = D3DXVECTOR2(1.0f, 0.5f);
-		//vertices[6].normal = D3DXVECTOR3(1.0f, -1.0f, -1.0f);
-
-		vertices[7].position = D3DXVECTOR3(-scale.x, -scale.y, scale.z);// +m_position;
-		vertices[7].texture = D3DXVECTOR2(1.0f, 1.0f);
-		//vertices[7].normal = D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
-
-		for (int i = 0; i < m_vertexCount; i++)
-		{
-			D3DXVec3TransformCoord(&pos, &vertices[i].position, &rotationMatrix);
-			vertices[i].position = pos + position;
-		}
-
-		indices[0] = 3;
-		indices[1] = 1;
-		indices[2] = 0;
-		indices[3] = 2;
-		indices[4] = 1;
-		indices[5] = 3;
-		indices[6] = 0;
-		indices[7] = 5;
-		indices[8] = 4;
-		indices[9] = 1;
-		indices[10] = 5;
-		indices[11] = 0;
-		indices[12] = 3;
-		indices[13] = 4;
-		indices[14] = 7;
-		indices[15] = 0;
-		indices[16] = 4;
-		indices[17] = 3;
-		indices[18] = 1;
-		indices[19] = 6;
-		indices[20] = 5;
-		indices[21] = 2;
-		indices[22] = 6;
-		indices[23] = 1;
-		indices[24] = 2;
-		indices[25] = 7;
-		indices[26] = 6;
-		indices[27] = 3;
-		indices[28] = 7;
-		indices[29] = 2;
-		indices[30] = 6;
-		indices[31] = 4;
-		indices[32] = 5;
-		indices[33] = 7;
-		indices[34] = 4;
-		indices[35] = 6;
-	}
-
-	VertexIndex* toRet = new VertexIndex;
-	toRet->vertexArrayPtr = vertices;
-	toRet->indexArrayPtr = indices;
-
-	return toRet;
 }

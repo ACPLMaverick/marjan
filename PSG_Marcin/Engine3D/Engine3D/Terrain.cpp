@@ -109,7 +109,7 @@ float Terrain::GetSize()
 
 void Terrain::loadFromXML(string path, TextureManager* textureManager, Direct3D* myD3D)
 {
-	using boost::property_tree::ptree;
+	/*using boost::property_tree::ptree;
 	using boost::property_tree::read_xml;
 
 	string strWidth;
@@ -148,5 +148,5 @@ void Terrain::loadFromXML(string path, TextureManager* textureManager, Direct3D*
 	for (vector<string>::iterator it = tilePaths.begin(); it != tilePaths.end(); ++it)
 	{
 		myTextures.push_back(textureManager->LoadTexture(myD3D->GetDevice(), (*it).c_str()));
-	}
+	}*/
 }

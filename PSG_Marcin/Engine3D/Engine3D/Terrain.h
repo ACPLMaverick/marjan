@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <random>
-#include <boost\property_tree\ptree.hpp>
-#include <boost\property_tree\xml_parser.hpp>
+//#include <boost\property_tree\ptree.hpp>
+//#include <boost\property_tree\xml_parser.hpp>
 #include "Texture.h"
 #include "GameObject.h"
 #include "Direct3D.h"

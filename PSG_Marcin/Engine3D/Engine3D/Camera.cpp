@@ -3,7 +3,7 @@
 
 Camera::Camera()
 {
-	m_position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_position = D3DXVECTOR3(0.0f, 0.0f, 1.8f);
 	m_rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_target = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 }

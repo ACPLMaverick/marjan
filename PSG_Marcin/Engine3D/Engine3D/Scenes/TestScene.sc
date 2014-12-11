@@ -1,37 +1,22 @@
-name=TestScene
-GameObject={
-name=player
-tag=player
-texture=./Assets/Textures/noTexture.dds
-shader=0
-position=[0,0.9,0]
-rotation=[0,0,0]
-scale=[1,1,1]
+Scene{
+TestScene
+GameObject{
+player
+player
+./Assets/Models/DefaultSphere.obj
+./Assets/Textures/test.dds
+0
+0.000000 1.700000 0.000000
+0.000000 180.000000 0.000000
+1.000000 1.000000 1.000000
 }
-GameObject={
-name=dupa
-tag=dupa
-texture=./Assets/Textures/test.dds
-shader=0
-position=[4,2,4]
-rotation=[0,0,0]
-scale=[1,2,1]
-}
-GameObject={
-name=dupa2
-tag=dupa
-texture=./Assets/Textures/tank_player_FR_01.dds
-shader=0
-position=[-4,2,-4]
-rotation=[0,0,0]
-scale=[1,2,1]
-}
-GameObject={
-name=terrain
-tag=terrain_collid
-texture=./Assets/Textures/metal01_d.dds
-shader=0
-position=[0,-30,0]
-rotation=[0,0,0]
-scale=[30,30,30]
+GameObject{
+plane
+terrain_collid
+./Assets/Models/BaseTerrain.obj
+./Assets/Textures/metal01_d.dds
+0
+0.000000 0.000000 0.000000
+0.000000 0.000000 0.000000
+1.000000 1.000000 1.000000
 }

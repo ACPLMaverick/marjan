@@ -44,6 +44,44 @@ GameObject::GameObject(string name, string tag, Texture* textures[], unsigned in
 	InitializeModel(device, position, rotation, scale);
 }
 
+GameObject::GameObject(ifstream &is, Graphics* myGraphics, HWND hwnd)
+{
+	string line;
+	string modelPath;
+	string texturePath;
+	int shaderID;
+	D3DXVECTOR3 pos;
+	D3DXVECTOR3 rot;
+	D3DXVECTOR3 scl;
+
+	is >> line;
+
+	if (line != "GameObject{") GameObject();
+
+	is >> myName;
+	is >> myTag;
+	is >> modelPath;
+	is >> texturePath;
+	is >> shaderID;
+
+	is >> pos.x;
+	is >> pos.y;
+	is >> pos.z;
+	is >> rot.x;
+	is >> rot.y;
+	is >> rot.z;
+	is >> scl.x; 
+	is >> scl.y;
+	is >> scl.z;
+
+	is >> line;
+
+	myTexture = myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texturePath.c_str());
+	myShader = myGraphics->GetShaders()->LoadShader(myGraphics->GetD3D()->GetDevice(), hwnd, shaderID);
+
+	InitializeModel(modelPath, myGraphics->GetD3D()->GetDevice(), pos, rot, scl);
+}
+
 GameObject::~GameObject()
 {
 	//Destroy();
@@ -159,4 +197,18 @@ void GameObject::SetTransparency(float tr)
 bool GameObject::GetDestroySignal()
 {
 	return destroySignal;
+}
+
+void GameObject::WriteToFile(ofstream &of)
+{
+	of << "GameObject{\n";
+	of << myName + "\n";
+	of << myTag + "\n";
+	of << myModel->GetFilePath() + "\n";
+	of << myTexture->myName + "\n";
+	of << myShader->myID + "\n";
+	of << to_string(myModel->position.x) + " " + to_string(myModel->position.y) + " " + to_string(myModel->position.z) + "\n";
+	of << to_string(myModel->rotation.x) + " " + to_string(myModel->rotation.y) + " " + to_string(myModel->rotation.z) + "\n";
+	of << to_string(myModel->scale.x) + " " + to_string(myModel->scale.y) + " " + to_string(myModel->scale.z) + "\n";
+	of << "}\n";
 }
