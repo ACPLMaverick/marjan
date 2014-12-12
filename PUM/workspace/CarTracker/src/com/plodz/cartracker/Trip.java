@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -39,6 +40,8 @@ public class Trip {
 	public String startAddress;
 	public String endAddress;
 	
+	private Context acContext; 
+	
 	public Trip()
 	{
 		nodes = new ArrayList<Location>();
@@ -52,6 +55,12 @@ public class Trip {
 		endTime = new GregorianCalendar();
 		startAddress = "???";
 		endAddress = "???";
+	}
+	
+	public Trip(Context acContext)
+	{
+		this();
+		this.acContext = acContext;
 	}
 	
 	public Trip(TripModel tm)
@@ -128,7 +137,7 @@ public class Trip {
 		currentPos = nodesLL.get(nodesLL.size() - 1);
 		if(nodes.size() > 1)
 		{
-			currentSpeed = loc.getSpeed();
+			currentSpeed = loc.getSpeed()*3.6f;
 			updateAvgSpeed();
 			updateDistance();
 			updateFuelConsumed();
@@ -136,13 +145,13 @@ public class Trip {
 		}
 		else
 		{
-			getAdddessFromLocation(nodes.get(0), startAddress);
+			startAddress = getAdddessFromLocation(nodes.get(0));
 		}
 	}
 	
 	public void end()
 	{
-		if(nodes.size() > 0) getAdddessFromLocation(nodes.get(nodes.size() - 1), endAddress);
+		if(nodes.size() > 0) endAddress = getAdddessFromLocation(nodes.get(nodes.size() - 1));
 		else endAddress = startAddress;
 		endTime.setTime(new Date());
 	}
@@ -220,9 +229,12 @@ public class Trip {
 		distance += d;
 	}
 	
-	private void getAdddessFromLocation(Location loc, String address)
+	private String getAdddessFromLocation(Location loc)
 	{
-		// TODO: implement
+		if(acContext == null) return "";
+		
+		GetAddressTask task = new GetAddressTask(acContext);
+		return task.doInBackground(loc);
 	}
 	
 	@SuppressLint("SimpleDateFormat") @Override

@@ -372,3 +372,6 @@ PUM/workspace/CarTracker/bin/resources.ap_
 PSG_Marcin/Engine2D_odpowiedz/
 Tuning/Tetris/Tetris.userprefs
 PUM/workspace/CarTracker/bin/
+*.sdf
+*.opensdf
+*.idb

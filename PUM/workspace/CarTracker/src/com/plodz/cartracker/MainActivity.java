@@ -64,6 +64,7 @@ public class MainActivity extends Activity {
     	Globals.priceDieselUltimate = 5.2f;
     	Globals.pricePB95 = 5.0f;
     	Globals.pricePB98 = 5.5f;
+    	Globals.mapZoomMultiplier = 16.0f;
     }
     
     public void onStartButtonClick(View v)

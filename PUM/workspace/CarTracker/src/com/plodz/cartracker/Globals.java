@@ -12,4 +12,5 @@ public class Globals {
 	public static float priceDieselUltimate;
 	public static float pricePB95;
 	public static float pricePB98;
+	public static float mapZoomMultiplier;
 }

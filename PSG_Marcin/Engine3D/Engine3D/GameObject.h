@@ -11,7 +11,6 @@
 #include "Texture.h"
 #include "TextureShader.h"
 #include "Model3D.h"
-#include "xml\pugixml.hpp"
 #include "Graphics.h"
 //using namespace std;
 

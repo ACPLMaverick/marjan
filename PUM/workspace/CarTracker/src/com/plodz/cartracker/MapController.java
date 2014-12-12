@@ -45,7 +45,7 @@ public class MapController implements
 	private TrackActivity activity;
 	private LocationClient myLocClient;
 	private LocationRequest myLocRequest;
-	private final float mapCameraZoom = 16.0f;
+	private final float mapCameraZoom = Globals.mapZoomMultiplier;
 	private final float polylineWidth = 25.0f;
 	private final int polylineColor = 0x7FFF0000;
 	private Location startLoc;

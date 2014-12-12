@@ -7,7 +7,6 @@
 #include "Graphics.h"
 #include "GameObject.h"
 #include "Terrain.h"
-#include "xml\pugixml.hpp"
 
 class GameObject;
 class Graphics;

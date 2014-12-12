@@ -100,7 +100,6 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="tiny_obj_loader.cpp" />
     <ClCompile Include="WinMain.cpp" />
-    <ClCompile Include="xml\pugixml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
@@ -127,8 +126,6 @@
     <ClInclude Include="TextureShader.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="tiny_obj_loader.h" />
-    <ClInclude Include="xml\pugiconfig.hpp" />
-    <ClInclude Include="xml\pugixml.hpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorVertexShader.hlsl">

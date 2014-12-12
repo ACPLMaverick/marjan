@@ -46,7 +46,7 @@ public class TrackingController {
 	public void initialize()
 	{
 		mc = new MapController(activity);
-		trip = new Trip();
+		trip = new Trip(activity.getApplicationContext());
 		
 		statConsTxt = (TextView) activity.findViewById(R.id.statConsumedFuelTxt);
 		statCostTxt = (TextView) activity.findViewById(R.id.statCostTxt);
@@ -77,6 +77,7 @@ public class TrackingController {
 		{
 			@Override
 			public void run() {
+				trip.update(mc.getMyLocation(), 0);
 				for(;ifRunning == true;)
 				{
 					try {

@@ -35,24 +35,18 @@ Model3D::VertexIndex* Model3D::LoadGeometry(bool ind, string filePath)
 
 	string error = tinyobj::LoadObj(shapes, materials, filePath.c_str(), NULL);
 
-	m_vertexCount = shapes.at(0).mesh.positions.size() / 3;
-	m_indexCount = shapes.at(0).mesh.indices.size();
+	m_vertexCount = 0;
+	m_indexCount = 0;
+	for (int f = 0; f < shapes.size(); f++)
+	{
+		m_vertexCount += (shapes.at(f).mesh.positions.size() / 3);
+		m_indexCount += shapes.at(f).mesh.indices.size();
+	}
 
 	vertices = new Vertex[m_vertexCount];
 	if (!vertices)
 	{
 		return false;
-	}
-	for (int i = 0, j = 0, k = 0; i < m_vertexCount; i++, j+=3, k+=2)
-	{
-		vertices[i].position.x = shapes.at(0).mesh.positions.at(j);
-		vertices[i].position.y = shapes.at(0).mesh.positions.at(j+1);
-		vertices[i].position.z = shapes.at(0).mesh.positions.at(j+2);
-		vertices[i].texture.x = shapes.at(0).mesh.texcoords.at(k);
-		vertices[i].texture.y = shapes.at(0).mesh.texcoords.at(k + 1);
-		vertices[i].normal.x = shapes.at(0).mesh.normals.at(j);
-		vertices[i].normal.y = shapes.at(0).mesh.normals.at(j + 1);
-		vertices[i].normal.z = shapes.at(0).mesh.normals.at(j + 2);
 	}
 
 	indices = new unsigned long[m_indexCount];
@@ -61,10 +55,33 @@ Model3D::VertexIndex* Model3D::LoadGeometry(bool ind, string filePath)
 		return false;
 	}
 	int i = 0;
-	for (std::vector<unsigned int>::iterator it = shapes.at(0).mesh.indices.begin(); it != shapes.at(0).mesh.indices.end(); ++it, i++)
+	int p = 0;
+	for (int w = 0; w < shapes.size(); w++)
 	{
-		indices[i] = (*it);
+		std::vector<float>::iterator itp = shapes.at(w).mesh.positions.begin();
+		std::vector<float>::iterator itt = shapes.at(w).mesh.texcoords.begin();
+		std::vector<float>::iterator itn = shapes.at(w).mesh.normals.begin();
+		std::vector<unsigned int>::iterator iti = shapes.at(w).mesh.indices.begin();
+		for (; itp != shapes.at(w).mesh.positions.end(); itp+=3, itt+=2, itn+=3, i++)
+		{
+			vertices[i].position.x =  (*itp);
+			vertices[i].position.y =  (*(itp+1));
+			vertices[i].position.z =  (*(itp+2));
+
+			vertices[i].texture.x = (*itt);
+			vertices[i].texture.y = 1.0f - (*(itt + 1));
+
+			vertices[i].normal.x = (*itn);
+			vertices[i].normal.y = (*(itn + 1));
+			vertices[i].normal.z = (*(itn + 2));
+		}
+
+		for (; iti != shapes.at(w).mesh.indices.end(); ++iti, p++)
+		{
+			indices[p] = (*iti);
+		}
 	}
+	
 
 	VertexIndex* toRet = new VertexIndex;
 	toRet->vertexArrayPtr = vertices;

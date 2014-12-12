@@ -3,9 +3,12 @@ package com.plodz.cartracker;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -22,6 +25,8 @@ public class LogStatisticsController {
 	GoogleMap statMap;
 	LogActivity activ;
 	Fragment frg;
+	CameraPosition defaultPos;
+	Polyline currentPolyline;
 	
 	TextView tvLogstatStartTime;
 	TextView tvLogstatEndTime;
@@ -37,6 +42,8 @@ public class LogStatisticsController {
 	
 	private final float polylineWidth = 25.0f;
 	private final int polylineColor = 0x7FFF0000;
+	private final float myMultiplier = 0.02f;
+	private final float zoomMultiplier = Globals.mapZoomMultiplier*myMultiplier;
 	
 	public LogStatisticsController(LogActivity activ)
 	{
@@ -45,6 +52,8 @@ public class LogStatisticsController {
 		FragmentManager manager = frg.getChildFragmentManager();
 		SupportMapFragment mpf = (SupportMapFragment)manager.findFragmentById(R.id.mapStats);
 		statMap = mpf.getMap();
+		defaultPos = statMap.getCameraPosition();
+		
 	}
 	
 	public void initializeDefaults()
@@ -100,6 +109,11 @@ public class LogStatisticsController {
 	
 	private void setupMap(ArrayList<Location> loclist, ArrayList<LatLng> LLlist)
 	{
+		// reset map to default
+		CameraUpdate defupd = CameraUpdateFactory.newCameraPosition(defaultPos);
+		statMap.animateCamera(defupd, 1, null);
+		if(currentPolyline != null) currentPolyline.remove();
+		
 		if(loclist.size() > 1)
 		{
 			createMarkerOnCurrentPos(loclist.get(0), BitmapDescriptorFactory.HUE_GREEN, 1.0f, "START");
@@ -108,15 +122,63 @@ public class LogStatisticsController {
 			polyOpts.width(polylineWidth);
 			polyOpts.color(polylineColor);
 			
-			Polyline currentPolyline = statMap.addPolyline(polyOpts);
+			currentPolyline = statMap.addPolyline(polyOpts);
+			currentPolyline.setPoints(LLlist);
+			
+			centerCamera(LLlist);
 			
 			createMarkerOnCurrentPos(loclist.get(loclist.size() - 1), BitmapDescriptorFactory.HUE_BLUE, 1.0f, "END");
 		}
 		else if(loclist.size() == 1)
 		{
 			createMarkerOnCurrentPos(loclist.get(0), BitmapDescriptorFactory.HUE_CYAN, 1.0f, "START AND END");
+			centerCamera(new LatLng(loclist.get(0).getLatitude(), loclist.get(0).getLongitude()));
 		}
 		else return;
+	}
+	
+	private void centerCamera(ArrayList<LatLng> LLlist)
+	{
+		float zoom;
+		LatLng center;
+		
+		double avgLat = 0, avgLng = 0;
+		double maxLat = 0, maxLng = 0;
+		double minLat = Double.MAX_VALUE, minLng = Double.MAX_VALUE;
+		for(LatLng l : LLlist)
+		{
+			avgLat += l.latitude;
+			avgLng += l.longitude;
+			
+			if(l.latitude > maxLat) maxLat = l.latitude;
+			if(l.longitude > maxLng) maxLng = l.longitude;
+			if(l.latitude < minLat) minLat = l.latitude;
+			if(l.longitude < minLng) minLng = l.longitude;
+		}
+		avgLat /= LLlist.size();
+		avgLng /= LLlist.size();
+		center = new LatLng(avgLat, avgLng);
+		
+		double diffLat = maxLat - minLat;
+		double diffLng = maxLng - minLng;
+		double diff;
+		if(diffLat > diffLng) diff = diffLat;
+		else diff = diffLng;
+		
+		zoom = (float)(1/(diff != 0 ? diff : 0.0f))*zoomMultiplier;
+		
+		CameraUpdate pos = CameraUpdateFactory.newCameraPosition(new CameraPosition(center, zoom, 
+				statMap.getCameraPosition().tilt, statMap.getCameraPosition().bearing));
+		
+		statMap.animateCamera(pos);
+	}
+	
+	private void centerCamera(LatLng ll)
+	{
+		CameraUpdate pos = CameraUpdateFactory.newCameraPosition(new CameraPosition(ll, zoomMultiplier/myMultiplier, 
+				statMap.getCameraPosition().tilt, statMap.getCameraPosition().bearing));
+		
+		statMap.animateCamera(pos);
 	}
 	
 	private boolean createMarkerOnCurrentPos(Location currentLoc, float color, float alpha, String title)
