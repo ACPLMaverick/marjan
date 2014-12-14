@@ -1,0 +1,669 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"i2c.c"
+   3              		.text
+   4              		.align	2
+   5              		.global	i2cCheckStatus
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	i2cCheckStatus, %function
+   9              	i2cCheckStatus:
+  10              		@ lr needed for prologue
+  11              	.L2:
+  12 0000 034B     		ldr	r3, .L7
+  13 0002 1B78     		ldrb	r3, [r3]
+  14 0004 1A07     		lsl	r2, r3, #28
+  15 0006 FBD5     		bpl	.L2
+  16 0008 024B     		ldr	r3, .L7+4
+  17 000a 1878     		ldrb	r0, [r3]
+  18              		@ sp needed for prologue
+  19 000c 7047     		bx	lr
+  20              	.L8:
+  21 000e 0000     		.align	2
+  22              	.L7:
+  23 0010 00C001E0 		.word	-536756224
+  24 0014 04C001E0 		.word	-536756220
+  25              		.size	i2cCheckStatus, .-i2cCheckStatus
+  26              		.align	2
+  27              		.global	i2cInit
+  28              		.code 16
+  29              		.thumb_func
+  30              		.type	i2cInit, %function
+  31              	i2cInit:
+  32 0018 0E49     		ldr	r1, .L11
+  33 001a 0B68     		ldr	r3, [r1]
+  34 001c 5022     		mov	r2, #80
+  35 001e 1343     		orr	r3, r3, r2
+  36 0020 0B60     		str	r3, [r1]
+  37 0022 0D4B     		ldr	r3, .L11+4
+  38 0024 6C22     		mov	r2, #108
+  39 0026 1A70     		strb	r2, [r3]
+  40 0028 043B     		sub	r3, r3, #4
+  41 002a 1A88     		ldrh	r2, [r3]
+  42 002c 4022     		mov	r2, #64
+  43 002e 1A80     		strh	r2, [r3]
+  44 0030 043B     		sub	r3, r3, #4
+  45 0032 1988     		ldrh	r1, [r3]
+  46 0034 1A80     		strh	r2, [r3]
+  47 0036 094A     		ldr	r2, .L11+8
+  48 0038 1378     		ldrb	r3, [r2]
+  49 003a 0023     		mov	r3, #0
+  50 003c 1370     		strb	r3, [r2]
+  51 003e 0849     		ldr	r1, .L11+12
+  52 0040 0B78     		ldrb	r3, [r1]
+  53 0042 7C22     		mov	r2, #124
+  54 0044 9343     		bic	r3, r3, r2
+  55 0046 4022     		mov	r2, #64
+  56 0048 1343     		orr	r3, r3, r2
+  57 004a 1B06     		lsl	r3, r3, #24
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 2
+
+
+  58 004c 1B0E     		lsr	r3, r3, #24
+  59              		@ lr needed for prologue
+  60 004e 0B70     		strb	r3, [r1]
+  61              		@ sp needed for prologue
+  62 0050 7047     		bx	lr
+  63              	.L12:
+  64 0052 0000     		.align	2
+  65              	.L11:
+  66 0054 00C002E0 		.word	-536690688
+  67 0058 18C001E0 		.word	-536756200
+  68 005c 0CC001E0 		.word	-536756212
+  69 0060 00C001E0 		.word	-536756224
+  70              		.size	i2cInit, .-i2cInit
+  71              		.align	2
+  72              		.global	i2cStart
+  73              		.code 16
+  74              		.thumb_func
+  75              		.type	i2cStart, %function
+  76              	i2cStart:
+  77 0064 0F4B     		ldr	r3, .L29
+  78 0066 1A78     		ldrb	r2, [r3]
+  79 0068 2021     		mov	r1, #32
+  80 006a 0A43     		orr	r2, r2, r1
+  81 006c 1206     		lsl	r2, r2, #24
+  82              		@ lr needed for prologue
+  83 006e 120E     		lsr	r2, r2, #24
+  84              	.L28:
+  85 0070 1A70     		strb	r2, [r3]
+  86              	.L27:
+  87 0072 0C4B     		ldr	r3, .L29
+  88 0074 1B78     		ldrb	r3, [r3]
+  89 0076 0822     		mov	r2, #8
+  90 0078 1342     		tst	r3, r2
+  91 007a FAD0     		beq	.L27
+  92 007c 0A4B     		ldr	r3, .L29+4
+  93 007e 1B78     		ldrb	r3, [r3]
+  94 0080 082B     		cmp	r3, #8
+  95 0082 07D0     		beq	.L16
+  96 0084 102B     		cmp	r3, #16
+  97 0086 05D0     		beq	.L16
+  98 0088 F82B     		cmp	r3, #248
+  99 008a 01D0     		beq	.L19
+ 100 008c 181C     		mov	r0, r3
+ 101 008e 02E0     		b	.L21
+ 102              	.L19:
+ 103 0090 064B     		ldr	r3, .L29+8
+ 104 0092 EDE7     		b	.L28
+ 105              	.L16:
+ 106 0094 0120     		mov	r0, #1
+ 107              	.L21:
+ 108 0096 054B     		ldr	r3, .L29+8
+ 109 0098 0006     		lsl	r0, r0, #24
+ 110 009a 2022     		mov	r2, #32
+ 111 009c 0016     		asr	r0, r0, #24
+ 112 009e 1A70     		strb	r2, [r3]
+ 113              		@ sp needed for prologue
+ 114 00a0 7047     		bx	lr
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 3
+
+
+ 115              	.L30:
+ 116 00a2 0000     		.align	2
+ 117              	.L29:
+ 118 00a4 00C001E0 		.word	-536756224
+ 119 00a8 04C001E0 		.word	-536756220
+ 120 00ac 18C001E0 		.word	-536756200
+ 121              		.size	i2cStart, .-i2cStart
+ 122              		.align	2
+ 123              		.global	i2cStop
+ 124              		.code 16
+ 125              		.thumb_func
+ 126              		.type	i2cStop, %function
+ 127              	i2cStop:
+ 128 00b0 0749     		ldr	r1, .L37
+ 129 00b2 0B78     		ldrb	r3, [r1]
+ 130 00b4 1022     		mov	r2, #16
+ 131 00b6 1343     		orr	r3, r3, r2
+ 132 00b8 1B06     		lsl	r3, r3, #24
+ 133 00ba 1B0E     		lsr	r3, r3, #24
+ 134 00bc 0B70     		strb	r3, [r1]
+ 135 00be 054B     		ldr	r3, .L37+4
+ 136 00c0 0822     		mov	r2, #8
+ 137 00c2 1A70     		strb	r2, [r3]
+ 138              		@ lr needed for prologue
+ 139              	.L32:
+ 140 00c4 024B     		ldr	r3, .L37
+ 141 00c6 1B78     		ldrb	r3, [r3]
+ 142 00c8 DA06     		lsl	r2, r3, #27
+ 143 00ca FBD4     		bmi	.L32
+ 144 00cc 0120     		mov	r0, #1
+ 145              		@ sp needed for prologue
+ 146 00ce 7047     		bx	lr
+ 147              	.L38:
+ 148              		.align	2
+ 149              	.L37:
+ 150 00d0 00C001E0 		.word	-536756224
+ 151 00d4 18C001E0 		.word	-536756200
+ 152              		.size	i2cStop, .-i2cStop
+ 153              		.align	2
+ 154              		.global	i2cPutChar
+ 155              		.code 16
+ 156              		.thumb_func
+ 157              		.type	i2cPutChar, %function
+ 158              	i2cPutChar:
+ 159 00d8 084B     		ldr	r3, .L44
+ 160 00da 1B78     		ldrb	r3, [r3]
+ 161 00dc 0006     		lsl	r0, r0, #24
+ 162 00de 0822     		mov	r2, #8
+ 163              		@ lr needed for prologue
+ 164 00e0 000E     		lsr	r0, r0, #24
+ 165 00e2 1342     		tst	r3, r2
+ 166 00e4 01D1     		bne	.L40
+ 167 00e6 FC20     		mov	r0, #252
+ 168 00e8 04E0     		b	.L42
+ 169              	.L40:
+ 170 00ea 054B     		ldr	r3, .L44+4
+ 171 00ec 1870     		strb	r0, [r3]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 4
+
+
+ 172 00ee 1033     		add	r3, r3, #16
+ 173 00f0 1A70     		strb	r2, [r3]
+ 174 00f2 0120     		mov	r0, #1
+ 175              	.L42:
+ 176 00f4 0006     		lsl	r0, r0, #24
+ 177 00f6 0016     		asr	r0, r0, #24
+ 178              		@ sp needed for prologue
+ 179 00f8 7047     		bx	lr
+ 180              	.L45:
+ 181 00fa 0000     		.align	2
+ 182              	.L44:
+ 183 00fc 00C001E0 		.word	-536756224
+ 184 0100 08C001E0 		.word	-536756216
+ 185              		.size	i2cPutChar, .-i2cPutChar
+ 186              		.align	2
+ 187              		.global	i2cGetChar
+ 188              		.code 16
+ 189              		.thumb_func
+ 190              		.type	i2cGetChar, %function
+ 191              	i2cGetChar:
+ 192 0104 0006     		lsl	r0, r0, #24
+ 193 0106 000E     		lsr	r0, r0, #24
+ 194              		@ lr needed for prologue
+ 195 0108 0028     		cmp	r0, #0
+ 196 010a 0AD1     		bne	.L47
+ 197 010c 1049     		ldr	r1, .L58
+ 198 010e 0B78     		ldrb	r3, [r1]
+ 199 0110 0422     		mov	r2, #4
+ 200 0112 1343     		orr	r3, r3, r2
+ 201 0114 1B06     		lsl	r3, r3, #24
+ 202 0116 1B0E     		lsr	r3, r3, #24
+ 203 0118 0B70     		strb	r3, [r1]
+ 204 011a 0E4B     		ldr	r3, .L58+4
+ 205 011c 0822     		mov	r2, #8
+ 206 011e 1A70     		strb	r2, [r3]
+ 207 0120 12E0     		b	.L57
+ 208              	.L47:
+ 209 0122 0128     		cmp	r0, #1
+ 210 0124 05D1     		bne	.L50
+ 211 0126 0B4B     		ldr	r3, .L58+4
+ 212 0128 0422     		mov	r2, #4
+ 213 012a 1A70     		strb	r2, [r3]
+ 214 012c 0822     		mov	r2, #8
+ 215 012e 1A70     		strb	r2, [r3]
+ 216 0130 0BE0     		b	.L49
+ 217              	.L50:
+ 218 0132 0228     		cmp	r0, #2
+ 219 0134 08D1     		bne	.L57
+ 220 0136 064B     		ldr	r3, .L58
+ 221 0138 1B78     		ldrb	r3, [r3]
+ 222 013a 1A07     		lsl	r2, r3, #28
+ 223 013c 01D4     		bmi	.L54
+ 224 013e FD20     		mov	r0, #253
+ 225 0140 03E0     		b	.L49
+ 226              	.L54:
+ 227 0142 054B     		ldr	r3, .L58+8
+ 228 0144 1B78     		ldrb	r3, [r3]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 5
+
+
+ 229 0146 0B70     		strb	r3, [r1]
+ 230              	.L57:
+ 231 0148 0120     		mov	r0, #1
+ 232              	.L49:
+ 233 014a 0006     		lsl	r0, r0, #24
+ 234 014c 0016     		asr	r0, r0, #24
+ 235              		@ sp needed for prologue
+ 236 014e 7047     		bx	lr
+ 237              	.L59:
+ 238              		.align	2
+ 239              	.L58:
+ 240 0150 00C001E0 		.word	-536756224
+ 241 0154 18C001E0 		.word	-536756200
+ 242 0158 08C001E0 		.word	-536756216
+ 243              		.size	i2cGetChar, .-i2cGetChar
+ 244              		.align	2
+ 245              		.global	i2cWaitTransmit
+ 246              		.code 16
+ 247              		.thumb_func
+ 248              		.type	i2cWaitTransmit, %function
+ 249              	i2cWaitTransmit:
+ 250              		@ lr needed for prologue
+ 251              	.L74:
+ 252 015c 084B     		ldr	r3, .L75
+ 253 015e 1B78     		ldrb	r3, [r3]
+ 254 0160 1A07     		lsl	r2, r3, #28
+ 255 0162 FBD5     		bpl	.L74
+ 256 0164 074B     		ldr	r3, .L75+4
+ 257 0166 1B78     		ldrb	r3, [r3]
+ 258 0168 182B     		cmp	r3, #24
+ 259 016a 06D0     		beq	.L63
+ 260 016c 282B     		cmp	r3, #40
+ 261 016e 04D0     		beq	.L63
+ 262 0170 F82B     		cmp	r3, #248
+ 263 0172 F3D0     		beq	.L74
+ 264 0174 0120     		mov	r0, #1
+ 265 0176 4042     		neg	r0, r0
+ 266 0178 00E0     		b	.L67
+ 267              	.L63:
+ 268 017a 0120     		mov	r0, #1
+ 269              	.L67:
+ 270              		@ sp needed for prologue
+ 271 017c 7047     		bx	lr
+ 272              	.L76:
+ 273 017e 0000     		.align	2
+ 274              	.L75:
+ 275 0180 00C001E0 		.word	-536756224
+ 276 0184 04C001E0 		.word	-536756220
+ 277              		.size	i2cWaitTransmit, .-i2cWaitTransmit
+ 278              		.align	2
+ 279              		.global	i2cWriteWithWait
+ 280              		.code 16
+ 281              		.thumb_func
+ 282              		.type	i2cWriteWithWait, %function
+ 283              	i2cWriteWithWait:
+ 284 0188 10B5     		push	{r4, lr}
+ 285 018a 0006     		lsl	r0, r0, #24
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 6
+
+
+ 286 018c 040E     		lsr	r4, r0, #24
+ 287              	.L79:
+ 288 018e 201C     		mov	r0, r4
+ 289 0190 FFF7FEFF 		bl	i2cPutChar
+ 290 0194 0006     		lsl	r0, r0, #24
+ 291 0196 000E     		lsr	r0, r0, #24
+ 292 0198 0306     		lsl	r3, r0, #24
+ 293 019a FC28     		cmp	r0, #252
+ 294 019c F7D0     		beq	.L79
+ 295 019e 1B16     		asr	r3, r3, #24
+ 296 01a0 012B     		cmp	r3, #1
+ 297 01a2 03D1     		bne	.L81
+ 298 01a4 FFF7FEFF 		bl	i2cWaitTransmit
+ 299 01a8 0006     		lsl	r0, r0, #24
+ 300 01aa 000E     		lsr	r0, r0, #24
+ 301              	.L81:
+ 302 01ac 0006     		lsl	r0, r0, #24
+ 303 01ae 0016     		asr	r0, r0, #24
+ 304              		@ sp needed for prologue
+ 305 01b0 10BC     		pop	{r4}
+ 306 01b2 02BC     		pop	{r1}
+ 307 01b4 0847     		bx	r1
+ 308              		.size	i2cWriteWithWait, .-i2cWriteWithWait
+ 309 01b6 0000     		.align	2
+ 310              		.global	i2cMyWrite
+ 311              		.code 16
+ 312              		.thumb_func
+ 313              		.type	i2cMyWrite, %function
+ 314              	i2cMyWrite:
+ 315 01b8 F0B5     		push	{r4, r5, r6, r7, lr}
+ 316 01ba 0006     		lsl	r0, r0, #24
+ 317 01bc 1204     		lsl	r2, r2, #16
+ 318 01be 0F1C     		mov	r7, r1
+ 319 01c0 040E     		lsr	r4, r0, #24
+ 320 01c2 160C     		lsr	r6, r2, #16
+ 321 01c4 FFF7FEFF 		bl	i2cStart
+ 322 01c8 0006     		lsl	r0, r0, #24
+ 323 01ca 050E     		lsr	r5, r0, #24
+ 324 01cc 0016     		asr	r0, r0, #24
+ 325 01ce 0128     		cmp	r0, #1
+ 326 01d0 17D1     		bne	.L85
+ 327 01d2 201C     		mov	r0, r4
+ 328 01d4 FFF7FEFF 		bl	i2cWriteWithWait
+ 329 01d8 0006     		lsl	r0, r0, #24
+ 330 01da 050E     		lsr	r5, r0, #24
+ 331 01dc 0016     		asr	r0, r0, #24
+ 332 01de 0128     		cmp	r0, #1
+ 333 01e0 0FD1     		bne	.L85
+ 334 01e2 0024     		mov	r4, #0
+ 335 01e4 09E0     		b	.L88
+ 336              	.L89:
+ 337 01e6 E05D     		ldrb	r0, [r4, r7]
+ 338 01e8 FFF7FEFF 		bl	i2cWriteWithWait
+ 339 01ec 0006     		lsl	r0, r0, #24
+ 340 01ee 0316     		asr	r3, r0, #24
+ 341 01f0 0134     		add	r4, r4, #1
+ 342 01f2 012B     		cmp	r3, #1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 7
+
+
+ 343 01f4 01D0     		beq	.L88
+ 344 01f6 050E     		lsr	r5, r0, #24
+ 345 01f8 03E0     		b	.L85
+ 346              	.L88:
+ 347 01fa 2306     		lsl	r3, r4, #24
+ 348 01fc 1B0E     		lsr	r3, r3, #24
+ 349 01fe B342     		cmp	r3, r6
+ 350 0200 F1D3     		bcc	.L89
+ 351              	.L85:
+ 352 0202 FFF7FEFF 		bl	i2cStop
+ 353 0206 2806     		lsl	r0, r5, #24
+ 354 0208 0016     		asr	r0, r0, #24
+ 355              		@ sp needed for prologue
+ 356 020a F0BC     		pop	{r4, r5, r6, r7}
+ 357 020c 02BC     		pop	{r1}
+ 358 020e 0847     		bx	r1
+ 359              		.size	i2cMyWrite, .-i2cMyWrite
+ 360              		.align	2
+ 361              		.global	i2cRepeatStart
+ 362              		.code 16
+ 363              		.thumb_func
+ 364              		.type	i2cRepeatStart, %function
+ 365              	i2cRepeatStart:
+ 366 0210 0F49     		ldr	r1, .L110
+ 367 0212 0B78     		ldrb	r3, [r1]
+ 368 0214 2022     		mov	r2, #32
+ 369 0216 1343     		orr	r3, r3, r2
+ 370 0218 1B06     		lsl	r3, r3, #24
+ 371 021a 1B0E     		lsr	r3, r3, #24
+ 372 021c 0B70     		strb	r3, [r1]
+ 373              		@ lr needed for prologue
+ 374 021e 0822     		mov	r2, #8
+ 375              	.L109:
+ 376 0220 0C4B     		ldr	r3, .L110+4
+ 377 0222 1A70     		strb	r2, [r3]
+ 378              	.L108:
+ 379 0224 0A4B     		ldr	r3, .L110
+ 380 0226 1B78     		ldrb	r3, [r3]
+ 381 0228 0822     		mov	r2, #8
+ 382 022a 1342     		tst	r3, r2
+ 383 022c FAD0     		beq	.L108
+ 384 022e 0A4B     		ldr	r3, .L110+8
+ 385 0230 1B78     		ldrb	r3, [r3]
+ 386 0232 082B     		cmp	r3, #8
+ 387 0234 05D0     		beq	.L97
+ 388 0236 102B     		cmp	r3, #16
+ 389 0238 03D0     		beq	.L97
+ 390 023a F82B     		cmp	r3, #248
+ 391 023c F0D0     		beq	.L109
+ 392 023e 181C     		mov	r0, r3
+ 393 0240 00E0     		b	.L102
+ 394              	.L97:
+ 395 0242 0120     		mov	r0, #1
+ 396              	.L102:
+ 397 0244 034B     		ldr	r3, .L110+4
+ 398 0246 0006     		lsl	r0, r0, #24
+ 399 0248 2022     		mov	r2, #32
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 8
+
+
+ 400 024a 0016     		asr	r0, r0, #24
+ 401 024c 1A70     		strb	r2, [r3]
+ 402              		@ sp needed for prologue
+ 403 024e 7047     		bx	lr
+ 404              	.L111:
+ 405              		.align	2
+ 406              	.L110:
+ 407 0250 00C001E0 		.word	-536756224
+ 408 0254 18C001E0 		.word	-536756200
+ 409 0258 04C001E0 		.word	-536756220
+ 410              		.size	i2cRepeatStart, .-i2cRepeatStart
+ 411              		.align	2
+ 412              		.global	i2cRead
+ 413              		.code 16
+ 414              		.thumb_func
+ 415              		.type	i2cRead, %function
+ 416              	i2cRead:
+ 417 025c F0B5     		push	{r4, r5, r6, r7, lr}
+ 418 025e 0006     		lsl	r0, r0, #24
+ 419 0260 1204     		lsl	r2, r2, #16
+ 420 0262 0D1C     		mov	r5, r1
+ 421 0264 060E     		lsr	r6, r0, #24
+ 422 0266 170C     		lsr	r7, r2, #16
+ 423 0268 FFF7FEFF 		bl	i2cStart
+ 424 026c 0006     		lsl	r0, r0, #24
+ 425 026e 040E     		lsr	r4, r0, #24
+ 426 0270 0016     		asr	r0, r0, #24
+ 427 0272 0128     		cmp	r0, #1
+ 428 0274 36D1     		bne	.L113
+ 429              	.L116:
+ 430 0276 301C     		mov	r0, r6
+ 431 0278 FFF7FEFF 		bl	i2cPutChar
+ 432 027c 0006     		lsl	r0, r0, #24
+ 433 027e 040E     		lsr	r4, r0, #24
+ 434 0280 2306     		lsl	r3, r4, #24
+ 435 0282 FC2C     		cmp	r4, #252
+ 436 0284 F7D0     		beq	.L116
+ 437 0286 1A1C     		mov	r2, r3
+ 438 0288 1B16     		asr	r3, r3, #24
+ 439 028a 012B     		cmp	r3, #1
+ 440 028c 2AD1     		bne	.L113
+ 441 028e 140E     		lsr	r4, r2, #24
+ 442 0290 0126     		mov	r6, #1
+ 443 0292 25E0     		b	.L119
+ 444              	.L142:
+ 445 0294 174B     		ldr	r3, .L143
+ 446 0296 1B78     		ldrb	r3, [r3]
+ 447 0298 1A07     		lsl	r2, r3, #28
+ 448 029a FBD5     		bpl	.L142
+ 449 029c 164B     		ldr	r3, .L143+4
+ 450 029e 1B78     		ldrb	r3, [r3]
+ 451 02a0 402B     		cmp	r3, #64
+ 452 02a2 03D0     		beq	.L122
+ 453 02a4 482B     		cmp	r3, #72
+ 454 02a6 01D0     		beq	.L122
+ 455 02a8 502B     		cmp	r3, #80
+ 456 02aa 11D1     		bne	.L125
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 9
+
+
+ 457              	.L122:
+ 458 02ac BE42     		cmp	r6, r7
+ 459 02ae 01D1     		bne	.L126
+ 460 02b0 0120     		mov	r0, #1
+ 461 02b2 00E0     		b	.L141
+ 462              	.L126:
+ 463 02b4 0020     		mov	r0, #0
+ 464              	.L141:
+ 465 02b6 291C     		mov	r1, r5
+ 466 02b8 FFF7FEFF 		bl	i2cGetChar
+ 467              	.L130:
+ 468 02bc 0220     		mov	r0, #2
+ 469 02be 291C     		mov	r1, r5
+ 470 02c0 FFF7FEFF 		bl	i2cGetChar
+ 471 02c4 0006     		lsl	r0, r0, #24
+ 472 02c6 040E     		lsr	r4, r0, #24
+ 473 02c8 FD2C     		cmp	r4, #253
+ 474 02ca F7D0     		beq	.L130
+ 475 02cc 0135     		add	r5, r5, #1
+ 476 02ce 04E0     		b	.L132
+ 477              	.L125:
+ 478 02d0 F82B     		cmp	r3, #248
+ 479 02d2 DFD0     		beq	.L142
+ 480 02d4 3B06     		lsl	r3, r7, #24
+ 481 02d6 1E0E     		lsr	r6, r3, #24
+ 482 02d8 FF24     		mov	r4, #255
+ 483              	.L132:
+ 484 02da 731C     		add	r3, r6, #1
+ 485 02dc 1B06     		lsl	r3, r3, #24
+ 486 02de 1E0E     		lsr	r6, r3, #24
+ 487              	.L119:
+ 488 02e0 BE42     		cmp	r6, r7
+ 489 02e2 D7D9     		bls	.L142
+ 490              	.L113:
+ 491 02e4 FFF7FEFF 		bl	i2cStop
+ 492 02e8 2006     		lsl	r0, r4, #24
+ 493 02ea 0016     		asr	r0, r0, #24
+ 494              		@ sp needed for prologue
+ 495 02ec F0BC     		pop	{r4, r5, r6, r7}
+ 496 02ee 02BC     		pop	{r1}
+ 497 02f0 0847     		bx	r1
+ 498              	.L144:
+ 499 02f2 0000     		.align	2
+ 500              	.L143:
+ 501 02f4 00C001E0 		.word	-536756224
+ 502 02f8 04C001E0 		.word	-536756220
+ 503              		.size	i2cRead, .-i2cRead
+ 504              		.align	2
+ 505              		.global	i2cWrite
+ 506              		.code 16
+ 507              		.thumb_func
+ 508              		.type	i2cWrite, %function
+ 509              	i2cWrite:
+ 510 02fc F0B5     		push	{r4, r5, r6, r7, lr}
+ 511 02fe 0006     		lsl	r0, r0, #24
+ 512 0300 1204     		lsl	r2, r2, #16
+ 513 0302 0D1C     		mov	r5, r1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 10
+
+
+ 514 0304 060E     		lsr	r6, r0, #24
+ 515 0306 170C     		lsr	r7, r2, #16
+ 516 0308 FFF7FEFF 		bl	i2cStart
+ 517 030c 0006     		lsl	r0, r0, #24
+ 518 030e 040E     		lsr	r4, r0, #24
+ 519 0310 0016     		asr	r0, r0, #24
+ 520 0312 0128     		cmp	r0, #1
+ 521 0314 2AD1     		bne	.L187
+ 522              	.L149:
+ 523 0316 301C     		mov	r0, r6
+ 524 0318 FFF7FEFF 		bl	i2cPutChar
+ 525 031c 0006     		lsl	r0, r0, #24
+ 526 031e 000E     		lsr	r0, r0, #24
+ 527 0320 0306     		lsl	r3, r0, #24
+ 528 0322 FC28     		cmp	r0, #252
+ 529 0324 F7D0     		beq	.L149
+ 530 0326 1C0E     		lsr	r4, r3, #24
+ 531 0328 1B16     		asr	r3, r3, #24
+ 532 032a 012B     		cmp	r3, #1
+ 533 032c 1ED1     		bne	.L187
+ 534 032e 0026     		mov	r6, #0
+ 535 0330 1AE0     		b	.L153
+ 536              	.L186:
+ 537 0332 184B     		ldr	r3, .L188
+ 538 0334 1B78     		ldrb	r3, [r3]
+ 539 0336 1A07     		lsl	r2, r3, #28
+ 540 0338 FBD5     		bpl	.L186
+ 541 033a 174B     		ldr	r3, .L188+4
+ 542 033c 1B78     		ldrb	r3, [r3]
+ 543 033e 182B     		cmp	r3, #24
+ 544 0340 01D0     		beq	.L160
+ 545 0342 282B     		cmp	r3, #40
+ 546 0344 08D1     		bne	.L158
+ 547              	.L160:
+ 548 0346 2878     		ldrb	r0, [r5]
+ 549 0348 FFF7FEFF 		bl	i2cPutChar
+ 550 034c 0006     		lsl	r0, r0, #24
+ 551 034e 040E     		lsr	r4, r0, #24
+ 552 0350 FC2C     		cmp	r4, #252
+ 553 0352 F8D0     		beq	.L160
+ 554 0354 0135     		add	r5, r5, #1
+ 555 0356 04E0     		b	.L162
+ 556              	.L158:
+ 557 0358 F82B     		cmp	r3, #248
+ 558 035a EAD0     		beq	.L186
+ 559 035c 3B06     		lsl	r3, r7, #24
+ 560 035e 1E0E     		lsr	r6, r3, #24
+ 561 0360 FF24     		mov	r4, #255
+ 562              	.L162:
+ 563 0362 731C     		add	r3, r6, #1
+ 564 0364 1B06     		lsl	r3, r3, #24
+ 565 0366 1E0E     		lsr	r6, r3, #24
+ 566              	.L153:
+ 567 0368 BE42     		cmp	r6, r7
+ 568 036a E2D3     		bcc	.L186
+ 569              	.L187:
+ 570 036c 094B     		ldr	r3, .L188
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 11
+
+
+ 571 036e 1B78     		ldrb	r3, [r3]
+ 572 0370 1A07     		lsl	r2, r3, #28
+ 573 0372 FBD5     		bpl	.L187
+ 574 0374 084B     		ldr	r3, .L188+4
+ 575 0376 1B78     		ldrb	r3, [r3]
+ 576 0378 182B     		cmp	r3, #24
+ 577 037a 04D0     		beq	.L165
+ 578 037c 282B     		cmp	r3, #40
+ 579 037e 02D0     		beq	.L165
+ 580 0380 F82B     		cmp	r3, #248
+ 581 0382 F3D0     		beq	.L187
+ 582 0384 FF24     		mov	r4, #255
+ 583              	.L165:
+ 584 0386 FFF7FEFF 		bl	i2cStop
+ 585 038a 2006     		lsl	r0, r4, #24
+ 586 038c 0016     		asr	r0, r0, #24
+ 587              		@ sp needed for prologue
+ 588 038e F0BC     		pop	{r4, r5, r6, r7}
+ 589 0390 02BC     		pop	{r1}
+ 590 0392 0847     		bx	r1
+ 591              	.L189:
+ 592              		.align	2
+ 593              	.L188:
+ 594 0394 00C001E0 		.word	-536756224
+ 595 0398 04C001E0 		.word	-536756220
+ 596              		.size	i2cWrite, .-i2cWrite
+ 597              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 i2c.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:9      .text:00000000 i2cCheckStatus
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:23     .text:00000010 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:31     .text:00000018 i2cInit
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:28     .text:00000018 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:66     .text:00000054 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:76     .text:00000064 i2cStart
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:73     .text:00000064 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:118    .text:000000a4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:127    .text:000000b0 i2cStop
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:124    .text:000000b0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:150    .text:000000d0 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:158    .text:000000d8 i2cPutChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:155    .text:000000d8 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:183    .text:000000fc $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:191    .text:00000104 i2cGetChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:188    .text:00000104 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:240    .text:00000150 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:249    .text:0000015c i2cWaitTransmit
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:246    .text:0000015c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:275    .text:00000180 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:283    .text:00000188 i2cWriteWithWait
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:280    .text:00000188 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:314    .text:000001b8 i2cMyWrite
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:365    .text:00000210 i2cRepeatStart
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:407    .text:00000250 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:416    .text:0000025c i2cRead
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:413    .text:0000025c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:501    .text:000002f4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:509    .text:000002fc i2cWrite
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:506    .text:000002fc $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclrbJfA.s:594    .text:00000394 $d
+
+NO UNDEFINED SYMBOLS

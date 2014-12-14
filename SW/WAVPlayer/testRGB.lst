@@ -1,0 +1,186 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"testRGB.c"
+   3              		.text
+   4              		.align	2
+   5              		.global	testRGB
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	testRGB, %function
+   9              	testRGB:
+  10 0000 70B5     		push	{r4, r5, r6, lr}
+  11 0002 3E4B     		ldr	r3, .L39
+  12 0004 1B78     		ldrb	r3, [r3]
+  13 0006 012B     		cmp	r3, #1
+  14 0008 08D1     		bne	.L2
+  15 000a 3D49     		ldr	r1, .L39+4
+  16 000c 3D4A     		ldr	r2, .L39+8
+  17 000e 0B68     		ldr	r3, [r1]
+  18 0010 1340     		and	r3, r3, r2
+  19 0012 0B60     		str	r3, [r1]
+  20 0014 A023     		mov	r3, #160
+  21 0016 0A68     		ldr	r2, [r1]
+  22 0018 9B02     		lsl	r3, r3, #10
+  23 001a 07E0     		b	.L36
+  24              	.L2:
+  25 001c 3849     		ldr	r1, .L39+4
+  26 001e 394A     		ldr	r2, .L39+8
+  27 0020 0B68     		ldr	r3, [r1]
+  28 0022 1340     		and	r3, r3, r2
+  29 0024 0B60     		str	r3, [r1]
+  30 0026 A823     		mov	r3, #168
+  31 0028 0A68     		ldr	r2, [r1]
+  32 002a 1B03     		lsl	r3, r3, #12
+  33              	.L36:
+  34 002c 1A43     		orr	r2, r2, r3
+  35 002e 364B     		ldr	r3, .L39+12
+  36 0030 0A60     		str	r2, [r1]
+  37 0032 0021     		mov	r1, #0
+  38 0034 1960     		str	r1, [r3]
+  39 0036 0222     		mov	r2, #2
+  40 0038 0833     		add	r3, r3, #8
+  41 003a 1A60     		str	r2, [r3]
+  42 003c 334A     		ldr	r2, .L39+16
+  43 003e 8023     		mov	r3, #128
+  44 0040 5B01     		lsl	r3, r3, #5
+  45 0042 1360     		str	r3, [r2]
+  46 0044 324B     		ldr	r3, .L39+20
+  47 0046 1960     		str	r1, [r3]
+  48 0048 2033     		add	r3, r3, #32
+  49 004a 1960     		str	r1, [r3]
+  50 004c 0833     		add	r3, r3, #8
+  51 004e 1960     		str	r1, [r3]
+  52 0050 5522     		mov	r2, #85
+  53 0052 0833     		add	r3, r3, #8
+  54 0054 1A60     		str	r2, [r3]
+  55 0056 2F4A     		ldr	r2, .L39+24
+  56 0058 A823     		mov	r3, #168
+  57 005a DB01     		lsl	r3, r3, #7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s 			page 2
+
+
+  58 005c 1360     		str	r3, [r2]
+  59 005e 2E4B     		ldr	r3, .L39+28
+  60 0060 0922     		mov	r2, #9
+  61 0062 0026     		mov	r6, #0
+  62 0064 0025     		mov	r5, #0
+  63 0066 0024     		mov	r4, #0
+  64 0068 1A60     		str	r2, [r3]
+  65 006a 00E0     		b	.L38
+  66              	.L6:
+  67 006c 0025     		mov	r5, #0
+  68              	.L38:
+  69 006e 002E     		cmp	r6, #0
+  70 0070 0AD1     		bne	.L7
+  71 0072 7F2C     		cmp	r4, #127
+  72 0074 01D8     		bhi	.L9
+  73 0076 0534     		add	r4, r4, #5
+  74 0078 00E0     		b	.L11
+  75              	.L9:
+  76 007a 0F34     		add	r4, r4, #15
+  77              	.L11:
+  78 007c C023     		mov	r3, #192
+  79 007e 9B00     		lsl	r3, r3, #2
+  80 0080 9C42     		cmp	r4, r3
+  81 0082 15D9     		bls	.L12
+  82 0084 0126     		mov	r6, #1
+  83 0086 13E0     		b	.L12
+  84              	.L7:
+  85 0088 002C     		cmp	r4, #0
+  86 008a 0CD1     		bne	.L14
+  87 008c 6B1C     		add	r3, r5, #1
+  88 008e 1B06     		lsl	r3, r3, #24
+  89 0090 1D0E     		lsr	r5, r3, #24
+  90 0092 2820     		mov	r0, #40
+  91 0094 FFF7FEFF 		bl	osSleep
+  92 0098 022D     		cmp	r5, #2
+  93 009a 02D9     		bls	.L16
+  94 009c 0026     		mov	r6, #0
+  95 009e 0025     		mov	r5, #0
+  96 00a0 0EE0     		b	.L18
+  97              	.L16:
+  98 00a2 0026     		mov	r6, #0
+  99 00a4 04E0     		b	.L12
+ 100              	.L14:
+ 101 00a6 7F2C     		cmp	r4, #127
+ 102 00a8 01D8     		bhi	.L19
+ 103 00aa 053C     		sub	r4, r4, #5
+ 104 00ac 00E0     		b	.L12
+ 105              	.L19:
+ 106 00ae 0F3C     		sub	r4, r4, #15
+ 107              	.L12:
+ 108 00b0 012D     		cmp	r5, #1
+ 109 00b2 0BD0     		beq	.L23
+ 110 00b4 012D     		cmp	r5, #1
+ 111 00b6 02D3     		bcc	.L22
+ 112 00b8 022D     		cmp	r5, #2
+ 113 00ba 15D1     		bne	.L33
+ 114 00bc 0BE0     		b	.L24
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s 			page 3
+
+
+ 115              	.L22:
+ 116 00be 0125     		mov	r5, #1
+ 117              	.L18:
+ 118 00c0 134B     		ldr	r3, .L39+20
+ 119 00c2 0422     		mov	r2, #4
+ 120 00c4 1C60     		str	r4, [r3]
+ 121 00c6 3033     		add	r3, r3, #48
+ 122 00c8 1A60     		str	r2, [r3]
+ 123 00ca 0EE0     		b	.L25
+ 124              	.L23:
+ 125 00cc 134B     		ldr	r3, .L39+32
+ 126 00ce 1022     		mov	r2, #16
+ 127 00d0 1C60     		str	r4, [r3]
+ 128 00d2 1033     		add	r3, r3, #16
+ 129 00d4 03E0     		b	.L37
+ 130              	.L24:
+ 131 00d6 124B     		ldr	r3, .L39+36
+ 132 00d8 4022     		mov	r2, #64
+ 133 00da 1C60     		str	r4, [r3]
+ 134 00dc 0833     		add	r3, r3, #8
+ 135              	.L37:
+ 136 00de 1A60     		str	r2, [r3]
+ 137 00e0 0120     		mov	r0, #1
+ 138 00e2 FFF7FEFF 		bl	osSleep
+ 139 00e6 C2E7     		b	.L38
+ 140              	.L33:
+ 141 00e8 0125     		mov	r5, #1
+ 142              	.L25:
+ 143 00ea 0120     		mov	r0, #1
+ 144 00ec FFF7FEFF 		bl	osSleep
+ 145 00f0 012D     		cmp	r5, #1
+ 146 00f2 BBD0     		beq	.L6
+ 147              		@ sp needed for prologue
+ 148 00f4 70BC     		pop	{r4, r5, r6}
+ 149 00f6 01BC     		pop	{r0}
+ 150 00f8 0047     		bx	r0
+ 151              	.L40:
+ 152 00fa 0000     		.align	2
+ 153              	.L39:
+ 154 00fc 00000000 		.word	xbeePresent
+ 155 0100 00C002E0 		.word	-536690688
+ 156 0104 FF3FF0FF 		.word	-1032193
+ 157 0108 0C4001E0 		.word	-536788980
+ 158 010c 184001E0 		.word	-536788968
+ 159 0110 204001E0 		.word	-536788960
+ 160 0114 4C4001E0 		.word	-536788916
+ 161 0118 044001E0 		.word	-536788988
+ 162 011c 404001E0 		.word	-536788928
+ 163 0120 484001E0 		.word	-536788920
+ 164              		.size	testRGB, .-testRGB
+ 165              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 testRGB.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s:9      .text:00000000 testRGB
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s:154    .text:000000fc $d
+
+UNDEFINED SYMBOLS
+osSleep
+xbeePresent

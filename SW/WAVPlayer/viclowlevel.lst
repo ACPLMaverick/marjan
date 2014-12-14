@@ -1,0 +1,77 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"viclowlevel.c"
+   3              		.text
+   4              		.align	2
+   5              		.global	enableIRQ
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	enableIRQ, %function
+   9              	enableIRQ:
+  10              		@ lr needed for prologue
+  11              		 mrs r0, cpsr
+  12              		.code	16
+  13 ???? 0023     		mov	r3, #128
+  14 ???? 021C     		mov	r2, r0
+  15 ???? 9A43     		bic	r2, r2, r3
+  16              		 msr cpsr, r2
+  17              		.code	16
+  18              		@ sp needed for prologue
+  19 ???? 7047     		bx	lr
+  20              		.size	enableIRQ, .-enableIRQ
+  21              		.align	2
+  22              		.global	restoreIRQ
+  23              		.code 16
+  24              		.thumb_func
+  25              		.type	restoreIRQ, %function
+  26              	restoreIRQ:
+  27              		@ lr needed for prologue
+  28              		 mrs r1, cpsr
+  29              		.code	16
+  30 ???? 0022     		mov	r2, #128
+  31 ???? 0B1C     		mov	r3, r1
+  32 ???? 9343     		bic	r3, r3, r2
+  33 ???? 1040     		and	r0, r0, r2
+  34 ???? 0343     		orr	r3, r3, r0
+  35              		 msr cpsr, r3
+  36              		.code	16
+  37 ???? 081C     		mov	r0, r1
+  38              		@ sp needed for prologue
+  39 ???? 7047     		bx	lr
+  40              		.size	restoreIRQ, .-restoreIRQ
+  41              		.align	2
+  42              		.global	disableIRQ
+  43              		.code 16
+  44              		.thumb_func
+  45              		.type	disableIRQ, %function
+  46              	disableIRQ:
+  47              		@ lr needed for prologue
+  48              		 mrs r0, cpsr
+  49              		.code	16
+  50 ???? 0023     		mov	r3, #128
+  51 ???? 0343     		orr	r3, r3, r0
+  52              		 msr cpsr, r3
+  53              		.code	16
+  54              		@ sp needed for prologue
+  55 ???? 7047     		bx	lr
+  56              		.size	disableIRQ, .-disableIRQ
+  57              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s 			page 2
+
+
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 viclowlevel.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s:9      .text:00000000 enableIRQ
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s:20     .text:00000000 L0
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s:26     .text:00000000 restoreIRQ
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s:40     .text:00000000 L0
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s:46     .text:00000000 disableIRQ
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccaNtGkf.s:56     .text:00000000 L0
+
+NO UNDEFINED SYMBOLS

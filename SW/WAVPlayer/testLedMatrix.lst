@@ -1,0 +1,279 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"testLedMatrix.c"
+   3              		.text
+   4              		.align	2
+   5              		.global	testLedMatrix
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	testLedMatrix, %function
+   9              	testLedMatrix:
+  10 0000 10B5     		push	{r4, lr}
+  11 0002 2949     		ldr	r1, .L7
+  12 0004 A823     		mov	r3, #168
+  13 0006 0A68     		ldr	r2, [r1]
+  14 0008 5B01     		lsl	r3, r3, #5
+  15 000a 1A43     		orr	r2, r2, r3
+  16 000c 274B     		ldr	r3, .L7+4
+  17 000e 0A60     		str	r2, [r1]
+  18 0010 0822     		mov	r2, #8
+  19 0012 1A60     		str	r2, [r3]
+  20 0014 6022     		mov	r2, #96
+  21 0016 0C3B     		sub	r3, r3, #12
+  22 0018 1A60     		str	r2, [r3]
+  23 001a 2549     		ldr	r1, .L7+8
+  24 001c 8023     		mov	r3, #128
+  25 001e 0A68     		ldr	r2, [r1]
+  26 0020 1B02     		lsl	r3, r3, #8
+  27 0022 1A43     		orr	r2, r2, r3
+  28 0024 0A60     		str	r2, [r1]
+  29 0026 234A     		ldr	r2, .L7+12
+  30 0028 1368     		ldr	r3, [r2]
+  31 002a 2021     		mov	r1, #32
+  32 002c 8B43     		bic	r3, r3, r1
+  33 002e 1360     		str	r3, [r2]
+  34 0030 214A     		ldr	r2, .L7+16
+  35 0032 224B     		ldr	r3, .L7+20
+  36 0034 1A60     		str	r2, [r3]
+  37 0036 224B     		ldr	r3, .L7+24
+  38 0038 2522     		mov	r2, #37
+  39 003a 1A60     		str	r2, [r3]
+  40 003c 214B     		ldr	r3, .L7+28
+  41 003e 1960     		str	r1, [r3]
+  42 0040 2149     		ldr	r1, .L7+32
+  43 0042 0223     		mov	r3, #2
+  44 0044 0B60     		str	r3, [r1]
+  45 0046 214B     		ldr	r3, .L7+36
+  46 0048 0022     		mov	r2, #0
+  47 004a 1A60     		str	r2, [r3]
+  48 004c 204A     		ldr	r2, .L7+40
+  49 004e 0833     		add	r3, r3, #8
+  50 0050 1A60     		str	r2, [r3]
+  51 0052 FF22     		mov	r2, #255
+  52 0054 183B     		sub	r3, r3, #24
+  53 0056 1A60     		str	r2, [r3]
+  54 0058 0322     		mov	r2, #3
+  55 005a 1433     		add	r3, r3, #20
+  56 005c 1A60     		str	r2, [r3]
+  57 005e 0123     		mov	r3, #1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s 			page 2
+
+
+  58 0060 0B60     		str	r3, [r1]
+  59 0062 1020     		mov	r0, #16
+  60 0064 FFF7FEFF 		bl	osSleep
+  61 0068 0123     		mov	r3, #1
+  62              	.L2:
+  63 006a 1C1C     		mov	r4, r3
+  64              	.L3:
+  65 006c 194B     		ldr	r3, .L7+44
+  66 006e 1A49     		ldr	r1, .L7+48
+  67 0070 1A5D     		ldrb	r2, [r3, r4]
+  68 0072 E318     		add	r3, r4, r3
+  69 0074 0A70     		strb	r2, [r1]
+  70 0076 5A78     		ldrb	r2, [r3, #1]
+  71 0078 4A70     		strb	r2, [r1, #1]
+  72 007a 9A78     		ldrb	r2, [r3, #2]
+  73 007c 8A70     		strb	r2, [r1, #2]
+  74 007e DA78     		ldrb	r2, [r3, #3]
+  75 0080 CA70     		strb	r2, [r1, #3]
+  76 0082 1A79     		ldrb	r2, [r3, #4]
+  77 0084 0A71     		strb	r2, [r1, #4]
+  78 0086 5A79     		ldrb	r2, [r3, #5]
+  79 0088 4A71     		strb	r2, [r1, #5]
+  80 008a 9A79     		ldrb	r2, [r3, #6]
+  81 008c DB79     		ldrb	r3, [r3, #7]
+  82 008e 8A71     		strb	r2, [r1, #6]
+  83 0090 CB71     		strb	r3, [r1, #7]
+  84 0092 1020     		mov	r0, #16
+  85 0094 FFF7FEFF 		bl	osSleep
+  86 0098 631C     		add	r3, r4, #1
+  87 009a 1B06     		lsl	r3, r3, #24
+  88 009c 1B0E     		lsr	r3, r3, #24
+  89 009e 0024     		mov	r4, #0
+  90 00a0 772B     		cmp	r3, #119
+  91 00a2 E3D8     		bhi	.L3
+  92 00a4 E1E7     		b	.L2
+  93              	.L8:
+  94 00a6 0000     		.align	2
+  95              	.L7:
+  96 00a8 00C002E0 		.word	-536690688
+  97 00ac 0C0002E0 		.word	-536739828
+  98 00b0 088002E0 		.word	-536707064
+  99 00b4 0CF0FFFF 		.word	-4084
+ 100 00b8 00000000 		.word	ledMatrix
+ 101 00bc 14F1FFFF 		.word	-3820
+ 102 00c0 14F2FFFF 		.word	-3564
+ 103 00c4 10F0FFFF 		.word	-4080
+ 104 00c8 048000E0 		.word	-536838140
+ 105 00cc 108000E0 		.word	-536838128
+ 106 00d0 C0D40100 		.word	120000
+ 107 00d4 00000000 		.word	eaText
+ 108 00d8 00000000 		.word	pattern
+ 109              		.size	testLedMatrix, .-testLedMatrix
+ 110              		.global	eaText
+ 111              		.section	.rodata
+ 112              		.type	eaText, %object
+ 113              		.size	eaText, 127
+ 114              	eaText:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s 			page 3
+
+
+ 115 0000 00       		.byte	0
+ 116 0001 00       		.byte	0
+ 117 0002 00       		.byte	0
+ 118 0003 00       		.byte	0
+ 119 0004 00       		.byte	0
+ 120 0005 00       		.byte	0
+ 121 0006 00       		.byte	0
+ 122 0007 00       		.byte	0
+ 123 0008 80       		.byte	-128
+ 124 0009 40       		.byte	64
+ 125 000a 20       		.byte	32
+ 126 000b 10       		.byte	16
+ 127 000c 08       		.byte	8
+ 128 000d 04       		.byte	4
+ 129 000e 02       		.byte	2
+ 130 000f 01       		.byte	1
+ 131 0010 02       		.byte	2
+ 132 0011 04       		.byte	4
+ 133 0012 08       		.byte	8
+ 134 0013 10       		.byte	16
+ 135 0014 20       		.byte	32
+ 136 0015 40       		.byte	64
+ 137 0016 80       		.byte	-128
+ 138 0017 40       		.byte	64
+ 139 0018 20       		.byte	32
+ 140 0019 10       		.byte	16
+ 141 001a 08       		.byte	8
+ 142 001b 04       		.byte	4
+ 143 001c 02       		.byte	2
+ 144 001d 01       		.byte	1
+ 145 001e 02       		.byte	2
+ 146 001f 04       		.byte	4
+ 147 0020 08       		.byte	8
+ 148 0021 10       		.byte	16
+ 149 0022 20       		.byte	32
+ 150 0023 40       		.byte	64
+ 151 0024 80       		.byte	-128
+ 152 0025 00       		.byte	0
+ 153 0026 00       		.byte	0
+ 154 0027 00       		.byte	0
+ 155 0028 00       		.byte	0
+ 156 0029 00       		.byte	0
+ 157 002a 00       		.byte	0
+ 158 002b 00       		.byte	0
+ 159 002c 00       		.byte	0
+ 160 002d 08       		.byte	8
+ 161 002e 08       		.byte	8
+ 162 002f 08       		.byte	8
+ 163 0030 08       		.byte	8
+ 164 0031 08       		.byte	8
+ 165 0032 08       		.byte	8
+ 166 0033 00       		.byte	0
+ 167 0034 00       		.byte	0
+ 168 0035 7F       		.byte	127
+ 169 0036 41       		.byte	65
+ 170 0037 41       		.byte	65
+ 171 0038 3E       		.byte	62
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s 			page 4
+
+
+ 172 0039 00       		.byte	0
+ 173 003a 7F       		.byte	127
+ 174 003b 49       		.byte	73
+ 175 003c 49       		.byte	73
+ 176 003d 41       		.byte	65
+ 177 003e 00       		.byte	0
+ 178 003f 7E       		.byte	126
+ 179 0040 09       		.byte	9
+ 180 0041 09       		.byte	9
+ 181 0042 7E       		.byte	126
+ 182 0043 00       		.byte	0
+ 183 0044 7F       		.byte	127
+ 184 0045 41       		.byte	65
+ 185 0046 41       		.byte	65
+ 186 0047 3E       		.byte	62
+ 187 0048 00       		.byte	0
+ 188 0049 00       		.byte	0
+ 189 004a 00       		.byte	0
+ 190 004b 00       		.byte	0
+ 191 004c 00       		.byte	0
+ 192 004d 00       		.byte	0
+ 193 004e 7E       		.byte	126
+ 194 004f 09       		.byte	9
+ 195 0050 09       		.byte	9
+ 196 0051 7E       		.byte	126
+ 197 0052 00       		.byte	0
+ 198 0053 7F       		.byte	127
+ 199 0054 19       		.byte	25
+ 200 0055 29       		.byte	41
+ 201 0056 46       		.byte	70
+ 202 0057 00       		.byte	0
+ 203 0058 01       		.byte	1
+ 204 0059 01       		.byte	1
+ 205 005a 7F       		.byte	127
+ 206 005b 01       		.byte	1
+ 207 005c 01       		.byte	1
+ 208 005d 00       		.byte	0
+ 209 005e 7F       		.byte	127
+ 210 005f 00       		.byte	0
+ 211 0060 26       		.byte	38
+ 212 0061 49       		.byte	73
+ 213 0062 49       		.byte	73
+ 214 0063 32       		.byte	50
+ 215 0064 00       		.byte	0
+ 216 0065 01       		.byte	1
+ 217 0066 01       		.byte	1
+ 218 0067 7F       		.byte	127
+ 219 0068 01       		.byte	1
+ 220 0069 01       		.byte	1
+ 221 006a 00       		.byte	0
+ 222 006b 26       		.byte	38
+ 223 006c 49       		.byte	73
+ 224 006d 49       		.byte	73
+ 225 006e 32       		.byte	50
+ 226 006f 00       		.byte	0
+ 227 0070 00       		.byte	0
+ 228 0071 00       		.byte	0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s 			page 5
+
+
+ 229 0072 08       		.byte	8
+ 230 0073 08       		.byte	8
+ 231 0074 08       		.byte	8
+ 232 0075 08       		.byte	8
+ 233 0076 08       		.byte	8
+ 234 0077 08       		.byte	8
+ 235 0078 00       		.byte	0
+ 236 0079 00       		.byte	0
+ 237 007a 00       		.byte	0
+ 238 007b 00       		.byte	0
+ 239 007c 00       		.byte	0
+ 240 007d 00       		.byte	0
+ 241 007e 00       		.byte	0
+ 242              		.global	pattern
+ 243              		.bss
+ 244              		.type	pattern, %object
+ 245              		.size	pattern, 8
+ 246              	pattern:
+ 247 0000 00000000 		.space	8
+ 247      00000000 
+ 248              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 testLedMatrix.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s:9      .text:00000000 testLedMatrix
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s:96     .text:000000a8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s:114    .rodata:00000000 eaText
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccG7nVuh.s:246    .bss:00000000 pattern
+                             .bss:00000000 $d
+
+UNDEFINED SYMBOLS
+osSleep
+ledMatrix

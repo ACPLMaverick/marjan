@@ -1,0 +1,272 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"testXBee.c"
+   3              		.section	.rodata.str1.4,"aMS",%progbits,1
+   4              		.align	2
+   5              	.LC0:
+   6 0000 0A0A2A2A 		.ascii	"\012\012*******************************************"
+   6      2A2A2A2A 
+   6      2A2A2A2A 
+   6      2A2A2A2A 
+   6      2A2A2A2A 
+   7 002d 2A2A2A2A 		.ascii	"************\012\000"
+   7      2A2A2A2A 
+   7      2A2A2A2A 
+   7      0A00
+   8 003b 00       		.align	2
+   9              	.LC2:
+  10 003c 2A202020 		.ascii	"*                                                  "
+  10      20202020 
+  10      20202020 
+  10      20202020 
+  10      20202020 
+  11 006f 2020202A 		.ascii	"   *\012\000"
+  11      0A00
+  12 0075 000000   		.align	2
+  13              	.LC4:
+  14 0078 2A20436F 		.ascii	"* Communication with the XBee ZigBee module is test"
+  14      6D6D756E 
+  14      69636174 
+  14      696F6E20 
+  14      77697468 
+  15 00ab 6564202A 		.ascii	"ed *\012\000"
+  15      0A00
+  16 00b1 000000   		.align	2
+  17              	.LC6:
+  18 00b4 2A2A2A2A 		.ascii	"***************************************************"
+  18      2A2A2A2A 
+  18      2A2A2A2A 
+  18      2A2A2A2A 
+  18      2A2A2A2A 
+  19 00e7 2A2A2A2A 		.ascii	"****\012\000"
+  19      0A00
+  20 00ed 000000   		.align	2
+  21              	.LC8:
+  22 00f0 2A202043 		.ascii	"*  Communication with XBee module below:           "
+  22      6F6D6D75 
+  22      6E696361 
+  22      74696F6E 
+  22      20776974 
+  23 0123 2020202A 		.ascii	"   *\012\012\000"
+  23      0A0A00
+  24 012a 0000     		.align	2
+  25              	.LC11:
+  26 012c 0A256300 		.ascii	"\012%c\000"
+  27              		.align	2
+  28              	.LC13:
+  29 0130 256300   		.ascii	"%c\000"
+  30 0133 00       		.align	2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s 			page 2
+
+
+  31              	.LC15:
+  32 0134 0A2A2A2A 		.ascii	"\012***********************************************"
+  32      2A2A2A2A 
+  32      2A2A2A2A 
+  32      2A2A2A2A 
+  32      2A2A2A2A 
+  33 0164 2A2A2A2A 		.ascii	"********\000"
+  33      2A2A2A2A 
+  33      00
+  34 016d 000000   		.align	2
+  35              	.LC17:
+  36 0170 0A2A2020 		.ascii	"\012*  XBee module detected!!!                     "
+  36      58426565 
+  36      206D6F64 
+  36      756C6520 
+  36      64657465 
+  37 01a0 20202020 		.ascii	"       *\000"
+  37      2020202A 
+  37      00
+  38 01a9 000000   		.align	2
+  39              	.LC19:
+  40 01ac 0A2A2A2A 		.ascii	"\012***********************************************"
+  40      2A2A2A2A 
+  40      2A2A2A2A 
+  40      2A2A2A2A 
+  40      2A2A2A2A 
+  41 01dc 2A2A2A2A 		.ascii	"********\012\012\012\000"
+  41      2A2A2A2A 
+  41      0A0A0A00 
+  42              		.align	2
+  43              	.LC21:
+  44 01e8 0A2A2020 		.ascii	"\012*  No XBee module detected...                  "
+  44      4E6F2058 
+  44      42656520 
+  44      6D6F6475 
+  44      6C652064 
+  45 0218 20202020 		.ascii	"       *\000"
+  45      2020202A 
+  45      00
+  46 0221 000000   		.text
+  47              		.align	2
+  48              		.global	testXBee
+  49              		.code 16
+  50              		.thumb_func
+  51              		.type	testXBee, %function
+  52              	testXBee:
+  53 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  54 0002 81B0     		sub	sp, sp, #4
+  55 0004 4248     		ldr	r0, .L19
+  56 0006 FFF7FEFF 		bl	simplePrintf
+  57 000a 424C     		ldr	r4, .L19+4
+  58 000c 201C     		mov	r0, r4
+  59 000e FFF7FEFF 		bl	simplePrintf
+  60 0012 4148     		ldr	r0, .L19+8
+  61 0014 FFF7FEFF 		bl	simplePrintf
+  62 0018 201C     		mov	r0, r4
+  63 001a FFF7FEFF 		bl	simplePrintf
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s 			page 3
+
+
+  64 001e 3F48     		ldr	r0, .L19+12
+  65 0020 3F4D     		ldr	r5, .L19+16
+  66 0022 FFF7FEFF 		bl	simplePrintf
+  67 0026 3F48     		ldr	r0, .L19+20
+  68 0028 FFF7FEFF 		bl	simplePrintf
+  69 002c 0321     		mov	r1, #3
+  70 002e 4122     		mov	r2, #65
+  71 0030 3D48     		ldr	r0, .L19+24
+  72 0032 FFF7FEFF 		bl	initUart1
+  73 0036 8024     		mov	r4, #128
+  74 0038 2B68     		ldr	r3, [r5]
+  75 003a 2402     		lsl	r4, r4, #8
+  76 003c 3B4E     		ldr	r6, .L19+28
+  77 003e 3C4F     		ldr	r7, .L19+32
+  78 0040 2343     		orr	r3, r3, r4
+  79 0042 2B60     		str	r3, [r5]
+  80 0044 0120     		mov	r0, #1
+  81 0046 3460     		str	r4, [r6]
+  82 0048 3C60     		str	r4, [r7]
+  83 004a FFF7FEFF 		bl	osSleep
+  84 004e 3460     		str	r4, [r6]
+  85 0050 8023     		mov	r3, #128
+  86 0052 2A68     		ldr	r2, [r5]
+  87 0054 DB00     		lsl	r3, r3, #3
+  88 0056 1A43     		orr	r2, r2, r3
+  89 0058 2A60     		str	r2, [r5]
+  90 005a 3B60     		str	r3, [r7]
+  91 005c 8023     		mov	r3, #128
+  92 005e 2A68     		ldr	r2, [r5]
+  93 0060 9B01     		lsl	r3, r3, #6
+  94 0062 1A43     		orr	r2, r2, r3
+  95 0064 2A60     		str	r2, [r5]
+  96 0066 1420     		mov	r0, #20
+  97 0068 3360     		str	r3, [r6]
+  98 006a FFF7FEFF 		bl	osSleep
+  99 006e 2B20     		mov	r0, #43
+ 100 0070 FFF7FEFF 		bl	uart1SendCh
+ 101 0074 2B20     		mov	r0, #43
+ 102 0076 FFF7FEFF 		bl	uart1SendCh
+ 103 007a 2B20     		mov	r0, #43
+ 104 007c FFF7FEFF 		bl	uart1SendCh
+ 105 0080 6E20     		mov	r0, #110
+ 106 0082 FFF7FEFF 		bl	osSleep
+ 107 0086 4120     		mov	r0, #65
+ 108 0088 FFF7FEFF 		bl	uart1SendCh
+ 109 008c 5420     		mov	r0, #84
+ 110 008e FFF7FEFF 		bl	uart1SendCh
+ 111 0092 5620     		mov	r0, #86
+ 112 0094 FFF7FEFF 		bl	uart1SendCh
+ 113 0098 4C20     		mov	r0, #76
+ 114 009a FFF7FEFF 		bl	uart1SendCh
+ 115 009e 0A20     		mov	r0, #10
+ 116 00a0 FFF7FEFF 		bl	uart1SendCh
+ 117 00a4 234B     		ldr	r3, .L19+36
+ 118 00a6 1E68     		ldr	r6, [r3]
+ 119 00a8 0025     		mov	r5, #0
+ 120 00aa 0FE0     		b	.L18
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s 			page 4
+
+
+ 121              	.L3:
+ 122 00ac 6C46     		mov	r4, sp
+ 123 00ae 0334     		add	r4, r4, #3
+ 124 00b0 201C     		mov	r0, r4
+ 125 00b2 FFF7FEFF 		bl	uart1GetChar
+ 126 00b6 0128     		cmp	r0, #1
+ 127 00b8 08D1     		bne	.L18
+ 128 00ba 2178     		ldrb	r1, [r4]
+ 129 00bc 0135     		add	r5, r5, #1
+ 130 00be 0D29     		cmp	r1, #13
+ 131 00c0 01D1     		bne	.L5
+ 132 00c2 1D48     		ldr	r0, .L19+40
+ 133 00c4 00E0     		b	.L17
+ 134              	.L5:
+ 135 00c6 1D48     		ldr	r0, .L19+44
+ 136              	.L17:
+ 137 00c8 FFF7FEFF 		bl	simplePrintf
+ 138              	.L18:
+ 139 00cc 194B     		ldr	r3, .L19+36
+ 140 00ce 1B68     		ldr	r3, [r3]
+ 141 00d0 1B4A     		ldr	r2, .L19+48
+ 142 00d2 9B1B     		sub	r3, r3, r6
+ 143 00d4 9342     		cmp	r3, r2
+ 144 00d6 E9D9     		bls	.L3
+ 145 00d8 1A48     		ldr	r0, .L19+52
+ 146 00da 1B4C     		ldr	r4, .L19+56
+ 147 00dc 4B2D     		cmp	r5, #75
+ 148 00de 09D9     		bls	.L8
+ 149 00e0 FFF7FEFF 		bl	simplePrintf
+ 150 00e4 1948     		ldr	r0, .L19+60
+ 151 00e6 FFF7FEFF 		bl	simplePrintf
+ 152 00ea 201C     		mov	r0, r4
+ 153 00ec FFF7FEFF 		bl	simplePrintf
+ 154 00f0 0120     		mov	r0, #1
+ 155 00f2 08E0     		b	.L10
+ 156              	.L8:
+ 157 00f4 FFF7FEFF 		bl	simplePrintf
+ 158 00f8 1548     		ldr	r0, .L19+64
+ 159 00fa FFF7FEFF 		bl	simplePrintf
+ 160 00fe 201C     		mov	r0, r4
+ 161 0100 FFF7FEFF 		bl	simplePrintf
+ 162 0104 0020     		mov	r0, #0
+ 163              	.L10:
+ 164 0106 01B0     		add	sp, sp, #4
+ 165              		@ sp needed for prologue
+ 166 0108 F0BC     		pop	{r4, r5, r6, r7}
+ 167 010a 02BC     		pop	{r1}
+ 168 010c 0847     		bx	r1
+ 169              	.L20:
+ 170 010e 0000     		.align	2
+ 171              	.L19:
+ 172 0110 00000000 		.word	.LC0
+ 173 0114 3C000000 		.word	.LC2
+ 174 0118 78000000 		.word	.LC4
+ 175 011c B4000000 		.word	.LC6
+ 176 0120 088002E0 		.word	-536707064
+ 177 0124 F0000000 		.word	.LC8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s 			page 5
+
+
+ 178 0128 87010000 		.word	391
+ 179 012c 048002E0 		.word	-536707068
+ 180 0130 0C8002E0 		.word	-536707060
+ 181 0134 00000000 		.word	msClock
+ 182 0138 2C010000 		.word	.LC11
+ 183 013c 30010000 		.word	.LC13
+ 184 0140 DB050000 		.word	1499
+ 185 0144 34010000 		.word	.LC15
+ 186 0148 AC010000 		.word	.LC19
+ 187 014c 70010000 		.word	.LC17
+ 188 0150 E8010000 		.word	.LC21
+ 189              		.size	testXBee, .-testXBee
+ 190              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 testXBee.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s:52     .text:00000000 testXBee
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccasnwJG.s:172    .text:00000110 $d
+
+UNDEFINED SYMBOLS
+simplePrintf
+initUart1
+osSleep
+uart1SendCh
+uart1GetChar
+msClock

@@ -1,0 +1,388 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"uart.c"
+   3              		.text
+   4              		.align	2
+   5              		.global	initUart1
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	initUart1, %function
+   9              	initUart1:
+  10 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  11 0002 244D     		ldr	r5, .L3
+  12 0004 244B     		ldr	r3, .L3+4
+  13 0006 2C68     		ldr	r4, [r5]
+  14 0008 1C40     		and	r4, r4, r3
+  15 000a A023     		mov	r3, #160
+  16 000c 234F     		ldr	r7, .L3+8
+  17 000e DB02     		lsl	r3, r3, #11
+  18 0010 1206     		lsl	r2, r2, #24
+  19 0012 0026     		mov	r6, #0
+  20 0014 83B0     		sub	sp, sp, #12
+  21 0016 1C43     		orr	r4, r4, r3
+  22 0018 120E     		lsr	r2, r2, #24
+  23 001a 2C60     		str	r4, [r5]
+  24 001c 0092     		str	r2, [sp]
+  25 001e 3E60     		str	r6, [r7]
+  26 0020 1F4A     		ldr	r2, .L3+12
+  27 0022 1368     		ldr	r3, [r2]
+  28 0024 0293     		str	r3, [sp, #8]
+  29 0026 1F4B     		ldr	r3, .L3+16
+  30 0028 9C46     		mov	ip, r3
+  31 002a 1B68     		ldr	r3, [r3]
+  32 002c 0293     		str	r3, [sp, #8]
+  33 002e 1E4B     		ldr	r3, .L3+20
+  34 0030 1B68     		ldr	r3, [r3]
+  35 0032 0004     		lsl	r0, r0, #16
+  36 0034 0293     		str	r3, [sp, #8]
+  37 0036 1D4D     		ldr	r5, .L3+24
+  38 0038 0302     		lsl	r3, r0, #8
+  39 003a 8024     		mov	r4, #128
+  40 003c 6246     		mov	r2, ip
+  41 003e 1B0E     		lsr	r3, r3, #24
+  42 0040 0906     		lsl	r1, r1, #24
+  43 0042 2C60     		str	r4, [r5]
+  44 0044 090E     		lsr	r1, r1, #24
+  45 0046 1360     		str	r3, [r2]
+  46 0048 009B     		ldr	r3, [sp]
+  47 004a 000E     		lsr	r0, r0, #24
+  48 004c A143     		bic	r1, r1, r4
+  49 004e 0832     		add	r2, r2, #8
+  50 0050 3860     		str	r0, [r7]
+  51 0052 2960     		str	r1, [r5]
+  52 0054 1360     		str	r3, [r2]
+  53 0056 164A     		ldr	r2, .L3+28
+  54 0058 1368     		ldr	r3, [r2]
+  55 005a A343     		bic	r3, r3, r4
+  56 005c 1360     		str	r3, [r2]
+  57 005e 154B     		ldr	r3, .L3+32
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s 			page 2
+
+
+  58 0060 2722     		mov	r2, #39
+  59 0062 1A60     		str	r2, [r3]
+  60 0064 144A     		ldr	r2, .L3+36
+  61 0066 154B     		ldr	r3, .L3+40
+  62 0068 1A60     		str	r2, [r3]
+  63 006a 154A     		ldr	r2, .L3+44
+  64 006c 1368     		ldr	r3, [r2]
+  65 006e 2343     		orr	r3, r3, r4
+  66 0070 1360     		str	r3, [r2]
+  67 0072 144B     		ldr	r3, .L3+48
+  68 0074 1E60     		str	r6, [r3]
+  69 0076 144B     		ldr	r3, .L3+52
+  70 0078 1E60     		str	r6, [r3]
+  71 007a 144B     		ldr	r3, .L3+56
+  72 007c 1E70     		strb	r6, [r3]
+  73 007e 144B     		ldr	r3, .L3+60
+  74 0080 1E60     		str	r6, [r3]
+  75 0082 144B     		ldr	r3, .L3+64
+  76 0084 03B0     		add	sp, sp, #12
+  77 0086 1E60     		str	r6, [r3]
+  78 0088 0123     		mov	r3, #1
+  79 008a 3B60     		str	r3, [r7]
+  80              		@ sp needed for prologue
+  81 008c F0BC     		pop	{r4, r5, r6, r7}
+  82 008e 01BC     		pop	{r0}
+  83 0090 0047     		bx	r0
+  84              	.L4:
+  85 0092 0000     		.align	2
+  86              	.L3:
+  87 0094 00C002E0 		.word	-536690688
+  88 0098 FFFFF0FF 		.word	-983041
+  89 009c 040001E0 		.word	-536805372
+  90 00a0 080001E0 		.word	-536805368
+  91 00a4 000001E0 		.word	-536805376
+  92 00a8 140001E0 		.word	-536805356
+  93 00ac 0C0001E0 		.word	-536805364
+  94 00b0 0CF0FFFF 		.word	-4084
+  95 00b4 1CF2FFFF 		.word	-3556
+  96 00b8 00000000 		.word	uart1ISR
+  97 00bc 1CF1FFFF 		.word	-3812
+  98 00c0 10F0FFFF 		.word	-4080
+  99 00c4 00000000 		.word	uart1TxHead
+ 100 00c8 00000000 		.word	uart1TxTail
+ 101 00cc 00000000 		.word	uart1TxRunning
+ 102 00d0 00000000 		.word	uart1RxHead
+ 103 00d4 00000000 		.word	uart1RxTail
+ 104              		.size	initUart1, .-initUart1
+ 105              		.align	2
+ 106              		.global	uart1GetChar
+ 107              		.code 16
+ 108              		.thumb_func
+ 109              		.type	uart1GetChar, %function
+ 110              	uart1GetChar:
+ 111 00d8 084B     		ldr	r3, .L10
+ 112 00da 0949     		ldr	r1, .L10+4
+ 113 00dc 1A68     		ldr	r2, [r3]
+ 114 00de 0B68     		ldr	r3, [r1]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s 			page 3
+
+
+ 115              		@ lr needed for prologue
+ 116 00e0 9A42     		cmp	r2, r3
+ 117 00e2 01D1     		bne	.L6
+ 118 00e4 0020     		mov	r0, #0
+ 119 00e6 08E0     		b	.L8
+ 120              	.L6:
+ 121 00e8 0B68     		ldr	r3, [r1]
+ 122 00ea 3F22     		mov	r2, #63
+ 123 00ec 0133     		add	r3, r3, #1
+ 124 00ee 1340     		and	r3, r3, r2
+ 125 00f0 0B60     		str	r3, [r1]
+ 126 00f2 044A     		ldr	r2, .L10+8
+ 127 00f4 D35C     		ldrb	r3, [r2, r3]
+ 128 00f6 0370     		strb	r3, [r0]
+ 129 00f8 0120     		mov	r0, #1
+ 130              	.L8:
+ 131              		@ sp needed for prologue
+ 132 00fa 7047     		bx	lr
+ 133              	.L11:
+ 134              		.align	2
+ 135              	.L10:
+ 136 00fc 00000000 		.word	uart1RxHead
+ 137 0100 00000000 		.word	uart1RxTail
+ 138 0104 00000000 		.word	uart1RxBuf
+ 139              		.size	uart1GetChar, .-uart1GetChar
+ 140              		.align	2
+ 141              		.global	uart1GetCh
+ 142              		.code 16
+ 143              		.thumb_func
+ 144              		.type	uart1GetCh, %function
+ 145              	uart1GetCh:
+ 146 0108 10B5     		push	{r4, lr}
+ 147 010a 81B0     		sub	sp, sp, #4
+ 148              	.L14:
+ 149 010c 6C46     		mov	r4, sp
+ 150 010e 0334     		add	r4, r4, #3
+ 151 0110 201C     		mov	r0, r4
+ 152 0112 FFF7FEFF 		bl	uart1GetChar
+ 153 0116 0028     		cmp	r0, #0
+ 154 0118 F8D0     		beq	.L14
+ 155 011a 2078     		ldrb	r0, [r4]
+ 156 011c 01B0     		add	sp, sp, #4
+ 157              		@ sp needed for prologue
+ 158 011e 10BC     		pop	{r4}
+ 159 0120 02BC     		pop	{r1}
+ 160 0122 0847     		bx	r1
+ 161              		.size	uart1GetCh, .-uart1GetCh
+ 162              		.align	2
+ 163              		.global	uart1SendChar
+ 164              		.code 16
+ 165              		.thumb_func
+ 166              		.type	uart1SendChar, %function
+ 167              	uart1SendChar:
+ 168 0124 30B5     		push	{r4, r5, lr}
+ 169 0126 1A4B     		ldr	r3, .L28
+ 170 0128 1B68     		ldr	r3, [r3]
+ 171 012a 0133     		add	r3, r3, #1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s 			page 4
+
+
+ 172 012c 3F22     		mov	r2, #63
+ 173 012e 1C1C     		mov	r4, r3
+ 174 0130 0006     		lsl	r0, r0, #24
+ 175 0132 1440     		and	r4, r4, r2
+ 176 0134 174A     		ldr	r2, .L28+4
+ 177 0136 81B0     		sub	sp, sp, #4
+ 178 0138 050E     		lsr	r5, r0, #24
+ 179              	.L20:
+ 180 013a 1368     		ldr	r3, [r2]
+ 181 013c 9C42     		cmp	r4, r3
+ 182 013e FCD0     		beq	.L20
+ 183 0140 FFF7FEFF 		bl	disIrq
+ 184 0144 1449     		ldr	r1, .L28+8
+ 185 0146 0090     		str	r0, [sp]
+ 186 0148 0B68     		ldr	r3, [r1]
+ 187 014a 0222     		mov	r2, #2
+ 188 014c 9343     		bic	r3, r3, r2
+ 189 014e 0B60     		str	r3, [r1]
+ 190 0150 0098     		ldr	r0, [sp]
+ 191 0152 FFF7FEFF 		bl	restoreIrq
+ 192 0156 114A     		ldr	r2, .L28+12
+ 193 0158 1378     		ldrb	r3, [r2]
+ 194 015a 012B     		cmp	r3, #1
+ 195 015c 04D1     		bne	.L22
+ 196 015e 104B     		ldr	r3, .L28+16
+ 197 0160 1D55     		strb	r5, [r3, r4]
+ 198 0162 0B4B     		ldr	r3, .L28
+ 199 0164 1C60     		str	r4, [r3]
+ 200 0166 03E0     		b	.L24
+ 201              	.L22:
+ 202 0168 0123     		mov	r3, #1
+ 203 016a 1370     		strb	r3, [r2]
+ 204 016c 0D4B     		ldr	r3, .L28+20
+ 205 016e 1D60     		str	r5, [r3]
+ 206              	.L24:
+ 207 0170 FFF7FEFF 		bl	disIrq
+ 208 0174 0849     		ldr	r1, .L28+8
+ 209 0176 0090     		str	r0, [sp]
+ 210 0178 0B68     		ldr	r3, [r1]
+ 211 017a 0222     		mov	r2, #2
+ 212 017c 1343     		orr	r3, r3, r2
+ 213 017e 0B60     		str	r3, [r1]
+ 214 0180 0098     		ldr	r0, [sp]
+ 215 0182 FFF7FEFF 		bl	restoreIrq
+ 216 0186 01B0     		add	sp, sp, #4
+ 217              		@ sp needed for prologue
+ 218 0188 30BC     		pop	{r4, r5}
+ 219 018a 01BC     		pop	{r0}
+ 220 018c 0047     		bx	r0
+ 221              	.L29:
+ 222 018e 0000     		.align	2
+ 223              	.L28:
+ 224 0190 00000000 		.word	uart1TxHead
+ 225 0194 00000000 		.word	uart1TxTail
+ 226 0198 040001E0 		.word	-536805372
+ 227 019c 00000000 		.word	uart1TxRunning
+ 228 01a0 00000000 		.word	uart1TxBuf
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s 			page 5
+
+
+ 229 01a4 000001E0 		.word	-536805376
+ 230              		.size	uart1SendChar, .-uart1SendChar
+ 231              		.align	2
+ 232              		.global	uart1SendChars
+ 233              		.code 16
+ 234              		.thumb_func
+ 235              		.type	uart1SendChars, %function
+ 236              	uart1SendChars:
+ 237 01a8 30B5     		push	{r4, r5, lr}
+ 238 01aa 0904     		lsl	r1, r1, #16
+ 239 01ac 051C     		mov	r5, r0
+ 240 01ae 0C0C     		lsr	r4, r1, #16
+ 241 01b0 03E0     		b	.L31
+ 242              	.L32:
+ 243 01b2 2878     		ldrb	r0, [r5]
+ 244 01b4 0135     		add	r5, r5, #1
+ 245 01b6 FFF7FEFF 		bl	uart1SendChar
+ 246              	.L31:
+ 247 01ba 631E     		sub	r3, r4, #1
+ 248 01bc 1B04     		lsl	r3, r3, #16
+ 249 01be 1C0C     		lsr	r4, r3, #16
+ 250 01c0 024B     		ldr	r3, .L35
+ 251 01c2 9C42     		cmp	r4, r3
+ 252 01c4 F5D1     		bne	.L32
+ 253              		@ sp needed for prologue
+ 254 01c6 30BC     		pop	{r4, r5}
+ 255 01c8 01BC     		pop	{r0}
+ 256 01ca 0047     		bx	r0
+ 257              	.L36:
+ 258              		.align	2
+ 259              	.L35:
+ 260 01cc FFFF0000 		.word	65535
+ 261              		.size	uart1SendChars, .-uart1SendChars
+ 262              		.align	2
+ 263              		.global	uart1SendCh
+ 264              		.code 16
+ 265              		.thumb_func
+ 266              		.type	uart1SendCh, %function
+ 267              	uart1SendCh:
+ 268 01d0 10B5     		push	{r4, lr}
+ 269 01d2 0006     		lsl	r0, r0, #24
+ 270 01d4 040E     		lsr	r4, r0, #24
+ 271 01d6 0A2C     		cmp	r4, #10
+ 272 01d8 02D1     		bne	.L38
+ 273 01da 0D20     		mov	r0, #13
+ 274 01dc FFF7FEFF 		bl	uart1SendChar
+ 275              	.L38:
+ 276 01e0 201C     		mov	r0, r4
+ 277 01e2 FFF7FEFF 		bl	uart1SendChar
+ 278              		@ sp needed for prologue
+ 279 01e6 10BC     		pop	{r4}
+ 280 01e8 01BC     		pop	{r0}
+ 281 01ea 0047     		bx	r0
+ 282              		.size	uart1SendCh, .-uart1SendCh
+ 283              		.align	2
+ 284              		.global	uart1SendString
+ 285              		.code 16
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s 			page 6
+
+
+ 286              		.thumb_func
+ 287              		.type	uart1SendString, %function
+ 288              	uart1SendString:
+ 289 01ec 10B5     		push	{r4, lr}
+ 290 01ee 041C     		mov	r4, r0
+ 291 01f0 02E0     		b	.L42
+ 292              	.L43:
+ 293 01f2 0134     		add	r4, r4, #1
+ 294 01f4 FFF7FEFF 		bl	uart1SendCh
+ 295              	.L42:
+ 296 01f8 2078     		ldrb	r0, [r4]
+ 297 01fa 0028     		cmp	r0, #0
+ 298 01fc F9D1     		bne	.L43
+ 299              		@ sp needed for prologue
+ 300 01fe 10BC     		pop	{r4}
+ 301 0200 01BC     		pop	{r0}
+ 302 0202 0047     		bx	r0
+ 303              		.size	uart1SendString, .-uart1SendString
+ 304              		.global	uart1TxHead
+ 305              		.bss
+ 306              		.align	2
+ 307              		.type	uart1TxHead, %object
+ 308              		.size	uart1TxHead, 4
+ 309              	uart1TxHead:
+ 310 0000 00000000 		.space	4
+ 311              		.global	uart1TxTail
+ 312              		.align	2
+ 313              		.type	uart1TxTail, %object
+ 314              		.size	uart1TxTail, 4
+ 315              	uart1TxTail:
+ 316 0004 00000000 		.space	4
+ 317              		.global	uart1TxRunning
+ 318              		.type	uart1TxRunning, %object
+ 319              		.size	uart1TxRunning, 1
+ 320              	uart1TxRunning:
+ 321 0008 00       		.space	1
+ 322              		.global	uart1RxHead
+ 323 0009 000000   		.align	2
+ 324              		.type	uart1RxHead, %object
+ 325              		.size	uart1RxHead, 4
+ 326              	uart1RxHead:
+ 327 000c 00000000 		.space	4
+ 328              		.global	uart1RxTail
+ 329              		.align	2
+ 330              		.type	uart1RxTail, %object
+ 331              		.size	uart1RxTail, 4
+ 332              	uart1RxTail:
+ 333 0010 00000000 		.space	4
+ 334              		.comm	uart1TxBuf,64,1
+ 335              		.comm	uart1RxBuf,64,1
+ 336              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 uart.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:9      .text:00000000 initUart1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:87     .text:00000094 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:309    .bss:00000000 uart1TxHead
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:315    .bss:00000004 uart1TxTail
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:320    .bss:00000008 uart1TxRunning
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:326    .bss:0000000c uart1RxHead
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:332    .bss:00000010 uart1RxTail
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:110    .text:000000d8 uart1GetChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:107    .text:000000d8 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:136    .text:000000fc $d
+                            *COM*:00000040 uart1RxBuf
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:145    .text:00000108 uart1GetCh
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:142    .text:00000108 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:167    .text:00000124 uart1SendChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:224    .text:00000190 $d
+                            *COM*:00000040 uart1TxBuf
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:236    .text:000001a8 uart1SendChars
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:233    .text:000001a8 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:260    .text:000001cc $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:267    .text:000001d0 uart1SendCh
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:264    .text:000001d0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc7achB6.s:288    .text:000001ec uart1SendString
+                             .bss:00000000 $d
+
+UNDEFINED SYMBOLS
+uart1ISR
+disIrq
+restoreIrq

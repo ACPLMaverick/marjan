@@ -1,0 +1,116 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"testMotor.c"
+   3              		.text
+   4              		.align	2
+   5              		.global	testMotor
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	testMotor, %function
+   9              	testMotor:
+  10 0000 10B5     		push	{r4, lr}
+  11 0002 1E4A     		ldr	r2, .L15
+  12 0004 1E49     		ldr	r1, .L15+4
+  13 0006 1368     		ldr	r3, [r2]
+  14 0008 0B43     		orr	r3, r3, r1
+  15 000a 1360     		str	r3, [r2]
+  16 000c 1D4B     		ldr	r3, .L15+8
+  17 000e 1960     		str	r1, [r3]
+  18 0010 0024     		mov	r4, #0
+  19              	.L2:
+  20 0012 1D49     		ldr	r1, .L15+12
+  21 0014 0B78     		ldrb	r3, [r1]
+  22 0016 0322     		mov	r2, #3
+  23 0018 0133     		add	r3, r3, #1
+  24 001a 1340     		and	r3, r3, r2
+  25 001c 0B70     		strb	r3, [r1]
+  26 001e 194A     		ldr	r2, .L15+8
+  27 0020 1749     		ldr	r1, .L15+4
+  28 0022 1160     		str	r1, [r2]
+  29 0024 194A     		ldr	r2, .L15+16
+  30 0026 9B00     		lsl	r3, r3, #2
+  31 0028 9A58     		ldr	r2, [r3, r2]
+  32 002a 194B     		ldr	r3, .L15+20
+  33 002c 0A20     		mov	r0, #10
+  34 002e 1A60     		str	r2, [r3]
+  35 0030 FFF7FEFF 		bl	osSleep
+  36 0034 631C     		add	r3, r4, #1
+  37 0036 1B06     		lsl	r3, r3, #24
+  38 0038 1C0E     		lsr	r4, r3, #24
+  39 003a 0C2C     		cmp	r4, #12
+  40 003c E9D1     		bne	.L2
+  41 003e 0024     		mov	r4, #0
+  42              	.L4:
+  43 0040 114A     		ldr	r2, .L15+12
+  44 0042 1378     		ldrb	r3, [r2]
+  45 0044 002B     		cmp	r3, #0
+  46 0046 01D1     		bne	.L5
+  47 0048 0323     		mov	r3, #3
+  48 004a 00E0     		b	.L14
+  49              	.L5:
+  50 004c 013B     		sub	r3, r3, #1
+  51              	.L14:
+  52 004e 1370     		strb	r3, [r2]
+  53 0050 0B4A     		ldr	r2, .L15+4
+  54 0052 0C4B     		ldr	r3, .L15+8
+  55 0054 1A60     		str	r2, [r3]
+  56 0056 0C4B     		ldr	r3, .L15+12
+  57 0058 1B78     		ldrb	r3, [r3]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s 			page 2
+
+
+  58 005a 0C4A     		ldr	r2, .L15+16
+  59 005c 9B00     		lsl	r3, r3, #2
+  60 005e 9A58     		ldr	r2, [r3, r2]
+  61 0060 0B4B     		ldr	r3, .L15+20
+  62 0062 0420     		mov	r0, #4
+  63 0064 1A60     		str	r2, [r3]
+  64 0066 FFF7FEFF 		bl	osSleep
+  65 006a 631C     		add	r3, r4, #1
+  66 006c 1B06     		lsl	r3, r3, #24
+  67 006e 1C0E     		lsr	r4, r3, #24
+  68 0070 0C2C     		cmp	r4, #12
+  69 0072 E5D1     		bne	.L4
+  70              		@ sp needed for prologue
+  71 0074 10BC     		pop	{r4}
+  72 0076 01BC     		pop	{r0}
+  73 0078 0047     		bx	r0
+  74              	.L16:
+  75 007a 0000     		.align	2
+  76              	.L15:
+  77 007c 088002E0 		.word	-536707064
+  78 0080 00102000 		.word	2101248
+  79 0084 0C8002E0 		.word	-536707060
+  80 0088 00000000 		.word	stepmotorIndex.1401
+  81 008c 00000000 		.word	stepmotorSteps.1400
+  82 0090 048002E0 		.word	-536707068
+  83              		.size	testMotor, .-testMotor
+  84              		.bss
+  85              	stepmotorIndex.1401:
+  86 0000 00       		.space	1
+  87              		.section	.rodata
+  88              		.align	2
+  89              		.type	stepmotorSteps.1400, %object
+  90              		.size	stepmotorSteps.1400, 16
+  91              	stepmotorSteps.1400:
+  92 0000 00102000 		.word	2101248
+  93 0004 00002000 		.word	2097152
+  94 0008 00000000 		.word	0
+  95 000c 00100000 		.word	4096
+  96              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 testMotor.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:9      .text:00000000 testMotor
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:77     .text:0000007c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:85     .bss:00000000 stepmotorIndex.1401
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:91     .rodata:00000000 stepmotorSteps.1400
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:92     .rodata:00000000 $d
+
+UNDEFINED SYMBOLS
+osSleep
