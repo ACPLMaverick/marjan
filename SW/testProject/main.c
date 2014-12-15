@@ -17,8 +17,6 @@
 #include <consol.h>
 #include "filesys/fs.h"
 #include "filesys/ls.h"
-#include "usb/lpc_usb.h"
-#include "usb/lpc_hid.h"
 #include "mp3shared.h"
 //#include <stdio.h>
 //#include <string.h>
@@ -79,6 +77,7 @@ unsigned char volumeDown;
 unsigned int isError;
 char* error;
 unsigned char currentVolume;
+unsigned char displayMode;
 
 void InitializeSharedData();
 ////////////////////////////
@@ -155,24 +154,24 @@ proc1(void* arg)
     //
     //Start USB
     //
-    printf("\n\nStarting USB Mouse test...\n");
-    printf("Use the joystick switch to move the cursor on the PC screen\n");
-    printf("(functions when the ADC test is visible)\n");
-    if (USB_Init(0,HID_CallBack,USB_NotFast))
-    {
-      printf("\nERROR initializing USB!\n");
-      for(;;)
-        osSleep(1);
-    }
+//    printf("\n\nStarting USB Mouse test...\n");
+//    printf("Use the joystick switch to move the cursor on the PC screen\n");
+//    printf("(functions when the ADC test is visible)\n");
+//    if (USB_Init(0,HID_CallBack,USB_NotFast))
+//    {
+//      printf("\nERROR initializing USB!\n");
+//      for(;;)
+//        osSleep(1);
+//    }
     
     //Initialize HID
-    HID_Init();
+    //HID_Init();
 
 
     //
     //Test XBee module (if present)
     //
-    xbeePresent = testXBee();
+    //xbeePresent = testXBee();
 
 
     //
@@ -231,29 +230,29 @@ proc1(void* arg)
     IOPIN &= ~0x001f0000;
     for(;;)
     {
-		  if ((IOPIN & 0x00100000) == 0)
-        HID_SendReport(0,0,10);
-		  else if ((IOPIN & 0x00080000) == 0)
-        HID_SendReport(0,-10,0);
-		  else if ((IOPIN & 0x00040000) == 0)
-        HID_SendReport(0,10,0);
-		  else if ((IOPIN & 0x00020000) == 0)
-        HID_SendReport(0,0,-10);
-
-      if ((IOPIN & 0x00010000) == 0)
-      {
-      	if (centerReleased == TRUE)
-      	{
-      		HID_SendReport(1,0,0);
-      		centerReleased = FALSE;
-      	}
-      }
-      else
-      {
-      	if (centerReleased == FALSE)
-      	  HID_SendReport(0,0,0);
-      	centerReleased = TRUE;
-      }
+//		  if ((IOPIN & 0x00100000) == 0)
+//        HID_SendReport(0,0,10);
+//		  else if ((IOPIN & 0x00080000) == 0)
+//        HID_SendReport(0,-10,0);
+//		  else if ((IOPIN & 0x00040000) == 0)
+//        HID_SendReport(0,10,0);
+//		  else if ((IOPIN & 0x00020000) == 0)
+//        HID_SendReport(0,0,-10);
+//
+//      if ((IOPIN & 0x00010000) == 0)
+//      {
+//      	if (centerReleased == TRUE)
+//      	{
+//      		HID_SendReport(1,0,0);
+//      		centerReleased = FALSE;
+//      	}
+//      }
+//      else
+//      {
+//      	if (centerReleased == FALSE)
+//      	  HID_SendReport(0,0,0);
+//      	centerReleased = TRUE;
+//      }
 
       osSleep(2);
     }
@@ -380,4 +379,5 @@ void InitializeSharedData()
 	isError = 0;
 	error = "";
 	currentVolume = 5;
+	displayMode = 0;
 }

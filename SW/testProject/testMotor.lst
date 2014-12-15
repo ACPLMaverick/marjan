@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s 			page 1
   55 0054 1A60     		str	r2, [r3]
   56 0056 0C4B     		ldr	r3, .L15+12
   57 0058 1B78     		ldrb	r3, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s 			page 2
 
 
   58 005a 0C4A     		ldr	r2, .L15+16
@@ -100,17 +100,17 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s 			page 1
   94 0008 00000000 		.word	0
   95 000c 00100000 		.word	4096
   96              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s 			page 3
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 testMotor.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s:9      .text:00000000 testMotor
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s:77     .text:0000007c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s:85     .bss:00000000 stepmotorIndex.1401
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s:91     .rodata:00000000 stepmotorSteps.1400
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccrZku4P.s:92     .rodata:00000000 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:9      .text:00000000 testMotor
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:77     .text:0000007c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:85     .bss:00000000 stepmotorIndex.1401
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:91     .rodata:00000000 stepmotorSteps.1400
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccEFkNQj.s:92     .rodata:00000000 $d
 
 UNDEFINED SYMBOLS
 osSleep

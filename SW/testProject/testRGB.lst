@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s 			page 1
   55 0056 2F4A     		ldr	r2, .L39+24
   56 0058 A823     		mov	r3, #168
   57 005a DB01     		lsl	r3, r3, #7
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s 			page 2
 
 
   58 005c 1360     		str	r3, [r2]
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s 			page 1
  112 00b8 022D     		cmp	r5, #2
  113 00ba 15D1     		bne	.L33
  114 00bc 0BE0     		b	.L24
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s 			page 3
 
 
  115              	.L22:
@@ -172,14 +172,14 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s 			page 1
  163 0120 484001E0 		.word	-536788920
  164              		.size	testRGB, .-testRGB
  165              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 testRGB.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s:9      .text:00000000 testRGB
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccAlcvEQ.s:154    .text:000000fc $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s:9      .text:00000000 testRGB
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczaTLp5.s:154    .text:000000fc $d
 
 UNDEFINED SYMBOLS
 osSleep

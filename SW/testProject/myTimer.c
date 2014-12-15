@@ -71,7 +71,7 @@ void initTimer1(void)
 	// konfiguracja przerwania
 	VICVectAddr5 = (unsigned )T1ISR;	// podpiêcie adresu funkcji do rejestru
 	VICVectCntl5 = 0x20 | 5;	// 0x20 - w³¹czenie Vectored IRQ
-								// 0x4 - numer Ÿród³owy Timera 0, którego channel mask wynosi w³aœnie 4
+								// 0x4 - numer Ÿród³owy Timera 1, którego channel mask wynosi w³aœnie 5
 	VICIntEnable = 0x20;
 	T1TCR = 0x02;	// reset timera
 }

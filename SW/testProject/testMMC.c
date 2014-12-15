@@ -14,12 +14,16 @@
 #include <lpc2xxx.h>
 #include <consol.h>
 #include "mp3shared.h"
+#include "libmad/midmad.h"
 
 #define JOYSTICK_UP 17
 #define JOYSTICK_RIGHT 18
 #define JOYSTICK_LEFT 19
 #define JOYSTICK_DOWN 20
 #define JOYSTICK_GND 14
+
+#define BUTTONCHECK_DELAY 20
+#define BUTTONREWINDCHECK_DELAY 100
 
 SongInfo currentSongInfo;
 unsigned char mmcInitialized;
@@ -30,9 +34,10 @@ unsigned char rewindBackward;
 unsigned char volumeUp;
 unsigned char volumeDown;
 unsigned int isError;
+unsigned char displayMode;
 char* error;
 
-extern char startupSound[];
+//extern char startupSound[];
 
 /////////////////////////////
 unsigned char id3TagSize = 128;
@@ -211,6 +216,9 @@ void testMMC(char* name)
 				currentSongInfo.nameLength = i;
 				for(i = 0; myAuthor[i] != '\0'; i++);
 				currentSongInfo.authorLength = i;
+
+				mp3_play(&file);
+
 				file_fclose(&file);
 			}
 			else
@@ -221,27 +229,27 @@ void testMMC(char* name)
 	//fs_umount(&(efs.myFs));
 }
 
-void playTestSound(void)
-{
-	tU32 cnt = 0;
-	int i = 0;
-	while(cnt++ < 0xF890)
-	{
-		tS32 val;
-		float volumeMultiplier = (float)currentVolume / 10;
-		val = startupSound[cnt] - 128;
-	    val = val * 2 * volumeMultiplier;
-	    if (val > 127) val = 127;
-	    else if (val < -127) val = -127;
-
-	    DACR = ((val+128) << 8) |  //actual value to output
-	            (1 << 16);         //BIAS = 1, 2.5uS settling time
-
-	    //delay 125 us = 850 for 8kHz, 600 for 11 kHz
-	    for(i=0; i<850; i++)
-	      asm volatile (" nop");
-	    }
-}
+//void playTestSound(void)
+//{
+//	tU32 cnt = 0;
+//	int i = 0;
+//	while(cnt++ < 0xF890)
+//	{
+//		tS32 val;
+//		float volumeMultiplier = (float)currentVolume / 10;
+//		val = startupSound[cnt] - 128;
+//	    val = val * 2 * volumeMultiplier;
+//	    if (val > 127) val = 127;
+//	    else if (val < -127) val = -127;
+//
+//	    DACR = ((val+128) << 8) |  //actual value to output
+//	            (1 << 16);         //BIAS = 1, 2.5uS settling time
+//
+//	    //delay 125 us = 850 for 8kHz, 600 for 11 kHz
+//	    for(i=0; i<850; i++)
+//	      asm volatile (" nop");
+//	    }
+//}
 
 void MMCproc(void)
 {
@@ -266,49 +274,67 @@ void MMCproc(void)
 	IOCLR0 |= (1<<JOYSTICK_RIGHT);*/
 	while(1)
 	{
-		if(changeLeft == 1)
-		{
-			changeLeft = 0;
-		}
+//		if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
+//		{
+//			rewindForward = 0;
+//		}
+//		if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
+//		{
+//			rewindBackward = 0;
+//		}
 		if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
 		{
-			 file_fclose(&file);
-			 currentSongInfo.ID = ((currentSongInfo.ID + 1) % 3);
-			 testMMC(&files[currentSongInfo.ID][0]);
-			 changeRight=1;
+			osSleep(BUTTONCHECK_DELAY);
+			if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
+			{
+				 file_fclose(&file);
+				 currentSongInfo.ID = ((currentSongInfo.ID + 1) % 3);
+				 testMMC(&files[currentSongInfo.ID][0]);
+				 currentSongInfo.time = 0;
+				 changeRight=1;
+			}
 		}
 
 		if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
 		{
-			file_fclose(&file);
-			currentSongInfo.ID = ((currentSongInfo.ID - 1) % 3);
-			if(currentSongInfo.ID < 0) currentSongInfo.ID = -currentSongInfo.ID;
-			testMMC(&files[currentSongInfo.ID][0]);
-			changeLeft=1;
+			osSleep(BUTTONCHECK_DELAY);
+			if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
+			{
+				file_fclose(&file);
+				currentSongInfo.ID = ((currentSongInfo.ID - 1) % 3);
+				if(currentSongInfo.ID < 0) currentSongInfo.ID = -currentSongInfo.ID;
+				testMMC(&files[currentSongInfo.ID][0]);
+				currentSongInfo.time = 0;
+				changeLeft=1;
+			}
 		}
 		if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
 		{
-			volumeUp = 1;
-			if(currentVolume < 9) currentVolume++;
+			osSleep(BUTTONCHECK_DELAY);
+			if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
+			{
+				volumeUp = 1;
+				if(currentVolume < 9) currentVolume++;
+			}
 		}
 		if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
 		{
-			volumeDown = 1;
-			if(currentVolume > 0) currentVolume--;
+			osSleep(BUTTONCHECK_DELAY);
+			if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
+			{
+				volumeDown = 1;
+				if(currentVolume > 0) currentVolume--;
+			}
 		}
 		if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
 		{
-			playTestSound();
+			osSleep(BUTTONCHECK_DELAY);
+			if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
+			{
+				if(displayMode == 0) displayMode = 1;
+				else displayMode = 0;
+			}
 		}
-		if(rewindForward == 1)
-		{
-			rewindForward = 0;
-		}
-		if(rewindBackward == 1)
-		{
-			rewindBackward = 0;
-		}
-
-		 osSleep(25);
+		 osSleep(10);
 	}
 }

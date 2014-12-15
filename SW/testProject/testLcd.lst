@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 1
   55 003e 8023     		mov	r3, #128
   56 0040 DB03     		lsl	r3, r3, #15
   57 0042 1360     		str	r3, [r2]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 2
 
 
   58 0044 174B     		ldr	r3, .L21
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 1
  112              	.L22:
  113 00a2 0000     		.align	2
  114              	.L21:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 3
 
 
  115 00a4 1C8002E0 		.word	-536707044
@@ -144,350 +144,381 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 1
  135 00c2 02BC     		pop	{r1}
  136 00c4 0847     		bx	r1
  137              		.size	numberToChar, .-numberToChar
- 138 00c6 0000     		.align	2
- 139              		.global	timeToString
- 140              		.code 16
- 141              		.thumb_func
- 142              		.type	timeToString, %function
- 143              	timeToString:
- 144 00c8 82B0     		sub	sp, sp, #8
- 145              		@ lr needed for prologue
- 146 00ca 01E0     		b	.L26
- 147              	.L27:
- 148 00cc 0A4B     		ldr	r3, .L41
- 149 00ce C018     		add	r0, r0, r3
- 150              	.L26:
- 151 00d0 0A4B     		ldr	r3, .L41+4
- 152 00d2 9842     		cmp	r0, r3
- 153 00d4 FAD8     		bhi	.L27
- 154 00d6 09E0     		b	.L37
- 155              	.L29:
- 156 00d8 022B     		cmp	r3, #2
- 157 00da 05D0     		beq	.L30
- 158 00dc 052B     		cmp	r3, #5
- 159 00de 07D0     		beq	.L32
- 160              	.L40:
- 161 00e0 0133     		add	r3, r3, #1
- 162 00e2 052B     		cmp	r3, #5
- 163 00e4 F8DD     		ble	.L29
- 164 00e6 03E0     		b	.L32
- 165              	.L30:
- 166 00e8 0323     		mov	r3, #3
- 167 00ea F9E7     		b	.L40
- 168              	.L37:
- 169 00ec 0023     		mov	r3, #0
- 170 00ee F7E7     		b	.L40
- 171              	.L32:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 4
+ 138              		.global	__udivsi3
+ 139 00c6 0000     		.align	2
+ 140              		.global	timeToString
+ 141              		.code 16
+ 142              		.thumb_func
+ 143              		.type	timeToString, %function
+ 144              	timeToString:
+ 145 00c8 70B5     		push	{r4, r5, r6, lr}
+ 146 00ca 174B     		ldr	r3, .L28
+ 147 00cc 0E1C     		mov	r6, r1
+ 148 00ce 051C     		mov	r5, r0
+ 149 00d0 9842     		cmp	r0, r3
+ 150 00d2 00D9     		bls	.L26
+ 151 00d4 1D1C     		mov	r5, r3
+ 152              	.L26:
+ 153 00d6 281C     		mov	r0, r5
+ 154 00d8 3C21     		mov	r1, #60
+ 155 00da FFF7FEFF 		bl	__udivsi3
+ 156 00de 3C21     		mov	r1, #60
+ 157 00e0 041C     		mov	r4, r0
+ 158 00e2 281C     		mov	r0, r5
+ 159 00e4 FFF7FEFF 		bl	__umodsi3
+ 160 00e8 0A21     		mov	r1, #10
+ 161 00ea 051C     		mov	r5, r0
+ 162 00ec 201C     		mov	r0, r4
+ 163 00ee FFF7FEFF 		bl	__udivsi3
+ 164 00f2 3030     		add	r0, r0, #48
+ 165 00f4 3070     		strb	r0, [r6]
+ 166 00f6 0A21     		mov	r1, #10
+ 167 00f8 201C     		mov	r0, r4
+ 168 00fa FFF7FEFF 		bl	__umodsi3
+ 169 00fe 3A23     		mov	r3, #58
+ 170 0100 3030     		add	r0, r0, #48
+ 171 0102 B370     		strb	r3, [r6, #2]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 4
 
 
- 172 00f0 6846     		mov	r0, sp
- 173 00f2 0230     		add	r0, r0, #2
- 174 00f4 02B0     		add	sp, sp, #8
- 175              		@ sp needed for prologue
- 176 00f6 7047     		bx	lr
- 177              	.L42:
- 178              		.align	2
- 179              	.L41:
- 180 00f8 F1F1FFFF 		.word	-3599
- 181 00fc 0F0E0000 		.word	3599
- 182              		.size	timeToString, .-timeToString
- 183              		.align	2
- 184              		.global	WriteString
- 185              		.code 16
- 186              		.thumb_func
- 187              		.type	WriteString, %function
- 188              	WriteString:
- 189 0100 10B5     		push	{r4, lr}
- 190 0102 041C     		mov	r4, r0
- 191 0104 04E0     		b	.L44
- 192              	.L45:
- 193 0106 0120     		mov	r0, #1
- 194 0108 FFF78AFF 		bl	writeLCD
- 195 010c FFF778FF 		bl	delay37us
- 196              	.L44:
- 197 0110 2178     		ldrb	r1, [r4]
- 198 0112 0134     		add	r4, r4, #1
- 199 0114 0029     		cmp	r1, #0
- 200 0116 F6D1     		bne	.L45
- 201              		@ sp needed for prologue
- 202 0118 10BC     		pop	{r4}
- 203 011a 01BC     		pop	{r0}
- 204 011c 0047     		bx	r0
- 205              		.size	WriteString, .-WriteString
- 206 011e 0000     		.align	2
- 207              		.global	ScreenShiftLeft
- 208              		.code 16
- 209              		.thumb_func
- 210              		.type	ScreenShiftLeft, %function
- 211              	ScreenShiftLeft:
- 212 0120 00B5     		push	{lr}
- 213 0122 0020     		mov	r0, #0
- 214 0124 3821     		mov	r1, #56
- 215 0126 FFF77BFF 		bl	writeLCD
- 216 012a FFF769FF 		bl	delay37us
- 217 012e 1821     		mov	r1, #24
- 218 0130 0020     		mov	r0, #0
- 219 0132 FFF775FF 		bl	writeLCD
- 220 0136 0120     		mov	r0, #1
- 221 0138 FFF7FEFF 		bl	osSleep
- 222 013c 0020     		mov	r0, #0
- 223 013e 0621     		mov	r1, #6
- 224 0140 FFF76EFF 		bl	writeLCD
- 225 0144 0120     		mov	r0, #1
- 226 0146 FFF7FEFF 		bl	osSleep
- 227              		@ sp needed for prologue
- 228 014a 01BC     		pop	{r0}
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 5
+ 172 0104 7070     		strb	r0, [r6, #1]
+ 173 0106 0A21     		mov	r1, #10
+ 174 0108 281C     		mov	r0, r5
+ 175 010a FFF7FEFF 		bl	__udivsi3
+ 176 010e 3030     		add	r0, r0, #48
+ 177 0110 F070     		strb	r0, [r6, #3]
+ 178 0112 0A21     		mov	r1, #10
+ 179 0114 281C     		mov	r0, r5
+ 180 0116 FFF7FEFF 		bl	__umodsi3
+ 181 011a 0023     		mov	r3, #0
+ 182 011c 3030     		add	r0, r0, #48
+ 183 011e 3071     		strb	r0, [r6, #4]
+ 184 0120 7371     		strb	r3, [r6, #5]
+ 185              		@ sp needed for prologue
+ 186 0122 70BC     		pop	{r4, r5, r6}
+ 187 0124 01BC     		pop	{r0}
+ 188 0126 0047     		bx	r0
+ 189              	.L29:
+ 190              		.align	2
+ 191              	.L28:
+ 192 0128 0F0E0000 		.word	3599
+ 193              		.size	timeToString, .-timeToString
+ 194              		.align	2
+ 195              		.global	WriteString
+ 196              		.code 16
+ 197              		.thumb_func
+ 198              		.type	WriteString, %function
+ 199              	WriteString:
+ 200 012c 10B5     		push	{r4, lr}
+ 201 012e 041C     		mov	r4, r0
+ 202 0130 04E0     		b	.L31
+ 203              	.L32:
+ 204 0132 0120     		mov	r0, #1
+ 205 0134 FFF774FF 		bl	writeLCD
+ 206 0138 FFF762FF 		bl	delay37us
+ 207              	.L31:
+ 208 013c 2178     		ldrb	r1, [r4]
+ 209 013e 0134     		add	r4, r4, #1
+ 210 0140 0029     		cmp	r1, #0
+ 211 0142 F6D1     		bne	.L32
+ 212              		@ sp needed for prologue
+ 213 0144 10BC     		pop	{r4}
+ 214 0146 01BC     		pop	{r0}
+ 215 0148 0047     		bx	r0
+ 216              		.size	WriteString, .-WriteString
+ 217 014a 0000     		.align	2
+ 218              		.global	ScreenShiftLeft
+ 219              		.code 16
+ 220              		.thumb_func
+ 221              		.type	ScreenShiftLeft, %function
+ 222              	ScreenShiftLeft:
+ 223 014c 00B5     		push	{lr}
+ 224 014e 0020     		mov	r0, #0
+ 225 0150 3821     		mov	r1, #56
+ 226 0152 FFF765FF 		bl	writeLCD
+ 227 0156 FFF753FF 		bl	delay37us
+ 228 015a 1821     		mov	r1, #24
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 5
 
 
- 229 014c 0047     		bx	r0
- 230              		.size	ScreenShiftLeft, .-ScreenShiftLeft
- 231 014e 0000     		.align	2
- 232              		.global	clearScr
- 233              		.code 16
- 234              		.thumb_func
- 235              		.type	clearScr, %function
- 236              	clearScr:
- 237 0150 00B5     		push	{lr}
- 238 0152 214A     		ldr	r2, .L52
- 239 0154 8023     		mov	r3, #128
- 240 0156 DB05     		lsl	r3, r3, #23
- 241 0158 1360     		str	r3, [r2]
- 242 015a 3220     		mov	r0, #50
- 243 015c FFF7FEFF 		bl	osSleep
- 244 0160 3021     		mov	r1, #48
- 245 0162 0020     		mov	r0, #0
- 246 0164 FFF75CFF 		bl	writeLCD
- 247 0168 0120     		mov	r0, #1
- 248 016a FFF7FEFF 		bl	osSleep
- 249 016e 0020     		mov	r0, #0
- 250 0170 3021     		mov	r1, #48
- 251 0172 FFF755FF 		bl	writeLCD
- 252 0176 FFF743FF 		bl	delay37us
- 253 017a 0020     		mov	r0, #0
- 254 017c 3021     		mov	r1, #48
- 255 017e FFF74FFF 		bl	writeLCD
- 256 0182 FFF73DFF 		bl	delay37us
- 257 0186 0020     		mov	r0, #0
- 258 0188 3821     		mov	r1, #56
- 259 018a FFF749FF 		bl	writeLCD
- 260 018e FFF737FF 		bl	delay37us
- 261 0192 0020     		mov	r0, #0
- 262 0194 0821     		mov	r1, #8
- 263 0196 FFF743FF 		bl	writeLCD
- 264 019a FFF731FF 		bl	delay37us
- 265 019e 0121     		mov	r1, #1
- 266 01a0 0020     		mov	r0, #0
- 267 01a2 FFF73DFF 		bl	writeLCD
- 268 01a6 0120     		mov	r0, #1
- 269 01a8 FFF7FEFF 		bl	osSleep
- 270 01ac 0621     		mov	r1, #6
- 271 01ae 0020     		mov	r0, #0
- 272 01b0 FFF736FF 		bl	writeLCD
- 273 01b4 0120     		mov	r0, #1
- 274 01b6 FFF7FEFF 		bl	osSleep
- 275 01ba 0020     		mov	r0, #0
- 276 01bc 0C21     		mov	r1, #12
- 277 01be FFF72FFF 		bl	writeLCD
- 278 01c2 FFF71DFF 		bl	delay37us
- 279 01c6 0020     		mov	r0, #0
- 280 01c8 0221     		mov	r1, #2
- 281 01ca FFF729FF 		bl	writeLCD
- 282 01ce 0120     		mov	r0, #1
- 283 01d0 FFF7FEFF 		bl	osSleep
- 284              		@ sp needed for prologue
- 285 01d4 01BC     		pop	{r0}
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 6
+ 229 015c 0020     		mov	r0, #0
+ 230 015e FFF75FFF 		bl	writeLCD
+ 231 0162 0120     		mov	r0, #1
+ 232 0164 FFF7FEFF 		bl	osSleep
+ 233 0168 0020     		mov	r0, #0
+ 234 016a 0621     		mov	r1, #6
+ 235 016c FFF758FF 		bl	writeLCD
+ 236 0170 0120     		mov	r0, #1
+ 237 0172 FFF7FEFF 		bl	osSleep
+ 238              		@ sp needed for prologue
+ 239 0176 01BC     		pop	{r0}
+ 240 0178 0047     		bx	r0
+ 241              		.size	ScreenShiftLeft, .-ScreenShiftLeft
+ 242 017a 0000     		.align	2
+ 243              		.global	clearScr
+ 244              		.code 16
+ 245              		.thumb_func
+ 246              		.type	clearScr, %function
+ 247              	clearScr:
+ 248 017c 00B5     		push	{lr}
+ 249 017e 214A     		ldr	r2, .L39
+ 250 0180 8023     		mov	r3, #128
+ 251 0182 DB05     		lsl	r3, r3, #23
+ 252 0184 1360     		str	r3, [r2]
+ 253 0186 3220     		mov	r0, #50
+ 254 0188 FFF7FEFF 		bl	osSleep
+ 255 018c 3021     		mov	r1, #48
+ 256 018e 0020     		mov	r0, #0
+ 257 0190 FFF746FF 		bl	writeLCD
+ 258 0194 0120     		mov	r0, #1
+ 259 0196 FFF7FEFF 		bl	osSleep
+ 260 019a 0020     		mov	r0, #0
+ 261 019c 3021     		mov	r1, #48
+ 262 019e FFF73FFF 		bl	writeLCD
+ 263 01a2 FFF72DFF 		bl	delay37us
+ 264 01a6 0020     		mov	r0, #0
+ 265 01a8 3021     		mov	r1, #48
+ 266 01aa FFF739FF 		bl	writeLCD
+ 267 01ae FFF727FF 		bl	delay37us
+ 268 01b2 0020     		mov	r0, #0
+ 269 01b4 3821     		mov	r1, #56
+ 270 01b6 FFF733FF 		bl	writeLCD
+ 271 01ba FFF721FF 		bl	delay37us
+ 272 01be 0020     		mov	r0, #0
+ 273 01c0 0821     		mov	r1, #8
+ 274 01c2 FFF72DFF 		bl	writeLCD
+ 275 01c6 FFF71BFF 		bl	delay37us
+ 276 01ca 0121     		mov	r1, #1
+ 277 01cc 0020     		mov	r0, #0
+ 278 01ce FFF727FF 		bl	writeLCD
+ 279 01d2 0120     		mov	r0, #1
+ 280 01d4 FFF7FEFF 		bl	osSleep
+ 281 01d8 0621     		mov	r1, #6
+ 282 01da 0020     		mov	r0, #0
+ 283 01dc FFF720FF 		bl	writeLCD
+ 284 01e0 0120     		mov	r0, #1
+ 285 01e2 FFF7FEFF 		bl	osSleep
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 6
 
 
- 286 01d6 0047     		bx	r0
- 287              	.L53:
- 288              		.align	2
- 289              	.L52:
- 290 01d8 048002E0 		.word	-536707068
- 291              		.size	clearScr, .-clearScr
- 292              		.align	2
- 293              		.global	testLcd
- 294              		.code 16
- 295              		.thumb_func
- 296              		.type	testLcd, %function
- 297              	testLcd:
- 298 01dc 10B5     		push	{r4, lr}
- 299 01de 3E4A     		ldr	r2, .L97
- 300 01e0 3E49     		ldr	r1, .L97+4
- 301 01e2 1368     		ldr	r3, [r2]
- 302 01e4 0B43     		orr	r3, r3, r1
- 303 01e6 1360     		str	r3, [r2]
- 304 01e8 3D4B     		ldr	r3, .L97+8
- 305 01ea 3E48     		ldr	r0, .L97+12
- 306 01ec 1960     		str	r1, [r3]
- 307 01ee 8022     		mov	r2, #128
- 308 01f0 0368     		ldr	r3, [r0]
- 309 01f2 D203     		lsl	r2, r2, #15
- 310 01f4 3C49     		ldr	r1, .L97+16
- 311 01f6 1343     		orr	r3, r3, r2
- 312 01f8 0360     		str	r3, [r0]
- 313 01fa 0A60     		str	r2, [r1]
- 314 01fc 8023     		mov	r3, #128
- 315 01fe 0268     		ldr	r2, [r0]
- 316 0200 DB05     		lsl	r3, r3, #23
- 317 0202 1A43     		orr	r2, r2, r3
- 318 0204 0260     		str	r2, [r0]
- 319 0206 0B60     		str	r3, [r1]
- 320 0208 0B60     		str	r3, [r1]
- 321 020a 0A20     		mov	r0, #10
- 322              	.L93:
- 323 020c FFF7FEFF 		bl	osSleep
- 324              	.L95:
- 325 0210 FFF7FEFF 		bl	clearScr
- 326 0214 354C     		ldr	r4, .L97+20
- 327 0216 2378     		ldrb	r3, [r4]
- 328 0218 002B     		cmp	r3, #0
- 329 021a 03D1     		bne	.L56
- 330 021c 344B     		ldr	r3, .L97+24
- 331 021e 1B78     		ldrb	r3, [r3]
- 332 0220 002B     		cmp	r3, #0
- 333 0222 13D0     		beq	.L58
- 334              	.L56:
- 335 0224 334B     		ldr	r3, .L97+28
- 336 0226 1878     		ldrb	r0, [r3]
- 337 0228 FFF7FEFF 		bl	numberToChar
- 338 022c 011C     		mov	r1, r0
- 339 022e 0120     		mov	r0, #1
- 340 0230 FFF7F6FE 		bl	writeLCD
- 341 0234 2378     		ldrb	r3, [r4]
- 342 0236 002B     		cmp	r3, #0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 7
+ 286 01e6 0020     		mov	r0, #0
+ 287 01e8 0C21     		mov	r1, #12
+ 288 01ea FFF719FF 		bl	writeLCD
+ 289 01ee FFF707FF 		bl	delay37us
+ 290 01f2 0020     		mov	r0, #0
+ 291 01f4 0221     		mov	r1, #2
+ 292 01f6 FFF713FF 		bl	writeLCD
+ 293 01fa 0120     		mov	r0, #1
+ 294 01fc FFF7FEFF 		bl	osSleep
+ 295              		@ sp needed for prologue
+ 296 0200 01BC     		pop	{r0}
+ 297 0202 0047     		bx	r0
+ 298              	.L40:
+ 299              		.align	2
+ 300              	.L39:
+ 301 0204 048002E0 		.word	-536707068
+ 302              		.size	clearScr, .-clearScr
+ 303              		.align	2
+ 304              		.global	testLcd
+ 305              		.code 16
+ 306              		.thumb_func
+ 307              		.type	testLcd, %function
+ 308              	testLcd:
+ 309 0208 10B5     		push	{r4, lr}
+ 310 020a 434A     		ldr	r2, .L87
+ 311 020c 4349     		ldr	r1, .L87+4
+ 312 020e 1368     		ldr	r3, [r2]
+ 313 0210 0B43     		orr	r3, r3, r1
+ 314 0212 1360     		str	r3, [r2]
+ 315 0214 424B     		ldr	r3, .L87+8
+ 316 0216 1960     		str	r1, [r3]
+ 317 0218 4249     		ldr	r1, .L87+12
+ 318 021a 8022     		mov	r2, #128
+ 319 021c 0B68     		ldr	r3, [r1]
+ 320 021e 4248     		ldr	r0, .L87+16
+ 321 0220 D203     		lsl	r2, r2, #15
+ 322 0222 1343     		orr	r3, r3, r2
+ 323 0224 0B60     		str	r3, [r1]
+ 324 0226 0260     		str	r2, [r0]
+ 325 0228 8022     		mov	r2, #128
+ 326 022a 0B68     		ldr	r3, [r1]
+ 327 022c D205     		lsl	r2, r2, #23
+ 328 022e 1343     		orr	r3, r3, r2
+ 329 0230 0B60     		str	r3, [r1]
+ 330 0232 0260     		str	r2, [r0]
+ 331 0234 3D4B     		ldr	r3, .L87+20
+ 332 0236 3E49     		ldr	r1, .L87+24
+ 333 0238 1B78     		ldrb	r3, [r3]
+ 334 023a 0B70     		strb	r3, [r1]
+ 335 023c 0260     		str	r2, [r0]
+ 336 023e 0A20     		mov	r0, #10
+ 337              	.L82:
+ 338 0240 FFF7FEFF 		bl	osSleep
+ 339              	.L85:
+ 340 0244 FFF7FEFF 		bl	clearScr
+ 341 0248 3A4C     		ldr	r4, .L87+28
+ 342 024a 2378     		ldrb	r3, [r4]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 7
 
 
- 343 0238 01D0     		beq	.L59
- 344 023a 0023     		mov	r3, #0
- 345 023c 2370     		strb	r3, [r4]
- 346              	.L59:
- 347 023e 2C4A     		ldr	r2, .L97+24
- 348 0240 1378     		ldrb	r3, [r2]
- 349 0242 002B     		cmp	r3, #0
- 350 0244 42D0     		beq	.L61
- 351 0246 0023     		mov	r3, #0
- 352 0248 1370     		strb	r3, [r2]
- 353 024a 3FE0     		b	.L61
- 354              	.L58:
- 355 024c 2A4B     		ldr	r3, .L97+32
- 356 024e 1B68     		ldr	r3, [r3]
- 357 0250 002B     		cmp	r3, #0
- 358 0252 0BD1     		bne	.L63
- 359 0254 294C     		ldr	r4, .L97+36
- 360 0256 2068     		ldr	r0, [r4]
- 361 0258 FFF7FEFF 		bl	WriteString
- 362 025c 0020     		mov	r0, #0
- 363 025e C021     		mov	r1, #192
- 364 0260 FFF7DEFE 		bl	writeLCD
- 365 0264 FFF7CCFE 		bl	delay37us
- 366 0268 6068     		ldr	r0, [r4, #4]
- 367 026a 01E0     		b	.L94
- 368              	.L63:
- 369 026c 244B     		ldr	r3, .L97+40
- 370 026e 1868     		ldr	r0, [r3]
- 371              	.L94:
- 372 0270 FFF7FEFF 		bl	WriteString
- 373 0274 3220     		mov	r0, #50
- 374 0276 FFF7FEFF 		bl	osSleep
- 375 027a 0120     		mov	r0, #1
- 376 027c FFF7FEFF 		bl	osSleep
- 377              	.L96:
- 378 0280 204A     		ldr	r2, .L97+44
- 379 0282 1178     		ldrb	r1, [r2]
- 380 0284 0029     		cmp	r1, #0
- 381 0286 02D0     		beq	.L68
- 382 0288 0023     		mov	r3, #0
- 383 028a 1370     		strb	r3, [r2]
- 384 028c C0E7     		b	.L95
- 385              	.L68:
- 386 028e 1E4A     		ldr	r2, .L97+48
- 387 0290 1378     		ldrb	r3, [r2]
- 388 0292 002B     		cmp	r3, #0
- 389 0294 01D0     		beq	.L70
- 390 0296 1170     		strb	r1, [r2]
- 391 0298 BAE7     		b	.L95
- 392              	.L70:
- 393 029a 144B     		ldr	r3, .L97+20
- 394 029c 1B78     		ldrb	r3, [r3]
- 395 029e 002B     		cmp	r3, #0
- 396 02a0 B6D1     		bne	.L95
- 397 02a2 134B     		ldr	r3, .L97+24
- 398 02a4 1B78     		ldrb	r3, [r3]
- 399 02a6 002B     		cmp	r3, #0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 8
+ 343 024c 002B     		cmp	r3, #0
+ 344 024e 03D1     		bne	.L43
+ 345 0250 394B     		ldr	r3, .L87+32
+ 346 0252 1B78     		ldrb	r3, [r3]
+ 347 0254 002B     		cmp	r3, #0
+ 348 0256 13D0     		beq	.L45
+ 349              	.L43:
+ 350 0258 384B     		ldr	r3, .L87+36
+ 351 025a 1878     		ldrb	r0, [r3]
+ 352 025c FFF7FEFF 		bl	numberToChar
+ 353 0260 011C     		mov	r1, r0
+ 354 0262 0120     		mov	r0, #1
+ 355 0264 FFF7DCFE 		bl	writeLCD
+ 356 0268 2378     		ldrb	r3, [r4]
+ 357 026a 002B     		cmp	r3, #0
+ 358 026c 01D0     		beq	.L46
+ 359 026e 0023     		mov	r3, #0
+ 360 0270 2370     		strb	r3, [r4]
+ 361              	.L46:
+ 362 0272 314A     		ldr	r2, .L87+32
+ 363 0274 1378     		ldrb	r3, [r2]
+ 364 0276 002B     		cmp	r3, #0
+ 365 0278 48D0     		beq	.L48
+ 366 027a 0023     		mov	r3, #0
+ 367 027c 1370     		strb	r3, [r2]
+ 368 027e 45E0     		b	.L48
+ 369              	.L45:
+ 370 0280 2F4B     		ldr	r3, .L87+40
+ 371 0282 1B68     		ldr	r3, [r3]
+ 372 0284 002B     		cmp	r3, #0
+ 373 0286 0BD1     		bne	.L50
+ 374 0288 2E4C     		ldr	r4, .L87+44
+ 375 028a 2068     		ldr	r0, [r4]
+ 376 028c FFF7FEFF 		bl	WriteString
+ 377 0290 0020     		mov	r0, #0
+ 378 0292 C021     		mov	r1, #192
+ 379 0294 FFF7C4FE 		bl	writeLCD
+ 380 0298 FFF7B2FE 		bl	delay37us
+ 381 029c 6068     		ldr	r0, [r4, #4]
+ 382 029e 01E0     		b	.L84
+ 383              	.L50:
+ 384 02a0 294B     		ldr	r3, .L87+48
+ 385 02a2 1868     		ldr	r0, [r3]
+ 386              	.L84:
+ 387 02a4 FFF7FEFF 		bl	WriteString
+ 388 02a8 3220     		mov	r0, #50
+ 389 02aa FFF7FEFF 		bl	osSleep
+ 390 02ae 0120     		mov	r0, #1
+ 391 02b0 FFF7FEFF 		bl	osSleep
+ 392              	.L86:
+ 393 02b4 254A     		ldr	r2, .L87+52
+ 394 02b6 1178     		ldrb	r1, [r2]
+ 395 02b8 0029     		cmp	r1, #0
+ 396 02ba 02D0     		beq	.L55
+ 397 02bc 0023     		mov	r3, #0
+ 398 02be 1370     		strb	r3, [r2]
+ 399 02c0 C0E7     		b	.L85
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 8
 
 
- 400 02a8 B2D1     		bne	.L95
- 401 02aa 134B     		ldr	r3, .L97+32
- 402 02ac 1B68     		ldr	r3, [r3]
- 403 02ae 002B     		cmp	r3, #0
- 404 02b0 AED1     		bne	.L95
- 405 02b2 6420     		mov	r0, #100
- 406 02b4 FFF7FEFF 		bl	osSleep
- 407 02b8 104A     		ldr	r2, .L97+36
- 408 02ba 537B     		ldrb	r3, [r2, #13]
- 409 02bc 102B     		cmp	r3, #16
- 410 02be 02D8     		bhi	.L75
- 411 02c0 937B     		ldrb	r3, [r2, #14]
- 412 02c2 102B     		cmp	r3, #16
- 413 02c4 DCD9     		bls	.L96
- 414              	.L75:
- 415 02c6 FFF7FEFF 		bl	ScreenShiftLeft
- 416 02ca D9E7     		b	.L96
- 417              	.L61:
- 418 02cc 3220     		mov	r0, #50
- 419 02ce FFF7FEFF 		bl	osSleep
- 420 02d2 0120     		mov	r0, #1
- 421 02d4 9AE7     		b	.L93
- 422              	.L98:
- 423 02d6 0000     		.align	2
- 424              	.L97:
- 425 02d8 188002E0 		.word	-536707048
- 426 02dc 0000FF03 		.word	67043328
- 427 02e0 1C8002E0 		.word	-536707044
- 428 02e4 088002E0 		.word	-536707064
- 429 02e8 0C8002E0 		.word	-536707060
- 430 02ec 00000000 		.word	volumeUp
- 431 02f0 00000000 		.word	volumeDown
- 432 02f4 00000000 		.word	currentVolume
- 433 02f8 00000000 		.word	isError
- 434 02fc 00000000 		.word	currentSongInfo
- 435 0300 00000000 		.word	error
- 436 0304 00000000 		.word	changeLeft
- 437 0308 00000000 		.word	changeRight
- 438              		.size	testLcd, .-testLcd
- 439              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s 			page 9
+ 400              	.L55:
+ 401 02c2 234A     		ldr	r2, .L87+56
+ 402 02c4 1378     		ldrb	r3, [r2]
+ 403 02c6 002B     		cmp	r3, #0
+ 404 02c8 11D1     		bne	.L83
+ 405 02ca 1A4B     		ldr	r3, .L87+28
+ 406 02cc 1B78     		ldrb	r3, [r3]
+ 407 02ce 002B     		cmp	r3, #0
+ 408 02d0 B8D1     		bne	.L85
+ 409 02d2 194B     		ldr	r3, .L87+32
+ 410 02d4 1B78     		ldrb	r3, [r3]
+ 411 02d6 002B     		cmp	r3, #0
+ 412 02d8 B4D1     		bne	.L85
+ 413 02da 194B     		ldr	r3, .L87+40
+ 414 02dc 1B68     		ldr	r3, [r3]
+ 415 02de 002B     		cmp	r3, #0
+ 416 02e0 B0D1     		bne	.L85
+ 417 02e2 124B     		ldr	r3, .L87+20
+ 418 02e4 124A     		ldr	r2, .L87+24
+ 419 02e6 1978     		ldrb	r1, [r3]
+ 420 02e8 1378     		ldrb	r3, [r2]
+ 421 02ea 8B42     		cmp	r3, r1
+ 422 02ec 01D0     		beq	.L62
+ 423              	.L83:
+ 424 02ee 1170     		strb	r1, [r2]
+ 425 02f0 A8E7     		b	.L85
+ 426              	.L62:
+ 427 02f2 6420     		mov	r0, #100
+ 428 02f4 FFF7FEFF 		bl	osSleep
+ 429 02f8 124A     		ldr	r2, .L87+44
+ 430 02fa 537B     		ldrb	r3, [r2, #13]
+ 431 02fc 102B     		cmp	r3, #16
+ 432 02fe 02D8     		bhi	.L64
+ 433 0300 937B     		ldrb	r3, [r2, #14]
+ 434 0302 102B     		cmp	r3, #16
+ 435 0304 D6D9     		bls	.L86
+ 436              	.L64:
+ 437 0306 FFF7FEFF 		bl	ScreenShiftLeft
+ 438 030a D3E7     		b	.L86
+ 439              	.L48:
+ 440 030c 3220     		mov	r0, #50
+ 441 030e FFF7FEFF 		bl	osSleep
+ 442 0312 0120     		mov	r0, #1
+ 443 0314 94E7     		b	.L82
+ 444              	.L88:
+ 445 0316 0000     		.align	2
+ 446              	.L87:
+ 447 0318 188002E0 		.word	-536707048
+ 448 031c 0000FF03 		.word	67043328
+ 449 0320 1C8002E0 		.word	-536707044
+ 450 0324 088002E0 		.word	-536707064
+ 451 0328 0C8002E0 		.word	-536707060
+ 452 032c 00000000 		.word	displayMode
+ 453 0330 00000000 		.word	currentDisplayMode
+ 454 0334 00000000 		.word	volumeUp
+ 455 0338 00000000 		.word	volumeDown
+ 456 033c 00000000 		.word	currentVolume
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 9
+
+
+ 457 0340 00000000 		.word	isError
+ 458 0344 00000000 		.word	currentSongInfo
+ 459 0348 00000000 		.word	error
+ 460 034c 00000000 		.word	changeLeft
+ 461 0350 00000000 		.word	changeRight
+ 462              		.size	testLcd, .-testLcd
+ 463              		.comm	currentDisplayMode,1,1
+ 464              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 testLcd.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:8      .text:00000000 delay37us
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:30     .text:0000001c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:33     .text:00000020 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:36     .text:00000020 writeLCD
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:115    .text:000000a4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:125    .text:000000b0 numberToChar
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:122    .text:000000b0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:143    .text:000000c8 timeToString
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:180    .text:000000f8 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:188    .text:00000100 WriteString
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:185    .text:00000100 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:211    .text:00000120 ScreenShiftLeft
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:236    .text:00000150 clearScr
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:290    .text:000001d8 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:297    .text:000001dc testLcd
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:294    .text:000001dc $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccFuxJbS.s:425    .text:000002d8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:8      .text:00000000 delay37us
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:30     .text:0000001c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:33     .text:00000020 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:36     .text:00000020 writeLCD
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:115    .text:000000a4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:125    .text:000000b0 numberToChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:122    .text:000000b0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:144    .text:000000c8 timeToString
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:192    .text:00000128 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:199    .text:0000012c WriteString
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:196    .text:0000012c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:222    .text:0000014c ScreenShiftLeft
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:247    .text:0000017c clearScr
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:301    .text:00000204 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:308    .text:00000208 testLcd
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:305    .text:00000208 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccluPcoS.s:447    .text:00000318 $d
+                            *COM*:00000001 currentDisplayMode
 
 UNDEFINED SYMBOLS
 __umodsi3
+__udivsi3
 osSleep
+displayMode
 volumeUp
 volumeDown
 currentVolume

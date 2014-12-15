@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 1
 
 
    1              		.file	"efs.c"
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
   31              		.loc 1 15 0
   32 0014 FEFFFFEB 		bl	if_initInterface
   33              	.LVL1:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 2
 
 
   34 0018 0030A0E1 		mov	r3, r0
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
   74              		.loc 1 23 0
   75 0078 445284E5 		str	r5, [r4, #580]
   76              		.loc 1 24 0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 3
 
 
   77 007c 482284E5 		str	r2, [r4, #584]
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  128              		.4byte	.LCFI0-.LFB2
  129 0021 0E       		.byte	0xe
  130 0022 18       		.uleb128 0x18
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 4
 
 
  131 0023 8E       		.byte	0x8e
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  185 004c 00000000 		.4byte	0x0
  186              	.LLST3:
  187 0050 20000000 		.4byte	.LVL2-.Ltext0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 5
 
 
  188 0054 38000000 		.4byte	.LVL3-.Ltext0
@@ -271,54 +271,54 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  215 000c 00000000 		.4byte	.Ldebug_line0
  216 0010 C0000000 		.4byte	.Letext0
  217 0014 00000000 		.4byte	.Ltext0
- 218 0018 33010000 		.4byte	.LASF65
+ 218 0018 2B010000 		.4byte	.LASF65
  219 001c 01       		.byte	0x1
- 220 001d 11010000 		.4byte	.LASF66
- 221 0021 0B000000 		.4byte	.LASF67
+ 220 001d 09010000 		.4byte	.LASF66
+ 221 0021 69000000 		.4byte	.LASF67
  222 0025 02       		.uleb128 0x2
- 223 0026 1C020000 		.4byte	.LASF0
+ 223 0026 14020000 		.4byte	.LASF0
  224 002a 01       		.byte	0x1
  225 002b 08       		.byte	0x8
  226 002c 02       		.uleb128 0x2
- 227 002d 1E010000 		.4byte	.LASF1
+ 227 002d 16010000 		.4byte	.LASF1
  228 0031 01       		.byte	0x1
  229 0032 06       		.byte	0x6
  230 0033 03       		.uleb128 0x3
- 231 0034 3F010000 		.4byte	.LASF7
+ 231 0034 37010000 		.4byte	.LASF7
  232 0038 05       		.byte	0x5
  233 0039 61       		.byte	0x61
  234 003a 3E000000 		.4byte	0x3e
  235 003e 02       		.uleb128 0x2
- 236 003f 95010000 		.4byte	.LASF2
+ 236 003f 8D010000 		.4byte	.LASF2
  237 0043 01       		.byte	0x1
  238 0044 08       		.byte	0x8
  239 0045 02       		.uleb128 0x2
- 240 0046 73000000 		.4byte	.LASF3
+ 240 0046 38000000 		.4byte	.LASF3
  241 004a 02       		.byte	0x2
  242 004b 05       		.byte	0x5
  243 004c 02       		.uleb128 0x2
- 244 004d 02020000 		.4byte	.LASF4
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 6
+ 244 004d FA010000 		.4byte	.LASF4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 6
 
 
  245 0051 02       		.byte	0x2
  246 0052 07       		.byte	0x7
  247 0053 02       		.uleb128 0x2
- 248 0054 56010000 		.4byte	.LASF5
+ 248 0054 4E010000 		.4byte	.LASF5
  249 0058 04       		.byte	0x4
  250 0059 05       		.byte	0x5
  251 005a 02       		.uleb128 0x2
- 252 005b 7C020000 		.4byte	.LASF6
+ 252 005b 74020000 		.4byte	.LASF6
  253 005f 04       		.byte	0x4
  254 0060 07       		.byte	0x7
  255 0061 04       		.uleb128 0x4
  256 0062 7C000000 		.4byte	0x7c
- 257 0066 5C000000 		.4byte	.LASF8
+ 257 0066 21000000 		.4byte	.LASF8
  258 006a 04       		.byte	0x4
  259 006b 03       		.byte	0x3
  260 006c 13       		.byte	0x13
  261 006d 05       		.uleb128 0x5
- 262 006e A3010000 		.4byte	.LASF10
+ 262 006e 9B010000 		.4byte	.LASF10
  263 0072 03       		.byte	0x3
  264 0073 15       		.byte	0x15
  265 0074 53000000 		.4byte	0x53
@@ -327,7 +327,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  268 007a 00       		.uleb128 0x0
  269 007b 00       		.byte	0x0
  270 007c 03       		.uleb128 0x3
- 271 007d 5C000000 		.4byte	.LASF8
+ 271 007d 21000000 		.4byte	.LASF8
  272 0081 03       		.byte	0x3
  273 0082 17       		.byte	0x17
  274 0083 61000000 		.4byte	0x61
@@ -338,7 +338,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  279 0091 04       		.byte	0x4
  280 0092 13       		.byte	0x13
  281 0093 05       		.uleb128 0x5
- 282 0094 17010000 		.4byte	.LASF11
+ 282 0094 0F010000 		.4byte	.LASF11
  283 0098 04       		.byte	0x4
  284 0099 14       		.byte	0x14
  285 009a 5A000000 		.4byte	0x5a
@@ -346,7 +346,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  287 009f 23       		.byte	0x23
  288 00a0 00       		.uleb128 0x0
  289 00a1 05       		.uleb128 0x5
- 290 00a2 15020000 		.4byte	.LASF12
+ 290 00a2 0D020000 		.4byte	.LASF12
  291 00a6 04       		.byte	0x4
  292 00a7 15       		.byte	0x15
  293 00a8 3E000000 		.4byte	0x3e
@@ -354,11 +354,11 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  295 00ad 23       		.byte	0x23
  296 00ae 04       		.uleb128 0x4
  297 00af 05       		.uleb128 0x5
- 298 00b0 6C010000 		.4byte	.LASF13
+ 298 00b0 64010000 		.4byte	.LASF13
  299 00b4 04       		.byte	0x4
  300 00b5 16       		.byte	0x16
  301 00b6 3E000000 		.4byte	0x3e
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 7
 
 
  302 00ba 02       		.byte	0x2
@@ -372,12 +372,12 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  310 00c5 87000000 		.4byte	0x87
  311 00c9 06       		.uleb128 0x6
  312 00ca 7F010000 		.4byte	0x17f
- 313 00ce E0000000 		.4byte	.LASF14
+ 313 00ce D8000000 		.4byte	.LASF14
  314 00d2 3002     		.2byte	0x230
  315 00d4 04       		.byte	0x4
  316 00d5 1A       		.byte	0x1a
  317 00d6 05       		.uleb128 0x5
- 318 00d7 D6020000 		.4byte	.LASF15
+ 318 00d7 CE020000 		.4byte	.LASF15
  319 00db 04       		.byte	0x4
  320 00dc 1B       		.byte	0x1b
  321 00dd 7F010000 		.4byte	0x17f
@@ -385,7 +385,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  323 00e2 23       		.byte	0x23
  324 00e3 00       		.uleb128 0x0
  325 00e4 05       		.uleb128 0x5
- 326 00e5 DB010000 		.4byte	.LASF16
+ 326 00e5 D3010000 		.4byte	.LASF16
  327 00e9 04       		.byte	0x4
  328 00ea 1D       		.byte	0x1d
  329 00eb 85010000 		.4byte	0x185
@@ -393,7 +393,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  331 00f0 23       		.byte	0x23
  332 00f1 04       		.uleb128 0x4
  333 00f2 05       		.uleb128 0x5
- 334 00f3 9D000000 		.4byte	.LASF17
+ 334 00f3 62000000 		.4byte	.LASF17
  335 00f7 04       		.byte	0x4
  336 00f8 1E       		.byte	0x1e
  337 00f9 4C000000 		.4byte	0x4c
@@ -401,7 +401,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  339 00fe 23       		.byte	0x23
  340 00ff 08       		.uleb128 0x8
  341 0100 05       		.uleb128 0x5
- 342 0101 A5020000 		.4byte	.LASF18
+ 342 0101 9D020000 		.4byte	.LASF18
  343 0105 04       		.byte	0x4
  344 0106 1F       		.byte	0x1f
  345 0107 4C000000 		.4byte	0x4c
@@ -409,7 +409,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  347 010c 23       		.byte	0x23
  348 010d 0A       		.uleb128 0xa
  349 010e 05       		.uleb128 0x5
- 350 010f B9010000 		.4byte	.LASF19
+ 350 010f B1010000 		.4byte	.LASF19
  351 0113 04       		.byte	0x4
  352 0114 21       		.byte	0x21
  353 0115 33000000 		.4byte	0x33
@@ -417,8 +417,8 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  355 011a 23       		.byte	0x23
  356 011b 0C       		.uleb128 0xc
  357 011c 05       		.uleb128 0x5
- 358 011d C4010000 		.4byte	.LASF20
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 8
+ 358 011d BC010000 		.4byte	.LASF20
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 8
 
 
  359 0121 04       		.byte	0x4
@@ -428,7 +428,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  363 0128 23       		.byte	0x23
  364 0129 10       		.uleb128 0x10
  365 012a 05       		.uleb128 0x5
- 366 012b 17010000 		.4byte	.LASF11
+ 366 012b 0F010000 		.4byte	.LASF11
  367 012f 04       		.byte	0x4
  368 0130 25       		.byte	0x25
  369 0131 A8010000 		.4byte	0x1a8
@@ -436,7 +436,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  371 0136 23       		.byte	0x23
  372 0137 28       		.uleb128 0x28
  373 0138 05       		.uleb128 0x5
- 374 0139 15020000 		.4byte	.LASF12
+ 374 0139 0D020000 		.4byte	.LASF12
  375 013d 04       		.byte	0x4
  376 013e 26       		.byte	0x26
  377 013f B8010000 		.4byte	0x1b8
@@ -444,7 +444,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  379 0144 23       		.byte	0x23
  380 0145 2C       		.uleb128 0x2c
  381 0146 05       		.uleb128 0x5
- 382 0147 6C010000 		.4byte	.LASF13
+ 382 0147 64010000 		.4byte	.LASF13
  383 014b 04       		.byte	0x4
  384 014c 27       		.byte	0x27
  385 014d B8010000 		.4byte	0x1b8
@@ -452,7 +452,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  387 0152 23       		.byte	0x23
  388 0153 2D       		.uleb128 0x2d
  389 0154 05       		.uleb128 0x5
- 390 0155 AB020000 		.4byte	.LASF21
+ 390 0155 A3020000 		.4byte	.LASF21
  391 0159 04       		.byte	0x4
  392 015a 28       		.byte	0x28
  393 015b B8010000 		.4byte	0x1b8
@@ -460,7 +460,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  395 0160 23       		.byte	0x23
  396 0161 2E       		.uleb128 0x2e
  397 0162 05       		.uleb128 0x5
- 398 0163 5F010000 		.4byte	.LASF22
+ 398 0163 57010000 		.4byte	.LASF22
  399 0167 04       		.byte	0x4
  400 0168 29       		.byte	0x29
  401 0169 B8010000 		.4byte	0x1b8
@@ -468,7 +468,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  403 016e 23       		.byte	0x23
  404 016f 2F       		.uleb128 0x2f
  405 0170 05       		.uleb128 0x5
- 406 0171 46010000 		.4byte	.LASF23
+ 406 0171 3E010000 		.4byte	.LASF23
  407 0175 04       		.byte	0x4
  408 0176 2B       		.byte	0x2b
  409 0177 C8010000 		.4byte	0x1c8
@@ -478,7 +478,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  413 017e 00       		.byte	0x0
  414 017f 07       		.uleb128 0x7
  415 0180 04       		.byte	0x4
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 9
 
 
  416 0181 7C000000 		.4byte	0x7c
@@ -496,7 +496,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  428 019f 02       		.byte	0x2
  429 01a0 00       		.byte	0x0
  430 01a1 02       		.uleb128 0x2
- 431 01a2 7C020000 		.4byte	.LASF6
+ 431 01a2 74020000 		.4byte	.LASF6
  432 01a6 04       		.byte	0x4
  433 01a7 07       		.byte	0x7
  434 01a8 08       		.uleb128 0x8
@@ -521,29 +521,29 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  453 01d6 FF01     		.2byte	0x1ff
  454 01d8 00       		.byte	0x0
  455 01d9 03       		.uleb128 0x3
- 456 01da E0000000 		.4byte	.LASF14
+ 456 01da D8000000 		.4byte	.LASF14
  457 01de 04       		.byte	0x4
  458 01df 2E       		.byte	0x2e
  459 01e0 C9000000 		.4byte	0xc9
  460 01e4 04       		.uleb128 0x4
  461 01e5 45020000 		.4byte	0x245
- 462 01e9 58020000 		.4byte	.LASF24
+ 462 01e9 50020000 		.4byte	.LASF24
  463 01ed 10       		.byte	0x10
  464 01ee 06       		.byte	0x6
  465 01ef 0E       		.byte	0xe
  466 01f0 05       		.uleb128 0x5
- 467 01f1 72010000 		.4byte	.LASF25
+ 467 01f1 6A010000 		.4byte	.LASF25
  468 01f5 06       		.byte	0x6
  469 01f6 0F       		.byte	0xf
  470 01f7 3E000000 		.4byte	0x3e
  471 01fb 02       		.byte	0x2
  472 01fc 23       		.byte	0x23
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 10
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 10
 
 
  473 01fd 00       		.uleb128 0x0
  474 01fe 05       		.uleb128 0x5
- 475 01ff 21020000 		.4byte	.LASF26
+ 475 01ff 19020000 		.4byte	.LASF26
  476 0203 06       		.byte	0x6
  477 0204 10       		.byte	0x10
  478 0205 45020000 		.4byte	0x245
@@ -551,7 +551,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  480 020a 23       		.byte	0x23
  481 020b 01       		.uleb128 0x1
  482 020c 05       		.uleb128 0x5
- 483 020d B4010000 		.4byte	.LASF27
+ 483 020d AC010000 		.4byte	.LASF27
  484 0211 06       		.byte	0x6
  485 0212 11       		.byte	0x11
  486 0213 3E000000 		.4byte	0x3e
@@ -559,7 +559,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  488 0218 23       		.byte	0x23
  489 0219 04       		.uleb128 0x4
  490 021a 05       		.uleb128 0x5
- 491 021b AF000000 		.4byte	.LASF28
+ 491 021b A7000000 		.4byte	.LASF28
  492 021f 06       		.byte	0x6
  493 0220 12       		.byte	0x12
  494 0221 45020000 		.4byte	0x245
@@ -567,7 +567,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  496 0226 23       		.byte	0x23
  497 0227 05       		.uleb128 0x5
  498 0228 05       		.uleb128 0x5
- 499 0229 67020000 		.4byte	.LASF29
+ 499 0229 5F020000 		.4byte	.LASF29
  500 022d 06       		.byte	0x6
  501 022e 13       		.byte	0x13
  502 022f 5A000000 		.4byte	0x5a
@@ -575,7 +575,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  504 0234 23       		.byte	0x23
  505 0235 08       		.uleb128 0x8
  506 0236 05       		.uleb128 0x5
- 507 0237 71020000 		.4byte	.LASF30
+ 507 0237 69020000 		.4byte	.LASF30
  508 023b 06       		.byte	0x6
  509 023c 14       		.byte	0x14
  510 023d 5A000000 		.4byte	0x5a
@@ -591,20 +591,20 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  520 0253 02       		.byte	0x2
  521 0254 00       		.byte	0x0
  522 0255 03       		.uleb128 0x3
- 523 0256 58020000 		.4byte	.LASF24
+ 523 0256 50020000 		.4byte	.LASF24
  524 025a 06       		.byte	0x6
  525 025b 16       		.byte	0x16
  526 025c E4010000 		.4byte	0x1e4
  527 0260 0B       		.uleb128 0xb
  528 0261 93020000 		.4byte	0x293
  529 0265 48       		.byte	0x48
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 11
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 11
 
 
  530 0266 06       		.byte	0x6
  531 0267 1A       		.byte	0x1a
  532 0268 05       		.uleb128 0x5
- 533 0269 50010000 		.4byte	.LASF31
+ 533 0269 48010000 		.4byte	.LASF31
  534 026d 06       		.byte	0x6
  535 026e 1B       		.byte	0x1b
  536 026f 93020000 		.4byte	0x293
@@ -612,7 +612,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  538 0274 23       		.byte	0x23
  539 0275 00       		.uleb128 0x0
  540 0276 05       		.uleb128 0x5
- 541 0277 B9010000 		.4byte	.LASF19
+ 541 0277 B1010000 		.4byte	.LASF19
  542 027b 06       		.byte	0x6
  543 027c 1C       		.byte	0x1c
  544 027d 33000000 		.4byte	0x33
@@ -620,7 +620,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  546 0282 23       		.byte	0x23
  547 0283 04       		.uleb128 0x4
  548 0284 05       		.uleb128 0x5
- 549 0285 68000000 		.4byte	.LASF32
+ 549 0285 2D000000 		.4byte	.LASF32
  550 0289 06       		.byte	0x6
  551 028a 1D       		.byte	0x1d
  552 028b 99020000 		.4byte	0x299
@@ -639,18 +639,18 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  565 02a7 03       		.byte	0x3
  566 02a8 00       		.byte	0x0
  567 02a9 03       		.uleb128 0x3
- 568 02aa EA000000 		.4byte	.LASF33
+ 568 02aa E2000000 		.4byte	.LASF33
  569 02ae 06       		.byte	0x6
  570 02af 1E       		.byte	0x1e
  571 02b0 60020000 		.4byte	0x260
  572 02b4 04       		.uleb128 0x4
  573 02b5 DD020000 		.4byte	0x2dd
- 574 02b9 C0000000 		.4byte	.LASF34
+ 574 02b9 B8000000 		.4byte	.LASF34
  575 02bd 08       		.byte	0x8
  576 02be 07       		.byte	0x7
  577 02bf 12       		.byte	0x12
  578 02c0 05       		.uleb128 0x5
- 579 02c1 AF010000 		.4byte	.LASF35
+ 579 02c1 A7010000 		.4byte	.LASF35
  580 02c5 07       		.byte	0x7
  581 02c6 13       		.byte	0x13
  582 02c7 DD020000 		.4byte	0x2dd
@@ -658,10 +658,10 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  584 02cc 23       		.byte	0x23
  585 02cd 00       		.uleb128 0x0
  586 02ce 05       		.uleb128 0x5
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 12
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 12
 
 
- 587 02cf B5020000 		.4byte	.LASF36
+ 587 02cf AD020000 		.4byte	.LASF36
  588 02d3 07       		.byte	0x7
  589 02d4 14       		.byte	0x14
  590 02d5 2C000000 		.4byte	0x2c
@@ -673,18 +673,18 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  596 02de 04       		.byte	0x4
  597 02df A9020000 		.4byte	0x2a9
  598 02e3 03       		.uleb128 0x3
- 599 02e4 C0000000 		.4byte	.LASF34
+ 599 02e4 B8000000 		.4byte	.LASF34
  600 02e8 07       		.byte	0x7
  601 02e9 16       		.byte	0x16
  602 02ea B4020000 		.4byte	0x2b4
  603 02ee 04       		.uleb128 0x4
  604 02ef 87030000 		.4byte	0x387
- 605 02f3 3F020000 		.4byte	.LASF37
+ 605 02f3 37020000 		.4byte	.LASF37
  606 02f7 1C       		.byte	0x1c
  607 02f8 08       		.byte	0x8
  608 02f9 14       		.byte	0x14
  609 02fa 05       		.uleb128 0x5
- 610 02fb 02010000 		.4byte	.LASF38
+ 610 02fb FA000000 		.4byte	.LASF38
  611 02ff 08       		.byte	0x8
  612 0300 15       		.byte	0x15
  613 0301 4C000000 		.4byte	0x4c
@@ -692,7 +692,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  615 0306 23       		.byte	0x23
  616 0307 00       		.uleb128 0x0
  617 0308 05       		.uleb128 0x5
- 618 0309 16030000 		.4byte	.LASF39
+ 618 0309 0E030000 		.4byte	.LASF39
  619 030d 08       		.byte	0x8
  620 030e 16       		.byte	0x16
  621 030f 3E000000 		.4byte	0x3e
@@ -700,7 +700,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  623 0314 23       		.byte	0x23
  624 0315 02       		.uleb128 0x2
  625 0316 05       		.uleb128 0x5
- 626 0317 2B020000 		.4byte	.LASF40
+ 626 0317 23020000 		.4byte	.LASF40
  627 031b 08       		.byte	0x8
  628 031c 17       		.byte	0x17
  629 031d 4C000000 		.4byte	0x4c
@@ -708,7 +708,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  631 0322 23       		.byte	0x23
  632 0323 04       		.uleb128 0x4
  633 0324 05       		.uleb128 0x5
- 634 0325 F5010000 		.4byte	.LASF41
+ 634 0325 ED010000 		.4byte	.LASF41
  635 0329 08       		.byte	0x8
  636 032a 18       		.byte	0x18
  637 032b 3E000000 		.4byte	0x3e
@@ -716,9 +716,9 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  639 0330 23       		.byte	0x23
  640 0331 06       		.uleb128 0x6
  641 0332 05       		.uleb128 0x5
- 642 0333 00030000 		.4byte	.LASF42
+ 642 0333 F8020000 		.4byte	.LASF42
  643 0337 08       		.byte	0x8
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 13
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 13
 
 
  644 0338 19       		.byte	0x19
@@ -727,7 +727,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  647 033e 23       		.byte	0x23
  648 033f 08       		.uleb128 0x8
  649 0340 05       		.uleb128 0x5
- 650 0341 DC020000 		.4byte	.LASF43
+ 650 0341 D4020000 		.4byte	.LASF43
  651 0345 08       		.byte	0x8
  652 0346 1A       		.byte	0x1a
  653 0347 4C000000 		.4byte	0x4c
@@ -735,7 +735,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  655 034c 23       		.byte	0x23
  656 034d 0A       		.uleb128 0xa
  657 034e 05       		.uleb128 0x5
- 658 034f 46000000 		.4byte	.LASF44
+ 658 034f 0B000000 		.4byte	.LASF44
  659 0353 08       		.byte	0x8
  660 0354 1B       		.byte	0x1b
  661 0355 4C000000 		.4byte	0x4c
@@ -743,7 +743,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  663 035a 23       		.byte	0x23
  664 035b 0C       		.uleb128 0xc
  665 035c 05       		.uleb128 0x5
- 666 035d 7B010000 		.4byte	.LASF45
+ 666 035d 73010000 		.4byte	.LASF45
  667 0361 08       		.byte	0x8
  668 0362 1C       		.byte	0x1c
  669 0363 5A000000 		.4byte	0x5a
@@ -751,7 +751,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  671 0368 23       		.byte	0x23
  672 0369 10       		.uleb128 0x10
  673 036a 05       		.uleb128 0x5
- 674 036b CA010000 		.4byte	.LASF46
+ 674 036b C2010000 		.4byte	.LASF46
  675 036f 08       		.byte	0x8
  676 0370 1D       		.byte	0x1d
  677 0371 5A000000 		.4byte	0x5a
@@ -759,7 +759,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  679 0376 23       		.byte	0x23
  680 0377 14       		.uleb128 0x14
  681 0378 05       		.uleb128 0x5
- 682 0379 7D000000 		.4byte	.LASF47
+ 682 0379 42000000 		.4byte	.LASF47
  683 037d 08       		.byte	0x8
  684 037e 1E       		.byte	0x1e
  685 037f 5A000000 		.4byte	0x5a
@@ -768,21 +768,21 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  688 0385 18       		.uleb128 0x18
  689 0386 00       		.byte	0x0
  690 0387 03       		.uleb128 0x3
- 691 0388 3F020000 		.4byte	.LASF37
+ 691 0388 37020000 		.4byte	.LASF37
  692 038c 08       		.byte	0x8
  693 038d 20       		.byte	0x20
  694 038e EE020000 		.4byte	0x2ee
  695 0392 04       		.uleb128 0x4
  696 0393 2B040000 		.4byte	0x42b
- 697 0397 A4000000 		.4byte	.LASF48
+ 697 0397 9C000000 		.4byte	.LASF48
  698 039b 40       		.byte	0x40
  699 039c 08       		.byte	0x8
  700 039d 22       		.byte	0x22
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 14
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 14
 
 
  701 039e 05       		.uleb128 0x5
- 702 039f EA020000 		.4byte	.LASF49
+ 702 039f E2020000 		.4byte	.LASF49
  703 03a3 08       		.byte	0x8
  704 03a4 23       		.byte	0x23
  705 03a5 2B040000 		.4byte	0x42b
@@ -790,7 +790,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  707 03aa 23       		.byte	0x23
  708 03ab 00       		.uleb128 0x0
  709 03ac 05       		.uleb128 0x5
- 710 03ad B7000000 		.4byte	.LASF50
+ 710 03ad AF000000 		.4byte	.LASF50
  711 03b1 08       		.byte	0x8
  712 03b2 24       		.byte	0x24
  713 03b3 87030000 		.4byte	0x387
@@ -798,7 +798,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  715 03b8 23       		.byte	0x23
  716 03b9 04       		.uleb128 0x4
  717 03ba 05       		.uleb128 0x5
- 718 03bb C5020000 		.4byte	.LASF51
+ 718 03bb BD020000 		.4byte	.LASF51
  719 03bf 08       		.byte	0x8
  720 03c0 25       		.byte	0x25
  721 03c1 5A000000 		.4byte	0x5a
@@ -806,7 +806,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  723 03c6 23       		.byte	0x23
  724 03c7 20       		.uleb128 0x20
  725 03c8 05       		.uleb128 0x5
- 726 03c9 D1000000 		.4byte	.LASF52
+ 726 03c9 C9000000 		.4byte	.LASF52
  727 03cd 08       		.byte	0x8
  728 03ce 26       		.byte	0x26
  729 03cf 5A000000 		.4byte	0x5a
@@ -814,7 +814,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  731 03d4 23       		.byte	0x23
  732 03d5 24       		.uleb128 0x24
  733 03d6 05       		.uleb128 0x5
- 734 03d7 89000000 		.4byte	.LASF53
+ 734 03d7 4E000000 		.4byte	.LASF53
  735 03db 08       		.byte	0x8
  736 03dc 27       		.byte	0x27
  737 03dd 5A000000 		.4byte	0x5a
@@ -822,7 +822,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  739 03e2 23       		.byte	0x23
  740 03e3 28       		.uleb128 0x28
  741 03e4 05       		.uleb128 0x5
- 742 03e5 EF000000 		.4byte	.LASF54
+ 742 03e5 E7000000 		.4byte	.LASF54
  743 03e9 08       		.byte	0x8
  744 03ea 28       		.byte	0x28
  745 03eb 5A000000 		.4byte	0x5a
@@ -830,7 +830,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  747 03f0 23       		.byte	0x23
  748 03f1 2C       		.uleb128 0x2c
  749 03f2 05       		.uleb128 0x5
- 750 03f3 8E020000 		.4byte	.LASF55
+ 750 03f3 86020000 		.4byte	.LASF55
  751 03f7 08       		.byte	0x8
  752 03f8 29       		.byte	0x29
  753 03f9 5A000000 		.4byte	0x5a
@@ -838,10 +838,10 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  755 03fe 23       		.byte	0x23
  756 03ff 30       		.uleb128 0x30
  757 0400 05       		.uleb128 0x5
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 15
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 15
 
 
- 758 0401 EF020000 		.4byte	.LASF56
+ 758 0401 E7020000 		.4byte	.LASF56
  759 0405 08       		.byte	0x8
  760 0406 2A       		.byte	0x2a
  761 0407 5A000000 		.4byte	0x5a
@@ -849,7 +849,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  763 040c 23       		.byte	0x23
  764 040d 34       		.uleb128 0x34
  765 040e 05       		.uleb128 0x5
- 766 040f 48020000 		.4byte	.LASF57
+ 766 040f 40020000 		.4byte	.LASF57
  767 0413 08       		.byte	0x8
  768 0414 2B       		.byte	0x2b
  769 0415 5A000000 		.4byte	0x5a
@@ -857,7 +857,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  771 041a 23       		.byte	0x23
  772 041b 38       		.uleb128 0x38
  773 041c 05       		.uleb128 0x5
- 774 041d B4010000 		.4byte	.LASF27
+ 774 041d AC010000 		.4byte	.LASF27
  775 0421 08       		.byte	0x8
  776 0422 2C       		.byte	0x2c
  777 0423 3E000000 		.4byte	0x3e
@@ -869,7 +869,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  783 042c 04       		.byte	0x4
  784 042d E3020000 		.4byte	0x2e3
  785 0431 03       		.uleb128 0x3
- 786 0432 A4000000 		.4byte	.LASF48
+ 786 0432 9C000000 		.4byte	.LASF48
  787 0436 08       		.byte	0x8
  788 0437 2E       		.byte	0x2e
  789 0438 92030000 		.4byte	0x392
@@ -879,7 +879,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  793 0443 02       		.byte	0x2
  794 0444 11       		.byte	0x11
  795 0445 05       		.uleb128 0x5
- 796 0446 0F030000 		.4byte	.LASF58
+ 796 0446 07030000 		.4byte	.LASF58
  797 044a 02       		.byte	0x2
  798 044b 12       		.byte	0x12
  799 044c 7C000000 		.4byte	0x7c
@@ -887,7 +887,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  801 0451 23       		.byte	0x23
  802 0452 00       		.uleb128 0x0
  803 0453 05       		.uleb128 0x5
- 804 0454 95000000 		.4byte	.LASF59
+ 804 0454 5A000000 		.4byte	.LASF59
  805 0458 02       		.byte	0x2
  806 0459 13       		.byte	0x13
  807 045a D9010000 		.4byte	0x1d9
@@ -895,10 +895,10 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  809 045f 23       		.byte	0x23
  810 0460 04       		.uleb128 0x4
  811 0461 05       		.uleb128 0x5
- 812 0462 CA000000 		.4byte	.LASF60
+ 812 0462 C2000000 		.4byte	.LASF60
  813 0466 02       		.byte	0x2
  814 0467 14       		.byte	0x14
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 16
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 16
 
 
  815 0468 A9020000 		.4byte	0x2a9
@@ -906,7 +906,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  817 046d 23       		.byte	0x23
  818 046e B404     		.uleb128 0x234
  819 0470 05       		.uleb128 0x5
- 820 0471 65010000 		.4byte	.LASF61
+ 820 0471 5D010000 		.4byte	.LASF61
  821 0475 02       		.byte	0x2
  822 0476 15       		.byte	0x15
  823 0477 E3020000 		.4byte	0x2e3
@@ -914,7 +914,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  825 047c 23       		.byte	0x23
  826 047d FC04     		.uleb128 0x27c
  827 047f 05       		.uleb128 0x5
- 828 0480 57000000 		.4byte	.LASF62
+ 828 0480 1C000000 		.4byte	.LASF62
  829 0484 02       		.byte	0x2
  830 0485 16       		.byte	0x16
  831 0486 31040000 		.4byte	0x431
@@ -923,14 +923,14 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  834 048c 8405     		.uleb128 0x284
  835 048e 00       		.byte	0x0
  836 048f 03       		.uleb128 0x3
- 837 0490 E2010000 		.4byte	.LASF63
+ 837 0490 DA010000 		.4byte	.LASF63
  838 0494 02       		.byte	0x2
  839 0495 17       		.byte	0x17
  840 0496 3C040000 		.4byte	0x43c
  841 049a 0D       		.uleb128 0xd
  842 049b E5040000 		.4byte	0x4e5
  843 049f 01       		.byte	0x1
- 844 04a0 2A010000 		.4byte	.LASF68
+ 844 04a0 22010000 		.4byte	.LASF68
  845 04a4 01       		.byte	0x1
  846 04a5 0D       		.byte	0xd
  847 04a6 01       		.byte	0x1
@@ -945,20 +945,20 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  856 04be EC040000 		.4byte	0x4ec
  857 04c2 1F000000 		.4byte	.LLST1
  858 04c6 0F       		.uleb128 0xf
- 859 04c7 BF010000 		.4byte	.LASF64
+ 859 04c7 B7010000 		.4byte	.LASF64
  860 04cb 01       		.byte	0x1
  861 04cc 0C       		.byte	0xc
  862 04cd F2040000 		.4byte	0x4f2
  863 04d1 3D000000 		.4byte	.LLST2
  864 04d5 10       		.uleb128 0x10
- 865 04d6 89010000 		.4byte	.LASF69
+ 865 04d6 81010000 		.4byte	.LASF69
  866 04da 01       		.byte	0x1
  867 04db 0E       		.byte	0xe
  868 04dc 2C000000 		.4byte	0x2c
  869 04e0 50000000 		.4byte	.LLST3
  870 04e4 00       		.byte	0x0
  871 04e5 11       		.uleb128 0x11
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 17
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 17
 
 
  872 04e6 696E7400 		.ascii	"int\000"
@@ -1018,7 +1018,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  926 002b 04       		.uleb128 0x4
  927 002c 13       		.uleb128 0x13
  928 002d 01       		.byte	0x1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 18
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 18
 
 
  929 002e 01       		.uleb128 0x1
@@ -1078,7 +1078,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  983 0064 01       		.uleb128 0x1
  984 0065 13       		.uleb128 0x13
  985 0066 49       		.uleb128 0x49
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 19
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 19
 
 
  986 0067 13       		.uleb128 0x13
@@ -1138,7 +1138,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  1040 009d 03       		.uleb128 0x3
  1041 009e 0E       		.uleb128 0xe
  1042 009f 3A       		.uleb128 0x3a
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 20
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 20
 
 
  1043 00a0 0B       		.uleb128 0xb
@@ -1198,7 +1198,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  1097 00d6 49       		.uleb128 0x49
  1098 00d7 13       		.uleb128 0x13
  1099 00d8 02       		.uleb128 0x2
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 21
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 21
 
 
  1100 00d9 06       		.uleb128 0x6
@@ -1243,316 +1243,314 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 1
  1137 0000 494F4D61 		.ascii	"IOManStack\000"
  1137      6E537461 
  1137      636B00
- 1138              	.LASF67:
- 1139 000b 2F637967 		.ascii	"/cygdrive/c/Embedded/eclipse/workspace/testProject/"
- 1139      64726976 
- 1139      652F632F 
- 1139      456D6265 
- 1139      64646564 
- 1140 003e 66696C65 		.ascii	"filesys\000"
- 1140      73797300 
- 1141              	.LASF44:
- 1142 0046 46617453 		.ascii	"FatSectorCount16\000"
- 1142      6563746F 
- 1142      72436F75 
- 1142      6E743136 
- 1142      00
- 1143              	.LASF62:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 22
+ 1138              	.LASF44:
+ 1139 000b 46617453 		.ascii	"FatSectorCount16\000"
+ 1139      6563746F 
+ 1139      72436F75 
+ 1139      6E743136 
+ 1139      00
+ 1140              	.LASF62:
+ 1141 001c 6D794673 		.ascii	"myFs\000"
+ 1141      00
+ 1142              	.LASF8:
+ 1143 0021 6877496E 		.ascii	"hwInterface\000"
+ 1143      74657266 
+ 1143      61636500 
+ 1144              	.LASF32:
+ 1145 002d 70617274 		.ascii	"partitions\000"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 22
 
 
- 1144 0057 6D794673 		.ascii	"myFs\000"
- 1144      00
- 1145              	.LASF8:
- 1146 005c 6877496E 		.ascii	"hwInterface\000"
- 1146      74657266 
- 1146      61636500 
- 1147              	.LASF32:
- 1148 0068 70617274 		.ascii	"partitions\000"
- 1148      6974696F 
- 1148      6E7300
- 1149              	.LASF3:
- 1150 0073 73686F72 		.ascii	"short int\000"
- 1150      7420696E 
- 1150      7400
- 1151              	.LASF47:
- 1152 007d 526F6F74 		.ascii	"RootCluster\000"
- 1152      436C7573 
- 1152      74657200 
- 1153              	.LASF53:
- 1154 0089 53656374 		.ascii	"SectorCount\000"
- 1154      6F72436F 
- 1154      756E7400 
- 1155              	.LASF59:
- 1156 0095 6D79494F 		.ascii	"myIOman\000"
- 1156      6D616E00 
- 1157              	.LASF17:
- 1158 009d 6E756D62 		.ascii	"numbuf\000"
- 1158      756600
- 1159              	.LASF48:
- 1160 00a4 46696C65 		.ascii	"FileSystem\000"
- 1160      53797374 
- 1160      656D00
- 1161              	.LASF28:
- 1162 00af 4348535F 		.ascii	"CHS_end\000"
- 1162      656E6400 
- 1163              	.LASF50:
- 1164 00b7 766F6C75 		.ascii	"volumeId\000"
- 1164      6D654964 
- 1164      00
- 1165              	.LASF34:
- 1166 00c0 50617274 		.ascii	"Partition\000"
- 1166      6974696F 
- 1166      6E00
- 1167              	.LASF60:
- 1168 00ca 6D794469 		.ascii	"myDisc\000"
- 1168      736300
- 1169              	.LASF52:
- 1170 00d1 46617453 		.ascii	"FatSectorCount\000"
- 1170      6563746F 
- 1170      72436F75 
- 1170      6E7400
- 1171              	.LASF14:
- 1172 00e0 494F4D61 		.ascii	"IOManager\000"
- 1172      6E616765 
- 1172      7200
- 1173              	.LASF33:
- 1174 00ea 44697363 		.ascii	"Disc\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 23
+ 1145      6974696F 
+ 1145      6E7300
+ 1146              	.LASF3:
+ 1147 0038 73686F72 		.ascii	"short int\000"
+ 1147      7420696E 
+ 1147      7400
+ 1148              	.LASF47:
+ 1149 0042 526F6F74 		.ascii	"RootCluster\000"
+ 1149      436C7573 
+ 1149      74657200 
+ 1150              	.LASF53:
+ 1151 004e 53656374 		.ascii	"SectorCount\000"
+ 1151      6F72436F 
+ 1151      756E7400 
+ 1152              	.LASF59:
+ 1153 005a 6D79494F 		.ascii	"myIOman\000"
+ 1153      6D616E00 
+ 1154              	.LASF17:
+ 1155 0062 6E756D62 		.ascii	"numbuf\000"
+ 1155      756600
+ 1156              	.LASF67:
+ 1157 0069 2F637967 		.ascii	"/cygdrive/c/Embedded/workspace/testProject/filesys\000"
+ 1157      64726976 
+ 1157      652F632F 
+ 1157      456D6265 
+ 1157      64646564 
+ 1158              	.LASF48:
+ 1159 009c 46696C65 		.ascii	"FileSystem\000"
+ 1159      53797374 
+ 1159      656D00
+ 1160              	.LASF28:
+ 1161 00a7 4348535F 		.ascii	"CHS_end\000"
+ 1161      656E6400 
+ 1162              	.LASF50:
+ 1163 00af 766F6C75 		.ascii	"volumeId\000"
+ 1163      6D654964 
+ 1163      00
+ 1164              	.LASF34:
+ 1165 00b8 50617274 		.ascii	"Partition\000"
+ 1165      6974696F 
+ 1165      6E00
+ 1166              	.LASF60:
+ 1167 00c2 6D794469 		.ascii	"myDisc\000"
+ 1167      736300
+ 1168              	.LASF52:
+ 1169 00c9 46617453 		.ascii	"FatSectorCount\000"
+ 1169      6563746F 
+ 1169      72436F75 
+ 1169      6E7400
+ 1170              	.LASF14:
+ 1171 00d8 494F4D61 		.ascii	"IOManager\000"
+ 1171      6E616765 
+ 1171      7200
+ 1172              	.LASF33:
+ 1173 00e2 44697363 		.ascii	"Disc\000"
+ 1173      00
+ 1174              	.LASF54:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 23
 
 
- 1174      00
- 1175              	.LASF54:
- 1176 00ef 46697273 		.ascii	"FirstSectorRootDir\000"
- 1176      74536563 
- 1176      746F7252 
- 1176      6F6F7444 
- 1176      697200
- 1177              	.LASF38:
- 1178 0102 42797465 		.ascii	"BytesPerSector\000"
- 1178      73506572 
- 1178      53656374 
- 1178      6F7200
- 1179              	.LASF66:
- 1180 0111 6566732E 		.ascii	"efs.c\000"
- 1180      6300
- 1181              	.LASF11:
- 1182 0117 73656374 		.ascii	"sector\000"
- 1182      6F7200
- 1183              	.LASF1:
- 1184 011e 7369676E 		.ascii	"signed char\000"
- 1184      65642063 
- 1184      68617200 
- 1185              	.LASF68:
- 1186 012a 6566735F 		.ascii	"efs_init\000"
- 1186      696E6974 
- 1186      00
- 1187              	.LASF65:
- 1188 0133 474E5520 		.ascii	"GNU C 4.1.1\000"
- 1188      4320342E 
- 1188      312E3100 
- 1189              	.LASF7:
- 1190 013f 6575696E 		.ascii	"euint8\000"
- 1190      743800
- 1191              	.LASF23:
- 1192 0146 63616368 		.ascii	"cache_mem\000"
- 1192      655F6D65 
- 1192      6D00
- 1193              	.LASF31:
- 1194 0150 696F6D61 		.ascii	"ioman\000"
- 1194      6E00
- 1195              	.LASF5:
- 1196 0156 6C6F6E67 		.ascii	"long int\000"
- 1196      20696E74 
- 1196      00
- 1197              	.LASF22:
- 1198 015f 69747074 		.ascii	"itptr\000"
- 1198      7200
- 1199              	.LASF61:
- 1200 0165 6D795061 		.ascii	"myPart\000"
- 1200      727400
- 1201              	.LASF13:
- 1202 016c 75736167 		.ascii	"usage\000"
- 1202      6500
- 1203              	.LASF25:
- 1204 0172 626F6F74 		.ascii	"bootFlag\000"
- 1204      466C6167 
- 1204      00
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 24
+ 1175 00e7 46697273 		.ascii	"FirstSectorRootDir\000"
+ 1175      74536563 
+ 1175      746F7252 
+ 1175      6F6F7444 
+ 1175      697200
+ 1176              	.LASF38:
+ 1177 00fa 42797465 		.ascii	"BytesPerSector\000"
+ 1177      73506572 
+ 1177      53656374 
+ 1177      6F7200
+ 1178              	.LASF66:
+ 1179 0109 6566732E 		.ascii	"efs.c\000"
+ 1179      6300
+ 1180              	.LASF11:
+ 1181 010f 73656374 		.ascii	"sector\000"
+ 1181      6F7200
+ 1182              	.LASF1:
+ 1183 0116 7369676E 		.ascii	"signed char\000"
+ 1183      65642063 
+ 1183      68617200 
+ 1184              	.LASF68:
+ 1185 0122 6566735F 		.ascii	"efs_init\000"
+ 1185      696E6974 
+ 1185      00
+ 1186              	.LASF65:
+ 1187 012b 474E5520 		.ascii	"GNU C 4.1.1\000"
+ 1187      4320342E 
+ 1187      312E3100 
+ 1188              	.LASF7:
+ 1189 0137 6575696E 		.ascii	"euint8\000"
+ 1189      743800
+ 1190              	.LASF23:
+ 1191 013e 63616368 		.ascii	"cache_mem\000"
+ 1191      655F6D65 
+ 1191      6D00
+ 1192              	.LASF31:
+ 1193 0148 696F6D61 		.ascii	"ioman\000"
+ 1193      6E00
+ 1194              	.LASF5:
+ 1195 014e 6C6F6E67 		.ascii	"long int\000"
+ 1195      20696E74 
+ 1195      00
+ 1196              	.LASF22:
+ 1197 0157 69747074 		.ascii	"itptr\000"
+ 1197      7200
+ 1198              	.LASF61:
+ 1199 015d 6D795061 		.ascii	"myPart\000"
+ 1199      727400
+ 1200              	.LASF13:
+ 1201 0164 75736167 		.ascii	"usage\000"
+ 1201      6500
+ 1202              	.LASF25:
+ 1203 016a 626F6F74 		.ascii	"bootFlag\000"
+ 1203      466C6167 
+ 1203      00
+ 1204              	.LASF45:
+ 1205 0173 53656374 		.ascii	"SectorCount32\000"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 24
 
 
- 1205              	.LASF45:
- 1206 017b 53656374 		.ascii	"SectorCount32\000"
- 1206      6F72436F 
- 1206      756E7433 
- 1206      3200
- 1207              	.LASF69:
- 1208 0189 72657475 		.ascii	"returnValue\000"
- 1208      726E5661 
- 1208      6C756500 
- 1209              	.LASF2:
- 1210 0195 756E7369 		.ascii	"unsigned char\000"
- 1210      676E6564 
- 1210      20636861 
- 1210      7200
- 1211              	.LASF10:
- 1212 01a3 73656374 		.ascii	"sectorCount\000"
- 1212      6F72436F 
- 1212      756E7400 
- 1213              	.LASF35:
- 1214 01af 64697363 		.ascii	"disc\000"
- 1214      00
- 1215              	.LASF27:
- 1216 01b4 74797065 		.ascii	"type\000"
- 1216      00
- 1217              	.LASF19:
- 1218 01b9 6572726F 		.ascii	"error\000"
- 1218      7200
- 1219              	.LASF64:
- 1220 01bf 6F707473 		.ascii	"opts\000"
- 1220      00
- 1221              	.LASF20:
- 1222 01c4 73746163 		.ascii	"stack\000"
- 1222      6B00
- 1223              	.LASF46:
- 1224 01ca 46617453 		.ascii	"FatSectorCount32\000"
- 1224      6563746F 
- 1224      72436F75 
- 1224      6E743332 
- 1224      00
- 1225              	.LASF16:
- 1226 01db 62756670 		.ascii	"bufptr\000"
- 1226      747200
- 1227              	.LASF63:
- 1228 01e2 456D6265 		.ascii	"EmbeddedFileSystem\000"
- 1228      64646564 
- 1228      46696C65 
- 1228      53797374 
- 1228      656D00
- 1229              	.LASF41:
- 1230 01f5 4E756D62 		.ascii	"NumberOfFats\000"
- 1230      65724F66 
- 1230      46617473 
- 1230      00
- 1231              	.LASF4:
- 1232 0202 73686F72 		.ascii	"short unsigned int\000"
- 1232      7420756E 
- 1232      7369676E 
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 25
+ 1205      6F72436F 
+ 1205      756E7433 
+ 1205      3200
+ 1206              	.LASF69:
+ 1207 0181 72657475 		.ascii	"returnValue\000"
+ 1207      726E5661 
+ 1207      6C756500 
+ 1208              	.LASF2:
+ 1209 018d 756E7369 		.ascii	"unsigned char\000"
+ 1209      676E6564 
+ 1209      20636861 
+ 1209      7200
+ 1210              	.LASF10:
+ 1211 019b 73656374 		.ascii	"sectorCount\000"
+ 1211      6F72436F 
+ 1211      756E7400 
+ 1212              	.LASF35:
+ 1213 01a7 64697363 		.ascii	"disc\000"
+ 1213      00
+ 1214              	.LASF27:
+ 1215 01ac 74797065 		.ascii	"type\000"
+ 1215      00
+ 1216              	.LASF19:
+ 1217 01b1 6572726F 		.ascii	"error\000"
+ 1217      7200
+ 1218              	.LASF64:
+ 1219 01b7 6F707473 		.ascii	"opts\000"
+ 1219      00
+ 1220              	.LASF20:
+ 1221 01bc 73746163 		.ascii	"stack\000"
+ 1221      6B00
+ 1222              	.LASF46:
+ 1223 01c2 46617453 		.ascii	"FatSectorCount32\000"
+ 1223      6563746F 
+ 1223      72436F75 
+ 1223      6E743332 
+ 1223      00
+ 1224              	.LASF16:
+ 1225 01d3 62756670 		.ascii	"bufptr\000"
+ 1225      747200
+ 1226              	.LASF63:
+ 1227 01da 456D6265 		.ascii	"EmbeddedFileSystem\000"
+ 1227      64646564 
+ 1227      46696C65 
+ 1227      53797374 
+ 1227      656D00
+ 1228              	.LASF41:
+ 1229 01ed 4E756D62 		.ascii	"NumberOfFats\000"
+ 1229      65724F66 
+ 1229      46617473 
+ 1229      00
+ 1230              	.LASF4:
+ 1231 01fa 73686F72 		.ascii	"short unsigned int\000"
+ 1231      7420756E 
+ 1231      7369676E 
+ 1231      65642069 
+ 1231      6E7400
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 25
 
 
- 1232      65642069 
- 1232      6E7400
- 1233              	.LASF12:
- 1234 0215 73746174 		.ascii	"status\000"
- 1234      757300
- 1235              	.LASF0:
- 1236 021c 63686172 		.ascii	"char\000"
- 1236      00
- 1237              	.LASF26:
- 1238 0221 4348535F 		.ascii	"CHS_begin\000"
- 1238      62656769 
- 1238      6E00
- 1239              	.LASF40:
- 1240 022b 52657365 		.ascii	"ReservedSectorCount\000"
- 1240      72766564 
- 1240      53656374 
- 1240      6F72436F 
- 1240      756E7400 
- 1241              	.LASF37:
- 1242 023f 566F6C75 		.ascii	"VolumeId\000"
- 1242      6D654964 
- 1242      00
- 1243              	.LASF57:
- 1244 0248 4E657874 		.ascii	"NextFreeCluster\000"
- 1244      46726565 
- 1244      436C7573 
- 1244      74657200 
- 1245              	.LASF24:
- 1246 0258 50617274 		.ascii	"PartitionField\000"
- 1246      6974696F 
- 1246      6E466965 
- 1246      6C6400
- 1247              	.LASF29:
- 1248 0267 4C42415F 		.ascii	"LBA_begin\000"
- 1248      62656769 
- 1248      6E00
- 1249              	.LASF30:
- 1250 0271 6E756D53 		.ascii	"numSectors\000"
- 1250      6563746F 
- 1250      727300
- 1251              	.LASF6:
- 1252 027c 6C6F6E67 		.ascii	"long unsigned int\000"
- 1252      20756E73 
- 1252      69676E65 
- 1252      6420696E 
- 1252      7400
- 1253              	.LASF55:
- 1254 028e 46697273 		.ascii	"FirstClusterCurrentDir\000"
- 1254      74436C75 
- 1254      73746572 
- 1254      43757272 
- 1254      656E7444 
- 1255              	.LASF18:
- 1256 02a5 6E756D69 		.ascii	"numit\000"
- 1256      7400
- 1257              	.LASF21:
- 1258 02ab 72656665 		.ascii	"reference\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 26
+ 1232              	.LASF12:
+ 1233 020d 73746174 		.ascii	"status\000"
+ 1233      757300
+ 1234              	.LASF0:
+ 1235 0214 63686172 		.ascii	"char\000"
+ 1235      00
+ 1236              	.LASF26:
+ 1237 0219 4348535F 		.ascii	"CHS_begin\000"
+ 1237      62656769 
+ 1237      6E00
+ 1238              	.LASF40:
+ 1239 0223 52657365 		.ascii	"ReservedSectorCount\000"
+ 1239      72766564 
+ 1239      53656374 
+ 1239      6F72436F 
+ 1239      756E7400 
+ 1240              	.LASF37:
+ 1241 0237 566F6C75 		.ascii	"VolumeId\000"
+ 1241      6D654964 
+ 1241      00
+ 1242              	.LASF57:
+ 1243 0240 4E657874 		.ascii	"NextFreeCluster\000"
+ 1243      46726565 
+ 1243      436C7573 
+ 1243      74657200 
+ 1244              	.LASF24:
+ 1245 0250 50617274 		.ascii	"PartitionField\000"
+ 1245      6974696F 
+ 1245      6E466965 
+ 1245      6C6400
+ 1246              	.LASF29:
+ 1247 025f 4C42415F 		.ascii	"LBA_begin\000"
+ 1247      62656769 
+ 1247      6E00
+ 1248              	.LASF30:
+ 1249 0269 6E756D53 		.ascii	"numSectors\000"
+ 1249      6563746F 
+ 1249      727300
+ 1250              	.LASF6:
+ 1251 0274 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1251      20756E73 
+ 1251      69676E65 
+ 1251      6420696E 
+ 1251      7400
+ 1252              	.LASF55:
+ 1253 0286 46697273 		.ascii	"FirstClusterCurrentDir\000"
+ 1253      74436C75 
+ 1253      73746572 
+ 1253      43757272 
+ 1253      656E7444 
+ 1254              	.LASF18:
+ 1255 029d 6E756D69 		.ascii	"numit\000"
+ 1255      7400
+ 1256              	.LASF21:
+ 1257 02a3 72656665 		.ascii	"reference\000"
+ 1257      72656E63 
+ 1257      6500
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 26
 
 
- 1258      72656E63 
- 1258      6500
- 1259              	.LASF36:
- 1260 02b5 61637469 		.ascii	"activePartition\000"
- 1260      76655061 
- 1260      72746974 
- 1260      696F6E00 
- 1261              	.LASF51:
- 1262 02c5 44617461 		.ascii	"DataClusterCount\000"
- 1262      436C7573 
- 1262      74657243 
- 1262      6F756E74 
- 1262      00
- 1263              	.LASF15:
- 1264 02d6 69666163 		.ascii	"iface\000"
- 1264      6500
- 1265              	.LASF43:
- 1266 02dc 53656374 		.ascii	"SectorCount16\000"
- 1266      6F72436F 
- 1266      756E7431 
- 1266      3600
- 1267              	.LASF49:
- 1268 02ea 70617274 		.ascii	"part\000"
- 1268      00
- 1269              	.LASF56:
- 1270 02ef 46726565 		.ascii	"FreeClusterCount\000"
- 1270      436C7573 
- 1270      74657243 
- 1270      6F756E74 
- 1270      00
- 1271              	.LASF42:
- 1272 0300 526F6F74 		.ascii	"RootEntryCount\000"
- 1272      456E7472 
- 1272      79436F75 
- 1272      6E7400
- 1273              	.LASF58:
- 1274 030f 6D794361 		.ascii	"myCard\000"
- 1274      726400
- 1275              	.LASF39:
- 1276 0316 53656374 		.ascii	"SectorsPerCluster\000"
- 1276      6F727350 
- 1276      6572436C 
- 1276      75737465 
- 1276      7200
- 1277              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s 			page 27
+ 1258              	.LASF36:
+ 1259 02ad 61637469 		.ascii	"activePartition\000"
+ 1259      76655061 
+ 1259      72746974 
+ 1259      696F6E00 
+ 1260              	.LASF51:
+ 1261 02bd 44617461 		.ascii	"DataClusterCount\000"
+ 1261      436C7573 
+ 1261      74657243 
+ 1261      6F756E74 
+ 1261      00
+ 1262              	.LASF15:
+ 1263 02ce 69666163 		.ascii	"iface\000"
+ 1263      6500
+ 1264              	.LASF43:
+ 1265 02d4 53656374 		.ascii	"SectorCount16\000"
+ 1265      6F72436F 
+ 1265      756E7431 
+ 1265      3600
+ 1266              	.LASF49:
+ 1267 02e2 70617274 		.ascii	"part\000"
+ 1267      00
+ 1268              	.LASF56:
+ 1269 02e7 46726565 		.ascii	"FreeClusterCount\000"
+ 1269      436C7573 
+ 1269      74657243 
+ 1269      6F756E74 
+ 1269      00
+ 1270              	.LASF42:
+ 1271 02f8 526F6F74 		.ascii	"RootEntryCount\000"
+ 1271      456E7472 
+ 1271      79436F75 
+ 1271      6E7400
+ 1272              	.LASF58:
+ 1273 0307 6D794361 		.ascii	"myCard\000"
+ 1273      726400
+ 1274              	.LASF39:
+ 1275 030e 53656374 		.ascii	"SectorsPerCluster\000"
+ 1275      6F727350 
+ 1275      6572436C 
+ 1275      75737465 
+ 1275      7200
+ 1276              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s 			page 27
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 efs.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s:13     .text:00000000 efs_init
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc9fvBmg.s:21     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s:13     .text:00000000 efs_init
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc0VpzTx.s:21     .text:00000000 $a
 
 UNDEFINED SYMBOLS
 if_initInterface

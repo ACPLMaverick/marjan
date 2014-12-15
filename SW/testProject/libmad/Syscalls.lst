@@ -1,0 +1,62 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQx6gC3.s 			page 1
+
+
+   1              		.file	"Syscalls.c"
+   2              		.text
+   3              		.align	2
+   4              		.global	_exit
+   5              		.type	_exit, %function
+   6              	_exit:
+   7              		@ Function supports interworking.
+   8              		@ Volatile: function does not return.
+   9              		@ args = 0, pretend = 0, frame = 0
+  10              		@ frame_needed = 0, uses_anonymous_args = 0
+  11              		@ link register save eliminated.
+  12              		@ lr needed for prologue
+  13              	.L3:
+  14 0000 FEFFFFEA 		b	.L3
+  15              		.size	_exit, .-_exit
+  16              		.align	2
+  17              		.global	sbrk
+  18              		.type	sbrk, %function
+  19              	sbrk:
+  20              		@ Function supports interworking.
+  21              		@ args = 0, pretend = 0, frame = 0
+  22              		@ frame_needed = 0, uses_anonymous_args = 0
+  23              		@ link register save eliminated.
+  24 0004 24209FE5 		ldr	r2, .L9
+  25 0008 003092E5 		ldr	r3, [r2, #0]
+  26 000c 000053E3 		cmp	r3, #0
+  27 0010 1C309F05 		ldreq	r3, .L9+4
+  28 0014 00308205 		streq	r3, [r2, #0]
+  29 0018 003092E5 		ldr	r3, [r2, #0]
+  30 001c 0010A0E1 		mov	r1, r0
+  31 0020 013083E0 		add	r3, r3, r1
+  32 0024 0000A0E3 		mov	r0, #0
+  33              		@ lr needed for prologue
+  34 0028 003082E5 		str	r3, [r2, #0]
+  35 002c 1EFF2FE1 		bx	lr
+  36              	.L10:
+  37              		.align	2
+  38              	.L9:
+  39 0030 00000000 		.word	heap_end.1307
+  40 0034 00000000 		.word	end
+  41              		.size	sbrk, .-sbrk
+  42              		.bss
+  43              		.align	2
+  44              	heap_end.1307:
+  45 0000 00000000 		.space	4
+  46              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQx6gC3.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Syscalls.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQx6gC3.s:6      .text:00000000 _exit
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQx6gC3.s:14     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQx6gC3.s:19     .text:00000004 sbrk
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQx6gC3.s:39     .text:00000030 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQx6gC3.s:44     .bss:00000000 heap_end.1307
+
+UNDEFINED SYMBOLS
+end

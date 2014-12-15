@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 1
 
 
    1              		.code	16
@@ -37,8 +37,8 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 1
   34              		.thumb_func
   35              		.type	InitializeSharedData, %function
   36              	InitializeSharedData:
-  37 0010 0F4B     		ldr	r3, .L7
-  38 0012 104A     		ldr	r2, .L7+4
+  37 0010 104B     		ldr	r3, .L7
+  38 0012 114A     		ldr	r2, .L7+4
   39 0014 1A60     		str	r2, [r3]
   40 0016 5A60     		str	r2, [r3, #4]
   41 0018 0022     		mov	r2, #0
@@ -46,603 +46,487 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 1
   43 001c 1A73     		strb	r2, [r3, #12]
   44 001e 5A73     		strb	r2, [r3, #13]
   45 0020 9A73     		strb	r2, [r3, #14]
-  46 0022 0D4B     		ldr	r3, .L7+8
+  46 0022 0E4B     		ldr	r3, .L7+8
   47 0024 1A70     		strb	r2, [r3]
-  48 0026 0D4B     		ldr	r3, .L7+12
+  48 0026 0E4B     		ldr	r3, .L7+12
   49 0028 1A70     		strb	r2, [r3]
-  50 002a 0D4B     		ldr	r3, .L7+16
+  50 002a 0E4B     		ldr	r3, .L7+16
   51 002c 1A70     		strb	r2, [r3]
-  52 002e 0D4B     		ldr	r3, .L7+20
+  52 002e 0E4B     		ldr	r3, .L7+20
   53 0030 1A70     		strb	r2, [r3]
-  54 0032 0D4B     		ldr	r3, .L7+24
+  54 0032 0E4B     		ldr	r3, .L7+24
   55 0034 1A70     		strb	r2, [r3]
-  56 0036 0D4B     		ldr	r3, .L7+28
+  56 0036 0E4B     		ldr	r3, .L7+28
   57 0038 1A70     		strb	r2, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 2
 
 
-  58 003a 0D4B     		ldr	r3, .L7+32
+  58 003a 0E4B     		ldr	r3, .L7+32
   59 003c 1A70     		strb	r2, [r3]
-  60 003e 0D4B     		ldr	r3, .L7+36
-  61 0040 1A60     		str	r2, [r3]
-  62 0042 0D4A     		ldr	r2, .L7+40
-  63 0044 0D4B     		ldr	r3, .L7+44
-  64 0046 1360     		str	r3, [r2]
-  65 0048 0D4A     		ldr	r2, .L7+48
+  60 003e 0E4B     		ldr	r3, .L7+36
+  61 0040 0E49     		ldr	r1, .L7+40
+  62 0042 1A60     		str	r2, [r3]
+  63 0044 0E4B     		ldr	r3, .L7+44
+  64 0046 0B60     		str	r3, [r1]
+  65 0048 0E49     		ldr	r1, .L7+48
   66 004a 0523     		mov	r3, #5
-  67              		@ lr needed for prologue
-  68 004c 1370     		strb	r3, [r2]
-  69              		@ sp needed for prologue
-  70 004e 7047     		bx	lr
-  71              	.L8:
-  72              		.align	2
-  73              	.L7:
-  74 0050 00000000 		.word	currentSongInfo
-  75 0054 04000000 		.word	.LC1
-  76 0058 00000000 		.word	mmcInitialized
-  77 005c 00000000 		.word	changeLeft
-  78 0060 00000000 		.word	changeRight
-  79 0064 00000000 		.word	rewindForward
-  80 0068 00000000 		.word	rewindBackward
-  81 006c 00000000 		.word	volumeUp
-  82 0070 00000000 		.word	volumeDown
-  83 0074 00000000 		.word	isError
-  84 0078 00000000 		.word	error
-  85 007c 00000000 		.word	.LC13
-  86 0080 00000000 		.word	currentVolume
-  87              		.size	InitializeSharedData, .-InitializeSharedData
-  88              		.align	2
-  89              		.global	main
-  90              		.code 16
-  91              		.thumb_func
-  92              		.type	main, %function
-  93              	main:
-  94 0084 30B5     		push	{r4, r5, lr}
-  95 0086 124A     		ldr	r2, .L11
-  96 0088 1368     		ldr	r3, [r2]
-  97 008a 8021     		mov	r1, #128
-  98 008c 0B43     		orr	r3, r3, r1
-  99 008e 1360     		str	r3, [r2]
- 100 0090 104B     		ldr	r3, .L11+4
- 101 0092 84B0     		sub	sp, sp, #16
- 102 0094 1960     		str	r1, [r3]
- 103 0096 FFF7FEFF 		bl	osInit
- 104 009a 6D46     		mov	r5, sp
- 105 009c 0123     		mov	r3, #1
- 106 009e 0E35     		add	r5, r5, #14
- 107 00a0 0093     		str	r3, [sp]
- 108 00a2 6C46     		mov	r4, sp
- 109 00a4 0023     		mov	r3, #0
- 110 00a6 C822     		mov	r2, #200
- 111 00a8 5200     		lsl	r2, r2, #1
- 112 00aa 0193     		str	r3, [sp, #4]
- 113 00ac 0F34     		add	r4, r4, #15
- 114 00ae 2B1C     		mov	r3, r5
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 3
+  67 004c 0B70     		strb	r3, [r1]
+  68 004e 0E4B     		ldr	r3, .L7+52
+  69              		@ lr needed for prologue
+  70 0050 1A70     		strb	r2, [r3]
+  71              		@ sp needed for prologue
+  72 0052 7047     		bx	lr
+  73              	.L8:
+  74              		.align	2
+  75              	.L7:
+  76 0054 00000000 		.word	currentSongInfo
+  77 0058 04000000 		.word	.LC1
+  78 005c 00000000 		.word	mmcInitialized
+  79 0060 00000000 		.word	changeLeft
+  80 0064 00000000 		.word	changeRight
+  81 0068 00000000 		.word	rewindForward
+  82 006c 00000000 		.word	rewindBackward
+  83 0070 00000000 		.word	volumeUp
+  84 0074 00000000 		.word	volumeDown
+  85 0078 00000000 		.word	isError
+  86 007c 00000000 		.word	error
+  87 0080 00000000 		.word	.LC13
+  88 0084 00000000 		.word	currentVolume
+  89 0088 00000000 		.word	displayMode
+  90              		.size	InitializeSharedData, .-InitializeSharedData
+  91              		.align	2
+  92              		.global	main
+  93              		.code 16
+  94              		.thumb_func
+  95              		.type	main, %function
+  96              	main:
+  97 008c 30B5     		push	{r4, r5, lr}
+  98 008e 124A     		ldr	r2, .L11
+  99 0090 1368     		ldr	r3, [r2]
+ 100 0092 8021     		mov	r1, #128
+ 101 0094 0B43     		orr	r3, r3, r1
+ 102 0096 1360     		str	r3, [r2]
+ 103 0098 104B     		ldr	r3, .L11+4
+ 104 009a 84B0     		sub	sp, sp, #16
+ 105 009c 1960     		str	r1, [r3]
+ 106 009e FFF7FEFF 		bl	osInit
+ 107 00a2 6D46     		mov	r5, sp
+ 108 00a4 0123     		mov	r3, #1
+ 109 00a6 0E35     		add	r5, r5, #14
+ 110 00a8 0093     		str	r3, [sp]
+ 111 00aa 6C46     		mov	r4, sp
+ 112 00ac 0023     		mov	r3, #0
+ 113 00ae C822     		mov	r2, #200
+ 114 00b0 5200     		lsl	r2, r2, #1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 3
 
 
- 115 00b0 0948     		ldr	r0, .L11+8
- 116 00b2 0A49     		ldr	r1, .L11+12
- 117 00b4 0294     		str	r4, [sp, #8]
- 118 00b6 FFF7FEFF 		bl	osCreateProcess
- 119 00ba 2878     		ldrb	r0, [r5]
- 120 00bc 211C     		mov	r1, r4
- 121 00be FFF7FEFF 		bl	osStartProcess
- 122 00c2 FFF7FEFF 		bl	osStart
- 123 00c6 0020     		mov	r0, #0
- 124 00c8 04B0     		add	sp, sp, #16
- 125              		@ sp needed for prologue
- 126 00ca 30BC     		pop	{r4, r5}
- 127 00cc 02BC     		pop	{r1}
- 128 00ce 0847     		bx	r1
- 129              	.L12:
- 130              		.align	2
- 131              	.L11:
- 132 00d0 088002E0 		.word	-536707064
- 133 00d4 048002E0 		.word	-536707068
- 134 00d8 00000000 		.word	initProc
- 135 00dc 04180000 		.word	initStack
- 136              		.size	main, .-main
- 137              		.align	2
- 138              		.code 16
- 139              		.thumb_func
- 140              		.type	initProc, %function
- 141              	initProc:
- 142 00e0 30B5     		push	{r4, r5, lr}
- 143 00e2 84B0     		sub	sp, sp, #16
- 144 00e4 FFF7FEFF 		bl	eaInit
- 145 00e8 0C4D     		ldr	r5, .L15
- 146 00ea 0323     		mov	r3, #3
- 147 00ec 0093     		str	r3, [sp]
- 148 00ee 6C46     		mov	r4, sp
- 149 00f0 0023     		mov	r3, #0
- 150 00f2 8022     		mov	r2, #128
- 151 00f4 1201     		lsl	r2, r2, #4
- 152 00f6 0193     		str	r3, [sp, #4]
- 153 00f8 0F34     		add	r4, r4, #15
- 154 00fa 2B1C     		mov	r3, r5
- 155 00fc 0848     		ldr	r0, .L15+4
- 156 00fe 0949     		ldr	r1, .L15+8
- 157 0100 0294     		str	r4, [sp, #8]
- 158 0102 FFF7FEFF 		bl	osCreateProcess
- 159 0106 2878     		ldrb	r0, [r5]
- 160 0108 211C     		mov	r1, r4
- 161 010a FFF7FEFF 		bl	osStartProcess
- 162 010e FFF7FEFF 		bl	osDeleteProcess
- 163 0112 04B0     		add	sp, sp, #16
- 164              		@ sp needed for prologue
- 165 0114 30BC     		pop	{r4, r5}
- 166 0116 01BC     		pop	{r0}
- 167 0118 0047     		bx	r0
- 168              	.L16:
- 169 011a 0000     		.align	2
- 170              	.L15:
- 171 011c 94190000 		.word	pid1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 4
+ 115 00b2 0193     		str	r3, [sp, #4]
+ 116 00b4 0F34     		add	r4, r4, #15
+ 117 00b6 2B1C     		mov	r3, r5
+ 118 00b8 0948     		ldr	r0, .L11+8
+ 119 00ba 0A49     		ldr	r1, .L11+12
+ 120 00bc 0294     		str	r4, [sp, #8]
+ 121 00be FFF7FEFF 		bl	osCreateProcess
+ 122 00c2 2878     		ldrb	r0, [r5]
+ 123 00c4 211C     		mov	r1, r4
+ 124 00c6 FFF7FEFF 		bl	osStartProcess
+ 125 00ca FFF7FEFF 		bl	osStart
+ 126 00ce 0020     		mov	r0, #0
+ 127 00d0 04B0     		add	sp, sp, #16
+ 128              		@ sp needed for prologue
+ 129 00d2 30BC     		pop	{r4, r5}
+ 130 00d4 02BC     		pop	{r1}
+ 131 00d6 0847     		bx	r1
+ 132              	.L12:
+ 133              		.align	2
+ 134              	.L11:
+ 135 00d8 088002E0 		.word	-536707064
+ 136 00dc 048002E0 		.word	-536707068
+ 137 00e0 00000000 		.word	initProc
+ 138 00e4 04180000 		.word	initStack
+ 139              		.size	main, .-main
+ 140              		.align	2
+ 141              		.code 16
+ 142              		.thumb_func
+ 143              		.type	initProc, %function
+ 144              	initProc:
+ 145 00e8 30B5     		push	{r4, r5, lr}
+ 146 00ea 84B0     		sub	sp, sp, #16
+ 147 00ec FFF7FEFF 		bl	eaInit
+ 148 00f0 0C4D     		ldr	r5, .L15
+ 149 00f2 0323     		mov	r3, #3
+ 150 00f4 0093     		str	r3, [sp]
+ 151 00f6 6C46     		mov	r4, sp
+ 152 00f8 0023     		mov	r3, #0
+ 153 00fa 8022     		mov	r2, #128
+ 154 00fc 1201     		lsl	r2, r2, #4
+ 155 00fe 0193     		str	r3, [sp, #4]
+ 156 0100 0F34     		add	r4, r4, #15
+ 157 0102 2B1C     		mov	r3, r5
+ 158 0104 0848     		ldr	r0, .L15+4
+ 159 0106 0949     		ldr	r1, .L15+8
+ 160 0108 0294     		str	r4, [sp, #8]
+ 161 010a FFF7FEFF 		bl	osCreateProcess
+ 162 010e 2878     		ldrb	r0, [r5]
+ 163 0110 211C     		mov	r1, r4
+ 164 0112 FFF7FEFF 		bl	osStartProcess
+ 165 0116 FFF7FEFF 		bl	osDeleteProcess
+ 166 011a 04B0     		add	sp, sp, #16
+ 167              		@ sp needed for prologue
+ 168 011c 30BC     		pop	{r4, r5}
+ 169 011e 01BC     		pop	{r0}
+ 170 0120 0047     		bx	r0
+ 171              	.L16:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 4
 
 
- 172 0120 00000000 		.word	proc1
- 173 0124 04000000 		.word	proc1Stack
- 174              		.size	initProc, .-initProc
- 175              		.section	.rodata.str1.4
- 176              		.align	2
- 177              	.LC21:
- 178 0008 0A0A0A0A 		.ascii	"\012\012\012\012\012*******************************"
- 178      0A2A2A2A 
- 178      2A2A2A2A 
- 178      2A2A2A2A 
- 178      2A2A2A2A 
- 179 002c 2A2A2A2A 		.ascii	"************************\012\000"
- 179      2A2A2A2A 
- 179      2A2A2A2A 
- 179      2A2A2A2A 
- 179      2A2A2A2A 
- 180 0046 0000     		.align	2
- 181              	.LC23:
- 182 0048 2A202020 		.ascii	"*                                                  "
- 182      20202020 
- 182      20202020 
- 182      20202020 
- 182      20202020 
- 183 007b 2020202A 		.ascii	"   *\012\000"
- 183      0A00
- 184 0081 000000   		.align	2
- 185              	.LC25:
- 186 0084 2A205468 		.ascii	"* This is the test program for Embedded Artists'   "
- 186      69732069 
- 186      73207468 
- 186      65207465 
- 186      73742070 
- 187 00b7 2020202A 		.ascii	"   *\012\000"
- 187      0A00
- 188 00bd 000000   		.align	2
- 189              	.LC27:
- 190 00c0 2A204C50 		.ascii	"* LPC2148 Education Board v3.0...                  "
- 190      43323134 
- 190      38204564 
- 190      75636174 
- 190      696F6E20 
- 191 00f3 2020202A 		.ascii	"   *\012\000"
- 191      0A00
- 192 00f9 000000   		.align	2
- 193              	.LC29:
- 194 00fc 2A205665 		.ascii	"* Version: 3.0                                     "
- 194      7273696F 
- 194      6E3A2033 
- 194      2E302020 
- 194      20202020 
- 195 012f 2020202A 		.ascii	"   *\012\000"
- 195      0A00
- 196 0135 000000   		.align	2
- 197              	.LC31:
- 198 0138 2A204461 		.ascii	"* Date:    22 December 2007                        "
- 198      74653A20 
- 198      20202032 
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 5
+ 172 0122 0000     		.align	2
+ 173              	.L15:
+ 174 0124 94190000 		.word	pid1
+ 175 0128 00000000 		.word	proc1
+ 176 012c 04000000 		.word	proc1Stack
+ 177              		.size	initProc, .-initProc
+ 178              		.section	.rodata.str1.4
+ 179              		.align	2
+ 180              	.LC22:
+ 181 0008 0A0A0A0A 		.ascii	"\012\012\012\012\012*******************************"
+ 181      0A2A2A2A 
+ 181      2A2A2A2A 
+ 181      2A2A2A2A 
+ 181      2A2A2A2A 
+ 182 002c 2A2A2A2A 		.ascii	"************************\012\000"
+ 182      2A2A2A2A 
+ 182      2A2A2A2A 
+ 182      2A2A2A2A 
+ 182      2A2A2A2A 
+ 183 0046 0000     		.align	2
+ 184              	.LC24:
+ 185 0048 2A202020 		.ascii	"*                                                  "
+ 185      20202020 
+ 185      20202020 
+ 185      20202020 
+ 185      20202020 
+ 186 007b 2020202A 		.ascii	"   *\012\000"
+ 186      0A00
+ 187 0081 000000   		.align	2
+ 188              	.LC26:
+ 189 0084 2A205468 		.ascii	"* This is the test program for Embedded Artists'   "
+ 189      69732069 
+ 189      73207468 
+ 189      65207465 
+ 189      73742070 
+ 190 00b7 2020202A 		.ascii	"   *\012\000"
+ 190      0A00
+ 191 00bd 000000   		.align	2
+ 192              	.LC28:
+ 193 00c0 2A204C50 		.ascii	"* LPC2148 Education Board v3.0...                  "
+ 193      43323134 
+ 193      38204564 
+ 193      75636174 
+ 193      696F6E20 
+ 194 00f3 2020202A 		.ascii	"   *\012\000"
+ 194      0A00
+ 195 00f9 000000   		.align	2
+ 196              	.LC30:
+ 197 00fc 2A205665 		.ascii	"* Version: 3.0                                     "
+ 197      7273696F 
+ 197      6E3A2033 
+ 197      2E302020 
+ 197      20202020 
+ 198 012f 2020202A 		.ascii	"   *\012\000"
+ 198      0A00
+ 199 0135 000000   		.align	2
+ 200              	.LC32:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 5
 
 
- 198      32204465 
- 198      63656D62 
- 199 016b 2020202A 		.ascii	"   *\012\000"
- 199      0A00
- 200 0171 000000   		.align	2
- 201              	.LC33:
- 202 0174 2A202843 		.ascii	"* (C) Embedded Artists 2005-2007                   "
- 202      2920456D 
- 202      62656464 
- 202      65642041 
- 202      72746973 
- 203 01a7 2020202A 		.ascii	"   *\012\000"
- 203      0A00
- 204 01ad 000000   		.align	2
- 205              	.LC35:
- 206 01b0 2A2A2A2A 		.ascii	"***************************************************"
- 206      2A2A2A2A 
- 206      2A2A2A2A 
- 206      2A2A2A2A 
- 206      2A2A2A2A 
- 207 01e3 2A2A2A2A 		.ascii	"****\012\000"
- 207      0A00
- 208 01e9 000000   		.align	2
- 209              	.LC37:
- 210 01ec 0A0A5374 		.ascii	"\012\012Starting USB Mouse test...\012\000"
- 210      61727469 
- 210      6E672055 
- 210      5342204D 
- 210      6F757365 
- 211 020a 0000     		.align	2
- 212              	.LC39:
- 213 020c 55736520 		.ascii	"Use the joystick switch to move the cursor on the P"
- 213      74686520 
- 213      6A6F7973 
- 213      7469636B 
- 213      20737769 
- 214 023f 43207363 		.ascii	"C screen\012\000"
- 214      7265656E 
- 214      0A00
- 215 0249 000000   		.align	2
- 216              	.LC41:
- 217 024c 2866756E 		.ascii	"(functions when the ADC test is visible)\012\000"
- 217      6374696F 
- 217      6E732077 
- 217      68656E20 
- 217      74686520 
- 218 0276 0000     		.align	2
- 219              	.LC44:
- 220 0278 0A455252 		.ascii	"\012ERROR initializing USB!\012\000"
- 220      4F522069 
- 220      6E697469 
- 220      616C697A 
- 220      696E6720 
- 221 0292 0000     		.text
- 222              		.align	2
- 223              		.code 16
- 224              		.thumb_func
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 6
+ 201 0138 2A204461 		.ascii	"* Date:    22 December 2007                        "
+ 201      74653A20 
+ 201      20202032 
+ 201      32204465 
+ 201      63656D62 
+ 202 016b 2020202A 		.ascii	"   *\012\000"
+ 202      0A00
+ 203 0171 000000   		.align	2
+ 204              	.LC34:
+ 205 0174 2A202843 		.ascii	"* (C) Embedded Artists 2005-2007                   "
+ 205      2920456D 
+ 205      62656464 
+ 205      65642041 
+ 205      72746973 
+ 206 01a7 2020202A 		.ascii	"   *\012\000"
+ 206      0A00
+ 207 01ad 000000   		.align	2
+ 208              	.LC36:
+ 209 01b0 2A2A2A2A 		.ascii	"***************************************************"
+ 209      2A2A2A2A 
+ 209      2A2A2A2A 
+ 209      2A2A2A2A 
+ 209      2A2A2A2A 
+ 210 01e3 2A2A2A2A 		.ascii	"****\012\000"
+ 210      0A00
+ 211 01e9 000000   		.text
+ 212              		.align	2
+ 213              		.code 16
+ 214              		.thumb_func
+ 215              		.type	proc1, %function
+ 216              	proc1:
+ 217 0130 F0B5     		push	{r4, r5, r6, r7, lr}
+ 218 0132 474D     		ldr	r5, .L32
+ 219 0134 E022     		mov	r2, #224
+ 220 0136 2B68     		ldr	r3, [r5]
+ 221 0138 9200     		lsl	r2, r2, #2
+ 222 013a 1343     		orr	r3, r3, r2
+ 223 013c 2B60     		str	r3, [r5]
+ 224 013e 454B     		ldr	r3, .L32+4
+ 225 0140 4549     		ldr	r1, .L32+8
+ 226 0142 1A60     		str	r2, [r3]
+ 227 0144 454A     		ldr	r2, .L32+12
+ 228 0146 0B68     		ldr	r3, [r1]
+ 229 0148 1340     		and	r3, r3, r2
+ 230 014a 0B60     		str	r3, [r1]
+ 231 014c 8023     		mov	r3, #128
+ 232 014e 0A68     		ldr	r2, [r1]
+ 233 0150 1B03     		lsl	r3, r3, #12
+ 234 0152 1A43     		orr	r2, r2, r3
+ 235 0154 0A60     		str	r2, [r1]
+ 236 0156 84B0     		sub	sp, sp, #16
+ 237 0158 4148     		ldr	r0, .L32+16
+ 238 015a FFF7FEFF 		bl	simplePrintf
+ 239 015e 414C     		ldr	r4, .L32+20
+ 240 0160 201C     		mov	r0, r4
+ 241 0162 FFF7FEFF 		bl	simplePrintf
+ 242 0166 4048     		ldr	r0, .L32+24
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 6
 
 
- 225              		.type	proc1, %function
- 226              	proc1:
- 227 0128 F0B5     		push	{r4, r5, r6, r7, lr}
- 228 012a 6E4D     		ldr	r5, .L52
- 229 012c E022     		mov	r2, #224
- 230 012e 2B68     		ldr	r3, [r5]
- 231 0130 9200     		lsl	r2, r2, #2
- 232 0132 1343     		orr	r3, r3, r2
- 233 0134 2B60     		str	r3, [r5]
- 234 0136 6C4B     		ldr	r3, .L52+4
- 235 0138 6C49     		ldr	r1, .L52+8
- 236 013a 1A60     		str	r2, [r3]
- 237 013c 6C4A     		ldr	r2, .L52+12
- 238 013e 0B68     		ldr	r3, [r1]
- 239 0140 1340     		and	r3, r3, r2
- 240 0142 0B60     		str	r3, [r1]
- 241 0144 8023     		mov	r3, #128
- 242 0146 0A68     		ldr	r2, [r1]
- 243 0148 1B03     		lsl	r3, r3, #12
- 244 014a 1A43     		orr	r2, r2, r3
- 245 014c 0A60     		str	r2, [r1]
- 246 014e 84B0     		sub	sp, sp, #16
- 247 0150 6848     		ldr	r0, .L52+16
- 248 0152 FFF7FEFF 		bl	simplePrintf
- 249 0156 684C     		ldr	r4, .L52+20
- 250 0158 201C     		mov	r0, r4
- 251 015a FFF7FEFF 		bl	simplePrintf
- 252 015e 6748     		ldr	r0, .L52+24
- 253 0160 FFF7FEFF 		bl	simplePrintf
- 254 0164 6648     		ldr	r0, .L52+28
- 255 0166 FFF7FEFF 		bl	simplePrintf
- 256 016a 201C     		mov	r0, r4
- 257 016c FFF7FEFF 		bl	simplePrintf
- 258 0170 6448     		ldr	r0, .L52+32
- 259 0172 FFF7FEFF 		bl	simplePrintf
- 260 0176 6448     		ldr	r0, .L52+36
- 261 0178 FFF7FEFF 		bl	simplePrintf
- 262 017c 6348     		ldr	r0, .L52+40
- 263 017e FFF7FEFF 		bl	simplePrintf
- 264 0182 201C     		mov	r0, r4
- 265 0184 FFF7FEFF 		bl	simplePrintf
- 266 0188 6148     		ldr	r0, .L52+44
- 267 018a FFF7FEFF 		bl	simplePrintf
- 268 018e 6148     		ldr	r0, .L52+48
- 269 0190 FFF7FEFF 		bl	simplePrintf
- 270 0194 6048     		ldr	r0, .L52+52
- 271 0196 FFF7FEFF 		bl	simplePrintf
- 272 019a 6048     		ldr	r0, .L52+56
- 273 019c FFF7FEFF 		bl	simplePrintf
- 274 01a0 5F49     		ldr	r1, .L52+60
- 275 01a2 0020     		mov	r0, #0
- 276 01a4 0022     		mov	r2, #0
- 277 01a6 FFF7FEFF 		bl	USB_Init
- 278 01aa 0028     		cmp	r0, #0
- 279 01ac 06D0     		beq	.L18
- 280 01ae 5D48     		ldr	r0, .L52+64
- 281 01b0 FFF7FEFF 		bl	simplePrintf
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 7
+ 243 0168 FFF7FEFF 		bl	simplePrintf
+ 244 016c 3F48     		ldr	r0, .L32+28
+ 245 016e FFF7FEFF 		bl	simplePrintf
+ 246 0172 201C     		mov	r0, r4
+ 247 0174 FFF7FEFF 		bl	simplePrintf
+ 248 0178 3D48     		ldr	r0, .L32+32
+ 249 017a FFF7FEFF 		bl	simplePrintf
+ 250 017e 3D48     		ldr	r0, .L32+36
+ 251 0180 FFF7FEFF 		bl	simplePrintf
+ 252 0184 3C48     		ldr	r0, .L32+40
+ 253 0186 FFF7FEFF 		bl	simplePrintf
+ 254 018a 201C     		mov	r0, r4
+ 255 018c FFF7FEFF 		bl	simplePrintf
+ 256 0190 3A48     		ldr	r0, .L32+44
+ 257 0192 FFF7FEFF 		bl	simplePrintf
+ 258 0196 3A49     		ldr	r1, .L32+48
+ 259 0198 3A4A     		ldr	r2, .L32+52
+ 260 019a 0B68     		ldr	r3, [r1]
+ 261 019c 1340     		and	r3, r3, r2
+ 262 019e 0B60     		str	r3, [r1]
+ 263 01a0 394B     		ldr	r3, .L32+56
+ 264 01a2 1B78     		ldrb	r3, [r3]
+ 265 01a4 012B     		cmp	r3, #1
+ 266 01a6 02D1     		bne	.L18
+ 267 01a8 2A68     		ldr	r2, [r5]
+ 268 01aa F523     		mov	r3, #245
+ 269 01ac 01E0     		b	.L31
+ 270              	.L18:
+ 271 01ae 2A68     		ldr	r2, [r5]
+ 272 01b0 FF23     		mov	r3, #255
+ 273              	.L31:
+ 274 01b2 1B02     		lsl	r3, r3, #8
+ 275 01b4 1A43     		orr	r2, r2, r3
+ 276 01b6 2A60     		str	r2, [r5]
+ 277 01b8 FF23     		mov	r3, #255
+ 278 01ba 344A     		ldr	r2, .L32+60
+ 279 01bc 1B02     		lsl	r3, r3, #8
+ 280 01be 0027     		mov	r7, #0
+ 281 01c0 1360     		str	r3, [r2]
+ 282 01c2 40E0     		b	.L21
+ 283              	.L22:
+ 284 01c4 234B     		ldr	r3, .L32+4
+ 285 01c6 0F20     		mov	r0, #15
+ 286 01c8 1C60     		str	r4, [r3]
+ 287 01ca FFF7FEFF 		bl	osSleep
+ 288 01ce 2F4B     		ldr	r3, .L32+60
+ 289 01d0 0135     		add	r5, r5, #1
+ 290 01d2 1C60     		str	r4, [r3]
+ 291 01d4 6400     		lsl	r4, r4, #1
+ 292 01d6 082D     		cmp	r5, #8
+ 293 01d8 F4D1     		bne	.L22
+ 294 01da 7B1C     		add	r3, r7, #1
+ 295 01dc 1B06     		lsl	r3, r3, #24
+ 296 01de 1F0E     		lsr	r7, r3, #24
+ 297 01e0 032F     		cmp	r7, #3
+ 298 01e2 30D1     		bne	.L21
+ 299 01e4 FFF7FEFF 		bl	testI2C
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 7
 
 
- 282              	.L20:
- 283 01b4 0120     		mov	r0, #1
- 284 01b6 FFF7FEFF 		bl	osSleep
- 285 01ba FBE7     		b	.L20
- 286              	.L18:
- 287 01bc FFF7FEFF 		bl	HID_Init
- 288 01c0 FFF7FEFF 		bl	testXBee
- 289 01c4 584B     		ldr	r3, .L52+68
- 290 01c6 5949     		ldr	r1, .L52+72
- 291 01c8 1870     		strb	r0, [r3]
- 292 01ca 594A     		ldr	r2, .L52+76
- 293 01cc 0B68     		ldr	r3, [r1]
- 294 01ce 1340     		and	r3, r3, r2
- 295 01d0 0B60     		str	r3, [r1]
- 296 01d2 0128     		cmp	r0, #1
- 297 01d4 02D1     		bne	.L21
- 298 01d6 2A68     		ldr	r2, [r5]
- 299 01d8 F523     		mov	r3, #245
- 300 01da 01E0     		b	.L48
- 301              	.L21:
- 302 01dc 2A68     		ldr	r2, [r5]
- 303 01de FF23     		mov	r3, #255
- 304              	.L48:
- 305 01e0 1B02     		lsl	r3, r3, #8
- 306 01e2 1A43     		orr	r2, r2, r3
- 307 01e4 2A60     		str	r2, [r5]
- 308 01e6 FF23     		mov	r3, #255
- 309 01e8 524A     		ldr	r2, .L52+80
- 310 01ea 1B02     		lsl	r3, r3, #8
- 311 01ec 0027     		mov	r7, #0
- 312 01ee 1360     		str	r3, [r2]
- 313 01f0 73E0     		b	.L24
- 314              	.L25:
- 315 01f2 3D4B     		ldr	r3, .L52+4
- 316 01f4 0F20     		mov	r0, #15
- 317 01f6 1C60     		str	r4, [r3]
- 318 01f8 FFF7FEFF 		bl	osSleep
- 319 01fc 4D4B     		ldr	r3, .L52+80
- 320 01fe 0135     		add	r5, r5, #1
- 321 0200 1C60     		str	r4, [r3]
- 322 0202 6400     		lsl	r4, r4, #1
- 323 0204 082D     		cmp	r5, #8
- 324 0206 F4D1     		bne	.L25
- 325 0208 7B1C     		add	r3, r7, #1
- 326 020a 1B06     		lsl	r3, r3, #24
- 327 020c 1F0E     		lsr	r7, r3, #24
- 328 020e 032F     		cmp	r7, #3
- 329 0210 63D1     		bne	.L24
- 330 0212 FFF7FEFF 		bl	testI2C
- 331 0216 FFF7FEFF 		bl	InitializeSharedData
- 332 021a 474D     		ldr	r5, .L52+84
- 333 021c 6C46     		mov	r4, sp
- 334 021e 8022     		mov	r2, #128
- 335 0220 0F34     		add	r4, r4, #15
- 336 0222 2B1C     		mov	r3, r5
- 337 0224 1201     		lsl	r2, r2, #4
- 338 0226 4548     		ldr	r0, .L52+88
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 8
+ 300 01e8 FFF7FEFF 		bl	InitializeSharedData
+ 301 01ec 284D     		ldr	r5, .L32+64
+ 302 01ee 6C46     		mov	r4, sp
+ 303 01f0 8022     		mov	r2, #128
+ 304 01f2 0F34     		add	r4, r4, #15
+ 305 01f4 2B1C     		mov	r3, r5
+ 306 01f6 1201     		lsl	r2, r2, #4
+ 307 01f8 2648     		ldr	r0, .L32+68
+ 308 01fa 2749     		ldr	r1, .L32+72
+ 309 01fc 0026     		mov	r6, #0
+ 310 01fe 0097     		str	r7, [sp]
+ 311 0200 0196     		str	r6, [sp, #4]
+ 312 0202 0294     		str	r4, [sp, #8]
+ 313 0204 FFF7FEFF 		bl	osCreateProcess
+ 314 0208 2878     		ldrb	r0, [r5]
+ 315 020a 211C     		mov	r1, r4
+ 316 020c FFF7FEFF 		bl	osStartProcess
+ 317 0210 224D     		ldr	r5, .L32+76
+ 318 0212 8022     		mov	r2, #128
+ 319 0214 1201     		lsl	r2, r2, #4
+ 320 0216 2B1C     		mov	r3, r5
+ 321 0218 2148     		ldr	r0, .L32+80
+ 322 021a 2249     		ldr	r1, .L32+84
+ 323 021c 0097     		str	r7, [sp]
+ 324 021e 0196     		str	r6, [sp, #4]
+ 325 0220 0294     		str	r4, [sp, #8]
+ 326 0222 FFF7FEFF 		bl	osCreateProcess
+ 327 0226 211C     		mov	r1, r4
+ 328 0228 2878     		ldrb	r0, [r5]
+ 329 022a FFF7FEFF 		bl	osStartProcess
+ 330 022e 6420     		mov	r0, #100
+ 331 0230 FFF7FEFF 		bl	osSleep
+ 332 0234 1C49     		ldr	r1, .L32+88
+ 333 0236 1D4A     		ldr	r2, .L32+92
+ 334 0238 0B68     		ldr	r3, [r1]
+ 335 023a 1340     		and	r3, r3, r2
+ 336 023c 0B60     		str	r3, [r1]
+ 337              	.L25:
+ 338 023e 0220     		mov	r0, #2
+ 339 0240 FFF7FEFF 		bl	osSleep
+ 340 0244 FBE7     		b	.L25
+ 341              	.L21:
+ 342 0246 8024     		mov	r4, #128
+ 343 0248 6400     		lsl	r4, r4, #1
+ 344 024a 0025     		mov	r5, #0
+ 345 024c BAE7     		b	.L22
+ 346              	.L33:
+ 347 024e 0000     		.align	2
+ 348              	.L32:
+ 349 0250 088002E0 		.word	-536707064
+ 350 0254 0C8002E0 		.word	-536707060
+ 351 0258 04C002E0 		.word	-536690684
+ 352 025c FFFFF3FF 		.word	-786433
+ 353 0260 08000000 		.word	.LC22
+ 354 0264 48000000 		.word	.LC24
+ 355 0268 84000000 		.word	.LC26
+ 356 026c C0000000 		.word	.LC28
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 8
 
 
- 339 0228 4549     		ldr	r1, .L52+92
- 340 022a 0026     		mov	r6, #0
- 341 022c 0294     		str	r4, [sp, #8]
- 342 022e 0097     		str	r7, [sp]
- 343 0230 0196     		str	r6, [sp, #4]
- 344 0232 FFF7FEFF 		bl	osCreateProcess
- 345 0236 2878     		ldrb	r0, [r5]
- 346 0238 211C     		mov	r1, r4
- 347 023a FFF7FEFF 		bl	osStartProcess
- 348 023e 414D     		ldr	r5, .L52+96
- 349 0240 8022     		mov	r2, #128
- 350 0242 1201     		lsl	r2, r2, #4
- 351 0244 2B1C     		mov	r3, r5
- 352 0246 4048     		ldr	r0, .L52+100
- 353 0248 4049     		ldr	r1, .L52+104
- 354 024a 0294     		str	r4, [sp, #8]
- 355 024c 0097     		str	r7, [sp]
- 356 024e 0196     		str	r6, [sp, #4]
- 357 0250 FFF7FEFF 		bl	osCreateProcess
- 358 0254 211C     		mov	r1, r4
- 359 0256 2878     		ldrb	r0, [r5]
- 360 0258 FFF7FEFF 		bl	osStartProcess
- 361 025c 6420     		mov	r0, #100
- 362 025e FFF7FEFF 		bl	osSleep
- 363 0262 3B49     		ldr	r1, .L52+108
- 364 0264 3B4A     		ldr	r2, .L52+112
- 365 0266 0B68     		ldr	r3, [r1]
- 366 0268 1340     		and	r3, r3, r2
- 367 026a 0B60     		str	r3, [r1]
- 368 026c 0124     		mov	r4, #1
- 369              	.L28:
- 370 026e 384A     		ldr	r2, .L52+108
- 371 0270 1368     		ldr	r3, [r2]
- 372 0272 D902     		lsl	r1, r3, #11
- 373 0274 03D4     		bmi	.L29
- 374 0276 0020     		mov	r0, #0
- 375 0278 0021     		mov	r1, #0
- 376 027a 0A22     		mov	r2, #10
- 377 027c 12E0     		b	.L49
- 378              	.L29:
- 379 027e 1368     		ldr	r3, [r2]
- 380 0280 1903     		lsl	r1, r3, #12
- 381 0282 02D4     		bmi	.L32
- 382 0284 0020     		mov	r0, #0
- 383 0286 F621     		mov	r1, #246
- 384 0288 04E0     		b	.L51
- 385              	.L32:
- 386 028a 1368     		ldr	r3, [r2]
- 387 028c 5903     		lsl	r1, r3, #13
- 388 028e 03D4     		bmi	.L34
- 389 0290 0020     		mov	r0, #0
- 390 0292 0A21     		mov	r1, #10
- 391              	.L51:
- 392 0294 0022     		mov	r2, #0
- 393 0296 05E0     		b	.L49
- 394              	.L34:
- 395 0298 1368     		ldr	r3, [r2]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 9
+ 357 0270 FC000000 		.word	.LC30
+ 358 0274 38010000 		.word	.LC32
+ 359 0278 74010000 		.word	.LC34
+ 360 027c B0010000 		.word	.LC36
+ 361 0280 00C002E0 		.word	-536690688
+ 362 0284 FFFF0000 		.word	65535
+ 363 0288 00000000 		.word	xbeePresent
+ 364 028c 048002E0 		.word	-536707068
+ 365 0290 95190000 		.word	pid2
+ 366 0294 00000000 		.word	proc2
+ 367 0298 04080000 		.word	proc2Stack
+ 368 029c 96190000 		.word	pid3
+ 369 02a0 00000000 		.word	proc3
+ 370 02a4 04100000 		.word	proc3Stack
+ 371 02a8 008002E0 		.word	-536707072
+ 372 02ac FFFFE0FF 		.word	-2031617
+ 373              		.size	proc1, .-proc1
+ 374              		.align	2
+ 375              		.code 16
+ 376              		.thumb_func
+ 377              		.type	proc3, %function
+ 378              	proc3:
+ 379 02b0 00B5     		push	{lr}
+ 380 02b2 FFF7FEFF 		bl	testLcd
+ 381              		@ sp needed for prologue
+ 382 02b6 01BC     		pop	{r0}
+ 383 02b8 0047     		bx	r0
+ 384              		.size	proc3, .-proc3
+ 385 02ba 0000     		.align	2
+ 386              		.code 16
+ 387              		.thumb_func
+ 388              		.type	proc2, %function
+ 389              	proc2:
+ 390 02bc 00B5     		push	{lr}
+ 391 02be FFF7FEFF 		bl	MMCproc
+ 392              		@ sp needed for prologue
+ 393 02c2 01BC     		pop	{r0}
+ 394 02c4 0047     		bx	r0
+ 395              		.size	proc2, .-proc2
+ 396              		.global	msClock
+ 397 02c6 C046     		.bss
+ 398              		.align	2
+ 399              		.type	msClock, %object
+ 400              		.size	msClock, 4
+ 401              	msClock:
+ 402 0000 00000000 		.space	4
+ 403              	proc1Stack:
+ 404 0004 00000000 		.space	2048
+ 404      00000000 
+ 404      00000000 
+ 404      00000000 
+ 404      00000000 
+ 405              	proc2Stack:
+ 406 0804 00000000 		.space	2048
+ 406      00000000 
+ 406      00000000 
+ 406      00000000 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 9
 
 
- 396 029a 9A03     		lsl	r2, r3, #14
- 397 029c 04D4     		bmi	.L31
- 398 029e 0020     		mov	r0, #0
- 399 02a0 0021     		mov	r1, #0
- 400 02a2 F622     		mov	r2, #246
- 401              	.L49:
- 402 02a4 FFF7FEFF 		bl	HID_SendReport
- 403              	.L31:
- 404 02a8 294B     		ldr	r3, .L52+108
- 405 02aa 1B68     		ldr	r3, [r3]
- 406 02ac D903     		lsl	r1, r3, #15
- 407 02ae 08D4     		bmi	.L37
- 408 02b0 012C     		cmp	r4, #1
- 409 02b2 0ED1     		bne	.L39
- 410 02b4 0120     		mov	r0, #1
- 411 02b6 0021     		mov	r1, #0
- 412 02b8 0022     		mov	r2, #0
- 413 02ba FFF7FEFF 		bl	HID_SendReport
- 414 02be 0024     		mov	r4, #0
- 415 02c0 07E0     		b	.L39
- 416              	.L37:
- 417 02c2 002C     		cmp	r4, #0
- 418 02c4 04D1     		bne	.L50
- 419 02c6 0020     		mov	r0, #0
- 420 02c8 0021     		mov	r1, #0
- 421 02ca 0022     		mov	r2, #0
- 422 02cc FFF7FEFF 		bl	HID_SendReport
- 423              	.L50:
- 424 02d0 0124     		mov	r4, #1
- 425              	.L39:
- 426 02d2 0220     		mov	r0, #2
- 427 02d4 FFF7FEFF 		bl	osSleep
- 428 02d8 C9E7     		b	.L28
- 429              	.L24:
- 430 02da 8024     		mov	r4, #128
- 431 02dc 6400     		lsl	r4, r4, #1
- 432 02de 0025     		mov	r5, #0
- 433 02e0 87E7     		b	.L25
- 434              	.L53:
- 435 02e2 0000     		.align	2
- 436              	.L52:
- 437 02e4 088002E0 		.word	-536707064
- 438 02e8 0C8002E0 		.word	-536707060
- 439 02ec 04C002E0 		.word	-536690684
- 440 02f0 FFFFF3FF 		.word	-786433
- 441 02f4 08000000 		.word	.LC21
- 442 02f8 48000000 		.word	.LC23
- 443 02fc 84000000 		.word	.LC25
- 444 0300 C0000000 		.word	.LC27
- 445 0304 FC000000 		.word	.LC29
- 446 0308 38010000 		.word	.LC31
- 447 030c 74010000 		.word	.LC33
- 448 0310 B0010000 		.word	.LC35
- 449 0314 EC010000 		.word	.LC37
- 450 0318 0C020000 		.word	.LC39
- 451 031c 4C020000 		.word	.LC41
- 452 0320 00000000 		.word	HID_CallBack
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 10
-
-
- 453 0324 78020000 		.word	.LC44
- 454 0328 00000000 		.word	xbeePresent
- 455 032c 00C002E0 		.word	-536690688
- 456 0330 FFFF0000 		.word	65535
- 457 0334 048002E0 		.word	-536707068
- 458 0338 95190000 		.word	pid2
- 459 033c 00000000 		.word	proc2
- 460 0340 04080000 		.word	proc2Stack
- 461 0344 96190000 		.word	pid3
- 462 0348 00000000 		.word	proc3
- 463 034c 04100000 		.word	proc3Stack
- 464 0350 008002E0 		.word	-536707072
- 465 0354 FFFFE0FF 		.word	-2031617
- 466              		.size	proc1, .-proc1
- 467              		.align	2
- 468              		.code 16
- 469              		.thumb_func
- 470              		.type	proc3, %function
- 471              	proc3:
- 472 0358 00B5     		push	{lr}
- 473 035a FFF7FEFF 		bl	testLcd
- 474              		@ sp needed for prologue
- 475 035e 01BC     		pop	{r0}
- 476 0360 0047     		bx	r0
- 477              		.size	proc3, .-proc3
- 478 0362 0000     		.align	2
- 479              		.code 16
- 480              		.thumb_func
- 481              		.type	proc2, %function
- 482              	proc2:
- 483 0364 00B5     		push	{lr}
- 484 0366 FFF7FEFF 		bl	MMCproc
- 485              		@ sp needed for prologue
- 486 036a 01BC     		pop	{r0}
- 487 036c 0047     		bx	r0
- 488              		.size	proc2, .-proc2
- 489              		.global	msClock
- 490 036e C046     		.bss
- 491              		.align	2
- 492              		.type	msClock, %object
- 493              		.size	msClock, 4
- 494              	msClock:
- 495 0000 00000000 		.space	4
- 496              	proc1Stack:
- 497 0004 00000000 		.space	2048
- 497      00000000 
- 497      00000000 
- 497      00000000 
- 497      00000000 
- 498              	proc2Stack:
- 499 0804 00000000 		.space	2048
- 499      00000000 
- 499      00000000 
- 499      00000000 
- 499      00000000 
- 500              	proc3Stack:
- 501 1004 00000000 		.space	2048
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 11
-
-
- 501      00000000 
- 501      00000000 
- 501      00000000 
- 501      00000000 
- 502              	initStack:
- 503 1804 00000000 		.space	400
- 503      00000000 
- 503      00000000 
- 503      00000000 
- 503      00000000 
- 504              	pid1:
- 505 1994 00       		.space	1
- 506              	pid2:
- 507 1995 00       		.space	1
- 508              	pid3:
- 509 1996 00       		.space	1
- 510              		.comm	currentSongInfo,16,4
- 511              		.comm	mmcInitialized,1,1
- 512              		.comm	changeLeft,1,1
- 513              		.comm	changeRight,1,1
- 514              		.comm	rewindForward,1,1
- 515              		.comm	rewindBackward,1,1
- 516              		.comm	volumeUp,1,1
- 517              		.comm	volumeDown,1,1
- 518              		.comm	isError,4,4
- 519              		.comm	error,4,4
- 520              		.comm	currentVolume,1,1
- 521              		.comm	xbeePresent,1,1
- 522              		.comm	fileName,4,4
- 523 1997 00       		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 12
+ 406      00000000 
+ 407              	proc3Stack:
+ 408 1004 00000000 		.space	2048
+ 408      00000000 
+ 408      00000000 
+ 408      00000000 
+ 408      00000000 
+ 409              	initStack:
+ 410 1804 00000000 		.space	400
+ 410      00000000 
+ 410      00000000 
+ 410      00000000 
+ 410      00000000 
+ 411              	pid1:
+ 412 1994 00       		.space	1
+ 413              	pid2:
+ 414 1995 00       		.space	1
+ 415              	pid3:
+ 416 1996 00       		.space	1
+ 417              		.comm	currentSongInfo,16,4
+ 418              		.comm	mmcInitialized,1,1
+ 419              		.comm	changeLeft,1,1
+ 420              		.comm	changeRight,1,1
+ 421              		.comm	rewindForward,1,1
+ 422              		.comm	rewindBackward,1,1
+ 423              		.comm	volumeUp,1,1
+ 424              		.comm	volumeDown,1,1
+ 425              		.comm	isError,4,4
+ 426              		.comm	error,4,4
+ 427              		.comm	currentVolume,1,1
+ 428              		.comm	displayMode,1,1
+ 429              		.comm	xbeePresent,1,1
+ 430              		.comm	fileName,4,4
+ 431 1997 00       		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:9      .text:00000000 appTick
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:20     .text:0000000c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:494    .bss:00000000 msClock
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:36     .text:00000010 InitializeSharedData
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:33     .text:00000010 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:74     .text:00000050 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:9      .text:00000000 appTick
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:20     .text:0000000c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:401    .bss:00000000 msClock
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:36     .text:00000010 InitializeSharedData
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:33     .text:00000010 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:76     .text:00000054 $d
                             *COM*:00000010 currentSongInfo
                             *COM*:00000001 mmcInitialized
                             *COM*:00000001 changeLeft
@@ -654,26 +538,27 @@ DEFINED SYMBOLS
                             *COM*:00000004 isError
                             *COM*:00000004 error
                             *COM*:00000001 currentVolume
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:93     .text:00000084 main
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:90     .text:00000084 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:132    .text:000000d0 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:141    .text:000000e0 initProc
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:502    .bss:00001804 initStack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:138    .text:000000e0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:171    .text:0000011c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:504    .bss:00001994 pid1
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:226    .text:00000128 proc1
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:496    .bss:00000004 proc1Stack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:223    .text:00000128 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:437    .text:000002e4 $d
+                            *COM*:00000001 displayMode
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:96     .text:0000008c main
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:93     .text:0000008c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:135    .text:000000d8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:144    .text:000000e8 initProc
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:409    .bss:00001804 initStack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:141    .text:000000e8 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:174    .text:00000124 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:411    .bss:00001994 pid1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:216    .text:00000130 proc1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:403    .bss:00000004 proc1Stack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:213    .text:00000130 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:349    .text:00000250 $d
                             *COM*:00000001 xbeePresent
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:506    .bss:00001995 pid2
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:482    .text:00000364 proc2
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:498    .bss:00000804 proc2Stack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:508    .bss:00001996 pid3
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:471    .text:00000358 proc3
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:500    .bss:00001004 proc3Stack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s:468    .text:00000358 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:413    .bss:00001995 pid2
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:389    .text:000002bc proc2
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:405    .bss:00000804 proc2Stack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:415    .bss:00001996 pid3
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:378    .text:000002b0 proc3
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:407    .bss:00001004 proc3Stack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccSrrrAV.s:375    .text:000002b0 $t
                              .bss:00000000 $d
                             *COM*:00000004 fileName
 
@@ -685,15 +570,7 @@ osStart
 eaInit
 osDeleteProcess
 simplePrintf
-USB_Init
 osSleep
-HID_Init
-testXBee
 testI2C
-HID_SendReport
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccj9Rjy0.s 			page 13
-
-
-HID_CallBack
 testLcd
 MMCproc

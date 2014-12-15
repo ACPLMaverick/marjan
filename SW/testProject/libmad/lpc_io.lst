@@ -1,0 +1,366 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s 			page 1
+
+
+   1              		.file	"lpc_io.c"
+   2              		.text
+   3              		.align	2
+   4              		.global	enable_audio_render
+   5              		.type	enable_audio_render, %function
+   6              	enable_audio_render:
+   7              		@ Function supports interworking.
+   8              		@ args = 0, pretend = 0, frame = 0
+   9              		@ frame_needed = 0, uses_anonymous_args = 0
+  10              		@ link register save eliminated.
+  11 0000 28109FE5 		ldr	r1, .L5
+  12 0004 0030D1E5 		ldrb	r3, [r1, #0]	@ zero_extendqisi2
+  13 0008 000053E3 		cmp	r3, #0
+  14              		@ lr needed for prologue
+  15 000c 0120A0E3 		mov	r2, #1
+  16 0010 1EFF2F11 		bxne	lr
+  17 0014 18309FE5 		ldr	r3, .L5+4
+  18 0018 0020C1E5 		strb	r2, [r1, #0]
+  19 001c 042083E5 		str	r2, [r3, #4]
+  20 0020 1F2082E2 		add	r2, r2, #31
+  21 0024 0030E0E3 		mvn	r3, #0
+  22 0028 EF2F03E5 		str	r2, [r3, #-4079]
+  23 002c 1EFF2FE1 		bx	lr
+  24              	.L6:
+  25              		.align	2
+  26              	.L5:
+  27 0030 04080000 		.word	RenderStatus
+  28 0034 008000E0 		.word	-536838144
+  29              		.size	enable_audio_render, .-enable_audio_render
+  30              		.align	2
+  31              		.global	disable_audio_render
+  32              		.type	disable_audio_render, %function
+  33              	disable_audio_render:
+  34              		@ Function supports interworking.
+  35              		@ args = 0, pretend = 0, frame = 0
+  36              		@ frame_needed = 0, uses_anonymous_args = 0
+  37              		@ link register save eliminated.
+  38 0038 20109FE5 		ldr	r1, .L11
+  39 003c 0030D1E5 		ldrb	r3, [r1, #0]	@ zero_extendqisi2
+  40 0040 010053E3 		cmp	r3, #1
+  41 0044 18309F05 		ldreq	r3, .L11+4
+  42 0048 0020A0E3 		mov	r2, #0
+  43 004c 0020C105 		streqb	r2, [r1, #0]
+  44 0050 04208305 		streq	r2, [r3, #4]
+  45 0054 0030E003 		mvneq	r3, #0
+  46              		@ lr needed for prologue
+  47 0058 EF2F0305 		streq	r2, [r3, #-4079]
+  48 005c 1EFF2FE1 		bx	lr
+  49              	.L12:
+  50              		.align	2
+  51              	.L11:
+  52 0060 04080000 		.word	RenderStatus
+  53 0064 008000E0 		.word	-536838144
+  54              		.size	disable_audio_render, .-disable_audio_render
+  55              		.align	2
+  56              		.global	wait_end_of_excerpt
+  57              		.type	wait_end_of_excerpt, %function
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s 			page 2
+
+
+  58              	wait_end_of_excerpt:
+  59              		@ Function supports interworking.
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+  63              		@ lr needed for prologue
+  64              	.L15:
+  65 0068 18209FE5 		ldr	r2, .L20
+  66 006c 023BA0E3 		mov	r3, #2048
+  67 0070 B31092E1 		ldrh	r1, [r2, r3]
+  68 0074 023083E2 		add	r3, r3, #2
+  69 0078 B33092E1 		ldrh	r3, [r2, r3]
+  70 007c 030051E1 		cmp	r1, r3
+  71 0080 F8FFFF1A 		bne	.L15
+  72 0084 FEFFFFEA 		b	disable_audio_render
+  73              	.L21:
+  74              		.align	2
+  75              	.L20:
+  76 0088 00000000 		.word	DecodedBuff
+  77              		.size	wait_end_of_excerpt, .-wait_end_of_excerpt
+  78              		.align	2
+  79              		.global	render_sample
+  80              		.type	render_sample, %function
+  81              	render_sample:
+  82              		@ Function supports interworking.
+  83              		@ args = 0, pretend = 0, frame = 0
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+  85 008c 04E02DE5 		str	lr, [sp, #-4]!
+  86 0090 0008A0E1 		mov	r0, r0, asl #16
+  87 0094 2008A0E1 		mov	r0, r0, lsr #16
+  88              	.L24:
+  89 0098 50C09FE5 		ldr	ip, .L31
+  90 009c 50309FE5 		ldr	r3, .L31+4
+  91 00a0 02EBA0E3 		mov	lr, #2048
+  92 00a4 BE209CE1 		ldrh	r2, [ip, lr]
+  93 00a8 B3109CE1 		ldrh	r1, [ip, r3]
+  94 00ac 44309FE5 		ldr	r3, .L31+8
+  95 00b0 012082E2 		add	r2, r2, #1
+  96 00b4 033002E0 		and	r3, r2, r3
+  97 00b8 010053E1 		cmp	r3, r1
+  98 00bc F5FFFF0A 		beq	.L24
+  99 00c0 BE109CE1 		ldrh	r1, [ip, lr]
+ 100 00c4 BE209CE1 		ldrh	r2, [ip, lr]
+ 101 00c8 28309FE5 		ldr	r3, .L31+8
+ 102 00cc 012082E2 		add	r2, r2, #1
+ 103 00d0 033002E0 		and	r3, r2, r3
+ 104 00d4 0338A0E1 		mov	r3, r3, asl #16
+ 105 00d8 8110A0E1 		mov	r1, r1, asl #1
+ 106 00dc 2338A0E1 		mov	r3, r3, lsr #16
+ 107 00e0 BE308CE1 		strh	r3, [ip, lr]	@ movhi
+ 108 00e4 BC0081E1 		strh	r0, [r1, ip]	@ movhi
+ 109 00e8 04E09DE4 		ldr	lr, [sp], #4
+ 110 00ec FEFFFFEA 		b	enable_audio_render
+ 111              	.L32:
+ 112              		.align	2
+ 113              	.L31:
+ 114 00f0 00000000 		.word	DecodedBuff
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s 			page 3
+
+
+ 115 00f4 02080000 		.word	2050
+ 116 00f8 FF030080 		.word	-2147482625
+ 117              		.size	render_sample, .-render_sample
+ 118              		.align	2
+ 119              		.global	render_sample_block
+ 120              		.type	render_sample_block, %function
+ 121              	render_sample_block:
+ 122              		@ Function supports interworking.
+ 123              		@ args = 0, pretend = 0, frame = 0
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125 00fc 70402DE9 		stmfd	sp!, {r4, r5, r6, lr}
+ 126 0100 0118A0E1 		mov	r1, r1, asl #16
+ 127 0104 0060A0E1 		mov	r6, r0
+ 128 0108 2158A0E1 		mov	r5, r1, lsr #16
+ 129 010c 0040A0E3 		mov	r4, #0
+ 130 0110 180000EA 		b	.L34
+ 131              	.L41:
+ 132 0114 6CC09FE5 		ldr	ip, .L44
+ 133 0118 6C309FE5 		ldr	r3, .L44+4
+ 134 011c 02EBA0E3 		mov	lr, #2048
+ 135 0120 BE209CE1 		ldrh	r2, [ip, lr]
+ 136 0124 B3109CE1 		ldrh	r1, [ip, r3]
+ 137 0128 60309FE5 		ldr	r3, .L44+8
+ 138 012c 012082E2 		add	r2, r2, #1
+ 139 0130 033002E0 		and	r3, r2, r3
+ 140 0134 010053E1 		cmp	r3, r1
+ 141 0138 F5FFFF0A 		beq	.L41
+ 142 013c BE009CE1 		ldrh	r0, [ip, lr]
+ 143 0140 BE309CE1 		ldrh	r3, [ip, lr]
+ 144 0144 44209FE5 		ldr	r2, .L44+8
+ 145 0148 013083E2 		add	r3, r3, #1
+ 146 014c 022003E0 		and	r2, r3, r2
+ 147 0150 8430A0E1 		mov	r3, r4, asl #1
+ 148 0154 B63093E1 		ldrh	r3, [r3, r6]
+ 149 0158 0228A0E1 		mov	r2, r2, asl #16
+ 150 015c 011084E2 		add	r1, r4, #1
+ 151 0160 8000A0E1 		mov	r0, r0, asl #1
+ 152 0164 2228A0E1 		mov	r2, r2, lsr #16
+ 153 0168 0118A0E1 		mov	r1, r1, asl #16
+ 154 016c BC3080E1 		strh	r3, [r0, ip]	@ movhi
+ 155 0170 BE208CE1 		strh	r2, [ip, lr]	@ movhi
+ 156 0174 2148A0E1 		mov	r4, r1, lsr #16
+ 157              	.L34:
+ 158 0178 050054E1 		cmp	r4, r5
+ 159 017c E4FFFF1A 		bne	.L41
+ 160 0180 7040BDE8 		ldmfd	sp!, {r4, r5, r6, lr}
+ 161 0184 FEFFFFEA 		b	enable_audio_render
+ 162              	.L45:
+ 163              		.align	2
+ 164              	.L44:
+ 165 0188 00000000 		.word	DecodedBuff
+ 166 018c 02080000 		.word	2050
+ 167 0190 FF030080 		.word	-2147482625
+ 168              		.size	render_sample_block, .-render_sample_block
+ 169              		.align	2
+ 170              		.global	init_timer
+ 171              		.type	init_timer, %function
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s 			page 4
+
+
+ 172              	init_timer:
+ 173              		@ Function supports interworking.
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 176              		@ link register save eliminated.
+ 177 0194 24309FE5 		ldr	r3, .L48
+ 178 0198 0020E0E3 		mvn	r2, #0
+ 179 019c FF3E02E5 		str	r3, [r2, #-3839]
+ 180 01a0 2530A0E3 		mov	r3, #37
+ 181 01a4 FF3D02E5 		str	r3, [r2, #-3583]
+ 182 01a8 2030A0E3 		mov	r3, #32
+ 183 01ac EF3F02E5 		str	r3, [r2, #-4079]
+ 184 01b0 0C309FE5 		ldr	r3, .L48+4
+ 185 01b4 042082E2 		add	r2, r2, #4
+ 186              		@ lr needed for prologue
+ 187 01b8 142083E5 		str	r2, [r3, #20]
+ 188 01bc 1EFF2FE1 		bx	lr
+ 189              	.L49:
+ 190              		.align	2
+ 191              	.L48:
+ 192 01c0 00000000 		.word	tc0
+ 193 01c4 008000E0 		.word	-536838144
+ 194              		.size	init_timer, .-init_timer
+ 195              		.align	2
+ 196              		.global	tc0
+ 197              		.type	tc0, %function
+ 198              	tc0:
+ 199              		@ Interrupt Service Routine.
+ 200              		@ args = 0, pretend = 0, frame = 0
+ 201              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202              		@ link register save eliminated.
+ 203 01c8 0F102DE9 		stmfd	sp!, {r0, r1, r2, r3, ip}
+ 204 01cc 74109FE5 		ldr	r1, .L56
+ 205 01d0 74009FE5 		ldr	r0, .L56+4
+ 206 01d4 023BA0E3 		mov	r3, #2048
+ 207 01d8 B32091E1 		ldrh	r2, [r1, r3]
+ 208 01dc B03091E1 		ldrh	r3, [r1, r0]
+ 209 01e0 030052E1 		cmp	r2, r3
+ 210              		@ lr needed for prologue
+ 211 01e4 64C09FE5 		ldr	ip, .L56+8
+ 212 01e8 0020A0E3 		mov	r2, #0
+ 213 01ec 0800000A 		beq	.L53
+ 214 01f0 B03091E1 		ldrh	r3, [r1, r0]
+ 215 01f4 B02091E1 		ldrh	r2, [r1, r0]
+ 216 01f8 012082E2 		add	r2, r2, #1
+ 217 01fc 0CC002E0 		and	ip, r2, ip
+ 218 0200 0C28A0E1 		mov	r2, ip, asl #16
+ 219 0204 2228A0E1 		mov	r2, r2, lsr #16
+ 220 0208 8330A0E1 		mov	r3, r3, asl #1
+ 221 020c B02081E1 		strh	r2, [r1, r0]	@ movhi
+ 222 0210 B12093E1 		ldrh	r2, [r3, r1]
+ 223              	.L53:
+ 224 0214 38309FE5 		ldr	r3, .L56+12
+ 225 0218 022922E2 		eor	r2, r2, #32768
+ 226 021c 033002E0 		and	r3, r2, r3
+ 227 0220 30209FE5 		ldr	r2, .L56+16
+ 228 0224 003082E5 		str	r3, [r2, #0]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s 			page 5
+
+
+ 229 0228 2C309FE5 		ldr	r3, .L56+20
+ 230 022c 0120A0E3 		mov	r2, #1
+ 231 0230 002083E5 		str	r2, [r3, #0]
+ 232 0234 0020A0E3 		mov	r2, #0
+ 233 0238 0030E0E3 		mvn	r3, #0
+ 234 023c CF2F03E5 		str	r2, [r3, #-4047]
+ 235 0240 0F10BDE8 		ldmfd	sp!, {r0, r1, r2, r3, ip}
+ 236 0244 04F05EE2 		subs	pc, lr, #4
+ 237              	.L57:
+ 238              		.align	2
+ 239              	.L56:
+ 240 0248 00000000 		.word	DecodedBuff
+ 241 024c 02080000 		.word	2050
+ 242 0250 FF030080 		.word	-2147482625
+ 243 0254 C0FF0000 		.word	65472
+ 244 0258 00C006E0 		.word	-536428544
+ 245 025c 008000E0 		.word	-536838144
+ 246              		.size	tc0, .-tc0
+ 247              		.global	__udivsi3
+ 248              		.align	2
+ 249              		.global	set_dac_sample_rate
+ 250              		.type	set_dac_sample_rate, %function
+ 251              	set_dac_sample_rate:
+ 252              		@ Function supports interworking.
+ 253              		@ args = 0, pretend = 0, frame = 0
+ 254              		@ frame_needed = 0, uses_anonymous_args = 0
+ 255 0260 0010A0E1 		mov	r1, r0
+ 256 0264 04E02DE5 		str	lr, [sp, #-4]!
+ 257 0268 14009FE5 		ldr	r0, .L60
+ 258 026c FEFFFFEB 		bl	__udivsi3
+ 259 0270 10309FE5 		ldr	r3, .L60+4
+ 260 0274 010040E2 		sub	r0, r0, #1
+ 261 0278 180083E5 		str	r0, [r3, #24]
+ 262 027c 04E09DE4 		ldr	lr, [sp], #4
+ 263 0280 1EFF2FE1 		bx	lr
+ 264              	.L61:
+ 265              		.align	2
+ 266              	.L60:
+ 267 0284 00879303 		.word	60000000
+ 268 0288 008000E0 		.word	-536838144
+ 269              		.size	set_dac_sample_rate, .-set_dac_sample_rate
+ 270              		.align	2
+ 271              		.global	init_IO
+ 272              		.type	init_IO, %function
+ 273              	init_IO:
+ 274              		@ Function supports interworking.
+ 275              		@ args = 0, pretend = 0, frame = 0
+ 276              		@ frame_needed = 0, uses_anonymous_args = 0
+ 277 028c 30009FE5 		ldr	r0, .L64
+ 278 0290 30309FE5 		ldr	r3, .L64+4
+ 279 0294 0010A0E3 		mov	r1, #0
+ 280 0298 B31080E1 		strh	r1, [r0, r3]	@ movhi
+ 281 029c B33090E1 		ldrh	r3, [r0, r3]
+ 282 02a0 022BA0E3 		mov	r2, #2048
+ 283 02a4 B23080E1 		strh	r3, [r0, r2]	@ movhi
+ 284 02a8 1C309FE5 		ldr	r3, .L64+8
+ 285 02ac 04E02DE5 		str	lr, [sp, #-4]!
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s 			page 6
+
+
+ 286 02b0 0010C3E5 		strb	r1, [r3, #0]
+ 287 02b4 FEFFFFEB 		bl	init_timer
+ 288 02b8 FEFFFFEB 		bl	enableIRQ
+ 289 02bc 04E09DE4 		ldr	lr, [sp], #4
+ 290 02c0 1EFF2FE1 		bx	lr
+ 291              	.L65:
+ 292              		.align	2
+ 293              	.L64:
+ 294 02c4 00000000 		.word	DecodedBuff
+ 295 02c8 02080000 		.word	2050
+ 296 02cc 04080000 		.word	RenderStatus
+ 297              		.size	init_IO, .-init_IO
+ 298              		.bss
+ 299              		.align	2
+ 300              	DecodedBuff:
+ 301 0000 00000000 		.space	2052
+ 301      00000000 
+ 301      00000000 
+ 301      00000000 
+ 301      00000000 
+ 302              	RenderStatus:
+ 303 0804 00       		.space	1
+ 304              		.comm	pippo,2,2
+ 305 0805 000000   		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 lpc_io.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:6      .text:00000000 enable_audio_render
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:11     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:27     .text:00000030 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:302    .bss:00000804 RenderStatus
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:33     .text:00000038 disable_audio_render
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:38     .text:00000038 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:52     .text:00000060 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:58     .text:00000068 wait_end_of_excerpt
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:65     .text:00000068 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:76     .text:00000088 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:300    .bss:00000000 DecodedBuff
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:81     .text:0000008c render_sample
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:85     .text:0000008c $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:114    .text:000000f0 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:121    .text:000000fc render_sample_block
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:125    .text:000000fc $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:165    .text:00000188 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:172    .text:00000194 init_timer
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:177    .text:00000194 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:192    .text:000001c0 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:198    .text:000001c8 tc0
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:203    .text:000001c8 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:240    .text:00000248 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:251    .text:00000260 set_dac_sample_rate
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:255    .text:00000260 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:267    .text:00000284 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:273    .text:0000028c init_IO
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:277    .text:0000028c $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQvrzML.s:294    .text:000002c4 $d
+                            *COM*:00000002 pippo
+
+UNDEFINED SYMBOLS
+__udivsi3
+enableIRQ

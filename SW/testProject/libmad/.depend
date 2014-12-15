@@ -1,0 +1,38 @@
+bit.o: bit.c global.h bit.h
+decoder.o: decoder.c global.h stream.h bit.h frame.h fixed.h timer.h \
+  synth.h ../filesys/ioman.h ../filesys/../mmc/interface.h \
+  ../filesys/../mmc/types.h ../startup/config.h ../filesys/error.h \
+  ../startup/config.h ../filesys/../mmc/hwinterface.h \
+  ../filesys/../mmc/debug.h ../filesys/libc.h decoder.h
+fixed.o: fixed.c global.h fixed.h
+frame.o: frame.c global.h bit.h stream.h frame.h fixed.h timer.h \
+  layer12.h layer3.h
+gnustub.o: gnustub.c
+huffman.o: huffman.c global.h huffman.h
+layer3.o: layer3.c global.h fixed.h bit.h stream.h frame.h timer.h \
+  huffman.h layer3.h ../mmc/debug.h ../mmc/types.h ../startup/config.h \
+  mad.h simplemad.h rq_table.dat imdct_s.dat
+layer12.o: layer12.c global.h fixed.h bit.h stream.h frame.h timer.h \
+  layer12.h simplemad.h mad.h sf_table.dat qc_table.dat
+lpc_io.o: lpc_io.c ../startup/lpc2xxx.h lpc_io.h PLL_calc.h viclowlevel.h
+minimad.o: minimad.c ../filesys/efs.h ../startup/config.h \
+  ../filesys/../mmc/interface.h ../filesys/../mmc/types.h \
+  ../startup/config.h ../filesys/disc.h ../filesys/error.h \
+  ../filesys/../mmc/hwinterface.h ../filesys/../mmc/debug.h \
+  ../filesys/ioman.h ../filesys/libc.h ../filesys/partition.h \
+  ../filesys/extract.h ../filesys/../mmc/types.h ../filesys/fs.h \
+  ../filesys/time.h ../filesys/file.h ../filesys/dir.h ../filesys/fat.h \
+  ../filesys/./ui.h ../filesys/./fs.h ../filesys/./../mmc/types.h \
+  ../filesys/./fat.h ../filesys/./dir.h ../startup/config.h \
+  ../filesys/ls.h ../startup/lpc2xxx.h mad.h ../mmc/debug.h \
+  ../filesys/ioman.h midmad.h lpc_io.h
+stream.o: stream.c global.h bit.h stream.h
+synth.o: synth.c global.h fixed.h frame.h timer.h stream.h bit.h synth.h \
+  ../filesys/ioman.h ../filesys/../mmc/interface.h \
+  ../filesys/../mmc/types.h ../startup/config.h ../filesys/error.h \
+  ../startup/config.h ../filesys/../mmc/hwinterface.h \
+  ../filesys/../mmc/debug.h ../filesys/libc.h simplemad.h mad.h D.dat
+Syscalls.o: Syscalls.c
+timer.o: timer.c global.h timer.h
+version.o: version.c global.h version.h
+viclowlevel.o: viclowlevel.c viclowlevel.h

@@ -1,0 +1,54 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQaWWzu.s 			page 1
+
+
+   1              		.file	"version.c"
+   2              		.global	mad_version
+   3              		.section	.rodata
+   4              		.align	2
+   5              		.type	mad_version, %object
+   6              		.size	mad_version, 33
+   7              	mad_version:
+   8 0000 4D504547 		.ascii	"MPEG Audio Decoder 0.15.1 (beta)\000"
+   8      20417564 
+   8      696F2044 
+   8      65636F64 
+   8      65722030 
+   9              		.global	mad_copyright
+  10 0021 000000   		.align	2
+  11              		.type	mad_copyright, %object
+  12              		.size	mad_copyright, 52
+  13              	mad_copyright:
+  14 0024 436F7079 		.ascii	"Copyright (C) 2000-2004 Underbit Technologies, Inc."
+  14      72696768 
+  14      74202843 
+  14      29203230 
+  14      30302D32 
+  15 0057 00       		.ascii	"\000"
+  16              		.global	mad_author
+  17              		.align	2
+  18              		.type	mad_author, %object
+  19              		.size	mad_author, 48
+  20              	mad_author:
+  21 0058 556E6465 		.ascii	"Underbit Technologies, Inc. <info@underbit.com>\000"
+  21      72626974 
+  21      20546563 
+  21      686E6F6C 
+  21      6F676965 
+  22              		.global	mad_build
+  23              		.align	2
+  24              		.type	mad_build, %object
+  25              		.size	mad_build, 1
+  26              	mad_build:
+  27 0088 00       		.ascii	"\000"
+  28 0089 000000   		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQaWWzu.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 version.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQaWWzu.s:7      .rodata:00000000 mad_version
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQaWWzu.s:13     .rodata:00000024 mad_copyright
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQaWWzu.s:20     .rodata:00000058 mad_author
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQaWWzu.s:26     .rodata:00000088 mad_build
+
+NO UNDEFINED SYMBOLS

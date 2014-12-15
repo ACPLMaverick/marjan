@@ -1,0 +1,314 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s 			page 1
+
+
+   1              		.file	"decoder.c"
+   2              		.text
+   3              		.align	2
+   4              		.global	mad_decoder_init
+   5              		.type	mad_decoder_init, %function
+   6              	mad_decoder_init:
+   7              		@ Function supports interworking.
+   8              		@ args = 16, pretend = 0, frame = 0
+   9              		@ frame_needed = 0, uses_anonymous_args = 0
+  10 0000 10402DE9 		stmfd	sp!, {r4, lr}
+  11 0004 203080E5 		str	r3, [r0, #32]
+  12 0008 08309DE5 		ldr	r3, [sp, #8]
+  13 000c 243080E5 		str	r3, [r0, #36]
+  14 0010 0C309DE5 		ldr	r3, [sp, #12]
+  15 0014 14C09DE5 		ldr	ip, [sp, #20]
+  16 0018 283080E5 		str	r3, [r0, #40]
+  17 001c 10309DE5 		ldr	r3, [sp, #16]
+  18 0020 0040E0E3 		mvn	r4, #0
+  19 0024 00E0A0E3 		mov	lr, #0
+  20 0028 30C080E5 		str	ip, [r0, #48]
+  21 002c 104080E5 		str	r4, [r0, #16]
+  22 0030 14E080E5 		str	lr, [r0, #20]
+  23 0034 181080E5 		str	r1, [r0, #24]
+  24 0038 1C2080E5 		str	r2, [r0, #28]
+  25 003c 2C3080E5 		str	r3, [r0, #44]
+  26 0040 104080E8 		stmia	r0, {r4, lr}	@ phole stm
+  27 0044 08E080E5 		str	lr, [r0, #8]
+  28 0048 0C4080E5 		str	r4, [r0, #12]
+  29 004c 1040BDE8 		ldmfd	sp!, {r4, lr}
+  30 0050 1EFF2FE1 		bx	lr
+  31              		.size	mad_decoder_init, .-mad_decoder_init
+  32              		.align	2
+  33              		.global	mad_decoder_finish
+  34              		.type	mad_decoder_finish, %function
+  35              	mad_decoder_finish:
+  36              		@ Function supports interworking.
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  39              		@ link register save eliminated.
+  40 0054 0000A0E3 		mov	r0, #0
+  41              		@ lr needed for prologue
+  42 0058 1EFF2FE1 		bx	lr
+  43              		.size	mad_decoder_finish, .-mad_decoder_finish
+  44              		.align	2
+  45              		.global	mad_decoder_run
+  46              		.type	mad_decoder_run, %function
+  47              	mad_decoder_run:
+  48              		@ Function supports interworking.
+  49              		@ args = 0, pretend = 0, frame = 0
+  50              		@ frame_needed = 0, uses_anonymous_args = 0
+  51 005c 30402DE9 		stmfd	sp!, {r4, r5, lr}
+  52 0060 000051E3 		cmp	r1, #0
+  53 0064 0040A0E1 		mov	r4, r0
+  54 0068 0150A0E1 		mov	r5, r1
+  55 006c 0030E0E3 		mvn	r3, #0
+  56 0070 001084E5 		str	r1, [r4, #0]
+  57 0074 0400001A 		bne	.L8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s 			page 2
+
+
+  58 0078 18309FE5 		ldr	r3, .L10
+  59 007c 143080E5 		str	r3, [r0, #20]
+  60 0080 070000EB 		bl	run_sync
+  61 0084 145084E5 		str	r5, [r4, #20]
+  62 0088 0030A0E1 		mov	r3, r0
+  63              	.L8:
+  64 008c 0300A0E1 		mov	r0, r3
+  65 0090 3040BDE8 		ldmfd	sp!, {r4, r5, lr}
+  66 0094 1EFF2FE1 		bx	lr
+  67              	.L11:
+  68              		.align	2
+  69              	.L10:
+  70 0098 00000000 		.word	Sync
+  71              		.size	mad_decoder_run, .-mad_decoder_run
+  72              		.align	2
+  73              		.global	mad_decoder_message
+  74              		.type	mad_decoder_message, %function
+  75              	mad_decoder_message:
+  76              		@ Function supports interworking.
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              		@ link register save eliminated.
+  80 009c 0000E0E3 		mvn	r0, #0
+  81              		@ lr needed for prologue
+  82 00a0 1EFF2FE1 		bx	lr
+  83              		.size	mad_decoder_message, .-mad_decoder_message
+  84              		.align	2
+  85              		.type	run_sync, %function
+  86              	run_sync:
+  87              		@ Function supports interworking.
+  88              		@ args = 0, pretend = 0, frame = 4
+  89              		@ frame_needed = 0, uses_anonymous_args = 0
+  90 00a4 F0452DE9 		stmfd	sp!, {r4, r5, r6, r7, r8, sl, lr}
+  91 00a8 0050A0E1 		mov	r5, r0
+  92 00ac 1C0090E5 		ldr	r0, [r0, #28]
+  93 00b0 04D04DE2 		sub	sp, sp, #4
+  94 00b4 000050E3 		cmp	r0, #0
+  95 00b8 0030A0E3 		mov	r3, #0
+  96 00bc 00308DE5 		str	r3, [sp, #0]
+  97 00c0 0050A001 		moveq	r5, r0
+  98 00c4 7400000A 		beq	.L17
+  99 00c8 144095E5 		ldr	r4, [r5, #20]
+ 100 00cc 2C8095E5 		ldr	r8, [r5, #44]
+ 101 00d0 0400A0E1 		mov	r0, r4
+ 102 00d4 000058E3 		cmp	r8, #0
+ 103 00d8 406084E2 		add	r6, r4, #64
+ 104 00dc 497D84E2 		add	r7, r4, #4672
+ 105 00e0 C4819F05 		ldreq	r8, .L51
+ 106 00e4 0DA0A001 		moveq	sl, sp
+ 107 00e8 18A09515 		ldrne	sl, [r5, #24]
+ 108 00ec 347087E2 		add	r7, r7, #52
+ 109 00f0 FEFFFFEB 		bl	mad_stream_init
+ 110 00f4 0600A0E1 		mov	r0, r6
+ 111 00f8 FEFFFFEB 		bl	mad_frame_init
+ 112 00fc 0700A0E1 		mov	r0, r7
+ 113 0100 FEFFFFEB 		bl	mad_synth_init
+ 114 0104 043095E5 		ldr	r3, [r5, #4]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s 			page 3
+
+
+ 115 0108 383084E5 		str	r3, [r4, #56]
+ 116              	.L21:
+ 117 010c 180095E5 		ldr	r0, [r5, #24]
+ 118 0110 0410A0E1 		mov	r1, r4
+ 119 0114 1CC095E5 		ldr	ip, [r5, #28]
+ 120 0118 0FE0A0E1 		mov	lr, pc
+ 121 011c 1CFF2FE1 		bx	ip
+ 122 0120 110050E3 		cmp	r0, #17
+ 123 0124 5700000A 		beq	.L24
+ 124 0128 200050E3 		cmp	r0, #32
+ 125 012c 4F00000A 		beq	.L25
+ 126              	.L47:
+ 127 0130 100050E3 		cmp	r0, #16
+ 128 0134 5100000A 		beq	.L23
+ 129              	.L50:
+ 130 0138 203095E5 		ldr	r3, [r5, #32]
+ 131 013c 000053E3 		cmp	r3, #0
+ 132 0140 1800000A 		beq	.L26
+ 133 0144 0600A0E1 		mov	r0, r6
+ 134 0148 0410A0E1 		mov	r1, r4
+ 135 014c FEFFFFEB 		bl	mad_header_decode
+ 136 0150 010070E3 		cmn	r0, #1
+ 137 0154 0800001A 		bne	.L28
+ 138 0158 3C3094E5 		ldr	r3, [r4, #60]
+ 139 015c FF0C13E3 		tst	r3, #65280
+ 140 0160 4200000A 		beq	.L25
+ 141 0164 0A00A0E1 		mov	r0, sl
+ 142 0168 0410A0E1 		mov	r1, r4
+ 143 016c 0620A0E1 		mov	r2, r6
+ 144 0170 0FE0A0E1 		mov	lr, pc
+ 145 0174 18FF2FE1 		bx	r8
+ 146 0178 370000EA 		b	.L49
+ 147              	.L28:
+ 148 017c 180095E5 		ldr	r0, [r5, #24]
+ 149 0180 0610A0E1 		mov	r1, r6
+ 150 0184 20C095E5 		ldr	ip, [r5, #32]
+ 151 0188 0FE0A0E1 		mov	lr, pc
+ 152 018c 1CFF2FE1 		bx	ip
+ 153 0190 110050E3 		cmp	r0, #17
+ 154 0194 3B00000A 		beq	.L24
+ 155 0198 200050E3 		cmp	r0, #32
+ 156 019c E5FFFF0A 		beq	.L50
+ 157 01a0 100050E3 		cmp	r0, #16
+ 158 01a4 3500000A 		beq	.L23
+ 159              	.L26:
+ 160 01a8 0600A0E1 		mov	r0, r6
+ 161 01ac 0410A0E1 		mov	r1, r4
+ 162 01b0 FEFFFFEB 		bl	mad_frame_decode
+ 163 01b4 010070E3 		cmn	r0, #1
+ 164 01b8 0030A013 		movne	r3, #0
+ 165 01bc 00308D15 		strne	r3, [sp, #0]
+ 166 01c0 0B00001A 		bne	.L34
+ 167 01c4 3C3094E5 		ldr	r3, [r4, #60]
+ 168 01c8 FF0C13E3 		tst	r3, #65280
+ 169 01cc 2700000A 		beq	.L25
+ 170 01d0 0A00A0E1 		mov	r0, sl
+ 171 01d4 0410A0E1 		mov	r1, r4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s 			page 4
+
+
+ 172 01d8 0620A0E1 		mov	r2, r6
+ 173 01dc 0FE0A0E1 		mov	lr, pc
+ 174 01e0 18FF2FE1 		bx	r8
+ 175 01e4 110050E3 		cmp	r0, #17
+ 176 01e8 2600000A 		beq	.L24
+ 177 01ec 200050E3 		cmp	r0, #32
+ 178 01f0 CEFFFF1A 		bne	.L47
+ 179              	.L34:
+ 180 01f4 243095E5 		ldr	r3, [r5, #36]
+ 181 01f8 000053E3 		cmp	r3, #0
+ 182 01fc 0A00000A 		beq	.L35
+ 183 0200 180095E5 		ldr	r0, [r5, #24]
+ 184 0204 0410A0E1 		mov	r1, r4
+ 185 0208 0620A0E1 		mov	r2, r6
+ 186 020c 0FE0A0E1 		mov	lr, pc
+ 187 0210 13FF2FE1 		bx	r3
+ 188 0214 110050E3 		cmp	r0, #17
+ 189 0218 1A00000A 		beq	.L24
+ 190 021c 200050E3 		cmp	r0, #32
+ 191 0220 C4FFFF0A 		beq	.L50
+ 192 0224 100050E3 		cmp	r0, #16
+ 193 0228 1400000A 		beq	.L23
+ 194              	.L35:
+ 195 022c 0700A0E1 		mov	r0, r7
+ 196 0230 0610A0E1 		mov	r1, r6
+ 197 0234 FEFFFFEB 		bl	mad_synth_frame
+ 198 0238 283095E5 		ldr	r3, [r5, #40]
+ 199 023c 000053E3 		cmp	r3, #0
+ 200 0240 BCFFFF0A 		beq	.L50
+ 201 0244 022B87E2 		add	r2, r7, #2048
+ 202 0248 042082E2 		add	r2, r2, #4
+ 203 024c 180095E5 		ldr	r0, [r5, #24]
+ 204 0250 0610A0E1 		mov	r1, r6
+ 205 0254 0FE0A0E1 		mov	lr, pc
+ 206 0258 13FF2FE1 		bx	r3
+ 207              	.L49:
+ 208 025c 100050E3 		cmp	r0, #16
+ 209 0260 0600000A 		beq	.L23
+ 210 0264 110050E3 		cmp	r0, #17
+ 211 0268 B2FFFF1A 		bne	.L50
+ 212 026c 050000EA 		b	.L24
+ 213              	.L25:
+ 214 0270 3C3094E5 		ldr	r3, [r4, #60]
+ 215 0274 010053E3 		cmp	r3, #1
+ 216 0278 0200001A 		bne	.L24
+ 217 027c A2FFFFEA 		b	.L21
+ 218              	.L23:
+ 219 0280 0050A0E3 		mov	r5, #0
+ 220 0284 000000EA 		b	.L38
+ 221              	.L24:
+ 222 0288 0050E0E3 		mvn	r5, #0
+ 223              	.L38:
+ 224 028c 0600A0E1 		mov	r0, r6
+ 225 0290 FEFFFFEB 		bl	mad_frame_finish
+ 226 0294 0400A0E1 		mov	r0, r4
+ 227 0298 FEFFFFEB 		bl	mad_stream_finish
+ 228              	.L17:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s 			page 5
+
+
+ 229 029c 0500A0E1 		mov	r0, r5
+ 230 02a0 04D08DE2 		add	sp, sp, #4
+ 231 02a4 F045BDE8 		ldmfd	sp!, {r4, r5, r6, r7, r8, sl, lr}
+ 232 02a8 1EFF2FE1 		bx	lr
+ 233              	.L52:
+ 234              		.align	2
+ 235              	.L51:
+ 236 02ac B0020000 		.word	error_default
+ 237              		.size	run_sync, .-run_sync
+ 238              		.align	2
+ 239              		.type	error_default, %function
+ 240              	error_default:
+ 241              		@ Function supports interworking.
+ 242              		@ args = 0, pretend = 0, frame = 0
+ 243              		@ frame_needed = 0, uses_anonymous_args = 0
+ 244 02b0 3C1091E5 		ldr	r1, [r1, #60]
+ 245 02b4 40309FE5 		ldr	r3, .L60
+ 246 02b8 030051E1 		cmp	r1, r3
+ 247 02bc 00C0A0E1 		mov	ip, r0
+ 248 02c0 04E02DE5 		str	lr, [sp, #-4]!
+ 249 02c4 0010A0E3 		mov	r1, #0
+ 250 02c8 0200A0E1 		mov	r0, r2
+ 251 02cc 0700001A 		bne	.L56
+ 252 02d0 00309CE5 		ldr	r3, [ip, #0]
+ 253 02d4 000053E3 		cmp	r3, #0
+ 254 02d8 0130A003 		moveq	r3, #1
+ 255 02dc 2010A0E3 		mov	r1, #32
+ 256 02e0 00308C05 		streq	r3, [ip, #0]
+ 257 02e4 0100000A 		beq	.L56
+ 258 02e8 FEFFFFEB 		bl	mad_frame_mute
+ 259 02ec 2010A0E3 		mov	r1, #32
+ 260              	.L56:
+ 261 02f0 0100A0E1 		mov	r0, r1
+ 262 02f4 04E09DE4 		ldr	lr, [sp], #4
+ 263 02f8 1EFF2FE1 		bx	lr
+ 264              	.L61:
+ 265              		.align	2
+ 266              	.L60:
+ 267 02fc 01020000 		.word	513
+ 268              		.size	error_default, .-error_default
+ 269              		.comm	Sync,6784,4
+ 270              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 decoder.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:6      .text:00000000 mad_decoder_init
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:10     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:35     .text:00000054 mad_decoder_finish
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:47     .text:0000005c mad_decoder_run
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:86     .text:000000a4 run_sync
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:70     .text:00000098 $d
+                            *COM*:00001a80 Sync
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:75     .text:0000009c mad_decoder_message
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:80     .text:0000009c $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:236    .text:000002ac $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:240    .text:000002b0 error_default
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:244    .text:000002b0 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccnmXIIC.s:267    .text:000002fc $d
+
+UNDEFINED SYMBOLS
+mad_stream_init
+mad_frame_init
+mad_synth_init
+mad_header_decode
+mad_frame_decode
+mad_synth_frame
+mad_frame_finish
+mad_stream_finish
+mad_frame_mute

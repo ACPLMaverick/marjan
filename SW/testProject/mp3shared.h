@@ -22,6 +22,7 @@ extern unsigned char volumeDown;
 extern unsigned int isError;
 extern char* error;
 extern unsigned char currentVolume;
+extern unsigned char displayMode;
 
 extern void InitializeSharedData();
 

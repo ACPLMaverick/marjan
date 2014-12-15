@@ -1,0 +1,560 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 1
+
+
+   1              		.file	"bit.c"
+   2              		.text
+   3              		.align	2
+   4              		.global	mad_bit_init
+   5              		.type	mad_bit_init, %function
+   6              	mad_bit_init:
+   7              		@ Function supports interworking.
+   8              		@ args = 0, pretend = 0, frame = 0
+   9              		@ frame_needed = 0, uses_anonymous_args = 0
+  10              		@ link register save eliminated.
+  11 0000 0830A0E3 		mov	r3, #8	@ movhi
+  12 0004 B630C0E1 		strh	r3, [r0, #6]	@ movhi
+  13 0008 0030A0E3 		mov	r3, #0	@ movhi
+  14              		@ lr needed for prologue
+  15 000c 001080E5 		str	r1, [r0, #0]
+  16 0010 B430C0E1 		strh	r3, [r0, #4]	@ movhi
+  17 0014 1EFF2FE1 		bx	lr
+  18              		.size	mad_bit_init, .-mad_bit_init
+  19              		.align	2
+  20              		.global	mad_bit_length
+  21              		.type	mad_bit_length, %function
+  22              	mad_bit_length:
+  23              		@ Function supports interworking.
+  24              		@ args = 0, pretend = 0, frame = 0
+  25              		@ frame_needed = 0, uses_anonymous_args = 0
+  26              		@ link register save eliminated.
+  27 0018 002090E5 		ldr	r2, [r0, #0]
+  28 001c 003091E5 		ldr	r3, [r1, #0]
+  29 0020 B600D0E1 		ldrh	r0, [r0, #6]
+  30 0024 033062E0 		rsb	r3, r2, r3
+  31 0028 B620D1E1 		ldrh	r2, [r1, #6]
+  32 002c 830180E0 		add	r0, r0, r3, asl #3
+  33 0030 000062E0 		rsb	r0, r2, r0
+  34              		@ lr needed for prologue
+  35 0034 1EFF2FE1 		bx	lr
+  36              		.size	mad_bit_length, .-mad_bit_length
+  37              		.align	2
+  38              		.global	mad_bit_nextbyte
+  39              		.type	mad_bit_nextbyte, %function
+  40              	mad_bit_nextbyte:
+  41              		@ Function supports interworking.
+  42              		@ args = 0, pretend = 0, frame = 0
+  43              		@ frame_needed = 0, uses_anonymous_args = 0
+  44              		@ link register save eliminated.
+  45 0038 B630D0E1 		ldrh	r3, [r0, #6]
+  46 003c 000090E5 		ldr	r0, [r0, #0]
+  47 0040 080053E3 		cmp	r3, #8
+  48 0044 0030A0E1 		mov	r3, r0
+  49 0048 01308012 		addne	r3, r0, #1
+  50 004c 0300A0E1 		mov	r0, r3
+  51              		@ lr needed for prologue
+  52 0050 1EFF2FE1 		bx	lr
+  53              		.size	mad_bit_nextbyte, .-mad_bit_nextbyte
+  54              		.align	2
+  55              		.global	mad_bit_skip
+  56              		.type	mad_bit_skip, %function
+  57              	mad_bit_skip:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 2
+
+
+  58              		@ Function supports interworking.
+  59              		@ args = 0, pretend = 0, frame = 0
+  60              		@ frame_needed = 0, uses_anonymous_args = 0
+  61              		@ link register save eliminated.
+  62 0054 B630D0E1 		ldrh	r3, [r0, #6]
+  63 0058 072001E2 		and	r2, r1, #7
+  64 005c 033062E0 		rsb	r3, r2, r3
+  65 0060 0338A0E1 		mov	r3, r3, asl #16
+  66 0064 2338A0E1 		mov	r3, r3, lsr #16
+  67 0068 B630C0E1 		strh	r3, [r0, #6]	@ movhi
+  68 006c 080053E3 		cmp	r3, #8
+  69 0070 B630D081 		ldrhih	r3, [r0, #6]
+  70 0074 002090E5 		ldr	r2, [r0, #0]
+  71 0078 08308382 		addhi	r3, r3, #8
+  72 007c B630C081 		strhih	r3, [r0, #6]	@ movhi
+  73 0080 A12182E0 		add	r2, r2, r1, lsr #3
+  74 0084 B630D0E1 		ldrh	r3, [r0, #6]
+  75 0088 011082E2 		add	r1, r2, #1
+  76 008c 002080E5 		str	r2, [r0, #0]
+  77 0090 00108085 		strhi	r1, [r0, #0]
+  78 0094 070053E3 		cmp	r3, #7
+  79 0098 00309095 		ldrls	r3, [r0, #0]
+  80 009c 0030D395 		ldrlsb	r3, [r3, #0]	@ zero_extendqisi2
+  81              		@ lr needed for prologue
+  82 00a0 B430C091 		strlsh	r3, [r0, #4]	@ movhi
+  83 00a4 1EFF2FE1 		bx	lr
+  84              		.size	mad_bit_skip, .-mad_bit_skip
+  85              		.align	2
+  86              		.global	mad_bit_read
+  87              		.type	mad_bit_read, %function
+  88              	mad_bit_read:
+  89              		@ Function supports interworking.
+  90              		@ args = 0, pretend = 0, frame = 0
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92              		@ link register save eliminated.
+  93 00a8 B630D0E1 		ldrh	r3, [r0, #6]
+  94 00ac 080053E3 		cmp	r3, #8
+  95 00b0 00309005 		ldreq	r3, [r0, #0]
+  96 00b4 0030D305 		ldreqb	r3, [r3, #0]	@ zero_extendqisi2
+  97 00b8 0120A0E1 		mov	r2, r1
+  98 00bc B610D0E1 		ldrh	r1, [r0, #6]
+  99 00c0 B430C001 		streqh	r3, [r0, #4]	@ movhi
+ 100 00c4 010052E1 		cmp	r2, r1
+ 101              		@ lr needed for prologue
+ 102 00c8 B4C0D0E1 		ldrh	ip, [r0, #4]
+ 103 00cc 0500002A 		bcs	.L19
+ 104 00d0 0030E0E3 		mvn	r3, #0
+ 105 00d4 1331CCE1 		bic	r3, ip, r3, asl r1
+ 106 00d8 012062E0 		rsb	r2, r2, r1
+ 107 00dc 53C2A0E1 		mov	ip, r3, asr r2
+ 108 00e0 B620C0E1 		strh	r2, [r0, #6]	@ movhi
+ 109 00e4 1A0000EA 		b	.L21
+ 110              	.L19:
+ 111 00e8 0030E0E3 		mvn	r3, #0
+ 112 00ec 13C1CCE1 		bic	ip, ip, r3, asl r1
+ 113 00f0 003090E5 		ldr	r3, [r0, #0]
+ 114 00f4 013083E2 		add	r3, r3, #1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 3
+
+
+ 115 00f8 003080E5 		str	r3, [r0, #0]
+ 116 00fc 021061E0 		rsb	r1, r1, r2
+ 117 0100 0830A0E3 		mov	r3, #8	@ movhi
+ 118 0104 B630C0E1 		strh	r3, [r0, #6]	@ movhi
+ 119 0108 040000EA 		b	.L22
+ 120              	.L23:
+ 121 010c 003090E5 		ldr	r3, [r0, #0]
+ 122 0110 0120D3E4 		ldrb	r2, [r3], #1	@ zero_extendqisi2
+ 123 0114 003080E5 		str	r3, [r0, #0]
+ 124 0118 081041E2 		sub	r1, r1, #8
+ 125 011c 0CC482E1 		orr	ip, r2, ip, asl #8
+ 126              	.L22:
+ 127 0120 070051E3 		cmp	r1, #7
+ 128 0124 F8FFFF8A 		bhi	.L23
+ 129 0128 000051E3 		cmp	r1, #0
+ 130 012c 0800000A 		beq	.L21
+ 131 0130 003090E5 		ldr	r3, [r0, #0]
+ 132 0134 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 133 0138 083061E2 		rsb	r3, r1, #8
+ 134 013c 5233A0E1 		mov	r3, r2, asr r3
+ 135 0140 1CC183E1 		orr	ip, r3, ip, asl r1
+ 136 0144 B630D0E1 		ldrh	r3, [r0, #6]
+ 137 0148 033061E0 		rsb	r3, r1, r3
+ 138 014c B630C0E1 		strh	r3, [r0, #6]	@ movhi
+ 139 0150 B420C0E1 		strh	r2, [r0, #4]	@ movhi
+ 140              	.L21:
+ 141 0154 0C00A0E1 		mov	r0, ip
+ 142 0158 1EFF2FE1 		bx	lr
+ 143              		.size	mad_bit_read, .-mad_bit_read
+ 144              		.align	2
+ 145              		.global	mad_bit_crc
+ 146              		.type	mad_bit_crc, %function
+ 147              	mad_bit_crc:
+ 148              		@ Function supports interworking.
+ 149              		@ args = 0, pretend = 0, frame = 8
+ 150              		@ frame_needed = 0, uses_anonymous_args = 0
+ 151 015c 30402DE9 		stmfd	sp!, {r4, r5, lr}
+ 152 0160 0338A0E1 		mov	r3, r3, asl #16
+ 153 0164 08D04DE2 		sub	sp, sp, #8
+ 154 0168 0250A0E1 		mov	r5, r2
+ 155 016c 2348A0E1 		mov	r4, r3, lsr #16
+ 156 0170 03008DE8 		stmia	sp, {r0-r1}
+ 157 0174 190000EA 		b	.L28
+ 158              	.L29:
+ 159 0178 FEFFFFEB 		bl	mad_bit_read
+ 160 017c 203CA0E1 		mov	r3, r0, lsr #24
+ 161 0180 243423E0 		eor	r3, r3, r4, lsr #8
+ 162 0184 34C19FE5 		ldr	ip, .L46
+ 163 0188 FF3003E2 		and	r3, r3, #255
+ 164 018c 8330A0E1 		mov	r3, r3, asl #1
+ 165 0190 BC2093E1 		ldrh	r2, [r3, ip]
+ 166 0194 2038A0E1 		mov	r3, r0, lsr #16
+ 167 0198 042422E0 		eor	r2, r2, r4, asl #8
+ 168 019c 223423E0 		eor	r3, r3, r2, lsr #8
+ 169 01a0 FF3003E2 		and	r3, r3, #255
+ 170 01a4 8330A0E1 		mov	r3, r3, asl #1
+ 171 01a8 BC1093E1 		ldrh	r1, [r3, ip]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 4
+
+
+ 172 01ac 2034A0E1 		mov	r3, r0, lsr #8
+ 173 01b0 021421E0 		eor	r1, r1, r2, asl #8
+ 174 01b4 213423E0 		eor	r3, r3, r1, lsr #8
+ 175 01b8 FF3003E2 		and	r3, r3, #255
+ 176 01bc 8330A0E1 		mov	r3, r3, asl #1
+ 177 01c0 BC2093E1 		ldrh	r2, [r3, ip]
+ 178 01c4 012422E0 		eor	r2, r2, r1, asl #8
+ 179 01c8 220420E0 		eor	r0, r0, r2, lsr #8
+ 180 01cc FF0000E2 		and	r0, r0, #255
+ 181 01d0 8000A0E1 		mov	r0, r0, asl #1
+ 182 01d4 BC3090E1 		ldrh	r3, [r0, ip]
+ 183 01d8 205045E2 		sub	r5, r5, #32
+ 184 01dc 024423E0 		eor	r4, r3, r2, asl #8
+ 185              	.L28:
+ 186 01e0 1F0055E3 		cmp	r5, #31
+ 187 01e4 0D00A0E1 		mov	r0, sp
+ 188 01e8 2010A0E3 		mov	r1, #32
+ 189 01ec E1FFFF8A 		bhi	.L29
+ 190 01f0 A531A0E1 		mov	r3, r5, lsr #3
+ 191 01f4 020053E3 		cmp	r3, #2
+ 192 01f8 0D00000A 		beq	.L33
+ 193 01fc 030053E3 		cmp	r3, #3
+ 194 0200 0200000A 		beq	.L34
+ 195 0204 010053E3 		cmp	r3, #1
+ 196 0208 2300001A 		bne	.L45
+ 197 020c 110000EA 		b	.L32
+ 198              	.L34:
+ 199 0210 0D00A0E1 		mov	r0, sp
+ 200 0214 0810A0E3 		mov	r1, #8
+ 201 0218 FEFFFFEB 		bl	mad_bit_read
+ 202 021c 240420E0 		eor	r0, r0, r4, lsr #8
+ 203 0220 FF0000E2 		and	r0, r0, #255
+ 204 0224 94309FE5 		ldr	r3, .L46
+ 205 0228 8000A0E1 		mov	r0, r0, asl #1
+ 206 022c B33090E1 		ldrh	r3, [r0, r3]
+ 207 0230 044423E0 		eor	r4, r3, r4, asl #8
+ 208              	.L33:
+ 209 0234 0D00A0E1 		mov	r0, sp
+ 210 0238 0810A0E3 		mov	r1, #8
+ 211 023c FEFFFFEB 		bl	mad_bit_read
+ 212 0240 240420E0 		eor	r0, r0, r4, lsr #8
+ 213 0244 FF0000E2 		and	r0, r0, #255
+ 214 0248 70309FE5 		ldr	r3, .L46
+ 215 024c 8000A0E1 		mov	r0, r0, asl #1
+ 216 0250 B33090E1 		ldrh	r3, [r0, r3]
+ 217 0254 044423E0 		eor	r4, r3, r4, asl #8
+ 218              	.L32:
+ 219 0258 0D00A0E1 		mov	r0, sp
+ 220 025c 0810A0E3 		mov	r1, #8
+ 221 0260 FEFFFFEB 		bl	mad_bit_read
+ 222 0264 240420E0 		eor	r0, r0, r4, lsr #8
+ 223 0268 FF0000E2 		and	r0, r0, #255
+ 224 026c 4C309FE5 		ldr	r3, .L46
+ 225 0270 8000A0E1 		mov	r0, r0, asl #1
+ 226 0274 B33090E1 		ldrh	r3, [r0, r3]
+ 227 0278 075005E2 		and	r5, r5, #7
+ 228 027c 044423E0 		eor	r4, r3, r4, asl #8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 5
+
+
+ 229 0280 050000EA 		b	.L45
+ 230              	.L35:
+ 231 0284 FEFFFFEB 		bl	mad_bit_read
+ 232 0288 A40720E0 		eor	r0, r0, r4, lsr #15
+ 233 028c 010010E3 		tst	r0, #1
+ 234 0290 2C309F15 		ldrne	r3, .L46+4
+ 235 0294 8440A0E1 		mov	r4, r4, asl #1
+ 236 0298 03402410 		eorne	r4, r4, r3
+ 237              	.L45:
+ 238 029c 015055E2 		subs	r5, r5, #1
+ 239 02a0 0D00A0E1 		mov	r0, sp
+ 240 02a4 0110A0E3 		mov	r1, #1
+ 241 02a8 F5FFFF2A 		bcs	.L35
+ 242 02ac 0408A0E1 		mov	r0, r4, asl #16
+ 243 02b0 2008A0E1 		mov	r0, r0, lsr #16
+ 244 02b4 08D08DE2 		add	sp, sp, #8
+ 245 02b8 3040BDE8 		ldmfd	sp!, {r4, r5, lr}
+ 246 02bc 1EFF2FE1 		bx	lr
+ 247              	.L47:
+ 248              		.align	2
+ 249              	.L46:
+ 250 02c0 00000000 		.word	crc_table
+ 251 02c4 05800000 		.word	32773
+ 252              		.size	mad_bit_crc, .-mad_bit_crc
+ 253              		.section	.rodata
+ 254              		.align	1
+ 255              		.type	crc_table, %object
+ 256              		.size	crc_table, 512
+ 257              	crc_table:
+ 258 0000 0000     		.short	0
+ 259 0002 0580     		.short	-32763
+ 260 0004 0F80     		.short	-32753
+ 261 0006 0A00     		.short	10
+ 262 0008 1B80     		.short	-32741
+ 263 000a 1E00     		.short	30
+ 264 000c 1400     		.short	20
+ 265 000e 1180     		.short	-32751
+ 266 0010 3380     		.short	-32717
+ 267 0012 3600     		.short	54
+ 268 0014 3C00     		.short	60
+ 269 0016 3980     		.short	-32711
+ 270 0018 2800     		.short	40
+ 271 001a 2D80     		.short	-32723
+ 272 001c 2780     		.short	-32729
+ 273 001e 2200     		.short	34
+ 274 0020 6380     		.short	-32669
+ 275 0022 6600     		.short	102
+ 276 0024 6C00     		.short	108
+ 277 0026 6980     		.short	-32663
+ 278 0028 7800     		.short	120
+ 279 002a 7D80     		.short	-32643
+ 280 002c 7780     		.short	-32649
+ 281 002e 7200     		.short	114
+ 282 0030 5000     		.short	80
+ 283 0032 5580     		.short	-32683
+ 284 0034 5F80     		.short	-32673
+ 285 0036 5A00     		.short	90
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 6
+
+
+ 286 0038 4B80     		.short	-32693
+ 287 003a 4E00     		.short	78
+ 288 003c 4400     		.short	68
+ 289 003e 4180     		.short	-32703
+ 290 0040 C380     		.short	-32573
+ 291 0042 C600     		.short	198
+ 292 0044 CC00     		.short	204
+ 293 0046 C980     		.short	-32567
+ 294 0048 D800     		.short	216
+ 295 004a DD80     		.short	-32547
+ 296 004c D780     		.short	-32553
+ 297 004e D200     		.short	210
+ 298 0050 F000     		.short	240
+ 299 0052 F580     		.short	-32523
+ 300 0054 FF80     		.short	-32513
+ 301 0056 FA00     		.short	250
+ 302 0058 EB80     		.short	-32533
+ 303 005a EE00     		.short	238
+ 304 005c E400     		.short	228
+ 305 005e E180     		.short	-32543
+ 306 0060 A000     		.short	160
+ 307 0062 A580     		.short	-32603
+ 308 0064 AF80     		.short	-32593
+ 309 0066 AA00     		.short	170
+ 310 0068 BB80     		.short	-32581
+ 311 006a BE00     		.short	190
+ 312 006c B400     		.short	180
+ 313 006e B180     		.short	-32591
+ 314 0070 9380     		.short	-32621
+ 315 0072 9600     		.short	150
+ 316 0074 9C00     		.short	156
+ 317 0076 9980     		.short	-32615
+ 318 0078 8800     		.short	136
+ 319 007a 8D80     		.short	-32627
+ 320 007c 8780     		.short	-32633
+ 321 007e 8200     		.short	130
+ 322 0080 8381     		.short	-32381
+ 323 0082 8601     		.short	390
+ 324 0084 8C01     		.short	396
+ 325 0086 8981     		.short	-32375
+ 326 0088 9801     		.short	408
+ 327 008a 9D81     		.short	-32355
+ 328 008c 9781     		.short	-32361
+ 329 008e 9201     		.short	402
+ 330 0090 B001     		.short	432
+ 331 0092 B581     		.short	-32331
+ 332 0094 BF81     		.short	-32321
+ 333 0096 BA01     		.short	442
+ 334 0098 AB81     		.short	-32341
+ 335 009a AE01     		.short	430
+ 336 009c A401     		.short	420
+ 337 009e A181     		.short	-32351
+ 338 00a0 E001     		.short	480
+ 339 00a2 E581     		.short	-32283
+ 340 00a4 EF81     		.short	-32273
+ 341 00a6 EA01     		.short	490
+ 342 00a8 FB81     		.short	-32261
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 7
+
+
+ 343 00aa FE01     		.short	510
+ 344 00ac F401     		.short	500
+ 345 00ae F181     		.short	-32271
+ 346 00b0 D381     		.short	-32301
+ 347 00b2 D601     		.short	470
+ 348 00b4 DC01     		.short	476
+ 349 00b6 D981     		.short	-32295
+ 350 00b8 C801     		.short	456
+ 351 00ba CD81     		.short	-32307
+ 352 00bc C781     		.short	-32313
+ 353 00be C201     		.short	450
+ 354 00c0 4001     		.short	320
+ 355 00c2 4581     		.short	-32443
+ 356 00c4 4F81     		.short	-32433
+ 357 00c6 4A01     		.short	330
+ 358 00c8 5B81     		.short	-32421
+ 359 00ca 5E01     		.short	350
+ 360 00cc 5401     		.short	340
+ 361 00ce 5181     		.short	-32431
+ 362 00d0 7381     		.short	-32397
+ 363 00d2 7601     		.short	374
+ 364 00d4 7C01     		.short	380
+ 365 00d6 7981     		.short	-32391
+ 366 00d8 6801     		.short	360
+ 367 00da 6D81     		.short	-32403
+ 368 00dc 6781     		.short	-32409
+ 369 00de 6201     		.short	354
+ 370 00e0 2381     		.short	-32477
+ 371 00e2 2601     		.short	294
+ 372 00e4 2C01     		.short	300
+ 373 00e6 2981     		.short	-32471
+ 374 00e8 3801     		.short	312
+ 375 00ea 3D81     		.short	-32451
+ 376 00ec 3781     		.short	-32457
+ 377 00ee 3201     		.short	306
+ 378 00f0 1001     		.short	272
+ 379 00f2 1581     		.short	-32491
+ 380 00f4 1F81     		.short	-32481
+ 381 00f6 1A01     		.short	282
+ 382 00f8 0B81     		.short	-32501
+ 383 00fa 0E01     		.short	270
+ 384 00fc 0401     		.short	260
+ 385 00fe 0181     		.short	-32511
+ 386 0100 0383     		.short	-31997
+ 387 0102 0603     		.short	774
+ 388 0104 0C03     		.short	780
+ 389 0106 0983     		.short	-31991
+ 390 0108 1803     		.short	792
+ 391 010a 1D83     		.short	-31971
+ 392 010c 1783     		.short	-31977
+ 393 010e 1203     		.short	786
+ 394 0110 3003     		.short	816
+ 395 0112 3583     		.short	-31947
+ 396 0114 3F83     		.short	-31937
+ 397 0116 3A03     		.short	826
+ 398 0118 2B83     		.short	-31957
+ 399 011a 2E03     		.short	814
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 8
+
+
+ 400 011c 2403     		.short	804
+ 401 011e 2183     		.short	-31967
+ 402 0120 6003     		.short	864
+ 403 0122 6583     		.short	-31899
+ 404 0124 6F83     		.short	-31889
+ 405 0126 6A03     		.short	874
+ 406 0128 7B83     		.short	-31877
+ 407 012a 7E03     		.short	894
+ 408 012c 7403     		.short	884
+ 409 012e 7183     		.short	-31887
+ 410 0130 5383     		.short	-31917
+ 411 0132 5603     		.short	854
+ 412 0134 5C03     		.short	860
+ 413 0136 5983     		.short	-31911
+ 414 0138 4803     		.short	840
+ 415 013a 4D83     		.short	-31923
+ 416 013c 4783     		.short	-31929
+ 417 013e 4203     		.short	834
+ 418 0140 C003     		.short	960
+ 419 0142 C583     		.short	-31803
+ 420 0144 CF83     		.short	-31793
+ 421 0146 CA03     		.short	970
+ 422 0148 DB83     		.short	-31781
+ 423 014a DE03     		.short	990
+ 424 014c D403     		.short	980
+ 425 014e D183     		.short	-31791
+ 426 0150 F383     		.short	-31757
+ 427 0152 F603     		.short	1014
+ 428 0154 FC03     		.short	1020
+ 429 0156 F983     		.short	-31751
+ 430 0158 E803     		.short	1000
+ 431 015a ED83     		.short	-31763
+ 432 015c E783     		.short	-31769
+ 433 015e E203     		.short	994
+ 434 0160 A383     		.short	-31837
+ 435 0162 A603     		.short	934
+ 436 0164 AC03     		.short	940
+ 437 0166 A983     		.short	-31831
+ 438 0168 B803     		.short	952
+ 439 016a BD83     		.short	-31811
+ 440 016c B783     		.short	-31817
+ 441 016e B203     		.short	946
+ 442 0170 9003     		.short	912
+ 443 0172 9583     		.short	-31851
+ 444 0174 9F83     		.short	-31841
+ 445 0176 9A03     		.short	922
+ 446 0178 8B83     		.short	-31861
+ 447 017a 8E03     		.short	910
+ 448 017c 8403     		.short	900
+ 449 017e 8183     		.short	-31871
+ 450 0180 8002     		.short	640
+ 451 0182 8582     		.short	-32123
+ 452 0184 8F82     		.short	-32113
+ 453 0186 8A02     		.short	650
+ 454 0188 9B82     		.short	-32101
+ 455 018a 9E02     		.short	670
+ 456 018c 9402     		.short	660
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 9
+
+
+ 457 018e 9182     		.short	-32111
+ 458 0190 B382     		.short	-32077
+ 459 0192 B602     		.short	694
+ 460 0194 BC02     		.short	700
+ 461 0196 B982     		.short	-32071
+ 462 0198 A802     		.short	680
+ 463 019a AD82     		.short	-32083
+ 464 019c A782     		.short	-32089
+ 465 019e A202     		.short	674
+ 466 01a0 E382     		.short	-32029
+ 467 01a2 E602     		.short	742
+ 468 01a4 EC02     		.short	748
+ 469 01a6 E982     		.short	-32023
+ 470 01a8 F802     		.short	760
+ 471 01aa FD82     		.short	-32003
+ 472 01ac F782     		.short	-32009
+ 473 01ae F202     		.short	754
+ 474 01b0 D002     		.short	720
+ 475 01b2 D582     		.short	-32043
+ 476 01b4 DF82     		.short	-32033
+ 477 01b6 DA02     		.short	730
+ 478 01b8 CB82     		.short	-32053
+ 479 01ba CE02     		.short	718
+ 480 01bc C402     		.short	708
+ 481 01be C182     		.short	-32063
+ 482 01c0 4382     		.short	-32189
+ 483 01c2 4602     		.short	582
+ 484 01c4 4C02     		.short	588
+ 485 01c6 4982     		.short	-32183
+ 486 01c8 5802     		.short	600
+ 487 01ca 5D82     		.short	-32163
+ 488 01cc 5782     		.short	-32169
+ 489 01ce 5202     		.short	594
+ 490 01d0 7002     		.short	624
+ 491 01d2 7582     		.short	-32139
+ 492 01d4 7F82     		.short	-32129
+ 493 01d6 7A02     		.short	634
+ 494 01d8 6B82     		.short	-32149
+ 495 01da 6E02     		.short	622
+ 496 01dc 6402     		.short	612
+ 497 01de 6182     		.short	-32159
+ 498 01e0 2002     		.short	544
+ 499 01e2 2582     		.short	-32219
+ 500 01e4 2F82     		.short	-32209
+ 501 01e6 2A02     		.short	554
+ 502 01e8 3B82     		.short	-32197
+ 503 01ea 3E02     		.short	574
+ 504 01ec 3402     		.short	564
+ 505 01ee 3182     		.short	-32207
+ 506 01f0 1382     		.short	-32237
+ 507 01f2 1602     		.short	534
+ 508 01f4 1C02     		.short	540
+ 509 01f6 1982     		.short	-32231
+ 510 01f8 0802     		.short	520
+ 511 01fa 0D82     		.short	-32243
+ 512 01fc 0782     		.short	-32249
+ 513 01fe 0202     		.short	514
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 10
+
+
+ 514              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 bit.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:6      .text:00000000 mad_bit_init
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:11     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:22     .text:00000018 mad_bit_length
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:40     .text:00000038 mad_bit_nextbyte
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:57     .text:00000054 mad_bit_skip
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:88     .text:000000a8 mad_bit_read
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:147    .text:0000015c mad_bit_crc
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:250    .text:000002c0 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccQP8NOT.s:257    .rodata:00000000 crc_table
+
+NO UNDEFINED SYMBOLS

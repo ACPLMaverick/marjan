@@ -1,0 +1,1358 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 1
+
+
+   1              		.file	"layer12.c"
+   2              		.global	__umodsi3
+   3              		.global	__udivsi3
+   4              		.text
+   5              		.align	2
+   6              		.type	II_samples, %function
+   7              	II_samples:
+   8              		@ Function supports interworking.
+   9              		@ args = 0, pretend = 0, frame = 12
+  10              		@ frame_needed = 0, uses_anonymous_args = 0
+  11 0000 F0452DE9 		stmfd	sp!, {r4, r5, r6, r7, r8, sl, lr}
+  12 0004 0260D1E5 		ldrb	r6, [r1, #2]	@ zero_extendqisi2
+  13 0008 0340D1E5 		ldrb	r4, [r1, #3]	@ zero_extendqisi2
+  14 000c 000056E3 		cmp	r6, #0
+  15 0010 0650A001 		moveq	r5, r6
+  16 0014 0CD04DE2 		sub	sp, sp, #12
+  17 0018 0180A0E1 		mov	r8, r1
+  18 001c 02A0A0E1 		mov	sl, r2
+  19 0020 0070A0E1 		mov	r7, r0
+  20 0024 0460A001 		moveq	r6, r4
+  21 0028 1000000A 		beq	.L7
+  22 002c 0410A0E1 		mov	r1, r4
+  23 0030 FEFFFFEB 		bl	mad_bit_read
+  24 0034 B070D8E1 		ldrh	r7, [r8, #0]
+  25 0038 0040A0E1 		mov	r4, r0
+  26 003c 0050A0E3 		mov	r5, #0
+  27              	.L4:
+  28 0040 0400A0E1 		mov	r0, r4
+  29 0044 0710A0E1 		mov	r1, r7
+  30 0048 FEFFFFEB 		bl	__umodsi3
+  31 004c 0710A0E1 		mov	r1, r7
+  32 0050 0D0085E7 		str	r0, [r5, sp]
+  33 0054 0400A0E1 		mov	r0, r4
+  34 0058 FEFFFFEB 		bl	__udivsi3
+  35 005c 045085E2 		add	r5, r5, #4
+  36 0060 0C0055E3 		cmp	r5, #12
+  37 0064 0040A0E1 		mov	r4, r0
+  38 0068 F4FFFF1A 		bne	.L4
+  39 006c 060000EA 		b	.L6
+  40              	.L7:
+  41 0070 0700A0E1 		mov	r0, r7
+  42 0074 0410A0E1 		mov	r1, r4
+  43 0078 FEFFFFEB 		bl	mad_bit_read
+  44 007c 0D0085E7 		str	r0, [r5, sp]
+  45 0080 045085E2 		add	r5, r5, #4
+  46 0084 0C0055E3 		cmp	r5, #12
+  47 0088 F8FFFF1A 		bne	.L7
+  48              	.L6:
+  49 008c 0000A0E3 		mov	r0, #0
+  50              	.L8:
+  51 0090 013046E2 		sub	r3, r6, #1
+  52 0094 0120A0E3 		mov	r2, #1
+  53 0098 1223A0E1 		mov	r2, r2, asl r3
+  54 009c 80309DE7 		ldr	r3, [sp, r0, asl #1]
+  55 00a0 023023E0 		eor	r3, r3, r2
+  56 00a4 0338A0E1 		mov	r3, r3, asl #16
+  57 00a8 2338A0E1 		mov	r3, r3, lsr #16
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 2
+
+
+  58 00ac 022003E0 		and	r2, r3, r2
+  59 00b0 002062E2 		rsb	r2, r2, #0
+  60 00b4 023083E1 		orr	r3, r3, r2
+  61 00b8 0338A0E1 		mov	r3, r3, asl #16
+  62 00bc 1D2066E2 		rsb	r2, r6, #29
+  63 00c0 4338A0E1 		mov	r3, r3, asr #16
+  64 00c4 1332A0E1 		mov	r3, r3, asl r2
+  65 00c8 F620D8E1 		ldrsh	r2, [r8, #6]
+  66 00cc 0338A0E1 		mov	r3, r3, asl #16
+  67 00d0 432882E0 		add	r2, r2, r3, asr #16
+  68 00d4 B430D8E1 		ldrh	r3, [r8, #4]
+  69 00d8 9213CCE0 		smull	r1, ip, r2, r3
+  70 00dc 211EB0E1 		movs	r1, r1, lsr #28
+  71 00e0 0C32A1E0 		adc	r3, r1, ip, lsl #4
+  72 00e4 BA3080E1 		strh	r3, [r0, sl]	@ movhi
+  73 00e8 020080E2 		add	r0, r0, #2
+  74 00ec 060050E3 		cmp	r0, #6
+  75 00f0 E6FFFF1A 		bne	.L8
+  76 00f4 0CD08DE2 		add	sp, sp, #12
+  77 00f8 F045BDE8 		ldmfd	sp!, {r4, r5, r6, r7, r8, sl, lr}
+  78 00fc 1EFF2FE1 		bx	lr
+  79              		.size	II_samples, .-II_samples
+  80              		.align	2
+  81              		.type	I_sample, %function
+  82              	I_sample:
+  83              		@ Function supports interworking.
+  84              		@ args = 0, pretend = 0, frame = 0
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86 0100 10402DE9 		stmfd	sp!, {r4, lr}
+  87 0104 0140A0E1 		mov	r4, r1
+  88 0108 FEFFFFEB 		bl	mad_bit_read
+  89 010c 012044E2 		sub	r2, r4, #1
+  90 0110 0138A0E3 		mov	r3, #65536
+  91 0114 1332A0E1 		mov	r3, r3, asl r2
+  92 0118 2338A0E1 		mov	r3, r3, lsr #16
+  93 011c 030020E0 		eor	r0, r0, r3
+  94 0120 0008A0E1 		mov	r0, r0, asl #16
+  95 0124 2008A0E1 		mov	r0, r0, lsr #16
+  96 0128 033000E0 		and	r3, r0, r3
+  97 012c 003063E2 		rsb	r3, r3, #0
+  98 0130 030080E1 		orr	r0, r0, r3
+  99 0134 30309FE5 		ldr	r3, .L18
+ 100 0138 0008A0E1 		mov	r0, r0, asl #16
+ 101 013c 843083E0 		add	r3, r3, r4, asl #1
+ 102 0140 4008A0E1 		mov	r0, r0, asr #16
+ 103 0144 1D4064E2 		rsb	r4, r4, #29
+ 104 0148 1004A0E1 		mov	r0, r0, asl r4
+ 105 014c B43053E1 		ldrh	r3, [r3, #-4]
+ 106 0150 9023C1E0 		smull	r2, r1, r0, r3
+ 107 0154 222EB0E1 		movs	r2, r2, lsr #28
+ 108 0158 0102A2E0 		adc	r0, r2, r1, lsl #4
+ 109 015c 0008A0E1 		mov	r0, r0, asl #16
+ 110 0160 4008A0E1 		mov	r0, r0, asr #16
+ 111 0164 1040BDE8 		ldmfd	sp!, {r4, lr}
+ 112 0168 1EFF2FE1 		bx	lr
+ 113              	.L19:
+ 114              		.align	2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 3
+
+
+ 115              	.L18:
+ 116 016c 38020000 		.word	linear_table
+ 117              		.size	I_sample, .-I_sample
+ 118              		.align	2
+ 119              		.global	mad_layer_II
+ 120              		.type	mad_layer_II, %function
+ 121              	mad_layer_II:
+ 122              		@ Function supports interworking.
+ 123              		@ args = 0, pretend = 0, frame = 356
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125 0170 F04F2DE9 		stmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 126 0174 04E091E5 		ldr	lr, [r1, #4]
+ 127 0178 1CC091E5 		ldr	ip, [r1, #28]
+ 128 017c 00005EE3 		cmp	lr, #0
+ 129 0180 01A0A0E1 		mov	sl, r1
+ 130 0184 59DF4DE2 		sub	sp, sp, #356
+ 131 0188 0210A013 		movne	r1, #2
+ 132 018c 0110A003 		moveq	r1, #1
+ 133 0190 010A1CE3 		tst	ip, #4096
+ 134 0194 08108DE5 		str	r1, [sp, #8]
+ 135 0198 00008DE5 		str	r0, [sp, #0]
+ 136 019c 0410A013 		movne	r1, #4
+ 137 01a0 1C00001A 		bne	.L26
+ 138 01a4 010B1CE3 		tst	ip, #1024
+ 139 01a8 1600001A 		bne	.L27
+ 140 01ac 08209DE5 		ldr	r2, [sp, #8]
+ 141 01b0 020052E3 		cmp	r2, #2
+ 142 01b4 10209AE5 		ldr	r2, [sl, #16]
+ 143 01b8 A220A001 		moveq	r2, r2, lsr #1
+ 144 01bc 0500000A 		beq	.L31
+ 145 01c0 2C369FE5 		ldr	r3, .L120
+ 146 01c4 030052E1 		cmp	r2, r3
+ 147 01c8 28369F85 		ldrhi	r3, .L120+4
+ 148 01cc 00409D85 		ldrhi	r4, [sp, #0]
+ 149 01d0 0000E083 		mvnhi	r0, #0
+ 150 01d4 8400008A 		bhi	.L117
+ 151              	.L31:
+ 152 01d8 1C369FE5 		ldr	r3, .L120+8
+ 153 01dc 030052E1 		cmp	r2, r3
+ 154 01e0 0400008A 		bhi	.L34
+ 155 01e4 14309AE5 		ldr	r3, [sl, #20]
+ 156 01e8 7D0C53E3 		cmp	r3, #32000
+ 157 01ec 0210A013 		movne	r1, #2
+ 158 01f0 0310A003 		moveq	r1, #3
+ 159 01f4 070000EA 		b	.L26
+ 160              	.L34:
+ 161 01f8 00369FE5 		ldr	r3, .L120+12
+ 162 01fc 030052E1 		cmp	r2, r3
+ 163 0200 0010A093 		movls	r1, #0
+ 164 0204 0300009A 		bls	.L26
+ 165              	.L27:
+ 166 0208 14209AE5 		ldr	r2, [sl, #20]
+ 167 020c E8359FE5 		ldr	r3, .L120+8
+ 168 0210 031052E0 		subs	r1, r2, r3
+ 169 0214 0110A013 		movne	r1, #1
+ 170              	.L26:
+ 171 0218 2430A0E3 		mov	r3, #36
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 4
+
+
+ 172 021c 930101E0 		mul	r1, r3, r1
+ 173 0220 DC259FE5 		ldr	r2, .L120+16
+ 174 0224 043081E2 		add	r3, r1, #4
+ 175 0228 02005EE3 		cmp	lr, #2
+ 176 022c 023083E0 		add	r3, r3, r2
+ 177 0230 021091E7 		ldr	r1, [r1, r2]
+ 178 0234 0C308DE5 		str	r3, [sp, #12]
+ 179 0238 08309A05 		ldreq	r3, [sl, #8]
+ 180 023c 04108DE5 		str	r1, [sp, #4]
+ 181 0240 00109DE5 		ldr	r1, [sp, #0]
+ 182 0244 012C8C03 		orreq	r2, ip, #256
+ 183 0248 0331A001 		moveq	r3, r3, asl #2
+ 184 024c 04C09DE5 		ldr	ip, [sp, #4]
+ 185 0250 2030A013 		movne	r3, #32
+ 186 0254 04308302 		addeq	r3, r3, #4
+ 187 0258 1C0081E2 		add	r0, r1, #28
+ 188 025c 030090E8 		ldmia	r0, {r0-r1}
+ 189 0260 1C208A05 		streq	r2, [sl, #28]
+ 190 0264 0060A0E3 		mov	r6, #0
+ 191 0268 03005CE1 		cmp	ip, r3
+ 192 026c 03C0A021 		movcs	ip, r3
+ 193 0270 10C08DE5 		str	ip, [sp, #16]
+ 194 0274 54018DE5 		str	r0, [sp, #340]
+ 195 0278 58118DE5 		str	r1, [sp, #344]
+ 196 027c 120000EA 		b	.L42
+ 197              	.L43:
+ 198 0280 0C209DE5 		ldr	r2, [sp, #12]
+ 199 0284 0230D6E7 		ldrb	r3, [r6, r2]	@ zero_extendqisi2
+ 200 0288 78259FE5 		ldr	r2, .L120+20
+ 201 028c 0331A0E1 		mov	r3, r3, asl #2
+ 202 0290 B27093E1 		ldrh	r7, [r3, r2]
+ 203 0294 064081E0 		add	r4, r1, r6
+ 204 0298 0050A0E3 		mov	r5, #0
+ 205 029c 010000EA 		b	.L44
+ 206              	.L45:
+ 207 02a0 FEFFFFEB 		bl	mad_bit_read
+ 208 02a4 200044E5 		strb	r0, [r4, #-32]
+ 209              	.L44:
+ 210 02a8 08C09DE5 		ldr	ip, [sp, #8]
+ 211 02ac 00309DE5 		ldr	r3, [sp, #0]
+ 212 02b0 0C0055E1 		cmp	r5, ip
+ 213 02b4 1C0083E2 		add	r0, r3, #28
+ 214 02b8 0710A0E1 		mov	r1, r7
+ 215 02bc 015085E2 		add	r5, r5, #1
+ 216 02c0 204084E2 		add	r4, r4, #32
+ 217 02c4 F5FFFF1A 		bne	.L45
+ 218 02c8 016086E2 		add	r6, r6, #1
+ 219              	.L42:
+ 220 02cc 10009DE5 		ldr	r0, [sp, #16]
+ 221 02d0 000056E1 		cmp	r6, r0
+ 222 02d4 451F8DE2 		add	r1, sp, #276
+ 223 02d8 E8FFFF1A 		bne	.L43
+ 224 02dc 203080E2 		add	r3, r0, #32
+ 225 02e0 034081E0 		add	r4, r1, r3
+ 226 02e4 0C109DE5 		ldr	r1, [sp, #12]
+ 227 02e8 0050A0E1 		mov	r5, r0
+ 228 02ec 006081E0 		add	r6, r1, r0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 5
+
+
+ 229 02f0 070000EA 		b	.L48
+ 230              	.L49:
+ 231 02f4 013056E5 		ldrb	r3, [r6, #-1]	@ zero_extendqisi2
+ 232 02f8 08259FE5 		ldr	r2, .L120+20
+ 233 02fc 0331A0E1 		mov	r3, r3, asl #2
+ 234 0300 B21093E1 		ldrh	r1, [r3, r2]
+ 235 0304 FEFFFFEB 		bl	mad_bit_read
+ 236 0308 FF0000E2 		and	r0, r0, #255
+ 237 030c 210044E5 		strb	r0, [r4, #-33]
+ 238 0310 010044E5 		strb	r0, [r4, #-1]
+ 239              	.L48:
+ 240 0314 0C009DE8 		ldmia	sp, {r2, r3}	@ phole ldm
+ 241 0318 030055E1 		cmp	r5, r3
+ 242 031c 1C0082E2 		add	r0, r2, #28
+ 243 0320 015085E2 		add	r5, r5, #1
+ 244 0324 014084E2 		add	r4, r4, #1
+ 245 0328 016086E2 		add	r6, r6, #1
+ 246 032c F0FFFF3A 		bcc	.L49
+ 247 0330 0070A0E3 		mov	r7, #0
+ 248 0334 0E0000EA 		b	.L51
+ 249              	.L52:
+ 250 0338 0030D6E5 		ldrb	r3, [r6, #0]	@ zero_extendqisi2
+ 251 033c 000053E3 		cmp	r3, #0
+ 252 0340 206086E2 		add	r6, r6, #32
+ 253 0344 0100000A 		beq	.L53
+ 254 0348 FEFFFFEB 		bl	mad_bit_read
+ 255 034c 0000C5E5 		strb	r0, [r5, #0]
+ 256              	.L53:
+ 257 0350 205085E2 		add	r5, r5, #32
+ 258              	.L55:
+ 259 0354 08209DE5 		ldr	r2, [sp, #8]
+ 260 0358 00C09DE5 		ldr	ip, [sp, #0]
+ 261 035c 020054E1 		cmp	r4, r2
+ 262 0360 1C008CE2 		add	r0, ip, #28
+ 263 0364 0210A0E3 		mov	r1, #2
+ 264 0368 014084E2 		add	r4, r4, #1
+ 265 036c F1FFFF1A 		bne	.L52
+ 266 0370 017087E2 		add	r7, r7, #1
+ 267              	.L51:
+ 268 0374 04309DE5 		ldr	r3, [sp, #4]
+ 269 0378 030057E1 		cmp	r7, r3
+ 270 037c 0500000A 		beq	.L57
+ 271 0380 453F8DE2 		add	r3, sp, #276
+ 272 0384 076083E0 		add	r6, r3, r7
+ 273 0388 D4308DE2 		add	r3, sp, #212
+ 274 038c 075083E0 		add	r5, r3, r7
+ 275 0390 0040A0E3 		mov	r4, #0
+ 276 0394 EEFFFFEA 		b	.L55
+ 277              	.L57:
+ 278 0398 1C309AE5 		ldr	r3, [sl, #28]
+ 279 039c 100013E3 		tst	r3, #16
+ 280 03a0 1300000A 		beq	.L59
+ 281 03a4 00409DE5 		ldr	r4, [sp, #0]
+ 282 03a8 550F8DE2 		add	r0, sp, #340
+ 283 03ac 1C1084E2 		add	r1, r4, #28
+ 284 03b0 FEFFFFEB 		bl	mad_bit_length
+ 285 03b4 B831DAE1 		ldrh	r3, [sl, #24]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 6
+
+
+ 286 03b8 0020A0E1 		mov	r2, r0
+ 287 03bc 550F8DE2 		add	r0, sp, #340
+ 288 03c0 030090E8 		ldmia	r0, {r0-r1}
+ 289 03c4 FEFFFFEB 		bl	mad_bit_crc
+ 290 03c8 BA31DAE1 		ldrh	r3, [sl, #26]
+ 291 03cc 000053E1 		cmp	r3, r0
+ 292 03d0 B801CAE1 		strh	r0, [sl, #24]	@ movhi
+ 293 03d4 0600000A 		beq	.L59
+ 294 03d8 2C309AE5 		ldr	r3, [sl, #44]
+ 295 03dc 010013E3 		tst	r3, #1
+ 296 03e0 0300001A 		bne	.L59
+ 297 03e4 20349FE5 		ldr	r3, .L120+24
+ 298 03e8 0000E0E3 		mvn	r0, #0
+ 299              	.L117:
+ 300 03ec 3C3084E5 		str	r3, [r4, #60]
+ 301 03f0 FC0000EA 		b	.L33
+ 302              	.L59:
+ 303 03f4 0080A0E3 		mov	r8, #0
+ 304 03f8 2F0000EA 		b	.L63
+ 305              	.L64:
+ 306 03fc 0030DBE5 		ldrb	r3, [fp, #0]	@ zero_extendqisi2
+ 307 0400 000053E3 		cmp	r3, #0
+ 308 0404 2000000A 		beq	.L65
+ 309 0408 FEFFFFEB 		bl	mad_bit_read
+ 310 040c 0050D9E5 		ldrb	r5, [r9, #0]	@ zero_extendqisi2
+ 311 0410 FF0000E2 		and	r0, r0, #255
+ 312 0414 0000C4E5 		strb	r0, [r4, #0]
+ 313 0418 030055E3 		cmp	r5, #3
+ 314 041c 05F19F97 		ldrls	pc, [pc, r5, asl #2]
+ 315 0420 0E0000EA 		b	.L67
+ 316              		.p2align 2
+ 317              	.L71:
+ 318 0424 40040000 		.word	.L68
+ 319 0428 50040000 		.word	.L69
+ 320 042c 34040000 		.word	.L70
+ 321 0430 50040000 		.word	.L69
+ 322              	.L70:
+ 323 0434 0200C4E5 		strb	r0, [r4, #2]
+ 324 0438 0100C4E5 		strb	r0, [r4, #1]
+ 325 043c 070000EA 		b	.L67
+ 326              	.L68:
+ 327 0440 0610A0E3 		mov	r1, #6
+ 328 0444 0600A0E1 		mov	r0, r6
+ 329 0448 FEFFFFEB 		bl	mad_bit_read
+ 330 044c 0100C4E5 		strb	r0, [r4, #1]
+ 331              	.L69:
+ 332 0450 0600A0E1 		mov	r0, r6
+ 333 0454 0610A0E3 		mov	r1, #6
+ 334 0458 FEFFFFEB 		bl	mad_bit_read
+ 335 045c 0200C4E5 		strb	r0, [r4, #2]
+ 336              	.L67:
+ 337 0460 010015E3 		tst	r5, #1
+ 338 0464 0800000A 		beq	.L65
+ 339 0468 6030A0E3 		mov	r3, #96
+ 340 046c 970302E0 		mul	r2, r7, r3
+ 341 0470 0330A0E3 		mov	r3, #3
+ 342 0474 982323E0 		mla	r3, r8, r3, r2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 7
+
+
+ 343 0478 59CF8DE2 		add	ip, sp, #356
+ 344 047c 0C3083E0 		add	r3, r3, ip
+ 345 0480 053083E0 		add	r3, r3, r5
+ 346 0484 513153E5 		ldrb	r3, [r3, #-337]	@ zero_extendqisi2
+ 347 0488 0130C4E5 		strb	r3, [r4, #1]
+ 348              	.L65:
+ 349 048c 017087E2 		add	r7, r7, #1
+ 350 0490 20B08BE2 		add	fp, fp, #32
+ 351 0494 604084E2 		add	r4, r4, #96
+ 352 0498 209089E2 		add	r9, r9, #32
+ 353              	.L73:
+ 354 049c 00009DE5 		ldr	r0, [sp, #0]
+ 355 04a0 08209DE5 		ldr	r2, [sp, #8]
+ 356 04a4 1C6080E2 		add	r6, r0, #28
+ 357 04a8 020057E1 		cmp	r7, r2
+ 358 04ac 0610A0E3 		mov	r1, #6
+ 359 04b0 0600A0E1 		mov	r0, r6
+ 360 04b4 D0FFFF1A 		bne	.L64
+ 361 04b8 018088E2 		add	r8, r8, #1
+ 362              	.L63:
+ 363 04bc 04309DE5 		ldr	r3, [sp, #4]
+ 364 04c0 030058E1 		cmp	r8, r3
+ 365 04c4 0060A003 		moveq	r6, #0
+ 366 04c8 0690A001 		moveq	r9, r6
+ 367 04cc 4300000A 		beq	.L118
+ 368              	.L75:
+ 369 04d0 14308DE2 		add	r3, sp, #20
+ 370 04d4 0320A0E3 		mov	r2, #3
+ 371 04d8 983224E0 		mla	r4, r8, r2, r3
+ 372 04dc 453F8DE2 		add	r3, sp, #276
+ 373 04e0 08B083E0 		add	fp, r3, r8
+ 374 04e4 D4308DE2 		add	r3, sp, #212
+ 375 04e8 089083E0 		add	r9, r3, r8
+ 376 04ec 0070A0E3 		mov	r7, #0
+ 377 04f0 E9FFFFEA 		b	.L73
+ 378              	.L78:
+ 379 04f4 00E0D8E5 		ldrb	lr, [r8, #0]	@ zero_extendqisi2
+ 380 04f8 00005EE3 		cmp	lr, #0
+ 381 04fc B0E8C401 		streqh	lr, [r4, #128]	@ movhi
+ 382 0500 B0E0C401 		streqh	lr, [r4, #0]	@ movhi
+ 383 0504 B0E4C401 		streqh	lr, [r4, #64]	@ movhi
+ 384 0508 2800000A 		beq	.L81
+ 385 050c 0CC09DE5 		ldr	ip, [sp, #12]
+ 386 0510 F0329FE5 		ldr	r3, .L120+20
+ 387 0514 0610DCE7 		ldrb	r1, [ip, r6]	@ zero_extendqisi2
+ 388 0518 013183E0 		add	r3, r3, r1, asl #2
+ 389 051c B2C0D3E1 		ldrh	ip, [r3, #2]
+ 390 0520 E8329FE5 		ldr	r3, .L120+28
+ 391 0524 0F10A0E3 		mov	r1, #15
+ 392 0528 9C3123E0 		mla	r3, ip, r1, r3
+ 393 052c 0E3083E0 		add	r3, r3, lr
+ 394 0530 013053E5 		ldrb	r3, [r3, #-1]	@ zero_extendqisi2
+ 395 0534 D8129FE5 		ldr	r1, .L120+32
+ 396 0538 831181E0 		add	r1, r1, r3, asl #3
+ 397 053c AFFEFFEB 		bl	II_samples
+ 398 0540 0330A0E3 		mov	r3, #3
+ 399 0544 960302E0 		mul	r2, r6, r3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 8
+
+
+ 400 0548 5D3083E2 		add	r3, r3, #93
+ 401 054c 972323E0 		mla	r3, r7, r3, r2
+ 402 0550 590F8DE2 		add	r0, sp, #356
+ 403 0554 003083E0 		add	r3, r3, r0
+ 404 0558 293183E0 		add	r3, r3, r9, lsr #2
+ 405 055c 503153E5 		ldrb	r3, [r3, #-336]	@ zero_extendqisi2
+ 406 0560 B0229FE5 		ldr	r2, .L120+36
+ 407 0564 8330A0E1 		mov	r3, r3, asl #1
+ 408 0568 011C8DE2 		add	r1, sp, #256
+ 409 056c B22093E1 		ldrh	r2, [r3, r2]
+ 410 0570 BE35D1E1 		ldrh	r3, [r1, #94]
+ 411 0574 9302C1E0 		smull	r0, r1, r3, r2
+ 412 0578 200EB0E1 		movs	r0, r0, lsr #28
+ 413 057c 0132A0E0 		adc	r3, r0, r1, lsl #4
+ 414 0580 B03445E1 		strh	r3, [r5, #-64]	@ movhi
+ 415 0584 01CC8DE2 		add	ip, sp, #256
+ 416 0588 B036DCE1 		ldrh	r3, [ip, #96]
+ 417 058c 9302C1E0 		smull	r0, r1, r3, r2
+ 418 0590 200EB0E1 		movs	r0, r0, lsr #28
+ 419 0594 0132A0E0 		adc	r3, r0, r1, lsl #4
+ 420 0598 B030C5E1 		strh	r3, [r5, #0]	@ movhi
+ 421 059c B236DCE1 		ldrh	r3, [ip, #98]
+ 422 05a0 9312C0E0 		smull	r1, r0, r3, r2
+ 423 05a4 211EB0E1 		movs	r1, r1, lsr #28
+ 424 05a8 0032A1E0 		adc	r3, r1, r0, lsl #4
+ 425 05ac B034C5E1 		strh	r3, [r5, #64]	@ movhi
+ 426              	.L81:
+ 427 05b0 017087E2 		add	r7, r7, #1
+ 428 05b4 095C85E2 		add	r5, r5, #2304
+ 429 05b8 094C84E2 		add	r4, r4, #2304
+ 430 05bc 208088E2 		add	r8, r8, #32
+ 431              	.L82:
+ 432 05c0 08309DE5 		ldr	r3, [sp, #8]
+ 433 05c4 00109DE5 		ldr	r1, [sp, #0]
+ 434 05c8 572F8DE2 		add	r2, sp, #348
+ 435 05cc 030057E1 		cmp	r7, r3
+ 436 05d0 1C0081E2 		add	r0, r1, #28
+ 437 05d4 022082E2 		add	r2, r2, #2
+ 438 05d8 C5FFFF1A 		bne	.L78
+ 439 05dc 016086E2 		add	r6, r6, #1
+ 440              	.L118:
+ 441 05e0 10409DE5 		ldr	r4, [sp, #16]
+ 442 05e4 040056E1 		cmp	r6, r4
+ 443 05e8 451F8DE2 		add	r1, sp, #276
+ 444 05ec 0500003A 		bcc	.L84
+ 445 05f0 0330A0E3 		mov	r3, #3
+ 446 05f4 990308E0 		mul	r8, r9, r3
+ 447 05f8 0CC09DE5 		ldr	ip, [sp, #12]
+ 448 05fc 047081E0 		add	r7, r1, r4
+ 449 0600 04608CE0 		add	r6, ip, r4
+ 450 0604 590000EA 		b	.L86
+ 451              	.L84:
+ 452 0608 0330A0E3 		mov	r3, #3
+ 453 060c 990303E0 		mul	r3, r9, r3
+ 454 0610 833286E0 		add	r3, r6, r3, asl #5
+ 455 0614 8330A0E1 		mov	r3, r3, asl #1
+ 456 0618 302083E2 		add	r2, r3, #48
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 9
+
+
+ 457 061c 703083E2 		add	r3, r3, #112
+ 458 0620 03508AE0 		add	r5, sl, r3
+ 459 0624 02408AE0 		add	r4, sl, r2
+ 460 0628 068081E0 		add	r8, r1, r6
+ 461 062c 0070A0E3 		mov	r7, #0
+ 462 0630 E2FFFFEA 		b	.L82
+ 463              	.L87:
+ 464 0634 0000D7E5 		ldrb	r0, [r7, #0]	@ zero_extendqisi2
+ 465 0638 000050E3 		cmp	r0, #0
+ 466 063c 8852A0E1 		mov	r5, r8, asl #5
+ 467 0640 0500001A 		bne	.L88
+ 468 0644 043085E0 		add	r3, r5, r4
+ 469 0648 8330A0E1 		mov	r3, r3, asl #1
+ 470 064c 303083E2 		add	r3, r3, #48
+ 471 0650 03308AE0 		add	r3, sl, r3
+ 472 0654 0020A0E1 		mov	r2, r0
+ 473 0658 370000EA 		b	.L90
+ 474              	.L88:
+ 475 065c 0020D6E5 		ldrb	r2, [r6, #0]	@ zero_extendqisi2
+ 476 0660 A0319FE5 		ldr	r3, .L120+20
+ 477 0664 023183E0 		add	r3, r3, r2, asl #2
+ 478 0668 B210D3E1 		ldrh	r1, [r3, #2]
+ 479 066c 9C319FE5 		ldr	r3, .L120+28
+ 480 0670 0F20A0E3 		mov	r2, #15
+ 481 0674 913223E0 		mla	r3, r1, r2, r3
+ 482 0678 00209DE5 		ldr	r2, [sp, #0]
+ 483 067c 003083E0 		add	r3, r3, r0
+ 484 0680 013053E5 		ldrb	r3, [r3, #-1]	@ zero_extendqisi2
+ 485 0684 88119FE5 		ldr	r1, .L120+32
+ 486 0688 1C0082E2 		add	r0, r2, #28
+ 487 068c 572F8DE2 		add	r2, sp, #348
+ 488 0690 831181E0 		add	r1, r1, r3, asl #3
+ 489 0694 022082E2 		add	r2, r2, #2
+ 490 0698 58FEFFEB 		bl	II_samples
+ 491 069c 043085E0 		add	r3, r5, r4
+ 492 06a0 8330A0E1 		mov	r3, r3, asl #1
+ 493 06a4 303083E2 		add	r3, r3, #48
+ 494 06a8 03E08AE0 		add	lr, sl, r3
+ 495 06ac 0050A0E3 		mov	r5, #0
+ 496              	.L91:
+ 497 06b0 08309DE5 		ldr	r3, [sp, #8]
+ 498 06b4 030055E1 		cmp	r5, r3
+ 499 06b8 2900000A 		beq	.L92
+ 500 06bc 0330A0E3 		mov	r3, #3
+ 501 06c0 940302E0 		mul	r2, r4, r3
+ 502 06c4 5D3083E2 		add	r3, r3, #93
+ 503 06c8 952323E0 		mla	r3, r5, r3, r2
+ 504 06cc 59CF8DE2 		add	ip, sp, #356
+ 505 06d0 0C3083E0 		add	r3, r3, ip
+ 506 06d4 293183E0 		add	r3, r3, r9, lsr #2
+ 507 06d8 503153E5 		ldrb	r3, [r3, #-336]	@ zero_extendqisi2
+ 508 06dc 34219FE5 		ldr	r2, .L120+36
+ 509 06e0 8330A0E1 		mov	r3, r3, asl #1
+ 510 06e4 010C8DE2 		add	r0, sp, #256
+ 511 06e8 B22093E1 		ldrh	r2, [r3, r2]
+ 512 06ec BE35D0E1 		ldrh	r3, [r0, #94]
+ 513 06f0 9302CCE0 		smull	r0, ip, r3, r2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 10
+
+
+ 514 06f4 200EB0E1 		movs	r0, r0, lsr #28
+ 515 06f8 0C12A0E0 		adc	r1, r0, ip, lsl #4
+ 516 06fc 010C8DE2 		add	r0, sp, #256
+ 517 0700 B036D0E1 		ldrh	r3, [r0, #96]
+ 518 0704 93C2C0E0 		smull	ip, r0, r3, r2
+ 519 0708 2CCEB0E1 		movs	ip, ip, lsr #28
+ 520 070c 0032ACE0 		adc	r3, ip, r0, lsl #4
+ 521 0710 B034CEE1 		strh	r3, [lr, #64]	@ movhi
+ 522 0714 01CC8DE2 		add	ip, sp, #256
+ 523 0718 B236DCE1 		ldrh	r3, [ip, #98]
+ 524 071c 9302CCE0 		smull	r0, ip, r3, r2
+ 525 0720 200EB0E1 		movs	r0, r0, lsr #28
+ 526 0724 0C32A0E0 		adc	r3, r0, ip, lsl #4
+ 527 0728 B010CEE1 		strh	r1, [lr, #0]	@ movhi
+ 528 072c B038CEE1 		strh	r3, [lr, #128]	@ movhi
+ 529 0730 015085E2 		add	r5, r5, #1
+ 530 0734 09EC8EE2 		add	lr, lr, #2304
+ 531 0738 DCFFFFEA 		b	.L91
+ 532              	.L90:
+ 533 073c 08009DE5 		ldr	r0, [sp, #8]
+ 534 0740 000052E1 		cmp	r2, r0
+ 535 0744 012082E2 		add	r2, r2, #1
+ 536 0748 0500000A 		beq	.L92
+ 537 074c 0010A0E3 		mov	r1, #0	@ movhi
+ 538 0750 B010C3E1 		strh	r1, [r3, #0]	@ movhi
+ 539 0754 B014C3E1 		strh	r1, [r3, #64]	@ movhi
+ 540 0758 B018C3E1 		strh	r1, [r3, #128]	@ movhi
+ 541 075c 093C83E2 		add	r3, r3, #2304
+ 542 0760 F5FFFFEA 		b	.L90
+ 543              	.L92:
+ 544 0764 014084E2 		add	r4, r4, #1
+ 545 0768 017087E2 		add	r7, r7, #1
+ 546 076c 016086E2 		add	r6, r6, #1
+ 547              	.L86:
+ 548 0770 04209DE5 		ldr	r2, [sp, #4]
+ 549 0774 020054E1 		cmp	r4, r2
+ 550 0778 ADFFFF3A 		bcc	.L87
+ 551 077c 0000A0E3 		mov	r0, #0
+ 552 0780 0E0000EA 		b	.L96
+ 553              	.L97:
+ 554 0784 2430A0E3 		mov	r3, #36
+ 555 0788 908323E0 		mla	r3, r0, r3, r8
+ 556 078c 013083E0 		add	r3, r3, r1
+ 557 0790 833282E0 		add	r3, r2, r3, asl #5
+ 558 0794 83308AE0 		add	r3, sl, r3, asl #1
+ 559 0798 0040A0E3 		mov	r4, #0	@ movhi
+ 560 079c B043C3E1 		strh	r4, [r3, #48]	@ movhi
+ 561 07a0 012082E2 		add	r2, r2, #1
+ 562              	.L119:
+ 563 07a4 1F0052E3 		cmp	r2, #31
+ 564 07a8 F5FFFF9A 		bls	.L97
+ 565 07ac 011081E2 		add	r1, r1, #1
+ 566 07b0 020051E3 		cmp	r1, #2
+ 567 07b4 04209DE5 		ldr	r2, [sp, #4]
+ 568 07b8 F9FFFF9A 		bls	.L119
+ 569 07bc 010080E2 		add	r0, r0, #1
+ 570              	.L96:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 11
+
+
+ 571 07c0 08C09DE5 		ldr	ip, [sp, #8]
+ 572 07c4 0C0050E1 		cmp	r0, ip
+ 573 07c8 04209D15 		ldrne	r2, [sp, #4]
+ 574 07cc 0010A013 		movne	r1, #0
+ 575 07d0 F3FFFF1A 		bne	.L119
+ 576              	.L102:
+ 577 07d4 019089E2 		add	r9, r9, #1
+ 578 07d8 0B0059E3 		cmp	r9, #11
+ 579 07dc 0060A093 		movls	r6, #0
+ 580 07e0 7EFFFF9A 		bls	.L118
+ 581              	.L104:
+ 582 07e4 0000A0E3 		mov	r0, #0
+ 583              	.L33:
+ 584 07e8 59DF8DE2 		add	sp, sp, #356
+ 585 07ec F04FBDE8 		ldmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 586 07f0 1EFF2FE1 		bx	lr
+ 587              	.L121:
+ 588              		.align	2
+ 589              	.L120:
+ 590 07f4 00EE0200 		.word	192000
+ 591 07f8 22020000 		.word	546
+ 592 07fc 80BB0000 		.word	48000
+ 593 0800 80380100 		.word	80000
+ 594 0804 00000000 		.word	sbquant_table
+ 595 0808 B4000000 		.word	bitalloc_table
+ 596 080c 01020000 		.word	513
+ 597 0810 D4000000 		.word	offset_table
+ 598 0814 30010000 		.word	qc_table
+ 599 0818 B8010000 		.word	sf_table
+ 600              		.size	mad_layer_II, .-mad_layer_II
+ 601              		.align	2
+ 602              		.global	mad_layer_I
+ 603              		.type	mad_layer_I, %function
+ 604              	mad_layer_I:
+ 605              		@ Function supports interworking.
+ 606              		@ args = 0, pretend = 0, frame = 136
+ 607              		@ frame_needed = 0, uses_anonymous_args = 0
+ 608 081c F04F2DE9 		stmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 609 0820 01A0A0E1 		mov	sl, r1
+ 610 0824 041091E5 		ldr	r1, [r1, #4]
+ 611 0828 000051E3 		cmp	r1, #0
+ 612 082c 88D04DE2 		sub	sp, sp, #136
+ 613 0830 20108102 		addeq	r1, r1, #32
+ 614 0834 0090A0E1 		mov	r9, r0
+ 615 0838 00108D05 		streq	r1, [sp, #0]
+ 616 083c 01B0A003 		moveq	fp, #1
+ 617 0840 0C00000A 		beq	.L125
+ 618 0844 020051E3 		cmp	r1, #2
+ 619 0848 2020A013 		movne	r2, #32
+ 620 084c 00208D15 		strne	r2, [sp, #0]
+ 621 0850 02B0A013 		movne	fp, #2
+ 622 0854 0700001A 		bne	.L125
+ 623 0858 08209AE5 		ldr	r2, [sl, #8]
+ 624 085c 1C309AE5 		ldr	r3, [sl, #28]
+ 625 0860 0221A0E1 		mov	r2, r2, asl #2
+ 626 0864 013C83E3 		orr	r3, r3, #256
+ 627 0868 042082E2 		add	r2, r2, #4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 12
+
+
+ 628 086c 1C308AE5 		str	r3, [sl, #28]
+ 629 0870 00208DE5 		str	r2, [sp, #0]
+ 630 0874 01B0A0E1 		mov	fp, r1
+ 631              	.L125:
+ 632 0878 1C309AE5 		ldr	r3, [sl, #28]
+ 633 087c 100013E3 		tst	r3, #16
+ 634 0880 1200000A 		beq	.L128
+ 635 0884 00209DE5 		ldr	r2, [sp, #0]
+ 636 0888 9B0202E0 		mul	r2, fp, r2
+ 637 088c 00309DE5 		ldr	r3, [sp, #0]
+ 638 0890 022063E0 		rsb	r2, r3, r2
+ 639 0894 0221A0E1 		mov	r2, r2, asl #2
+ 640 0898 B831DAE1 		ldrh	r3, [sl, #24]
+ 641 089c 802082E2 		add	r2, r2, #128
+ 642 08a0 1C0089E2 		add	r0, r9, #28
+ 643 08a4 030090E8 		ldmia	r0, {r0-r1}
+ 644 08a8 FEFFFFEB 		bl	mad_bit_crc
+ 645 08ac BA31DAE1 		ldrh	r3, [sl, #26]
+ 646 08b0 000053E1 		cmp	r3, r0
+ 647 08b4 B801CAE1 		strh	r0, [sl, #24]	@ movhi
+ 648 08b8 0400000A 		beq	.L128
+ 649 08bc 2C309AE5 		ldr	r3, [sl, #44]
+ 650 08c0 010013E3 		tst	r3, #1
+ 651 08c4 0000E003 		mvneq	r0, #0
+ 652 08c8 94329F05 		ldreq	r3, .L197
+ 653 08cc 9E00000A 		beq	.L194
+ 654              	.L128:
+ 655 08d0 0060A0E3 		mov	r6, #0
+ 656 08d4 0D0000EA 		b	.L133
+ 657              	.L134:
+ 658 08d8 FEFFFFEB 		bl	mad_bit_read
+ 659 08dc 0F0050E3 		cmp	r0, #15
+ 660 08e0 0020A0E1 		mov	r2, r0
+ 661 08e4 013080E2 		add	r3, r0, #1
+ 662 08e8 9500000A 		beq	.L183
+ 663 08ec 000050E3 		cmp	r0, #0
+ 664 08f0 FF200312 		andne	r2, r3, #255
+ 665 08f4 2020C5E4 		strb	r2, [r5], #32
+ 666 08f8 014084E2 		add	r4, r4, #1
+ 667              	.L140:
+ 668 08fc 0B0054E1 		cmp	r4, fp
+ 669 0900 1C0089E2 		add	r0, r9, #28
+ 670 0904 0410A0E3 		mov	r1, #4
+ 671 0908 F2FFFF1A 		bne	.L134
+ 672 090c 016086E2 		add	r6, r6, #1
+ 673              	.L133:
+ 674 0910 00109DE5 		ldr	r1, [sp, #0]
+ 675 0914 010056E1 		cmp	r6, r1
+ 676 0918 48208DE2 		add	r2, sp, #72
+ 677 091c 20308102 		addeq	r3, r1, #32
+ 678 0920 03408200 		addeq	r4, r2, r3
+ 679 0924 0150A001 		moveq	r5, r1
+ 680 0928 1000000A 		beq	.L144
+ 681              	.L142:
+ 682 092c 065082E0 		add	r5, r2, r6
+ 683 0930 0040A0E3 		mov	r4, #0
+ 684 0934 F0FFFFEA 		b	.L140
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 13
+
+
+ 685              	.L185:
+ 686 0938 0040A0E3 		mov	r4, #0
+ 687 093c 04408DE5 		str	r4, [sp, #4]
+ 688 0940 3B0000EA 		b	.L196
+ 689              	.L145:
+ 690 0944 FEFFFFEB 		bl	mad_bit_read
+ 691 0948 0F0050E3 		cmp	r0, #15
+ 692 094c 0030A0E1 		mov	r3, r0
+ 693 0950 012080E2 		add	r2, r0, #1
+ 694 0954 7A00000A 		beq	.L183
+ 695 0958 000050E3 		cmp	r0, #0
+ 696 095c FF300212 		andne	r3, r2, #255
+ 697 0960 203044E5 		strb	r3, [r4, #-32]
+ 698 0964 0030C4E5 		strb	r3, [r4, #0]
+ 699 0968 015085E2 		add	r5, r5, #1
+ 700 096c 014084E2 		add	r4, r4, #1
+ 701              	.L144:
+ 702 0970 1F0055E3 		cmp	r5, #31
+ 703 0974 1C0089E2 		add	r0, r9, #28
+ 704 0978 0410A0E3 		mov	r1, #4
+ 705 097c F0FFFF9A 		bls	.L145
+ 706 0980 0040A0E3 		mov	r4, #0
+ 707 0984 0460A0E1 		mov	r6, r4
+ 708 0988 060000EA 		b	.L195
+ 709              	.L153:
+ 710 098c 403055E5 		ldrb	r3, [r5, #-64]	@ zero_extendqisi2
+ 711 0990 000053E3 		cmp	r3, #0
+ 712 0994 1C0089E2 		add	r0, r9, #28
+ 713 0998 0610A0E3 		mov	r1, #6
+ 714 099c 0100000A 		beq	.L195
+ 715 09a0 FEFFFFEB 		bl	mad_bit_read
+ 716 09a4 800045E5 		strb	r0, [r5, #-128]
+ 717              	.L195:
+ 718 09a8 88208DE2 		add	r2, sp, #136
+ 719 09ac 843282E0 		add	r3, r2, r4, asl #5
+ 720 09b0 0B0054E1 		cmp	r4, fp
+ 721 09b4 065083E0 		add	r5, r3, r6
+ 722 09b8 014084E2 		add	r4, r4, #1
+ 723 09bc F2FFFF3A 		bcc	.L153
+ 724 09c0 016086E2 		add	r6, r6, #1
+ 725 09c4 1F0056E3 		cmp	r6, #31
+ 726 09c8 0040A0E3 		mov	r4, #0
+ 727 09cc D9FFFF8A 		bhi	.L185
+ 728 09d0 F4FFFFEA 		b	.L195
+ 729              	.L160:
+ 730 09d4 0030D6E5 		ldrb	r3, [r6, #0]	@ zero_extendqisi2
+ 731 09d8 001053E2 		subs	r1, r3, #0
+ 732 09dc 0B00000A 		beq	.L163
+ 733 09e0 C6FDFFEB 		bl	I_sample
+ 734 09e4 0030D7E5 		ldrb	r3, [r7, #0]	@ zero_extendqisi2
+ 735 09e8 78219FE5 		ldr	r2, .L197+4
+ 736 09ec 0008A0E1 		mov	r0, r0, asl #16
+ 737 09f0 8330A0E1 		mov	r3, r3, asl #1
+ 738 09f4 B23093E1 		ldrh	r3, [r3, r2]
+ 739 09f8 2008A0E1 		mov	r0, r0, lsr #16
+ 740 09fc 9013C2E0 		smull	r1, r2, r0, r3
+ 741 0a00 211EB0E1 		movs	r1, r1, lsr #28
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 14
+
+
+ 742 0a04 0232A1E0 		adc	r3, r1, r2, lsl #4
+ 743 0a08 0338A0E1 		mov	r3, r3, asl #16
+ 744 0a0c 2338A0E1 		mov	r3, r3, lsr #16
+ 745              	.L163:
+ 746 0a10 B030C8E1 		strh	r3, [r8, #0]	@ movhi
+ 747 0a14 015085E2 		add	r5, r5, #1
+ 748 0a18 098C88E2 		add	r8, r8, #2304
+ 749 0a1c 207087E2 		add	r7, r7, #32
+ 750 0a20 206086E2 		add	r6, r6, #32
+ 751              	.L164:
+ 752 0a24 0B0055E1 		cmp	r5, fp
+ 753 0a28 1C0089E2 		add	r0, r9, #28
+ 754 0a2c E8FFFF1A 		bne	.L160
+ 755 0a30 014084E2 		add	r4, r4, #1
+ 756              	.L196:
+ 757 0a34 00309DE5 		ldr	r3, [sp, #0]
+ 758 0a38 48208DE2 		add	r2, sp, #72
+ 759 0a3c 030054E1 		cmp	r4, r3
+ 760 0a40 03608220 		addcs	r6, r2, r3
+ 761 0a44 0350A021 		movcs	r5, r3
+ 762 0a48 3400002A 		bcs	.L168
+ 763 0a4c 04109DE5 		ldr	r1, [sp, #4]
+ 764 0a50 813284E0 		add	r3, r4, r1, asl #5
+ 765 0a54 8330A0E1 		mov	r3, r3, asl #1
+ 766 0a58 303083E2 		add	r3, r3, #48
+ 767 0a5c 03808AE0 		add	r8, sl, r3
+ 768 0a60 08308DE2 		add	r3, sp, #8
+ 769 0a64 047083E0 		add	r7, r3, r4
+ 770 0a68 046082E0 		add	r6, r2, r4
+ 771 0a6c 0050A0E3 		mov	r5, #0
+ 772 0a70 EBFFFFEA 		b	.L164
+ 773              	.L169:
+ 774 0a74 0010D6E5 		ldrb	r1, [r6, #0]	@ zero_extendqisi2
+ 775 0a78 04209DE5 		ldr	r2, [sp, #4]
+ 776 0a7c 000051E3 		cmp	r1, #0
+ 777 0a80 8242A0E1 		mov	r4, r2, asl #5
+ 778 0a84 05308400 		addeq	r3, r4, r5
+ 779 0a88 8330A001 		moveq	r3, r3, asl #1
+ 780 0a8c 30308302 		addeq	r3, r3, #48
+ 781 0a90 03308A00 		addeq	r3, sl, r3
+ 782 0a94 1C00000A 		beq	.L172
+ 783              	.L170:
+ 784 0a98 1C0089E2 		add	r0, r9, #28
+ 785 0a9c 97FDFFEB 		bl	I_sample
+ 786 0aa0 053084E0 		add	r3, r4, r5
+ 787 0aa4 8330A0E1 		mov	r3, r3, asl #1
+ 788 0aa8 0008A0E1 		mov	r0, r0, asl #16
+ 789 0aac 303083E2 		add	r3, r3, #48
+ 790 0ab0 08208DE2 		add	r2, sp, #8
+ 791 0ab4 2008A0E1 		mov	r0, r0, lsr #16
+ 792 0ab8 05E082E0 		add	lr, r2, r5
+ 793 0abc 03C08AE0 		add	ip, sl, r3
+ 794 0ac0 0040A0E3 		mov	r4, #0
+ 795 0ac4 080000EA 		b	.L173
+ 796              	.L174:
+ 797 0ac8 20305EE5 		ldrb	r3, [lr, #-32]	@ zero_extendqisi2
+ 798 0acc 94209FE5 		ldr	r2, .L197+4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 15
+
+
+ 799 0ad0 8330A0E1 		mov	r3, r3, asl #1
+ 800 0ad4 B23093E1 		ldrh	r3, [r3, r2]
+ 801 0ad8 9013C2E0 		smull	r1, r2, r0, r3
+ 802 0adc 211EB0E1 		movs	r1, r1, lsr #28
+ 803 0ae0 0232A1E0 		adc	r3, r1, r2, lsl #4
+ 804 0ae4 B030CCE1 		strh	r3, [ip, #0]	@ movhi
+ 805 0ae8 09CC8CE2 		add	ip, ip, #2304
+ 806              	.L173:
+ 807 0aec 0B0054E1 		cmp	r4, fp
+ 808 0af0 20E08EE2 		add	lr, lr, #32
+ 809 0af4 014084E2 		add	r4, r4, #1
+ 810 0af8 F2FFFF1A 		bne	.L174
+ 811 0afc 050000EA 		b	.L175
+ 812              	.L176:
+ 813 0b00 0020A0E3 		mov	r2, #0	@ movhi
+ 814 0b04 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+ 815 0b08 093C83E2 		add	r3, r3, #2304
+ 816              	.L172:
+ 817 0b0c 0B0051E1 		cmp	r1, fp
+ 818 0b10 011081E2 		add	r1, r1, #1
+ 819 0b14 F9FFFF1A 		bne	.L176
+ 820              	.L175:
+ 821 0b18 015085E2 		add	r5, r5, #1
+ 822 0b1c 016086E2 		add	r6, r6, #1
+ 823              	.L168:
+ 824 0b20 1F0055E3 		cmp	r5, #31
+ 825 0b24 D2FFFF9A 		bls	.L169
+ 826 0b28 04309DE5 		ldr	r3, [sp, #4]
+ 827 0b2c 013083E2 		add	r3, r3, #1
+ 828 0b30 0B0053E3 		cmp	r3, #11
+ 829 0b34 04308DE5 		str	r3, [sp, #4]
+ 830 0b38 0500008A 		bhi	.L178
+ 831 0b3c 0040A0E3 		mov	r4, #0
+ 832 0b40 BBFFFFEA 		b	.L196
+ 833              	.L183:
+ 834 0b44 20309FE5 		ldr	r3, .L197+8
+ 835 0b48 0000E0E3 		mvn	r0, #0
+ 836              	.L194:
+ 837 0b4c 3C3089E5 		str	r3, [r9, #60]
+ 838 0b50 000000EA 		b	.L132
+ 839              	.L178:
+ 840 0b54 0000A0E3 		mov	r0, #0
+ 841              	.L132:
+ 842 0b58 88D08DE2 		add	sp, sp, #136
+ 843 0b5c F04FBDE8 		ldmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 844 0b60 1EFF2FE1 		bx	lr
+ 845              	.L198:
+ 846              		.align	2
+ 847              	.L197:
+ 848 0b64 01020000 		.word	513
+ 849 0b68 B8010000 		.word	sf_table
+ 850 0b6c 11020000 		.word	529
+ 851              		.size	mad_layer_I, .-mad_layer_I
+ 852              		.section	.rodata
+ 853              		.align	2
+ 854              		.type	sbquant_table, %object
+ 855              		.size	sbquant_table, 180
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 16
+
+
+ 856              	sbquant_table:
+ 857 0000 1B000000 		.word	27
+ 858 0004 07       		.byte	7
+ 859 0005 07       		.byte	7
+ 860 0006 07       		.byte	7
+ 861 0007 06       		.byte	6
+ 862 0008 06       		.byte	6
+ 863 0009 06       		.byte	6
+ 864 000a 06       		.byte	6
+ 865 000b 06       		.byte	6
+ 866 000c 06       		.byte	6
+ 867 000d 06       		.byte	6
+ 868 000e 06       		.byte	6
+ 869 000f 03       		.byte	3
+ 870 0010 03       		.byte	3
+ 871 0011 03       		.byte	3
+ 872 0012 03       		.byte	3
+ 873 0013 03       		.byte	3
+ 874 0014 03       		.byte	3
+ 875 0015 03       		.byte	3
+ 876 0016 03       		.byte	3
+ 877 0017 03       		.byte	3
+ 878 0018 03       		.byte	3
+ 879 0019 03       		.byte	3
+ 880 001a 03       		.byte	3
+ 881 001b 00       		.byte	0
+ 882 001c 00       		.byte	0
+ 883 001d 00       		.byte	0
+ 884 001e 00       		.byte	0
+ 885 001f 000000   		.space	3
+ 886 0022 0000     		.space	2
+ 887 0024 1E000000 		.word	30
+ 888 0028 07       		.byte	7
+ 889 0029 07       		.byte	7
+ 890 002a 07       		.byte	7
+ 891 002b 06       		.byte	6
+ 892 002c 06       		.byte	6
+ 893 002d 06       		.byte	6
+ 894 002e 06       		.byte	6
+ 895 002f 06       		.byte	6
+ 896 0030 06       		.byte	6
+ 897 0031 06       		.byte	6
+ 898 0032 06       		.byte	6
+ 899 0033 03       		.byte	3
+ 900 0034 03       		.byte	3
+ 901 0035 03       		.byte	3
+ 902 0036 03       		.byte	3
+ 903 0037 03       		.byte	3
+ 904 0038 03       		.byte	3
+ 905 0039 03       		.byte	3
+ 906 003a 03       		.byte	3
+ 907 003b 03       		.byte	3
+ 908 003c 03       		.byte	3
+ 909 003d 03       		.byte	3
+ 910 003e 03       		.byte	3
+ 911 003f 00       		.byte	0
+ 912 0040 00       		.byte	0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 17
+
+
+ 913 0041 00       		.byte	0
+ 914 0042 00       		.byte	0
+ 915 0043 00       		.byte	0
+ 916 0044 00       		.byte	0
+ 917 0045 00       		.byte	0
+ 918 0046 0000     		.space	2
+ 919 0048 08000000 		.word	8
+ 920 004c 05       		.byte	5
+ 921 004d 05       		.byte	5
+ 922 004e 02       		.byte	2
+ 923 004f 02       		.byte	2
+ 924 0050 02       		.byte	2
+ 925 0051 02       		.byte	2
+ 926 0052 02       		.byte	2
+ 927 0053 02       		.byte	2
+ 928 0054 00000000 		.space	22
+ 928      00000000 
+ 928      00000000 
+ 928      00000000 
+ 928      00000000 
+ 929 006a 0000     		.space	2
+ 930 006c 0C000000 		.word	12
+ 931 0070 05       		.byte	5
+ 932 0071 05       		.byte	5
+ 933 0072 02       		.byte	2
+ 934 0073 02       		.byte	2
+ 935 0074 02       		.byte	2
+ 936 0075 02       		.byte	2
+ 937 0076 02       		.byte	2
+ 938 0077 02       		.byte	2
+ 939 0078 02       		.byte	2
+ 940 0079 02       		.byte	2
+ 941 007a 02       		.byte	2
+ 942 007b 02       		.byte	2
+ 943 007c 00000000 		.space	18
+ 943      00000000 
+ 943      00000000 
+ 943      00000000 
+ 943      0000
+ 944 008e 0000     		.space	2
+ 945 0090 1E000000 		.word	30
+ 946 0094 04       		.byte	4
+ 947 0095 04       		.byte	4
+ 948 0096 04       		.byte	4
+ 949 0097 04       		.byte	4
+ 950 0098 02       		.byte	2
+ 951 0099 02       		.byte	2
+ 952 009a 02       		.byte	2
+ 953 009b 02       		.byte	2
+ 954 009c 02       		.byte	2
+ 955 009d 02       		.byte	2
+ 956 009e 02       		.byte	2
+ 957 009f 01       		.byte	1
+ 958 00a0 01       		.byte	1
+ 959 00a1 01       		.byte	1
+ 960 00a2 01       		.byte	1
+ 961 00a3 01       		.byte	1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 18
+
+
+ 962 00a4 01       		.byte	1
+ 963 00a5 01       		.byte	1
+ 964 00a6 01       		.byte	1
+ 965 00a7 01       		.byte	1
+ 966 00a8 01       		.byte	1
+ 967 00a9 01       		.byte	1
+ 968 00aa 01       		.byte	1
+ 969 00ab 01       		.byte	1
+ 970 00ac 01       		.byte	1
+ 971 00ad 01       		.byte	1
+ 972 00ae 01       		.byte	1
+ 973 00af 01       		.byte	1
+ 974 00b0 01       		.byte	1
+ 975 00b1 01       		.byte	1
+ 976 00b2 0000     		.space	2
+ 977              		.align	2
+ 978              		.type	bitalloc_table, %object
+ 979              		.size	bitalloc_table, 32
+ 980              	bitalloc_table:
+ 981 00b4 0200     		.short	2
+ 982 00b6 0000     		.short	0
+ 983 00b8 0200     		.short	2
+ 984 00ba 0300     		.short	3
+ 985 00bc 0300     		.short	3
+ 986 00be 0300     		.short	3
+ 987 00c0 0300     		.short	3
+ 988 00c2 0100     		.short	1
+ 989 00c4 0400     		.short	4
+ 990 00c6 0200     		.short	2
+ 991 00c8 0400     		.short	4
+ 992 00ca 0300     		.short	3
+ 993 00cc 0400     		.short	4
+ 994 00ce 0400     		.short	4
+ 995 00d0 0400     		.short	4
+ 996 00d2 0500     		.short	5
+ 997              		.type	offset_table, %object
+ 998              		.size	offset_table, 90
+ 999              	offset_table:
+ 1000 00d4 00       		.byte	0
+ 1001 00d5 01       		.byte	1
+ 1002 00d6 10       		.byte	16
+ 1003 00d7 00000000 		.space	12
+ 1003      00000000 
+ 1003      00000000 
+ 1004 00e3 00       		.byte	0
+ 1005 00e4 01       		.byte	1
+ 1006 00e5 02       		.byte	2
+ 1007 00e6 03       		.byte	3
+ 1008 00e7 04       		.byte	4
+ 1009 00e8 05       		.byte	5
+ 1010 00e9 10       		.byte	16
+ 1011 00ea 00000000 		.space	8
+ 1011      00000000 
+ 1012 00f2 00       		.byte	0
+ 1013 00f3 01       		.byte	1
+ 1014 00f4 02       		.byte	2
+ 1015 00f5 03       		.byte	3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 19
+
+
+ 1016 00f6 04       		.byte	4
+ 1017 00f7 05       		.byte	5
+ 1018 00f8 06       		.byte	6
+ 1019 00f9 07       		.byte	7
+ 1020 00fa 08       		.byte	8
+ 1021 00fb 09       		.byte	9
+ 1022 00fc 0A       		.byte	10
+ 1023 00fd 0B       		.byte	11
+ 1024 00fe 0C       		.byte	12
+ 1025 00ff 0D       		.byte	13
+ 1026 0100 0E       		.byte	14
+ 1027 0101 00       		.byte	0
+ 1028 0102 01       		.byte	1
+ 1029 0103 03       		.byte	3
+ 1030 0104 04       		.byte	4
+ 1031 0105 05       		.byte	5
+ 1032 0106 06       		.byte	6
+ 1033 0107 07       		.byte	7
+ 1034 0108 08       		.byte	8
+ 1035 0109 09       		.byte	9
+ 1036 010a 0A       		.byte	10
+ 1037 010b 0B       		.byte	11
+ 1038 010c 0C       		.byte	12
+ 1039 010d 0D       		.byte	13
+ 1040 010e 0E       		.byte	14
+ 1041 010f 0F       		.byte	15
+ 1042 0110 00       		.byte	0
+ 1043 0111 01       		.byte	1
+ 1044 0112 02       		.byte	2
+ 1045 0113 03       		.byte	3
+ 1046 0114 04       		.byte	4
+ 1047 0115 05       		.byte	5
+ 1048 0116 06       		.byte	6
+ 1049 0117 07       		.byte	7
+ 1050 0118 08       		.byte	8
+ 1051 0119 09       		.byte	9
+ 1052 011a 0A       		.byte	10
+ 1053 011b 0B       		.byte	11
+ 1054 011c 0C       		.byte	12
+ 1055 011d 0D       		.byte	13
+ 1056 011e 10       		.byte	16
+ 1057 011f 00       		.byte	0
+ 1058 0120 02       		.byte	2
+ 1059 0121 04       		.byte	4
+ 1060 0122 05       		.byte	5
+ 1061 0123 06       		.byte	6
+ 1062 0124 07       		.byte	7
+ 1063 0125 08       		.byte	8
+ 1064 0126 09       		.byte	9
+ 1065 0127 0A       		.byte	10
+ 1066 0128 0B       		.byte	11
+ 1067 0129 0C       		.byte	12
+ 1068 012a 0D       		.byte	13
+ 1069 012b 0E       		.byte	14
+ 1070 012c 0F       		.byte	15
+ 1071 012d 10       		.byte	16
+ 1072 012e 0000     		.align	2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 20
+
+
+ 1073              		.type	qc_table, %object
+ 1074              		.size	qc_table, 136
+ 1075              	qc_table:
+ 1076 0130 0300     		.short	3
+ 1077 0132 02       		.byte	2
+ 1078 0133 05       		.byte	5
+ 1079 0134 5555     		.short	21845
+ 1080 0136 0000     		.short	0
+ 1081 0138 0500     		.short	5
+ 1082 013a 03       		.byte	3
+ 1083 013b 07       		.byte	7
+ 1084 013c 9A99     		.short	-26214
+ 1085 013e 0000     		.short	0
+ 1086 0140 0700     		.short	7
+ 1087 0142 00       		.byte	0
+ 1088 0143 03       		.byte	3
+ 1089 0144 9224     		.short	9362
+ 1090 0146 0000     		.short	0
+ 1091 0148 0900     		.short	9
+ 1092 014a 04       		.byte	4
+ 1093 014b 0A       		.byte	10
+ 1094 014c 1CC7     		.short	-14564
+ 1095 014e 0000     		.short	0
+ 1096 0150 0F00     		.short	15
+ 1097 0152 00       		.byte	0
+ 1098 0153 04       		.byte	4
+ 1099 0154 1111     		.short	4369
+ 1100 0156 0000     		.short	0
+ 1101 0158 1F00     		.short	31
+ 1102 015a 00       		.byte	0
+ 1103 015b 05       		.byte	5
+ 1104 015c 0821     		.short	8456
+ 1105 015e 0000     		.short	0
+ 1106 0160 3F00     		.short	63
+ 1107 0162 00       		.byte	0
+ 1108 0163 06       		.byte	6
+ 1109 0164 1004     		.short	1040
+ 1110 0166 0000     		.short	0
+ 1111 0168 7F00     		.short	127
+ 1112 016a 00       		.byte	0
+ 1113 016b 07       		.byte	7
+ 1114 016c 8140     		.short	16513
+ 1115 016e 0000     		.short	0
+ 1116 0170 FF00     		.short	255
+ 1117 0172 00       		.byte	0
+ 1118 0173 08       		.byte	8
+ 1119 0174 1010     		.short	4112
+ 1120 0176 0000     		.short	0
+ 1121 0178 FF01     		.short	511
+ 1122 017a 00       		.byte	0
+ 1123 017b 09       		.byte	9
+ 1124 017c 0204     		.short	1026
+ 1125 017e 0000     		.short	0
+ 1126 0180 FF03     		.short	1023
+ 1127 0182 00       		.byte	0
+ 1128 0183 0A       		.byte	10
+ 1129 0184 0001     		.short	256
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 21
+
+
+ 1130 0186 0000     		.short	0
+ 1131 0188 FF07     		.short	2047
+ 1132 018a 00       		.byte	0
+ 1133 018b 0B       		.byte	11
+ 1134 018c 4000     		.short	64
+ 1135 018e 0000     		.short	0
+ 1136 0190 FF0F     		.short	4095
+ 1137 0192 00       		.byte	0
+ 1138 0193 0C       		.byte	12
+ 1139 0194 1000     		.short	16
+ 1140 0196 0000     		.short	0
+ 1141 0198 FF1F     		.short	8191
+ 1142 019a 00       		.byte	0
+ 1143 019b 0D       		.byte	13
+ 1144 019c 0480     		.short	-32764
+ 1145 019e 0000     		.short	0
+ 1146 01a0 FF3F     		.short	16383
+ 1147 01a2 00       		.byte	0
+ 1148 01a3 0E       		.byte	14
+ 1149 01a4 0140     		.short	16385
+ 1150 01a6 0080     		.short	-32768
+ 1151 01a8 FF7F     		.short	32767
+ 1152 01aa 00       		.byte	0
+ 1153 01ab 0F       		.byte	15
+ 1154 01ac 0020     		.short	8192
+ 1155 01ae 0040     		.short	16384
+ 1156 01b0 FFFF     		.short	-1
+ 1157 01b2 00       		.byte	0
+ 1158 01b3 10       		.byte	16
+ 1159 01b4 0010     		.short	4096
+ 1160 01b6 0020     		.short	8192
+ 1161              		.align	1
+ 1162              		.type	sf_table, %object
+ 1163              		.size	sf_table, 128
+ 1164              	sf_table:
+ 1165 01b8 0000     		.short	0
+ 1166 01ba A5FE     		.short	-347
+ 1167 01bc FAA2     		.short	-23814
+ 1168 01be 0000     		.short	0
+ 1169 01c0 53FF     		.short	-173
+ 1170 01c2 7D51     		.short	20861
+ 1171 01c4 0000     		.short	0
+ 1172 01c6 A97F     		.short	32681
+ 1173 01c8 BE28     		.short	10430
+ 1174 01ca 0000     		.short	0
+ 1175 01cc D5BF     		.short	-16427
+ 1176 01ce 5F14     		.short	5215
+ 1177 01d0 0000     		.short	0
+ 1178 01d2 EA5F     		.short	24554
+ 1179 01d4 308A     		.short	-30160
+ 1180 01d6 0000     		.short	0
+ 1181 01d8 F52F     		.short	12277
+ 1182 01da 1845     		.short	17688
+ 1183 01dc 0000     		.short	0
+ 1184 01de FB97     		.short	-26629
+ 1185 01e0 8CA2     		.short	-23924
+ 1186 01e2 0000     		.short	0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 22
+
+
+ 1187 01e4 FDCB     		.short	-13315
+ 1188 01e6 4651     		.short	20806
+ 1189 01e8 0000     		.short	0
+ 1190 01ea FF65     		.short	26111
+ 1191 01ec A328     		.short	10403
+ 1192 01ee 0000     		.short	0
+ 1193 01f0 FFB2     		.short	-19713
+ 1194 01f2 5114     		.short	5201
+ 1195 01f4 0000     		.short	0
+ 1196 01f6 8059     		.short	22912
+ 1197 01f8 290A     		.short	2601
+ 1198 01fa 0000     		.short	0
+ 1199 01fc C02C     		.short	11456
+ 1200 01fe 1485     		.short	-31468
+ 1201 0200 0000     		.short	0
+ 1202 0202 6096     		.short	-27040
+ 1203 0204 8A42     		.short	17034
+ 1204 0206 0000     		.short	0
+ 1205 0208 30CB     		.short	-13520
+ 1206 020a 45A1     		.short	-24251
+ 1207 020c 0080     		.short	-32768
+ 1208 020e 9865     		.short	26008
+ 1209 0210 A350     		.short	20643
+ 1210 0212 0040     		.short	16384
+ 1211 0214 CC32     		.short	13004
+ 1212 0216 5128     		.short	10321
+ 1213 0218 0020     		.short	8192
+ 1214 021a 6619     		.short	6502
+ 1215 021c 2914     		.short	5161
+ 1216 021e 0010     		.short	4096
+ 1217 0220 B30C     		.short	3251
+ 1218 0222 140A     		.short	2580
+ 1219 0224 0008     		.short	2048
+ 1220 0226 5906     		.short	1625
+ 1221 0228 0A05     		.short	1290
+ 1222 022a 0004     		.short	1024
+ 1223 022c 2D03     		.short	813
+ 1224 022e 8502     		.short	645
+ 1225 0230 0002     		.short	512
+ 1226 0232 9601     		.short	406
+ 1227 0234 4301     		.short	323
+ 1228 0236 0000     		.short	0
+ 1229              		.align	1
+ 1230              		.type	linear_table, %object
+ 1231              		.size	linear_table, 28
+ 1232              	linear_table:
+ 1233 0238 5555     		.short	21845
+ 1234 023a 9224     		.short	9362
+ 1235 023c 1111     		.short	4369
+ 1236 023e 0821     		.short	8456
+ 1237 0240 1004     		.short	1040
+ 1238 0242 8140     		.short	16513
+ 1239 0244 1010     		.short	4112
+ 1240 0246 0204     		.short	1026
+ 1241 0248 0001     		.short	256
+ 1242 024a 4000     		.short	64
+ 1243 024c 1000     		.short	16
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 23
+
+
+ 1244 024e 0480     		.short	-32764
+ 1245 0250 0140     		.short	16385
+ 1246 0252 0020     		.short	8192
+ 1247              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s 			page 24
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 layer12.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:7      .text:00000000 II_samples
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:11     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:82     .text:00000100 I_sample
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:116    .text:0000016c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:1232   .rodata:00000238 linear_table
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:121    .text:00000170 mad_layer_II
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:125    .text:00000170 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:318    .text:00000424 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:323    .text:00000434 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:590    .text:000007f4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:856    .rodata:00000000 sbquant_table
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:980    .rodata:000000b4 bitalloc_table
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:999    .rodata:000000d4 offset_table
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:1075   .rodata:00000130 qc_table
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:1164   .rodata:000001b8 sf_table
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:604    .text:0000081c mad_layer_I
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:608    .text:0000081c $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:848    .text:00000b64 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cceV7Sa1.s:857    .rodata:00000000 $d
+
+UNDEFINED SYMBOLS
+__umodsi3
+__udivsi3
+mad_bit_read
+mad_bit_length
+mad_bit_crc

@@ -1,0 +1,1010 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 1
+
+
+   1              		.file	"timer.c"
+   2              		.text
+   3              		.align	2
+   4              		.global	mad_timer_compare
+   5              		.type	mad_timer_compare, %function
+   6              	mad_timer_compare:
+   7              		@ Function supports interworking.
+   8              		@ args = 0, pretend = 0, frame = 0
+   9              		@ frame_needed = 0, uses_anonymous_args = 0
+  10              		@ link register save eliminated.
+  11 0000 00C062E0 		rsb	ip, r2, r0
+  12 0004 00005CE3 		cmp	ip, #0
+  13              		@ lr needed for prologue
+  14 0008 060000BA 		blt	.L2
+  15 000c 010063E0 		rsb	r0, r3, r1
+  16 0010 0130A0E3 		mov	r3, #1
+  17 0014 0400001A 		bne	.L6
+  18 0018 000050E3 		cmp	r0, #0
+  19 001c 0030A003 		moveq	r3, #0
+  20 0020 0130A013 		movne	r3, #1
+  21 0024 000000AA 		bge	.L6
+  22              	.L2:
+  23 0028 0030E0E3 		mvn	r3, #0
+  24              	.L6:
+  25 002c 0300A0E1 		mov	r0, r3
+  26 0030 1EFF2FE1 		bx	lr
+  27              		.size	mad_timer_compare, .-mad_timer_compare
+  28              		.align	2
+  29              		.global	mad_timer_negate
+  30              		.type	mad_timer_negate, %function
+  31              	mad_timer_negate:
+  32              		@ Function supports interworking.
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		@ link register save eliminated.
+  36 0034 003090E5 		ldr	r3, [r0, #0]
+  37 0038 042090E5 		ldr	r2, [r0, #4]
+  38 003c 1CC09FE5 		ldr	ip, .L13
+  39 0040 003063E2 		rsb	r3, r3, #0
+  40 0044 000052E3 		cmp	r2, #0
+  41 0048 0CC062E0 		rsb	ip, r2, ip
+  42 004c 011043E2 		sub	r1, r3, #1
+  43 0050 003080E5 		str	r3, [r0, #0]
+  44              		@ lr needed for prologue
+  45 0054 04C08015 		strne	ip, [r0, #4]
+  46 0058 00108015 		strne	r1, [r0, #0]
+  47 005c 1EFF2FE1 		bx	lr
+  48              	.L14:
+  49              		.align	2
+  50              	.L13:
+  51 0060 004D0715 		.word	352800000
+  52              		.size	mad_timer_negate, .-mad_timer_negate
+  53              		.align	2
+  54              		.global	mad_timer_abs
+  55              		.type	mad_timer_abs, %function
+  56              	mad_timer_abs:
+  57              		@ Function supports interworking.
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 2
+
+
+  58              		@ args = 0, pretend = 0, frame = 8
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60 0064 10402DE9 		stmfd	sp!, {r4, lr}
+  61 0068 08D04DE2 		sub	sp, sp, #8
+  62 006c 06008DE8 		stmia	sp, {r1-r2}
+  63 0070 00309DE5 		ldr	r3, [sp, #0]
+  64 0074 000053E3 		cmp	r3, #0
+  65 0078 0040A0E1 		mov	r4, r0
+  66 007c 0D00A0E1 		mov	r0, sp
+  67 0080 FEFFFFBB 		bllt	mad_timer_negate
+  68              	.L16:
+  69 0084 0C009DE8 		ldmia	sp, {r2-r3}
+  70 0088 0400A0E1 		mov	r0, r4
+  71 008c 0C0084E8 		stmia	r4, {r2-r3}
+  72 0090 08D08DE2 		add	sp, sp, #8
+  73 0094 1040BDE8 		ldmfd	sp!, {r4, lr}
+  74 0098 1EFF2FE1 		bx	lr
+  75              		.size	mad_timer_abs, .-mad_timer_abs
+  76              		.global	__udivsi3
+  77              		.global	__umodsi3
+  78              		.align	2
+  79              		.type	reduce_timer, %function
+  80              	reduce_timer:
+  81              		@ Function supports interworking.
+  82              		@ args = 0, pretend = 0, frame = 0
+  83              		@ frame_needed = 0, uses_anonymous_args = 0
+  84 009c 70402DE9 		stmfd	sp!, {r4, r5, r6, lr}
+  85 00a0 045090E5 		ldr	r5, [r0, #4]
+  86 00a4 30609FE5 		ldr	r6, .L21
+  87 00a8 0040A0E1 		mov	r4, r0
+  88 00ac 0610A0E1 		mov	r1, r6
+  89 00b0 0500A0E1 		mov	r0, r5
+  90 00b4 FEFFFFEB 		bl	__udivsi3
+  91 00b8 003094E5 		ldr	r3, [r4, #0]
+  92 00bc 003083E0 		add	r3, r3, r0
+  93 00c0 003084E5 		str	r3, [r4, #0]
+  94 00c4 0500A0E1 		mov	r0, r5
+  95 00c8 0610A0E1 		mov	r1, r6
+  96 00cc FEFFFFEB 		bl	__umodsi3
+  97 00d0 040084E5 		str	r0, [r4, #4]
+  98 00d4 7040BDE8 		ldmfd	sp!, {r4, r5, r6, lr}
+  99 00d8 1EFF2FE1 		bx	lr
+ 100              	.L22:
+ 101              		.align	2
+ 102              	.L21:
+ 103 00dc 004D0715 		.word	352800000
+ 104              		.size	reduce_timer, .-reduce_timer
+ 105              		.align	2
+ 106              		.global	mad_timer_add
+ 107              		.type	mad_timer_add, %function
+ 108              	mad_timer_add:
+ 109              		@ Function supports interworking.
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112 00e0 10402DE9 		stmfd	sp!, {r4, lr}
+ 113 00e4 005090E8 		ldmia	r0, {ip, lr}	@ phole ldm
+ 114 00e8 24309FE5 		ldr	r3, .L27
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 3
+
+
+ 115 00ec 02E08EE0 		add	lr, lr, r2
+ 116 00f0 01C08CE0 		add	ip, ip, r1
+ 117 00f4 03005EE1 		cmp	lr, r3
+ 118 00f8 0040A0E1 		mov	r4, r0
+ 119 00fc 005080E8 		stmia	r0, {ip, lr}	@ phole stm
+ 120 0100 0100009A 		bls	.L26
+ 121 0104 1040BDE8 		ldmfd	sp!, {r4, lr}
+ 122 0108 E3FFFFEA 		b	reduce_timer
+ 123              	.L26:
+ 124 010c 1040BDE8 		ldmfd	sp!, {r4, lr}
+ 125 0110 1EFF2FE1 		bx	lr
+ 126              	.L28:
+ 127              		.align	2
+ 128              	.L27:
+ 129 0114 FF4C0715 		.word	352799999
+ 130              		.size	mad_timer_add, .-mad_timer_add
+ 131              		.align	2
+ 132              		.global	mad_timer_multiply
+ 133              		.type	mad_timer_multiply, %function
+ 134              	mad_timer_multiply:
+ 135              		@ Function supports interworking.
+ 136              		@ args = 0, pretend = 0, frame = 8
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138 0118 30402DE9 		stmfd	sp!, {r4, r5, lr}
+ 139 011c 000051E3 		cmp	r1, #0
+ 140 0120 08D04DE2 		sub	sp, sp, #8
+ 141 0124 0050A0E1 		mov	r5, r0
+ 142 0128 0140A0A1 		movge	r4, r1
+ 143 012c 004061B2 		rsblt	r4, r1, #0
+ 144 0130 FEFFFFBB 		bllt	mad_timer_negate
+ 145              	.L32:
+ 146 0134 003095E5 		ldr	r3, [r5, #0]
+ 147 0138 042095E5 		ldr	r2, [r5, #4]
+ 148 013c 00308DE5 		str	r3, [sp, #0]
+ 149 0140 40309FE5 		ldr	r3, .L39
+ 150 0144 04208DE5 		str	r2, [sp, #4]
+ 151 0148 060093E8 		ldmia	r3, {r1-r2}
+ 152 014c 060085E8 		stmia	r5, {r1-r2}
+ 153 0150 070000EA 		b	.L33
+ 154              	.L34:
+ 155 0154 010014E3 		tst	r4, #1
+ 156 0158 0500A0E1 		mov	r0, r5
+ 157 015c A440A0E1 		mov	r4, r4, lsr #1
+ 158 0160 06009D18 		ldmneia	sp, {r1-r2}
+ 159 0164 FEFFFF1B 		blne	mad_timer_add
+ 160              	.L35:
+ 161 0168 08008DE2 		add	r0, sp, #8
+ 162 016c 060030E9 		ldmdb	r0!, {r1-r2}
+ 163 0170 FEFFFFEB 		bl	mad_timer_add
+ 164              	.L33:
+ 165 0174 000054E3 		cmp	r4, #0
+ 166 0178 F5FFFF1A 		bne	.L34
+ 167 017c 08D08DE2 		add	sp, sp, #8
+ 168 0180 3040BDE8 		ldmfd	sp!, {r4, r5, lr}
+ 169 0184 1EFF2FE1 		bx	lr
+ 170              	.L40:
+ 171              		.align	2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 4
+
+
+ 172              	.L39:
+ 173 0188 00000000 		.word	mad_timer_zero
+ 174              		.size	mad_timer_multiply, .-mad_timer_multiply
+ 175              		.align	2
+ 176              		.type	reduce_rational, %function
+ 177              	reduce_rational:
+ 178              		@ Function supports interworking.
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181 018c F0412DE9 		stmfd	sp!, {r4, r5, r6, r7, r8, lr}
+ 182 0190 007090E5 		ldr	r7, [r0, #0]
+ 183 0194 004091E5 		ldr	r4, [r1, #0]
+ 184 0198 0080A0E1 		mov	r8, r0
+ 185 019c 0160A0E1 		mov	r6, r1
+ 186 01a0 0750A0E1 		mov	r5, r7
+ 187 01a4 040000EA 		b	.L42
+ 188              	.L43:
+ 189 01a8 0500A0E1 		mov	r0, r5
+ 190 01ac 0410A0E1 		mov	r1, r4
+ 191 01b0 FEFFFFEB 		bl	__umodsi3
+ 192 01b4 0450A0E1 		mov	r5, r4
+ 193 01b8 0040A0E1 		mov	r4, r0
+ 194              	.L42:
+ 195 01bc 000054E3 		cmp	r4, #0
+ 196 01c0 F8FFFF1A 		bne	.L43
+ 197 01c4 000055E3 		cmp	r5, #0
+ 198 01c8 FEFFFF0B 		bleq	abort
+ 199              	.L45:
+ 200 01cc 0510A0E1 		mov	r1, r5
+ 201 01d0 0700A0E1 		mov	r0, r7
+ 202 01d4 FEFFFFEB 		bl	__udivsi3
+ 203 01d8 000088E5 		str	r0, [r8, #0]
+ 204 01dc 0510A0E1 		mov	r1, r5
+ 205 01e0 000096E5 		ldr	r0, [r6, #0]
+ 206 01e4 FEFFFFEB 		bl	__udivsi3
+ 207 01e8 000086E5 		str	r0, [r6, #0]
+ 208 01ec F041BDE8 		ldmfd	sp!, {r4, r5, r6, r7, r8, lr}
+ 209 01f0 1EFF2FE1 		bx	lr
+ 210              		.size	reduce_rational, .-reduce_rational
+ 211              		.align	2
+ 212              		.type	scale_rational, %function
+ 213              	scale_rational:
+ 214              		@ Function supports interworking.
+ 215              		@ args = 0, pretend = 0, frame = 12
+ 216              		@ frame_needed = 0, uses_anonymous_args = 0
+ 217 01f4 F0402DE9 		stmfd	sp!, {r4, r5, r6, r7, lr}
+ 218 01f8 0CD04DE2 		sub	sp, sp, #12
+ 219 01fc 04408DE2 		add	r4, sp, #4
+ 220 0200 08008DE5 		str	r0, [sp, #8]
+ 221 0204 04108DE5 		str	r1, [sp, #4]
+ 222 0208 08008DE2 		add	r0, sp, #8
+ 223 020c 0410A0E1 		mov	r1, r4
+ 224 0210 00208DE5 		str	r2, [sp, #0]
+ 225 0214 DCFFFFEB 		bl	reduce_rational
+ 226 0218 0410A0E1 		mov	r1, r4
+ 227 021c 0D00A0E1 		mov	r0, sp
+ 228 0220 D9FFFFEB 		bl	reduce_rational
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 5
+
+
+ 229 0224 04509DE5 		ldr	r5, [sp, #4]
+ 230 0228 000055E3 		cmp	r5, #0
+ 231 022c FEFFFF0B 		bleq	abort
+ 232              	.L49:
+ 233 0230 00709DE5 		ldr	r7, [sp, #0]
+ 234 0234 070055E1 		cmp	r5, r7
+ 235 0238 08609DE5 		ldr	r6, [sp, #8]
+ 236 023c 0800002A 		bcs	.L51
+ 237 0240 0510A0E1 		mov	r1, r5
+ 238 0244 0700A0E1 		mov	r0, r7
+ 239 0248 FEFFFFEB 		bl	__udivsi3
+ 240 024c 0510A0E1 		mov	r1, r5
+ 241 0250 900604E0 		mul	r4, r0, r6
+ 242 0254 0700A0E1 		mov	r0, r7
+ 243 0258 FEFFFFEB 		bl	__umodsi3
+ 244 025c 960000E0 		mul	r0, r6, r0
+ 245 0260 090000EA 		b	.L57
+ 246              	.L51:
+ 247 0264 060055E1 		cmp	r5, r6
+ 248 0268 0B00002A 		bcs	.L54
+ 249 026c 0510A0E1 		mov	r1, r5
+ 250 0270 0600A0E1 		mov	r0, r6
+ 251 0274 FEFFFFEB 		bl	__udivsi3
+ 252 0278 0510A0E1 		mov	r1, r5
+ 253 027c 900704E0 		mul	r4, r0, r7
+ 254 0280 0600A0E1 		mov	r0, r6
+ 255 0284 FEFFFFEB 		bl	__umodsi3
+ 256 0288 970000E0 		mul	r0, r7, r0
+ 257              	.L57:
+ 258 028c 0510A0E1 		mov	r1, r5
+ 259 0290 FEFFFFEB 		bl	__udivsi3
+ 260 0294 000084E0 		add	r0, r4, r0
+ 261 0298 020000EA 		b	.L53
+ 262              	.L54:
+ 263 029c 970600E0 		mul	r0, r7, r6
+ 264 02a0 0510A0E1 		mov	r1, r5
+ 265 02a4 FEFFFFEB 		bl	__udivsi3
+ 266              	.L53:
+ 267 02a8 0CD08DE2 		add	sp, sp, #12
+ 268 02ac F040BDE8 		ldmfd	sp!, {r4, r5, r6, r7, lr}
+ 269 02b0 1EFF2FE1 		bx	lr
+ 270              		.size	scale_rational, .-scale_rational
+ 271              		.align	2
+ 272              		.global	mad_timer_fraction
+ 273              		.type	mad_timer_fraction, %function
+ 274              	mad_timer_fraction:
+ 275              		@ Function supports interworking.
+ 276              		@ args = 0, pretend = 0, frame = 8
+ 277              		@ frame_needed = 0, uses_anonymous_args = 0
+ 278 02b4 10402DE9 		stmfd	sp!, {r4, lr}
+ 279 02b8 08D04DE2 		sub	sp, sp, #8
+ 280 02bc 0240A0E1 		mov	r4, r2
+ 281 02c0 0120A0E1 		mov	r2, r1
+ 282 02c4 0010A0E1 		mov	r1, r0
+ 283 02c8 0D00A0E1 		mov	r0, sp
+ 284 02cc FEFFFFEB 		bl	mad_timer_abs
+ 285 02d0 03009DE8 		ldmia	sp, {r0-r1}
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 6
+
+
+ 286 02d4 000054E3 		cmp	r4, #0
+ 287 02d8 54C09FE5 		ldr	ip, .L66
+ 288 02dc 0130A0E1 		mov	r3, r1
+ 289 02e0 0500000A 		beq	.L60
+ 290 02e4 0C0054E1 		cmp	r4, ip
+ 291 02e8 0100A0E1 		mov	r0, r1
+ 292 02ec 0420A0E1 		mov	r2, r4
+ 293 02f0 0C10A0E1 		mov	r1, ip
+ 294 02f4 0700001A 		bne	.L65
+ 295 02f8 090000EA 		b	.L61
+ 296              	.L60:
+ 297 02fc 000051E3 		cmp	r1, #0
+ 298 0300 2C009FE5 		ldr	r0, .L66
+ 299 0304 2C309FE5 		ldr	r3, .L66+4
+ 300 0308 0500000A 		beq	.L61
+ 301 030c FEFFFFEB 		bl	__udivsi3
+ 302 0310 0030A0E1 		mov	r3, r0
+ 303 0314 020000EA 		b	.L61
+ 304              	.L65:
+ 305 0318 08D08DE2 		add	sp, sp, #8
+ 306 031c 1040BDE8 		ldmfd	sp!, {r4, lr}
+ 307 0320 B3FFFFEA 		b	scale_rational
+ 308              	.L61:
+ 309 0324 0300A0E1 		mov	r0, r3
+ 310 0328 08D08DE2 		add	sp, sp, #8
+ 311 032c 1040BDE8 		ldmfd	sp!, {r4, lr}
+ 312 0330 1EFF2FE1 		bx	lr
+ 313              	.L67:
+ 314              		.align	2
+ 315              	.L66:
+ 316 0334 004D0715 		.word	352800000
+ 317 0338 014D0715 		.word	352800001
+ 318              		.size	mad_timer_fraction, .-mad_timer_fraction
+ 319              		.global	__divsi3
+ 320              		.align	2
+ 321              		.global	mad_timer_count
+ 322              		.type	mad_timer_count, %function
+ 323              	mad_timer_count:
+ 324              		@ Function supports interworking.
+ 325              		@ args = 0, pretend = 0, frame = 0
+ 326              		@ frame_needed = 0, uses_anonymous_args = 0
+ 327 033c 300052E3 		cmp	r2, #48
+ 328 0340 30402DE9 		stmfd	sp!, {r4, r5, lr}
+ 329 0344 0240A0E1 		mov	r4, r2
+ 330 0348 0050A0E1 		mov	r5, r0
+ 331 034c 0120A0E1 		mov	r2, r1
+ 332 0350 4B00000A 		beq	.L74
+ 333 0354 1F0000CA 		bgt	.L75
+ 334 0358 020074E3 		cmn	r4, #2
+ 335 035c 4400000A 		beq	.L71
+ 336 0360 0E0000CA 		bgt	.L76
+ 337 0364 300074E3 		cmn	r4, #48
+ 338 0368 4B00000A 		beq	.L70
+ 339 036c 040000CA 		bgt	.L77
+ 340 0370 3C0074E3 		cmn	r4, #60
+ 341 0374 4800000A 		beq	.L70
+ 342 0378 320074E3 		cmn	r4, #50
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 7
+
+
+ 343 037c 3A00001A 		bne	.L69
+ 344 0380 450000EA 		b	.L70
+ 345              	.L77:
+ 346 0384 1E0074E3 		cmn	r4, #30
+ 347 0388 4300000A 		beq	.L70
+ 348 038c 360000BA 		blt	.L69
+ 349 0390 193084E2 		add	r3, r4, #25
+ 350 0394 010053E3 		cmp	r3, #1
+ 351 0398 3300008A 		bhi	.L69
+ 352 039c 3E0000EA 		b	.L70
+ 353              	.L76:
+ 354 03a0 0A0054E3 		cmp	r4, #10
+ 355 03a4 3600000A 		beq	.L74
+ 356 03a8 040000CA 		bgt	.L78
+ 357 03ac 010074E3 		cmn	r4, #1
+ 358 03b0 3100000A 		beq	.L72
+ 359 03b4 000054E3 		cmp	r4, #0
+ 360 03b8 4100000A 		beq	.L73
+ 361 03bc 2A0000EA 		b	.L69
+ 362              	.L78:
+ 363 03c0 180054E3 		cmp	r4, #24
+ 364 03c4 280000BA 		blt	.L69
+ 365 03c8 190054E3 		cmp	r4, #25
+ 366 03cc 2C0000DA 		ble	.L74
+ 367 03d0 1E0054E3 		cmp	r4, #30
+ 368 03d4 230000EA 		b	.L83
+ 369              	.L75:
+ 370 03d8 F0309FE5 		ldr	r3, .L85
+ 371 03dc 030054E1 		cmp	r4, r3
+ 372 03e0 2700000A 		beq	.L74
+ 373 03e4 0C0000CA 		bgt	.L79
+ 374 03e8 4B0054E3 		cmp	r4, #75
+ 375 03ec 2400000A 		beq	.L74
+ 376 03f0 030000CA 		bgt	.L80
+ 377 03f4 320054E3 		cmp	r4, #50
+ 378 03f8 2100000A 		beq	.L74
+ 379 03fc 3C0054E3 		cmp	r4, #60
+ 380 0400 180000EA 		b	.L83
+ 381              	.L80:
+ 382 0404 FA0F54E3 		cmp	r4, #1000
+ 383 0408 1D00000A 		beq	.L74
+ 384 040c 7D0D54E3 		cmp	r4, #8000
+ 385 0410 1B00000A 		beq	.L74
+ 386 0414 640054E3 		cmp	r4, #100
+ 387 0418 120000EA 		b	.L83
+ 388              	.L79:
+ 389 041c B0309FE5 		ldr	r3, .L85+4
+ 390 0420 030054E1 		cmp	r4, r3
+ 391 0424 1600000A 		beq	.L74
+ 392 0428 070000CA 		bgt	.L81
+ 393 042c FA0D54E3 		cmp	r4, #16000
+ 394 0430 1300000A 		beq	.L74
+ 395 0434 9C309FE5 		ldr	r3, .L85+8
+ 396 0438 030054E1 		cmp	r4, r3
+ 397 043c 1000000A 		beq	.L74
+ 398 0440 94309FE5 		ldr	r3, .L85+12
+ 399 0444 030054E1 		cmp	r4, r3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 8
+
+
+ 400 0448 060000EA 		b	.L83
+ 401              	.L81:
+ 402 044c 8C309FE5 		ldr	r3, .L85+16
+ 403 0450 030054E1 		cmp	r4, r3
+ 404 0454 0A00000A 		beq	.L74
+ 405 0458 84309FE5 		ldr	r3, .L85+20
+ 406 045c 030054E1 		cmp	r4, r3
+ 407 0460 0700000A 		beq	.L74
+ 408 0464 7D0C54E3 		cmp	r4, #32000
+ 409              	.L83:
+ 410 0468 0500000A 		beq	.L74
+ 411              	.L69:
+ 412 046c 0050A0E3 		mov	r5, #0
+ 413 0470 130000EA 		b	.L73
+ 414              	.L71:
+ 415 0474 E11EA0E3 		mov	r1, #3600
+ 416 0478 0F0000EA 		b	.L84
+ 417              	.L72:
+ 418 047c 3C10A0E3 		mov	r1, #60
+ 419 0480 0D0000EA 		b	.L84
+ 420              	.L74:
+ 421 0484 0200A0E1 		mov	r0, r2
+ 422 0488 58109FE5 		ldr	r1, .L85+24
+ 423 048c 0420A0E1 		mov	r2, r4
+ 424 0490 57FFFFEB 		bl	scale_rational
+ 425 0494 940525E0 		mla	r5, r4, r5, r0
+ 426 0498 090000EA 		b	.L73
+ 427              	.L70:
+ 428 049c 0210A0E1 		mov	r1, r2
+ 429 04a0 0500A0E1 		mov	r0, r5
+ 430 04a4 002064E2 		rsb	r2, r4, #0
+ 431 04a8 FEFFFFEB 		bl	mad_timer_count
+ 432 04ac FA3FA0E3 		mov	r3, #1000
+ 433 04b0 930000E0 		mul	r0, r3, r0
+ 434 04b4 30109FE5 		ldr	r1, .L85+28
+ 435 04b8 030080E0 		add	r0, r0, r3
+ 436              	.L84:
+ 437 04bc FEFFFFEB 		bl	__divsi3
+ 438 04c0 0050A0E1 		mov	r5, r0
+ 439              	.L73:
+ 440 04c4 0500A0E1 		mov	r0, r5
+ 441 04c8 3040BDE8 		ldmfd	sp!, {r4, r5, lr}
+ 442 04cc 1EFF2FE1 		bx	lr
+ 443              	.L86:
+ 444              		.align	2
+ 445              	.L85:
+ 446 04d0 112B0000 		.word	11025
+ 447 04d4 C05D0000 		.word	24000
+ 448 04d8 22560000 		.word	22050
+ 449 04dc E02E0000 		.word	12000
+ 450 04e0 44AC0000 		.word	44100
+ 451 04e4 80BB0000 		.word	48000
+ 452 04e8 004D0715 		.word	352800000
+ 453 04ec E9030000 		.word	1001
+ 454              		.size	mad_timer_count, .-mad_timer_count
+ 455              		.align	2
+ 456              		.global	mad_timer_string
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 9
+
+
+ 457              		.type	mad_timer_string, %function
+ 458              	mad_timer_string:
+ 459              		@ Function supports interworking.
+ 460              		@ args = 12, pretend = 0, frame = 20
+ 461              		@ frame_needed = 0, uses_anonymous_args = 0
+ 462 04f0 F04F2DE9 		stmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 463 04f4 20D04DE2 		sub	sp, sp, #32
+ 464 04f8 10008DE5 		str	r0, [sp, #16]
+ 465 04fc 14108DE5 		str	r1, [sp, #20]
+ 466 0500 0C208DE5 		str	r2, [sp, #12]
+ 467 0504 48709DE5 		ldr	r7, [sp, #72]
+ 468 0508 0120A0E1 		mov	r2, r1
+ 469 050c 0010A0E1 		mov	r1, r0
+ 470 0510 18008DE2 		add	r0, sp, #24
+ 471 0514 03B0A0E1 		mov	fp, r3
+ 472 0518 44A09DE5 		ldr	sl, [sp, #68]
+ 473 051c FEFFFFEB 		bl	mad_timer_abs
+ 474 0520 18308DE2 		add	r3, sp, #24
+ 475 0524 180093E8 		ldmia	r3, {r3-r4}
+ 476 0528 3C0057E3 		cmp	r7, #60
+ 477 052c 10308DE5 		str	r3, [sp, #16]
+ 478 0530 14408DE5 		str	r4, [sp, #20]
+ 479 0534 0360A0E1 		mov	r6, r3
+ 480 0538 3D00000A 		beq	.L90
+ 481 053c 190000CA 		bgt	.L91
+ 482 0540 180077E3 		cmn	r7, #24
+ 483 0544 0B0000CA 		bgt	.L92
+ 484 0548 190077E3 		cmn	r7, #25
+ 485 054c 480000AA 		bge	.L89
+ 486 0550 320077E3 		cmn	r7, #50
+ 487 0554 4600000A 		beq	.L89
+ 488 0558 010000CA 		bgt	.L93
+ 489 055c 3C0077E3 		cmn	r7, #60
+ 490 0560 020000EA 		b	.L117
+ 491              	.L93:
+ 492 0564 300077E3 		cmn	r7, #48
+ 493 0568 4100000A 		beq	.L89
+ 494 056c 1E0077E3 		cmn	r7, #30
+ 495              	.L117:
+ 496 0570 2C00001A 		bne	.L88
+ 497 0574 3E0000EA 		b	.L89
+ 498              	.L92:
+ 499 0578 190057E3 		cmp	r7, #25
+ 500 057c 030000CA 		bgt	.L94
+ 501 0580 180057E3 		cmp	r7, #24
+ 502 0584 2A0000AA 		bge	.L90
+ 503 0588 0A0057E3 		cmp	r7, #10
+ 504 058c 240000EA 		b	.L116
+ 505              	.L94:
+ 506 0590 300057E3 		cmp	r7, #48
+ 507 0594 2600000A 		beq	.L90
+ 508 0598 320057E3 		cmp	r7, #50
+ 509 059c 2400000A 		beq	.L90
+ 510 05a0 1E0057E3 		cmp	r7, #30
+ 511 05a4 1E0000EA 		b	.L116
+ 512              	.L91:
+ 513 05a8 64339FE5 		ldr	r3, .L123
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 10
+
+
+ 514 05ac 030057E1 		cmp	r7, r3
+ 515 05b0 1F00000A 		beq	.L90
+ 516 05b4 0A0000CA 		bgt	.L95
+ 517 05b8 FA0F57E3 		cmp	r7, #1000
+ 518 05bc 1C00000A 		beq	.L90
+ 519 05c0 030000CA 		bgt	.L96
+ 520 05c4 4B0057E3 		cmp	r7, #75
+ 521 05c8 1900000A 		beq	.L90
+ 522 05cc 640057E3 		cmp	r7, #100
+ 523 05d0 130000EA 		b	.L116
+ 524              	.L96:
+ 525 05d4 7D0D57E3 		cmp	r7, #8000
+ 526 05d8 38339F15 		ldrne	r3, .L123+4
+ 527 05dc 0700001A 		bne	.L122
+ 528 05e0 130000EA 		b	.L90
+ 529              	.L95:
+ 530 05e4 30339FE5 		ldr	r3, .L123+8
+ 531 05e8 030057E1 		cmp	r7, r3
+ 532 05ec 1000000A 		beq	.L90
+ 533 05f0 040000CA 		bgt	.L97
+ 534 05f4 FA0D57E3 		cmp	r7, #16000
+ 535 05f8 0D00000A 		beq	.L90
+ 536 05fc 1C339FE5 		ldr	r3, .L123+12
+ 537              	.L122:
+ 538 0600 030057E1 		cmp	r7, r3
+ 539 0604 060000EA 		b	.L116
+ 540              	.L97:
+ 541 0608 14339FE5 		ldr	r3, .L123+16
+ 542 060c 030057E1 		cmp	r7, r3
+ 543 0610 0700000A 		beq	.L90
+ 544 0614 0C339FE5 		ldr	r3, .L123+20
+ 545 0618 030057E1 		cmp	r7, r3
+ 546 061c 0400000A 		beq	.L90
+ 547 0620 7D0C57E3 		cmp	r7, #32000
+ 548              	.L116:
+ 549 0624 0200000A 		beq	.L90
+ 550              	.L88:
+ 551 0628 0080A0E3 		mov	r8, #0
+ 552 062c 0890A0E1 		mov	r9, r8
+ 553 0630 330000EA 		b	.L98
+ 554              	.L90:
+ 555 0634 0710A0E1 		mov	r1, r7
+ 556 0638 EC029FE5 		ldr	r0, .L123+24
+ 557 063c FEFFFFEB 		bl	__udivsi3
+ 558 0640 0040A0E1 		mov	r4, r0
+ 559 0644 0410A0E1 		mov	r1, r4
+ 560 0648 14009DE5 		ldr	r0, [sp, #20]
+ 561 064c FEFFFFEB 		bl	__udivsi3
+ 562 0650 0410A0E1 		mov	r1, r4
+ 563 0654 0090A0E1 		mov	r9, r0
+ 564 0658 14009DE5 		ldr	r0, [sp, #20]
+ 565 065c FEFFFFEB 		bl	__umodsi3
+ 566 0660 0410A0E1 		mov	r1, r4
+ 567 0664 4C209DE5 		ldr	r2, [sp, #76]
+ 568 0668 E1FEFFEB 		bl	scale_rational
+ 569 066c 0080A0E1 		mov	r8, r0
+ 570 0670 230000EA 		b	.L98
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 11
+
+
+ 571              	.L89:
+ 572 0674 0720A0E1 		mov	r2, r7
+ 573 0678 10008DE2 		add	r0, sp, #16
+ 574 067c 030090E8 		ldmia	r0, {r0-r1}
+ 575 0680 FEFFFFEB 		bl	mad_timer_count
+ 576 0684 A4329FE5 		ldr	r3, .L123+28
+ 577 0688 970303E0 		mul	r3, r7, r3
+ 578 068c 125043E2 		sub	r5, r3, #18
+ 579 0690 0510A0E1 		mov	r1, r5
+ 580 0694 0040A0E1 		mov	r4, r0
+ 581 0698 FEFFFFEB 		bl	__umodsi3
+ 582 069c 0510A0E1 		mov	r1, r5
+ 583 06a0 0080A0E1 		mov	r8, r0
+ 584 06a4 0400A0E1 		mov	r0, r4
+ 585 06a8 FEFFFFEB 		bl	__udivsi3
+ 586 06ac 1230A0E3 		mov	r3, #18
+ 587 06b0 020058E3 		cmp	r8, #2
+ 588 06b4 904326E0 		mla	r6, r0, r3, r4
+ 589 06b8 0700009A 		bls	.L99
+ 590 06bc 0A10A0E3 		mov	r1, #10
+ 591 06c0 0500A0E1 		mov	r0, r5
+ 592 06c4 FEFFFFEB 		bl	__udivsi3
+ 593 06c8 024048E2 		sub	r4, r8, #2
+ 594 06cc 0010A0E1 		mov	r1, r0
+ 595 06d0 0400A0E1 		mov	r0, r4
+ 596 06d4 FEFFFFEB 		bl	__udivsi3
+ 597 06d8 806086E0 		add	r6, r6, r0, asl #1
+ 598              	.L99:
+ 599 06dc 004067E2 		rsb	r4, r7, #0
+ 600 06e0 0600A0E1 		mov	r0, r6
+ 601 06e4 0410A0E1 		mov	r1, r4
+ 602 06e8 FEFFFFEB 		bl	__umodsi3
+ 603 06ec 0410A0E1 		mov	r1, r4
+ 604 06f0 0090A0E1 		mov	r9, r0
+ 605 06f4 0600A0E1 		mov	r0, r6
+ 606 06f8 FEFFFFEB 		bl	__udivsi3
+ 607 06fc 0080A0E3 		mov	r8, #0
+ 608 0700 0060A0E1 		mov	r6, r0
+ 609              	.L98:
+ 610 0704 30005AE3 		cmp	sl, #48
+ 611 0708 7500000A 		beq	.L106
+ 612 070c 1F0000CA 		bgt	.L107
+ 613 0710 02007AE3 		cmn	sl, #2
+ 614 0714 4300000A 		beq	.L103
+ 615 0718 0E0000CA 		bgt	.L108
+ 616 071c 30007AE3 		cmn	sl, #48
+ 617 0720 6D00000A 		beq	.L102
+ 618 0724 040000CA 		bgt	.L109
+ 619 0728 3C007AE3 		cmn	sl, #60
+ 620 072c 6A00000A 		beq	.L102
+ 621 0730 32007AE3 		cmn	sl, #50
+ 622 0734 7300001A 		bne	.L115
+ 623 0738 670000EA 		b	.L102
+ 624              	.L109:
+ 625 073c 1E007AE3 		cmn	sl, #30
+ 626 0740 6500000A 		beq	.L102
+ 627 0744 6F0000BA 		blt	.L115
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 12
+
+
+ 628 0748 19308AE2 		add	r3, sl, #25
+ 629 074c 010053E3 		cmp	r3, #1
+ 630 0750 6C00008A 		bhi	.L115
+ 631 0754 600000EA 		b	.L102
+ 632              	.L108:
+ 633 0758 0A005AE3 		cmp	sl, #10
+ 634 075c 6000000A 		beq	.L106
+ 635 0760 040000CA 		bgt	.L110
+ 636 0764 01007AE3 		cmn	sl, #1
+ 637 0768 4500000A 		beq	.L104
+ 638 076c 00005AE3 		cmp	sl, #0
+ 639 0770 5200000A 		beq	.L105
+ 640 0774 630000EA 		b	.L115
+ 641              	.L110:
+ 642 0778 18005AE3 		cmp	sl, #24
+ 643 077c 610000BA 		blt	.L115
+ 644 0780 19005AE3 		cmp	sl, #25
+ 645 0784 560000DA 		ble	.L106
+ 646 0788 1E005AE3 		cmp	sl, #30
+ 647 078c 230000EA 		b	.L121
+ 648              	.L107:
+ 649 0790 80319FE5 		ldr	r3, .L123+4
+ 650 0794 03005AE1 		cmp	sl, r3
+ 651 0798 5100000A 		beq	.L106
+ 652 079c 0C0000CA 		bgt	.L111
+ 653 07a0 4B005AE3 		cmp	sl, #75
+ 654 07a4 4E00000A 		beq	.L106
+ 655 07a8 030000CA 		bgt	.L112
+ 656 07ac 32005AE3 		cmp	sl, #50
+ 657 07b0 4B00000A 		beq	.L106
+ 658 07b4 3C005AE3 		cmp	sl, #60
+ 659 07b8 180000EA 		b	.L121
+ 660              	.L112:
+ 661 07bc FA0F5AE3 		cmp	sl, #1000
+ 662 07c0 4700000A 		beq	.L106
+ 663 07c4 7D0D5AE3 		cmp	sl, #8000
+ 664 07c8 4500000A 		beq	.L106
+ 665 07cc 64005AE3 		cmp	sl, #100
+ 666 07d0 120000EA 		b	.L121
+ 667              	.L111:
+ 668 07d4 40319FE5 		ldr	r3, .L123+8
+ 669 07d8 03005AE1 		cmp	sl, r3
+ 670 07dc 4000000A 		beq	.L106
+ 671 07e0 070000CA 		bgt	.L113
+ 672 07e4 FA0D5AE3 		cmp	sl, #16000
+ 673 07e8 3D00000A 		beq	.L106
+ 674 07ec 2C319FE5 		ldr	r3, .L123+12
+ 675 07f0 03005AE1 		cmp	sl, r3
+ 676 07f4 3A00000A 		beq	.L106
+ 677 07f8 14319FE5 		ldr	r3, .L123
+ 678 07fc 03005AE1 		cmp	sl, r3
+ 679 0800 060000EA 		b	.L121
+ 680              	.L113:
+ 681 0804 18319FE5 		ldr	r3, .L123+16
+ 682 0808 03005AE1 		cmp	sl, r3
+ 683 080c 3400000A 		beq	.L106
+ 684 0810 10319FE5 		ldr	r3, .L123+20
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 13
+
+
+ 685 0814 03005AE1 		cmp	sl, r3
+ 686 0818 3100000A 		beq	.L106
+ 687 081c 7D0C5AE3 		cmp	sl, #32000
+ 688              	.L121:
+ 689 0820 3800001A 		bne	.L115
+ 690 0824 2E0000EA 		b	.L106
+ 691              	.L103:
+ 692 0828 0600A0E1 		mov	r0, r6
+ 693 082c 3C10A0E3 		mov	r1, #60
+ 694 0830 FEFFFFEB 		bl	__udivsi3
+ 695 0834 3C10A0E3 		mov	r1, #60
+ 696 0838 0040A0E1 		mov	r4, r0
+ 697 083c FEFFFFEB 		bl	__udivsi3
+ 698 0840 3C10A0E3 		mov	r1, #60
+ 699 0844 0050A0E1 		mov	r5, r0
+ 700 0848 0400A0E1 		mov	r0, r4
+ 701 084c FEFFFFEB 		bl	__umodsi3
+ 702 0850 3C10A0E3 		mov	r1, #60
+ 703 0854 0040A0E1 		mov	r4, r0
+ 704 0858 0600A0E1 		mov	r0, r6
+ 705 085c FEFFFFEB 		bl	__umodsi3
+ 706 0860 0B10A0E1 		mov	r1, fp
+ 707 0864 00008DE5 		str	r0, [sp, #0]
+ 708 0868 0520A0E1 		mov	r2, r5
+ 709 086c 0C009DE5 		ldr	r0, [sp, #12]
+ 710 0870 0430A0E1 		mov	r3, r4
+ 711 0874 04908DE5 		str	r9, [sp, #4]
+ 712 0878 08808DE5 		str	r8, [sp, #8]
+ 713 087c FEFFFFEB 		bl	sprintf
+ 714 0880 200000EA 		b	.L115
+ 715              	.L104:
+ 716 0884 0600A0E1 		mov	r0, r6
+ 717 0888 3C10A0E3 		mov	r1, #60
+ 718 088c FEFFFFEB 		bl	__udivsi3
+ 719 0890 3C10A0E3 		mov	r1, #60
+ 720 0894 0040A0E1 		mov	r4, r0
+ 721 0898 0600A0E1 		mov	r0, r6
+ 722 089c FEFFFFEB 		bl	__umodsi3
+ 723 08a0 0B10A0E1 		mov	r1, fp
+ 724 08a4 0030A0E1 		mov	r3, r0
+ 725 08a8 0420A0E1 		mov	r2, r4
+ 726 08ac 0C009DE5 		ldr	r0, [sp, #12]
+ 727 08b0 00908DE5 		str	r9, [sp, #0]
+ 728 08b4 04808DE5 		str	r8, [sp, #4]
+ 729 08b8 FEFFFFEB 		bl	sprintf
+ 730 08bc 110000EA 		b	.L115
+ 731              	.L105:
+ 732 08c0 0C009DE5 		ldr	r0, [sp, #12]
+ 733 08c4 0B10A0E1 		mov	r1, fp
+ 734 08c8 0620A0E1 		mov	r2, r6
+ 735 08cc 0930A0E1 		mov	r3, r9
+ 736 08d0 00808DE5 		str	r8, [sp, #0]
+ 737 08d4 FEFFFFEB 		bl	sprintf
+ 738 08d8 0A0000EA 		b	.L115
+ 739              	.L102:
+ 740 08dc 000057E3 		cmp	r7, #0
+ 741 08e0 0080A0B3 		movlt	r8, #0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 14
+
+
+ 742              	.L106:
+ 743 08e4 10008DE2 		add	r0, sp, #16
+ 744 08e8 030090E8 		ldmia	r0, {r0-r1}
+ 745 08ec 0A20A0E1 		mov	r2, sl
+ 746 08f0 FEFFFFEB 		bl	mad_timer_count
+ 747 08f4 0B10A0E1 		mov	r1, fp
+ 748 08f8 0020A0E1 		mov	r2, r0
+ 749 08fc 0830A0E1 		mov	r3, r8
+ 750 0900 0C009DE5 		ldr	r0, [sp, #12]
+ 751 0904 FEFFFFEB 		bl	sprintf
+ 752              	.L115:
+ 753 0908 20D08DE2 		add	sp, sp, #32
+ 754 090c F04FBDE8 		ldmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 755 0910 1EFF2FE1 		bx	lr
+ 756              	.L124:
+ 757              		.align	2
+ 758              	.L123:
+ 759 0914 E02E0000 		.word	12000
+ 760 0918 112B0000 		.word	11025
+ 761 091c C05D0000 		.word	24000
+ 762 0920 22560000 		.word	22050
+ 763 0924 44AC0000 		.word	44100
+ 764 0928 80BB0000 		.word	48000
+ 765 092c 004D0715 		.word	352800000
+ 766 0930 A8FDFFFF 		.word	-600
+ 767              		.size	mad_timer_string, .-mad_timer_string
+ 768              		.align	2
+ 769              		.global	mad_timer_set
+ 770              		.type	mad_timer_set, %function
+ 771              	mad_timer_set:
+ 772              		@ Function supports interworking.
+ 773              		@ args = 0, pretend = 0, frame = 0
+ 774              		@ frame_needed = 0, uses_anonymous_args = 0
+ 775 0934 F0402DE9 		stmfd	sp!, {r4, r5, r6, r7, lr}
+ 776 0938 0340A0E1 		mov	r4, r3
+ 777 093c 030052E1 		cmp	r2, r3
+ 778 0940 0030A033 		movcc	r3, #0
+ 779 0944 0130A023 		movcs	r3, #1
+ 780 0948 000054E3 		cmp	r4, #0
+ 781 094c 0030A003 		moveq	r3, #0
+ 782 0950 0060A0E1 		mov	r6, r0
+ 783 0954 000053E3 		cmp	r3, #0
+ 784 0958 0250A0E1 		mov	r5, r2
+ 785 095c 0170A0E1 		mov	r7, r1
+ 786 0960 001086E5 		str	r1, [r6, #0]
+ 787 0964 0800000A 		beq	.L126
+ 788 0968 0200A0E1 		mov	r0, r2
+ 789 096c 0410A0E1 		mov	r1, r4
+ 790 0970 FEFFFFEB 		bl	__udivsi3
+ 791 0974 000087E0 		add	r0, r7, r0
+ 792 0978 000086E5 		str	r0, [r6, #0]
+ 793 097c 0410A0E1 		mov	r1, r4
+ 794 0980 0500A0E1 		mov	r0, r5
+ 795 0984 FEFFFFEB 		bl	__umodsi3
+ 796 0988 0050A0E1 		mov	r5, r0
+ 797              	.L126:
+ 798 098c FA0D54E3 		cmp	r4, #16000
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 15
+
+
+ 799 0990 3100000A 		beq	.L134
+ 800 0994 0E00008A 		bhi	.L141
+ 801 0998 FA0F54E3 		cmp	r4, #1000
+ 802 099c 2400000A 		beq	.L130
+ 803 09a0 0200008A 		bhi	.L142
+ 804 09a4 010054E3 		cmp	r4, #1
+ 805 09a8 3700008A 		bhi	.L128
+ 806 09ac 1D0000EA 		b	.L148
+ 807              	.L142:
+ 808 09b0 0C319FE5 		ldr	r3, .L150
+ 809 09b4 030054E1 		cmp	r4, r3
+ 810 09b8 2300000A 		beq	.L132
+ 811 09bc 04319FE5 		ldr	r3, .L150+4
+ 812 09c0 030054E1 		cmp	r4, r3
+ 813 09c4 2200000A 		beq	.L133
+ 814 09c8 7D0D54E3 		cmp	r4, #8000
+ 815 09cc 2E00001A 		bne	.L128
+ 816 09d0 190000EA 		b	.L131
+ 817              	.L141:
+ 818 09d4 7D0C54E3 		cmp	r4, #32000
+ 819 09d8 2500000A 		beq	.L137
+ 820 09dc 0600008A 		bhi	.L143
+ 821 09e0 E4309FE5 		ldr	r3, .L150+8
+ 822 09e4 030054E1 		cmp	r4, r3
+ 823 09e8 1D00000A 		beq	.L135
+ 824 09ec DC309FE5 		ldr	r3, .L150+12
+ 825 09f0 030054E1 		cmp	r4, r3
+ 826 09f4 2400001A 		bne	.L128
+ 827 09f8 1B0000EA 		b	.L136
+ 828              	.L143:
+ 829 09fc D0309FE5 		ldr	r3, .L150+16
+ 830 0a00 030054E1 		cmp	r4, r3
+ 831 0a04 1E00000A 		beq	.L139
+ 832 0a08 C8309FE5 		ldr	r3, .L150+20
+ 833 0a0c 030054E1 		cmp	r4, r3
+ 834 0a10 04508605 		streq	r5, [r6, #4]
+ 835 0a14 2100000A 		beq	.L145
+ 836 0a18 BC309FE5 		ldr	r3, .L150+24
+ 837 0a1c 030054E1 		cmp	r4, r3
+ 838 0a20 1900001A 		bne	.L128
+ 839 0a24 140000EA 		b	.L138
+ 840              	.L148:
+ 841 0a28 0030A0E3 		mov	r3, #0
+ 842 0a2c 043086E5 		str	r3, [r6, #4]
+ 843 0a30 210000EA 		b	.L147
+ 844              	.L130:
+ 845 0a34 A4309FE5 		ldr	r3, .L150+28
+ 846 0a38 000000EA 		b	.L149
+ 847              	.L131:
+ 848 0a3c 98309FE5 		ldr	r3, .L150+24
+ 849              	.L149:
+ 850 0a40 950303E0 		mul	r3, r5, r3
+ 851 0a44 043086E5 		str	r3, [r6, #4]
+ 852 0a48 140000EA 		b	.L145
+ 853              	.L132:
+ 854 0a4c 7D3CA0E3 		mov	r3, #32000
+ 855 0a50 FAFFFFEA 		b	.L149
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 16
+
+
+ 856              	.L133:
+ 857 0a54 88309FE5 		ldr	r3, .L150+32
+ 858 0a58 F8FFFFEA 		b	.L149
+ 859              	.L134:
+ 860 0a5c 68309FE5 		ldr	r3, .L150+8
+ 861 0a60 F6FFFFEA 		b	.L149
+ 862              	.L135:
+ 863 0a64 FA3DA0E3 		mov	r3, #16000
+ 864 0a68 F4FFFFEA 		b	.L149
+ 865              	.L136:
+ 866 0a6c 74309FE5 		ldr	r3, .L150+36
+ 867 0a70 F2FFFFEA 		b	.L149
+ 868              	.L137:
+ 869 0a74 48309FE5 		ldr	r3, .L150
+ 870 0a78 F0FFFFEA 		b	.L149
+ 871              	.L138:
+ 872 0a7c 7D3DA0E3 		mov	r3, #8000
+ 873 0a80 EEFFFFEA 		b	.L149
+ 874              	.L139:
+ 875 0a84 60309FE5 		ldr	r3, .L150+40
+ 876 0a88 ECFFFFEA 		b	.L149
+ 877              	.L128:
+ 878 0a8c 0500A0E1 		mov	r0, r5
+ 879 0a90 0410A0E1 		mov	r1, r4
+ 880 0a94 3C209FE5 		ldr	r2, .L150+20
+ 881 0a98 D5FDFFEB 		bl	scale_rational
+ 882 0a9c 040086E5 		str	r0, [r6, #4]
+ 883              	.L145:
+ 884 0aa0 042096E5 		ldr	r2, [r6, #4]
+ 885 0aa4 44309FE5 		ldr	r3, .L150+44
+ 886 0aa8 030052E1 		cmp	r2, r3
+ 887 0aac 0200009A 		bls	.L147
+ 888 0ab0 0600A0E1 		mov	r0, r6
+ 889 0ab4 F040BDE8 		ldmfd	sp!, {r4, r5, r6, r7, lr}
+ 890 0ab8 77FDFFEA 		b	reduce_timer
+ 891              	.L147:
+ 892 0abc F040BDE8 		ldmfd	sp!, {r4, r5, r6, r7, lr}
+ 893 0ac0 1EFF2FE1 		bx	lr
+ 894              	.L151:
+ 895              		.align	2
+ 896              	.L150:
+ 897 0ac4 112B0000 		.word	11025
+ 898 0ac8 E02E0000 		.word	12000
+ 899 0acc 22560000 		.word	22050
+ 900 0ad0 C05D0000 		.word	24000
+ 901 0ad4 80BB0000 		.word	48000
+ 902 0ad8 004D0715 		.word	352800000
+ 903 0adc 44AC0000 		.word	44100
+ 904 0ae0 20620500 		.word	352800
+ 905 0ae4 D8720000 		.word	29400
+ 906 0ae8 6C390000 		.word	14700
+ 907 0aec B61C0000 		.word	7350
+ 908 0af0 FF4C0715 		.word	352799999
+ 909              		.size	mad_timer_set, .-mad_timer_set
+ 910              		.global	mad_timer_zero
+ 911              		.section	.rodata
+ 912              		.align	2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 17
+
+
+ 913              		.type	mad_timer_zero, %object
+ 914              		.size	mad_timer_zero, 8
+ 915              	mad_timer_zero:
+ 916 0000 00000000 		.space	8
+ 916      00000000 
+ 917              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 timer.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:6      .text:00000000 mad_timer_compare
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:11     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:31     .text:00000034 mad_timer_negate
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:51     .text:00000060 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:56     .text:00000064 mad_timer_abs
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:60     .text:00000064 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:80     .text:0000009c reduce_timer
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:103    .text:000000dc $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:108    .text:000000e0 mad_timer_add
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:112    .text:000000e0 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:129    .text:00000114 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:134    .text:00000118 mad_timer_multiply
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:138    .text:00000118 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:173    .text:00000188 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:915    .rodata:00000000 mad_timer_zero
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:177    .text:0000018c reduce_rational
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:181    .text:0000018c $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:213    .text:000001f4 scale_rational
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:274    .text:000002b4 mad_timer_fraction
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:316    .text:00000334 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:323    .text:0000033c mad_timer_count
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:327    .text:0000033c $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:446    .text:000004d0 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:458    .text:000004f0 mad_timer_string
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:462    .text:000004f0 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:759    .text:00000914 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:771    .text:00000934 mad_timer_set
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:775    .text:00000934 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxnBvVI.s:897    .text:00000ac4 $d
+
+UNDEFINED SYMBOLS
+__udivsi3
+__umodsi3
+abort
+__divsi3
+sprintf

@@ -170,4 +170,6 @@
 #define FULL_ERROR_SUPPORT
 #define LIST_MAXLENFILENAME 12
 
+#define VECTORED_IRQ_INTERRUPTS
+
 #endif  /* _config_h_ */

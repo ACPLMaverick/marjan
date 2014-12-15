@@ -1,0 +1,479 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 1
+
+
+   1              		.file	"stream.c"
+   2              		.text
+   3              		.align	2
+   4              		.global	mad_stream_finish
+   5              		.type	mad_stream_finish, %function
+   6              	mad_stream_finish:
+   7              		@ Function supports interworking.
+   8              		@ args = 0, pretend = 0, frame = 0
+   9              		@ frame_needed = 0, uses_anonymous_args = 0
+  10              		@ link register save eliminated.
+  11 0000 303090E5 		ldr	r3, [r0, #48]
+  12 0004 000053E3 		cmp	r3, #0
+  13 0008 0030A013 		movne	r3, #0
+  14              		@ lr needed for prologue
+  15 000c 30308015 		strne	r3, [r0, #48]
+  16 0010 1EFF2FE1 		bx	lr
+  17              		.size	mad_stream_finish, .-mad_stream_finish
+  18              		.align	2
+  19              		.global	mad_stream_skip
+  20              		.type	mad_stream_skip, %function
+  21              	mad_stream_skip:
+  22              		@ Function supports interworking.
+  23              		@ args = 0, pretend = 0, frame = 0
+  24              		@ frame_needed = 0, uses_anonymous_args = 0
+  25              		@ link register save eliminated.
+  26 0014 083090E5 		ldr	r3, [r0, #8]
+  27 0018 013083E0 		add	r3, r3, r1
+  28              		@ lr needed for prologue
+  29 001c 083080E5 		str	r3, [r0, #8]
+  30 0020 1EFF2FE1 		bx	lr
+  31              		.size	mad_stream_skip, .-mad_stream_skip
+  32              		.section	.rodata.str1.4,"aMS",%progbits,1
+  33              		.align	2
+  34              	.LC0:
+  35 0000 696E636F 		.ascii	"incompatible block_type for JS\000"
+  35      6D706174 
+  35      69626C65 
+  35      20626C6F 
+  35      636B5F74 
+  36 001f 00       		.align	2
+  37              	.LC1:
+  38 0020 6E6F2065 		.ascii	"no error\000"
+  38      72726F72 
+  38      00
+  39 0029 000000   		.align	2
+  40              	.LC2:
+  41 002c 696E7075 		.ascii	"input buffer too small (or EOF)\000"
+  41      74206275 
+  41      66666572 
+  41      20746F6F 
+  41      20736D61 
+  42              		.align	2
+  43              	.LC3:
+  44 004c 696E7661 		.ascii	"invalid (null) buffer pointer\000"
+  44      6C696420 
+  44      286E756C 
+  44      6C292062 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 2
+
+
+  44      75666665 
+  45 006a 0000     		.align	2
+  46              	.LC4:
+  47 006c 6E6F7420 		.ascii	"not enough memory\000"
+  47      656E6F75 
+  47      6768206D 
+  47      656D6F72 
+  47      7900
+  48 007e 0000     		.align	2
+  49              	.LC5:
+  50 0080 6C6F7374 		.ascii	"lost synchronization\000"
+  50      2073796E 
+  50      6368726F 
+  50      6E697A61 
+  50      74696F6E 
+  51 0095 000000   		.align	2
+  52              	.LC6:
+  53 0098 72657365 		.ascii	"reserved header layer value\000"
+  53      72766564 
+  53      20686561 
+  53      64657220 
+  53      6C617965 
+  54              		.align	2
+  55              	.LC7:
+  56 00b4 666F7262 		.ascii	"forbidden bitrate value\000"
+  56      69646465 
+  56      6E206269 
+  56      74726174 
+  56      65207661 
+  57              		.align	2
+  58              	.LC8:
+  59 00cc 72657365 		.ascii	"reserved sample frequency value\000"
+  59      72766564 
+  59      2073616D 
+  59      706C6520 
+  59      66726571 
+  60              		.align	2
+  61              	.LC9:
+  62 00ec 72657365 		.ascii	"reserved emphasis value\000"
+  62      72766564 
+  62      20656D70 
+  62      68617369 
+  62      73207661 
+  63              		.align	2
+  64              	.LC10:
+  65 0104 43524320 		.ascii	"CRC check failed\000"
+  65      63686563 
+  65      6B206661 
+  65      696C6564 
+  65      00
+  66 0115 000000   		.align	2
+  67              	.LC11:
+  68 0118 666F7262 		.ascii	"forbidden bit allocation value\000"
+  68      69646465 
+  68      6E206269 
+  68      7420616C 
+  68      6C6F6361 
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 3
+
+
+  69 0137 00       		.align	2
+  70              	.LC12:
+  71 0138 62616420 		.ascii	"bad scalefactor index\000"
+  71      7363616C 
+  71      65666163 
+  71      746F7220 
+  71      696E6465 
+  72 014e 0000     		.align	2
+  73              	.LC13:
+  74 0150 62616420 		.ascii	"bad bitrate/mode combination\000"
+  74      62697472 
+  74      6174652F 
+  74      6D6F6465 
+  74      20636F6D 
+  75 016d 000000   		.align	2
+  76              	.LC14:
+  77 0170 62616420 		.ascii	"bad frame length\000"
+  77      6672616D 
+  77      65206C65 
+  77      6E677468 
+  77      00
+  78 0181 000000   		.align	2
+  79              	.LC15:
+  80 0184 62616420 		.ascii	"bad big_values count\000"
+  80      6269675F 
+  80      76616C75 
+  80      65732063 
+  80      6F756E74 
+  81 0199 000000   		.align	2
+  82              	.LC16:
+  83 019c 72657365 		.ascii	"reserved block_type\000"
+  83      72766564 
+  83      20626C6F 
+  83      636B5F74 
+  83      79706500 
+  84              		.align	2
+  85              	.LC17:
+  86 01b0 62616420 		.ascii	"bad scalefactor selection info\000"
+  86      7363616C 
+  86      65666163 
+  86      746F7220 
+  86      73656C65 
+  87 01cf 00       		.align	2
+  88              	.LC18:
+  89 01d0 62616420 		.ascii	"bad main_data_begin pointer\000"
+  89      6D61696E 
+  89      5F646174 
+  89      615F6265 
+  89      67696E20 
+  90              		.align	2
+  91              	.LC19:
+  92 01ec 62616420 		.ascii	"bad audio data length\000"
+  92      61756469 
+  92      6F206461 
+  92      7461206C 
+  92      656E6774 
+  93 0202 0000     		.align	2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 4
+
+
+  94              	.LC20:
+  95 0204 62616420 		.ascii	"bad Huffman table select\000"
+  95      48756666 
+  95      6D616E20 
+  95      7461626C 
+  95      65207365 
+  96 021d 000000   		.align	2
+  97              	.LC21:
+  98 0220 48756666 		.ascii	"Huffman data overrun\000"
+  98      6D616E20 
+  98      64617461 
+  98      206F7665 
+  98      7272756E 
+  99 0235 000000   		.text
+ 100              		.align	2
+ 101              		.global	mad_stream_errorstr
+ 102              		.type	mad_stream_errorstr, %function
+ 103              	mad_stream_errorstr:
+ 104              		@ Function supports interworking.
+ 105              		@ args = 0, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107              		@ link register save eliminated.
+ 108 0024 3C2090E5 		ldr	r2, [r0, #60]
+ 109 0028 8C319FE5 		ldr	r3, .L39
+ 110 002c 030052E1 		cmp	r2, r3
+ 111              		@ lr needed for prologue
+ 112 0030 88019F05 		ldreq	r0, .L39+4
+ 113 0034 1EFF2F01 		bxeq	lr
+ 114 0038 2300008A 		bhi	.L31
+ 115 003c 113E43E2 		sub	r3, r3, #272
+ 116 0040 030052E1 		cmp	r2, r3
+ 117 0044 78019F05 		ldreq	r0, .L39+8
+ 118 0048 1EFF2F01 		bxeq	lr
+ 119 004c 0A00008A 		bhi	.L32
+ 120 0050 010052E3 		cmp	r2, #1
+ 121 0054 6C019F05 		ldreq	r0, .L39+12
+ 122 0058 1EFF2F01 		bxeq	lr
+ 123 005c 68019F35 		ldrcc	r0, .L39+16
+ 124 0060 1EFF2F31 		bxcc	lr
+ 125 0064 020052E3 		cmp	r2, #2
+ 126 0068 60019F05 		ldreq	r0, .L39+20
+ 127 006c 1EFF2F01 		bxeq	lr
+ 128 0070 310052E3 		cmp	r2, #49
+ 129 0074 4000001A 		bne	.L8
+ 130 0078 410000EA 		b	.L12
+ 131              	.L32:
+ 132 007c 410F52E3 		cmp	r2, #260
+ 133 0080 4C019F05 		ldreq	r0, .L39+24
+ 134 0084 1EFF2F01 		bxeq	lr
+ 135 0088 0700008A 		bhi	.L33
+ 136 008c 44319FE5 		ldr	r3, .L39+28
+ 137 0090 030052E1 		cmp	r2, r3
+ 138 0094 40019F05 		ldreq	r0, .L39+32
+ 139 0098 1EFF2F01 		bxeq	lr
+ 140 009c 013083E2 		add	r3, r3, #1
+ 141 00a0 030052E1 		cmp	r2, r3
+ 142 00a4 3400001A 		bne	.L8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 5
+
+
+ 143 00a8 370000EA 		b	.L15
+ 144              	.L33:
+ 145 00ac 2C319FE5 		ldr	r3, .L39+36
+ 146 00b0 030052E1 		cmp	r2, r3
+ 147 00b4 28019F05 		ldreq	r0, .L39+40
+ 148 00b8 1EFF2F01 		bxeq	lr
+ 149 00bc FC3083E2 		add	r3, r3, #252
+ 150 00c0 030052E1 		cmp	r2, r3
+ 151 00c4 2C00001A 		bne	.L8
+ 152 00c8 310000EA 		b	.L18
+ 153              	.L31:
+ 154 00cc 8D0F52E3 		cmp	r2, #564
+ 155 00d0 10019F05 		ldreq	r0, .L39+44
+ 156 00d4 1EFF2F01 		bxeq	lr
+ 157 00d8 1400008A 		bhi	.L34
+ 158 00dc 08319FE5 		ldr	r3, .L39+48
+ 159 00e0 030052E1 		cmp	r2, r3
+ 160 00e4 04019F05 		ldreq	r0, .L39+52
+ 161 00e8 1EFF2F01 		bxeq	lr
+ 162 00ec 0700008A 		bhi	.L35
+ 163 00f0 103043E2 		sub	r3, r3, #16
+ 164 00f4 030052E1 		cmp	r2, r3
+ 165 00f8 F4009F05 		ldreq	r0, .L39+56
+ 166 00fc 1EFF2F01 		bxeq	lr
+ 167 0100 013083E2 		add	r3, r3, #1
+ 168 0104 030052E1 		cmp	r2, r3
+ 169 0108 1B00001A 		bne	.L8
+ 170 010c 220000EA 		b	.L21
+ 171              	.L35:
+ 172 0110 E0309FE5 		ldr	r3, .L39+60
+ 173 0114 030052E1 		cmp	r2, r3
+ 174 0118 DC009F05 		ldreq	r0, .L39+64
+ 175 011c 1EFF2F01 		bxeq	lr
+ 176 0120 013083E2 		add	r3, r3, #1
+ 177 0124 030052E1 		cmp	r2, r3
+ 178 0128 1300001A 		bne	.L8
+ 179 012c 1C0000EA 		b	.L24
+ 180              	.L34:
+ 181 0130 C8309FE5 		ldr	r3, .L39+68
+ 182 0134 030052E1 		cmp	r2, r3
+ 183 0138 C4009F05 		ldreq	r0, .L39+72
+ 184 013c 1EFF2F01 		bxeq	lr
+ 185 0140 0700008A 		bhi	.L36
+ 186 0144 023043E2 		sub	r3, r3, #2
+ 187 0148 030052E1 		cmp	r2, r3
+ 188 014c B4009F05 		ldreq	r0, .L39+76
+ 189 0150 1EFF2F01 		bxeq	lr
+ 190 0154 013083E2 		add	r3, r3, #1
+ 191 0158 030052E1 		cmp	r2, r3
+ 192 015c 0600001A 		bne	.L8
+ 193 0160 110000EA 		b	.L27
+ 194              	.L36:
+ 195 0164 8E0F52E3 		cmp	r2, #568
+ 196 0168 1100000A 		beq	.L29
+ 197 016c 98309FE5 		ldr	r3, .L39+80
+ 198 0170 030052E1 		cmp	r2, r3
+ 199 0174 94009F05 		ldreq	r0, .L39+84
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 6
+
+
+ 200 0178 1EFF2F01 		bxeq	lr
+ 201              	.L8:
+ 202 017c 0000A0E3 		mov	r0, #0
+ 203 0180 1EFF2FE1 		bx	lr
+ 204              	.L12:
+ 205 0184 88009FE5 		ldr	r0, .L39+88
+ 206 0188 1EFF2FE1 		bx	lr
+ 207              	.L15:
+ 208 018c 84009FE5 		ldr	r0, .L39+92
+ 209 0190 1EFF2FE1 		bx	lr
+ 210              	.L18:
+ 211 0194 80009FE5 		ldr	r0, .L39+96
+ 212 0198 1EFF2FE1 		bx	lr
+ 213              	.L21:
+ 214 019c 7C009FE5 		ldr	r0, .L39+100
+ 215 01a0 1EFF2FE1 		bx	lr
+ 216              	.L24:
+ 217 01a4 78009FE5 		ldr	r0, .L39+104
+ 218 01a8 1EFF2FE1 		bx	lr
+ 219              	.L27:
+ 220 01ac 74009FE5 		ldr	r0, .L39+108
+ 221 01b0 1EFF2FE1 		bx	lr
+ 222              	.L29:
+ 223 01b4 70009FE5 		ldr	r0, .L39+112
+ 224 01b8 1EFF2FE1 		bx	lr
+ 225              	.L40:
+ 226              		.align	2
+ 227              	.L39:
+ 228 01bc 11020000 		.word	529
+ 229 01c0 18010000 		.word	.LC11
+ 230 01c4 80000000 		.word	.LC5
+ 231 01c8 2C000000 		.word	.LC2
+ 232 01cc 20000000 		.word	.LC1
+ 233 01d0 4C000000 		.word	.LC3
+ 234 01d4 CC000000 		.word	.LC8
+ 235 01d8 02010000 		.word	258
+ 236 01dc 98000000 		.word	.LC6
+ 237 01e0 05010000 		.word	261
+ 238 01e4 EC000000 		.word	.LC9
+ 239 01e8 B0010000 		.word	.LC17
+ 240 01ec 31020000 		.word	561
+ 241 01f0 70010000 		.word	.LC14
+ 242 01f4 38010000 		.word	.LC12
+ 243 01f8 32020000 		.word	562
+ 244 01fc 84010000 		.word	.LC15
+ 245 0200 37020000 		.word	567
+ 246 0204 04020000 		.word	.LC20
+ 247 0208 D0010000 		.word	.LC18
+ 248 020c 39020000 		.word	569
+ 249 0210 00000000 		.word	.LC0
+ 250 0214 6C000000 		.word	.LC4
+ 251 0218 B4000000 		.word	.LC7
+ 252 021c 04010000 		.word	.LC10
+ 253 0220 50010000 		.word	.LC13
+ 254 0224 9C010000 		.word	.LC16
+ 255 0228 EC010000 		.word	.LC19
+ 256 022c 20020000 		.word	.LC21
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 7
+
+
+ 257              		.size	mad_stream_errorstr, .-mad_stream_errorstr
+ 258              		.align	2
+ 259              		.global	mad_stream_sync
+ 260              		.type	mad_stream_sync, %function
+ 261              	mad_stream_sync:
+ 262              		@ Function supports interworking.
+ 263              		@ args = 0, pretend = 0, frame = 0
+ 264              		@ frame_needed = 0, uses_anonymous_args = 0
+ 265 0230 30402DE9 		stmfd	sp!, {r4, r5, lr}
+ 266 0234 1C5080E2 		add	r5, r0, #28
+ 267 0238 0040A0E1 		mov	r4, r0
+ 268 023c 0500A0E1 		mov	r0, r5
+ 269 0240 FEFFFFEB 		bl	mad_bit_nextbyte
+ 270 0244 042094E5 		ldr	r2, [r4, #4]
+ 271 0248 0010A0E1 		mov	r1, r0
+ 272 024c 000000EA 		b	.L42
+ 273              	.L43:
+ 274 0250 011081E2 		add	r1, r1, #1
+ 275              	.L42:
+ 276 0254 013042E2 		sub	r3, r2, #1
+ 277 0258 030051E1 		cmp	r1, r3
+ 278 025c 0600002A 		bcs	.L44
+ 279 0260 0030D1E5 		ldrb	r3, [r1, #0]	@ zero_extendqisi2
+ 280 0264 FF0053E3 		cmp	r3, #255
+ 281 0268 F8FFFF1A 		bne	.L43
+ 282 026c 0130D1E5 		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 283 0270 E03003E2 		and	r3, r3, #224
+ 284 0274 E00053E3 		cmp	r3, #224
+ 285 0278 F4FFFF1A 		bne	.L43
+ 286              	.L44:
+ 287 027c 023061E0 		rsb	r3, r1, r2
+ 288 0280 070053E3 		cmp	r3, #7
+ 289 0284 0000E0D3 		mvnle	r0, #0
+ 290 0288 020000DA 		ble	.L49
+ 291 028c 0500A0E1 		mov	r0, r5
+ 292 0290 FEFFFFEB 		bl	mad_bit_init
+ 293 0294 0000A0E3 		mov	r0, #0
+ 294              	.L49:
+ 295 0298 3040BDE8 		ldmfd	sp!, {r4, r5, lr}
+ 296 029c 1EFF2FE1 		bx	lr
+ 297              		.size	mad_stream_sync, .-mad_stream_sync
+ 298              		.align	2
+ 299              		.global	mad_stream_buffer
+ 300              		.type	mad_stream_buffer, %function
+ 301              	mad_stream_buffer:
+ 302              		@ Function supports interworking.
+ 303              		@ args = 0, pretend = 0, frame = 0
+ 304              		@ frame_needed = 0, uses_anonymous_args = 0
+ 305 02a0 022081E0 		add	r2, r1, r2
+ 306 02a4 0130A0E3 		mov	r3, #1
+ 307 02a8 042080E5 		str	r2, [r0, #4]
+ 308 02ac 181080E5 		str	r1, [r0, #24]
+ 309 02b0 0C3080E5 		str	r3, [r0, #12]
+ 310 02b4 001080E5 		str	r1, [r0, #0]
+ 311 02b8 141080E5 		str	r1, [r0, #20]
+ 312 02bc 04E02DE5 		str	lr, [sp, #-4]!
+ 313 02c0 1C0080E2 		add	r0, r0, #28
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 8
+
+
+ 314 02c4 FEFFFFEB 		bl	mad_bit_init
+ 315 02c8 04E09DE4 		ldr	lr, [sp], #4
+ 316 02cc 1EFF2FE1 		bx	lr
+ 317              		.size	mad_stream_buffer, .-mad_stream_buffer
+ 318              		.align	2
+ 319              		.global	mad_stream_init
+ 320              		.type	mad_stream_init, %function
+ 321              	mad_stream_init:
+ 322              		@ Function supports interworking.
+ 323              		@ args = 0, pretend = 0, frame = 0
+ 324              		@ frame_needed = 0, uses_anonymous_args = 0
+ 325 02d0 30402DE9 		stmfd	sp!, {r4, r5, lr}
+ 326 02d4 0040A0E3 		mov	r4, #0
+ 327 02d8 0050A0E1 		mov	r5, r0
+ 328 02dc 004080E5 		str	r4, [r0, #0]
+ 329 02e0 044080E5 		str	r4, [r0, #4]
+ 330 02e4 084080E5 		str	r4, [r0, #8]
+ 331 02e8 0C4080E5 		str	r4, [r0, #12]
+ 332 02ec 104080E5 		str	r4, [r0, #16]
+ 333 02f0 144080E5 		str	r4, [r0, #20]
+ 334 02f4 184080E5 		str	r4, [r0, #24]
+ 335 02f8 0410A0E1 		mov	r1, r4
+ 336 02fc 1C0080E2 		add	r0, r0, #28
+ 337 0300 FEFFFFEB 		bl	mad_bit_init
+ 338 0304 240085E2 		add	r0, r5, #36
+ 339 0308 0410A0E1 		mov	r1, r4
+ 340 030c FEFFFFEB 		bl	mad_bit_init
+ 341 0310 3C4085E5 		str	r4, [r5, #60]
+ 342 0314 2C4085E5 		str	r4, [r5, #44]
+ 343 0318 304085E5 		str	r4, [r5, #48]
+ 344 031c 344085E5 		str	r4, [r5, #52]
+ 345 0320 384085E5 		str	r4, [r5, #56]
+ 346 0324 3040BDE8 		ldmfd	sp!, {r4, r5, lr}
+ 347 0328 1EFF2FE1 		bx	lr
+ 348              		.size	mad_stream_init, .-mad_stream_init
+ 349              		.comm	MainData,2567,1
+ 350              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stream.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:6      .text:00000000 mad_stream_finish
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:11     .text:00000000 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:21     .text:00000014 mad_stream_skip
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:103    .text:00000024 mad_stream_errorstr
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:228    .text:000001bc $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:261    .text:00000230 mad_stream_sync
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:265    .text:00000230 $a
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:301    .text:000002a0 mad_stream_buffer
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccg05Tod.s:321    .text:000002d0 mad_stream_init
+                            *COM*:00000a07 MainData
+
+UNDEFINED SYMBOLS
+mad_bit_nextbyte
+mad_bit_init

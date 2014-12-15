@@ -52,42 +52,36 @@ CODE    = THUMB
 
 # List C source files here.
 CSRCS   = main.c          \
-          eeprom.c        \
-          i2c.c           \
-          uart.c          \
-          testLedMatrix.c \
           testLcd.c       \
           testMMC.c		  \
-          testMotor.c     \
-          testRGB.c       \
-          testI2C.c       \
-          testAdc.c       \
-          testXBee.c      \
-          myTimer.c 	  \
-          startupSound.c  
+          testI2C.c		  \
+          eeprom.c		  \
+          i2c.c			\
+          myTimer.c 	  
 
 # List assembler source files here
 ASRCS   = 
 
 # List subdirectories to recursively invoke make in 
 SUBDIRS = ./startup \
-          usb \
           irq \
           mmc \
-          filesys
+          filesys \
+          libmad
 
 # List additional libraries to link with
 LIBS    = irq/irq_code.a \
           ./startup/libea_startup_thumb.a \
           ./pre_emptive_os/pre_emptive_os.a \
-          usb/libusb.a \
           ./filesys/filesys.a \
-          ./mmc/mmc.a
+          ./mmc/mmc.a \
+		  ./libmad/libmad.a
 
 # Add include search paths
 INC     = -I ./startup \
 			-I ./filesys \
-			-I ./mmc
+			-I ./mmc \
+			-I ./libmad
 
 # Select if an executable program or a library shall be created
 PROGRAM_MK  = true

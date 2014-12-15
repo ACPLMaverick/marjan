@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 1
   48 003c 2A202020 		.ascii	"*                                                  "
   48      20202020 
   48      20202020 
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s 			page 2
 
 
   48      20202020 
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 1
   84 0128 2C20743D 		.ascii	", t=??? \000"
   84      3F3F3F20 
   84      00
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s 			page 3
 
 
   85 0131 000000   		.align	2
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 1
  139 0090 E41A     		sub	r4, r4, r3
  140 0092 051C     		mov	r5, r0
  141 0094 6301     		lsl	r3, r4, #5
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s 			page 4
 
 
  142 0096 7448     		ldr	r0, .L19+36
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 1
  196 0118 1A43     		orr	r2, r2, r3
  197 011a 574B     		ldr	r3, .L19+52
  198 011c 1A60     		str	r2, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s 			page 5
 
 
  199 011e 019A     		ldr	r2, [sp, #4]
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 1
  253 018e 2023     		mov	r3, #32
  254 0190 0094     		str	r4, [sp]
  255 0192 FFF7FEFF 		bl	consolSendNumber
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s 			page 6
 
 
  256 0196 9020     		mov	r0, #144
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 1
  310 0210 0221     		mov	r1, #2
  311 0212 0093     		str	r3, [sp]
  312 0214 0022     		mov	r2, #0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s 			page 7
 
 
  313 0216 2023     		mov	r3, #32
@@ -412,17 +412,17 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 1
  361 02b0 3C010000 		.word	.LC30
  362              		.size	testAdc, .-testAdc
  363              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s 			page 8
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 testAdc.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s:8      .text:00000000 getAnalogueInput
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s:38     .text:00000030 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s:100    .text:00000038 testAdc
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s:97     .text:00000038 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqrBiS6.s:334    .text:00000244 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s:8      .text:00000000 getAnalogueInput
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s:38     .text:00000030 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s:100    .text:00000038 testAdc
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s:97     .text:00000038 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc93CYrP.s:334    .text:00000244 $d
 
 UNDEFINED SYMBOLS
 simplePrintf

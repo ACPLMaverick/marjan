@@ -30,6 +30,7 @@
 #define LCD_CURSOR_2ROW 0xC0
 #define LCD_SHIFT_LEFT 0x18
 
+unsigned char currentDisplayMode;
 /////////////////////////////
 extern SongInfo currentSongInfo;
 extern unsigned char mmcInitialized;
@@ -42,6 +43,7 @@ extern unsigned char volumeDown;
 extern unsigned int isError;
 extern char* error;
 extern unsigned char currentVolume;
+extern unsigned char displayMode;
 ////////////////////////////
 void ScreenShiftLeft(void);
 ////////////////////////////
@@ -63,6 +65,8 @@ initLCD(void)
 	
   IODIR0 |= LCD_BACKLIGHT;
   IOCLR0  = LCD_BACKLIGHT;
+
+  currentDisplayMode = displayMode;
 }
 
 /*****************************************************************************
@@ -145,33 +149,19 @@ unsigned char numberToChar(unsigned char number)
  *    Converts time to format MM:SS as string
  *
  ****************************************************************************/
-unsigned char* timeToString(unsigned long time)
+void timeToString(unsigned long time, unsigned char* toReturn)
 {
-	unsigned char str[6];
 	unsigned long maxTime = 3599;
-	while(time > maxTime) time -= maxTime;
-	int i = 0;
-	int b = 1000;
-	for(i = 0; i < 6; i++, b/10)
-	{
-		if(i == 2)
-		{
-			str[i] = ':';
-			continue;
-		}
-		else if(i == 5)
-		{
-			str[i] = '\0';
-			break;
-		}
-		else
-		{
-			str[i] = (time / b) + 48;
-			time = time - (time/b)*b;
-		}
-	}
+	while (time > maxTime) time = maxTime;
 
-	return str;
+	unsigned int minutes = time / 60;
+	unsigned int seconds = time % 60;
+	toReturn[0] = minutes / 10 + 48;
+	toReturn[1] = minutes % 10 + 48;
+	toReturn[2] = ':';
+	toReturn[3] = seconds / 10 + 48;
+	toReturn[4] = seconds % 10 + 48;
+	toReturn[5] = '\0';
 }
 
 void clearScr()
@@ -223,10 +213,12 @@ testLcd(void)
   {
  	clearScr();
 
- 	/// TIMER TEST!!!!!!
+// 	if(displayMode == 1)
 // 	{
 // 		//writeLCD(1, numberToChar(currentSongInfo.time));
-// 		WriteString(timeToString(currentSongInfo.time));
+// 		unsigned char toWrite[6];
+// 		timeToString(currentSongInfo.time, toWrite);
+// 		WriteString(toWrite);
 // 		osSleep(10);
 // 		continue;
 // 	}
@@ -281,6 +273,11 @@ testLcd(void)
     	    	}
     	    	if(isError != 0)
     	    	{
+    	    		break;
+    	    	}
+    	    	if(currentDisplayMode != displayMode)
+    	    	{
+    	    		currentDisplayMode = displayMode;
     	    		break;
     	    	}
 
