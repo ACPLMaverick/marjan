@@ -6,6 +6,9 @@
  */
 
 #include "wavplayer.h"
+#include "myLCD.h"
+#include "myMMC.h"
+#include "myTimer.h"
 
 SongInfo currentSongInfo;
 EmbeddedFile* myFile;
@@ -13,10 +16,9 @@ S_TYPE soundTable[S_SIZE];
 unsigned long* filePtr;
 unsigned long fileOffset;
 unsigned long fileSize;
+unsigned long joystickTimer;
 
 unsigned char currentVolume;
-
-extern void myTimerExec(void);
 
 void zeroBuffer(void)
 {
@@ -26,26 +28,6 @@ void zeroBuffer(void)
 		if(i % 2 != 0) soundTable[i] = 255;
 		else soundTable[i] = 0;
 	}
-}
-
-void sendToDACOld(void)
-{
-	tU32 cnt = 0;
-	int i = 0;
-	while(cnt++ < S_SIZE)
-	{
-		tS32 val;
-		float volumeMultiplier = (float)currentVolume / 10;
-		val = soundTable[cnt] - 128;
-	    val = val * 2 * volumeMultiplier;
-	    if (val > 127) val = 127;
-	    else if (val < -127) val = -127;
-	    DACR = ((val+128) << 8) |  //actual value to output
-	            (1 << 16);         //BIAS = 1, 2.5uS settling time
-
-	    for(i=0; i < S_SAMPLE; i++)
-	      asm volatile (" nop");
-	    }
 }
 
 void sendToDAC(unsigned char sample)
@@ -58,15 +40,7 @@ void sendToDAC(unsigned char sample)
 	    if (val > 127) val = 127;
 	    else if (val < -127) val = -127;
 	    DACR = ((val+128) << 8) |  //actual value to output
-	            (0 << 16);         //BIAS = 1, 2.5uS settling time
-}
-
-void readFromFile(void)
-{
-	//zeroBuffer();
-	file_read(myFile, S_SIZE, soundTable);
-	//fileOffset = fileOffset + S_SIZE;
-	//currentSongInfo.time = fileOffset;
+	            (1 << 16);         //BIAS = 1, 2.5uS settling time
 }
 
 void playWAV(EmbeddedFile* file)
@@ -75,29 +49,92 @@ void playWAV(EmbeddedFile* file)
 	currentSongInfo.time = 0;
 	fileSize = (*file).FileSize;
 	(*file).FilePtr = S_START;
-	//fileOffset = S_START;
+	fileOffset = S_START;
 	myFile = file;
+	joystickTimer = 0;
 
 	myTimerExec();
-
-	// main function loop
-//	while(fileOffset < fileSize)
-//	{
-//		readFromFile();
-//		sendToDACOld();
-//	}
-//	unsigned long tmp = fileOffset - fileSize;
-//	if(tmp < S_SIZE)
-//	{
-//		fileOffset = fileOffset - (fileOffset - fileSize);
-//		readFromFile();
-//		sendToDACOld();
-//	}
 }
 
 void ISR(void)
 {
 	unsigned char newSample[1];
 	file_read(myFile, 1, newSample);
+	fileOffset += S_SIZE;
 	sendToDAC(newSample[0]);
+
+	// koniec piosenki
+	if(fileOffset > (fileSize - ID3TAGSIZE))
+	{
+		StopInterrupts();
+		changeRight = 1;
+		return;
+	}
+
+	// joystick w lewo
+	if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
+	{
+		joystickTimer++;
+		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		{
+			StopInterrupts();
+			joystickTimer = 0;
+			changeLeft = 1;
+		}
+		return;
+	}
+	//else joystickTimer = 0;
+
+	// joystick w prawo
+	if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
+	{
+		joystickTimer++;
+		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		{
+			StopInterrupts();
+			joystickTimer = 0;
+			changeRight = 1;
+		}
+		return;
+	}
+	//else joystickTimer = 0;
+
+	// joystick w gore
+	if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
+	{
+		joystickTimer++;
+		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		{
+			joystickTimer = 0;
+			volumeUp = 1;
+		}
+		return;
+	}
+	//else joystickTimer = 0;
+
+	// joystick w dol
+	if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
+	{
+		joystickTimer++;
+		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		{
+			joystickTimer = 0;
+			volumeDown = 1;
+		}
+		return;
+	}
+	//else joystickTimer = 0;
+
+	// joystick wcisniety
+	if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
+	{
+		joystickTimer++;
+		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		{
+			joystickTimer = 0;
+			displayMode = 1;
+		}
+		return;
+	}
+	//else joystickTimer = 0;
 }

@@ -18,6 +18,7 @@
 #include "filesys/fs.h"
 #include "filesys/ls.h"
 #include "mp3shared.h"
+#include "myMMC.h"
 //#include <stdio.h>
 //#include <string.h>
 
@@ -49,16 +50,11 @@ static void proc5(void* arg);
 static void initProc(void* arg);
 
 void testLedMatrix(void);
-void testLcd(void);
 void testMotor(void);
 void testRGB(void);
 void testI2C(void);
 void testAdc(void);
 tU8  testXBee(void);
-
-void myTimerExec(void);
-
-void MMCproc(void);
 
 tU8 xbeePresent;
 volatile tU32 msClock = 0;

@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s 			page 1
   55 0030 024B     		ldr	r3, .L16
   56 0032 AA22     		mov	r2, #170
   57 0034 1A60     		str	r2, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s 			page 2
 
 
   58 0036 5522     		mov	r2, #85
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s 			page 1
  112              		.code 16
  113              		.thumb_func
  114              		.type	initTimer1, %function
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s 			page 3
 
 
  115              	initTimer1:
@@ -126,116 +126,141 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s 			page 1
  117 0082 0022     		mov	r2, #0
  118 0084 1A60     		str	r2, [r3]
  119 0086 0C4A     		ldr	r2, .L28+4
- 120 0088 643B     		sub	r3, r3, #100
- 121 008a 1A60     		str	r2, [r3]
- 122 008c 0122     		mov	r2, #1
- 123 008e 0C33     		add	r3, r3, #12
- 124 0090 1A60     		str	r2, [r3]
- 125 0092 0322     		mov	r2, #3
- 126 0094 043B     		sub	r3, r3, #4
- 127 0096 1A60     		str	r2, [r3]
- 128 0098 084A     		ldr	r2, .L28+8
- 129 009a 094B     		ldr	r3, .L28+12
- 130 009c 1A60     		str	r2, [r3]
- 131 009e 094B     		ldr	r3, .L28+16
- 132 00a0 2522     		mov	r2, #37
- 133 00a2 1A60     		str	r2, [r3]
- 134 00a4 084B     		ldr	r3, .L28+20
- 135 00a6 2022     		mov	r2, #32
- 136 00a8 1A60     		str	r2, [r3]
- 137 00aa 084B     		ldr	r3, .L28+24
- 138 00ac 0222     		mov	r2, #2
- 139              		@ lr needed for prologue
- 140 00ae 1A60     		str	r2, [r3]
- 141              		@ sp needed for prologue
- 142 00b0 7047     		bx	lr
- 143              	.L29:
- 144 00b2 0000     		.align	2
- 145              	.L28:
- 146 00b4 708000E0 		.word	-536838032
- 147 00b8 590A0000 		.word	2649
- 148 00bc 00000000 		.word	T1ISR
- 149 00c0 14F1FFFF 		.word	-3820
- 150 00c4 14F2FFFF 		.word	-3564
- 151 00c8 10F0FFFF 		.word	-4080
- 152 00cc 048000E0 		.word	-536838140
- 153              		.size	initTimer1, .-initTimer1
- 154              		.align	2
- 155              		.global	myTimerExec
- 156              		.code 16
- 157              		.thumb_func
- 158              		.type	myTimerExec, %function
- 159              	myTimerExec:
- 160 00d0 00B5     		push	{lr}
- 161 00d2 FFF7FEFF 		bl	initClocks
- 162 00d6 FFF7FEFF 		bl	initTimer1
- 163 00da 024B     		ldr	r3, .L32
- 164 00dc 0122     		mov	r2, #1
- 165 00de 1A60     		str	r2, [r3]
- 166              		@ sp needed for prologue
- 167 00e0 01BC     		pop	{r0}
- 168 00e2 0047     		bx	r0
- 169              	.L33:
- 170              		.align	2
- 171              	.L32:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s 			page 4
+ 120 0088 A423     		mov	r3, #164
+ 121 008a 1B01     		lsl	r3, r3, #4
+ 122 008c 1360     		str	r3, [r2]
+ 123 008e 0B4B     		ldr	r3, .L28+8
+ 124 0090 0122     		mov	r2, #1
+ 125 0092 1A60     		str	r2, [r3]
+ 126 0094 0322     		mov	r2, #3
+ 127 0096 043B     		sub	r3, r3, #4
+ 128 0098 1A60     		str	r2, [r3]
+ 129 009a 094A     		ldr	r2, .L28+12
+ 130 009c 094B     		ldr	r3, .L28+16
+ 131 009e 1A60     		str	r2, [r3]
+ 132 00a0 094B     		ldr	r3, .L28+20
+ 133 00a2 2522     		mov	r2, #37
+ 134 00a4 1A60     		str	r2, [r3]
+ 135 00a6 094B     		ldr	r3, .L28+24
+ 136 00a8 2022     		mov	r2, #32
+ 137 00aa 1A60     		str	r2, [r3]
+ 138 00ac 084B     		ldr	r3, .L28+28
+ 139 00ae 0222     		mov	r2, #2
+ 140              		@ lr needed for prologue
+ 141 00b0 1A60     		str	r2, [r3]
+ 142              		@ sp needed for prologue
+ 143 00b2 7047     		bx	lr
+ 144              	.L29:
+ 145              		.align	2
+ 146              	.L28:
+ 147 00b4 708000E0 		.word	-536838032
+ 148 00b8 0C8000E0 		.word	-536838132
+ 149 00bc 188000E0 		.word	-536838120
+ 150 00c0 00000000 		.word	T1ISR
+ 151 00c4 14F1FFFF 		.word	-3820
+ 152 00c8 14F2FFFF 		.word	-3564
+ 153 00cc 10F0FFFF 		.word	-4080
+ 154 00d0 048000E0 		.word	-536838140
+ 155              		.size	initTimer1, .-initTimer1
+ 156              		.align	2
+ 157              		.global	myTimerExec
+ 158              		.code 16
+ 159              		.thumb_func
+ 160              		.type	myTimerExec, %function
+ 161              	myTimerExec:
+ 162 00d4 00B5     		push	{lr}
+ 163 00d6 FFF7FEFF 		bl	initClocks
+ 164 00da FFF7FEFF 		bl	initTimer1
+ 165 00de 024B     		ldr	r3, .L32
+ 166 00e0 0122     		mov	r2, #1
+ 167 00e2 1A60     		str	r2, [r3]
+ 168              		@ sp needed for prologue
+ 169 00e4 01BC     		pop	{r0}
+ 170 00e6 0047     		bx	r0
+ 171              	.L33:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s 			page 4
 
 
- 172 00e4 048000E0 		.word	-536838140
- 173              		.size	myTimerExec, .-myTimerExec
- 174              		.align	2
- 175              		.global	T1ISR
- 176              		.code 16
- 177              		.thumb_func
- 178              		.type	T1ISR, %function
- 179              	T1ISR:
- 180 00e8 30B5     		push	{r4, r5, lr}
- 181 00ea 054C     		ldr	r4, .L36
- 182 00ec 2568     		ldr	r5, [r4]
- 183 00ee FFF7FEFF 		bl	ISR
- 184 00f2 044B     		ldr	r3, .L36+4
- 185 00f4 0022     		mov	r2, #0
- 186 00f6 2560     		str	r5, [r4]
- 187              		@ sp needed for prologue
- 188 00f8 1A60     		str	r2, [r3]
- 189 00fa 30BC     		pop	{r4, r5}
- 190 00fc 01BC     		pop	{r0}
- 191 00fe 0047     		bx	r0
- 192              	.L37:
- 193              		.align	2
- 194              	.L36:
- 195 0100 008000E0 		.word	-536838144
- 196 0104 30F0FFFF 		.word	-4048
- 197              		.size	T1ISR, .-T1ISR
- 198              		.comm	currentSongInfo,16,4
- 199              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s 			page 5
+ 172              		.align	2
+ 173              	.L32:
+ 174 00e8 048000E0 		.word	-536838140
+ 175              		.size	myTimerExec, .-myTimerExec
+ 176              		.align	2
+ 177              		.global	StopInterrupts
+ 178              		.code 16
+ 179              		.thumb_func
+ 180              		.type	StopInterrupts, %function
+ 181              	StopInterrupts:
+ 182 00ec 024A     		ldr	r2, .L36
+ 183 00ee 0023     		mov	r3, #0
+ 184 00f0 1360     		str	r3, [r2]
+ 185 00f2 024A     		ldr	r2, .L36+4
+ 186              		@ lr needed for prologue
+ 187 00f4 1360     		str	r3, [r2]
+ 188              		@ sp needed for prologue
+ 189 00f6 7047     		bx	lr
+ 190              	.L37:
+ 191              		.align	2
+ 192              	.L36:
+ 193 00f8 14F1FFFF 		.word	-3820
+ 194 00fc 14F2FFFF 		.word	-3564
+ 195              		.size	StopInterrupts, .-StopInterrupts
+ 196              		.align	2
+ 197              		.global	T1ISR
+ 198              		.code 16
+ 199              		.thumb_func
+ 200              		.type	T1ISR, %function
+ 201              	T1ISR:
+ 202 0100 30B5     		push	{r4, r5, lr}
+ 203 0102 054C     		ldr	r4, .L40
+ 204 0104 2568     		ldr	r5, [r4]
+ 205 0106 FFF7FEFF 		bl	ISR
+ 206 010a 044B     		ldr	r3, .L40+4
+ 207 010c 0022     		mov	r2, #0
+ 208 010e 2560     		str	r5, [r4]
+ 209              		@ sp needed for prologue
+ 210 0110 1A60     		str	r2, [r3]
+ 211 0112 30BC     		pop	{r4, r5}
+ 212 0114 01BC     		pop	{r0}
+ 213 0116 0047     		bx	r0
+ 214              	.L41:
+ 215              		.align	2
+ 216              	.L40:
+ 217 0118 008000E0 		.word	-536838144
+ 218 011c 30F0FFFF 		.word	-4048
+ 219              		.size	T1ISR, .-T1ISR
+ 220              		.comm	currentSongInfo,20,4
+ 221              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 myTimer.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:9      .text:00000000 setupPLL
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:22     .text:00000010 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:29     .text:00000014 connectPLL
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:26     .text:00000014 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:46     .text:00000028 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:54     .text:00000030 feedSeq
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:51     .text:00000030 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:66     .text:0000003c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:73     .text:00000040 initClocks
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:70     .text:00000040 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:106    .text:00000074 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:115    .text:00000080 initTimer1
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:112    .text:00000080 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:146    .text:000000b4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:179    .text:000000e8 T1ISR
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:159    .text:000000d0 myTimerExec
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:156    .text:000000d0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:172    .text:000000e4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:176    .text:000000e8 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccBIAVg5.s:195    .text:00000100 $d
-                            *COM*:00000010 currentSongInfo
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:9      .text:00000000 setupPLL
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:22     .text:00000010 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:29     .text:00000014 connectPLL
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:26     .text:00000014 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:46     .text:00000028 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:54     .text:00000030 feedSeq
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:51     .text:00000030 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:66     .text:0000003c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:73     .text:00000040 initClocks
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:70     .text:00000040 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:106    .text:00000074 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:115    .text:00000080 initTimer1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:112    .text:00000080 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:147    .text:000000b4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:201    .text:00000100 T1ISR
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:161    .text:000000d4 myTimerExec
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:158    .text:000000d4 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:174    .text:000000e8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:181    .text:000000ec StopInterrupts
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:178    .text:000000ec $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:193    .text:000000f8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:198    .text:00000100 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccPgnxwr.s:217    .text:00000118 $d
+                            *COM*:00000014 currentSongInfo
 
 UNDEFINED SYMBOLS
 ISR

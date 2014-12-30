@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 1
 
 
    1              		.code	16
@@ -43,9 +43,9 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
   40 0016 5A60     		str	r2, [r3, #4]
   41 0018 0022     		mov	r2, #0
   42 001a 9A60     		str	r2, [r3, #8]
-  43 001c 1A73     		strb	r2, [r3, #12]
-  44 001e 5A73     		strb	r2, [r3, #13]
-  45 0020 9A73     		strb	r2, [r3, #14]
+  43 001c DA60     		str	r2, [r3, #12]
+  44 001e 1A74     		strb	r2, [r3, #16]
+  45 0020 5A74     		strb	r2, [r3, #17]
   46 0022 0E4B     		ldr	r3, .L7+8
   47 0024 1A70     		strb	r2, [r3]
   48 0026 0E4B     		ldr	r3, .L7+12
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
   55 0034 1A70     		strb	r2, [r3]
   56 0036 0E4B     		ldr	r3, .L7+28
   57 0038 1A70     		strb	r2, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 2
 
 
   58 003a 0E4B     		ldr	r3, .L7+32
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
  112 00ac 0023     		mov	r3, #0
  113 00ae C822     		mov	r2, #200
  114 00b0 5200     		lsl	r2, r2, #1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 3
 
 
  115 00b2 0193     		str	r3, [sp, #4]
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
  169 011e 01BC     		pop	{r0}
  170 0120 0047     		bx	r0
  171              	.L16:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 4
 
 
  172 0122 0000     		.align	2
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
  198      0A00
  199 0135 000000   		.align	2
  200              	.LC32:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 5
 
 
  201 0138 2A204461 		.ascii	"* Date:    22 December 2007                        "
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
  240 0160 201C     		mov	r0, r4
  241 0162 FFF7FEFF 		bl	simplePrintf
  242 0166 3848     		ldr	r0, .L32+24
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 6
 
 
  243 0168 FFF7FEFF 		bl	simplePrintf
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
  297 01e0 032E     		cmp	r6, #3
  298 01e2 21D1     		bne	.L21
  299 01e4 FFF7FEFF 		bl	testI2C
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 7
 
 
  300 01e8 FFF7FEFF 		bl	InitializeSharedData
@@ -418,7 +418,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
  354 0278 04080000 		.word	proc2Stack
  355 027c 008002E0 		.word	-536707072
  356 0280 FFFFE0FF 		.word	-2031617
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 8
 
 
  357              		.size	proc1, .-proc1
@@ -462,7 +462,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
  383 1194 00       		.space	1
  384              	pid2:
  385 1195 00       		.space	1
- 386              		.comm	currentSongInfo,16,4
+ 386              		.comm	currentSongInfo,20,4
  387              		.comm	mmcInitialized,1,1
  388              		.comm	changeLeft,1,1
  389              		.comm	changeRight,1,1
@@ -474,22 +474,26 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 1
  395              		.comm	error,4,4
  396              		.comm	currentVolume,1,1
  397              		.comm	displayMode,1,1
- 398              		.comm	xbeePresent,1,1
- 399              		.comm	fileName,4,4
- 400 1196 0000     		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s 			page 9
+ 398              		.comm	files,3328,1
+ 399              		.comm	xbeePresent,1,1
+ 400              		.comm	fileName,4,4
+ 401 1196 0000     		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 9
+
+
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:9      .text:00000000 appTick
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:20     .text:0000000c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:374    .bss:00000000 msClock
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:36     .text:00000010 InitializeSharedData
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:33     .text:00000010 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:76     .text:00000054 $d
-                            *COM*:00000010 currentSongInfo
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:9      .text:00000000 appTick
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:20     .text:0000000c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:374    .bss:00000000 msClock
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:36     .text:00000010 InitializeSharedData
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:33     .text:00000010 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:76     .text:00000054 $d
+                            *COM*:00000014 currentSongInfo
                             *COM*:00000001 mmcInitialized
                             *COM*:00000001 changeLeft
                             *COM*:00000001 changeRight
@@ -501,24 +505,25 @@ DEFINED SYMBOLS
                             *COM*:00000004 error
                             *COM*:00000001 currentVolume
                             *COM*:00000001 displayMode
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:96     .text:0000008c main
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:93     .text:0000008c $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:135    .text:000000d8 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:144    .text:000000e8 initProc
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:380    .bss:00001004 initStack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:141    .text:000000e8 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:174    .text:00000124 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:382    .bss:00001194 pid1
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:216    .text:00000130 proc1
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:376    .bss:00000004 proc1Stack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:213    .text:00000130 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:336    .text:00000230 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:96     .text:0000008c main
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:93     .text:0000008c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:135    .text:000000d8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:144    .text:000000e8 initProc
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:380    .bss:00001004 initStack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:141    .text:000000e8 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:174    .text:00000124 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:382    .bss:00001194 pid1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:216    .text:00000130 proc1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:376    .bss:00000004 proc1Stack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:213    .text:00000130 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:336    .text:00000230 $d
                             *COM*:00000001 xbeePresent
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:384    .bss:00001195 pid2
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:362    .text:00000284 proc2
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:378    .bss:00000804 proc2Stack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc8gvbCU.s:359    .text:00000284 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:384    .bss:00001195 pid2
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:362    .text:00000284 proc2
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:378    .bss:00000804 proc2Stack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccxGBXX3.s:359    .text:00000284 $t
                              .bss:00000000 $d
+                            *COM*:00000d00 files
                             *COM*:00000004 fileName
 
 UNDEFINED SYMBOLS

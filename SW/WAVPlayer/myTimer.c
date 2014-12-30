@@ -1,16 +1,7 @@
 #include <lpc2xxx.h>
 #include "mp3shared.h"
 #include "wavplayer.h"
-
-#define PLOCK (0x00000500)	// lock bit of PLLSTAT
-#define MR0I (1 << 0) // przerwanie wywo³ane kiedy TC == MR0
-#define MR0R (1 << 1) // resetowanie TC kiedy TC == MR0
-#define DELAY_MS 2
-#define PRESCALE 2650	// TC inkrementowane co 2715 - ileœ cykli zegara
-						// wartoœæ dla próbkowania 11050 Hz
-
-#define PLLFEEDCODE01 0xAA
-#define PLLFEEDCODE02 0x55
+#include "myTimer.h"
 
 SongInfo currentSongInfo;
 
@@ -73,7 +64,7 @@ void initTimer1(void)
 	// konfiguracja przerwania
 	VICVectAddr5 = (unsigned )T1ISR;	// podpiêcie adresu funkcji do rejestru
 	VICVectCntl5 = 0x20 | 5;	// 0x20 - w³¹czenie Vectored IRQ
-								// 0x4 - numer Ÿród³owy Timera 1, którego channel mask wynosi w³aœnie 5
+								// 0x5 - numer Ÿród³owy Timera 1, którego channel mask wynosi w³aœnie 5
 	VICIntEnable = 0x20;
 	T1TCR = 0x02;	// reset timera
 }
@@ -89,6 +80,12 @@ void T1ISR(void)
 	////////////////
 	T1IR = regVal;		// czyœcimy Interrupt Flag
 	VICVectAddr = 0x0;	// sygna³ koñca przerwania
+}
+
+void StopInterrupts(void)
+{
+	VICVectAddr5 = 0x00;
+	VICVectCntl5 = 0x00;
 }
 
 

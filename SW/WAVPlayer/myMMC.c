@@ -1,11 +1,4 @@
-/******************************************************************************
- *
- * Copyright:
- *    (C) 2000 - 2005 Embedded Artists AB
- *
- *****************************************************************************/
-
-
+#include "myMMC.h"
 #include <stdio.h>
 #include "./pre_emptive_os/api/general.h"
 #include <efs.h>
@@ -13,17 +6,6 @@
 #include <string.h>
 #include <lpc2xxx.h>
 #include <consol.h>
-#include "mp3shared.h"
-#include "wavplayer.h"
-
-#define JOYSTICK_UP 17
-#define JOYSTICK_RIGHT 18
-#define JOYSTICK_LEFT 19
-#define JOYSTICK_DOWN 20
-#define JOYSTICK_GND 14
-
-#define BUTTONCHECK_DELAY 20
-#define BUTTONREWINDCHECK_DELAY 100
 
 SongInfo currentSongInfo;
 unsigned char mmcInitialized;
@@ -37,16 +19,9 @@ unsigned int isError;
 unsigned char displayMode;
 char* error;
 
-//extern char startupSound[];
-
 /////////////////////////////
-unsigned char id3TagSize = 128;
-				unsigned long fileSize;
-				unsigned char readSize = 30;
-				unsigned char myName[30];
-				unsigned char myAuthor[30];
-				unsigned long titleOffset = 3;
-				unsigned long authorOffset = 33;
+unsigned char myName[30];
+unsigned char myAuthor[30];
 //////////////////////////////
 
 EmbeddedFileSystem  efs;
@@ -55,7 +30,8 @@ DirList             list;
 unsigned char       file_name[13];
 unsigned int        size;
 
-unsigned char files[256][13];
+unsigned char songCount;
+
 extern void playWAV(EmbeddedFile *file);
 
 void format_file_name(unsigned char *dest, unsigned char *src)
@@ -182,33 +158,43 @@ void getFileNames(void)
 				i++;
 			}
 		}
+		songCount = i;
 
 }
 
-void testMMC(char* name)
+void ReadTagsFromFile(EmbeddedFile* myFile)
+{
+	int i;
+	for(i = 0; i < READSIZE; i++)
+	{
+		myName[i] = '\0';
+		myAuthor[i] = '\0';
+	}
+
+	file_fread(myFile,((*myFile).FileSize - ID3TAGSIZE) + TITLEOFFSET, READSIZE,myName);
+	file_fread(myFile,((*myFile).FileSize - ID3TAGSIZE) +  AUTHOROFFSET, READSIZE, myAuthor);
+
+	myName[READSIZE - 1] = '\0';
+	myAuthor[READSIZE - 1] = '\0';
+
+	currentSongInfo.name = myName;
+	currentSongInfo.author = myAuthor;
+	for(i = 0; myName[i] != '\0'; i++);
+	currentSongInfo.nameLength = i;
+	for(i = 0; myAuthor[i] != '\0'; i++);
+	currentSongInfo.authorLength = i;
+}
+
+void ReadAndPlay(char* name)
 {
 	unsigned char* error03 = "ERR:file";
 			if (file_fopen(&file, &efs.myFs, name, 'r') == 0)
 			{
 				DBG((TXT("File successfully opened!.\n")));
-//				int i;
-//				for(i = 0; i < readSize; i++)
-//				{
-//					myName[i] = '\0';
-//					myAuthor[i] = '\0';
-//				}
-//				myName[readSize - 1] = '\0';
-//				myAuthor[readSize - 1] = '\0';
-				fileSize = file.FileSize;
-//				file_fread(&file,(fileSize - id3TagSize) + titleOffset, readSize,myName);
-//				file_fread(&file,(fileSize - id3TagSize) +  authorOffset, readSize, myAuthor);
 
-				currentSongInfo.name = name;
-				//currentSongInfo.author = myAuthor;
-//				for(i = 0; myName[i] != '\0'; i++);
-//				currentSongInfo.nameLength = i;
-//				for(i = 0; myAuthor[i] != '\0'; i++);
-//				currentSongInfo.authorLength = i;
+				ReadTagsFromFile(&file);
+
+				LCDWriteNameAuthor();
 
 				playWAV(&file);
 
@@ -221,28 +207,6 @@ void testMMC(char* name)
 			}
 	//fs_umount(&(efs.myFs));
 }
-
-//void playTestSound(void)
-//{
-//	tU32 cnt = 0;
-//	int i = 0;
-//	while(cnt++ < 0xF890)
-//	{
-//		tS32 val;
-//		float volumeMultiplier = (float)currentVolume / 10;
-//		val = startupSound[cnt] - 128;
-//	    val = val * 2 * volumeMultiplier;
-//	    if (val > 127) val = 127;
-//	    else if (val < -127) val = -127;
-//
-//	    DACR = ((val+128) << 8) |  //actual value to output
-//	            (1 << 16);         //BIAS = 1, 2.5uS settling time
-//
-//	    //delay 125 us = 850 for 8kHz, 600 for 11 kHz
-//	    for(i=0; i<850; i++)
-//	      asm volatile (" nop");
-//	    }
-//}
 
 void MMCproc(void)
 {
@@ -261,63 +225,58 @@ void MMCproc(void)
 		files[i][0] = "";
 	}
 	getFileNames();
-	testMMC(&files[currentSongInfo.ID][0]);
+
+	startLCD();
+
+	ReadAndPlay(&files[currentSongInfo.ID][0]);
 
 	while(1)
 	{
-		if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
+		if(changeLeft != 0)
 		{
-			osSleep(BUTTONCHECK_DELAY);
-			if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
-			{
-				 file_fclose(&file);
-				 currentSongInfo.ID = ((currentSongInfo.ID + 1) % 3);
-				 testMMC(&files[currentSongInfo.ID][0]);
-				 currentSongInfo.time = 0;
-				 changeRight=1;
-			}
+			changeLeft = 0;
+			file_fclose(&file);
+			currentSongInfo.ID = ((currentSongInfo.ID - 1) % songCount);
+			if(currentSongInfo.ID < 0) currentSongInfo.ID = 0;
+			currentSongInfo.time = 0;
+			ReadAndPlay(&files[currentSongInfo.ID][0]);
 		}
 
-		if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
+		if(changeRight != 0)
 		{
-			osSleep(BUTTONCHECK_DELAY);
-			if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
-			{
-				file_fclose(&file);
-				currentSongInfo.ID = ((currentSongInfo.ID - 1) % 3);
-				if(currentSongInfo.ID < 0) currentSongInfo.ID = -currentSongInfo.ID;
-				testMMC(&files[currentSongInfo.ID][0]);
-				currentSongInfo.time = 0;
-				changeLeft=1;
-			}
+			changeRight = 0;
+			file_fclose(&file);
+			currentSongInfo.ID = ((currentSongInfo.ID + 1) % songCount);
+			currentSongInfo.time = 0;
+			ReadAndPlay(&files[currentSongInfo.ID][0]);
 		}
-		if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
+
+		if(volumeUp != 0)
 		{
-			osSleep(BUTTONCHECK_DELAY);
-			if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
-			{
-				volumeUp = 1;
-				if(currentVolume < 9) currentVolume++;
-			}
+			volumeUp = 0;
+			if(currentVolume < 9) currentVolume++;
 		}
-		if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
+
+		if(volumeDown != 0)
 		{
-			osSleep(BUTTONCHECK_DELAY);
-			if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
-			{
-				volumeDown = 1;
-				if(currentVolume > 0) currentVolume--;
-			}
+			volumeDown = 0;
+			if(currentVolume > 0) currentVolume--;
 		}
-		if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
+
+		if(rewindForward != 0)
 		{
-			osSleep(BUTTONCHECK_DELAY);
-			if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
-			{
-				if(displayMode == 0) displayMode = 1;
-				else displayMode = 0;
-			}
+
 		}
-		 osSleep(10);
+
+		if(rewindBackward != 0)
+		{
+
+		}
+
+		if(displayMode != 0)
+		{
+			if(displayMode == 0) displayMode = 1;
+			else displayMode = 0;
+		}
 	}
 }

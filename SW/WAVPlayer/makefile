@@ -52,8 +52,8 @@ CODE    = THUMB
 
 # List C source files here.
 CSRCS   = main.c          \
-          testLcd.c       \
-          testMMC.c		  \
+          myLCD.c       \
+          myMMC.c		  \
           testI2C.c		  \
           eeprom.c		  \
           i2c.c			\

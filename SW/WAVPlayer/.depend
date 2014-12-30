@@ -6,13 +6,19 @@ main.o: main.c pre_emptive_os/api/osapi.h \
   startup/config.h filesys/partition.h filesys/../mmc/hwinterface.h \
   filesys/../mmc/debug.h filesys/disc.h filesys/ioman.h filesys/libc.h \
   filesys/extract.h filesys/../mmc/types.h filesys/time.h filesys/ls.h \
-  filesys/fs.h filesys/dir.h filesys/fat.h filesys/file.h mp3shared.h
-testLcd.o: testLcd.c startup/../pre_emptive_os/api/osapi.h \
+  filesys/fs.h filesys/dir.h filesys/fat.h filesys/file.h mp3shared.h \
+  myMMC.h wavplayer.h filesys/efs.h filesys/./ui.h filesys/./fs.h \
+  filesys/./../mmc/types.h filesys/./fat.h filesys/./dir.h \
+  startup/config.h myTimer.h myLCD.h \
+  startup/../pre_emptive_os/api/osapi.h \
+  startup/../pre_emptive_os/api/general.h
+myLCD.o: myLCD.c myLCD.h startup/../pre_emptive_os/api/osapi.h \
   startup/../pre_emptive_os/api/../api/general.h \
   startup/../pre_emptive_os/api/general.h startup/printf_P.h \
   startup/config.h startup/consol.h startup/lpc2xxx.h startup/consol.h \
   mp3shared.h
-testMMC.o: testMMC.c pre_emptive_os/api/general.h filesys/efs.h \
+myMMC.o: myMMC.c myMMC.h mp3shared.h wavplayer.h startup/lpc2xxx.h \
+  startup/consol.h pre_emptive_os/api/general.h filesys/efs.h \
   startup/config.h filesys/../mmc/interface.h filesys/../mmc/types.h \
   startup/config.h filesys/disc.h filesys/error.h \
   filesys/../mmc/hwinterface.h filesys/../mmc/debug.h filesys/ioman.h \
@@ -20,8 +26,12 @@ testMMC.o: testMMC.c pre_emptive_os/api/general.h filesys/efs.h \
   filesys/../mmc/types.h filesys/fs.h filesys/time.h filesys/file.h \
   filesys/dir.h filesys/fat.h filesys/./ui.h filesys/./fs.h \
   filesys/./../mmc/types.h filesys/./fat.h filesys/./dir.h \
-  startup/config.h filesys/ls.h startup/lpc2xxx.h startup/consol.h \
-  mp3shared.h wavplayer.h filesys/efs.h
+  startup/config.h myTimer.h myLCD.h \
+  startup/../pre_emptive_os/api/osapi.h \
+  startup/../pre_emptive_os/api/../api/general.h \
+  startup/../pre_emptive_os/api/general.h startup/printf_P.h \
+  startup/config.h startup/consol.h filesys/efs.h filesys/ls.h \
+  startup/config.h filesys/fs.h filesys/dir.h filesys/fat.h
 testI2C.o: testI2C.c startup/../pre_emptive_os/api/osapi.h \
   startup/../pre_emptive_os/api/../api/general.h \
   startup/../pre_emptive_os/api/general.h startup/printf_P.h \
@@ -39,7 +49,7 @@ myTimer.o: myTimer.c startup/lpc2xxx.h mp3shared.h wavplayer.h \
   filesys/../mmc/types.h filesys/fs.h filesys/time.h filesys/file.h \
   filesys/dir.h filesys/fat.h filesys/./ui.h filesys/./fs.h \
   filesys/./../mmc/types.h filesys/./fat.h filesys/./dir.h \
-  startup/config.h
+  startup/config.h myTimer.h
 wavplayer.o: wavplayer.c wavplayer.h startup/lpc2xxx.h startup/consol.h \
   pre_emptive_os/api/general.h filesys/efs.h startup/config.h \
   filesys/../mmc/interface.h filesys/../mmc/types.h startup/config.h \
@@ -48,4 +58,8 @@ wavplayer.o: wavplayer.c wavplayer.h startup/lpc2xxx.h startup/consol.h \
   filesys/partition.h filesys/extract.h filesys/../mmc/types.h \
   filesys/fs.h filesys/time.h filesys/file.h filesys/dir.h filesys/fat.h \
   filesys/./ui.h filesys/./fs.h filesys/./../mmc/types.h filesys/./fat.h \
-  filesys/./dir.h startup/config.h mp3shared.h
+  filesys/./dir.h startup/config.h mp3shared.h myTimer.h myLCD.h \
+  startup/../pre_emptive_os/api/osapi.h \
+  startup/../pre_emptive_os/api/../api/general.h \
+  startup/../pre_emptive_os/api/general.h startup/printf_P.h \
+  startup/config.h startup/consol.h myMMC.h

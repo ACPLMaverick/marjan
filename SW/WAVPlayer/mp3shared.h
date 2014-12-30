@@ -6,7 +6,7 @@ typedef struct {
 	unsigned char* name;
 	unsigned char* author;
 	unsigned long time;
-	unsigned char ID;
+	int ID;
 	unsigned char nameLength;
 	unsigned char authorLength;
 } SongInfo;

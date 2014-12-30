@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
   51 0048 1343     		orr	r3, r3, r2
   52 004a DB0F     		lsr	r3, r3, #31
   53 004c 0122     		mov	r2, #1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 2
 
 
   54 004e 5340     		eor	r3, r3, r2
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
  108              	.L15:
  109 00ba 0420     		mov	r0, #4
  110 00bc 04A9     		add	r1, sp, #16
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 3
 
 
  111 00be 0A22     		mov	r2, #10
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
  159      2A2A2A2A 
  159      0A00
  160 0053 00       		.align	2
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 4
 
 
  161              	.LC6:
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
  186      524F4D20 
  187 0195 000000   		.align	2
  188              	.LC22:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 5
 
 
  189 0198 0A0A5375 		.ascii	"\012\012Summary of EEPROM tests: Failed at least on"
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
  225 013e 2B60     		str	r3, [r5]
  226 0140 1023     		mov	r3, #16
  227 0142 2B60     		str	r3, [r5]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 6
 
 
  228 0144 4F4B     		ldr	r3, .L40+24
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
  282 01d0 2E4A     		ldr	r2, .L40+32
  283 01d2 1368     		ldr	r3, [r2]
  284 01d4 002B     		cmp	r3, #0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 7
 
 
  285 01d6 03D1     		bne	.L27
@@ -418,7 +418,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
  339 0250 1648     		ldr	r0, .L40+64
  340 0252 490C     		lsr	r1, r1, #17
  341 0254 D218     		add	r2, r2, r3
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 8
 
 
  342 0256 FFF7FEFF 		bl	simplePrintf
@@ -455,17 +455,17 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 1
  373 02b0 20020000 		.word	.LC28
  374              		.size	testI2C, .-testI2C
  375              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s 			page 9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s 			page 9
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 testI2C.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s:16     .text:00000000 testEEPROM
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s:152    .text:00000108 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s:207    .text:00000110 testI2C
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s:204    .text:00000110 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cclK6tS7.s:356    .text:0000026c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s:16     .text:00000000 testEEPROM
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s:152    .text:00000108 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s:207    .text:00000110 testI2C
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s:204    .text:00000110 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccsoSOaa.s:356    .text:0000026c $d
 
 UNDEFINED SYMBOLS
 memcpy

@@ -1,0 +1,568 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"myLCD.c"
+   3              		.text
+   4              		.align	2
+   5              		.global	initLCD
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	initLCD, %function
+   9              	initLCD:
+  10 0000 0C4A     		ldr	r2, .L3
+  11 0002 0D49     		ldr	r1, .L3+4
+  12 0004 1368     		ldr	r3, [r2]
+  13 0006 0B43     		orr	r3, r3, r1
+  14 0008 1360     		str	r3, [r2]
+  15 000a 0C4B     		ldr	r3, .L3+8
+  16 000c 1960     		str	r1, [r3]
+  17 000e 0C49     		ldr	r1, .L3+12
+  18 0010 8022     		mov	r2, #128
+  19 0012 0B68     		ldr	r3, [r1]
+  20 0014 D203     		lsl	r2, r2, #15
+  21 0016 0B48     		ldr	r0, .L3+16
+  22 0018 1343     		orr	r3, r3, r2
+  23 001a 0B60     		str	r3, [r1]
+  24 001c 0260     		str	r2, [r0]
+  25 001e 8023     		mov	r3, #128
+  26 0020 0A68     		ldr	r2, [r1]
+  27 0022 DB05     		lsl	r3, r3, #23
+  28 0024 1A43     		orr	r2, r2, r3
+  29 0026 0A60     		str	r2, [r1]
+  30 0028 0360     		str	r3, [r0]
+  31 002a 074B     		ldr	r3, .L3+20
+  32 002c 074A     		ldr	r2, .L3+24
+  33 002e 1B78     		ldrb	r3, [r3]
+  34              		@ lr needed for prologue
+  35 0030 1370     		strb	r3, [r2]
+  36              		@ sp needed for prologue
+  37 0032 7047     		bx	lr
+  38              	.L4:
+  39              		.align	2
+  40              	.L3:
+  41 0034 188002E0 		.word	-536707048
+  42 0038 0000FF03 		.word	67043328
+  43 003c 1C8002E0 		.word	-536707044
+  44 0040 088002E0 		.word	-536707064
+  45 0044 0C8002E0 		.word	-536707060
+  46 0048 00000000 		.word	displayMode
+  47 004c 00000000 		.word	currentDisplayMode
+  48              		.size	initLCD, .-initLCD
+  49              		.align	2
+  50              		.global	delay37us
+  51              		.code 16
+  52              		.thumb_func
+  53              		.type	delay37us, %function
+  54              	delay37us:
+  55 0050 81B0     		sub	sp, sp, #4
+  56 0052 0023     		mov	r3, #0
+  57              		@ lr needed for prologue
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 2
+
+
+  58 0054 02E0     		b	.L10
+  59              	.L7:
+  60 0056 C046     		 nop
+  61              		.code	16
+  62 0058 009B     		ldr	r3, [sp]
+  63 005a 0133     		add	r3, r3, #1
+  64              	.L10:
+  65 005c 0093     		str	r3, [sp]
+  66 005e 009A     		ldr	r2, [sp]
+  67 0060 024B     		ldr	r3, .L11
+  68 0062 9A42     		cmp	r2, r3
+  69 0064 F7D9     		bls	.L7
+  70 0066 01B0     		add	sp, sp, #4
+  71              		@ sp needed for prologue
+  72 0068 7047     		bx	lr
+  73              	.L12:
+  74 006a 0000     		.align	2
+  75              	.L11:
+  76 006c 973A0000 		.word	14999
+  77              		.size	delay37us, .-delay37us
+  78              		.align	2
+  79              		.global	writeLCD
+  80              		.code 16
+  81              		.thumb_func
+  82              		.type	writeLCD, %function
+  83              	writeLCD:
+  84 0070 0906     		lsl	r1, r1, #24
+  85 0072 0006     		lsl	r0, r0, #24
+  86 0074 81B0     		sub	sp, sp, #4
+  87              		@ lr needed for prologue
+  88 0076 090E     		lsr	r1, r1, #24
+  89 0078 0028     		cmp	r0, #0
+  90 007a 03D1     		bne	.L14
+  91 007c 8023     		mov	r3, #128
+  92 007e 1D4A     		ldr	r2, .L25
+  93 0080 5B04     		lsl	r3, r3, #17
+  94 0082 02E0     		b	.L24
+  95              	.L14:
+  96 0084 8023     		mov	r3, #128
+  97 0086 1C4A     		ldr	r2, .L25+4
+  98 0088 5B04     		lsl	r3, r3, #17
+  99              	.L24:
+ 100 008a 1360     		str	r3, [r2]
+ 101 008c 1B4A     		ldr	r2, .L25+8
+ 102 008e 8023     		mov	r3, #128
+ 103 0090 DB03     		lsl	r3, r3, #15
+ 104 0092 1360     		str	r3, [r2]
+ 105 0094 174B     		ldr	r3, .L25
+ 106 0096 FF22     		mov	r2, #255
+ 107 0098 1204     		lsl	r2, r2, #16
+ 108 009a 1A60     		str	r2, [r3]
+ 109 009c 0B04     		lsl	r3, r1, #16
+ 110 009e 1340     		and	r3, r3, r2
+ 111 00a0 154A     		ldr	r2, .L25+4
+ 112 00a2 1360     		str	r3, [r2]
+ 113 00a4 8023     		mov	r3, #128
+ 114 00a6 9B04     		lsl	r3, r3, #18
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 3
+
+
+ 115 00a8 1360     		str	r3, [r2]
+ 116 00aa 6B46     		mov	r3, sp
+ 117 00ac 0022     		mov	r2, #0
+ 118 00ae 0333     		add	r3, r3, #3
+ 119 00b0 1A70     		strb	r2, [r3]
+ 120 00b2 05E0     		b	.L17
+ 121              	.L18:
+ 122 00b4 C046     		 nop
+ 123              		.code	16
+ 124 00b6 0B78     		ldrb	r3, [r1]
+ 125 00b8 0133     		add	r3, r3, #1
+ 126 00ba 1B06     		lsl	r3, r3, #24
+ 127 00bc 1B0E     		lsr	r3, r3, #24
+ 128 00be 0B70     		strb	r3, [r1]
+ 129              	.L17:
+ 130 00c0 6946     		mov	r1, sp
+ 131 00c2 0331     		add	r1, r1, #3
+ 132 00c4 0B78     		ldrb	r3, [r1]
+ 133 00c6 0F2B     		cmp	r3, #15
+ 134 00c8 F4D9     		bls	.L18
+ 135 00ca 8023     		mov	r3, #128
+ 136 00cc 094A     		ldr	r2, .L25
+ 137 00ce 9B04     		lsl	r3, r3, #18
+ 138 00d0 1360     		str	r3, [r2]
+ 139 00d2 0023     		mov	r3, #0
+ 140 00d4 0B70     		strb	r3, [r1]
+ 141 00d6 05E0     		b	.L20
+ 142              	.L21:
+ 143 00d8 C046     		 nop
+ 144              		.code	16
+ 145 00da 1378     		ldrb	r3, [r2]
+ 146 00dc 0133     		add	r3, r3, #1
+ 147 00de 1B06     		lsl	r3, r3, #24
+ 148 00e0 1B0E     		lsr	r3, r3, #24
+ 149 00e2 1370     		strb	r3, [r2]
+ 150              	.L20:
+ 151 00e4 6A46     		mov	r2, sp
+ 152 00e6 0332     		add	r2, r2, #3
+ 153 00e8 1378     		ldrb	r3, [r2]
+ 154 00ea 0F2B     		cmp	r3, #15
+ 155 00ec F4D9     		bls	.L21
+ 156 00ee 01B0     		add	sp, sp, #4
+ 157              		@ sp needed for prologue
+ 158 00f0 7047     		bx	lr
+ 159              	.L26:
+ 160 00f2 0000     		.align	2
+ 161              	.L25:
+ 162 00f4 1C8002E0 		.word	-536707044
+ 163 00f8 148002E0 		.word	-536707052
+ 164 00fc 0C8002E0 		.word	-536707060
+ 165              		.size	writeLCD, .-writeLCD
+ 166              		.align	2
+ 167              		.global	lcdBacklight
+ 168              		.code 16
+ 169              		.thumb_func
+ 170              		.type	lcdBacklight, %function
+ 171              	lcdBacklight:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 4
+
+
+ 172 0100 0006     		lsl	r0, r0, #24
+ 173 0102 000E     		lsr	r0, r0, #24
+ 174              		@ lr needed for prologue
+ 175 0104 0128     		cmp	r0, #1
+ 176 0106 03D1     		bne	.L28
+ 177 0108 8023     		mov	r3, #128
+ 178 010a 044A     		ldr	r2, .L33
+ 179 010c DB05     		lsl	r3, r3, #23
+ 180 010e 02E0     		b	.L32
+ 181              	.L28:
+ 182 0110 8023     		mov	r3, #128
+ 183 0112 034A     		ldr	r2, .L33+4
+ 184 0114 DB05     		lsl	r3, r3, #23
+ 185              	.L32:
+ 186 0116 1360     		str	r3, [r2]
+ 187              		@ sp needed for prologue
+ 188 0118 7047     		bx	lr
+ 189              	.L34:
+ 190 011a 0000     		.align	2
+ 191              	.L33:
+ 192 011c 048002E0 		.word	-536707068
+ 193 0120 0C8002E0 		.word	-536707060
+ 194              		.size	lcdBacklight, .-lcdBacklight
+ 195              		.global	__umodsi3
+ 196              		.align	2
+ 197              		.global	numberToChar
+ 198              		.code 16
+ 199              		.thumb_func
+ 200              		.type	numberToChar, %function
+ 201              	numberToChar:
+ 202 0124 00B5     		push	{lr}
+ 203 0126 0A21     		mov	r1, #10
+ 204 0128 FFF7FEFF 		bl	__umodsi3
+ 205 012c 3030     		add	r0, r0, #48
+ 206 012e 0006     		lsl	r0, r0, #24
+ 207 0130 000E     		lsr	r0, r0, #24
+ 208              		@ sp needed for prologue
+ 209 0132 02BC     		pop	{r1}
+ 210 0134 0847     		bx	r1
+ 211              		.size	numberToChar, .-numberToChar
+ 212              		.global	__udivsi3
+ 213 0136 0000     		.align	2
+ 214              		.global	timeToString
+ 215              		.code 16
+ 216              		.thumb_func
+ 217              		.type	timeToString, %function
+ 218              	timeToString:
+ 219 0138 70B5     		push	{r4, r5, r6, lr}
+ 220 013a 174B     		ldr	r3, .L40
+ 221 013c 0E1C     		mov	r6, r1
+ 222 013e 051C     		mov	r5, r0
+ 223 0140 9842     		cmp	r0, r3
+ 224 0142 00D9     		bls	.L38
+ 225 0144 1D1C     		mov	r5, r3
+ 226              	.L38:
+ 227 0146 281C     		mov	r0, r5
+ 228 0148 3C21     		mov	r1, #60
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 5
+
+
+ 229 014a FFF7FEFF 		bl	__udivsi3
+ 230 014e 3C21     		mov	r1, #60
+ 231 0150 041C     		mov	r4, r0
+ 232 0152 281C     		mov	r0, r5
+ 233 0154 FFF7FEFF 		bl	__umodsi3
+ 234 0158 0A21     		mov	r1, #10
+ 235 015a 051C     		mov	r5, r0
+ 236 015c 201C     		mov	r0, r4
+ 237 015e FFF7FEFF 		bl	__udivsi3
+ 238 0162 3030     		add	r0, r0, #48
+ 239 0164 3070     		strb	r0, [r6]
+ 240 0166 0A21     		mov	r1, #10
+ 241 0168 201C     		mov	r0, r4
+ 242 016a FFF7FEFF 		bl	__umodsi3
+ 243 016e 3A23     		mov	r3, #58
+ 244 0170 3030     		add	r0, r0, #48
+ 245 0172 B370     		strb	r3, [r6, #2]
+ 246 0174 7070     		strb	r0, [r6, #1]
+ 247 0176 0A21     		mov	r1, #10
+ 248 0178 281C     		mov	r0, r5
+ 249 017a FFF7FEFF 		bl	__udivsi3
+ 250 017e 3030     		add	r0, r0, #48
+ 251 0180 F070     		strb	r0, [r6, #3]
+ 252 0182 0A21     		mov	r1, #10
+ 253 0184 281C     		mov	r0, r5
+ 254 0186 FFF7FEFF 		bl	__umodsi3
+ 255 018a 0023     		mov	r3, #0
+ 256 018c 3030     		add	r0, r0, #48
+ 257 018e 3071     		strb	r0, [r6, #4]
+ 258 0190 7371     		strb	r3, [r6, #5]
+ 259              		@ sp needed for prologue
+ 260 0192 70BC     		pop	{r4, r5, r6}
+ 261 0194 01BC     		pop	{r0}
+ 262 0196 0047     		bx	r0
+ 263              	.L41:
+ 264              		.align	2
+ 265              	.L40:
+ 266 0198 0F0E0000 		.word	3599
+ 267              		.size	timeToString, .-timeToString
+ 268              		.align	2
+ 269              		.global	WriteString
+ 270              		.code 16
+ 271              		.thumb_func
+ 272              		.type	WriteString, %function
+ 273              	WriteString:
+ 274 019c 10B5     		push	{r4, lr}
+ 275 019e 041C     		mov	r4, r0
+ 276 01a0 04E0     		b	.L43
+ 277              	.L44:
+ 278 01a2 0120     		mov	r0, #1
+ 279 01a4 FFF7FEFF 		bl	writeLCD
+ 280 01a8 FFF7FEFF 		bl	delay37us
+ 281              	.L43:
+ 282 01ac 2178     		ldrb	r1, [r4]
+ 283 01ae 0134     		add	r4, r4, #1
+ 284 01b0 0029     		cmp	r1, #0
+ 285 01b2 F6D1     		bne	.L44
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 6
+
+
+ 286              		@ sp needed for prologue
+ 287 01b4 10BC     		pop	{r4}
+ 288 01b6 01BC     		pop	{r0}
+ 289 01b8 0047     		bx	r0
+ 290              		.size	WriteString, .-WriteString
+ 291 01ba 0000     		.align	2
+ 292              		.global	ScreenShiftLeft
+ 293              		.code 16
+ 294              		.thumb_func
+ 295              		.type	ScreenShiftLeft, %function
+ 296              	ScreenShiftLeft:
+ 297 01bc 00B5     		push	{lr}
+ 298 01be 0020     		mov	r0, #0
+ 299 01c0 3821     		mov	r1, #56
+ 300 01c2 FFF7FEFF 		bl	writeLCD
+ 301 01c6 FFF7FEFF 		bl	delay37us
+ 302 01ca 1821     		mov	r1, #24
+ 303 01cc 0020     		mov	r0, #0
+ 304 01ce FFF7FEFF 		bl	writeLCD
+ 305 01d2 0120     		mov	r0, #1
+ 306 01d4 FFF7FEFF 		bl	osSleep
+ 307 01d8 0020     		mov	r0, #0
+ 308 01da 0621     		mov	r1, #6
+ 309 01dc FFF7FEFF 		bl	writeLCD
+ 310 01e0 0120     		mov	r0, #1
+ 311 01e2 FFF7FEFF 		bl	osSleep
+ 312              		@ sp needed for prologue
+ 313 01e6 01BC     		pop	{r0}
+ 314 01e8 0047     		bx	r0
+ 315              		.size	ScreenShiftLeft, .-ScreenShiftLeft
+ 316 01ea 0000     		.align	2
+ 317              		.global	clearScr
+ 318              		.code 16
+ 319              		.thumb_func
+ 320              		.type	clearScr, %function
+ 321              	clearScr:
+ 322 01ec 00B5     		push	{lr}
+ 323 01ee 214A     		ldr	r2, .L51
+ 324 01f0 8023     		mov	r3, #128
+ 325 01f2 DB05     		lsl	r3, r3, #23
+ 326 01f4 1360     		str	r3, [r2]
+ 327 01f6 3220     		mov	r0, #50
+ 328 01f8 FFF7FEFF 		bl	osSleep
+ 329 01fc 3021     		mov	r1, #48
+ 330 01fe 0020     		mov	r0, #0
+ 331 0200 FFF7FEFF 		bl	writeLCD
+ 332 0204 0120     		mov	r0, #1
+ 333 0206 FFF7FEFF 		bl	osSleep
+ 334 020a 0020     		mov	r0, #0
+ 335 020c 3021     		mov	r1, #48
+ 336 020e FFF7FEFF 		bl	writeLCD
+ 337 0212 FFF7FEFF 		bl	delay37us
+ 338 0216 0020     		mov	r0, #0
+ 339 0218 3021     		mov	r1, #48
+ 340 021a FFF7FEFF 		bl	writeLCD
+ 341 021e FFF7FEFF 		bl	delay37us
+ 342 0222 0020     		mov	r0, #0
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 7
+
+
+ 343 0224 3821     		mov	r1, #56
+ 344 0226 FFF7FEFF 		bl	writeLCD
+ 345 022a FFF7FEFF 		bl	delay37us
+ 346 022e 0020     		mov	r0, #0
+ 347 0230 0821     		mov	r1, #8
+ 348 0232 FFF7FEFF 		bl	writeLCD
+ 349 0236 FFF7FEFF 		bl	delay37us
+ 350 023a 0121     		mov	r1, #1
+ 351 023c 0020     		mov	r0, #0
+ 352 023e FFF7FEFF 		bl	writeLCD
+ 353 0242 0120     		mov	r0, #1
+ 354 0244 FFF7FEFF 		bl	osSleep
+ 355 0248 0621     		mov	r1, #6
+ 356 024a 0020     		mov	r0, #0
+ 357 024c FFF7FEFF 		bl	writeLCD
+ 358 0250 0120     		mov	r0, #1
+ 359 0252 FFF7FEFF 		bl	osSleep
+ 360 0256 0020     		mov	r0, #0
+ 361 0258 0C21     		mov	r1, #12
+ 362 025a FFF7FEFF 		bl	writeLCD
+ 363 025e FFF7FEFF 		bl	delay37us
+ 364 0262 0020     		mov	r0, #0
+ 365 0264 0221     		mov	r1, #2
+ 366 0266 FFF7FEFF 		bl	writeLCD
+ 367 026a 0120     		mov	r0, #1
+ 368 026c FFF7FEFF 		bl	osSleep
+ 369              		@ sp needed for prologue
+ 370 0270 01BC     		pop	{r0}
+ 371 0272 0047     		bx	r0
+ 372              	.L52:
+ 373              		.align	2
+ 374              	.L51:
+ 375 0274 048002E0 		.word	-536707068
+ 376              		.size	clearScr, .-clearScr
+ 377              		.align	2
+ 378              		.global	LCDWriteTime
+ 379              		.code 16
+ 380              		.thumb_func
+ 381              		.type	LCDWriteTime, %function
+ 382              	LCDWriteTime:
+ 383 0278 10B5     		push	{r4, lr}
+ 384 027a 82B0     		sub	sp, sp, #8
+ 385 027c FFF7FEFF 		bl	clearScr
+ 386 0280 6C46     		mov	r4, sp
+ 387 0282 064B     		ldr	r3, .L55
+ 388 0284 0234     		add	r4, r4, #2
+ 389 0286 9868     		ldr	r0, [r3, #8]
+ 390 0288 211C     		mov	r1, r4
+ 391 028a FFF7FEFF 		bl	timeToString
+ 392 028e 201C     		mov	r0, r4
+ 393 0290 FFF7FEFF 		bl	WriteString
+ 394 0294 02B0     		add	sp, sp, #8
+ 395              		@ sp needed for prologue
+ 396 0296 10BC     		pop	{r4}
+ 397 0298 01BC     		pop	{r0}
+ 398 029a 0047     		bx	r0
+ 399              	.L56:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 8
+
+
+ 400              		.align	2
+ 401              	.L55:
+ 402 029c 00000000 		.word	currentSongInfo
+ 403              		.size	LCDWriteTime, .-LCDWriteTime
+ 404              		.align	2
+ 405              		.global	LCDWriteVolume
+ 406              		.code 16
+ 407              		.thumb_func
+ 408              		.type	LCDWriteVolume, %function
+ 409              	LCDWriteVolume:
+ 410 02a0 00B5     		push	{lr}
+ 411 02a2 FFF7FEFF 		bl	clearScr
+ 412 02a6 0B4B     		ldr	r3, .L63
+ 413 02a8 1878     		ldrb	r0, [r3]
+ 414 02aa FFF7FEFF 		bl	numberToChar
+ 415 02ae 011C     		mov	r1, r0
+ 416 02b0 0120     		mov	r0, #1
+ 417 02b2 FFF7FEFF 		bl	writeLCD
+ 418 02b6 084A     		ldr	r2, .L63+4
+ 419 02b8 1378     		ldrb	r3, [r2]
+ 420 02ba 002B     		cmp	r3, #0
+ 421 02bc 01D0     		beq	.L58
+ 422 02be 0023     		mov	r3, #0
+ 423 02c0 1370     		strb	r3, [r2]
+ 424              	.L58:
+ 425 02c2 064A     		ldr	r2, .L63+8
+ 426 02c4 1378     		ldrb	r3, [r2]
+ 427 02c6 002B     		cmp	r3, #0
+ 428 02c8 01D0     		beq	.L62
+ 429 02ca 0023     		mov	r3, #0
+ 430 02cc 1370     		strb	r3, [r2]
+ 431              	.L62:
+ 432              		@ sp needed for prologue
+ 433 02ce 01BC     		pop	{r0}
+ 434 02d0 0047     		bx	r0
+ 435              	.L64:
+ 436 02d2 0000     		.align	2
+ 437              	.L63:
+ 438 02d4 00000000 		.word	currentVolume
+ 439 02d8 00000000 		.word	volumeUp
+ 440 02dc 00000000 		.word	volumeDown
+ 441              		.size	LCDWriteVolume, .-LCDWriteVolume
+ 442              		.align	2
+ 443              		.global	LCDWriteNameAuthor
+ 444              		.code 16
+ 445              		.thumb_func
+ 446              		.type	LCDWriteNameAuthor, %function
+ 447              	LCDWriteNameAuthor:
+ 448 02e0 10B5     		push	{r4, lr}
+ 449 02e2 FFF7FEFF 		bl	clearScr
+ 450 02e6 084C     		ldr	r4, .L67
+ 451 02e8 2068     		ldr	r0, [r4]
+ 452 02ea FFF7FEFF 		bl	WriteString
+ 453 02ee C021     		mov	r1, #192
+ 454 02f0 0020     		mov	r0, #0
+ 455 02f2 FFF7FEFF 		bl	writeLCD
+ 456 02f6 FFF7FEFF 		bl	delay37us
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 9
+
+
+ 457 02fa 6068     		ldr	r0, [r4, #4]
+ 458 02fc FFF7FEFF 		bl	WriteString
+ 459              		@ sp needed for prologue
+ 460 0300 10BC     		pop	{r4}
+ 461 0302 01BC     		pop	{r0}
+ 462 0304 0047     		bx	r0
+ 463              	.L68:
+ 464 0306 0000     		.align	2
+ 465              	.L67:
+ 466 0308 00000000 		.word	currentSongInfo
+ 467              		.size	LCDWriteNameAuthor, .-LCDWriteNameAuthor
+ 468              		.align	2
+ 469              		.global	startLCD
+ 470              		.code 16
+ 471              		.thumb_func
+ 472              		.type	startLCD, %function
+ 473              	startLCD:
+ 474 030c 00B5     		push	{lr}
+ 475 030e FFF7FEFF 		bl	initLCD
+ 476 0312 054A     		ldr	r2, .L71
+ 477 0314 8023     		mov	r3, #128
+ 478 0316 DB05     		lsl	r3, r3, #23
+ 479 0318 1360     		str	r3, [r2]
+ 480 031a 0A20     		mov	r0, #10
+ 481 031c FFF7FEFF 		bl	osSleep
+ 482 0320 FFF7FEFF 		bl	LCDWriteNameAuthor
+ 483              		@ sp needed for prologue
+ 484 0324 01BC     		pop	{r0}
+ 485 0326 0047     		bx	r0
+ 486              	.L72:
+ 487              		.align	2
+ 488              	.L71:
+ 489 0328 0C8002E0 		.word	-536707060
+ 490              		.size	startLCD, .-startLCD
+ 491              		.comm	currentDisplayMode,1,1
+ 492              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 myLCD.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:9      .text:00000000 initLCD
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:41     .text:00000034 $d
+                            *COM*:00000001 currentDisplayMode
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:54     .text:00000050 delay37us
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:51     .text:00000050 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:76     .text:0000006c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:83     .text:00000070 writeLCD
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:80     .text:00000070 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:162    .text:000000f4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:171    .text:00000100 lcdBacklight
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:168    .text:00000100 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:192    .text:0000011c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:201    .text:00000124 numberToChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:198    .text:00000124 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:218    .text:00000138 timeToString
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:266    .text:00000198 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:273    .text:0000019c WriteString
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:270    .text:0000019c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:296    .text:000001bc ScreenShiftLeft
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:321    .text:000001ec clearScr
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:375    .text:00000274 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:382    .text:00000278 LCDWriteTime
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:379    .text:00000278 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:402    .text:0000029c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:409    .text:000002a0 LCDWriteVolume
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:406    .text:000002a0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:438    .text:000002d4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:447    .text:000002e0 LCDWriteNameAuthor
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:444    .text:000002e0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:466    .text:00000308 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:473    .text:0000030c startLCD
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:470    .text:0000030c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:489    .text:00000328 $d
+
+UNDEFINED SYMBOLS
+displayMode
+__umodsi3
+__udivsi3
+osSleep
+currentSongInfo
+currentVolume
+volumeUp
+volumeDown
