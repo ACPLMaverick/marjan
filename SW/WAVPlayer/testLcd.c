@@ -138,7 +138,7 @@ lcdBacklight(tU8 onOff)
  *    Bigger numbers are "cut" by modulo operation
  *
  ****************************************************************************/
-unsigned char numberToChar(unsigned char number)
+unsigned char numberToChar(unsigned long number)
 {
 	return (number % 10) + 48;
 }
@@ -238,7 +238,10 @@ testLcd(void)
 		writeLCD(0, 0x80 | 0x40);
 		delay37us();
 
-		WriteString(currentSongInfo.author);
+		//WriteString(currentSongInfo.author);
+		unsigned char toWrite[6];
+		timeToString(currentSongInfo.time, toWrite);
+		WriteString(toWrite);
 	}
 	else
 	{
@@ -247,47 +250,47 @@ testLcd(void)
 
     osSleep(50);
     osSleep(1); //actually only 1.52 mS needed
-
-    // awaiting command from joystick
-    if(awaitLoop != 0)
-    {
-    	for(;;)
-    	    {
-    	    	if(changeLeft != 0)
-    	    	{
-    	    		changeLeft = 0;
-    	    		break;
-    	    	}
-    	    	if(changeRight != 0)
-    	    	{
-    	    	    changeRight = 0;
-    	    	    break;
-    	    	}
-    	    	if(volumeUp != 0)
-    	    	{
-    	    		break;
-    	    	}
-    	    	if(volumeDown != 0)
-    	    	{
-    	    		break;
-    	    	}
-    	    	if(isError != 0)
-    	    	{
-    	    		break;
-    	    	}
-    	    	if(currentDisplayMode != displayMode)
-    	    	{
-    	    		currentDisplayMode = displayMode;
-    	    		break;
-    	    	}
-
-    	    	osSleep(100);
-    	    	if(currentSongInfo.nameLength > 16 || currentSongInfo.authorLength > 16)
-    	    	{
-    	    		ScreenShiftLeft();
-    	    	}
-    	    }
-    }
+//
+//    // awaiting command from joystick
+//    if(awaitLoop != 0)
+//    {
+//    	for(;;)
+//    	    {
+//    	    	if(changeLeft != 0)
+//    	    	{
+//    	    		changeLeft = 0;
+//    	    		break;
+//    	    	}
+//    	    	if(changeRight != 0)
+//    	    	{
+//    	    	    changeRight = 0;
+//    	    	    break;
+//    	    	}
+//    	    	if(volumeUp != 0)
+//    	    	{
+//    	    		break;
+//    	    	}
+//    	    	if(volumeDown != 0)
+//    	    	{
+//    	    		break;
+//    	    	}
+//    	    	if(isError != 0)
+//    	    	{
+//    	    		break;
+//    	    	}
+//    	    	if(currentDisplayMode != displayMode)
+//    	    	{
+//    	    		currentDisplayMode = displayMode;
+//    	    		break;
+//    	    	}
+//
+//    	    	osSleep(100);
+//    	    	if(currentSongInfo.nameLength > 16 || currentSongInfo.authorLength > 16)
+//    	    	{
+//    	    		ScreenShiftLeft();
+//    	    	}
+//    	    }
+//    }
     if(awaitLoop == 0) awaitLoop = 1;
   }
 	//lcdBacklight(FALSE);

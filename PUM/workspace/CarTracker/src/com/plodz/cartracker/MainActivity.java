@@ -1,6 +1,8 @@
 package com.plodz.cartracker;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,10 +63,11 @@ public class MainActivity extends Activity {
     	Globals.checkDelay = 1;
     	Globals.showHigherPrice = false;
     	Globals.priceDiesel = 4.8f;
-    	Globals.priceDieselUltimate = 5.2f;
+    	Globals.priceDieselUltimate = 2.5f;
     	Globals.pricePB95 = 5.0f;
     	Globals.pricePB98 = 5.5f;
     	Globals.mapZoomMultiplier = 16.0f;
+    	Globals.lastUpdate = new GregorianCalendar();
     }
     
     public void onStartButtonClick(View v)
@@ -88,7 +91,8 @@ public class MainActivity extends Activity {
     
     public void onPricesButtonClick(View v)
     {
-    	
+    	Intent intent = new Intent(this, FuelActivity.class);
+    	startActivity(intent);
     }
     
     public void onSettingsButtonClick(View v)

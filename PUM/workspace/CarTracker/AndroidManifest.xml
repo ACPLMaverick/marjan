@@ -61,6 +61,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
+        <activity
+            android:name=".FuelActivity"
+            android:label="@string/title_activity_fuel" >
+        </activity>
     </application>
 
 </manifest>

@@ -61,10 +61,10 @@ Model3D::VertexIndex* Model3D::LoadGeometry(bool ind, string filePath)
 		std::vector<float>::iterator itp = shapes.at(w).mesh.positions.begin();
 		std::vector<float>::iterator itt = shapes.at(w).mesh.texcoords.begin();
 		std::vector<float>::iterator itn = shapes.at(w).mesh.normals.begin();
-		std::vector<unsigned int>::iterator iti = shapes.at(w).mesh.indices.begin();
+		std::vector<unsigned int>::reverse_iterator iti = shapes.at(w).mesh.indices.rbegin();
 		for (; itp != shapes.at(w).mesh.positions.end(); itp+=3, itt+=2, itn+=3, i++)
 		{
-			vertices[i].position.x =  (*itp);
+			vertices[i].position.x =  - (*itp);
 			vertices[i].position.y =  (*(itp+1));
 			vertices[i].position.z =  (*(itp+2));
 
@@ -76,7 +76,7 @@ Model3D::VertexIndex* Model3D::LoadGeometry(bool ind, string filePath)
 			vertices[i].normal.z = (*(itn + 2));
 		}
 
-		for (; iti != shapes.at(w).mesh.indices.end(); ++iti, p++)
+		for (; iti != shapes.at(w).mesh.indices.rend(); ++iti, p++)
 		{
 			indices[p] = (*iti);
 		}

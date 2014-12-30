@@ -212,7 +212,7 @@ void testMMC(char* name)
 
 				playWAV(&file);
 
-				file_fclose(&file);
+				//file_fclose(&file);
 			}
 			else
 			{
@@ -262,19 +262,9 @@ void MMCproc(void)
 	}
 	getFileNames();
 	testMMC(&files[currentSongInfo.ID][0]);
-/*
-	IODIR0 &= ~(1<<JOYSTICK_RIGHT);
-	IOCLR0 |= (1<<JOYSTICK_RIGHT);*/
+
 	while(1)
 	{
-//		if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
-//		{
-//			rewindForward = 0;
-//		}
-//		if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
-//		{
-//			rewindBackward = 0;
-//		}
 		if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
 		{
 			osSleep(BUTTONCHECK_DELAY);

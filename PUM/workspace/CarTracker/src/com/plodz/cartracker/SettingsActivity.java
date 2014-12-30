@@ -135,7 +135,8 @@ public class SettingsActivity extends Activity {
     
     protected void addItemsToFTSpinner()
     {
-    	String[] array = {getString(R.string.str_set_fuelTypeDiesel), getString(R.string.str_set_fuelTypeGasoline)};
+    	String[] array = {getString(R.string.str_set_fuelTypeDiesel), getString(R.string.str_set_fuelTypeGasoline), 
+    			getString(R.string.str_set_fuelTypeLPG)};
     	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.settings_listviewlayout, array);
     	
@@ -164,7 +165,13 @@ public class SettingsActivity extends Activity {
     	if(Globals.myFuelType == fuelType.DIESEL)
     	{
     		array[0] = getString(R.string.str_set_fuelTypeON);
-    		array[1] = getString(R.string.str_set_fuelTypeONUltimate);
+    		array[1] = "";
+    		
+    	}
+    	else if(Globals.myFuelType == fuelType.LPG)
+    	{
+    		array[0] = getString(R.string.str_set_fuelTypeLPG);
+    		array[1] = "";
     	}
     	else
     	{
@@ -211,6 +218,9 @@ public class SettingsActivity extends Activity {
     		break;
     	case 1:
     		Globals.myFuelType = Globals.fuelType.PETROL;
+    		break;
+    	case 2:
+    		Globals.myFuelType = Globals.fuelType.LPG;
     		break;
     	default:
     		Globals.myFuelType = Globals.fuelType.DIESEL;

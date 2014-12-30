@@ -8,8 +8,9 @@
 #ifndef WAVPLAYER_H_
 #define WAVPLAYER_H_
 
+//15908
 #define S_SIZE 15908
-#define S_TYPE char
+#define S_TYPE unsigned char
 #define S_SAMPLE 600
 #define S_START 44
 
@@ -19,6 +20,7 @@
 #include "filesys/efs.h"
 #include "mp3shared.h"
 
-void playWAV(EmbeddedFile *file);
+void playWAV(EmbeddedFile* file);
+void ISR(void);
 
 #endif /* WAVPLAYER_H_ */

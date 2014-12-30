@@ -43,12 +43,20 @@
     <string name="str_set_fuelTypePB95">PB 95</string>
     <string name="str_set_fuelTypePB98">PB 98</string>
     <string name="str_set_fuelTypeON">Diesel</string>
-    <string name="str_set_fuelTypeONUltimate">Diesel Ultimate</string>
+    <string name="str_set_fuelTypeLPG">LPG</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_log">Trip Log</string>
     <string name="title_section1">Trip Log</string>
     <string name="title_section2">Trip Stats</string>
     <string name="title_section3">Section 3</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_fuel">FuelActivity</string>
+    <string name="str_fuels_siteTitle">Getting fuel prices from:&#160;</string>
+    <string name="str_fuels_siteAddress">tba</string>
+    <string name="str_fuels_buttonUpdate">Update</string>
+    <string name="str_fuels_lastUpdated">Last updated:&#160;</string>
+    <string name="str_fuels_updating">Updating&#8230;</string>
+    <string name="str_fuels_error">Update failed :(</string>
+    <string name="str_fuels_errorNoInternet">No internet connection :(</string>
 
 </resources>

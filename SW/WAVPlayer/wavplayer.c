@@ -7,6 +7,7 @@
 
 #include "wavplayer.h"
 
+SongInfo currentSongInfo;
 EmbeddedFile* myFile;
 S_TYPE soundTable[S_SIZE];
 unsigned long* filePtr;
@@ -15,7 +16,19 @@ unsigned long fileSize;
 
 unsigned char currentVolume;
 
-void sendToDAC(void)
+extern void myTimerExec(void);
+
+void zeroBuffer(void)
+{
+	int i;
+	for(i = 0; i < S_SIZE; i++)
+	{
+		if(i % 2 != 0) soundTable[i] = 255;
+		else soundTable[i] = 0;
+	}
+}
+
+void sendToDACOld(void)
 {
 	tU32 cnt = 0;
 	int i = 0;
@@ -27,7 +40,6 @@ void sendToDAC(void)
 	    val = val * 2 * volumeMultiplier;
 	    if (val > 127) val = 127;
 	    else if (val < -127) val = -127;
-
 	    DACR = ((val+128) << 8) |  //actual value to output
 	            (1 << 16);         //BIAS = 1, 2.5uS settling time
 
@@ -36,31 +48,56 @@ void sendToDAC(void)
 	    }
 }
 
-void readFromFile(void)
+void sendToDAC(unsigned char sample)
 {
-	file_fread(myFile, fileOffset, S_SIZE, soundTable);
-	fileOffset += S_SIZE;
+		tS32 val;
+		float volumeMultiplier = (float)currentVolume / 10;
+		val = sample;
+		val -= 128;
+	    val = val * 2 * volumeMultiplier;
+	    if (val > 127) val = 127;
+	    else if (val < -127) val = -127;
+	    DACR = ((val+128) << 8) |  //actual value to output
+	            (0 << 16);         //BIAS = 1, 2.5uS settling time
 }
 
-void playWAV(EmbeddedFile *file)
+void readFromFile(void)
+{
+	//zeroBuffer();
+	file_read(myFile, S_SIZE, soundTable);
+	//fileOffset = fileOffset + S_SIZE;
+	//currentSongInfo.time = fileOffset;
+}
+
+void playWAV(EmbeddedFile* file)
 {
 	// reading necessary data from file
+	currentSongInfo.time = 0;
 	fileSize = (*file).FileSize;
-	filePtr = &((*file).FilePtr);
-	fileOffset = S_START;
+	(*file).FilePtr = S_START;
+	//fileOffset = S_START;
 	myFile = file;
 
+	myTimerExec();
+
 	// main function loop
-	while(fileOffset < fileSize)
-	{
-		readFromFile();
-		sendToDAC();
-	}
-	unsigned long tmp = fileOffset - fileSize;
-	if(tmp < S_SIZE)
-	{
-		fileOffset = fileOffset - (fileOffset - fileSize);
-		readFromFile();
-		sendToDAC();
-	}
+//	while(fileOffset < fileSize)
+//	{
+//		readFromFile();
+//		sendToDACOld();
+//	}
+//	unsigned long tmp = fileOffset - fileSize;
+//	if(tmp < S_SIZE)
+//	{
+//		fileOffset = fileOffset - (fileOffset - fileSize);
+//		readFromFile();
+//		sendToDACOld();
+//	}
+}
+
+void ISR(void)
+{
+	unsigned char newSample[1];
+	file_read(myFile, 1, newSample);
+	sendToDAC(newSample[0]);
 }

@@ -216,8 +216,8 @@ proc1(void* arg)
     //
     osCreateProcess(proc2, proc2Stack, PROC2_STACK_SIZE, &pid2, 3, NULL, &error);
     osStartProcess(pid2, &error);
-    osCreateProcess(proc3, proc3Stack, PROC3_STACK_SIZE, &pid3, 3, NULL, &error);
-    osStartProcess(pid3, &error);
+//    osCreateProcess(proc3, proc3Stack, PROC3_STACK_SIZE, &pid3, 3, NULL, &error);
+//    osStartProcess(pid3, &error);
 //    osCreateProcess(proc4, proc4Stack, PROC4_STACK_SIZE, &pid4, 3, NULL, &error);
 //    osStartProcess(pid4, &error);
 //    osCreateProcess(proc5, proc5Stack, PROC5_STACK_SIZE, &pid5, 3, NULL, &error);
@@ -378,6 +378,6 @@ void InitializeSharedData()
 	volumeDown = 0;
 	isError = 0;
 	error = "";
-	currentVolume = 5;
+	currentVolume = 9;
 	displayMode = 0;
 }

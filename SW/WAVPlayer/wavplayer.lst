@@ -1,207 +1,305 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s 			page 1
 
 
    1              		.code	16
    2              		.file	"wavplayer.c"
-   3              		.global	__floatsisf
-   4              		.global	__addsf3
-   5              		.global	__divsf3
-   6              		.global	__mulsf3
-   7              		.global	__fixsfsi
-   8              		.text
-   9              		.align	2
-  10              		.global	sendToDAC
-  11              		.code 16
-  12              		.thumb_func
-  13              		.type	sendToDAC, %function
-  14              	sendToDAC:
-  15 0000 F0B5     		push	{r4, r5, r6, r7, lr}
-  16 0002 1D4D     		ldr	r5, .L14
-  17 0004 1D4F     		ldr	r7, .L14+4
-  18              	.L2:
-  19 0006 2878     		ldrb	r0, [r5]
-  20 0008 8038     		sub	r0, r0, #128
-  21 000a 4000     		lsl	r0, r0, #1
-  22 000c FFF7FEFF 		bl	__floatsisf
-  23 0010 0024     		mov	r4, #0
-  24 0012 3C57     		ldrsb	r4, [r7, r4]
-  25 0014 061C     		add	r6, r0, #0
-  26 0016 201C     		mov	r0, r4
-  27 0018 FFF7FEFF 		bl	__floatsisf
-  28 001c 002C     		cmp	r4, #0
-  29 001e 02DA     		bge	.L3
-  30 0020 1749     		ldr	r1, .L14+8
-  31 0022 FFF7FEFF 		bl	__addsf3
-  32              	.L3:
-  33 0026 1749     		ldr	r1, .L14+12
-  34 0028 FFF7FEFF 		bl	__divsf3
-  35 002c 011C     		add	r1, r0, #0
-  36 002e 301C     		add	r0, r6, #0
-  37 0030 FFF7FEFF 		bl	__mulsf3
-  38 0034 FFF7FEFF 		bl	__fixsfsi
-  39 0038 031C     		mov	r3, r0
-  40 003a 7F33     		add	r3, r3, #127
-  41 003c 02DA     		bge	.L4
-  42 003e 7F20     		mov	r0, #127
-  43 0040 4042     		neg	r0, r0
-  44 0042 02E0     		b	.L5
-  45              	.L4:
-  46 0044 7F28     		cmp	r0, #127
-  47 0046 00DD     		ble	.L5
-  48 0048 7F20     		mov	r0, #127
-  49              	.L5:
-  50 004a 031C     		mov	r3, r0
-  51 004c 8033     		add	r3, r3, #128
-  52 004e 8022     		mov	r2, #128
-  53 0050 5202     		lsl	r2, r2, #9
-  54 0052 1B02     		lsl	r3, r3, #8
-  55 0054 1343     		orr	r3, r3, r2
-  56 0056 0C4A     		ldr	r2, .L14+16
-  57 0058 1360     		str	r3, [r2]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s 			page 2
+   3              		.text
+   4              		.align	2
+   5              		.global	zeroBuffer
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	zeroBuffer, %function
+   9              	zeroBuffer:
+  10 0000 064A     		ldr	r2, .L10
+  11              		@ lr needed for prologue
+  12 0002 0021     		mov	r1, #0
+  13              	.L2:
+  14 0004 0123     		mov	r3, #1
+  15 0006 0B40     		and	r3, r1
+  16 0008 01D0     		beq	.L3
+  17 000a 0123     		mov	r3, #1
+  18 000c 5B42     		neg	r3, r3
+  19              	.L3:
+  20 000e 1370     		strb	r3, [r2]
+  21 0010 034B     		ldr	r3, .L10+4
+  22 0012 0131     		add	r1, r1, #1
+  23 0014 0132     		add	r2, r2, #1
+  24 0016 9942     		cmp	r1, r3
+  25 0018 F4D1     		bne	.L2
+  26              		@ sp needed for prologue
+  27 001a 7047     		bx	lr
+  28              	.L11:
+  29              		.align	2
+  30              	.L10:
+  31 001c 00000000 		.word	soundTable
+  32 0020 243E0000 		.word	15908
+  33              		.size	zeroBuffer, .-zeroBuffer
+  34              		.global	__floatsisf
+  35              		.global	__addsf3
+  36              		.global	__divsf3
+  37              		.global	__mulsf3
+  38              		.global	__fixsfsi
+  39              		.align	2
+  40              		.global	sendToDACOld
+  41              		.code 16
+  42              		.thumb_func
+  43              		.type	sendToDACOld, %function
+  44              	sendToDACOld:
+  45 0024 F0B5     		push	{r4, r5, r6, r7, lr}
+  46 0026 1D4D     		ldr	r5, .L25
+  47 0028 1D4F     		ldr	r7, .L25+4
+  48              	.L13:
+  49 002a 2878     		ldrb	r0, [r5]
+  50 002c 8038     		sub	r0, r0, #128
+  51 002e 4000     		lsl	r0, r0, #1
+  52 0030 FFF7FEFF 		bl	__floatsisf
+  53 0034 0024     		mov	r4, #0
+  54 0036 3C57     		ldrsb	r4, [r7, r4]
+  55 0038 061C     		add	r6, r0, #0
+  56 003a 201C     		mov	r0, r4
+  57 003c FFF7FEFF 		bl	__floatsisf
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s 			page 2
 
 
-  58 005a 0022     		mov	r2, #0
-  59              	.L6:
-  60 005c C046     		 nop
-  61              		.code	16
-  62 005e 9623     		mov	r3, #150
-  63 0060 0132     		add	r2, r2, #1
-  64 0062 9B00     		lsl	r3, r3, #2
-  65 0064 9A42     		cmp	r2, r3
-  66 0066 F9D1     		bne	.L6
-  67 0068 084B     		ldr	r3, .L14+20
-  68 006a 0135     		add	r5, r5, #1
-  69 006c 9D42     		cmp	r5, r3
-  70 006e CAD1     		bne	.L2
-  71              		@ sp needed for prologue
-  72 0070 F0BC     		pop	{r4, r5, r6, r7}
-  73 0072 01BC     		pop	{r0}
-  74 0074 0047     		bx	r0
+  58 0040 002C     		cmp	r4, #0
+  59 0042 02DA     		bge	.L14
+  60 0044 1749     		ldr	r1, .L25+8
+  61 0046 FFF7FEFF 		bl	__addsf3
+  62              	.L14:
+  63 004a 1749     		ldr	r1, .L25+12
+  64 004c FFF7FEFF 		bl	__divsf3
+  65 0050 011C     		add	r1, r0, #0
+  66 0052 301C     		add	r0, r6, #0
+  67 0054 FFF7FEFF 		bl	__mulsf3
+  68 0058 FFF7FEFF 		bl	__fixsfsi
+  69 005c 031C     		mov	r3, r0
+  70 005e 7F33     		add	r3, r3, #127
+  71 0060 02DA     		bge	.L15
+  72 0062 7F20     		mov	r0, #127
+  73 0064 4042     		neg	r0, r0
+  74 0066 02E0     		b	.L16
   75              	.L15:
-  76 0076 0000     		.align	2
-  77              	.L14:
-  78 0078 01000000 		.word	soundTable+1
-  79 007c 00000000 		.word	currentVolume
-  80 0080 00008043 		.word	1132462080
-  81 0084 00002041 		.word	1092616192
-  82 0088 00C006E0 		.word	-536428544
-  83 008c 253E0000 		.word	soundTable+15909
-  84              		.size	sendToDAC, .-sendToDAC
-  85              		.align	2
-  86              		.global	readFromFile
-  87              		.code 16
-  88              		.thumb_func
-  89              		.type	readFromFile, %function
-  90              	readFromFile:
-  91 0090 30B5     		push	{r4, r5, lr}
-  92 0092 074C     		ldr	r4, .L18
-  93 0094 074D     		ldr	r5, .L18+4
-  94 0096 084A     		ldr	r2, .L18+8
-  95 0098 084B     		ldr	r3, .L18+12
-  96 009a 1068     		ldr	r0, [r2]
-  97 009c 2168     		ldr	r1, [r4]
-  98 009e 2A1C     		mov	r2, r5
-  99 00a0 FFF7FEFF 		bl	file_fread
- 100 00a4 2368     		ldr	r3, [r4]
- 101 00a6 5B19     		add	r3, r3, r5
- 102 00a8 2360     		str	r3, [r4]
- 103              		@ sp needed for prologue
- 104 00aa 30BC     		pop	{r4, r5}
- 105 00ac 01BC     		pop	{r0}
- 106 00ae 0047     		bx	r0
- 107              	.L19:
- 108              		.align	2
- 109              	.L18:
- 110 00b0 00000000 		.word	fileOffset
- 111 00b4 243E0000 		.word	15908
- 112 00b8 00000000 		.word	myFile
- 113 00bc 00000000 		.word	soundTable
- 114              		.size	readFromFile, .-readFromFile
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s 			page 3
+  76 0068 7F28     		cmp	r0, #127
+  77 006a 00DD     		ble	.L16
+  78 006c 7F20     		mov	r0, #127
+  79              	.L16:
+  80 006e 031C     		mov	r3, r0
+  81 0070 8033     		add	r3, r3, #128
+  82 0072 8022     		mov	r2, #128
+  83 0074 5202     		lsl	r2, r2, #9
+  84 0076 1B02     		lsl	r3, r3, #8
+  85 0078 1343     		orr	r3, r3, r2
+  86 007a 0C4A     		ldr	r2, .L25+16
+  87 007c 1360     		str	r3, [r2]
+  88 007e 0022     		mov	r2, #0
+  89              	.L17:
+  90 0080 C046     		 nop
+  91              		.code	16
+  92 0082 9623     		mov	r3, #150
+  93 0084 0132     		add	r2, r2, #1
+  94 0086 9B00     		lsl	r3, r3, #2
+  95 0088 9A42     		cmp	r2, r3
+  96 008a F9D1     		bne	.L17
+  97 008c 084B     		ldr	r3, .L25+20
+  98 008e 0135     		add	r5, r5, #1
+  99 0090 9D42     		cmp	r5, r3
+ 100 0092 CAD1     		bne	.L13
+ 101              		@ sp needed for prologue
+ 102 0094 F0BC     		pop	{r4, r5, r6, r7}
+ 103 0096 01BC     		pop	{r0}
+ 104 0098 0047     		bx	r0
+ 105              	.L26:
+ 106 009a 0000     		.align	2
+ 107              	.L25:
+ 108 009c 01000000 		.word	soundTable+1
+ 109 00a0 00000000 		.word	currentVolume
+ 110 00a4 00008043 		.word	1132462080
+ 111 00a8 00002041 		.word	1092616192
+ 112 00ac 00C006E0 		.word	-536428544
+ 113 00b0 253E0000 		.word	soundTable+15909
+ 114              		.size	sendToDACOld, .-sendToDACOld
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s 			page 3
 
 
  115              		.align	2
- 116              		.global	playWAV
+ 116              		.global	sendToDAC
  117              		.code 16
  118              		.thumb_func
- 119              		.type	playWAV, %function
- 120              	playWAV:
- 121 00c0 00B5     		push	{lr}
- 122 00c2 C36C     		ldr	r3, [r0, #76]
- 123 00c4 104A     		ldr	r2, .L27
- 124 00c6 1360     		str	r3, [r2]
- 125 00c8 104A     		ldr	r2, .L27+4
- 126 00ca 031C     		mov	r3, r0
- 127 00cc 4833     		add	r3, r3, #72
- 128 00ce 1360     		str	r3, [r2]
- 129 00d0 0F4A     		ldr	r2, .L27+8
- 130 00d2 2C23     		mov	r3, #44
- 131 00d4 1360     		str	r3, [r2]
- 132 00d6 0F4B     		ldr	r3, .L27+12
- 133 00d8 1860     		str	r0, [r3]
- 134 00da 03E0     		b	.L21
- 135              	.L22:
- 136 00dc FFF7FEFF 		bl	readFromFile
- 137 00e0 FFF7FEFF 		bl	sendToDAC
- 138              	.L21:
- 139 00e4 0A48     		ldr	r0, .L27+8
- 140 00e6 084B     		ldr	r3, .L27
- 141 00e8 0268     		ldr	r2, [r0]
- 142 00ea 1B68     		ldr	r3, [r3]
- 143 00ec 9A42     		cmp	r2, r3
- 144 00ee F5D3     		bcc	.L22
- 145 00f0 D11A     		sub	r1, r2, r3
- 146 00f2 094B     		ldr	r3, .L27+16
- 147 00f4 9942     		cmp	r1, r3
- 148 00f6 05D8     		bhi	.L26
- 149 00f8 531A     		sub	r3, r2, r1
- 150 00fa 0360     		str	r3, [r0]
- 151 00fc FFF7FEFF 		bl	readFromFile
- 152 0100 FFF7FEFF 		bl	sendToDAC
- 153              	.L26:
- 154              		@ sp needed for prologue
- 155 0104 01BC     		pop	{r0}
- 156 0106 0047     		bx	r0
- 157              	.L28:
- 158              		.align	2
- 159              	.L27:
- 160 0108 00000000 		.word	fileSize
- 161 010c 00000000 		.word	filePtr
- 162 0110 00000000 		.word	fileOffset
- 163 0114 00000000 		.word	myFile
- 164 0118 233E0000 		.word	15907
- 165              		.size	playWAV, .-playWAV
- 166              		.comm	currentVolume,1,1
- 167              		.comm	myFile,4,4
- 168              		.comm	soundTable,15908,1
- 169              		.comm	filePtr,4,4
- 170              		.comm	fileOffset,4,4
- 171              		.comm	fileSize,4,4
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s 			page 4
+ 119              		.type	sendToDAC, %function
+ 120              	sendToDAC:
+ 121 00b4 30B5     		push	{r4, r5, lr}
+ 122 00b6 164B     		ldr	r3, .L32
+ 123 00b8 0006     		lsl	r0, r0, #24
+ 124 00ba C00D     		lsr	r0, r0, #23
+ 125 00bc C018     		add	r0, r0, r3
+ 126 00be FFF7FEFF 		bl	__floatsisf
+ 127 00c2 144B     		ldr	r3, .L32+4
+ 128 00c4 0024     		mov	r4, #0
+ 129 00c6 1C57     		ldrsb	r4, [r3, r4]
+ 130 00c8 051C     		add	r5, r0, #0
+ 131 00ca 201C     		mov	r0, r4
+ 132 00cc FFF7FEFF 		bl	__floatsisf
+ 133 00d0 002C     		cmp	r4, #0
+ 134 00d2 02DA     		bge	.L28
+ 135 00d4 1049     		ldr	r1, .L32+8
+ 136 00d6 FFF7FEFF 		bl	__addsf3
+ 137              	.L28:
+ 138 00da 1049     		ldr	r1, .L32+12
+ 139 00dc FFF7FEFF 		bl	__divsf3
+ 140 00e0 011C     		add	r1, r0, #0
+ 141 00e2 281C     		add	r0, r5, #0
+ 142 00e4 FFF7FEFF 		bl	__mulsf3
+ 143 00e8 FFF7FEFF 		bl	__fixsfsi
+ 144 00ec 031C     		mov	r3, r0
+ 145 00ee 7F33     		add	r3, r3, #127
+ 146 00f0 02DA     		bge	.L29
+ 147 00f2 7F20     		mov	r0, #127
+ 148 00f4 4042     		neg	r0, r0
+ 149 00f6 02E0     		b	.L30
+ 150              	.L29:
+ 151 00f8 7F28     		cmp	r0, #127
+ 152 00fa 00DD     		ble	.L30
+ 153 00fc 7F20     		mov	r0, #127
+ 154              	.L30:
+ 155 00fe 031C     		mov	r3, r0
+ 156 0100 074A     		ldr	r2, .L32+16
+ 157 0102 8033     		add	r3, r3, #128
+ 158 0104 1B02     		lsl	r3, r3, #8
+ 159 0106 1360     		str	r3, [r2]
+ 160              		@ sp needed for prologue
+ 161 0108 30BC     		pop	{r4, r5}
+ 162 010a 01BC     		pop	{r0}
+ 163 010c 0047     		bx	r0
+ 164              	.L33:
+ 165 010e 0000     		.align	2
+ 166              	.L32:
+ 167 0110 00FFFFFF 		.word	-256
+ 168 0114 00000000 		.word	currentVolume
+ 169 0118 00008043 		.word	1132462080
+ 170 011c 00002041 		.word	1092616192
+ 171 0120 00C006E0 		.word	-536428544
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s 			page 4
 
 
- 172              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s 			page 5
+ 172              		.size	sendToDAC, .-sendToDAC
+ 173              		.align	2
+ 174              		.global	ISR
+ 175              		.code 16
+ 176              		.thumb_func
+ 177              		.type	ISR, %function
+ 178              	ISR:
+ 179 0124 10B5     		push	{r4, lr}
+ 180 0126 81B0     		sub	sp, sp, #4
+ 181 0128 074B     		ldr	r3, .L36
+ 182 012a 6C46     		mov	r4, sp
+ 183 012c 0334     		add	r4, r4, #3
+ 184 012e 1868     		ldr	r0, [r3]
+ 185 0130 0121     		mov	r1, #1
+ 186 0132 221C     		mov	r2, r4
+ 187 0134 FFF7FEFF 		bl	file_read
+ 188 0138 2078     		ldrb	r0, [r4]
+ 189 013a FFF7FEFF 		bl	sendToDAC
+ 190 013e 01B0     		add	sp, sp, #4
+ 191              		@ sp needed for prologue
+ 192 0140 10BC     		pop	{r4}
+ 193 0142 01BC     		pop	{r0}
+ 194 0144 0047     		bx	r0
+ 195              	.L37:
+ 196 0146 0000     		.align	2
+ 197              	.L36:
+ 198 0148 00000000 		.word	myFile
+ 199              		.size	ISR, .-ISR
+ 200              		.align	2
+ 201              		.global	readFromFile
+ 202              		.code 16
+ 203              		.thumb_func
+ 204              		.type	readFromFile, %function
+ 205              	readFromFile:
+ 206 014c 00B5     		push	{lr}
+ 207 014e 044B     		ldr	r3, .L40
+ 208 0150 044A     		ldr	r2, .L40+4
+ 209 0152 1868     		ldr	r0, [r3]
+ 210 0154 0449     		ldr	r1, .L40+8
+ 211 0156 FFF7FEFF 		bl	file_read
+ 212              		@ sp needed for prologue
+ 213 015a 01BC     		pop	{r0}
+ 214 015c 0047     		bx	r0
+ 215              	.L41:
+ 216 015e 0000     		.align	2
+ 217              	.L40:
+ 218 0160 00000000 		.word	myFile
+ 219 0164 00000000 		.word	soundTable
+ 220 0168 243E0000 		.word	15908
+ 221              		.size	readFromFile, .-readFromFile
+ 222              		.align	2
+ 223              		.global	playWAV
+ 224              		.code 16
+ 225              		.thumb_func
+ 226              		.type	playWAV, %function
+ 227              	playWAV:
+ 228 016c 00B5     		push	{lr}
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s 			page 5
+
+
+ 229 016e 074A     		ldr	r2, .L44
+ 230 0170 0023     		mov	r3, #0
+ 231 0172 9360     		str	r3, [r2, #8]
+ 232 0174 064A     		ldr	r2, .L44+4
+ 233 0176 C36C     		ldr	r3, [r0, #76]
+ 234 0178 1360     		str	r3, [r2]
+ 235 017a 2C23     		mov	r3, #44
+ 236 017c 8364     		str	r3, [r0, #72]
+ 237 017e 054B     		ldr	r3, .L44+8
+ 238 0180 1860     		str	r0, [r3]
+ 239 0182 FFF7FEFF 		bl	myTimerExec
+ 240              		@ sp needed for prologue
+ 241 0186 01BC     		pop	{r0}
+ 242 0188 0047     		bx	r0
+ 243              	.L45:
+ 244 018a 0000     		.align	2
+ 245              	.L44:
+ 246 018c 00000000 		.word	currentSongInfo
+ 247 0190 00000000 		.word	fileSize
+ 248 0194 00000000 		.word	myFile
+ 249              		.size	playWAV, .-playWAV
+ 250              		.comm	currentSongInfo,16,4
+ 251              		.comm	currentVolume,1,1
+ 252              		.comm	myFile,4,4
+ 253              		.comm	soundTable,15908,1
+ 254              		.comm	filePtr,4,4
+ 255              		.comm	fileOffset,4,4
+ 256              		.comm	fileSize,4,4
+ 257              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 wavplayer.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:14     .text:00000000 sendToDAC
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:78     .text:00000078 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:9      .text:00000000 zeroBuffer
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:31     .text:0000001c $d
                             *COM*:00003e24 soundTable
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:44     .text:00000024 sendToDACOld
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:41     .text:00000024 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:108    .text:0000009c $d
                             *COM*:00000001 currentVolume
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:90     .text:00000090 readFromFile
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:87     .text:00000090 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:110    .text:000000b0 $d
-                            *COM*:00000004 fileOffset
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:120    .text:000000b4 sendToDAC
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:117    .text:000000b4 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:167    .text:00000110 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:178    .text:00000124 ISR
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:175    .text:00000124 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:198    .text:00000148 $d
                             *COM*:00000004 myFile
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:120    .text:000000c0 playWAV
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:117    .text:000000c0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccLjLOXp.s:160    .text:00000108 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:205    .text:0000014c readFromFile
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:202    .text:0000014c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:218    .text:00000160 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:227    .text:0000016c playWAV
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:224    .text:0000016c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccpqbHw4.s:246    .text:0000018c $d
+                            *COM*:00000010 currentSongInfo
                             *COM*:00000004 fileSize
                             *COM*:00000004 filePtr
+                            *COM*:00000004 fileOffset
 
 UNDEFINED SYMBOLS
 __floatsisf
@@ -209,4 +307,5 @@ __addsf3
 __divsf3
 __mulsf3
 __fixsfsi
-file_fread
+file_read
+myTimerExec

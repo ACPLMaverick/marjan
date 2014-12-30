@@ -1,0 +1,187 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+	
+    <TextView
+        android:id="@+id/tvFuelTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/str_button_prices"
+        android:textColor="@color/col_font_main"
+        android:textSize="40sp" >
+	</TextView>
+    
+    <TableLayout
+            android:id="@+id/tlFuel"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_below="@+id/tvFuelTitle"
+        	android:orientation="vertical">
+            
+            <TableRow 
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+            	android:orientation="vertical"
+                >
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/StatisticStyle"
+                    android:text="@string/str_set_fuelTypePB95"
+                    />
+                  
+                <TextView
+                    android:id="@+id/tvFuelsPB95"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:gravity="right"
+                    style="@style/StatisticStyle"
+                    android:text=""
+                    />
+            </TableRow>
+            
+            <TableRow 
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+            	android:orientation="vertical"
+                >
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/StatisticStyle"
+                    android:text="@string/str_set_fuelTypePB98"
+                    />
+                  
+                <TextView
+                    android:id="@+id/tvFuelsPB98"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:gravity="right"
+                    style="@style/StatisticStyle"
+                    android:text=""
+                    />
+            </TableRow>
+            
+            <TableRow 
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+            	android:orientation="vertical"
+                >
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/StatisticStyle"
+                    android:text="@string/str_set_fuelTypeON"
+                    />
+                  
+                <TextView
+                    android:id="@+id/tvFuelsON"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:gravity="right"
+                    style="@style/StatisticStyle"
+                    android:text=""
+                    />
+            </TableRow>
+            
+            <TableRow 
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+            	android:orientation="vertical"
+                >
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/StatisticStyle"
+                    android:text="@string/str_set_fuelTypeLPG"
+                    />
+                  
+                <TextView
+                    android:id="@+id/tvFuelsONU"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:gravity="right"
+                    style="@style/StatisticStyle"
+                    android:text=""
+                    />
+            </TableRow>
+            
+     </TableLayout>
+     
+    <TextView
+        			android:id="@+id/tvFuelsLastUpdatedText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tlFuel"
+                    android:layout_marginTop="15dp"
+                    android:gravity="left"
+                    style="@style/SettingStyle"
+                    android:text="@string/str_fuels_lastUpdated"
+                    />
+    
+    <TextView
+        			android:id="@+id/tvFuelsLastUpdated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tlFuel"
+                    android:layout_toRightOf="@+id/tvFuelsLastUpdatedText"
+                    android:layout_marginTop="15dp"
+                    android:gravity="left"
+                    style="@style/SettingStyle"
+                    android:text=""
+                    />
+    
+    <TextView
+        			android:id="@+id/tvFuelsProviderText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvFuelsLastUpdatedText"
+                    android:layout_marginTop="15dp"
+                    android:gravity="left"
+                    android:textSize="13sp"
+                    style="@style/SettingStyle"
+                    android:text="@string/str_fuels_siteTitle"
+                    />
+    
+    <TextView
+        			android:id="@+id/tvFuelsProvider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvFuelsLastUpdatedText"
+                    android:layout_toRightOf="@+id/tvFuelsProviderText"
+                    android:layout_marginTop="15dp"
+                    android:gravity="left"
+                    android:textSize="13sp"
+                    style="@style/SettingStyle"
+                    android:text="@string/str_fuels_siteAddress"
+                    />
+
+    <Button
+        android:id="@+id/btnFuelsUpdate"
+        style="@style/MainButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvFuelsProviderText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/str_fuels_buttonUpdate"
+        android:onClick="onUpdateFuelPricesButtonClick" />
+
+</RelativeLayout>

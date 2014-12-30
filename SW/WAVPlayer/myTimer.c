@@ -1,16 +1,20 @@
 #include <lpc2xxx.h>
 #include "mp3shared.h"
+#include "wavplayer.h"
 
 #define PLOCK (0x00000500)	// lock bit of PLLSTAT
 #define MR0I (1 << 0) // przerwanie wywo³ane kiedy TC == MR0
 #define MR0R (1 << 1) // resetowanie TC kiedy TC == MR0
-#define DELAY_MS 1000
-#define PRESCALE 60000	// TC inkrementowane co 60 000 cykli zegara
+#define DELAY_MS 2
+#define PRESCALE 2650	// TC inkrementowane co 2715 - ileœ cykli zegara
+						// wartoœæ dla próbkowania 11050 Hz
 
 #define PLLFEEDCODE01 0xAA
 #define PLLFEEDCODE02 0x55
 
 SongInfo currentSongInfo;
+
+extern void ISR(void);
 
 void myTimerExec(void);
 void setupPLL(void);
@@ -26,8 +30,6 @@ void myTimerExec(void)
 	initTimer1();
 
 	T1TCR = 0x01;
-
-	for(;;);
 }
 
 void setupPLL(void)
@@ -82,7 +84,7 @@ void T1ISR(void)
 	regVal = T1IR;
 	/////////////////
 
-	currentSongInfo.time += 1;
+	ISR();
 
 	////////////////
 	T1IR = regVal;		// czyœcimy Interrupt Flag

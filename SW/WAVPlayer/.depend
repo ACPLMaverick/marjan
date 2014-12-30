@@ -30,7 +30,16 @@ testI2C.o: testI2C.c startup/../pre_emptive_os/api/osapi.h \
 eeprom.o: eeprom.c startup/../pre_emptive_os/api/general.h i2c.h
 i2c.o: i2c.c startup/../pre_emptive_os/api/general.h i2c.h \
   startup/lpc2xxx.h
-myTimer.o: myTimer.c startup/lpc2xxx.h mp3shared.h
+myTimer.o: myTimer.c startup/lpc2xxx.h mp3shared.h wavplayer.h \
+  startup/consol.h pre_emptive_os/api/general.h filesys/efs.h \
+  startup/config.h filesys/../mmc/interface.h filesys/../mmc/types.h \
+  startup/config.h filesys/disc.h filesys/error.h \
+  filesys/../mmc/hwinterface.h filesys/../mmc/debug.h filesys/ioman.h \
+  filesys/libc.h filesys/partition.h filesys/extract.h \
+  filesys/../mmc/types.h filesys/fs.h filesys/time.h filesys/file.h \
+  filesys/dir.h filesys/fat.h filesys/./ui.h filesys/./fs.h \
+  filesys/./../mmc/types.h filesys/./fat.h filesys/./dir.h \
+  startup/config.h
 wavplayer.o: wavplayer.c wavplayer.h startup/lpc2xxx.h startup/consol.h \
   pre_emptive_os/api/general.h filesys/efs.h startup/config.h \
   filesys/../mmc/interface.h filesys/../mmc/types.h startup/config.h \
