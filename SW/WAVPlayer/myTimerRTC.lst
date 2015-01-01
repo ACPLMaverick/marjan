@@ -1,0 +1,369 @@
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 1
+
+
+   1              		.code	16
+   2              		.file	"myTimerRTC.c"
+   3              		.text
+   4              		.align	2
+   5              		.global	setupPLL
+   6              		.code 16
+   7              		.thumb_func
+   8              		.type	setupPLL, %function
+   9              	setupPLL:
+  10 0000 034B     		ldr	r3, .L3
+  11 0002 0122     		mov	r2, #1
+  12 0004 1A60     		str	r2, [r3]
+  13 0006 2422     		mov	r2, #36
+  14 0008 0433     		add	r3, r3, #4
+  15              		@ lr needed for prologue
+  16 000a 1A60     		str	r2, [r3]
+  17              		@ sp needed for prologue
+  18 000c 7047     		bx	lr
+  19              	.L4:
+  20 000e 0000     		.align	2
+  21              	.L3:
+  22 0010 80C01FE0 		.word	-534790016
+  23              		.size	setupPLL, .-setupPLL
+  24              		.align	2
+  25              		.global	connectPLL
+  26              		.code 16
+  27              		.thumb_func
+  28              		.type	connectPLL, %function
+  29              	connectPLL:
+  30              		@ lr needed for prologue
+  31              	.L7:
+  32 0014 044B     		ldr	r3, .L12
+  33 0016 1A68     		ldr	r2, [r3]
+  34 0018 A023     		mov	r3, #160
+  35 001a DB00     		lsl	r3, r3, #3
+  36 001c 1A42     		tst	r2, r3
+  37 001e F9D0     		beq	.L7
+  38 0020 024B     		ldr	r3, .L12+4
+  39 0022 0322     		mov	r2, #3
+  40 0024 1A60     		str	r2, [r3]
+  41              		@ sp needed for prologue
+  42 0026 7047     		bx	lr
+  43              	.L13:
+  44              		.align	2
+  45              	.L12:
+  46 0028 88C01FE0 		.word	-534790008
+  47 002c 80C01FE0 		.word	-534790016
+  48              		.size	connectPLL, .-connectPLL
+  49              		.align	2
+  50              		.global	feedSeq
+  51              		.code 16
+  52              		.thumb_func
+  53              		.type	feedSeq, %function
+  54              	feedSeq:
+  55 0030 024B     		ldr	r3, .L16
+  56 0032 AA22     		mov	r2, #170
+  57 0034 1A60     		str	r2, [r3]
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 2
+
+
+  58 0036 5522     		mov	r2, #85
+  59              		@ lr needed for prologue
+  60 0038 1A60     		str	r2, [r3]
+  61              		@ sp needed for prologue
+  62 003a 7047     		bx	lr
+  63              	.L17:
+  64              		.align	2
+  65              	.L16:
+  66 003c 8CC01FE0 		.word	-534790004
+  67              		.size	feedSeq, .-feedSeq
+  68              		.align	2
+  69              		.global	initClocks
+  70              		.code 16
+  71              		.thumb_func
+  72              		.type	initClocks, %function
+  73              	initClocks:
+  74 0040 0C4B     		ldr	r3, .L24
+  75 0042 0122     		mov	r2, #1
+  76 0044 1A60     		str	r2, [r3]
+  77 0046 2422     		mov	r2, #36
+  78 0048 0433     		add	r3, r3, #4
+  79 004a 1A60     		str	r2, [r3]
+  80 004c 0A4A     		ldr	r2, .L24+4
+  81 004e AA23     		mov	r3, #170
+  82 0050 1360     		str	r3, [r2]
+  83 0052 5523     		mov	r3, #85
+  84 0054 1360     		str	r3, [r2]
+  85              		@ lr needed for prologue
+  86              	.L19:
+  87 0056 094B     		ldr	r3, .L24+8
+  88 0058 1A68     		ldr	r2, [r3]
+  89 005a A023     		mov	r3, #160
+  90 005c DB00     		lsl	r3, r3, #3
+  91 005e 1A42     		tst	r2, r3
+  92 0060 F9D0     		beq	.L19
+  93 0062 044B     		ldr	r3, .L24
+  94 0064 0322     		mov	r2, #3
+  95 0066 1A60     		str	r2, [r3]
+  96 0068 034A     		ldr	r2, .L24+4
+  97 006a AA23     		mov	r3, #170
+  98 006c 1360     		str	r3, [r2]
+  99 006e 5523     		mov	r3, #85
+ 100 0070 1360     		str	r3, [r2]
+ 101              		@ sp needed for prologue
+ 102 0072 7047     		bx	lr
+ 103              	.L25:
+ 104              		.align	2
+ 105              	.L24:
+ 106 0074 80C01FE0 		.word	-534790016
+ 107 0078 8CC01FE0 		.word	-534790004
+ 108 007c 88C01FE0 		.word	-534790008
+ 109              		.size	initClocks, .-initClocks
+ 110              		.align	2
+ 111              		.global	initTimer1
+ 112              		.code 16
+ 113              		.thumb_func
+ 114              		.type	initTimer1, %function
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 3
+
+
+ 115              	initTimer1:
+ 116 0080 084B     		ldr	r3, .L28
+ 117 0082 0022     		mov	r2, #0
+ 118 0084 1A60     		str	r2, [r3]
+ 119 0086 084A     		ldr	r2, .L28+4
+ 120 0088 A423     		mov	r3, #164
+ 121 008a 1B01     		lsl	r3, r3, #4
+ 122 008c 1360     		str	r3, [r2]
+ 123 008e 074B     		ldr	r3, .L28+8
+ 124 0090 0122     		mov	r2, #1
+ 125 0092 1A60     		str	r2, [r3]
+ 126 0094 0322     		mov	r2, #3
+ 127 0096 043B     		sub	r3, r3, #4
+ 128 0098 1A60     		str	r2, [r3]
+ 129 009a 0222     		mov	r2, #2
+ 130 009c 103B     		sub	r3, r3, #16
+ 131              		@ lr needed for prologue
+ 132 009e 1A60     		str	r2, [r3]
+ 133              		@ sp needed for prologue
+ 134 00a0 7047     		bx	lr
+ 135              	.L29:
+ 136 00a2 0000     		.align	2
+ 137              	.L28:
+ 138 00a4 708000E0 		.word	-536838032
+ 139 00a8 0C8000E0 		.word	-536838132
+ 140 00ac 188000E0 		.word	-536838120
+ 141              		.size	initTimer1, .-initTimer1
+ 142              		.align	2
+ 143              		.global	initRTC
+ 144              		.code 16
+ 145              		.thumb_func
+ 146              		.type	initRTC, %function
+ 147              	initRTC:
+ 148 00b0 094B     		ldr	r3, .L32
+ 149 00b2 0322     		mov	r2, #3
+ 150 00b4 1A60     		str	r2, [r3]
+ 151 00b6 1122     		mov	r2, #17
+ 152 00b8 0833     		add	r3, r3, #8
+ 153 00ba 1A60     		str	r2, [r3]
+ 154 00bc 074A     		ldr	r2, .L32+4
+ 155 00be 0023     		mov	r3, #0
+ 156 00c0 1360     		str	r3, [r2]
+ 157 00c2 074B     		ldr	r3, .L32+8
+ 158 00c4 1268     		ldr	r2, [r2]
+ 159 00c6 1A60     		str	r2, [r3]
+ 160 00c8 1A68     		ldr	r2, [r3]
+ 161 00ca 043B     		sub	r3, r3, #4
+ 162 00cc 1A60     		str	r2, [r3]
+ 163 00ce 0122     		mov	r2, #1
+ 164 00d0 143B     		sub	r3, r3, #20
+ 165              		@ lr needed for prologue
+ 166 00d2 1A60     		str	r2, [r3]
+ 167              		@ sp needed for prologue
+ 168 00d4 7047     		bx	lr
+ 169              	.L33:
+ 170 00d6 0000     		.align	2
+ 171              	.L32:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 4
+
+
+ 172 00d8 004002E0 		.word	-536723456
+ 173 00dc 284002E0 		.word	-536723416
+ 174 00e0 244002E0 		.word	-536723420
+ 175              		.size	initRTC, .-initRTC
+ 176              		.align	2
+ 177              		.global	setupInterrupts
+ 178              		.code 16
+ 179              		.thumb_func
+ 180              		.type	setupInterrupts, %function
+ 181              	setupInterrupts:
+ 182 00e4 074A     		ldr	r2, .L36
+ 183 00e6 084B     		ldr	r3, .L36+4
+ 184 00e8 1A60     		str	r2, [r3]
+ 185 00ea 084B     		ldr	r3, .L36+8
+ 186 00ec 2522     		mov	r2, #37
+ 187 00ee 1A60     		str	r2, [r3]
+ 188 00f0 074A     		ldr	r2, .L36+12
+ 189 00f2 E03B     		sub	r3, r3, #224
+ 190 00f4 1A60     		str	r2, [r3]
+ 191 00f6 074B     		ldr	r3, .L36+16
+ 192 00f8 2D22     		mov	r2, #45
+ 193 00fa 1A60     		str	r2, [r3]
+ 194 00fc 064A     		ldr	r2, .L36+20
+ 195 00fe 074B     		ldr	r3, .L36+24
+ 196              		@ lr needed for prologue
+ 197 0100 1A60     		str	r2, [r3]
+ 198              		@ sp needed for prologue
+ 199 0102 7047     		bx	lr
+ 200              	.L37:
+ 201              		.align	2
+ 202              	.L36:
+ 203 0104 00000000 		.word	T1ISR
+ 204 0108 14F1FFFF 		.word	-3820
+ 205 010c 14F2FFFF 		.word	-3564
+ 206 0110 00000000 		.word	RTCISR
+ 207 0114 34F2FFFF 		.word	-3532
+ 208 0118 20200000 		.word	8224
+ 209 011c 10F0FFFF 		.word	-4080
+ 210              		.size	setupInterrupts, .-setupInterrupts
+ 211              		.align	2
+ 212              		.global	myTimerRTCExec
+ 213              		.code 16
+ 214              		.thumb_func
+ 215              		.type	myTimerRTCExec, %function
+ 216              	myTimerRTCExec:
+ 217 0120 00B5     		push	{lr}
+ 218 0122 FFF7FEFF 		bl	initClocks
+ 219 0126 FFF7FEFF 		bl	initTimer1
+ 220 012a FFF7FEFF 		bl	initRTC
+ 221 012e FFF7FEFF 		bl	setupInterrupts
+ 222 0132 024B     		ldr	r3, .L40
+ 223 0134 0122     		mov	r2, #1
+ 224 0136 1A60     		str	r2, [r3]
+ 225              		@ sp needed for prologue
+ 226 0138 01BC     		pop	{r0}
+ 227 013a 0047     		bx	r0
+ 228              	.L41:
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 5
+
+
+ 229              		.align	2
+ 230              	.L40:
+ 231 013c 048000E0 		.word	-536838140
+ 232              		.size	myTimerRTCExec, .-myTimerRTCExec
+ 233              		.align	2
+ 234              		.global	StopInterrupts
+ 235              		.code 16
+ 236              		.thumb_func
+ 237              		.type	StopInterrupts, %function
+ 238              	StopInterrupts:
+ 239 0140 044B     		ldr	r3, .L44
+ 240 0142 0022     		mov	r2, #0
+ 241 0144 1A60     		str	r2, [r3]
+ 242 0146 044B     		ldr	r3, .L44+4
+ 243 0148 1A60     		str	r2, [r3]
+ 244 014a E03B     		sub	r3, r3, #224
+ 245 014c 1A60     		str	r2, [r3]
+ 246 014e 034B     		ldr	r3, .L44+8
+ 247              		@ lr needed for prologue
+ 248 0150 1A60     		str	r2, [r3]
+ 249              		@ sp needed for prologue
+ 250 0152 7047     		bx	lr
+ 251              	.L45:
+ 252              		.align	2
+ 253              	.L44:
+ 254 0154 14F1FFFF 		.word	-3820
+ 255 0158 14F2FFFF 		.word	-3564
+ 256 015c 34F2FFFF 		.word	-3532
+ 257              		.size	StopInterrupts, .-StopInterrupts
+ 258              		.align	2
+ 259              		.global	RTCISR
+ 260              		.code 16
+ 261              		.thumb_func
+ 262              		.type	RTCISR, %function
+ 263              	RTCISR:
+ 264 0160 00B5     		push	{lr}
+ 265 0162 FFF7FEFF 		bl	ISR_RTC
+ 266 0166 0549     		ldr	r1, .L48
+ 267 0168 0B68     		ldr	r3, [r1]
+ 268 016a 0122     		mov	r2, #1
+ 269 016c 1343     		orr	r3, r3, r2
+ 270 016e 0B60     		str	r3, [r1]
+ 271 0170 034B     		ldr	r3, .L48+4
+ 272 0172 0022     		mov	r2, #0
+ 273 0174 1A60     		str	r2, [r3]
+ 274              		@ sp needed for prologue
+ 275 0176 01BC     		pop	{r0}
+ 276 0178 0047     		bx	r0
+ 277              	.L49:
+ 278 017a 0000     		.align	2
+ 279              	.L48:
+ 280 017c 004002E0 		.word	-536723456
+ 281 0180 30F0FFFF 		.word	-4048
+ 282              		.size	RTCISR, .-RTCISR
+ 283              		.align	2
+ 284              		.global	T1ISR
+ 285              		.code 16
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 6
+
+
+ 286              		.thumb_func
+ 287              		.type	T1ISR, %function
+ 288              	T1ISR:
+ 289 0184 30B5     		push	{r4, r5, lr}
+ 290 0186 054C     		ldr	r4, .L52
+ 291 0188 2568     		ldr	r5, [r4]
+ 292 018a FFF7FEFF 		bl	ISR
+ 293 018e 044B     		ldr	r3, .L52+4
+ 294 0190 0022     		mov	r2, #0
+ 295 0192 2560     		str	r5, [r4]
+ 296              		@ sp needed for prologue
+ 297 0194 1A60     		str	r2, [r3]
+ 298 0196 30BC     		pop	{r4, r5}
+ 299 0198 01BC     		pop	{r0}
+ 300 019a 0047     		bx	r0
+ 301              	.L53:
+ 302              		.align	2
+ 303              	.L52:
+ 304 019c 008000E0 		.word	-536838144
+ 305 01a0 30F0FFFF 		.word	-4048
+ 306              		.size	T1ISR, .-T1ISR
+ 307              		.comm	currentSongInfo,20,4
+ 308              		.ident	"GCC: (GNU) 4.1.1"
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 myTimerRTC.c
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:9      .text:00000000 setupPLL
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:22     .text:00000010 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:29     .text:00000014 connectPLL
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:26     .text:00000014 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:46     .text:00000028 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:54     .text:00000030 feedSeq
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:51     .text:00000030 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:66     .text:0000003c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:73     .text:00000040 initClocks
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:70     .text:00000040 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:106    .text:00000074 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:115    .text:00000080 initTimer1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:112    .text:00000080 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:138    .text:000000a4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:147    .text:000000b0 initRTC
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:144    .text:000000b0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:172    .text:000000d8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:181    .text:000000e4 setupInterrupts
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:178    .text:000000e4 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:203    .text:00000104 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:288    .text:00000184 T1ISR
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:263    .text:00000160 RTCISR
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:216    .text:00000120 myTimerRTCExec
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:213    .text:00000120 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:231    .text:0000013c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:238    .text:00000140 StopInterrupts
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:235    .text:00000140 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:254    .text:00000154 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:260    .text:00000160 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:280    .text:0000017c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:285    .text:00000184 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:304    .text:0000019c $d
+                            *COM*:00000014 currentSongInfo
+
+UNDEFINED SYMBOLS
+ISR_RTC
+ISR

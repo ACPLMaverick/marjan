@@ -21,9 +21,10 @@
 #include "./pre_emptive_os/api/general.h"
 #include "filesys/efs.h"
 #include "mp3shared.h"
-#include "myTimer.h"
+#include "myTimerRTC.h"
 
 void playWAV(EmbeddedFile* file);
 void ISR(void);
+void ISR_RTC(void);
 
 #endif /* WAVPLAYER_H_ */

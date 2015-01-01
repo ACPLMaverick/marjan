@@ -57,7 +57,7 @@ CSRCS   = main.c          \
           testI2C.c		  \
           eeprom.c		  \
           i2c.c			\
-          myTimer.c 	  \
+          myTimerRTC.c 	  \
           wavplayer.c	\
 
 # List assembler source files here

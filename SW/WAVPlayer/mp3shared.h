@@ -23,6 +23,7 @@ extern unsigned int isError;
 extern char* error;
 extern unsigned char currentVolume;
 extern unsigned char displayMode;
+extern unsigned char displayChanged;
 
 extern void InitializeSharedData();
 

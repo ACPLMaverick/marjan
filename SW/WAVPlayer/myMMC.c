@@ -17,6 +17,7 @@ unsigned char volumeUp;
 unsigned char volumeDown;
 unsigned int isError;
 unsigned char displayMode;
+unsigned char displayChanged;
 char* error;
 
 /////////////////////////////
@@ -31,6 +32,8 @@ unsigned char       file_name[13];
 unsigned int        size;
 
 unsigned char songCount;
+unsigned char lastDisplayMode;
+unsigned long lastTime;
 
 extern void playWAV(EmbeddedFile *file);
 
@@ -194,6 +197,9 @@ void ReadAndPlay(char* name)
 
 				ReadTagsFromFile(&file);
 
+				displayMode = 0;
+				lastDisplayMode = displayMode;
+				lastTime = 0;
 				LCDWriteNameAuthor();
 
 				playWAV(&file);
@@ -255,12 +261,16 @@ void MMCproc(void)
 		{
 			volumeUp = 0;
 			if(currentVolume < 9) currentVolume++;
+			displayMode = 1;
+			LCDWriteVolume();
 		}
 
 		if(volumeDown != 0)
 		{
 			volumeDown = 0;
 			if(currentVolume > 0) currentVolume--;
+			displayMode = 1;
+			LCDWriteVolume();
 		}
 
 		if(rewindForward != 0)
@@ -273,10 +283,41 @@ void MMCproc(void)
 
 		}
 
-		if(displayMode != 0)
+		if(lastDisplayMode != displayMode)
 		{
-			if(displayMode == 0) displayMode = 1;
-			else displayMode = 0;
+			lastTime = 0;
+			if(displayMode == 2)
+			{
+				LCDWriteTime();
+			}
+			else if(displayMode == 3)
+			{
+				LCDWriteTime();
+			}
+			else if(displayMode == 1)
+			{
+				LCDWriteVolume();
+				lastTime = currentSongInfo.time;
+			}
+			else
+			{
+				LCDWriteNameAuthor();
+				lastTime = currentSongInfo.time;
+			}
+			lastDisplayMode = displayMode;
 		}
+
+		if(displayMode == 1)
+		{
+			if(currentSongInfo.time - lastTime > 2) displayMode = 0;
+		}
+
+//		if(displayMode == 0 &&
+//			(currentSongInfo.nameLength > 16 || currentSongInfo.authorLength > 16) &&
+//			currentSongInfo.time - lastTime > 1)
+//		{
+//			ScreenShiftLeft();
+//			lastTime = currentSongInfo.time;
+//		}
 	}
 }

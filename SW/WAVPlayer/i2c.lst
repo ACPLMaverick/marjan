@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
   55 0046 4022     		mov	r2, #64
   56 0048 1343     		orr	r3, r3, r2
   57 004a 1B06     		lsl	r3, r3, #24
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 2
 
 
   58 004c 1B0E     		lsr	r3, r3, #24
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  112 009e 1A70     		strb	r2, [r3]
  113              		@ sp needed for prologue
  114 00a0 7047     		bx	lr
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 3
 
 
  115              	.L30:
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  169              	.L40:
  170 00ea 054B     		ldr	r3, .L44+4
  171 00ec 1870     		strb	r0, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 4
 
 
  172 00ee 1033     		add	r3, r3, #16
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  226              	.L54:
  227 0142 054B     		ldr	r3, .L58+8
  228 0144 1B78     		ldrb	r3, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 5
 
 
  229 0146 0B70     		strb	r3, [r1]
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  283              	i2cWriteWithWait:
  284 0188 10B5     		push	{r4, lr}
  285 018a 0006     		lsl	r0, r0, #24
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 6
 
 
  286 018c 040E     		lsr	r4, r0, #24
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  340 01ee 0316     		asr	r3, r0, #24
  341 01f0 0134     		add	r4, r4, #1
  342 01f2 012B     		cmp	r3, #1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 7
 
 
  343 01f4 01D0     		beq	.L88
@@ -418,7 +418,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  397 0244 034B     		ldr	r3, .L110+4
  398 0246 0006     		lsl	r0, r0, #24
  399 0248 2022     		mov	r2, #32
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 8
 
 
  400 024a 0016     		asr	r0, r0, #24
@@ -478,7 +478,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  454 02a6 01D0     		beq	.L122
  455 02a8 502B     		cmp	r3, #80
  456 02aa 11D1     		bne	.L125
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 9
 
 
  457              	.L122:
@@ -538,7 +538,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  511 02fe 0006     		lsl	r0, r0, #24
  512 0300 1204     		lsl	r2, r2, #16
  513 0302 0D1C     		mov	r5, r1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 10
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 10
 
 
  514 0304 060E     		lsr	r6, r0, #24
@@ -598,7 +598,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  568 036a E2D3     		bcc	.L186
  569              	.L187:
  570 036c 094B     		ldr	r3, .L188
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 11
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 11
 
 
  571 036e 1B78     		ldrb	r3, [r3]
@@ -628,42 +628,42 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 1
  595 0398 04C001E0 		.word	-536756220
  596              		.size	i2cWrite, .-i2cWrite
  597              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s 			page 12
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s 			page 12
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 i2c.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:9      .text:00000000 i2cCheckStatus
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:23     .text:00000010 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:31     .text:00000018 i2cInit
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:28     .text:00000018 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:66     .text:00000054 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:76     .text:00000064 i2cStart
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:73     .text:00000064 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:118    .text:000000a4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:127    .text:000000b0 i2cStop
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:124    .text:000000b0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:150    .text:000000d0 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:158    .text:000000d8 i2cPutChar
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:155    .text:000000d8 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:183    .text:000000fc $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:191    .text:00000104 i2cGetChar
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:188    .text:00000104 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:240    .text:00000150 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:249    .text:0000015c i2cWaitTransmit
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:246    .text:0000015c $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:275    .text:00000180 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:283    .text:00000188 i2cWriteWithWait
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:280    .text:00000188 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:314    .text:000001b8 i2cMyWrite
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:365    .text:00000210 i2cRepeatStart
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:407    .text:00000250 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:416    .text:0000025c i2cRead
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:413    .text:0000025c $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:501    .text:000002f4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:509    .text:000002fc i2cWrite
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:506    .text:000002fc $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccCoZ3z1.s:594    .text:00000394 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:9      .text:00000000 i2cCheckStatus
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:23     .text:00000010 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:31     .text:00000018 i2cInit
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:28     .text:00000018 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:66     .text:00000054 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:76     .text:00000064 i2cStart
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:73     .text:00000064 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:118    .text:000000a4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:127    .text:000000b0 i2cStop
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:124    .text:000000b0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:150    .text:000000d0 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:158    .text:000000d8 i2cPutChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:155    .text:000000d8 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:183    .text:000000fc $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:191    .text:00000104 i2cGetChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:188    .text:00000104 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:240    .text:00000150 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:249    .text:0000015c i2cWaitTransmit
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:246    .text:0000015c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:275    .text:00000180 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:283    .text:00000188 i2cWriteWithWait
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:280    .text:00000188 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:314    .text:000001b8 i2cMyWrite
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:365    .text:00000210 i2cRepeatStart
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:407    .text:00000250 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:416    .text:0000025c i2cRead
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:413    .text:0000025c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:501    .text:000002f4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:509    .text:000002fc i2cWrite
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:506    .text:000002fc $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccRjTYCM.s:594    .text:00000394 $d
 
 NO UNDEFINED SYMBOLS

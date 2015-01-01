@@ -8,7 +8,6 @@
 #include "wavplayer.h"
 #include "myLCD.h"
 #include "myMMC.h"
-#include "myTimer.h"
 
 SongInfo currentSongInfo;
 EmbeddedFile* myFile;
@@ -19,6 +18,7 @@ unsigned long fileSize;
 unsigned long joystickTimer;
 
 unsigned char currentVolume;
+unsigned char displayChanged;
 
 void zeroBuffer(void)
 {
@@ -53,7 +53,7 @@ void playWAV(EmbeddedFile* file)
 	myFile = file;
 	joystickTimer = 0;
 
-	myTimerExec();
+	myTimerRTCExec();
 }
 
 void ISR(void)
@@ -83,10 +83,8 @@ void ISR(void)
 		}
 		return;
 	}
-	//else joystickTimer = 0;
-
 	// joystick w prawo
-	if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
+	else if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
 	{
 		joystickTimer++;
 		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
@@ -97,10 +95,8 @@ void ISR(void)
 		}
 		return;
 	}
-	//else joystickTimer = 0;
-
 	// joystick w gore
-	if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
+	else if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
 	{
 		joystickTimer++;
 		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
@@ -110,10 +106,8 @@ void ISR(void)
 		}
 		return;
 	}
-	//else joystickTimer = 0;
-
 	// joystick w dol
-	if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
+	else if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
 	{
 		joystickTimer++;
 		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
@@ -123,18 +117,30 @@ void ISR(void)
 		}
 		return;
 	}
-	//else joystickTimer = 0;
-
 	// joystick wcisniety
-	if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
+	else if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
 	{
 		joystickTimer++;
 		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
 		{
 			joystickTimer = 0;
-			displayMode = 1;
+			if(displayMode == 0) displayMode = 2;
+			else displayMode = 0;
 		}
 		return;
 	}
-	//else joystickTimer = 0;
+	joystickTimer = 0;
+}
+
+void ISR_RTC(void)
+{
+	currentSongInfo.time = RTC_SEC + 60*RTC_MIN;
+	if(displayMode == 2)
+	{
+		displayMode = 3;
+	}
+	else if(displayMode == 3)
+	{
+		displayMode = 2;
+	}
 }

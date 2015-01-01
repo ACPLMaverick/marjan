@@ -18,7 +18,7 @@
 #define PLLFEEDCODE01 0xAA
 #define PLLFEEDCODE02 0x55
 
-void myTimerExec(void);
+void myTimerRTCExec(void);
 void StopInterrupts(void);
 
 #endif /* MYTIMER_H_ */

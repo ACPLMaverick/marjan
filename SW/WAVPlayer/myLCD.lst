@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
   55 0050 81B0     		sub	sp, sp, #4
   56 0052 0023     		mov	r3, #0
   57              		@ lr needed for prologue
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 2
 
 
   58 0054 02E0     		b	.L10
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
  112 00a2 1360     		str	r3, [r2]
  113 00a4 8023     		mov	r3, #128
  114 00a6 9B04     		lsl	r3, r3, #18
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 3
 
 
  115 00a8 1360     		str	r3, [r2]
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
  169              		.thumb_func
  170              		.type	lcdBacklight, %function
  171              	lcdBacklight:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 4
 
 
  172 0100 0006     		lsl	r0, r0, #24
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
  226              	.L38:
  227 0146 281C     		mov	r0, r5
  228 0148 3C21     		mov	r1, #60
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 5
 
 
  229 014a FFF7FEFF 		bl	__udivsi3
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
  283 01ae 0134     		add	r4, r4, #1
  284 01b0 0029     		cmp	r1, #0
  285 01b2 F6D1     		bne	.L44
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 6
 
 
  286              		@ sp needed for prologue
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
  340 021a FFF7FEFF 		bl	writeLCD
  341 021e FFF7FEFF 		bl	delay37us
  342 0222 0020     		mov	r0, #0
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 7
 
 
  343 0224 3821     		mov	r1, #56
@@ -418,7 +418,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
  397 0298 01BC     		pop	{r0}
  398 029a 0047     		bx	r0
  399              	.L56:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 8
 
 
  400              		.align	2
@@ -478,7 +478,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
  454 02f0 0020     		mov	r0, #0
  455 02f2 FFF7FEFF 		bl	writeLCD
  456 02f6 FFF7FEFF 		bl	delay37us
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 9
 
 
  457 02fa 6068     		ldr	r0, [r4, #4]
@@ -517,45 +517,45 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 1
  490              		.size	startLCD, .-startLCD
  491              		.comm	currentDisplayMode,1,1
  492              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s 			page 10
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 myLCD.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:9      .text:00000000 initLCD
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:41     .text:00000034 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:9      .text:00000000 initLCD
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:41     .text:00000034 $d
                             *COM*:00000001 currentDisplayMode
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:54     .text:00000050 delay37us
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:51     .text:00000050 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:76     .text:0000006c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:83     .text:00000070 writeLCD
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:80     .text:00000070 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:162    .text:000000f4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:171    .text:00000100 lcdBacklight
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:168    .text:00000100 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:192    .text:0000011c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:201    .text:00000124 numberToChar
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:198    .text:00000124 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:218    .text:00000138 timeToString
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:266    .text:00000198 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:273    .text:0000019c WriteString
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:270    .text:0000019c $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:296    .text:000001bc ScreenShiftLeft
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:321    .text:000001ec clearScr
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:375    .text:00000274 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:382    .text:00000278 LCDWriteTime
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:379    .text:00000278 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:402    .text:0000029c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:409    .text:000002a0 LCDWriteVolume
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:406    .text:000002a0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:438    .text:000002d4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:447    .text:000002e0 LCDWriteNameAuthor
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:444    .text:000002e0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:466    .text:00000308 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:473    .text:0000030c startLCD
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:470    .text:0000030c $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cczkwDPz.s:489    .text:00000328 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:54     .text:00000050 delay37us
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:51     .text:00000050 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:76     .text:0000006c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:83     .text:00000070 writeLCD
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:80     .text:00000070 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:162    .text:000000f4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:171    .text:00000100 lcdBacklight
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:168    .text:00000100 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:192    .text:0000011c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:201    .text:00000124 numberToChar
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:198    .text:00000124 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:218    .text:00000138 timeToString
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:266    .text:00000198 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:273    .text:0000019c WriteString
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:270    .text:0000019c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:296    .text:000001bc ScreenShiftLeft
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:321    .text:000001ec clearScr
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:375    .text:00000274 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:382    .text:00000278 LCDWriteTime
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:379    .text:00000278 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:402    .text:0000029c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:409    .text:000002a0 LCDWriteVolume
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:406    .text:000002a0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:438    .text:000002d4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:447    .text:000002e0 LCDWriteNameAuthor
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:444    .text:000002e0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:466    .text:00000308 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:473    .text:0000030c startLCD
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:470    .text:0000030c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cc6T5X1e.s:489    .text:00000328 $d
 
 UNDEFINED SYMBOLS
 displayMode

@@ -74,6 +74,7 @@ unsigned int isError;
 char* error;
 unsigned char currentVolume;
 unsigned char displayMode;
+unsigned char displayChanged;
 
 void InitializeSharedData();
 ////////////////////////////
@@ -376,4 +377,5 @@ void InitializeSharedData()
 	error = "";
 	currentVolume = 9;
 	displayMode = 0;
+	displayChanged = 0;
 }
