@@ -286,7 +286,12 @@ void MMCproc(void)
 		if(lastDisplayMode != displayMode)
 		{
 			lastTime = 0;
-			if(displayMode == 2)
+			if(displayMode == 0)
+			{
+				LCDWriteNameAuthor();
+				lastTime = currentSongInfo.time;
+			}
+			else if(displayMode == 2)
 			{
 				LCDWriteTime();
 			}
@@ -297,11 +302,6 @@ void MMCproc(void)
 			else if(displayMode == 1)
 			{
 				LCDWriteVolume();
-				lastTime = currentSongInfo.time;
-			}
-			else
-			{
-				LCDWriteNameAuthor();
 				lastTime = currentSongInfo.time;
 			}
 			lastDisplayMode = displayMode;

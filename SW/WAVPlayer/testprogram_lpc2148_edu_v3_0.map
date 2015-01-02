@@ -50,6 +50,10 @@ Archive member included because of file (symbol)
                               /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o) (__div0)
 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
                               ./pre_emptive_os/pre_emptive_os.a(timer.o) (_call_via_r4)
+/cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+                              wavplayer.o (__subdf3)
+/cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+                              wavplayer.o (__fixdfsi)
 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
                               wavplayer.o (__addsf3)
 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
@@ -75,6 +79,7 @@ Allocating common symbols
 Common symbol       size              file
 
 rewindBackward      0x1               main.o
+rewindTimer         0x4               wavplayer.o
 xbeePresent         0x1               main.o
 isError             0x4               main.o
 currentVolume       0x1               main.o
@@ -82,6 +87,7 @@ fileOffset          0x4               wavplayer.o
 list                0x34              myMMC.o
 myFile              0x4               wavplayer.o
 soundTable          0x1               wavplayer.o
+rewTime             0x4               wavplayer.o
 changeLeft          0x1               main.o
 songCount           0x1               myMMC.o
 fileName            0x4               main.o
@@ -94,6 +100,7 @@ joystickTimer       0x4               wavplayer.o
 displayChanged      0x1               main.o
 file_name           0xd               myMMC.o
 file                0x50              myMMC.o
+canPlay             0x1               wavplayer.o
 changeRight         0x1               main.o
 pHeapStart          0x4               ./startup/libea_startup_thumb.a(framework.o)
 filePtr             0x4               wavplayer.o
@@ -144,7 +151,7 @@ LOAD /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a
 LOAD /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a
 END GROUP
 
-.text           0x00000000     0x8070
+.text           0x00000000     0x8628
  *startup.o(.text)
  .text          0x00000000      0x1d8 ./startup/libea_startup_thumb.a(startup.o)
                 0x00000000                _startup
@@ -167,546 +174,577 @@ END GROUP
                 0x0000060c                WriteString
                 0x0000077c                startLCD
                 0x0000065c                clearScr
- .text          0x0000079c      0x458 myMMC.o
+ .text          0x0000079c      0x430 myMMC.o
                 0x0000079c                ReadTagsFromFile
                 0x00000814                ReadAndPlay
                 0x00000874                initMMC
                 0x0000095c                format_file_name
                 0x000009b4                getFileNames
                 0x00000a1c                MMCproc
- .text          0x00000bf4      0x2b4 testI2C.o
-                0x00000bf4                testEEPROM
-                0x00000d04                testI2C
- .text          0x00000ea8      0x23c eeprom.o
-                0x00000ff8                lm75Read
-                0x00000ea8                eepromWrite
-                0x00000f14                eepromPoll
-                0x0000106c                eepromPageRead
-                0x00000f60                eepromStartRead
- .text          0x000010e4      0x39c i2c.o
-                0x000010fc                i2cInit
-                0x00001340                i2cRead
-                0x0000126c                i2cWriteWithWait
-                0x00001148                i2cStart
-                0x00001194                i2cStop
-                0x000010e4                i2cCheckStatus
-                0x000011e8                i2cGetChar
-                0x000012f4                i2cRepeatStart
-                0x000013e0                i2cWrite
-                0x00001240                i2cWaitTransmit
-                0x0000129c                i2cMyWrite
-                0x000011bc                i2cPutChar
- .text          0x00001480      0x1a4 myTimerRTC.o
-                0x00001530                initRTC
-                0x00001494                connectPLL
-                0x000014c0                initClocks
-                0x00001500                initTimer1
-                0x00001480                setupPLL
-                0x000015a0                myTimerRTCExec
-                0x000014b0                feedSeq
-                0x000015e0                RTCISR
-                0x000015c0                StopInterrupts
-                0x00001564                setupInterrupts
-                0x00001604                T1ISR
- .text          0x00001624      0x21c wavplayer.o
-                0x000016dc                ISR
-                0x000016a4                ISR_RTC
-                0x00001630                sendToDAC
-                0x00001624                zeroBuffer
-                0x00001804                playWAV
- .text          0x00001840      0x67c ./startup/libea_startup_thumb.a(consol.o)
-                0x00001cf8                consolGetIntNum
-                0x00001934                consolSendCh
-                0x00001b00                consolGetString
-                0x000019a4                consolSendNumber
-                0x00001abc                consolGetCh
-                0x00001914                consolSendChar
-                0x00001b78                simplePrintf
-                0x00001978                consolSendString
-                0x00001dd8                consolScanf
-                0x00001adc                consolGetChar
-                0x000018c4                consolInit
- .text          0x00001ebc      0x2c0 ./startup/libea_startup_thumb.a(framework.o)
-                0x00001fe8                eaInit
-                0x00001f34                lowLevelInit
-                0x00001ebc                exceptionHandlerInit
- .text          0x0000217c      0x4f8 ./pre_emptive_os/pre_emptive_os.a(kernel.o)
-                0x000024f8                osTick
-                0x000025bc                rmvFromRdyList
-                0x00002318                osGetHighPrioProc
-                0x000025d8                osSuspend
-                0x0000222c                osInit
-                0x0000260c                osDeleteProcess
-                0x00002258                osISREnter
-                0x00002334                schedule
-                0x0000227c                osCreateProcess
-                0x00002478                addToRdyList
-                0x000021c8                addToTimeList
-                0x0000248c                osResume
-                0x0000217c                osPid
-                0x0000263c                osSleep
-                0x000023a0                osISRExit
-                0x00002408                osStart
-                0x00002434                rmvFromTimeList
-                0x00002554                osStartProcess
- .text          0x00002674      0x124 ./pre_emptive_os/pre_emptive_os.a(prioqueue.o)
-                0x00002674                initPrioQueue
-                0x000026dc                rmvFromPrioQueue
-                0x00002694                addToPrioQueue
-                0x00002778                isEmptyPrioQueue
-                0x00002740                getHighPrioQueue
- .text          0x00002798      0x218 ./pre_emptive_os/pre_emptive_os.a(timer.o)
-                0x00002798                timerTick
-                0x0000290c                osInitTimers
-                0x000028a8                osDeleteTimer
-                0x0000287c                osCreateTimer
- .text          0x000029b0       0xa4 ./pre_emptive_os/pre_emptive_os.a(stack_usage.o)
-                0x000029b0                osStackUsage
-                0x000029f4                createStackPattern
-                0x00002a14                checkStackLimit
- .text          0x00002a54      0x1ec ./pre_emptive_os/pre_emptive_os.a(a7hal.o)
-                0x00002a8c                stkFrameInit_oshal
-                0x00002a54                timerIsr_oshal
-                0x00002b6c                halRestoreInterrupts_oshal
-                0x00002b74                initTimer_oshal
-                0x00002b5c                halEnableInterrupts_oshal
-                0x00002c0c                handleIRQs_oshal
-                0x00002b3c                halDisableInterrupts_oshal
- .text          0x00002c40       0xc4 ./pre_emptive_os/pre_emptive_os.a(a7hal_a.o)
-                0x00002c4c                startHighProc_oshal
-                0x00002c74                ctxSwitchIsr_oshal
-                0x00002c54                ctxSwitch_oshal
-                0x00002c94                generalIRQ_oshal
- .text          0x00002d04      0x144 ./pre_emptive_os/pre_emptive_os.a(count_sem.o)
-                0x00002da4                osSemGive
-                0x00002e08                osSemTryTake
-                0x00002d04                osSemInit
-                0x00002d18                osSemTake
- .text          0x00002e48       0xd8 ./pre_emptive_os/pre_emptive_os.a(event.o)
-                0x00002e58                eventWait
-                0x00002e48                eventInit
-                0x00002ec0                eventIsEmpty
-                0x00002e90                eventWaitReturn
-                0x00002ed0                eventSignal
- .text          0x00002f20       0xc0 ./filesys/filesys.a(efs.o)
-                0x00002f20                efs_init
- .text          0x00002fe0      0xa60 ./filesys/filesys.a(file.o)
-                0x00003458                file_write
-                0x000030d4                file_normalToFatName
-                0x0000320c                file_requiredCluster
-                0x000031f8                file_getAttr
-                0x0000304c                file_validateChar
-                0x00003690                file_fopen
-                0x000035d0                file_read
-                0x00003484                file_fread
-                0x000031d4                file_setAttr
-                0x000035fc                file_fclose
-                0x00002fe0                file_setpos
-                0x00002ffc                file_initFile
-                0x000032b0                file_fwrite
- .text          0x00003a40      0x93c ./filesys/filesys.a(fs.o)
-                0x00003af8                fs_countDataSectors
-                0x000041e8                fs_loadVolumeId
-                0x00003c4c                fs_sectorToCluster
-                0x00003b84                fs_determineFatType
-                0x000042fc                fs_initFs
-                0x00003c18                fs_clusterToSector
-                0x00003f6c                fs_findFile
-                0x000040e8                fs_findFreeFile
-                0x00003ce4                fs_setFirstClusterInDirEntry
-                0x00003cac                fs_getFirstClusterRootDir
-                0x00003ebc                fs_flushFs
-                0x00003ee0                fs_umount
-                0x00003ca4                fs_giveFreeClusterHint
-                0x00003ef8                fs_getLastCluster
-                0x00003bc8                fs_findFirstSectorRootDir
-                0x00003cf4                fs_setFsInfo
-                0x000041a0                fs_getNextFreeCluster
-                0x00003a40                fs_verifySanity
-                0x00003d90                fs_getFsInfo
-                0x00003cc4                fs_initClusterChain
-                0x00003c00                fs_initCurrentDir
-                0x00003e50                fs_clearCluster
-                0x000042a8                fs_isValidFat
- .text          0x0000437c      0xea8 ./filesys/filesys.a(ioman.o)
-                0x00004d9c                ioman_putSectorInCache
-                0x00004ca8                ioman_flushRange
-                0x000046c0                ioman_getPtr
-                0x0000461c                ioman_push
-                0x000047f0                ioman_findFreeSpot
-                0x00004414                ioman_getUseCnt
-                0x00004a3c                ioman_printStatus
-                0x00004ba4                ioman_flushSector
-                0x00004d60                ioman_readSector
-                0x00004840                ioman_findUnusedSpot
-                0x00004ecc                ioman_getSector
-                0x0000478c                ioman_findSectorInCache
-                0x00004964                ioman_findOverallocableSpot
-                0x000050ac                ioman_reset
-                0x0000453c                ioman_decRefCnt
-                0x000046ec                ioman_getBp
-                0x00004478                ioman_decUseCnt
-                0x0000437c                ioman_getBuffer
-                0x00004a7c                ioman_writeSector
-                0x00005184                ioman_releaseSector
-                0x00004abc                ioman_directSectorWrite
-                0x00005154                ioman_init
-                0x00004c28                ioman_flushAll
-                0x00004504                ioman_incRefCnt
-                0x00004384                ioman_setAttr
-                0x00004e1c                ioman_directSectorRead
-                0x0000459c                ioman_pop
-                0x000043d4                ioman_getAttr
-                0x000044b0                ioman_resetUseCnt
-                0x000044d8                ioman_getRefCnt
-                0x00004574                ioman_resetRefCnt
-                0x00004440                ioman_incUseCnt
-                0x00004748                ioman_resetCacheItem
- .text          0x00005224       0xcc ./filesys/filesys.a(libc.o)
-                0x000052d0                memSet
-                0x000052b0                memClr
-                0x00005270                memCpy
-                0x00005224                strMatch
- .text          0x000052f0      0x2d0 ./filesys/filesys.a(ls.o)
-                0x00005378                ls_getRootAreaEntry
-                0x00005324                ls_fileEntryToDirListEntry
-                0x000054c0                ls_getDirEntry
-                0x000053f8                ls_getRealDirEntry
-                0x000054fc                ls_getNext
-                0x000052f0                ls_isValidFileEntry
-                0x00005550                ls_openDir
- .text          0x000055c0      0x1d8 ./filesys/filesys.a(partition.o)
-                0x00005738                part_getSect
-                0x00005670                part_readBuf
-                0x00005638                part_getRealLBA
-                0x000055f8                part_initPartition
-                0x000056d4                part_directSectorRead
-                0x000055c0                part_isFatPart
-                0x00005764                part_writeBuf
-                0x00005650                part_relSect
-                0x00005704                part_flushPart
-                0x000056a4                part_directSectorWrite
- .text          0x00005798       0x18 ./filesys/filesys.a(time.o)
-                0x00005798                fs_makeDate
-                0x000057a0                fs_makeTime
-                0x000057a8                fs_hasTimeSupport
- .text          0x000057b0      0x100 ./filesys/filesys.a(extract.o)
-                0x00005838                ex_getPartitionField
-                0x000057b0                ex_getb16
-                0x0000580c                ex_setb32
-                0x000057cc                ex_getb32
-                0x000058ac                ex_setPartitionField
-                0x000057f8                ex_setb16
- .text          0x000058b0      0x610 ./filesys/filesys.a(dir.o)
-                0x00005a64                dir_updateDirectoryEntry
-                0x00005d60                dir_findinCluster
-                0x00005e24                dir_findinDir
-                0x00005af4                dir_setFirstCluster
-                0x00005c84                dir_findinBuf
-                0x00005930                dir_addCluster
-                0x00005cac                dir_findinRootArea
-                0x00005b44                dir_createDirectoryEntry
-                0x00005994                dir_createDefaultEntry
-                0x00005be4                dir_findFileinBuf
-                0x00005ab4                dir_setFileSize
-                0x000059e0                dir_getFatFileName
-                0x00005b90                dir_getFileStructure
-                0x000058b0                dir_findFreeEntryinBuf
- .text          0x00005ec0       0x74 ./filesys/filesys.a(disc.o)
-                0x00005f24                disc_initDisc
-                0x00005ec0                disc_loadMBR
- .text          0x00005f34      0xadc ./filesys/filesys.a(fat.o)
-                0x00006214                fat_getNextClusterChain
-                0x00006024                fat_setNextClusterAddressWBuf
-                0x00005f34                fat_getSectorAddressFatEntry
-                0x00006154                fat_getNextClusterAddressWBuf
-                0x0000631c                fat_LogicToDiscCluster
-                0x00006490                fat_setNextClusterAddress
-                0x0000678c                fat_countFreeClusters
-                0x0000668c                fat_getNextClusterAddress
-                0x000063bc                fat_DiscToLogicCluster
-                0x00005f94                fat_isEocMarker
-                0x000067d8                fat_allocClusterChain
-                0x00005fec                fat_giveEocMarker
-                0x00006430                fat_countClustersInChain
-                0x0000660c                fat_unlinkClusterChain
- .text          0x00006a10      0x1bc ./mmc/mmc.a(hwinterface.o)
-                0x00006a18                if_spiInit
-                0x00006a10                if_setPos
-                0x00006ac8                if_spiSend
-                0x00006b10                if_writeBuf
-                0x00006b28                if_readBuf
-                0x00006aac                if_spiSetSpeed
-                0x00006b44                if_initInterface
- .text          0x00006bcc      0x4fc ./mmc/mmc.a(sd.o)
-                0x00006d38                sd_getDriveSize
-                0x00006eac                sd_readSector
-                0x00006bcc                sd_Resp8bError
-                0x00006cb0                sd_Command
-                0x00006c44                sd_Resp8b
-                0x00006e14                sd_writeSector
-                0x00006c7c                sd_Resp16b
-                0x00006f78                sd_State
-                0x00006fac                sd_Init
- .text          0x000070c8      0x114 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
-                0x000070c8                __udivsi3
-                0x000070c8                __aeabi_uidiv
-                0x000071c4                __aeabi_uidivmod
- .text          0x000071dc      0x144 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_divsi3.o)
-                0x000071dc                __aeabi_idiv
-                0x000071dc                __divsi3
-                0x00007308                __aeabi_idivmod
- .text          0x00007320       0xd0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_umodsi3.o)
-                0x00007320                __umodsi3
- .text          0x000073f0       0xe8 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
-                0x000073f0                __modsi3
- .text          0x000074d8        0x4 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
-                0x000074d8                __aeabi_ldiv0
-                0x000074d8                __div0
-                0x000074d8                __aeabi_idiv0
- .text          0x000074dc       0x3c /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
-                0x000074e4                _call_via_r2
-                0x000074f4                _call_via_r6
-                0x000074f0                _call_via_r5
-                0x000074e8                _call_via_r3
-                0x00007508                _call_via_fp
-                0x000074fc                _call_via_r8
-                0x000074f8                _call_via_r7
-                0x000074dc                _call_via_r0
-                0x00007504                _call_via_sl
-                0x00007510                _call_via_sp
-                0x00007500                _call_via_r9
-                0x000074ec                _call_via_r4
-                0x000074e0                _call_via_r1
-                0x0000750c                _call_via_ip
-                0x00007514                _call_via_lr
- .text          0x00007518      0x2ac /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
-                0x00007524                __aeabi_fadd
-                0x00007520                __subsf3
-                0x000076e8                __aeabi_i2f
-                0x00007520                __aeabi_fsub
-                0x00007718                __floatdisf
-                0x000076e8                __floatsisf
-                0x00007708                __floatundisf
-                0x000076e0                __aeabi_ui2f
-                0x00007718                __aeabi_l2f
-                0x00007708                __aeabi_ul2f
-                0x00007518                __aeabi_frsub
-                0x000076e0                __floatunsisf
-                0x00007524                __addsf3
- .text          0x000077c4      0x2f8 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
-                0x0000795c                __divsf3
-                0x0000795c                __aeabi_fdiv
-                0x000077c4                __mulsf3
-                0x000077c4                __aeabi_fmul
- .text          0x00007abc       0x5c /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
-                0x00007abc                __fixsfsi
-                0x00007abc                __aeabi_f2iz
- .text          0x00007b18       0x30 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
-                0x00007b18                _atoi_r
-                0x00007b30                atoi
- .text          0x00007b48       0x9c /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
-                0x00007b48                memcpy
- .text          0x00007be4       0x90 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
-                0x00007be4                strlen
- .text          0x00007c74      0x114 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
-                0x00007c74                strncpy
- .text          0x00007d88      0x1f0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
-                0x00007f4c                strtol
-                0x00007d88                _strtol_r
- .text          0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
- .text          0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+ .text          0x00000bcc      0x2b4 testI2C.o
+                0x00000bcc                testEEPROM
+                0x00000cdc                testI2C
+ .text          0x00000e80      0x23c eeprom.o
+                0x00000fd0                lm75Read
+                0x00000e80                eepromWrite
+                0x00000eec                eepromPoll
+                0x00001044                eepromPageRead
+                0x00000f38                eepromStartRead
+ .text          0x000010bc      0x39c i2c.o
+                0x000010d4                i2cInit
+                0x00001318                i2cRead
+                0x00001244                i2cWriteWithWait
+                0x00001120                i2cStart
+                0x0000116c                i2cStop
+                0x000010bc                i2cCheckStatus
+                0x000011c0                i2cGetChar
+                0x000012cc                i2cRepeatStart
+                0x000013b8                i2cWrite
+                0x00001218                i2cWaitTransmit
+                0x00001274                i2cMyWrite
+                0x00001194                i2cPutChar
+ .text          0x00001458      0x1a4 myTimerRTC.o
+                0x00001508                initRTC
+                0x0000146c                connectPLL
+                0x00001498                initClocks
+                0x000014d8                initTimer1
+                0x00001458                setupPLL
+                0x00001578                myTimerRTCExec
+                0x00001488                feedSeq
+                0x000015b8                RTCISR
+                0x00001598                StopInterrupts
+                0x0000153c                setupInterrupts
+                0x000015dc                T1ISR
+ .text          0x000015fc      0x350 wavplayer.o
+                0x0000171c                ISR
+                0x0000167c                ISR_RTC
+                0x00001608                sendToDAC
+                0x000015fc                zeroBuffer
+                0x000018f8                playWAV
+ .text          0x0000194c      0x67c ./startup/libea_startup_thumb.a(consol.o)
+                0x00001e04                consolGetIntNum
+                0x00001a40                consolSendCh
+                0x00001c0c                consolGetString
+                0x00001ab0                consolSendNumber
+                0x00001bc8                consolGetCh
+                0x00001a20                consolSendChar
+                0x00001c84                simplePrintf
+                0x00001a84                consolSendString
+                0x00001ee4                consolScanf
+                0x00001be8                consolGetChar
+                0x000019d0                consolInit
+ .text          0x00001fc8      0x2c0 ./startup/libea_startup_thumb.a(framework.o)
+                0x000020f4                eaInit
+                0x00002040                lowLevelInit
+                0x00001fc8                exceptionHandlerInit
+ .text          0x00002288      0x4f8 ./pre_emptive_os/pre_emptive_os.a(kernel.o)
+                0x00002604                osTick
+                0x000026c8                rmvFromRdyList
+                0x00002424                osGetHighPrioProc
+                0x000026e4                osSuspend
+                0x00002338                osInit
+                0x00002718                osDeleteProcess
+                0x00002364                osISREnter
+                0x00002440                schedule
+                0x00002388                osCreateProcess
+                0x00002584                addToRdyList
+                0x000022d4                addToTimeList
+                0x00002598                osResume
+                0x00002288                osPid
+                0x00002748                osSleep
+                0x000024ac                osISRExit
+                0x00002514                osStart
+                0x00002540                rmvFromTimeList
+                0x00002660                osStartProcess
+ .text          0x00002780      0x124 ./pre_emptive_os/pre_emptive_os.a(prioqueue.o)
+                0x00002780                initPrioQueue
+                0x000027e8                rmvFromPrioQueue
+                0x000027a0                addToPrioQueue
+                0x00002884                isEmptyPrioQueue
+                0x0000284c                getHighPrioQueue
+ .text          0x000028a4      0x218 ./pre_emptive_os/pre_emptive_os.a(timer.o)
+                0x000028a4                timerTick
+                0x00002a18                osInitTimers
+                0x000029b4                osDeleteTimer
+                0x00002988                osCreateTimer
+ .text          0x00002abc       0xa4 ./pre_emptive_os/pre_emptive_os.a(stack_usage.o)
+                0x00002abc                osStackUsage
+                0x00002b00                createStackPattern
+                0x00002b20                checkStackLimit
+ .text          0x00002b60      0x1ec ./pre_emptive_os/pre_emptive_os.a(a7hal.o)
+                0x00002b98                stkFrameInit_oshal
+                0x00002b60                timerIsr_oshal
+                0x00002c78                halRestoreInterrupts_oshal
+                0x00002c80                initTimer_oshal
+                0x00002c68                halEnableInterrupts_oshal
+                0x00002d18                handleIRQs_oshal
+                0x00002c48                halDisableInterrupts_oshal
+ .text          0x00002d4c       0xc4 ./pre_emptive_os/pre_emptive_os.a(a7hal_a.o)
+                0x00002d58                startHighProc_oshal
+                0x00002d80                ctxSwitchIsr_oshal
+                0x00002d60                ctxSwitch_oshal
+                0x00002da0                generalIRQ_oshal
+ .text          0x00002e10      0x144 ./pre_emptive_os/pre_emptive_os.a(count_sem.o)
+                0x00002eb0                osSemGive
+                0x00002f14                osSemTryTake
+                0x00002e10                osSemInit
+                0x00002e24                osSemTake
+ .text          0x00002f54       0xd8 ./pre_emptive_os/pre_emptive_os.a(event.o)
+                0x00002f64                eventWait
+                0x00002f54                eventInit
+                0x00002fcc                eventIsEmpty
+                0x00002f9c                eventWaitReturn
+                0x00002fdc                eventSignal
+ .text          0x0000302c       0xc0 ./filesys/filesys.a(efs.o)
+                0x0000302c                efs_init
+ .text          0x000030ec      0xa60 ./filesys/filesys.a(file.o)
+                0x00003564                file_write
+                0x000031e0                file_normalToFatName
+                0x00003318                file_requiredCluster
+                0x00003304                file_getAttr
+                0x00003158                file_validateChar
+                0x0000379c                file_fopen
+                0x000036dc                file_read
+                0x00003590                file_fread
+                0x000032e0                file_setAttr
+                0x00003708                file_fclose
+                0x000030ec                file_setpos
+                0x00003108                file_initFile
+                0x000033bc                file_fwrite
+ .text          0x00003b4c      0x93c ./filesys/filesys.a(fs.o)
+                0x00003c04                fs_countDataSectors
+                0x000042f4                fs_loadVolumeId
+                0x00003d58                fs_sectorToCluster
+                0x00003c90                fs_determineFatType
+                0x00004408                fs_initFs
+                0x00003d24                fs_clusterToSector
+                0x00004078                fs_findFile
+                0x000041f4                fs_findFreeFile
+                0x00003df0                fs_setFirstClusterInDirEntry
+                0x00003db8                fs_getFirstClusterRootDir
+                0x00003fc8                fs_flushFs
+                0x00003fec                fs_umount
+                0x00003db0                fs_giveFreeClusterHint
+                0x00004004                fs_getLastCluster
+                0x00003cd4                fs_findFirstSectorRootDir
+                0x00003e00                fs_setFsInfo
+                0x000042ac                fs_getNextFreeCluster
+                0x00003b4c                fs_verifySanity
+                0x00003e9c                fs_getFsInfo
+                0x00003dd0                fs_initClusterChain
+                0x00003d0c                fs_initCurrentDir
+                0x00003f5c                fs_clearCluster
+                0x000043b4                fs_isValidFat
+ .text          0x00004488      0xea8 ./filesys/filesys.a(ioman.o)
+                0x00004ea8                ioman_putSectorInCache
+                0x00004db4                ioman_flushRange
+                0x000047cc                ioman_getPtr
+                0x00004728                ioman_push
+                0x000048fc                ioman_findFreeSpot
+                0x00004520                ioman_getUseCnt
+                0x00004b48                ioman_printStatus
+                0x00004cb0                ioman_flushSector
+                0x00004e6c                ioman_readSector
+                0x0000494c                ioman_findUnusedSpot
+                0x00004fd8                ioman_getSector
+                0x00004898                ioman_findSectorInCache
+                0x00004a70                ioman_findOverallocableSpot
+                0x000051b8                ioman_reset
+                0x00004648                ioman_decRefCnt
+                0x000047f8                ioman_getBp
+                0x00004584                ioman_decUseCnt
+                0x00004488                ioman_getBuffer
+                0x00004b88                ioman_writeSector
+                0x00005290                ioman_releaseSector
+                0x00004bc8                ioman_directSectorWrite
+                0x00005260                ioman_init
+                0x00004d34                ioman_flushAll
+                0x00004610                ioman_incRefCnt
+                0x00004490                ioman_setAttr
+                0x00004f28                ioman_directSectorRead
+                0x000046a8                ioman_pop
+                0x000044e0                ioman_getAttr
+                0x000045bc                ioman_resetUseCnt
+                0x000045e4                ioman_getRefCnt
+                0x00004680                ioman_resetRefCnt
+                0x0000454c                ioman_incUseCnt
+                0x00004854                ioman_resetCacheItem
+ .text          0x00005330       0xcc ./filesys/filesys.a(libc.o)
+                0x000053dc                memSet
+                0x000053bc                memClr
+                0x0000537c                memCpy
+                0x00005330                strMatch
+ .text          0x000053fc      0x2d0 ./filesys/filesys.a(ls.o)
+                0x00005484                ls_getRootAreaEntry
+                0x00005430                ls_fileEntryToDirListEntry
+                0x000055cc                ls_getDirEntry
+                0x00005504                ls_getRealDirEntry
+                0x00005608                ls_getNext
+                0x000053fc                ls_isValidFileEntry
+                0x0000565c                ls_openDir
+ .text          0x000056cc      0x1d8 ./filesys/filesys.a(partition.o)
+                0x00005844                part_getSect
+                0x0000577c                part_readBuf
+                0x00005744                part_getRealLBA
+                0x00005704                part_initPartition
+                0x000057e0                part_directSectorRead
+                0x000056cc                part_isFatPart
+                0x00005870                part_writeBuf
+                0x0000575c                part_relSect
+                0x00005810                part_flushPart
+                0x000057b0                part_directSectorWrite
+ .text          0x000058a4       0x18 ./filesys/filesys.a(time.o)
+                0x000058a4                fs_makeDate
+                0x000058ac                fs_makeTime
+                0x000058b4                fs_hasTimeSupport
+ .text          0x000058bc      0x100 ./filesys/filesys.a(extract.o)
+                0x00005944                ex_getPartitionField
+                0x000058bc                ex_getb16
+                0x00005918                ex_setb32
+                0x000058d8                ex_getb32
+                0x000059b8                ex_setPartitionField
+                0x00005904                ex_setb16
+ .text          0x000059bc      0x610 ./filesys/filesys.a(dir.o)
+                0x00005b70                dir_updateDirectoryEntry
+                0x00005e6c                dir_findinCluster
+                0x00005f30                dir_findinDir
+                0x00005c00                dir_setFirstCluster
+                0x00005d90                dir_findinBuf
+                0x00005a3c                dir_addCluster
+                0x00005db8                dir_findinRootArea
+                0x00005c50                dir_createDirectoryEntry
+                0x00005aa0                dir_createDefaultEntry
+                0x00005cf0                dir_findFileinBuf
+                0x00005bc0                dir_setFileSize
+                0x00005aec                dir_getFatFileName
+                0x00005c9c                dir_getFileStructure
+                0x000059bc                dir_findFreeEntryinBuf
+ .text          0x00005fcc       0x74 ./filesys/filesys.a(disc.o)
+                0x00006030                disc_initDisc
+                0x00005fcc                disc_loadMBR
+ .text          0x00006040      0xadc ./filesys/filesys.a(fat.o)
+                0x00006320                fat_getNextClusterChain
+                0x00006130                fat_setNextClusterAddressWBuf
+                0x00006040                fat_getSectorAddressFatEntry
+                0x00006260                fat_getNextClusterAddressWBuf
+                0x00006428                fat_LogicToDiscCluster
+                0x0000659c                fat_setNextClusterAddress
+                0x00006898                fat_countFreeClusters
+                0x00006798                fat_getNextClusterAddress
+                0x000064c8                fat_DiscToLogicCluster
+                0x000060a0                fat_isEocMarker
+                0x000068e4                fat_allocClusterChain
+                0x000060f8                fat_giveEocMarker
+                0x0000653c                fat_countClustersInChain
+                0x00006718                fat_unlinkClusterChain
+ .text          0x00006b1c      0x1bc ./mmc/mmc.a(hwinterface.o)
+                0x00006b24                if_spiInit
+                0x00006b1c                if_setPos
+                0x00006bd4                if_spiSend
+                0x00006c1c                if_writeBuf
+                0x00006c34                if_readBuf
+                0x00006bb8                if_spiSetSpeed
+                0x00006c50                if_initInterface
+ .text          0x00006cd8      0x4fc ./mmc/mmc.a(sd.o)
+                0x00006e44                sd_getDriveSize
+                0x00006fb8                sd_readSector
+                0x00006cd8                sd_Resp8bError
+                0x00006dbc                sd_Command
+                0x00006d50                sd_Resp8b
+                0x00006f20                sd_writeSector
+                0x00006d88                sd_Resp16b
+                0x00007084                sd_State
+                0x000070b8                sd_Init
+ .text          0x000071d4      0x114 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
+                0x000071d4                __udivsi3
+                0x000071d4                __aeabi_uidiv
+                0x000072d0                __aeabi_uidivmod
+ .text          0x000072e8      0x144 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_divsi3.o)
+                0x000072e8                __aeabi_idiv
+                0x000072e8                __divsi3
+                0x00007414                __aeabi_idivmod
+ .text          0x0000742c       0xd0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_umodsi3.o)
+                0x0000742c                __umodsi3
+ .text          0x000074fc       0xe8 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
+                0x000074fc                __modsi3
+ .text          0x000075e4        0x4 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
+                0x000075e4                __aeabi_ldiv0
+                0x000075e4                __div0
+                0x000075e4                __aeabi_idiv0
+ .text          0x000075e8       0x3c /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
+                0x000075f0                _call_via_r2
+                0x00007600                _call_via_r6
+                0x000075fc                _call_via_r5
+                0x000075f4                _call_via_r3
+                0x00007614                _call_via_fp
+                0x00007608                _call_via_r8
+                0x00007604                _call_via_r7
+                0x000075e8                _call_via_r0
+                0x00007610                _call_via_sl
+                0x0000761c                _call_via_sp
+                0x0000760c                _call_via_r9
+                0x000075f8                _call_via_r4
+                0x000075ec                _call_via_r1
+                0x00007618                _call_via_ip
+                0x00007620                _call_via_lr
+ .text          0x00007624      0x430 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+                0x000079e8                __floatdidf
+                0x00007968                __floatsidf
+                0x00007940                __aeabi_ui2d
+                0x00007624                __aeabi_drsub
+                0x00007994                __extendsfdf2
+                0x00007630                __adddf3
+                0x00007940                __floatunsidf
+                0x00007630                __aeabi_dadd
+                0x000079d4                __aeabi_ul2d
+                0x0000762c                __aeabi_dsub
+                0x000079d4                __floatundidf
+                0x00007968                __aeabi_i2d
+                0x000079e8                __aeabi_l2d
+                0x00007994                __aeabi_f2d
+                0x0000762c                __subdf3
+ .text          0x00007a54       0x5c /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+                0x00007a54                __fixdfsi
+                0x00007a54                __aeabi_d2iz
+ .text          0x00007ab0      0x2ac /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+                0x00007abc                __aeabi_fadd
+                0x00007ab8                __subsf3
+                0x00007c80                __aeabi_i2f
+                0x00007ab8                __aeabi_fsub
+                0x00007cb0                __floatdisf
+                0x00007c80                __floatsisf
+                0x00007ca0                __floatundisf
+                0x00007c78                __aeabi_ui2f
+                0x00007cb0                __aeabi_l2f
+                0x00007ca0                __aeabi_ul2f
+                0x00007ab0                __aeabi_frsub
+                0x00007c78                __floatunsisf
+                0x00007abc                __addsf3
+ .text          0x00007d5c      0x2f8 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
+                0x00007ef4                __divsf3
+                0x00007ef4                __aeabi_fdiv
+                0x00007d5c                __mulsf3
+                0x00007d5c                __aeabi_fmul
+ .text          0x00008054       0x5c /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
+                0x00008054                __fixsfsi
+                0x00008054                __aeabi_f2iz
+ .text          0x000080b0       0x30 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
+                0x000080b0                _atoi_r
+                0x000080c8                atoi
+ .text          0x000080e0       0x9c /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
+                0x000080e0                memcpy
+ .text          0x0000817c       0x90 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
+                0x0000817c                strlen
+ .text          0x0000820c      0x114 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
+                0x0000820c                strncpy
+ .text          0x00008320      0x1f0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
+                0x000084e4                strtol
+                0x00008320                _strtol_r
+ .text          0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
+ .text          0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
  *(.glue_7)
- .glue_7        0x00007f78        0x0 main.o
- .glue_7        0x00007f78        0x0 myLCD.o
- .glue_7        0x00007f78        0x0 myMMC.o
- .glue_7        0x00007f78        0x0 testI2C.o
- .glue_7        0x00007f78        0x0 eeprom.o
- .glue_7        0x00007f78        0x0 i2c.o
- .glue_7        0x00007f78        0x0 myTimerRTC.o
- .glue_7        0x00007f78        0x0 wavplayer.o
- .glue_7        0x00007f78        0x0 ./startup/libea_startup_thumb.a(consol.o)
- .glue_7        0x00007f78        0x0 ./startup/libea_startup_thumb.a(framework.o)
- .glue_7        0x00007f78        0x0 ./startup/libea_startup_thumb.a(startup.o)
- .glue_7        0x00007f78        0x0 ./pre_emptive_os/pre_emptive_os.a(kernel.o)
- .glue_7        0x00007f78        0x0 ./pre_emptive_os/pre_emptive_os.a(prioqueue.o)
- .glue_7        0x00007f78        0x0 ./pre_emptive_os/pre_emptive_os.a(timer.o)
- .glue_7        0x00007f78        0x0 ./pre_emptive_os/pre_emptive_os.a(stack_usage.o)
- .glue_7        0x00007f78        0x0 ./pre_emptive_os/pre_emptive_os.a(a7hal.o)
- .glue_7        0x00007f78        0x0 ./pre_emptive_os/pre_emptive_os.a(a7hal_a.o)
- .glue_7        0x00007f78        0x0 ./pre_emptive_os/pre_emptive_os.a(count_sem.o)
- .glue_7        0x00007f78        0x0 ./pre_emptive_os/pre_emptive_os.a(event.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(efs.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(file.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(fs.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(ioman.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(libc.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(ls.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(partition.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(time.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(extract.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(dir.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(disc.o)
- .glue_7        0x00007f78        0x0 ./filesys/filesys.a(fat.o)
- .glue_7        0x00007f78        0x0 ./mmc/mmc.a(hwinterface.o)
- .glue_7        0x00007f78        0x0 ./mmc/mmc.a(sd.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_divsi3.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_umodsi3.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
- .glue_7        0x00007f78        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
- .glue_7        0x00007f78       0x18 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
-                0x00007f84                __osISRExit_from_arm
-                0x00007f78                __osTick_from_arm
+ .glue_7        0x00008510        0x0 main.o
+ .glue_7        0x00008510        0x0 myLCD.o
+ .glue_7        0x00008510        0x0 myMMC.o
+ .glue_7        0x00008510        0x0 testI2C.o
+ .glue_7        0x00008510        0x0 eeprom.o
+ .glue_7        0x00008510        0x0 i2c.o
+ .glue_7        0x00008510        0x0 myTimerRTC.o
+ .glue_7        0x00008510        0x0 wavplayer.o
+ .glue_7        0x00008510        0x0 ./startup/libea_startup_thumb.a(consol.o)
+ .glue_7        0x00008510        0x0 ./startup/libea_startup_thumb.a(framework.o)
+ .glue_7        0x00008510        0x0 ./startup/libea_startup_thumb.a(startup.o)
+ .glue_7        0x00008510        0x0 ./pre_emptive_os/pre_emptive_os.a(kernel.o)
+ .glue_7        0x00008510        0x0 ./pre_emptive_os/pre_emptive_os.a(prioqueue.o)
+ .glue_7        0x00008510        0x0 ./pre_emptive_os/pre_emptive_os.a(timer.o)
+ .glue_7        0x00008510        0x0 ./pre_emptive_os/pre_emptive_os.a(stack_usage.o)
+ .glue_7        0x00008510        0x0 ./pre_emptive_os/pre_emptive_os.a(a7hal.o)
+ .glue_7        0x00008510        0x0 ./pre_emptive_os/pre_emptive_os.a(a7hal_a.o)
+ .glue_7        0x00008510        0x0 ./pre_emptive_os/pre_emptive_os.a(count_sem.o)
+ .glue_7        0x00008510        0x0 ./pre_emptive_os/pre_emptive_os.a(event.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(efs.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(file.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(fs.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(ioman.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(libc.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(ls.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(partition.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(time.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(extract.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(dir.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(disc.o)
+ .glue_7        0x00008510        0x0 ./filesys/filesys.a(fat.o)
+ .glue_7        0x00008510        0x0 ./mmc/mmc.a(hwinterface.o)
+ .glue_7        0x00008510        0x0 ./mmc/mmc.a(sd.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_divsi3.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_umodsi3.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
+ .glue_7        0x00008510        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
+ .glue_7        0x00008510       0x18 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+                0x0000851c                __osISRExit_from_arm
+                0x00008510                __osTick_from_arm
  *(.glue_7t)
- .glue_7t       0x00007f90        0x0 main.o
- .glue_7t       0x00007f90        0x0 myLCD.o
- .glue_7t       0x00007f90        0x0 myMMC.o
- .glue_7t       0x00007f90        0x0 testI2C.o
- .glue_7t       0x00007f90        0x0 eeprom.o
- .glue_7t       0x00007f90        0x0 i2c.o
- .glue_7t       0x00007f90        0x0 myTimerRTC.o
- .glue_7t       0x00007f90        0x0 wavplayer.o
- .glue_7t       0x00007f90        0x0 ./startup/libea_startup_thumb.a(consol.o)
- .glue_7t       0x00007f90        0x0 ./startup/libea_startup_thumb.a(framework.o)
- .glue_7t       0x00007f90        0x0 ./startup/libea_startup_thumb.a(startup.o)
- .glue_7t       0x00007f90        0x0 ./pre_emptive_os/pre_emptive_os.a(kernel.o)
- .glue_7t       0x00007f90        0x0 ./pre_emptive_os/pre_emptive_os.a(prioqueue.o)
- .glue_7t       0x00007f90        0x0 ./pre_emptive_os/pre_emptive_os.a(timer.o)
- .glue_7t       0x00007f90        0x0 ./pre_emptive_os/pre_emptive_os.a(stack_usage.o)
- .glue_7t       0x00007f90        0x0 ./pre_emptive_os/pre_emptive_os.a(a7hal.o)
- .glue_7t       0x00007f90        0x0 ./pre_emptive_os/pre_emptive_os.a(a7hal_a.o)
- .glue_7t       0x00007f90        0x0 ./pre_emptive_os/pre_emptive_os.a(count_sem.o)
- .glue_7t       0x00007f90        0x0 ./pre_emptive_os/pre_emptive_os.a(event.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(efs.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(file.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(fs.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(ioman.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(libc.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(ls.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(partition.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(time.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(extract.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(dir.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(disc.o)
- .glue_7t       0x00007f90        0x0 ./filesys/filesys.a(fat.o)
- .glue_7t       0x00007f90        0x0 ./mmc/mmc.a(hwinterface.o)
- .glue_7t       0x00007f90        0x0 ./mmc/mmc.a(sd.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_divsi3.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_umodsi3.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
- .glue_7t       0x00007f90        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
- .glue_7t       0x00007f90       0xe0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
-                0x00007fe4                __file_fclose_change_to_arm
-                0x00007fec                ____modsi3_change_to_arm
-                0x00008010                ____divsf3_from_thumb
-                0x00007fdc                __ls_getNext_change_to_arm
-                0x0000802c                __file_read_change_to_arm
-                0x00008024                ____fixsfsi_change_to_arm
-                0x00007fd0                __strncpy_from_thumb
-                0x00008038                __halRestoreInterrupts_oshal_from_thumb
-                0x0000800c                ____addsf3_change_to_arm
-                0x00008020                ____fixsfsi_from_thumb
-                0x00008000                ____floatsisf_from_thumb
-                0x00007ffc                __strlen_change_to_arm
-                0x00007ff0                __memcpy_from_thumb
-                0x00008048                __ctxSwitch_oshal_from_thumb
-                0x00008044                __stkFrameInit_oshal_change_to_arm
-                0x0000805c                __initTimer_oshal_change_to_arm
-                0x00007fc8                __ls_openDir_from_thumb
-                0x00008060                __startHighProc_oshal_from_thumb
-                0x00007fa4                ____umodsi3_change_to_arm
-                0x00007fe8                ____modsi3_from_thumb
-                0x00007fac                ____udivsi3_change_to_arm
-                0x00008064                __startHighProc_oshal_change_to_arm
-                0x00008050                __ctxSwitchIsr_oshal_from_thumb
-                0x00007fc4                __efs_init_change_to_arm
-                0x00008014                ____divsf3_change_to_arm
-                0x0000803c                __halRestoreInterrupts_oshal_change_to_arm
-                0x00007f9c                __simplePrintf_change_to_arm
-                0x00007fa0                ____umodsi3_from_thumb
-                0x00007fb8                __file_fopen_from_thumb
-                0x00008068                ____divsi3_from_thumb
-                0x0000801c                ____mulsf3_change_to_arm
-                0x00007fc0                __efs_init_from_thumb
-                0x00007fb4                __file_fread_change_to_arm
-                0x0000804c                __ctxSwitch_oshal_change_to_arm
-                0x00008004                ____floatsisf_change_to_arm
-                0x00008040                __stkFrameInit_oshal_from_thumb
-                0x00007fa8                ____udivsi3_from_thumb
-                0x00007f90                __eaInit_from_thumb
-                0x00007f98                __simplePrintf_from_thumb
-                0x00007fbc                __file_fopen_change_to_arm
-                0x00008058                __initTimer_oshal_from_thumb
-                0x00007f94                __eaInit_change_to_arm
-                0x00007ff8                __strlen_from_thumb
-                0x00008054                __ctxSwitchIsr_oshal_change_to_arm
-                0x00007fcc                __ls_openDir_change_to_arm
-                0x00008034                __halDisableInterrupts_oshal_change_to_arm
-                0x00008018                ____mulsf3_from_thumb
-                0x00008030                __halDisableInterrupts_oshal_from_thumb
-                0x00008008                ____addsf3_from_thumb
-                0x00007fe0                __file_fclose_from_thumb
-                0x00007fd8                __ls_getNext_from_thumb
-                0x00007ff4                __memcpy_change_to_arm
-                0x00007fb0                __file_fread_from_thumb
-                0x00007fd4                __strncpy_change_to_arm
-                0x00008028                __file_read_from_thumb
-                0x0000806c                ____divsi3_change_to_arm
-                0x00008070                . = ALIGN (0x4)
+ .glue_7t       0x00008528        0x0 main.o
+ .glue_7t       0x00008528        0x0 myLCD.o
+ .glue_7t       0x00008528        0x0 myMMC.o
+ .glue_7t       0x00008528        0x0 testI2C.o
+ .glue_7t       0x00008528        0x0 eeprom.o
+ .glue_7t       0x00008528        0x0 i2c.o
+ .glue_7t       0x00008528        0x0 myTimerRTC.o
+ .glue_7t       0x00008528        0x0 wavplayer.o
+ .glue_7t       0x00008528        0x0 ./startup/libea_startup_thumb.a(consol.o)
+ .glue_7t       0x00008528        0x0 ./startup/libea_startup_thumb.a(framework.o)
+ .glue_7t       0x00008528        0x0 ./startup/libea_startup_thumb.a(startup.o)
+ .glue_7t       0x00008528        0x0 ./pre_emptive_os/pre_emptive_os.a(kernel.o)
+ .glue_7t       0x00008528        0x0 ./pre_emptive_os/pre_emptive_os.a(prioqueue.o)
+ .glue_7t       0x00008528        0x0 ./pre_emptive_os/pre_emptive_os.a(timer.o)
+ .glue_7t       0x00008528        0x0 ./pre_emptive_os/pre_emptive_os.a(stack_usage.o)
+ .glue_7t       0x00008528        0x0 ./pre_emptive_os/pre_emptive_os.a(a7hal.o)
+ .glue_7t       0x00008528        0x0 ./pre_emptive_os/pre_emptive_os.a(a7hal_a.o)
+ .glue_7t       0x00008528        0x0 ./pre_emptive_os/pre_emptive_os.a(count_sem.o)
+ .glue_7t       0x00008528        0x0 ./pre_emptive_os/pre_emptive_os.a(event.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(efs.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(file.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(fs.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(ioman.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(libc.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(ls.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(partition.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(time.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(extract.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(dir.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(disc.o)
+ .glue_7t       0x00008528        0x0 ./filesys/filesys.a(fat.o)
+ .glue_7t       0x00008528        0x0 ./mmc/mmc.a(hwinterface.o)
+ .glue_7t       0x00008528        0x0 ./mmc/mmc.a(sd.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_divsi3.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_umodsi3.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
+ .glue_7t       0x00008528        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
+ .glue_7t       0x00008528      0x100 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+                0x0000857c                __file_fclose_change_to_arm
+                0x00008584                ____modsi3_change_to_arm
+                0x000085a8                ____divsf3_from_thumb
+                0x00008574                __ls_getNext_change_to_arm
+                0x000085e4                __file_read_change_to_arm
+                0x000085d8                ____subdf3_from_thumb
+                0x000085bc                ____fixsfsi_change_to_arm
+                0x00008568                __strncpy_from_thumb
+                0x000085f0                __halRestoreInterrupts_oshal_from_thumb
+                0x000085a4                ____addsf3_change_to_arm
+                0x000085dc                ____subdf3_change_to_arm
+                0x000085b8                ____fixsfsi_from_thumb
+                0x00008598                ____floatsisf_from_thumb
+                0x00008594                __strlen_change_to_arm
+                0x00008588                __memcpy_from_thumb
+                0x00008600                __ctxSwitch_oshal_from_thumb
+                0x000085fc                __stkFrameInit_oshal_change_to_arm
+                0x00008614                __initTimer_oshal_change_to_arm
+                0x00008560                __ls_openDir_from_thumb
+                0x00008618                __startHighProc_oshal_from_thumb
+                0x0000853c                ____umodsi3_change_to_arm
+                0x000085d0                ____fixdfsi_from_thumb
+                0x00008580                ____modsi3_from_thumb
+                0x00008544                ____udivsi3_change_to_arm
+                0x0000861c                __startHighProc_oshal_change_to_arm
+                0x00008608                __ctxSwitchIsr_oshal_from_thumb
+                0x0000855c                __efs_init_change_to_arm
+                0x000085ac                ____divsf3_change_to_arm
+                0x000085d4                ____fixdfsi_change_to_arm
+                0x000085f4                __halRestoreInterrupts_oshal_change_to_arm
+                0x00008534                __simplePrintf_change_to_arm
+                0x00008538                ____umodsi3_from_thumb
+                0x00008550                __file_fopen_from_thumb
+                0x00008620                ____divsi3_from_thumb
+                0x000085b4                ____mulsf3_change_to_arm
+                0x000085cc                ____adddf3_change_to_arm
+                0x00008558                __efs_init_from_thumb
+                0x0000854c                __file_fread_change_to_arm
+                0x00008604                __ctxSwitch_oshal_change_to_arm
+                0x000085c0                ____floatsidf_from_thumb
+                0x0000859c                ____floatsisf_change_to_arm
+                0x000085f8                __stkFrameInit_oshal_from_thumb
+                0x00008540                ____udivsi3_from_thumb
+                0x00008528                __eaInit_from_thumb
+                0x000085c8                ____adddf3_from_thumb
+                0x00008530                __simplePrintf_from_thumb
+                0x00008554                __file_fopen_change_to_arm
+                0x00008610                __initTimer_oshal_from_thumb
+                0x0000852c                __eaInit_change_to_arm
+                0x00008590                __strlen_from_thumb
+                0x0000860c                __ctxSwitchIsr_oshal_change_to_arm
+                0x00008564                __ls_openDir_change_to_arm
+                0x000085ec                __halDisableInterrupts_oshal_change_to_arm
+                0x000085b0                ____mulsf3_from_thumb
+                0x000085e8                __halDisableInterrupts_oshal_from_thumb
+                0x000085a0                ____addsf3_from_thumb
+                0x00008578                __file_fclose_from_thumb
+                0x00008570                __ls_getNext_from_thumb
+                0x0000858c                __memcpy_change_to_arm
+                0x00008548                __file_fread_from_thumb
+                0x0000856c                __strncpy_change_to_arm
+                0x000085e0                __file_read_from_thumb
+                0x00008624                ____divsi3_change_to_arm
+                0x000085c4                ____floatsidf_change_to_arm
+                0x00008628                . = ALIGN (0x4)
 
-.rodata         0x00008070      0x6a8
+.rodata         0x00008628      0x6a8
  *(.rodata)
- .rodata        0x00008070       0x10 ./startup/libea_startup_thumb.a(consol.o)
- .rodata        0x00008080      0x101 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
-                0x00008080                _ctype_
- *fill*         0x00008181        0x3 00
- .rodata        0x00008184        0x4 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
-                0x00008184                _global_impure_ptr
+ .rodata        0x00008628       0x10 ./startup/libea_startup_thumb.a(consol.o)
+ .rodata        0x00008638      0x101 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
+                0x00008638                _ctype_
+ *fill*         0x00008739        0x3 00
+ .rodata        0x0000873c        0x4 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+                0x0000873c                _global_impure_ptr
  *(.rodata*)
  .rodata.str1.4
-                0x00008188      0x1e5 main.o
+                0x00008740      0x1e5 main.o
                                 0x1ec (size before relaxing)
- *fill*         0x0000836d        0x3 00
+ *fill*         0x00008925        0x3 00
  .rodata.str1.4
-                0x00008370       0xdf myMMC.o
+                0x00008928       0xdf myMMC.o
                                  0xe4 (size before relaxing)
- *fill*         0x0000844f        0x1 00
+ *fill*         0x00008a07        0x1 00
  .rodata.str1.4
-                0x00008450      0x1d4 testI2C.o
+                0x00008a08      0x1d4 testI2C.o
                                 0x24c (size before relaxing)
  .rodata.str1.4
-                0x00008624       0x18 ./startup/libea_startup_thumb.a(consol.o)
+                0x00008bdc       0x18 ./startup/libea_startup_thumb.a(consol.o)
  .rodata.str1.4
-                0x0000863c       0xd8 ./startup/libea_startup_thumb.a(framework.o)
+                0x00008bf4       0xd8 ./startup/libea_startup_thumb.a(framework.o)
  .rodata.str1.4
-                0x00008714        0x4 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
-                0x00008718                . = ALIGN (0x4)
-                0x00008718                _etext = .
-                0x00008718                PROVIDE (etext, .)
+                0x00008ccc        0x4 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+                0x00008cd0                . = ALIGN (0x4)
+                0x00008cd0                _etext = .
+                0x00008cd0                PROVIDE (etext, .)
 
-.data           0x40000080      0x408 load address 0x00008718
+.data           0x40000080      0x408 load address 0x00008cd0
                 0x40000080                _data = .
  *(.data)
  .data          0x40000080        0x0 main.o
@@ -748,6 +786,8 @@ END GROUP
  .data          0x40000080        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
  .data          0x40000080        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
  .data          0x40000080        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
+ .data          0x40000080        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+ .data          0x40000080        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
  .data          0x40000080        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
  .data          0x40000080        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
  .data          0x40000080        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
@@ -764,7 +804,7 @@ END GROUP
                 0x40000488                _edata = .
                 0x40000488                PROVIDE (edata, .)
 
-.bss            0x40000488     0x26f4
+.bss            0x40000488     0x2700
                 0x40000488                _bss = .
                 0x40000488                __bss_start = .
                 0x40000488                __bss_start__ = .
@@ -813,6 +853,8 @@ END GROUP
  .bss           0x40001994        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
  .bss           0x40001994        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
  .bss           0x40001994        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
+ .bss           0x40001994        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+ .bss           0x40001994        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
  .bss           0x40001994        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
  .bss           0x40001994        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
  .bss           0x40001994        0x0 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
@@ -856,24 +898,27 @@ END GROUP
                 0x40002a64                size
                 0x40002a68                lastDisplayMode
  *fill*         0x40002a69        0x3 00
- COMMON         0x40002a6c       0x18 wavplayer.o
-                0x40002a6c                fileOffset
-                0x40002a70                myFile
-                0x40002a74                soundTable
-                0x40002a78                fileSize
-                0x40002a7c                joystickTimer
-                0x40002a80                filePtr
- COMMON         0x40002a84        0x8 ./startup/libea_startup_thumb.a(framework.o)
-                0x40002a84                pHeapEnd
-                0x40002a88                pHeapStart
- COMMON         0x40002a8c       0xf0 ./pre_emptive_os/pre_emptive_os.a(kernel.o)
-                0x40002a8c                processControlBlocks
-                0x40002b7c                . = ALIGN (0x4)
-                0x40002b7c                . = ALIGN (0x4)
-                0x40002b7c                __bss_end = .
-                0x40002b7c                __bss_end__ = .
-                0x40002b7c                _end = .
-                0x40002b7c                PROVIDE (end, .)
+ COMMON         0x40002a6c       0x24 wavplayer.o
+                0x40002a6c                rewindTimer
+                0x40002a70                fileOffset
+                0x40002a74                myFile
+                0x40002a78                soundTable
+                0x40002a7c                rewTime
+                0x40002a80                fileSize
+                0x40002a84                joystickTimer
+                0x40002a88                canPlay
+                0x40002a8c                filePtr
+ COMMON         0x40002a90        0x8 ./startup/libea_startup_thumb.a(framework.o)
+                0x40002a90                pHeapEnd
+                0x40002a94                pHeapStart
+ COMMON         0x40002a98       0xf0 ./pre_emptive_os/pre_emptive_os.a(kernel.o)
+                0x40002a98                processControlBlocks
+                0x40002b88                . = ALIGN (0x4)
+                0x40002b88                . = ALIGN (0x4)
+                0x40002b88                __bss_end = .
+                0x40002b88                __bss_end__ = .
+                0x40002b88                _end = .
+                0x40002b88                PROVIDE (end, .)
 
 .stab           0x00000000      0x600
  *(.stab)
@@ -950,7 +995,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x4a0
+.debug_aranges  0x00000000      0x4e0
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x20 ./startup/libea_startup_thumb.a(consol.o)
@@ -1011,21 +1056,25 @@ END GROUP
  .debug_aranges
                 0x00000380       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
  .debug_aranges
-                0x000003a0       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+                0x000003a0       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
  .debug_aranges
-                0x000003c0       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
+                0x000003c0       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
  .debug_aranges
-                0x000003e0       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
+                0x000003e0       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
  .debug_aranges
-                0x00000400       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
+                0x00000400       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
  .debug_aranges
-                0x00000420       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
+                0x00000420       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
  .debug_aranges
-                0x00000440       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
+                0x00000440       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
  .debug_aranges
-                0x00000460       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
+                0x00000460       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
  .debug_aranges
-                0x00000480       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
+                0x00000480       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
+ .debug_aranges
+                0x000004a0       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
+ .debug_aranges
+                0x000004c0       0x20 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
 
 .debug_pubnames
                 0x00000000     0x131b
@@ -1091,7 +1140,7 @@ END GROUP
  .debug_pubnames
                 0x000012e2       0x39 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 
-.debug_info     0x00000000     0x9e14
+.debug_info     0x00000000     0x9ee2
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x584 ./startup/libea_startup_thumb.a(consol.o)
  .debug_info    0x00000584      0x1e5 ./startup/libea_startup_thumb.a(framework.o)
@@ -1122,18 +1171,20 @@ END GROUP
  .debug_info    0x00007baf       0x68 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
  .debug_info    0x00007c17       0x68 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
  .debug_info    0x00007c7f       0x68 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
- .debug_info    0x00007ce7       0x67 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
- .debug_info    0x00007d4e       0x67 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
- .debug_info    0x00007db5       0x67 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
- .debug_info    0x00007e1c      0x949 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
- .debug_info    0x00008765      0x10a /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
- .debug_info    0x0000886f       0xd4 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
- .debug_info    0x00008943      0x127 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
- .debug_info    0x00008a6a      0xa0f /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
- .debug_info    0x00009479       0x79 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
- .debug_info    0x000094f2      0x922 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+ .debug_info    0x00007ce7       0x67 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+ .debug_info    0x00007d4e       0x67 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+ .debug_info    0x00007db5       0x67 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+ .debug_info    0x00007e1c       0x67 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
+ .debug_info    0x00007e83       0x67 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
+ .debug_info    0x00007eea      0x949 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
+ .debug_info    0x00008833      0x10a /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
+ .debug_info    0x0000893d       0xd4 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
+ .debug_info    0x00008a11      0x127 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
+ .debug_info    0x00008b38      0xa0f /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
+ .debug_info    0x00009547       0x79 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
+ .debug_info    0x000095c0      0x922 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 
-.debug_abbrev   0x00000000     0x28a0
+.debug_abbrev   0x00000000     0x28c8
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x2a4 ./startup/libea_startup_thumb.a(consol.o)
  .debug_abbrev  0x000002a4       0xd0 ./startup/libea_startup_thumb.a(framework.o)
@@ -1164,18 +1215,20 @@ END GROUP
  .debug_abbrev  0x0000218e       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
  .debug_abbrev  0x000021a2       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
  .debug_abbrev  0x000021b6       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
- .debug_abbrev  0x000021ca       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
- .debug_abbrev  0x000021de       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
- .debug_abbrev  0x000021f2       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
- .debug_abbrev  0x00002206      0x176 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
- .debug_abbrev  0x0000237c       0xa6 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
- .debug_abbrev  0x00002422       0x8b /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
- .debug_abbrev  0x000024ad       0x8d /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
- .debug_abbrev  0x0000253a      0x1bd /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
- .debug_abbrev  0x000026f7       0x52 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
- .debug_abbrev  0x00002749      0x157 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+ .debug_abbrev  0x000021ca       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+ .debug_abbrev  0x000021de       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+ .debug_abbrev  0x000021f2       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+ .debug_abbrev  0x00002206       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
+ .debug_abbrev  0x0000221a       0x14 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
+ .debug_abbrev  0x0000222e      0x176 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
+ .debug_abbrev  0x000023a4       0xa6 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
+ .debug_abbrev  0x0000244a       0x8b /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
+ .debug_abbrev  0x000024d5       0x8d /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
+ .debug_abbrev  0x00002562      0x1bd /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
+ .debug_abbrev  0x0000271f       0x52 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
+ .debug_abbrev  0x00002771      0x157 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 
-.debug_line     0x00000000     0x23b5
+.debug_line     0x00000000     0x258c
  *(.debug_line)
  .debug_line    0x00000000      0x193 ./startup/libea_startup_thumb.a(consol.o)
  .debug_line    0x00000193       0xba ./startup/libea_startup_thumb.a(framework.o)
@@ -1206,16 +1259,18 @@ END GROUP
  .debug_line    0x000019e1       0x74 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_modsi3.o)
  .debug_line    0x00001a55       0x5d /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
  .debug_line    0x00001ab2       0x6b /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_call_via_rX.o)
- .debug_line    0x00001b1d      0x113 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
- .debug_line    0x00001c30      0x11d /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
- .debug_line    0x00001d4d       0x72 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
- .debug_line    0x00001dbf       0xf9 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
- .debug_line    0x00001eb8       0xc8 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
- .debug_line    0x00001f80       0xaf /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
- .debug_line    0x0000202f       0xd5 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
- .debug_line    0x00002104      0x173 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
- .debug_line    0x00002277       0x5b /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
- .debug_line    0x000022d2       0xe3 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+ .debug_line    0x00001b1d      0x165 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+ .debug_line    0x00001c82       0x72 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+ .debug_line    0x00001cf4      0x113 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+ .debug_line    0x00001e07      0x11d /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
+ .debug_line    0x00001f24       0x72 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
+ .debug_line    0x00001f96       0xf9 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
+ .debug_line    0x0000208f       0xc8 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(memcpy.o)
+ .debug_line    0x00002157       0xaf /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strlen.o)
+ .debug_line    0x00002206       0xd5 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strncpy.o)
+ .debug_line    0x000022db      0x173 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
+ .debug_line    0x0000244e       0x5b /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(ctype_.o)
+ .debug_line    0x000024a9       0xe3 /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 
 .debug_frame    0x00000000     0x185c
  *(.debug_frame)
@@ -1381,46 +1436,64 @@ RTCISR                                            myTimerRTC.o
 ReadAndPlay                                       myMMC.o
 ReadTagsFromFile                                  myMMC.o
 ScreenShiftLeft                                   myLCD.o
-                                                  myMMC.o
 StopInterrupts                                    myTimerRTC.o
                                                   wavplayer.o
 T1ISR                                             myTimerRTC.o
 WriteString                                       myLCD.o
+____adddf3_change_to_arm                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+____adddf3_from_thumb                             /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____addsf3_change_to_arm                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____addsf3_from_thumb                             /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____divsf3_change_to_arm                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____divsf3_from_thumb                             /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____divsi3_change_to_arm                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____divsi3_from_thumb                             /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+____fixdfsi_change_to_arm                         /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+____fixdfsi_from_thumb                            /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____fixsfsi_change_to_arm                         /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____fixsfsi_from_thumb                            /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+____floatsidf_change_to_arm                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+____floatsidf_from_thumb                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____floatsisf_change_to_arm                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____floatsisf_from_thumb                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____modsi3_change_to_arm                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____modsi3_from_thumb                             /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____mulsf3_change_to_arm                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____mulsf3_from_thumb                             /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+____subdf3_change_to_arm                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+____subdf3_from_thumb                             /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____udivsi3_change_to_arm                         /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____udivsi3_from_thumb                            /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____umodsi3_change_to_arm                         /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 ____umodsi3_from_thumb                            /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+__adddf3                                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+                                                  wavplayer.o
 __addsf3                                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
                                                   wavplayer.o
+__aeabi_d2iz                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+__aeabi_dadd                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+__aeabi_drsub                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+__aeabi_dsub                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+__aeabi_f2d                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __aeabi_f2iz                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
 __aeabi_fadd                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
 __aeabi_fdiv                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
 __aeabi_fmul                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_muldivsf3.o)
 __aeabi_frsub                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
 __aeabi_fsub                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+__aeabi_i2d                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __aeabi_i2f                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
 __aeabi_idiv                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_divsi3.o)
 __aeabi_idiv0                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
 __aeabi_idivmod                                   /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_divsi3.o)
+__aeabi_l2d                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __aeabi_l2f                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
 __aeabi_ldiv0                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_dvmd_tls.o)
+__aeabi_ui2d                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __aeabi_ui2f                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
 __aeabi_uidiv                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
 __aeabi_uidivmod                                  /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
+__aeabi_ul2d                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __aeabi_ul2f                                      /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
 __bss_end__                                       ./startup/libea_startup_thumb.a(startup.o)
 __bss_start__                                     ./startup/libea_startup_thumb.a(startup.o)
@@ -1445,6 +1518,7 @@ __eaInit_change_to_arm                            /cygdrive/c/Embedded/GNUARM/bi
 __eaInit_from_thumb                               /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __efs_init_change_to_arm                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __efs_init_from_thumb                             /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+__extendsfdf2                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __file_fclose_change_to_arm                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __file_fclose_from_thumb                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __file_fopen_change_to_arm                        /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
@@ -1453,12 +1527,19 @@ __file_fread_change_to_arm                        /cygdrive/c/Embedded/GNUARM/bi
 __file_fread_from_thumb                           /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __file_read_change_to_arm                         /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __file_read_from_thumb                            /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+__fixdfsi                                         /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixdfsi.o)
+                                                  wavplayer.o
 __fixsfsi                                         /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_fixsfsi.o)
                                                   wavplayer.o
+__floatdidf                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __floatdisf                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+__floatsidf                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+                                                  wavplayer.o
 __floatsisf                                       /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
                                                   wavplayer.o
+__floatundidf                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __floatundisf                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
+__floatunsidf                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
 __floatunsisf                                     /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
 __halDisableInterrupts_oshal_change_to_arm        /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __halDisableInterrupts_oshal_from_thumb           /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
@@ -1489,6 +1570,8 @@ __strlen_change_to_arm                            /cygdrive/c/Embedded/GNUARM/bi
 __strlen_from_thumb                               /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __strncpy_change_to_arm                           /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
 __strncpy_from_thumb                              /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(impure.o)
+__subdf3                                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubdf3.o)
+                                                  wavplayer.o
 __subsf3                                          /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_addsubsf3.o)
 __udivsi3                                         /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/interwork/libgcc.a(_udivsi3.o)
                                                   /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(strtol.o)
@@ -1542,6 +1625,7 @@ appTick                                           main.o
                                                   ./pre_emptive_os/pre_emptive_os.a(kernel.o)
 atoi                                              /cygdrive/c/Embedded/GNUARM/bin/../lib/gcc/arm-elf/4.1.1/../../../../arm-elf/lib/interwork/libc.a(atoi.o)
                                                   ./startup/libea_startup_thumb.a(consol.o)
+canPlay                                           wavplayer.o
 changeLeft                                        wavplayer.o
                                                   myMMC.o
                                                   main.o
@@ -1977,10 +2061,14 @@ playWAV                                           wavplayer.o
 processControlBlocks                              ./pre_emptive_os/pre_emptive_os.a(event.o)
                                                   ./pre_emptive_os/pre_emptive_os.a(stack_usage.o)
                                                   ./pre_emptive_os/pre_emptive_os.a(kernel.o)
-rewindBackward                                    myMMC.o
+rewTime                                           wavplayer.o
+rewindBackward                                    wavplayer.o
+                                                  myMMC.o
                                                   main.o
-rewindForward                                     myMMC.o
+rewindForward                                     wavplayer.o
+                                                  myMMC.o
                                                   main.o
+rewindTimer                                       wavplayer.o
 rmvFromPrioQueue                                  ./pre_emptive_os/pre_emptive_os.a(prioqueue.o)
                                                   ./pre_emptive_os/pre_emptive_os.a(event.o)
                                                   ./pre_emptive_os/pre_emptive_os.a(kernel.o)

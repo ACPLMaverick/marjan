@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 1
   55 0030 024B     		ldr	r3, .L16
   56 0032 AA22     		mov	r2, #170
   57 0034 1A60     		str	r2, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s 			page 2
 
 
   58 0036 5522     		mov	r2, #85
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 1
  112              		.code 16
  113              		.thumb_func
  114              		.type	initTimer1, %function
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s 			page 3
 
 
  115              	initTimer1:
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 1
  169              	.L33:
  170 00d6 0000     		.align	2
  171              	.L32:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s 			page 4
 
 
  172 00d8 004002E0 		.word	-536723456
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 1
  226 0138 01BC     		pop	{r0}
  227 013a 0047     		bx	r0
  228              	.L41:
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s 			page 5
 
 
  229              		.align	2
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 1
  283              		.align	2
  284              		.global	T1ISR
  285              		.code 16
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s 			page 6
 
 
  286              		.thumb_func
@@ -324,44 +324,44 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 1
  306              		.size	T1ISR, .-T1ISR
  307              		.comm	currentSongInfo,20,4
  308              		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s 			page 7
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 myTimerRTC.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:9      .text:00000000 setupPLL
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:22     .text:00000010 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:29     .text:00000014 connectPLL
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:26     .text:00000014 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:46     .text:00000028 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:54     .text:00000030 feedSeq
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:51     .text:00000030 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:66     .text:0000003c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:73     .text:00000040 initClocks
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:70     .text:00000040 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:106    .text:00000074 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:115    .text:00000080 initTimer1
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:112    .text:00000080 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:138    .text:000000a4 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:147    .text:000000b0 initRTC
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:144    .text:000000b0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:172    .text:000000d8 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:181    .text:000000e4 setupInterrupts
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:178    .text:000000e4 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:203    .text:00000104 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:288    .text:00000184 T1ISR
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:263    .text:00000160 RTCISR
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:216    .text:00000120 myTimerRTCExec
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:213    .text:00000120 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:231    .text:0000013c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:238    .text:00000140 StopInterrupts
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:235    .text:00000140 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:254    .text:00000154 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:260    .text:00000160 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:280    .text:0000017c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:285    .text:00000184 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/cckpTgDw.s:304    .text:0000019c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:9      .text:00000000 setupPLL
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:22     .text:00000010 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:29     .text:00000014 connectPLL
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:26     .text:00000014 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:46     .text:00000028 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:54     .text:00000030 feedSeq
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:51     .text:00000030 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:66     .text:0000003c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:73     .text:00000040 initClocks
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:70     .text:00000040 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:106    .text:00000074 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:115    .text:00000080 initTimer1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:112    .text:00000080 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:138    .text:000000a4 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:147    .text:000000b0 initRTC
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:144    .text:000000b0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:172    .text:000000d8 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:181    .text:000000e4 setupInterrupts
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:178    .text:000000e4 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:203    .text:00000104 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:288    .text:00000184 T1ISR
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:263    .text:00000160 RTCISR
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:216    .text:00000120 myTimerRTCExec
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:213    .text:00000120 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:231    .text:0000013c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:238    .text:00000140 StopInterrupts
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:235    .text:00000140 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:254    .text:00000154 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:260    .text:00000160 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:280    .text:0000017c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:285    .text:00000184 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccNUXUnk.s:304    .text:0000019c $d
                             *COM*:00000014 currentSongInfo
 
 UNDEFINED SYMBOLS

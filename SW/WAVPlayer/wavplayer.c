@@ -16,6 +16,9 @@ unsigned long* filePtr;
 unsigned long fileOffset;
 unsigned long fileSize;
 unsigned long joystickTimer;
+signed long rewindTimer;
+signed long rewTime;
+unsigned char canPlay;
 
 unsigned char currentVolume;
 unsigned char displayChanged;
@@ -52,19 +55,25 @@ void playWAV(EmbeddedFile* file)
 	fileOffset = S_START;
 	myFile = file;
 	joystickTimer = 0;
+	rewindTimer = 0;
+	rewTime = 0;
+	canPlay = 1;
 
 	myTimerRTCExec();
 }
 
 void ISR(void)
 {
-	unsigned char newSample[1];
-	file_read(myFile, 1, newSample);
-	fileOffset += S_SIZE;
-	sendToDAC(newSample[0]);
+	if(canPlay != 0)
+	{
+		unsigned char newSample[1];
+		file_read(myFile, 1, newSample);
+		fileOffset += S_SIZE;
+		sendToDAC(newSample[0]);
+	}
 
 	// koniec piosenki
-	if(fileOffset > (fileSize - ID3TAGSIZE))
+	if((*myFile).FilePtr > (fileSize - ID3TAGSIZE))
 	{
 		StopInterrupts();
 		changeRight = 1;
@@ -75,11 +84,18 @@ void ISR(void)
 	if((IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
 	{
 		joystickTimer++;
-		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		rewindTimer--;
+		if(joystickTimer > (T_REWDELAY*T_CHECKBUTTON/(PRESCALE*DELAY_MS)) && (IOPIN0 & (1<<JOYSTICK_LEFT)) == 0)
 		{
-			StopInterrupts();
-			joystickTimer = 0;
-			changeLeft = 1;
+			// przewijanie
+			if((*myFile).FilePtr > S_START)
+			{
+				rewindBackward = 1;
+				canPlay = 0;
+				rewindTimer = 0;
+				displayMode = 2;
+				(*myFile).FilePtr -= T_REWIND;
+			}
 		}
 		return;
 	}
@@ -87,11 +103,18 @@ void ISR(void)
 	else if((IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
 	{
 		joystickTimer++;
-		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		rewindTimer++;
+		if(joystickTimer > (T_REWDELAY*T_CHECKBUTTON/(PRESCALE*DELAY_MS)) && (IOPIN0 & (1<<JOYSTICK_RIGHT)) == 0)
 		{
-			StopInterrupts();
-			joystickTimer = 0;
-			changeRight = 1;
+			// przewijanie
+			if((*myFile).FilePtr < (*myFile).FileSize)
+			{
+				rewindForward = 1;
+				canPlay = 0;
+				rewindTimer = 0;
+				displayMode = 2;
+				(*myFile).FilePtr += T_REWIND;
+			}
 		}
 		return;
 	}
@@ -99,7 +122,7 @@ void ISR(void)
 	else if((IOPIN0 & (1<<JOYSTICK_UP)) == 0)
 	{
 		joystickTimer++;
-		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)) && (IOPIN0 & (1<<JOYSTICK_UP)) == 0)
 		{
 			joystickTimer = 0;
 			volumeUp = 1;
@@ -110,7 +133,7 @@ void ISR(void)
 	else if((IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
 	{
 		joystickTimer++;
-		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)) && (IOPIN0 & (1<<JOYSTICK_DOWN)) == 0)
 		{
 			joystickTimer = 0;
 			volumeDown = 1;
@@ -121,26 +144,64 @@ void ISR(void)
 	else if((IOPIN0 & (1<<JOYSTICK_GND)) == 0)
 	{
 		joystickTimer++;
-		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+		if(joystickTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)) && (IOPIN0 & (1<<JOYSTICK_GND)) == 0)
 		{
 			joystickTimer = 0;
-			if(displayMode == 0) displayMode = 2;
-			else displayMode = 0;
+			if(displayMode == 0)
+			{
+				displayMode = 2;
+				return;
+			}
+//			if(displayMode == 2 || displayMode == 3)
+//			{
+//				displayMode = 0;
+//				return;
+//			}
 		}
 		return;
 	}
+	else if(rewindTimer > (T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+	{
+		StopInterrupts();
+		joystickTimer = 0;
+		rewindTimer = 0;
+		changeRight = 1;
+		return;
+	}
+	else if(rewindTimer < -(T_CHECKBUTTON/(PRESCALE*DELAY_MS)))
+	{
+		StopInterrupts();
+		joystickTimer = 0;
+		rewindTimer = 0;
+		changeLeft = 1;
+		return;
+	}
+	if(canPlay == 0)
+	{
+		canPlay = 1;
+		displayMode = 0;
+	}
+	rewindForward = 0;
+	rewindBackward = 0;
 	joystickTimer = 0;
 }
 
 void ISR_RTC(void)
 {
-	currentSongInfo.time = RTC_SEC + 60*RTC_MIN;
+	if(canPlay == 0)
+	{
+		if(rewindForward == 1) rewTime += T_REWIND*0.8;
+		if(rewindBackward == 1) rewTime -= T_REWIND*0.8;
+	}
+	currentSongInfo.time = RTC_SEC + 60*RTC_MIN + rewTime;
 	if(displayMode == 2)
 	{
 		displayMode = 3;
+		return;
 	}
-	else if(displayMode == 3)
+	if(displayMode == 3)
 	{
 		displayMode = 2;
+		return;
 	}
 }

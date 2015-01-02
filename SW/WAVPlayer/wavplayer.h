@@ -15,6 +15,8 @@
 #define S_START 44
 
 #define T_CHECKBUTTON 12000000
+#define T_REWIND 10
+#define T_REWDELAY 5
 
 #include <lpc2xxx.h>
 #include <consol.h>

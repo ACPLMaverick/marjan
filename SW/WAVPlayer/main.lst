@@ -1,4 +1,4 @@
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 1
 
 
    1              		.code	16
@@ -58,7 +58,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
   55 0034 1A70     		strb	r2, [r3]
   56 0036 0F4B     		ldr	r3, .L7+28
   57 0038 1A70     		strb	r2, [r3]
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 2
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 2
 
 
   58 003a 0F4B     		ldr	r3, .L7+32
@@ -118,7 +118,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
  112 00ae 0E35     		add	r5, r5, #14
  113 00b0 0093     		str	r3, [sp]
  114 00b2 6C46     		mov	r4, sp
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 3
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 3
 
 
  115 00b4 0023     		mov	r3, #0
@@ -178,7 +178,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
  169 0122 04B0     		add	sp, sp, #16
  170              		@ sp needed for prologue
  171 0124 30BC     		pop	{r4, r5}
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 4
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 4
 
 
  172 0126 01BC     		pop	{r0}
@@ -238,7 +238,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
  200      2E302020 
  200      20202020 
  201 012f 2020202A 		.ascii	"   *\012\000"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 5
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 5
 
 
  201      0A00
@@ -298,7 +298,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
  240 0160 3948     		ldr	r0, .L32+16
  241 0162 FFF7FEFF 		bl	simplePrintf
  242 0166 394C     		ldr	r4, .L32+20
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 6
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 6
 
 
  243 0168 201C     		mov	r0, r4
@@ -358,7 +358,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
  297 01e2 731C     		add	r3, r6, #1
  298 01e4 1B06     		lsl	r3, r3, #24
  299 01e6 1E0E     		lsr	r6, r3, #24
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 7
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 7
 
 
  300 01e8 032E     		cmp	r6, #3
@@ -418,7 +418,7 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
  354 0274 048002E0 		.word	-536707068
  355 0278 95110000 		.word	pid2
  356 027c 00000000 		.word	proc2
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 8
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 8
 
 
  357 0280 04080000 		.word	proc2Stack
@@ -478,25 +478,25 @@ ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 1
  399              		.comm	currentVolume,1,1
  400              		.comm	displayMode,1,1
  401              		.comm	displayChanged,1,1
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 9
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 9
 
 
  402              		.comm	files,3328,1
  403              		.comm	xbeePresent,1,1
  404              		.comm	fileName,4,4
  405 1196 0000     		.ident	"GCC: (GNU) 4.1.1"
-ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s 			page 10
+ARM GAS  /cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s 			page 10
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:1      .text:00000000 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:9      .text:00000000 appTick
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:20     .text:0000000c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:377    .bss:00000000 msClock
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:36     .text:00000010 InitializeSharedData
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:33     .text:00000010 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:78     .text:00000058 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:1      .text:00000000 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:9      .text:00000000 appTick
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:20     .text:0000000c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:377    .bss:00000000 msClock
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:36     .text:00000010 InitializeSharedData
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:33     .text:00000010 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:78     .text:00000058 $d
                             *COM*:00000014 currentSongInfo
                             *COM*:00000001 mmcInitialized
                             *COM*:00000001 changeLeft
@@ -510,23 +510,23 @@ DEFINED SYMBOLS
                             *COM*:00000001 currentVolume
                             *COM*:00000001 displayMode
                             *COM*:00000001 displayChanged
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:99     .text:00000094 main
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:96     .text:00000094 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:138    .text:000000e0 $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:147    .text:000000f0 initProc
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:383    .bss:00001004 initStack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:144    .text:000000f0 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:177    .text:0000012c $d
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:385    .bss:00001194 pid1
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:219    .text:00000138 proc1
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:379    .bss:00000004 proc1Stack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:216    .text:00000138 $t
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:339    .text:00000238 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:99     .text:00000094 main
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:96     .text:00000094 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:138    .text:000000e0 $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:147    .text:000000f0 initProc
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:383    .bss:00001004 initStack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:144    .text:000000f0 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:177    .text:0000012c $d
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:385    .bss:00001194 pid1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:219    .text:00000138 proc1
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:379    .bss:00000004 proc1Stack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:216    .text:00000138 $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:339    .text:00000238 $d
                             *COM*:00000001 xbeePresent
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:387    .bss:00001195 pid2
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:365    .text:0000028c proc2
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:381    .bss:00000804 proc2Stack
-/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccWT1RHK.s:362    .text:0000028c $t
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:387    .bss:00001195 pid2
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:365    .text:0000028c proc2
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:381    .bss:00000804 proc2Stack
+/cygdrive/c/DOCUME~1/mkwapisz/LOCALS~1/Temp/ccqz5Hls.s:362    .text:0000028c $t
                              .bss:00000000 $d
                             *COM*:00000d00 files
                             *COM*:00000004 fileName
