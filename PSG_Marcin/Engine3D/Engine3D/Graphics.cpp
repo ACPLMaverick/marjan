@@ -6,6 +6,8 @@ Graphics::Graphics()
 	m_D3D = nullptr;
 	m_Camera = nullptr;
 	debugText = nullptr;
+
+	m_Light = nullptr;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -50,6 +52,9 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, "Could not initialize text object", "Error", MB_OK);
 		return false;
 	}
+
+	m_Light = new LightDirectional(D3DXVECTOR4(1.0f, 0.8f, 0.6f, 1.0f), D3DXVECTOR3(-0.5f, -0.7f, 1.0f));
+	m_Ambient = new LightAmbient(D3DXVECTOR4(0.0f, 0.0f, 0.1f, 1.0f));
 	
 	return true;
 }
@@ -86,6 +91,18 @@ void Graphics::Shutdown()
 		delete debugText;
 		debugText = nullptr;
 	}
+
+	if (m_Light)
+	{
+		delete m_Light;
+		m_Light = nullptr;
+	}
+
+	if (m_Ambient)
+	{
+		delete m_Ambient;
+		m_Ambient = nullptr;
+	}
 }
 
 bool Graphics::Frame(GameObject* objects[], unsigned int objectCount)
@@ -118,11 +135,14 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount)
 		result = debugText->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
 		if (!result) return false;
 
+		D3DXVECTOR3 viewVector;
+		D3DXVec3Subtract(&viewVector, &m_Camera->GetPosition(), &m_Camera->GetTarget());
+
 		GameObject* obj;
 		for (int i = 0; i < objectCount; i++)
 		{
 			obj = objects[i];
-			obj->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+			obj->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, m_Light, m_Ambient, viewVector);
 		}
 		delete[] objects;
 
@@ -145,7 +165,7 @@ bool Graphics::InitializeManagers(HWND hwnd)
 	textureManager->AddTexture(m_D3D->GetDevice(), "Assets/Textures/dynamiteCrate_spec.dds");
 
 	shaderManager = new ShaderManager();
-	bool result = shaderManager->AddShader(m_D3D->GetDevice(), hwnd, "TextureShader", 0);
+	bool result = shaderManager->AddShaders(m_D3D->GetDevice(), hwnd);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the texture shader", "Error", MB_OK);

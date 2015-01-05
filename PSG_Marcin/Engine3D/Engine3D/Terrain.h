@@ -20,7 +20,7 @@ private:
 	float tileSize;
 	float zPos;
 	unsigned int textureCount;
-	TextureShader* terrainShader;
+	LightShader* terrainShader;
 	Direct3D* myD3D;
 
 	vector<Texture*> myTextures;
@@ -30,8 +30,8 @@ private:
 public:
 	Terrain();
 	Terrain(unsigned int width, unsigned int height, unsigned int borderWidth, float tileSize, 
-		float zPos, Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D);
-	Terrain(string filePath, TextureManager* textureManager, TextureShader* terrainShader, Direct3D* myD3D);
+		float zPos, Texture* textures[], unsigned int textureCount, LightShader* terrainShader, Direct3D* myD3D);
+	Terrain(string filePath, TextureManager* textureManager, LightShader* terrainShader, Direct3D* myD3D);
 	Terrain(const Terrain&);
 	~Terrain();
 

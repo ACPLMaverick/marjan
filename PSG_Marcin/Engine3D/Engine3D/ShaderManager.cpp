@@ -11,21 +11,6 @@ ShaderManager::~ShaderManager()
 	Shutdown();
 }
 
-TextureShader* ShaderManager::LoadShader(ID3D11Device* device, HWND hwnd, LPCSTR name)
-{
-	// iterating over map to check for texture existence
-	for (map<LPCSTR, TextureShader*>::iterator it = shaders.begin(); it != shaders.end(); ++it)
-	{
-		if ((*it).first == name) return (*it).second;
-	}
-
-	// loading texture from drive and putting it into the map
-	TextureShader* myShader = new TextureShader();
-	myShader->Initialize(device, hwnd, shaders.count(name));
-	shaders.insert(pair<LPCSTR, TextureShader*>(name, myShader));
-	return myShader;
-}
-
 TextureShader* ShaderManager::LoadShader(ID3D11Device* device, HWND hwnd, int id)
 {
 	// iterating over map to check for texture existence
@@ -43,12 +28,24 @@ TextureShader* ShaderManager::LoadShader(ID3D11Device* device, HWND hwnd, int id
 	return shaders[lastElem];
 }
 
-bool ShaderManager::AddShader(ID3D11Device* device, HWND hwnd, LPCSTR name, int id)
+bool ShaderManager::AddShaders(ID3D11Device* device, HWND hwnd)
 {
 	// loading texture from drive and putting it into the map
 	TextureShader* myShader = new TextureShader();
-	bool result = myShader->Initialize(device, hwnd, id);
-	if (result) shaders.insert(pair<LPCSTR, TextureShader*>(name, myShader));
+	bool result = myShader->Initialize(device, hwnd, 0);
+	if (result) shaders.insert(pair<LPCSTR, TextureShader*>("TextureShader", myShader));
+	else return false;
+
+	LightShader* myLight = new LightShader();
+	result = myLight->Initialize(device, hwnd, 1);
+	if (result) shaders.insert(pair<LPCSTR, TextureShader*>("LightShader", myLight));
+	else return false;
+
+	SpecularShader* mySpec = new SpecularShader();
+	result = mySpec->Initialize(device, hwnd, 2);
+	if (result) shaders.insert(pair<LPCSTR, TextureShader*>("SpecularShader", mySpec));
+	else return false;
+
 	return result;
 }
 

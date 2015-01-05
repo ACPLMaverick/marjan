@@ -10,6 +10,7 @@
 #include "Sprite2D.h"
 #include "Texture.h"
 #include "TextureShader.h"
+#include "SpecularShader.h"
 #include "Model3D.h"
 #include "Graphics.h"
 //using namespace std;
@@ -38,6 +39,10 @@ public:
 	Texture* myTexture;
 	TextureShader* myShader;
 
+	D3DXVECTOR4 specularColor;
+	float specularIntensity;
+	float specularGlossiness;
+
 	GameObject();
 	GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	GameObject(string name, string tag, string modelPath, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
@@ -46,7 +51,7 @@ public:
 	GameObject(const GameObject&);
 	~GameObject();
 
-	virtual bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix);
+	virtual bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, LightDirectional* light, LightAmbient* ambient, D3DXVECTOR3 viewVector);
 	void Destroy();
 
 	bool GetDestroySignal();

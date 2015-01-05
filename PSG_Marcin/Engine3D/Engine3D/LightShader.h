@@ -5,47 +5,37 @@
 #include <D3DX10math.h>
 #include <D3DX11async.h>
 #include <fstream>
+#include "TextureShader.h"
 using namespace std;
 
-class LightShader
+class LightShader : public TextureShader
 {
-private:
-	struct MatrixBuffer
-	{
-		D3DXMATRIX world;
-		D3DXMATRIX view;
-		D3DXMATRIX projection;
-	};
-
+protected:
 	struct LightBuffer
 	{
-		float padding;	// extra - for structure to be multiple of 16
-		D3DXVECTOR3 lightDirection;
 		D3DXVECTOR4 diffuseColor;
+		D3DXVECTOR3 lightDirection;
+		float padding;	// extra - for structure to be multiple of 16
 	};
 
-	ID3D11VertexShader* m_vertexShader;
-	ID3D11PixelShader* m_pixelShader;
-	ID3D11InputLayout* m_layout;
-	ID3D11Buffer* m_matrixBuffer;
+	struct AmbientBuffer
+	{
+		D3DXVECTOR4 ambientColor;
+	};
+
 	ID3D11Buffer* m_lightBuffer;
-	ID3D11SamplerState* m_sampleState; //!!
+	ID3D11Buffer* m_ambientBuffer;
 
-	bool InitializeShader(ID3D11Device*, HWND, LPCSTR, LPCSTR);
-	void ShutdownShader();
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, LPCSTR);
+	virtual bool InitializeShader(ID3D11Device*, HWND, LPCSTR, LPCSTR);
+	virtual void ShutdownShader();
 
-	bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR3 lightDirection, D3DXVECTOR4 diffuseColor);
-	void RenderShader(ID3D11DeviceContext*, int);
+	virtual bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor);
 public:
-	int myID;
-
 	LightShader();
 	LightShader(const LightShader&);
 	~LightShader();
 
-	bool Initialize(ID3D11Device*, HWND, int);
-	void Shutdown();
-	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR3 lightDirection, D3DXVECTOR4 diffuseColor);
+	virtual bool Initialize(ID3D11Device*, HWND, int);
+	virtual bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor);
 };
 

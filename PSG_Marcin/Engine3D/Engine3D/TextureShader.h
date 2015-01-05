@@ -9,7 +9,7 @@ using namespace std;
 
 class TextureShader
 {
-private:
+protected:
 	struct MatrixBuffer
 	{
 		D3DXMATRIX world;
@@ -30,11 +30,11 @@ private:
 	ID3D11Buffer* m_transparentBuffer;
 	ID3D11SamplerState* m_sampleState; //!!
 
-	bool InitializeShader(ID3D11Device*, HWND, LPCSTR, LPCSTR);
-	void ShutdownShader();
+	virtual bool InitializeShader(ID3D11Device*, HWND, LPCSTR, LPCSTR);
+	virtual void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, LPCSTR);
 
-	bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, float blend);
+	virtual bool SetShaderParameters(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, float blend);
 	void RenderShader(ID3D11DeviceContext*, int);
 public:
 	int myID;
@@ -43,8 +43,8 @@ public:
 	TextureShader(const TextureShader&);
 	~TextureShader();
 
-	bool Initialize(ID3D11Device*, HWND, int);
+	virtual bool Initialize(ID3D11Device*, HWND, int);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, float);
+	virtual bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, ID3D11ShaderResourceView*, float);
 };
 

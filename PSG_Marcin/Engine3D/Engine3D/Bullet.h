@@ -18,12 +18,12 @@ protected:
 public:
 	Bullet();
 	Bullet(const Bullet&);
-	Bullet(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, float speed, float distance);
+	Bullet(string name, string tag, Texture* texture, LightShader* shader, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, float speed, float distance);
 	Bullet(string name, string tag, Texture* textures[], unsigned int textureCount,
-		TextureShader* shader, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, float speed, float distance);
+		LightShader* shader, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale, float speed, float distance);
 	~Bullet();
 
-	virtual bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix);
+	virtual bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, LightDirectional* light);
 
 	float GetSpeed();
 	float GetDistance();

@@ -1,5 +1,4 @@
 #include "System.h"
-#include "Bullet.h"
 
 unsigned long System::frameCount;
 bool System::playerAnimation;
@@ -262,23 +261,23 @@ void System::ProcessCamera()
 
 	cam->SetTarget(lookAt);
 }
-
-void System::PlayerShoot()
-{
-	GameObject* player = myScene->GetPlayer();
-	Bullet* newBullet = new Bullet(
-		"test_bullet",
-		"bullets",
-		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/bullet.dds"),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		(player->GetPosition() + D3DXVECTOR3(0.0f,0.0f,0.1f)),
-		player->GetRotation(),
-		D3DXVECTOR3(0.3f, 0.3f, 0.3f),
-		5.0f,
-		50.0f);
-	myScene->Add(newBullet);
-}
+//
+//void System::PlayerShoot()
+//{
+//	GameObject* player = myScene->GetPlayer();
+//	Bullet* newBullet = new Bullet(
+//		"test_bullet",
+//		"bullets",
+//		(myGraphics->GetTextures())->LoadTexture(myGraphics->GetD3D()->GetDevice(), "./Assets/Textures/bullet.dds"),
+//		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+//		myGraphics->GetD3D()->GetDevice(),
+//		(player->GetPosition() + D3DXVECTOR3(0.0f,0.0f,0.1f)),
+//		player->GetRotation(),
+//		D3DXVECTOR3(0.3f, 0.3f, 0.3f),
+//		5.0f,
+//		50.0f);
+//	myScene->Add(newBullet);
+//}
 
 void System::RotateVector(D3DXVECTOR3& retVec, D3DXVECTOR3 rotationVector)
 {

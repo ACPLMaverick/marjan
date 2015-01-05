@@ -10,6 +10,8 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Sprite2D.h"
+#include "LightDirectional.h"
+#include "LightAmbient.h"
 #include "TextureShader.h"
 #include "TextureManager.h"
 #include "ShaderManager.h"
@@ -37,6 +39,9 @@ private:
 
 	TextureManager* textureManager;
 	ShaderManager* shaderManager;
+
+	LightDirectional* m_Light;
+	LightAmbient* m_Ambient;
 
 	bool Render(GameObject* objects[], unsigned int objectCount);
 	//bool InitializeModels();

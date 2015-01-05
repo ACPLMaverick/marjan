@@ -6,6 +6,10 @@ GameObject::GameObject()
 	myModel = nullptr;
 	myTexture = nullptr;
 	myShader = nullptr;
+
+	specularColor = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	specularIntensity = 1.0f;
+	specularGlossiness = 100.0f;
 }
 
 GameObject::GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device* device, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale) : GameObject()
@@ -44,7 +48,7 @@ GameObject::GameObject(string name, string tag, Texture* textures[], unsigned in
 	InitializeModel(device, position, rotation, scale);
 }
 
-GameObject::GameObject(ifstream &is, Graphics* myGraphics, HWND hwnd)
+GameObject::GameObject(ifstream &is, Graphics* myGraphics, HWND hwnd) : GameObject()
 {
 	string line;
 	string modelPath;
@@ -64,6 +68,13 @@ GameObject::GameObject(ifstream &is, Graphics* myGraphics, HWND hwnd)
 	is >> texturePath;
 	is >> shaderID;
 
+	is >> specularColor.x;
+	is >> specularColor.y;
+	is >> specularColor.z;
+	is >> specularColor.w;
+	is >> specularIntensity;
+	is >> specularGlossiness;
+
 	is >> pos.x;
 	is >> pos.y;
 	is >> pos.z;
@@ -76,7 +87,7 @@ GameObject::GameObject(ifstream &is, Graphics* myGraphics, HWND hwnd)
 
 	is >> line;
 
-	myTexture = myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texturePath.c_str());
+	myTexture = myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texturePath);
 	myShader = myGraphics->GetShaders()->LoadShader(myGraphics->GetD3D()->GetDevice(), hwnd, shaderID);
 
 	InitializeModel(modelPath, myGraphics->GetD3D()->GetDevice(), pos, rot, scl);
@@ -88,13 +99,28 @@ GameObject::~GameObject()
 	// possible memory leak?
 }
 
-bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)
+bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, LightDirectional* light, LightAmbient* ambient, D3DXVECTOR3 viewVector)
 {
 	if (myTag == "player") canAnimate = System::playerAnimation;
 	if (animationTextures.size() > 0 && canAnimate)AnimateTexture();
 	bool result;
 	myModel->Render(deviceContext);
-	result = myShader->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), transparency);
+	if (myShader->myID == 0)
+	{
+		result = myShader->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), 1.0f);
+	}
+	else if (myShader->myID == 1)
+	{
+		LightShader* ls = (LightShader*)myShader;
+		result = ls->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), light->GetDiffuseColor(), light->GetDirection(), ambient->GetDiffuseColor());
+	}
+	else if (myShader->myID == 2)
+	{
+		SpecularShader* ls = (SpecularShader*)myShader;
+		result = ls->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), 
+			light->GetDiffuseColor(), light->GetDirection(), ambient->GetDiffuseColor(), viewVector, this->specularColor, this->specularIntensity, this->specularGlossiness);
+	}
+	
 	if (!result) return false;
 	return true;
 }
@@ -207,6 +233,9 @@ void GameObject::WriteToFile(ofstream &of)
 	of << myModel->GetFilePath() + "\n";
 	of << myTexture->myName + "\n";
 	of << myShader->myID + "\n";
+	of << to_string(specularColor.x) + " " + to_string(specularColor.y) + " " + to_string(specularColor.z) + " " + to_string(specularColor.w) + "\n";
+	of << to_string(specularIntensity) + "\n";
+	of << to_string(specularGlossiness) + "\n";
 	of << to_string(myModel->position.x) + " " + to_string(myModel->position.y) + " " + to_string(myModel->position.z) + "\n";
 	of << to_string(myModel->rotation.x) + " " + to_string(myModel->rotation.y) + " " + to_string(myModel->rotation.z) + "\n";
 	of << to_string(myModel->scale.x) + " " + to_string(myModel->scale.y) + " " + to_string(myModel->scale.z) + "\n";

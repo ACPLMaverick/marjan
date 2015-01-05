@@ -10,7 +10,7 @@ Terrain::Terrain(const Terrain& other)
 }
 
 Terrain::Terrain(unsigned int width, unsigned int height, unsigned int borderWidth, float tileSize, float zPos, 
-	Texture* textures[], unsigned int textureCount, TextureShader* terrainShader, Direct3D* myD3D)
+	Texture* textures[], unsigned int textureCount, LightShader* terrainShader, Direct3D* myD3D)
 {
 	this->width = width;
 	this->height = height;
@@ -24,7 +24,7 @@ Terrain::Terrain(unsigned int width, unsigned int height, unsigned int borderWid
 	for (int i = 0; i < textureCount; i++) myTextures.push_back(textures[i]);
 }
 
-Terrain::Terrain(string filePath, TextureManager* textureManager, TextureShader* terrainShader, Direct3D* myD3D)
+Terrain::Terrain(string filePath, TextureManager* textureManager, LightShader* terrainShader, Direct3D* myD3D)
 {
 	this->textureCount = textureCount;
 	this->terrainShader = terrainShader;

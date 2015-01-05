@@ -6,7 +6,6 @@
 
 #include "Graphics.h"
 #include "GameObject.h"
-#include "Terrain.h"
 
 class GameObject;
 class Graphics;
@@ -24,11 +23,10 @@ private:
 	HWND m_hwnd;
 
 	vector<GameObject*> gameObjects;
-	Terrain* terrain;
 	GameObject* player;
 
 	void InitializeGameObjects();
-	void InitializeTerrain();
+	//void InitializeTerrain();
 	void LoadFromFile();
 public:
 	static unsigned int checkGameObjects;

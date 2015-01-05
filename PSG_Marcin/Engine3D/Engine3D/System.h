@@ -21,12 +21,10 @@
 #include "FPSCounter.h"
 #include "CPUCounter.h"
 #include "Timer.h"
-#include "Terrain.h"
 #include "Scene.h"
 
 class GameObject;
 class Graphics;
-class Terrain;
 class Scene;
 
 class System
@@ -50,7 +48,7 @@ private:
 	void ProcessCamera();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
-	void PlayerShoot();
+	//void PlayerShoot();
 public:
 	static unsigned long frameCount;
 	static bool playerAnimation;

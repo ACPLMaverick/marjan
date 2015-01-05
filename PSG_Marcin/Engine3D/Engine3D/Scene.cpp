@@ -4,7 +4,6 @@ unsigned int Scene::checkGameObjects;
 Scene::Scene()
 {
 	checkGameObjects = false;
-	terrain = nullptr;
 	player = nullptr;
 }
 
@@ -84,13 +83,6 @@ void Scene::Shutdown()
 		(*it) = nullptr;
 	}
 	gameObjects.clear();
-
-	if (terrain)
-	{
-		terrain->Shutdown();
-		delete terrain;
-		terrain = nullptr;
-	}
 }
 
 void Scene::InitializeGameObjects()
@@ -123,12 +115,12 @@ void Scene::InitializeGameObjects()
 		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	gameObjects.push_back(go02);
 }
-
-void Scene::InitializeTerrain()
-{
-	terrain = new Terrain("Configs/TerrainProperties.xml", myGraphics->GetTextures(), (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
-	terrain->Initialize();
-}
+//
+//void Scene::InitializeTerrain()
+//{
+//	terrain = new Terrain("Configs/TerrainProperties.xml", myGraphics->GetTextures(), (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
+//	terrain->Initialize();
+//}
 
 void Scene::Add(GameObject* obj)
 {

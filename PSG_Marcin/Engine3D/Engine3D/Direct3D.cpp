@@ -259,22 +259,22 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	m_deviceContext->RSSetState(m_rasterState);
 
 	 //blending description
-	ZeroMemory(&blendStateDescription, sizeof(blendStateDescription));
-	blendStateDescription.AlphaToCoverageEnable = true;
-	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
-	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	//ZeroMemory(&blendStateDescription, sizeof(blendStateDescription));
+	//blendStateDescription.AlphaToCoverageEnable = true;
+	//blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	//blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	//blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	//blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	//blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	//blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	//blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	//blendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	result = m_device->CreateBlendState(&blendStateDescription, &m_blendState);
-	if (FAILED(result)) return false;
+	//result = m_device->CreateBlendState(&blendStateDescription, &m_blendState);
+	//if (FAILED(result)) return false;
 
-	const FLOAT blendFactor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	m_deviceContext->OMSetBlendState(m_blendState, blendFactor, 0xffffffff);
+	//const FLOAT blendFactor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	//m_deviceContext->OMSetBlendState(m_blendState, blendFactor, 0xffffffff);
 
 	// viewport description
 	viewport.Width = (float)screenWidth;

@@ -1,7 +1,7 @@
-#include "LightShader.h"
+#include "SpecularShader.h"
 
 
-LightShader::LightShader()
+SpecularShader::SpecularShader()
 {
 	m_vertexShader = nullptr;
 	m_pixelShader = nullptr;
@@ -12,28 +12,28 @@ LightShader::LightShader()
 	m_ambientBuffer = nullptr;
 }
 
-LightShader::LightShader(const LightShader& other)
+SpecularShader::SpecularShader(const SpecularShader& other)
 {
 }
 
-LightShader::~LightShader()
+SpecularShader::~SpecularShader()
 {
 }
 
-bool LightShader::Initialize(ID3D11Device* device, HWND hwnd, int id)
+bool SpecularShader::Initialize(ID3D11Device* device, HWND hwnd, int id)
 {
 	bool result;
 	this->myID = id;
-	result = InitializeShader(device, hwnd, "DiffuseVertexShader.hlsl", "DiffusePixelShader.hlsl");
+	result = InitializeShader(device, hwnd, "SpecularVertexShader.hlsl", "SpecularPixelShader.hlsl");
 	if (!result) return false;
 	return true;
 }
 
-bool LightShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, 
-	D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor)
+bool SpecularShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
+	D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor, D3DXVECTOR3 viewVector, D3DXVECTOR4 specularColor, float specularIntensity, float specularGlossiness)
 {
 	bool result;
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, diffuseColor, lightDirection, ambientColor);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, diffuseColor, lightDirection, ambientColor, viewVector, specularColor, specularIntensity, specularGlossiness);
 	if (!result) return false;
 
 	RenderShader(deviceContext, indexCount);
@@ -42,7 +42,7 @@ bool LightShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3D
 }
 
 
-bool LightShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFilename, LPCSTR psFilename)
+bool SpecularShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFilename, LPCSTR psFilename)
 {
 	//////////////// loads the shader files and makes it usable to DirectX and the GPU
 
@@ -55,6 +55,7 @@ bool LightShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFil
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
 	D3D11_BUFFER_DESC ambientBufferDesc;
+	D3D11_BUFFER_DESC specularBufferDesc;
 
 	D3D11_SAMPLER_DESC samplerDesc;
 
@@ -64,7 +65,7 @@ bool LightShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFil
 
 	// shader compilation into buffers
 
-	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "DiffuseVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "SpecularVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 		&vertexShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
@@ -79,7 +80,7 @@ bool LightShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFil
 		return false;
 	}
 
-	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "DiffusePixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "SpecularPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 		&pixelShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
@@ -194,11 +195,21 @@ bool LightShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFil
 	result = device->CreateBuffer(&ambientBufferDesc, NULL, &m_ambientBuffer);
 	if (FAILED(result)) return false;
 
+	specularBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	specularBufferDesc.ByteWidth = sizeof(SpecularBuffer);
+	specularBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	specularBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	specularBufferDesc.MiscFlags = 0;
+	specularBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&specularBufferDesc, NULL, &m_specularBuffer);
+	if (FAILED(result)) return false;
+
 	return true;
 }
 
 
-void LightShader::ShutdownShader()
+void SpecularShader::ShutdownShader()
 {
 	if (m_matrixBuffer)
 	{
@@ -235,9 +246,15 @@ void LightShader::ShutdownShader()
 		m_ambientBuffer->Release();
 		m_ambientBuffer = nullptr;
 	}
+	if (m_specularBuffer)
+	{
+		m_specularBuffer->Release();
+		m_specularBuffer = nullptr;
+	}
 }
 
-bool LightShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor)
+bool SpecularShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, 
+	ID3D11ShaderResourceView* texture, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor, D3DXVECTOR3 viewVector, D3DXVECTOR4 specularColor, float specularIntensity, float specularGlossiness)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -245,6 +262,7 @@ bool LightShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMA
 	unsigned int bufferNumber;
 	LightBuffer* dataPtr02;
 	AmbientBuffer* dataPtr03;
+	SpecularBuffer* dataPtr04;
 
 	// TRANSPOSING MATRICES!!!!!! REQUIREMENT IN DX11
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
@@ -283,15 +301,30 @@ bool LightShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMA
 	dataPtr02->padding = 0.0f;
 	deviceContext->Unmap(m_lightBuffer, 0);
 
+	D3DXVec3Normalize(&viewVector, &viewVector);
+	D3DXVec3TransformCoord(&viewVector, &viewVector, &worldMatrix);
+	D3DXVec3Normalize(&viewVector, &viewVector);
+
 	result = deviceContext->Map(m_ambientBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result)) return false;
 	dataPtr03 = (AmbientBuffer*)mappedResource.pData;
 	dataPtr03->ambientColor = ambientColor;
 	deviceContext->Unmap(m_ambientBuffer, 0);
 
+	result = deviceContext->Map(m_specularBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result)) return false;
+	dataPtr04 = (SpecularBuffer*)mappedResource.pData;
+	dataPtr04->viewVector = viewVector;
+	dataPtr04->specularColor = specularColor;
+	dataPtr04->specularIntensity = specularIntensity;
+	dataPtr04->glossiness = specularGlossiness;
+	dataPtr04->padding01 = D3DXVECTOR4(0.0f, 0.0f, 0.0f, 0.0f);
+	dataPtr04->padding02 = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	deviceContext->Unmap(m_specularBuffer, 0);
+
 	bufferNumber = 0;
-	ID3D11Buffer** buffers[2] = { &m_lightBuffer, &m_ambientBuffer };
-	deviceContext->PSSetConstantBuffers(bufferNumber, 2, buffers[0]);
+	ID3D11Buffer** buffers[3] = { &m_lightBuffer, &m_ambientBuffer, &m_specularBuffer };
+	deviceContext->PSSetConstantBuffers(bufferNumber, 3, buffers[0]);
 
 	return true;
 }

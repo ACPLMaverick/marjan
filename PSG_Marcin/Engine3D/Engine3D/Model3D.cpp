@@ -71,7 +71,7 @@ Model3D::VertexIndex* Model3D::LoadGeometry(bool ind, string filePath)
 			vertices[i].texture.x = (*itt);
 			vertices[i].texture.y = 1.0f - (*(itt + 1));
 
-			vertices[i].normal.x = (*itn);
+			vertices[i].normal.x = - (*itn);
 			vertices[i].normal.y = (*(itn + 1));
 			vertices[i].normal.z = (*(itn + 2));
 		}
@@ -99,6 +99,7 @@ void Model3D::UpdateGeometry()
 	if (myGeometry == nullptr) return;
 
 	D3DXMATRIX rotationMatrix;
+	D3DXVECTOR3 tempNorm;
 	D3DXVECTOR3 tempPos;
 
 	float pitch = rotation.x * 0.0174532925f;
@@ -110,11 +111,14 @@ void Model3D::UpdateGeometry()
 	for (int i = 0; i < m_vertexCount; i++)
 	{
 		tempPos = myGeometry->vertexArrayPtr[i].position;
+		tempNorm = myGeometry->vertexArrayPtr[i].normal;
 		tempPos.x = tempPos.x*scale.x;
 		tempPos.y = tempPos.y*scale.y;
 		tempPos.z = tempPos.z*scale.z;
 		D3DXVec3TransformCoord(&tempPos, &tempPos, &rotationMatrix);
+		D3DXVec3TransformCoord(&tempNorm, &tempNorm, &rotationMatrix);
 		tempPos += position;
 		myGeometry->vertexArrayPtr[i].position = tempPos;
+		myGeometry->vertexArrayPtr[i].normal = tempNorm;
 	}
 }

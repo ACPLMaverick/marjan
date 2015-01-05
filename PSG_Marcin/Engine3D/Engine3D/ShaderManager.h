@@ -2,6 +2,8 @@
 #include <map>
 #include <D3D11.h>
 #include "TextureShader.h"
+#include "LightShader.h"
+#include "SpecularShader.h"
 
 class ShaderManager
 {
@@ -11,9 +13,8 @@ public:
 	ShaderManager();
 	~ShaderManager();
 
-	TextureShader* LoadShader(ID3D11Device* device, HWND hwnd, LPCSTR path);
 	TextureShader* LoadShader(ID3D11Device* device, HWND hwnd, int id);
-	bool AddShader(ID3D11Device* device, HWND hwnd, LPCSTR path, int id);
+	bool AddShaders(ID3D11Device* device, HWND hwnd);
 	void Shutdown();
 };
 
