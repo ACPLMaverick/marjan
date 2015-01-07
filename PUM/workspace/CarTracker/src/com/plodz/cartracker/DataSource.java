@@ -1,6 +1,8 @@
 package com.plodz.cartracker;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,6 +30,16 @@ public class DataSource {
 		MySQLiteHelper.COLUMN_FUEL_ID,
 		MySQLiteHelper.COLUMN_FUEL_TYPE,
 		MySQLiteHelper.COLUMN_FUEL_PRICE
+	};
+
+	private String[] allColumnsMisc = {
+		MySQLiteHelper.COLUMN_MISC_ID,
+		MySQLiteHelper.COLUMN_MISC_MYFUEL,
+		MySQLiteHelper.COLUMN_MISC_MYCONS,
+		MySQLiteHelper.COLUMN_MISC_UPDRATIO,
+		MySQLiteHelper.COLUMN_MISC_CHECKDELAY,
+		MySQLiteHelper.COLUMN_MISC_LASTUPDATE,
+		MySQLiteHelper.COLUMN_MISC_ZOOMMULTIPLIER
 	};
 	
 	public DataSource(Context context)
@@ -76,6 +88,100 @@ public class DataSource {
 		
 		cursor.close();
 		return list;
+	}
+	
+	public void saveFuels()
+	{
+		clearFuelTable();
+		
+		ContentValues values = new ContentValues();
+		values.put(MySQLiteHelper.COLUMN_FUEL_TYPE, Globals.stringON);
+		values.put(MySQLiteHelper.COLUMN_FUEL_PRICE, Globals.priceON);
+		database.insert(MySQLiteHelper.TABLE_FUELS, null, values);
+		
+		values.clear();
+		values.put(MySQLiteHelper.COLUMN_FUEL_TYPE, Globals.stringLPG);
+		values.put(MySQLiteHelper.COLUMN_FUEL_PRICE, Globals.priceLPG);
+		database.insert(MySQLiteHelper.TABLE_FUELS, null, values);
+		
+		values.clear();
+		values.put(MySQLiteHelper.COLUMN_FUEL_TYPE, Globals.stringPB95);
+		values.put(MySQLiteHelper.COLUMN_FUEL_PRICE, Globals.pricePB95);
+		database.insert(MySQLiteHelper.TABLE_FUELS, null, values);
+		
+		values.clear();
+		values.put(MySQLiteHelper.COLUMN_FUEL_TYPE, Globals.stringPB98);
+		values.put(MySQLiteHelper.COLUMN_FUEL_PRICE, Globals.pricePB98);
+		database.insert(MySQLiteHelper.TABLE_FUELS, null, values);
+	}
+	
+	public void saveAllGlobals()
+	{
+		saveFuels();
+		clearMiscTable();
+		
+		ContentValues values = new ContentValues();
+		values.put(MySQLiteHelper.COLUMN_MISC_MYFUEL, Globals.myFuelType.ordinal());
+		values.put(MySQLiteHelper.COLUMN_MISC_MYCONS, Globals.myFuelConsumption);
+		values.put(MySQLiteHelper.COLUMN_MISC_UPDRATIO, Globals.DBG_updateRatio);
+		values.put(MySQLiteHelper.COLUMN_MISC_CHECKDELAY, Globals.checkDelay);
+		values.put(MySQLiteHelper.COLUMN_MISC_LASTUPDATE, Globals.lastUpdate.getTimeInMillis());
+		values.put(MySQLiteHelper.COLUMN_MISC_ZOOMMULTIPLIER, Globals.mapZoomMultiplier);
+		database.insert(MySQLiteHelper.TABLE_MISC, null, values);
+	}
+	
+	public boolean loadFuelPrices()
+	{
+		Cursor cursor = database.query(MySQLiteHelper.TABLE_FUELS, allColumnsFuel, null, null, null, null, null);
+		if(cursor.getCount() == 0) return false;
+		cursor.moveToFirst();
+		
+		while(!cursor.isAfterLast())
+		{
+			String type = cursor.getString(1);
+			if(type == Globals.stringON)
+			{
+				Globals.priceON = cursor.getFloat(2);
+			}
+			else if(type == Globals.stringLPG)
+			{
+				Globals.priceLPG = cursor.getFloat(2);
+			}
+			else if(type == Globals.stringPB95)
+			{
+				Globals.pricePB95 = cursor.getFloat(2);
+			}
+			else if(type == Globals.stringPB98)
+			{
+				Globals.pricePB98 = cursor.getFloat(2);
+			}
+			cursor.moveToNext();
+		}
+		
+		return true;
+	}
+	
+	public boolean loadMiscGlobals()
+	{
+		Cursor cursor = database.query(MySQLiteHelper.TABLE_MISC, allColumnsMisc, null, null, null, null, null);
+		if(cursor.getCount() == 0) return false;
+		cursor.moveToFirst();
+		
+		Globals.myFuelType = Globals.fuelType.values()[cursor.getInt(1)];
+		Globals.myFuelConsumption = cursor.getFloat(2);
+		Globals.DBG_updateRatio = cursor.getFloat(3);
+		Globals.checkDelay = cursor.getInt(4);
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(new Date(cursor.getLong(5)));
+		Globals.lastUpdate = cal;
+		Globals.mapZoomMultiplier = cursor.getFloat(6);
+		
+		return true;
+	}
+	
+	public void clearMiscTable()
+	{
+		database.delete(MySQLiteHelper.TABLE_MISC, null, null);
 	}
 	
 	public void clearTripTable()

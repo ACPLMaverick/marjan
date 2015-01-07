@@ -40,7 +40,7 @@ public class TrackActivity extends Activity {
 	protected void onStop()
 	{
 		super.onStop();
-		controller.endTracking();
+		//controller.endTracking();
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class TrackActivity extends Activity {
 	{
 		super.onDestroy();
 		// TOOD: what happens when we quit tracking?
-		controller.endTracking();
+		//controller.endTracking();
 	}
 	
 	public void startTracking() { controller.startTracking(); }

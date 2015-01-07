@@ -38,14 +38,25 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkForGooglePlay();
-        initializeGlobals();
         data = new DataSource(this);
+        initializeGlobals();
+    }
+    
+    @Override
+    protected void onStop()
+    {
+    	super.onStop();
     }
     
     @Override
     protected void onDestroy()
     {
     	super.onDestroy();
+
+    	data.open();
+    	data.saveFuels();
+    	data.saveAllGlobals();
+    	data.close();
     }
     
     protected void checkForGooglePlay()
@@ -56,18 +67,31 @@ public class MainActivity extends Activity {
     
     protected void initializeGlobals()
     {
-    	// all settings will be loaded from file, saved when app closes
+    	data.open();
+    	boolean result;
+    	result = data.loadFuelPrices();
+    	if(!result) loadDefaultFuelPrices();
+    	result = data.loadMiscGlobals();
+    	if(!result) loadDefaultMiscGlobals();
+    	data.close();
+    }
+    
+    protected void loadDefaultMiscGlobals()
+    {
     	Globals.myFuelConsumption = 6.0f;				
-    	Globals.myFuelType = Globals.fuelType.DIESEL;	
+    	Globals.myFuelType = Globals.fuelType.ON;	
     	Globals.DBG_updateRatio = 0.00005f;
     	Globals.checkDelay = 1;
-    	Globals.showHigherPrice = false;
-    	Globals.priceDiesel = 4.8f;
-    	Globals.priceDieselUltimate = 2.5f;
-    	Globals.pricePB95 = 5.0f;
-    	Globals.pricePB98 = 5.5f;
     	Globals.mapZoomMultiplier = 16.0f;
     	Globals.lastUpdate = new GregorianCalendar();
+    }
+    
+    protected void loadDefaultFuelPrices()
+    {
+    	Globals.priceON = 0.0f;
+    	Globals.priceLPG = 0.0f;
+    	Globals.pricePB95 = 0.0f;
+    	Globals.pricePB98 = 0.0f;
     }
     
     public void onStartButtonClick(View v)

@@ -26,7 +26,6 @@ public class SettingsActivity extends Activity {
 
 	ScrollView mainScrollView;
 	Spinner spFuelType;
-	Spinner spFuelShowed;
 	EditText settingFuelConsumption;
 	EditText settingUpdateRatio;
 	EditText settingCheckRatio;
@@ -41,7 +40,6 @@ public class SettingsActivity extends Activity {
 		initializeMainListView();
 		initializeSettings();
 		addItemsToFTSpinner();
-		addItemsToFSSpinner();
 	}
 	
 	protected void initializeMainListView()
@@ -51,7 +49,6 @@ public class SettingsActivity extends Activity {
     	settingUpdateRatio = (EditText) findViewById(R.id.etDBGUpdateRatio);
     	settingCheckRatio = (EditText) findViewById(R.id.etDBGCheckRate);
     	spFuelType = (Spinner) findViewById(R.id.spFuelSelection);
-    	spFuelShowed = (Spinner) findViewById(R.id.spFuelShowedSelection);
 	}
 	
 	protected void initializeSettings()
@@ -135,13 +132,13 @@ public class SettingsActivity extends Activity {
     
     protected void addItemsToFTSpinner()
     {
-    	String[] array = {getString(R.string.str_set_fuelTypeDiesel), getString(R.string.str_set_fuelTypeGasoline), 
-    			getString(R.string.str_set_fuelTypeLPG)};
+    	String[] array = {getString(R.string.str_set_fuelTypeON), getString(R.string.str_set_fuelTypePB95), 
+    			getString(R.string.str_set_fuelTypePB98), getString(R.string.str_set_fuelTypeLPG)};
     	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.settings_listviewlayout, array);
     	
     	spFuelType.setAdapter(adapter);
-    	spFuelType.setSelection(0);
+    	spFuelType.setSelection(Globals.myFuelType.ordinal());
     	spFuelType.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -158,89 +155,25 @@ public class SettingsActivity extends Activity {
     	});
     	adapter.notifyDataSetChanged();
     }
-    
-    private void updateFSSpinner()
-    {
-    	String[] array = new String[2];
-    	if(Globals.myFuelType == fuelType.DIESEL)
-    	{
-    		array[0] = getString(R.string.str_set_fuelTypeON);
-    		array[1] = "";
-    		
-    	}
-    	else if(Globals.myFuelType == fuelType.LPG)
-    	{
-    		array[0] = getString(R.string.str_set_fuelTypeLPG);
-    		array[1] = "";
-    	}
-    	else
-    	{
-    		array[0] = getString(R.string.str_set_fuelTypePB95);
-    		array[1] = getString(R.string.str_set_fuelTypePB98);
-    	}
-    	sfsAdapter.clear();
-    	sfsAdapter.addAll(array);
-    	if(Globals.showHigherPrice) spFuelShowed.setSelection(1);
-    	else spFuelShowed.setSelection(0);
-    	sfsAdapter.notifyDataSetChanged();
-    }
-    
-    protected void addItemsToFSSpinner()
-    {
-    	sfsAdapter = new ArrayAdapter<String>(this, R.layout.settings_listviewlayout);
-    	updateFSSpinner();
-    	spFuelShowed.setAdapter(sfsAdapter);
-    	spFuelShowed.setSelection(0);
-    	spFuelShowed.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				onSpinnerFShowedElementSelected(parent, view, position, id);
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				
-			}
-    		
-    	});
-    	sfsAdapter.notifyDataSetChanged();
-    }
-    
     public void onSpinnerFTypeElementSelected(AdapterView<?> parent, View view, int position, long id)
     {
-    	Globals.fuelType prevVal = Globals.myFuelType;
     	switch((int)id)
     	{
     	case 0:
-    		Globals.myFuelType = Globals.fuelType.DIESEL;
+    		Globals.myFuelType = Globals.fuelType.ON;
     		break;
     	case 1:
-    		Globals.myFuelType = Globals.fuelType.PETROL;
+    		Globals.myFuelType = Globals.fuelType.PB95;
     		break;
     	case 2:
+    		Globals.myFuelType = Globals.fuelType.PB98;
+    		break;
+    	case 3:
     		Globals.myFuelType = Globals.fuelType.LPG;
     		break;
     	default:
-    		Globals.myFuelType = Globals.fuelType.DIESEL;
-    		break;
-    	}
-    	if(prevVal != Globals.myFuelType) updateFSSpinner();
-    }
-    
-    public void onSpinnerFShowedElementSelected(AdapterView<?> parent, View view, int position, long id)
-    {
-    	switch((int)id)
-    	{
-    	case 0:
-    		Globals.showHigherPrice = false;
-    		break;
-    	case 1:
-    		Globals.showHigherPrice = true;
-    		break;
-    	default:
-    		Globals.showHigherPrice = false;
+    		Globals.myFuelType = Globals.fuelType.ON;
     		break;
     	}
     }

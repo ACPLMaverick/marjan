@@ -35,9 +35,8 @@
     <string name="str_stat_addressunknown">unknown</string>
     <string name="str_set_title">Settings</string>
     <string name="str_set_fuelConsumption">Fuel consumption:&#160;</string>
-    <string name="str_set_fuelShowed">During tracking calculate price based on fuel type:&#160;</string>
     <string name="str_set_fuelConsumptionVal">&#160;l//100 km</string>
-    <string name="str_set_fuelType">Engine type:&#160;</string>
+    <string name="str_set_fuelType">Fuel type:&#160;</string>
     <string name="str_set_fuelTypeGasoline">Petrol</string>
     <string name="str_set_fuelTypeDiesel">Diesel</string>
     <string name="str_set_fuelTypePB95">PB 95</string>

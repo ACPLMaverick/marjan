@@ -187,16 +187,16 @@ public class Trip {
 //		average /= nodes.size();
 //		avgSpeed = average;
 		
-		avgSpeed = (distance / (float)((currentTime.getTimeInMillis() - startTime.getTimeInMillis())/3600000));
+		avgSpeed = (distance / (float)((currentTime.getTimeInMillis())/3600000));
 	}
 
 	private void updateFuelCost()
 	{
 		float currentPrice;
-		if(Globals.myFuelType == Globals.fuelType.LPG) currentPrice = Globals.priceDieselUltimate;
-		else if(Globals.myFuelType == Globals.fuelType.DIESEL && !Globals.showHigherPrice) currentPrice = Globals.priceDiesel;
-		else if(Globals.myFuelType == Globals.fuelType.PETROL && Globals.showHigherPrice) currentPrice = Globals.pricePB98;
-		else if(Globals.myFuelType == Globals.fuelType.PETROL && !Globals.showHigherPrice) currentPrice = Globals.pricePB95;
+		if(Globals.myFuelType == Globals.fuelType.LPG) currentPrice = Globals.priceLPG;
+		else if(Globals.myFuelType == Globals.fuelType.ON) currentPrice = Globals.priceON;
+		else if(Globals.myFuelType == Globals.fuelType.PB98) currentPrice = Globals.pricePB98;
+		else if(Globals.myFuelType == Globals.fuelType.PB95) currentPrice = Globals.pricePB95;
 		else currentPrice = 0.0f;
 		
 		fuelCost = currentPrice*fuelConsumed;

@@ -26,12 +26,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_FUEL_TYPE = "fueltype";
 	public static final String COLUMN_FUEL_PRICE = "fuelprice";
 	
+	public static final String TABLE_MISC = "misc";
+	public static final String COLUMN_MISC_ID = "_id";
+	public static final String COLUMN_MISC_MYFUEL = "myfuel";
+	public static final String COLUMN_MISC_MYCONS = "myconsumption";
+	public static final String COLUMN_MISC_UPDRATIO = "updratio";
+	public static final String COLUMN_MISC_CHECKDELAY = "checkdelay";
+	public static final String COLUMN_MISC_LASTUPDATE = "lastupdate";
+	public static final String COLUMN_MISC_ZOOMMULTIPLIER = "zoommultiplier";
+	
 	
 	private static final String DATABASE_NAME = "cartracker.db";
 	private static final int DATABASE_VERSION = 1;
 	
 	// Database creation SQL statement
-	private static final String DATABASE_CREATE = "create table "
+	private static final String DATABASE_CREATE_01 = "create table "
 			+ TABLE_TRIPS + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " 
 			+ COLUMN_NODES + " text not null, "
@@ -43,12 +52,20 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_AVGSPEED + " real not null, "
 			+ COLUMN_DISTANCE + " real not null, "
 			+ COLUMN_FUELCONSUMED + " real not null, "
-			+ COLUMN_FUELCOST + " real not null); "
-			+ "create table "
+			+ COLUMN_FUELCOST + " real not null); ";
+	private static final String DATABASE_CREATE_02 = "create table "
 			+ TABLE_FUELS + "(" + COLUMN_FUEL_ID
 			+ " integer primary key autoincrement, " 
 			+ COLUMN_FUEL_TYPE + " text not null, "
 			+ COLUMN_FUEL_PRICE + " real not null); ";
+	private static final String DATABASE_CREATE_03 = "create table "
+			+ TABLE_MISC + "(" + COLUMN_MISC_ID + " integer primary key autoincrement, "
+			+ COLUMN_MISC_MYFUEL + " integer not null, "
+			+ COLUMN_MISC_MYCONS + " real not null, "
+			+ COLUMN_MISC_UPDRATIO + " real not null, "
+			+ COLUMN_MISC_CHECKDELAY + " integer not null, "
+			+ COLUMN_MISC_LASTUPDATE + " integer not null, "
+			+ COLUMN_MISC_ZOOMMULTIPLIER + " real not null); ";
 	
 	public MySQLiteHelper(Context context) 
 	{
@@ -58,7 +75,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) 
 	{
-		db.execSQL(DATABASE_CREATE);
+		db.execSQL(DATABASE_CREATE_01);
+		db.execSQL(DATABASE_CREATE_02);
+		db.execSQL(DATABASE_CREATE_03);
 	}
 
 	@Override
