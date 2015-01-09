@@ -65,6 +65,13 @@
             android:name=".FuelActivity"
             android:label="@string/title_activity_fuel" >
         </activity>
+        <activity
+            android:name=".GlobalStatsActivity"
+            android:label="@string/title_activity_global_stats" >
+        </activity>
+        <activity android:name="org.achartengine.chartdemo.demo.chart.XYChartBuilder" />
+        <activity android:name="org.achartengine.chartdemo.demo.chart.PieChartBuilder" />
+        <activity android:name="org.achartengine.GraphicalActivity" />
     </application>
 
 </manifest>

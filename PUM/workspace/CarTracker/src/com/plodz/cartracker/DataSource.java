@@ -139,19 +139,19 @@ public class DataSource {
 		while(!cursor.isAfterLast())
 		{
 			String type = cursor.getString(1);
-			if(type == Globals.stringON)
+			if(type.equals(Globals.stringON))
 			{
 				Globals.priceON = cursor.getFloat(2);
 			}
-			else if(type == Globals.stringLPG)
+			else if(type.equals(Globals.stringLPG))
 			{
 				Globals.priceLPG = cursor.getFloat(2);
 			}
-			else if(type == Globals.stringPB95)
+			else if(type.equals(Globals.stringPB95))
 			{
 				Globals.pricePB95 = cursor.getFloat(2);
 			}
-			else if(type == Globals.stringPB98)
+			else if(type.equals(Globals.stringPB98))
 			{
 				Globals.pricePB98 = cursor.getFloat(2);
 			}

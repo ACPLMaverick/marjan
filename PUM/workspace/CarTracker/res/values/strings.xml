@@ -6,7 +6,7 @@
     <string name="str_button_start">Start tracking!</string>
     <string name="str_button_startBack">Back to tracking</string>
     <string name="str_button_log">Trip log</string>
-    <string name="str_button_chart">Draw chart</string>
+    <string name="str_button_chart">Global statistics</string>
     <string name="str_button_prices">Fuel prices</string>
     <string name="str_button_settings">Settings</string>
     <string name="title_activity_track">TrackActivity</string>
@@ -57,5 +57,23 @@
     <string name="str_fuels_updating">Updating&#8230;</string>
     <string name="str_fuels_error">Update failed :(</string>
     <string name="str_fuels_errorNoInternet">No internet connection :(</string>
+    <string name="title_activity_global_stats">GlobalStatsActivity</string>
+    <string name="str_gs_totaltripcount">Total number of trips:&#160;</string>
+    <string name="str_gs_totalfuelcost">Total fuel cost:&#160;</string>
+    <string name="str_gs_avgfuelcost">Average fuel cost:&#160;</string>
+    <string name="str_gs_totalfuelcons">Total fuel consumed:&#160;</string>
+    <string name="str_gs_avgfuelcons">Average fuel consumed:&#160;</string>
+    <string name="str_gs_avgspeed">Average speed:&#160;</string>
+    <string name="str_gs_avgdistance">Average trip distance:&#160;</string>
+    <string name="str_gs_totaldistance">Total trips distance:&#160;</string>
+    <string name="str_gs_avgtime">Average trip time:&#160;</string>
+    <string name="str_gs_totaltime">Total trips time:&#160;</string>
+    <string name="str_gs_days">days</string>
+    <string name="str_chart_cost">Fuel costs</string>
+    <string name="str_chart_cons">Fuel consumed</string>
+    <string name="str_chart_spd">Average speed</string>
+    <string name="str_chart_dist">Distance travelled</string>
+    <string name="str_chart_time">Time taken</string>
+    <string name="str_chart_val_date">Date</string>
 
 </resources>

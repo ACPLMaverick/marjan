@@ -108,9 +108,8 @@ public class MainActivity extends Activity {
     
     public void onChartButtonClick(View v)
     {
-//    	data.open();
-//    	data.clearTripTable();
-//    	data.close();
+    	Intent intent = new Intent(this, GlobalStatsActivity.class);
+    	startActivity(intent);
     }
     
     public void onPricesButtonClick(View v)
