@@ -59,7 +59,6 @@
     <Compile Include="Model\Płyta.cs" />
     <Compile Include="Model\Płytoteka.cs" />
     <Compile Include="Model\Płyty.cs" />
-    <Compile Include="Model\TYTUŁ.cs" />
     <Compile Include="Model\Utwory.cs" />
     <Compile Include="Model\Utwór.cs" />
     <Page Include="View\MainWindow.xaml">

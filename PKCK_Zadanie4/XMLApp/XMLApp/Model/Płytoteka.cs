@@ -43,7 +43,6 @@ namespace XMLApp.Model
             {
                 (płyty as IXmlSerializable).ReadXml(reader);
             }
-            reader.ReadEndElement();
         }
 
         public void WriteXml(System.Xml.XmlWriter writer)
