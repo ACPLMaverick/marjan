@@ -1,0 +1,15 @@
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\bin\Debug\XMLApp.exe.config
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\XMLApp.csprojResolveAssemblyReference.cache
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\View\MainWindow.baml
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\View\MainWindow.g.cs
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\App.g.cs
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\XMLApp_MarkupCompile.cache
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\XMLApp.g.resources
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\XMLApp.Properties.Resources.resources
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\XMLApp.csproj.GenerateResource.Cache
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\bin\Debug\XMLApp.exe
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\bin\Debug\XMLApp.pdb
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\XMLApp.exe
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\XMLApp.pdb
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Dokumenty\Studia\XML\lab4\aplikacja\XMLApp\XMLApp\obj\Debug\XMLApp_MarkupCompile.lref

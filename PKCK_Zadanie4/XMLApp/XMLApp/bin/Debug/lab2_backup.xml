@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="style.css" type="text/css"?>
+<!--DOCTYPE płytoteka SYSTEM "zewnetrznyDTD.dtd"-->
+<!--LABORATORIUM #2: Dokument XML plus XML Schema-->
+<płytoteka>
+	<nagłówek>Płytoteka</nagłówek>
+	<info>
+		<imię_i_nazwisko>Jan Bełczącki</imię_i_nazwisko>
+		<nr_albumu>180503</nr_albumu>
+		<imię_i_nazwisko>Marcin Wawrzonowski</imię_i_nazwisko>
+		<nr_albumu>180729</nr_albumu>
+		<laboratorium>Poniedziałek, 10:30</laboratorium>
+		<prowadząca>dr inż. Joanna Ochelska-Mierzejewska</prowadząca>
+	</info>
+	<gatunki>
+		<gatunek typ="1"><nazwa>Rock</nazwa></gatunek>
+		<gatunek typ="2"><nazwa>Metal</nazwa></gatunek>
+		<gatunek typ="3"><nazwa>Punk</nazwa></gatunek>
+		<gatunek typ="4"><nazwa>Pop</nazwa></gatunek>
+	</gatunki>
+	<płyty>
+		<płyta ID="a1">
+			<tytuł gatunekPłyty = "1">&quot;I&quot;</tytuł>
+			<autor kraj = "WielkaBrytania">Led Zeppelin</autor>
+			<rok>1969</rok>
+			<czas_całkowity>00:44:26</czas_całkowity>
+			<cena waluta="GBP">14.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Good Times Bad Times</tytuł><czas>00:02:46</czas></utwór>
+				<utwór numer = "2. "><tytuł>Babe I&apos;m Gonna Leave You</tytuł><czas>00:06:42</czas></utwór>
+				<utwór numer = "3. "><tytuł>You Shook Me</tytuł><czas>00:06:28</czas></utwór>
+				<utwór numer = "4. "><tytuł>Dazed and Confused</tytuł><czas>00:06:28</czas></utwór>
+				<utwór numer = "5. "><tytuł>Your Time is Gonna Come</tytuł><czas>00:04:34</czas></utwór>
+				<utwór numer = "6. "><tytuł>Black Mountain Side</tytuł><czas>00:02:12</czas></utwór>
+				<utwór numer = "7. "><tytuł>Communication Breakdown</tytuł><czas>00:02:30</czas></utwór>
+				<utwór numer = "8. "><tytuł>I Can&apos;t Quit You Baby</tytuł><czas>00:04:42</czas></utwór>
+				<utwór numer = "9. "><tytuł>How Many More Times</tytuł><czas>00:08:27</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a2">
+			<tytuł gatunekPłyty = "1">&quot;Sgt. Pepper&apos;s Lonely Hearts Club Band&quot;</tytuł>
+			<autor kraj = "WielkaBrytania">The Beatles</autor>
+			<rok>1967</rok>
+			<czas_całkowity>00:39:42</czas_całkowity>
+			<cena waluta="GBP">16.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Sgt. Pepper&apos;s Lonely Hearts Club Band</tytuł><czas>00:02:02</czas></utwór>
+				<utwór numer = "2. "><tytuł>With a Little Help from My Friends</tytuł><czas>00:02:44</czas></utwór>
+				<utwór numer = "3. "><tytuł>Lucy in the Sky with Diamonds</tytuł><czas>00:03:28</czas></utwór>
+				<utwór numer = "4. "><tytuł>Getting Better</tytuł><czas>00:02:48</czas></utwór>
+				<utwór numer = "5. "><tytuł>Fixing a Hole</tytuł><czas>00:02:36</czas></utwór>
+				<utwór numer = "6. "><tytuł>She&apos;s Leaving Home</tytuł><czas>00:03:35</czas></utwór>
+				<utwór numer = "7. "><tytuł>Being for the Benefit of Mr. Kite!</tytuł><czas>00:02:37</czas></utwór>
+				<utwór numer = "8. "><tytuł>Within You Without You</tytuł><czas>00:05:04</czas></utwór>
+				<utwór numer = "9. "><tytuł>When I&apos;m Sixty-Four</tytuł><czas>00:02:37</czas></utwór>
+				<utwór numer = "10. "><tytuł>Lovely Rita</tytuł><czas>00:02:42</czas></utwór>
+				<utwór numer = "11. "><tytuł>Good Morning Good Morning</tytuł><czas>00:02:41</czas></utwór>
+				<utwór numer = "12. "><tytuł>Sgt. Pepper&apos;s Lonely Hearts Club Band (Reprise)</tytuł><czas>00:01:19</czas></utwór>
+				<utwór numer = "13. "><tytuł>A Day in the Life</tytuł><czas>00:05:39</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a3">
+			<tytuł gatunekPłyty = "1">&quot;A Night at the Opera&quot;</tytuł>
+			<autor kraj = "WielkaBrytania">Queen</autor>
+			<rok>1975</rok>
+			<czas_całkowity>00:43:10</czas_całkowity>
+			<cena waluta="PLN">39.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Death on Two Legs (Dedicated To...)</tytuł><czas>00:03:43</czas></utwór>
+				<utwór numer = "2. "><tytuł>Lazing on a Sunday Afternoon</tytuł><czas>00:01:08</czas></utwór>
+				<utwór numer = "3. "><tytuł>I&apos;m In Love with My Car</tytuł><czas>00:03:05</czas></utwór>
+				<utwór numer = "4. "><tytuł>You&apos;re My Best Friend</tytuł><czas>00:02:50</czas></utwór>
+				<utwór numer = "5. "><tytuł>39</tytuł><czas>00:03:25</czas></utwór>
+				<utwór numer = "6. "><tytuł>Sweet Lady</tytuł><czas>00:04:01</czas></utwór>
+				<utwór numer = "7. "><tytuł>Seaside Rendezvous</tytuł><czas>00:02:13</czas></utwór>
+				<utwór numer = "8. "><tytuł>The Prophet&apos;s Song</tytuł><czas>00:08:17</czas></utwór>
+				<utwór numer = "9. "><tytuł>Love of My Life</tytuł><czas>00:03:38</czas></utwór>
+				<utwór numer = "10. "><tytuł>Good Company</tytuł><czas>00:03:26</czas></utwór>
+				<utwór numer = "11. "><tytuł>Bohemian Rhapsody</tytuł><czas>00:05:55</czas></utwór>
+				<utwór numer = "12. "><tytuł>God Save the Queen</tytuł><czas>00:01:11</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a4">
+			<tytuł gatunekPłyty = "1">&quot;The Doors&quot;</tytuł>
+			<autor kraj = "USA">The Doors</autor>
+			<rok>1967</rok>
+			<czas_całkowity>00:44:48</czas_całkowity>
+			<cena waluta="USD">29.90</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Break on Through (To the Other Side)</tytuł><czas>00:02:29</czas></utwór>
+				<utwór numer = "2. "><tytuł>Soul Kitchen</tytuł><czas>00:03:35</czas></utwór>
+				<utwór numer = "3. "><tytuł>The Crystal Ship</tytuł><czas>00:02:34</czas></utwór>
+				<utwór numer = "4. "><tytuł>Twentieth Century Fox</tytuł><czas>00:02:33</czas></utwór>
+				<utwór numer = "5. "><tytuł>Alabama Song (Whisky Song)</tytuł><czas>00:03:20</czas></utwór>
+				<utwór numer = "6. "><tytuł>Light My Fire</tytuł><czas>00:07:06</czas></utwór>
+				<utwór numer = "7. "><tytuł>Back Door Man</tytuł><czas>00:03:34</czas></utwór>
+				<utwór numer = "8. "><tytuł>I Looked at You</tytuł><czas>00:02:22</czas></utwór>
+				<utwór numer = "9. "><tytuł>End of the Night</tytuł><czas>00:02:52</czas></utwór>
+				<utwór numer = "10. "><tytuł>Take It as It Comes</tytuł><czas>00:02:23</czas></utwór>
+				<utwór numer = "11. "><tytuł>The End</tytuł><czas>00:11:41</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a5">
+			<tytuł gatunekPłyty = "1">&quot;Stadium Arcadium&quot;</tytuł>
+			<autor kraj = "USA">Red Hot Chili Peppers</autor>
+			<rok>2006</rok>
+			<czas_całkowity>02:02:27</czas_całkowity>
+			<cena waluta="PLN">49.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Dani California</tytuł><czas>00:04:42</czas></utwór>
+				<utwór numer = "2. "><tytuł>Snow (Hey Oh)</tytuł><czas>00:05:37</czas></utwór>
+				<utwór numer = "3. "><tytuł>Charlie</tytuł><czas>00:04:37</czas></utwór>
+				<utwór numer = "4. "><tytuł>Stadium Arcadium</tytuł><czas>00:05:15</czas></utwór>
+				<utwór numer = "5. "><tytuł>Humb de Bump</tytuł><czas>00:03:33</czas></utwór>
+				<utwór numer = "6. "><tytuł>She&apos;s Only 18</tytuł><czas>00:03:25</czas></utwór>
+				<utwór numer = "7. "><tytuł>Slow Cheetah</tytuł><czas>00:05:19</czas></utwór>
+				<utwór numer = "8. "><tytuł>Torture Me</tytuł><czas>00:03:44</czas></utwór>
+				<utwór numer = "9. "><tytuł>Strip My Mind</tytuł><czas>00:04:19</czas></utwór>
+				<utwór numer = "10. "><tytuł>Especially in Michigan</tytuł><czas>00:04:00</czas></utwór>
+				<utwór numer = "11. "><tytuł>Warlocks</tytuł><czas>00:03:25</czas></utwór>
+				<utwór numer = "12. "><tytuł>C&apos;mon Girl</tytuł><czas>00:03:48</czas></utwór>
+				<utwór numer = "13. "><tytuł>Wet Sand</tytuł><czas>00:05:09</czas></utwór>
+				<utwór numer = "14. "><tytuł>Hey</tytuł><czas>00:05:39</czas></utwór>
+				<utwór numer = "15. "><tytuł>Desecration Smile</tytuł><czas>00:05:02</czas></utwór>
+				<utwór numer = "16. "><tytuł>Tell Me Baby</tytuł><czas>00:04:07</czas></utwór>
+				<utwór numer = "17. "><tytuł>Hard to Concentrate</tytuł><czas>00:04:02</czas></utwór>
+				<utwór numer = "18. "><tytuł>21st Century</tytuł><czas>00:04:22</czas></utwór>
+				<utwór numer = "19. "><tytuł>She Looks to Me</tytuł><czas>00:04:06</czas></utwór>
+				<utwór numer = "20. "><tytuł>Readymade</tytuł><czas>00:04:30</czas></utwór>
+				<utwór numer = "21. "><tytuł>If</tytuł><czas>00:02:53</czas></utwór>
+				<utwór numer = "22. "><tytuł>Make You Feel Better</tytuł><czas>00:03:52</czas></utwór>
+				<utwór numer = "23. "><tytuł>Animal Bar</tytuł><czas>00:05:26</czas></utwór>
+				<utwór numer = "24. "><tytuł>So Much I</tytuł><czas>00:03:44</czas></utwór>
+				<utwór numer = "25. "><tytuł>Storm in a Teacup</tytuł><czas>00:03:45</czas></utwór>
+				<utwór numer = "26. "><tytuł>We Believe</tytuł><czas>00:03:36</czas></utwór>
+				<utwór numer = "27. "><tytuł>Turn it Again</tytuł><czas>00:06:06</czas></utwór>
+				<utwór numer = "28. "><tytuł>Death of a Martian</tytuł><czas>00:04:24</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a6">
+			<tytuł gatunekPłyty = "1">&quot;Exile on Main St.&quot;</tytuł>
+			<autor kraj = "WielkaBrytania">The Rolling Stones</autor>
+			<rok>1972</rok>
+			<czas_całkowity>01:07:07</czas_całkowity>
+			<cena waluta="GBP">29.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Rocks Off</tytuł><czas>00:04:31</czas></utwór>
+				<utwór numer = "2. "><tytuł>Rip This Joint</tytuł><czas>00:02:22</czas></utwór>
+				<utwór numer = "3. "><tytuł>Shake Your Hips</tytuł><czas>00:02:59</czas></utwór>
+				<utwór numer = "4. "><tytuł>Casino Boogie</tytuł><czas>00:03:33</czas></utwór>
+				<utwór numer = "5. "><tytuł>Tumbling Dice</tytuł><czas>00:03:45</czas></utwór>
+				<utwór numer = "6. "><tytuł>Sweet Virginia</tytuł><czas>00:04:27</czas></utwór>
+				<utwór numer = "7. "><tytuł>Tom and Frayed</tytuł><czas>00:04:17</czas></utwór>
+				<utwór numer = "8. "><tytuł>Sweet Black Angel</tytuł><czas>00:02:54</czas></utwór>
+				<utwór numer = "9. "><tytuł>Loving Cup</tytuł><czas>00:04:25</czas></utwór>
+				<utwór numer = "10. "><tytuł>Happy</tytuł><czas>00:03:04</czas></utwór>
+				<utwór numer = "11. "><tytuł>Turd on the Run</tytuł><czas>00:02:36</czas></utwór>
+				<utwór numer = "12. "><tytuł>Ventilator Blues</tytuł><czas>00:03:24</czas></utwór>
+				<utwór numer = "13. "><tytuł>I Just Want to See His Face</tytuł><czas>00:02:52</czas></utwór>
+				<utwór numer = "14. "><tytuł>Let it Loose</tytuł><czas>00:05:16</czas></utwór>
+				<utwór numer = "15. "><tytuł>All Down the Line</tytuł><czas>00:03:49</czas></utwór>
+				<utwór numer = "16. "><tytuł>Stop Breaking Down</tytuł><czas>00:04:34</czas></utwór>
+				<utwór numer = "17. "><tytuł>Shine a Light</tytuł><czas>00:04:14</czas></utwór>
+				<utwór numer = "18. "><tytuł>Soul Survivor</tytuł><czas>00:03:49</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a7">
+			<tytuł gatunekPłyty = "1">&quot;Backspacer&quot;</tytuł>
+			<autor kraj = "USA">Pearl Jam</autor>
+			<rok>2009</rok>
+			<czas_całkowity>00:36:38</czas_całkowity>
+			<cena waluta="PLN">39.95</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Gonna See My Friend</tytuł><czas>00:02:47</czas></utwór>
+				<utwór numer = "2. "><tytuł>Got Some</tytuł><czas>00:03:01</czas></utwór>
+				<utwór numer = "3. "><tytuł>The Fixer</tytuł><czas>00:02:57</czas></utwór>
+				<utwór numer = "4. "><tytuł>Johnny Guitar</tytuł><czas>00:02:49</czas></utwór>
+				<utwór numer = "5. "><tytuł>Just Breathe</tytuł><czas>00:03:34</czas></utwór>
+				<utwór numer = "6. "><tytuł>Amongst the Waves</tytuł><czas>00:03:57</czas></utwór>
+				<utwór numer = "7. "><tytuł>Unthought Known</tytuł><czas>00:04:08</czas></utwór>
+				<utwór numer = "8. "><tytuł>Supersonic</tytuł><czas>00:02:38</czas></utwór>
+				<utwór numer = "9. "><tytuł>Speed of Sound</tytuł><czas>00:03:34</czas></utwór>
+				<utwór numer = "10. "><tytuł>Force of Nature</tytuł><czas>00:04:03</czas></utwór>
+				<utwór numer = "11. "><tytuł>The End</tytuł><czas>00:02:55</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a8">
+			<tytuł gatunekPłyty = "2">&quot;Fear of the Dark&quot;</tytuł>
+			<autor kraj = "WielkaBrytania">Iron Maiden</autor>
+			<rok>1992</rok>
+			<czas_całkowity>00:57:58</czas_całkowity>
+			<cena waluta="PLN">34.95</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Be Quick or Be Dead</tytuł><czas>00:03:21</czas></utwór>
+				<utwór numer = "2. "><tytuł>From Here to Eternity</tytuł><czas>00:03:35</czas></utwór>
+				<utwór numer = "3. "><tytuł>Afraid to Shoot Strangers</tytuł><czas>00:06:52</czas></utwór>
+				<utwór numer = "4. "><tytuł>Fear is the Key</tytuł><czas>00:05:30</czas></utwór>
+				<utwór numer = "5. "><tytuł>Childhood&apos;s End</tytuł><czas>00:04:37</czas></utwór>
+				<utwór numer = "6. "><tytuł>Wasting Love</tytuł><czas>00:05:46</czas></utwór>
+				<utwór numer = "7. "><tytuł>The Fugitive</tytuł><czas>00:04:52</czas></utwór>
+				<utwór numer = "8. "><tytuł>Chains of Misery</tytuł><czas>00:03:33</czas></utwór>
+				<utwór numer = "9. "><tytuł>The Apparition</tytuł><czas>00:03:53</czas></utwór>
+				<utwór numer = "10. "><tytuł>Judas Be My Guide</tytuł><czas>00:03:06</czas></utwór>
+				<utwór numer = "11. "><tytuł>Weekend Warrior</tytuł><czas>00:05:37</czas></utwór>
+				<utwór numer = "12. "><tytuł>Fear of the Dark</tytuł><czas>00:07:16</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a9">
+			<tytuł gatunekPłyty = "2">&quot;The Quantum Enigma&quot;</tytuł>
+			<autor kraj = "Holandia">Epica</autor>
+			<rok>2014</rok>
+			<czas_całkowity>01:08:13</czas_całkowity>
+			<cena waluta="EUR">24.95</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Originem</tytuł><czas>00:02:11</czas></utwór>
+				<utwór numer = "2. "><tytuł>The Second Stone</tytuł><czas>00:05:00</czas></utwór>
+				<utwór numer = "3. "><tytuł>The Essence of Silence</tytuł><czas>00:04:47</czas></utwór>
+				<utwór numer = "4. "><tytuł>Victims of Contingency</tytuł><czas>00:03:31</czas></utwór>
+				<utwór numer = "5. "><tytuł>Sense Without Sanity</tytuł><czas>00:07:42</czas></utwór>
+				<utwór numer = "6. "><tytuł>Unchain Utopia</tytuł><czas>00:04:45</czas></utwór>
+				<utwór numer = "7. "><tytuł>The Fifth Guardian</tytuł><czas>00:03:04</czas></utwór>
+				<utwór numer = "8. "><tytuł>Chemical Insomnia</tytuł><czas>00:05:12</czas></utwór>
+				<utwór numer = "9. "><tytuł>Reverence</tytuł><czas>00:05:02</czas></utwór>
+				<utwór numer = "10. "><tytuł>Omen</tytuł><czas>00:05:28</czas></utwór>
+				<utwór numer = "11. "><tytuł>Canvas of Life</tytuł><czas>00:05:28</czas></utwór>
+				<utwór numer = "12. "><tytuł>Natural Corruption</tytuł><czas>00:05:24</czas></utwór>
+				<utwór numer = "13. "><tytuł>The Quantum Enigma</tytuł><czas>00:11:53</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a10">
+			<tytuł gatunekPłyty = "2">&quot;Wishmaster&quot;</tytuł>
+			<autor kraj = "Finlandia">Nightwish</autor>
+			<rok>2000</rok>
+			<czas_całkowity>00:56:03</czas_całkowity>
+			<cena waluta="EUR">14.95</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>She Is My Sin</tytuł><czas>00:04:46</czas></utwór>
+				<utwór numer = "2. "><tytuł>The Kinslayer</tytuł><czas>00:03:59</czas></utwór>
+				<utwór numer = "3. "><tytuł>Come Cover Me</tytuł><czas>00:04:34</czas></utwór>
+				<utwór numer = "4. "><tytuł>Wanderlust</tytuł><czas>00:04:50</czas></utwór>
+				<utwór numer = "5. "><tytuł>Two for Tragedy</tytuł><czas>00:03:50</czas></utwór>
+				<utwór numer = "6. "><tytuł>Wishmaster</tytuł><czas>00:04:24</czas></utwór>
+				<utwór numer = "7. "><tytuł>Bare Grace Misery</tytuł><czas>00:03:39</czas></utwór>
+				<utwór numer = "8. "><tytuł>Crownless</tytuł><czas>00:04:25</czas></utwór>
+				<utwór numer = "9. "><tytuł>Deep Silent Complete</tytuł><czas>00:03:57</czas></utwór>
+				<utwór numer = "10. "><tytuł>Dead Boy&apos;s Poem</tytuł><czas>00:06:47</czas></utwór>
+				<utwór numer = "11. "><tytuł>FantasMic</tytuł><czas>00:08:17</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a11">
+			<tytuł gatunekPłyty = "2">&quot;A Night at the Opera&quot;</tytuł>
+			<autor kraj = "Niemcy">Blind Guardian</autor>
+			<rok>2002</rok>
+			<czas_całkowity>01:07:01</czas_całkowity>
+			<cena waluta="EUR">9.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Precious Jerusalem</tytuł><czas>00:06:22</czas></utwór>
+				<utwór numer = "2. "><tytuł>Battlefield</tytuł><czas>00:05:37</czas></utwór>
+				<utwór numer = "3. "><tytuł>Under the Ice</tytuł><czas>00:05:44</czas></utwór>
+				<utwór numer = "4. "><tytuł>Sadly Sings Destiny</tytuł><czas>00:06:04</czas></utwór>
+				<utwór numer = "5. "><tytuł>The Maiden and the Minstrel Knight</tytuł><czas>00:05:30</czas></utwór>
+				<utwór numer = "6. "><tytuł>Wait for an Answer</tytuł><czas>00:06:30</czas></utwór>
+				<utwór numer = "7. "><tytuł>The Soulforged</tytuł><czas>00:05:18</czas></utwór>
+				<utwór numer = "8. "><tytuł>Age of False Innocence</tytuł><czas>00:06:05</czas></utwór>
+				<utwór numer = "9. "><tytuł>Punishment Divine</tytuł><czas>00:05:45</czas></utwór>
+				<utwór numer = "10. "><tytuł>And Then There Was Silence</tytuł><czas>00:14:06</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a12">
+			<tytuł gatunekPłyty = "2">&quot;The Hunter&quot;</tytuł>
+			<autor kraj = "USA">Mastodon</autor>
+			<rok>2011</rok>
+			<czas_całkowity>00:52:54</czas_całkowity>
+			<cena waluta="USD">13.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Black Tongue</tytuł><czas>00:03:27</czas></utwór>
+				<utwór numer = "2. "><tytuł>Curl of the Burl</tytuł><czas>00:03:40</czas></utwór>
+				<utwór numer = "3. "><tytuł>Blasteroid</tytuł><czas>00:02:35</czas></utwór>
+				<utwór numer = "4. "><tytuł>Stargasm</tytuł><czas>00:04:39</czas></utwór>
+				<utwór numer = "5. "><tytuł>Octopus Has No Friends</tytuł><czas>00:03:48</czas></utwór>
+				<utwór numer = "6. "><tytuł>All the Heavy Lifting</tytuł><czas>00:04:31</czas></utwór>
+				<utwór numer = "7. "><tytuł>The Hunter</tytuł><czas>00:05:17</czas></utwór>
+				<utwór numer = "8. "><tytuł>Dry Bone Valley</tytuł><czas>00:03:59</czas></utwór>
+				<utwór numer = "9. "><tytuł>Thickening</tytuł><czas>00:04:30</czas></utwór>
+				<utwór numer = "10. "><tytuł>Creature Lives</tytuł><czas>00:04:41</czas></utwór>
+				<utwór numer = "11. "><tytuł>Spectrelight</tytuł><czas>00:03:09</czas></utwór>
+				<utwór numer = "12. "><tytuł>Bedazzled Fingernails</tytuł><czas>00:03:08</czas></utwór>
+				<utwór numer = "13. "><tytuł>The Sparrow</tytuł><czas>00:05:30</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a13">
+			<tytuł gatunekPłyty = "2">&quot;Master of Puppets&quot;</tytuł>
+			<autor kraj = "USA">Metallica</autor>
+			<rok>1986</rok>
+			<czas_całkowity>00:54:46</czas_całkowity>
+			<cena waluta="PLN">29.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Battery</tytuł><czas>00:05:12</czas></utwór>
+				<utwór numer = "2. "><tytuł>Master of Puppets</tytuł><czas>00:08:36</czas></utwór>
+				<utwór numer = "3. "><tytuł>The Thing That Should Not Be</tytuł><czas>00:06:37</czas></utwór>
+				<utwór numer = "4. "><tytuł>Welcome Home (Sanitarium)</tytuł><czas>00:06:27</czas></utwór>
+				<utwór numer = "5. "><tytuł>Disposable Heroes</tytuł><czas>00:08:17</czas></utwór>
+				<utwór numer = "6. "><tytuł>Leper Messiah</tytuł><czas>00:05:40</czas></utwór>
+				<utwór numer = "7. "><tytuł>Orion</tytuł><czas>00:08:28</czas></utwór>
+				<utwór numer = "8. "><tytuł>Damage, Inc.</tytuł><czas>00:05:29</czas></utwór>
+			</utwory>
+		</płyta>		
+		<płyta ID="a14">
+			<tytuł gatunekPłyty = "2">&quot;Reign in Blood&quot;</tytuł>
+			<autor kraj = "USA">Slayer</autor>
+			<rok>1986</rok>
+			<czas_całkowity>00:28:58</czas_całkowity>
+			<cena waluta="PLN">24.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Angel of Death</tytuł><czas>00:04:51</czas></utwór>
+				<utwór numer = "2. "><tytuł>Piece by Piece</tytuł><czas>00:02:03</czas></utwór>
+				<utwór numer = "3. "><tytuł>Necrophobic</tytuł><czas>00:01:40</czas></utwór>
+				<utwór numer = "4. "><tytuł>Altar of Sacrifice</tytuł><czas>00:02:50</czas></utwór>
+				<utwór numer = "5. "><tytuł>Jesus Saves</tytuł><czas>00:02:54</czas></utwór>
+				<utwór numer = "6. "><tytuł>Criminally Insane</tytuł><czas>00:02:23</czas></utwór>
+				<utwór numer = "7. "><tytuł>Reborn</tytuł><czas>00:02:12</czas></utwór>
+				<utwór numer = "8. "><tytuł>Epidemic</tytuł><czas>00:02:23</czas></utwór>
+				<utwór numer = "9. "><tytuł>Postmortem</tytuł><czas>00:03:27</czas></utwór>
+				<utwór numer = "10. "><tytuł>Raining Blood</tytuł><czas>00:04:17</czas></utwór>
+			</utwory>
+		</płyta>		
+		<płyta ID="a15">
+			<tytuł gatunekPłyty = "3">&quot;Smash&quot;</tytuł>
+			<autor kraj = "USA">The Offspring</autor>
+			<rok>1994</rok>
+			<czas_całkowity>00:46:47</czas_całkowity>
+			<cena waluta="USD">9.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Time to Relax</tytuł><czas>00:00:25</czas></utwór>
+				<utwór numer = "2. "><tytuł>Nitro (Youth Energy)</tytuł><czas>00:02:27</czas></utwór>
+				<utwór numer = "3. "><tytuł>Bad Habit</tytuł><czas>00:03:43</czas></utwór>
+				<utwór numer = "4. "><tytuł>Gotta Get Away</tytuł><czas>00:03:52</czas></utwór>
+				<utwór numer = "5. "><tytuł>Genocide</tytuł><czas>00:03:33</czas></utwór>
+				<utwór numer = "6. "><tytuł>Something to Believe In</tytuł><czas>00:03:17</czas></utwór>
+				<utwór numer = "7. "><tytuł>Come Out and Play</tytuł><czas>00:03:17</czas></utwór>
+				<utwór numer = "8. "><tytuł>Self Esteem</tytuł><czas>00:04:17</czas></utwór>
+				<utwór numer = "9. "><tytuł>It&apos;ll Be a Long Time</tytuł><czas>00:02:43</czas></utwór>
+				<utwór numer = "10. "><tytuł>Killboy Powerhead</tytuł><czas>00:02:02</czas></utwór>
+				<utwór numer = "11. "><tytuł>What Happened to You?</tytuł><czas>00:02:12</czas></utwór>
+				<utwór numer = "12. "><tytuł>So Alone</tytuł><czas>00:01:17</czas></utwór>
+				<utwór numer = "13. "><tytuł>Not the One</tytuł><czas>00:02:54</czas></utwór>
+				<utwór numer = "14. "><tytuł>Smash</tytuł><czas>00:10:42</czas></utwór>
+			</utwory>
+		</płyta>			
+		<płyta ID="a16">
+			<tytuł gatunekPłyty = "3">&quot;Never Mind the Bollocks, Here&apos;s the Sex Pistols&quot;</tytuł>
+			<autor kraj = "WielkaBrytania">Sex Pistols</autor>
+			<rok>1977</rok>
+			<czas_całkowity>00:34:32</czas_całkowity>
+			<cena waluta="GBP">19.95</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Holidays in the Sun</tytuł><czas>00:03:22</czas></utwór>
+				<utwór numer = "2. "><tytuł>Liar</tytuł><czas>00:02:41</czas></utwór>
+				<utwór numer = "3. "><tytuł>No Feelings</tytuł><czas>00:02:53</czas></utwór>
+				<utwór numer = "4. "><tytuł>God Save the Queen</tytuł><czas>00:03:20</czas></utwór>
+				<utwór numer = "5. "><tytuł>Problems</tytuł><czas>00:04:11</czas></utwór>
+				<utwór numer = "6. "><tytuł>Seventeen</tytuł><czas>00:02:02</czas></utwór>
+				<utwór numer = "7. "><tytuł>Anarchy in the UK</tytuł><czas>00:03:32</czas></utwór>
+				<utwór numer = "8. "><tytuł>Bodies</tytuł><czas>00:03:03</czas></utwór>
+				<utwór numer = "9. "><tytuł>Pretty Vacant</tytuł><czas>00:03:18</czas></utwór>
+				<utwór numer = "10. "><tytuł>New York</tytuł><czas>00:03:07</czas></utwór>
+				<utwór numer = "11. "><tytuł>EMI</tytuł><czas>00:03:10</czas></utwór>
+			</utwory>
+		</płyta>			
+		<płyta ID="a17">
+			<tytuł gatunekPłyty = "3">&quot;London Calling&quot;</tytuł>
+			<autor kraj = "WielkaBrytania">The Clash</autor>
+			<rok>1979</rok>
+			<czas_całkowity>01:05:07</czas_całkowity>
+			<cena waluta="GBP">24.90</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>London Calling</tytuł><czas>00:03:19</czas></utwór>
+				<utwór numer = "2. "><tytuł>Brand New Cadillac</tytuł><czas>00:02:09</czas></utwór>
+				<utwór numer = "3. "><tytuł>Jimmy Jazz</tytuł><czas>00:03:52</czas></utwór>
+				<utwór numer = "4. "><tytuł>Hateful</tytuł><czas>00:02:45</czas></utwór>
+				<utwór numer = "5. "><tytuł>Rudie Can&apos;t Fail</tytuł><czas>00:03:26</czas></utwór>
+				<utwór numer = "6. "><tytuł>Spanish Bombs</tytuł><czas>00:03:19</czas></utwór>
+				<utwór numer = "7. "><tytuł>The Right Profile</tytuł><czas>00:03:56</czas></utwór>
+				<utwór numer = "8. "><tytuł>Lost in the Supermarket</tytuł><czas>00:03:47</czas></utwór>
+				<utwór numer = "9. "><tytuł>Clampdown</tytuł><czas>00:03:49</czas></utwór>
+				<utwór numer = "10. "><tytuł>The Guns of Brixton</tytuł><czas>00:03:07</czas></utwór>
+				<utwór numer = "11. "><tytuł>Wrong &apos;em Boyo</tytuł><czas>00:03:10</czas></utwór>
+				<utwór numer = "12. "><tytuł>Death or Glory</tytuł><czas>00:03:55</czas></utwór>
+				<utwór numer = "13. "><tytuł>Koka Kola</tytuł><czas>00:01:46</czas></utwór>
+				<utwór numer = "14. "><tytuł>The Card Cheat</tytuł><czas>00:03:51</czas></utwór>
+				<utwór numer = "15. "><tytuł>Lover&apos;s Rock</tytuł><czas>00:04:01</czas></utwór>
+				<utwór numer = "16. "><tytuł>Four Horsemen</tytuł><czas>00:02:56</czas></utwór>
+				<utwór numer = "17. "><tytuł>I&apos;m Not Down</tytuł><czas>00:03:00</czas></utwór>
+				<utwór numer = "18. "><tytuł>Revolution Rock</tytuł><czas>00:05:37</czas></utwór>
+				<utwór numer = "19. "><tytuł>Train in Vain</tytuł><czas>00:03:09</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a18">
+			<tytuł gatunekPłyty = "3">&quot;Against the Grain&quot;</tytuł>
+			<autor kraj = "USA">Bad Religion</autor>
+			<rok>1990</rok>
+			<czas_całkowity>00:34:27</czas_całkowity>
+			<cena waluta="USD">25.00</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Modern Man</tytuł><czas>00:01:58</czas></utwór>
+				<utwór numer = "2. "><tytuł>Turn on the Light</tytuł><czas>00:01:24</czas></utwór>
+				<utwór numer = "3. "><tytuł>Get Off</tytuł><czas>00:01:43</czas></utwór>
+				<utwór numer = "4. "><tytuł>Blenderhead</tytuł><czas>00:01:12</czas></utwór>
+				<utwór numer = "5. "><tytuł>The Positive Aspect of Negative Thinking</tytuł><czas>00:00:57</czas></utwór>
+				<utwór numer = "6. "><tytuł>Anesthesia</tytuł><czas>00:03:04</czas></utwór>
+				<utwór numer = "7. "><tytuł>Flat Earth Society</tytuł><czas>00:02:23</czas></utwór>
+				<utwór numer = "8. "><tytuł>Faith Alone</tytuł><czas>00:03:40</czas></utwór>
+				<utwór numer = "9. "><tytuł>Entropy</tytuł><czas>00:02:24</czas></utwór>
+				<utwór numer = "10. "><tytuł>Against the Grain</tytuł><czas>00:02:09</czas></utwór>
+				<utwór numer = "11. "><tytuł>Operation Rescue</tytuł><czas>00:02:08</czas></utwór>
+				<utwór numer = "12. "><tytuł>God Song</tytuł><czas>00:01:38</czas></utwór>
+				<utwór numer = "13. "><tytuł>21st Century (Digital Boy)</tytuł><czas>00:02:50</czas></utwór>
+				<utwór numer = "14. "><tytuł>Misery and Famine</tytuł><czas>00:02:35</czas></utwór>
+				<utwór numer = "15. "><tytuł>Unacceptable</tytuł><czas>00:01:44</czas></utwór>
+				<utwór numer = "16. "><tytuł>Quality or Quantity</tytuł><czas>00:01:34</czas></utwór>
+				<utwór numer = "17. "><tytuł>Walk Away</tytuł><czas>00:01:52</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a19">
+			<tytuł gatunekPłyty = "3">&quot;Ramones&quot;</tytuł>
+			<autor kraj = "USA">Ramones</autor>
+			<rok>1976</rok>
+			<czas_całkowity>00:29:04</czas_całkowity>
+			<cena waluta="USD">19.95</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Blitzkrieg Bop</tytuł><czas>00:02:12</czas></utwór>
+				<utwór numer = "2. "><tytuł>Beat on the Brat</tytuł><czas>00:02:30</czas></utwór>
+				<utwór numer = "3. "><tytuł>Judy Is a Punk</tytuł><czas>00:01:30</czas></utwór>
+				<utwór numer = "4. "><tytuł>I Wanna Be Your Boyfriend</tytuł><czas>00:02:24</czas></utwór>
+				<utwór numer = "5. "><tytuł>Chain Saw</tytuł><czas>00:01:55</czas></utwór>
+				<utwór numer = "6. "><tytuł>Now I Wanna Sniff Some Glue</tytuł><czas>00:01:34</czas></utwór>
+				<utwór numer = "7. "><tytuł>I Don&apos;t Wanna Go Down to the Basement</tytuł><czas>00:02:35</czas></utwór>
+				<utwór numer = "8. "><tytuł>Loudmouth</tytuł><czas>00:02:14</czas></utwór>
+				<utwór numer = "9. "><tytuł>Havana Affair</tytuł><czas>00:02:00</czas></utwór>
+				<utwór numer = "10. "><tytuł>Listen to My Heart</tytuł><czas>00:01:56</czas></utwór>
+				<utwór numer = "11. "><tytuł>53rd &amp; 3rd</tytuł><czas>00:02:19</czas></utwór>
+				<utwór numer = "12. "><tytuł>Let&apos;s Dance</tytuł><czas>00:01:51</czas></utwór>
+				<utwór numer = "13. "><tytuł>I Don&apos;t Wanna Walk Around with You</tytuł><czas>00:01:43</czas></utwór>
+				<utwór numer = "14. "><tytuł>Today Your Love, Tomorrow the World</tytuł><czas>00:02:09</czas></utwór>
+			</utwory>
+		</płyta>			
+		<płyta ID="a20">
+			<tytuł gatunekPłyty = "3">&quot;Fresh Fruit for Rotting Vegetables&quot;</tytuł>
+			<autor kraj = "USA">Dead Kennedys</autor>
+			<rok>1980</rok>
+			<czas_całkowity>00:33:03</czas_całkowity>
+			<cena waluta="USD">15.90</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Kill the Poor</tytuł><czas>00:03:07</czas></utwór>
+				<utwór numer = "2. "><tytuł>Forward to Death</tytuł><czas>00:01:23</czas></utwór>
+				<utwór numer = "3. "><tytuł>When Ya Get Drafted</tytuł><czas>00:01:23</czas></utwór>
+				<utwór numer = "4. "><tytuł>Let&apos;s Lynch the Landlord</tytuł><czas>00:02:13</czas></utwór>
+				<utwór numer = "5. "><tytuł>Drug Me</tytuł><czas>00:01:56</czas></utwór>
+				<utwór numer = "6. "><tytuł>Your Emotions</tytuł><czas>00:01:20</czas></utwór>
+				<utwór numer = "7. "><tytuł>Chemical Warfare</tytuł><czas>00:02:55</czas></utwór>
+				<utwór numer = "8. "><tytuł>California Uber Alles</tytuł><czas>00:03:03</czas></utwór>
+				<utwór numer = "9. "><tytuł>I Kill Children</tytuł><czas>00:02:04</czas></utwór>
+				<utwór numer = "10. "><tytuł>Stealing People&apos;s Mail</tytuł><czas>00:01:34</czas></utwór>
+				<utwór numer = "11. "><tytuł>Funland at the Beach</tytuł><czas>00:01:49</czas></utwór>
+				<utwór numer = "12. "><tytuł>Ill in the Head</tytuł><czas>00:02:46</czas></utwór>
+				<utwór numer = "13. "><tytuł>Holiday in Cambodia</tytuł><czas>00:04:37</czas></utwór>
+				<utwór numer = "14. "><tytuł>Viva Las Vegas</tytuł><czas>00:02:42</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a21">
+			<tytuł gatunekPłyty = "3">&quot;Raw Power&quot;</tytuł>
+			<autor kraj = "USA">The Stooges</autor>
+			<rok>1973</rok>
+			<czas_całkowity>00:34:00</czas_całkowity>
+			<cena waluta="PLN">34.95</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Search and Destroy</tytuł><czas>00:03:29</czas></utwór>
+				<utwór numer = "2. "><tytuł>Gimme Danger</tytuł><czas>00:03:33</czas></utwór>
+				<utwór numer = "3. "><tytuł>Your Pretty Face Is Going to Hell</tytuł><czas>00:04:54</czas></utwór>
+				<utwór numer = "4. "><tytuł>Penetration</tytuł><czas>00:03:41</czas></utwór>
+				<utwór numer = "5. "><tytuł>Raw Power</tytuł><czas>00:04:16</czas></utwór>
+				<utwór numer = "6. "><tytuł>I Need Somebody</tytuł><czas>00:04:53</czas></utwór>
+				<utwór numer = "7. "><tytuł>Shake Appeal</tytuł><czas>00:03:04</czas></utwór>
+				<utwór numer = "8. "><tytuł>Death Trip</tytuł><czas>00:06:07</czas></utwór>
+			</utwory>
+		</płyta>	
+		<płyta ID="a22">
+			<tytuł gatunekPłyty = "4">&quot;Escapology&quot;</tytuł>
+			<autor kraj = "WielkaBrytania">Robbie Williams</autor>
+			<rok>2002</rok>
+			<czas_całkowity>01:13:51</czas_całkowity>
+			<cena waluta="PLN">29.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>How Peculiar</tytuł><czas>00:03:13</czas></utwór>
+				<utwór numer = "2. "><tytuł>Feel</tytuł><czas>00:04:22</czas></utwór>
+				<utwór numer = "3. "><tytuł>Something Beautiful</tytuł><czas>00:04:48</czas></utwór>
+				<utwór numer = "4. "><tytuł>Monsoon</tytuł><czas>00:03:46</czas></utwór>
+				<utwór numer = "5. "><tytuł>Sexed Up</tytuł><czas>00:04:19</czas></utwór>
+				<utwór numer = "6. "><tytuł>Love Somebody</tytuł><czas>00:04:10</czas></utwór>
+				<utwór numer = "7. "><tytuł>Revolution</tytuł><czas>00:05:44</czas></utwór>
+				<utwór numer = "8. "><tytuł>Handsome Man</tytuł><czas>00:03:54</czas></utwór>
+				<utwór numer = "9. "><tytuł>Come Undone</tytuł><czas>00:04:38</czas></utwór>
+				<utwór numer = "10. "><tytuł>Me and My Monkey</tytuł><czas>00:07:12</czas></utwór>
+				<utwór numer = "11. "><tytuł>Song 3</tytuł><czas>00:03:48</czas></utwór>
+				<utwór numer = "12. "><tytuł>Hot Fudge</tytuł><czas>00:04:05</czas></utwór>
+				<utwór numer = "13. "><tytuł>Cursed</tytuł><czas>00:04:01</czas></utwór>
+				<utwór numer = "14. "><tytuł>Nan&apos;s Song</tytuł><czas>00:09:38</czas></utwór>
+			</utwory>
+		</płyta>			
+		<płyta ID="a23">
+			<tytuł gatunekPłyty = "4">&quot;Thriller&quot;</tytuł>
+			<autor kraj = "USA">Michael Jackson</autor>
+			<rok>1982</rok>
+			<czas_całkowity>00:42:19</czas_całkowity>
+			<cena waluta="PLN">49.90</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Wanna Be Startin&apos; Something</tytuł><czas>00:06:03</czas></utwór>
+				<utwór numer = "2. "><tytuł>Baby Be Mine</tytuł><czas>00:04:20</czas></utwór>
+				<utwór numer = "3. "><tytuł>The Girl Is Mine</tytuł><czas>00:03:42</czas></utwór>
+				<utwór numer = "4. "><tytuł>Thriller</tytuł><czas>00:05:57</czas></utwór>
+				<utwór numer = "5. "><tytuł>Beat It</tytuł><czas>00:04:18</czas></utwór>
+				<utwór numer = "6. "><tytuł>Billie Jean</tytuł><czas>00:04:54</czas></utwór>
+				<utwór numer = "7. "><tytuł>Human Nature</tytuł><czas>00:04:06</czas></utwór>
+				<utwór numer = "8. "><tytuł>P.Y.T. (Pretty Young Thing)</tytuł><czas>00:03:59</czas></utwór>
+				<utwór numer = "9. "><tytuł>The Lady in My Life</tytuł><czas>00:05:00</czas></utwór>
+			</utwory>
+		</płyta>			
+		<płyta ID="a24">
+			<tytuł gatunekPłyty = "4">&quot;Like a Virgin&quot;</tytuł>
+			<autor kraj = "USA">Madonna</autor>
+			<rok>1984</rok>
+			<czas_całkowity>00:43:10</czas_całkowity>
+			<cena waluta="USD">8.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Material Girl</tytuł><czas>00:04:00</czas></utwór>
+				<utwór numer = "2. "><tytuł>Angel</tytuł><czas>00:03:56</czas></utwór>
+				<utwór numer = "3. "><tytuł>Like a Virgin</tytuł><czas>00:03:38</czas></utwór>
+				<utwór numer = "4. "><tytuł>Over and Over</tytuł><czas>00:04:12</czas></utwór>
+				<utwór numer = "5. "><tytuł>Love Don&apos;t Live Here Anymore</tytuł><czas>00:04:47</czas></utwór>
+				<utwór numer = "6. "><tytuł>Dress You Up</tytuł><czas>00:04:01</czas></utwór>
+				<utwór numer = "7. "><tytuł>Shoo-Bee-Doo</tytuł><czas>00:05:16</czas></utwór>
+				<utwór numer = "8. "><tytuł>Pretender</tytuł><czas>00:04:30</czas></utwór>
+				<utwór numer = "9. "><tytuł>Stay</tytuł><czas>00:04:07</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a25">
+			<tytuł gatunekPłyty = "4">&quot;Waterloo&quot;</tytuł>
+			<autor kraj = "Szwecja">ABBA</autor>
+			<rok>1974</rok>
+			<czas_całkowity>00:38:10</czas_całkowity>
+			<cena waluta="EUR">10.90</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Waterloo</tytuł><czas>00:02:45</czas></utwór>
+				<utwór numer = "2. "><tytuł>Sitting in the Palmtree</tytuł><czas>00:03:39</czas></utwór>
+				<utwór numer = "3. "><tytuł>King Kong Song</tytuł><czas>00:03:14</czas></utwór>
+				<utwór numer = "4. "><tytuł>Hasta Manana</tytuł><czas>00:03:05</czas></utwór>
+				<utwór numer = "5. "><tytuł>My Mama Said</tytuł><czas>00:03:14</czas></utwór>
+				<utwór numer = "6. "><tytuł>Dance (While the Music Still Goes On)</tytuł><czas>00:03:05</czas></utwór>
+				<utwór numer = "7. "><tytuł>Honey, Honey</tytuł><czas>00:02:56</czas></utwór>
+				<utwór numer = "8. "><tytuł>Watch Out</tytuł><czas>00:03:46</czas></utwór>
+				<utwór numer = "9. "><tytuł>What About Livingstone?</tytuł><czas>00:02:54</czas></utwór>
+				<utwór numer = "10. "><tytuł>Gonna Sing You My Lovesong</tytuł><czas>00:03:35</czas></utwór>
+				<utwór numer = "11. "><tytuł>Suzy-Hang-Around</tytuł><czas>00:03:11</czas></utwór>
+				<utwór numer = "12. "><tytuł>Waterloo</tytuł><czas>00:02:46</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a26">
+			<tytuł gatunekPłyty = "4">&quot;Fever&quot;</tytuł>
+			<autor kraj = "Australia">Kylie Minogue</autor>
+			<rok>2001</rok>
+			<czas_całkowity>00:45:27</czas_całkowity>
+			<cena waluta="USD">13.95</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>More More More</tytuł><czas>00:04:40</czas></utwór>
+				<utwór numer = "2. "><tytuł>Love at First Sight</tytuł><czas>00:03:57</czas></utwór>
+				<utwór numer = "3. "><tytuł>Can&apos;t Get You Out of My Head</tytuł><czas>00:03:49</czas></utwór>
+				<utwór numer = "4. "><tytuł>Fever</tytuł><czas>00:03:30</czas></utwór>
+				<utwór numer = "5. "><tytuł>Give It to Me</tytuł><czas>00:02:48</czas></utwór>
+				<utwór numer = "6. "><tytuł>Fragile</tytuł><czas>00:03:44</czas></utwór>
+				<utwór numer = "7. "><tytuł>Come into My World</tytuł><czas>00:04:30</czas></utwór>
+				<utwór numer = "8. "><tytuł>In Your Eyes</tytuł><czas>00:03:18</czas></utwór>
+				<utwór numer = "9. "><tytuł>Dancefloor</tytuł><czas>00:03:23</czas></utwór>
+				<utwór numer = "10. "><tytuł>Love Affair</tytuł><czas>00:03:47</czas></utwór>
+				<utwór numer = "11. "><tytuł>Your Love</tytuł><czas>00:03:47</czas></utwór>
+				<utwór numer = "12. "><tytuł>Burning Up</tytuł><czas>00:03:59</czas></utwór>
+			</utwory>
+		</płyta>			
+		<płyta ID="a27">
+			<tytuł gatunekPłyty = "4">&quot;Justified&quot;</tytuł>
+			<autor kraj = "USA">Justin Timberlake</autor>
+			<rok>2002</rok>
+			<czas_całkowity>01:03:15</czas_całkowity>
+			<cena waluta="USD">10.00</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Senorita</tytuł><czas>00:04:55</czas></utwór>
+				<utwór numer = "2. "><tytuł>Like I Love You</tytuł><czas>00:04:44</czas></utwór>
+				<utwór numer = "3. "><tytuł>(Oh No) What You Got</tytuł><czas>00:04:31</czas></utwór>
+				<utwór numer = "4. "><tytuł>Take It from Here</tytuł><czas>00:06:14</czas></utwór>
+				<utwór numer = "5. "><tytuł>Cry Me a River</tytuł><czas>00:04:48</czas></utwór>
+				<utwór numer = "6. "><tytuł>Rock Your Body</tytuł><czas>00:04:27</czas></utwór>
+				<utwór numer = "7. "><tytuł>Nothin&apos; Else</tytuł><czas>00:04:59</czas></utwór>
+				<utwór numer = "8. "><tytuł>Last Night</tytuł><czas>00:04:47</czas></utwór>
+				<utwór numer = "9. "><tytuł>Still on My Brain</tytuł><czas>00:04:36</czas></utwór>
+				<utwór numer = "10. "><tytuł>(And She Said) Take Me Now</tytuł><czas>00:05:31</czas></utwór>
+				<utwór numer = "11. "><tytuł>Right for Me</tytuł><czas>00:04:30</czas></utwór>
+				<utwór numer = "12. "><tytuł>Let&apos; Take a Ride</tytuł><czas>00:04:44</czas></utwór>
+				<utwór numer = "13. "><tytuł>Never Again</tytuł><czas>00:04:35</czas></utwór>
+			</utwory>
+		</płyta>
+		<płyta ID="a28">
+			<tytuł gatunekPłyty = "4">&quot;gloria!&quot;</tytuł>
+			<autor kraj = "Kuba">Gloria Estefan</autor>
+			<rok>1998</rok>
+			<czas_całkowity>01:13:28</czas_całkowity>
+			<cena waluta="PLN">19.99</cena>
+			<utwory>
+				<utwór numer = "1. "><tytuł>Heaven&apos;s What I Feel</tytuł><czas>00:05:02</czas></utwór>
+				<utwór numer = "2. "><tytuł>Don&apos;t Stop</tytuł><czas>00:04:27</czas></utwór>
+				<utwór numer = "3. "><tytuł>Oye!</tytuł><czas>00:04:40</czas></utwór>
+				<utwór numer = "4. "><tytuł>Real Woman</tytuł><czas>00:04:22</czas></utwór>
+				<utwór numer = "5. "><tytuł>Feelin</tytuł><czas>00:04:10</czas></utwór>
+				<utwór numer = "6. "><tytuł>Don&apos;t Release Me</tytuł><czas>00:04:16</czas></utwór>
+				<utwór numer = "7. "><tytuł>Don&apos;t Let This Moment End</tytuł><czas>00:04:42</czas></utwór>
+				<utwór numer = "8. "><tytuł>Touched By An Angel</tytuł><czas>00:04:11</czas></utwór>
+				<utwór numer = "9. "><tytuł>Lucky Girl</tytuł><czas>00:04:31</czas></utwór>
+				<utwór numer = "10. "><tytuł>I Just Wanna Be Happy</tytuł><czas>00:03:54</czas></utwór>
+				<utwór numer = "11. "><tytuł>Cuba Libre</tytuł><czas>00:04:38</czas></utwór>
+			</utwory>
+		</płyta>
+	</płyty>
+</płytoteka>
