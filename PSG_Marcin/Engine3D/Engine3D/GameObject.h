@@ -51,7 +51,7 @@ public:
 	GameObject(const GameObject&);
 	~GameObject();
 
-	virtual bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, LightDirectional* light, LightAmbient* ambient, D3DXVECTOR3 viewVector);
+	virtual bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, Light* lights[], D3DXVECTOR3 viewVector);
 	void Destroy();
 
 	bool GetDestroySignal();

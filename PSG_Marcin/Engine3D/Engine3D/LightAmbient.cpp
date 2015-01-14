@@ -1,12 +1,11 @@
 #include "LightAmbient.h"
 
-
 LightAmbient::LightAmbient() : Light()
 {
 	m_diffuseColor.x = 0.0f;
 	m_diffuseColor.y = 0.0f;
 	m_diffuseColor.z = 0.0f;
-	m_diffuseColor.w = 0.0f;
+	m_diffuseColor.w = 1.0f;
 
 	this->name = "LightAmbient";
 }
@@ -14,6 +13,18 @@ LightAmbient::LightAmbient() : Light()
 LightAmbient::LightAmbient(D3DXVECTOR4 diffuseColor) : LightAmbient()
 {
 	m_diffuseColor = diffuseColor;
+}
+
+LightAmbient::LightAmbient(ifstream &is) : LightAmbient()
+{
+	string line; 
+
+	is >> this->name;
+	is >> this->m_diffuseColor.x;
+	is >> this->m_diffuseColor.y;
+	is >> this->m_diffuseColor.z;
+
+	is >> line;
 }
 
 LightAmbient::LightAmbient(const LightAmbient&)

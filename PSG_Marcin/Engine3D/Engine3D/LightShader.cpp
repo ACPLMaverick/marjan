@@ -30,10 +30,10 @@ bool LightShader::Initialize(ID3D11Device* device, HWND hwnd, int id)
 }
 
 bool LightShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, 
-	D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor)
+	D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 diffuseColors[], D3DXVECTOR4 lightDirections[], unsigned int lightCount, D3DXVECTOR4 ambientColor)
 {
 	bool result;
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, diffuseColor, lightDirection, ambientColor);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, diffuseColors, lightDirections, lightCount, ambientColor);
 	if (!result) return false;
 
 	RenderShader(deviceContext, indexCount);
@@ -237,7 +237,8 @@ void LightShader::ShutdownShader()
 	}
 }
 
-bool LightShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR4 diffuseColor, D3DXVECTOR3 lightDirection, D3DXVECTOR4 ambientColor)
+bool LightShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, 
+	ID3D11ShaderResourceView* texture, D3DXVECTOR4 diffuseColors[], D3DXVECTOR4 lightDirections[], unsigned int lightCount, D3DXVECTOR4 ambientColor)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -278,9 +279,14 @@ bool LightShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMA
 	if (FAILED(result)) return false;
 
 	dataPtr02 = (LightBuffer*)mappedResource.pData;
-	dataPtr02->diffuseColor = diffuseColor;
-	dataPtr02->lightDirection = lightDirection;
-	dataPtr02->padding = 0.0f;
+
+	for (int i = 0; i < lightCount; i++)
+	{
+		dataPtr02->diffuseColor[i] = diffuseColors[i];
+		dataPtr02->lightDirection[i] = lightDirections[i];
+	}
+	dataPtr02->lightDirection[0].w = lightCount;
+
 	deviceContext->Unmap(m_lightBuffer, 0);
 
 	result = deviceContext->Map(m_ambientBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);

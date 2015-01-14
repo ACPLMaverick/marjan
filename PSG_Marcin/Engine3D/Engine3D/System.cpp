@@ -164,7 +164,7 @@ bool System::Frame()
 		goTab[i] = gameObjects.at(j);
 	}*/
 	
-	result = myGraphics->Frame(myScene->GetGameObjectsAsArray(), myScene->GetGameObjectsSize());
+	result = myGraphics->Frame(myScene->GetGameObjectsAsArray(), myScene->GetGameObjectsSize(), myScene->GetLightArray());
 	if (!result) return false;
 
 	return true;

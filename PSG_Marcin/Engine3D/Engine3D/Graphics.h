@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Sprite2D.h"
+#include "Light.h"
 #include "LightDirectional.h"
 #include "LightAmbient.h"
 #include "TextureShader.h"
@@ -40,10 +41,7 @@ private:
 	TextureManager* textureManager;
 	ShaderManager* shaderManager;
 
-	LightDirectional* m_Light;
-	LightAmbient* m_Ambient;
-
-	bool Render(GameObject* objects[], unsigned int objectCount);
+	bool Render(GameObject* objects[], unsigned int objectCount, Light* lights[]);
 	//bool InitializeModels();
 	bool InitializeManagers(HWND hwnd);
 	//void RelaseModels();
@@ -54,7 +52,7 @@ public:
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
-	bool Frame(GameObject* objects[], unsigned int objectCount);
+	bool Frame(GameObject* objects[], unsigned int objectCount, Light* lights[]);
 
 	TextureManager* GetTextures();
 	ShaderManager* GetShaders();

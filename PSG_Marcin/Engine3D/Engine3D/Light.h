@@ -1,6 +1,9 @@
 #pragma once
 #include <D3DX10math.h>
 #include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
 
 class Light
 {

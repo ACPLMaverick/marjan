@@ -4,9 +4,8 @@ SamplerState sampleType;
 
 cbuffer LightBuffer
 {
-	float4 diffuseColor;
-	float3 lightDirection;
-	float padding;
+	float4 diffuseColors[16];
+	float4 lightDirections[16];
 };
 
 cbuffer AmbientLightBuffer
@@ -38,32 +37,33 @@ float4 SpecularPixelShader(PixelInput input) : SV_TARGET
 	float3 lightDir;
 	float lightIntensity;
 	float4 color;
+	float4 finalColor = float4(0, 0, 0, 0);
+	float lightCount = lightDirections[0].w;
 
 	float3 r;
 	float3 v;
 	float4 specular;
 
-	//float specularIntensity = 1.0f;
-	//float glossiness = 100;
-	//float4 specularColor = float4(1, 1, 1, 1);
-
 	// sample pixel color from texture using sampler at this texture coordinate location
 	textureColor = shaderTexture.Sample(sampleType, input.tex);
 
-	lightDir = -lightDirection;
-	lightIntensity = saturate(dot(input.normal, lightDir));
+	for (int i = 0; i < lightCount; i++)
+	{
+		lightDir = -lightDirections[i];
+		lightIntensity = saturate(dot(input.normal, lightDir));
 
-	// compute for specular
-	r = normalize(lightDir - 2 * dot(lightDir, input.normal) * input.normal);
-	v = viewVector;
+		// compute for specular
+		r = normalize(lightDir - 2 * dot(-lightDir, input.normal) * input.normal);
+		v = viewVector;
 
-	float dotProduct = dot(r, v);
-	specular = specularIntensity * specularColor * max(pow(dotProduct, glossiness), 0) * length(textureColor) * lightIntensity;
+		float dotProduct = saturate(dot(r, v));
+		specular = specularIntensity * specularColor * max(pow(dotProduct, glossiness), 0) * length(textureColor) * lightIntensity;
 
-	// combine with diffuse
-	color = saturate(diffuseColor*lightIntensity + ambientColor);
+		// combine with diffuse
+		color = saturate(diffuseColors[i]*lightIntensity + ambientColor);
 
-	color = color*textureColor + specular*textureColor.a;
+		finalColor = saturate(finalColor + color*textureColor + specular*textureColor.a*diffuseColors[i]);
+	}
 
-	return color;
+	return finalColor;
 }
