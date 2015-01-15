@@ -1,51 +1,28 @@
-#include "TextureShader.h"
+#include "LightDeferredShader.h"
 
 
-TextureShader::TextureShader()
-{
-	m_vertexShader = nullptr;
-	m_pixelShader = nullptr;
-	m_layout = nullptr;
-	m_matrixBuffer = nullptr;
-	m_sampleState = nullptr;
-}
-
-TextureShader::TextureShader(const TextureShader& other)
+LightDeferredShader::LightDeferredShader()
 {
 }
 
-TextureShader::~TextureShader()
+LightDeferredShader::LightDeferredShader(const LightDeferredShader &other)
 {
 }
 
-bool TextureShader::Initialize(ID3D11Device* device, HWND hwnd, int id)
+LightDeferredShader::~LightDeferredShader()
+{
+}
+
+bool LightDeferredShader::Initialize(ID3D11Device* device, HWND hwnd, int id)
 {
 	bool result;
 	this->myID = id;
-	result = InitializeShader(device, hwnd, "TextureVertexShader.hlsl", "TexturePixelShader.hlsl");
+	result = InitializeShader(device, hwnd, "DiffuseDeferredVertexShader.hlsl", "DiffuseDeferredPixelShader.hlsl");
 	if (!result) return false;
 	return true;
 }
 
-void TextureShader::Shutdown()
-{
-	ShutdownShader();
-}
-
-
-bool TextureShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, float blend)
-{
-	bool result;
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, blend);
-	if (!result) return false;
-
-	RenderShader(deviceContext, indexCount);
-
-	return true;
-}
-
-
-bool TextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFilename, LPCSTR psFilename)
+bool LightDeferredShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFilename, LPCSTR psFilename)
 {
 	//////////////// loads the shader files and makes it usable to DirectX and the GPU
 
@@ -56,6 +33,8 @@ bool TextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsF
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
+	D3D11_BUFFER_DESC lightBufferDesc;
+	D3D11_BUFFER_DESC ambientBufferDesc;
 
 	D3D11_SAMPLER_DESC samplerDesc;
 
@@ -65,7 +44,7 @@ bool TextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsF
 
 	// shader compilation into buffers
 
-	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "TextureVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "DiffuseDeferredVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 		&vertexShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
@@ -80,7 +59,7 @@ bool TextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsF
 		return false;
 	}
 
-	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "TexturePixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
+	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "DiffuseDeferredPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL,
 		&pixelShaderBuffer, &errorMessage, NULL);
 	if (FAILED(result))
 	{
@@ -164,69 +143,53 @@ bool TextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsF
 	result = device->CreateSamplerState(&samplerDesc, &m_sampleState);
 	if (FAILED(result)) return false;
 
+	// Setup the description of the light dynamic constant buffer that is in the pixel shader.
+	// Note that ByteWidth always needs to be a multiple of 16 if using D3D11_BIND_CONSTANT_BUFFER or CreateBuffer will fail.
+	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightBufferDesc.ByteWidth = sizeof(LightBuffer);
+	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightBufferDesc.MiscFlags = 0;
+	lightBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&lightBufferDesc, NULL, &m_lightBuffer);
+	if (FAILED(result)) return false;
+
+	ambientBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	ambientBufferDesc.ByteWidth = sizeof(AmbientBuffer);
+	ambientBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	ambientBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	ambientBufferDesc.MiscFlags = 0;
+	ambientBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&ambientBufferDesc, NULL, &m_ambientBuffer);
+	if (FAILED(result)) return false;
+
 	return true;
 }
 
-
-void TextureShader::ShutdownShader()
+bool LightDeferredShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
+	D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* textureColors, ID3D11ShaderResourceView* textureNormals, D3DXVECTOR4 diffuseColors[], D3DXVECTOR4 lightDirections[],
+	unsigned int lightCount, D3DXVECTOR4 ambientColor)
 {
-	if (m_matrixBuffer)
-	{
-		m_matrixBuffer->Release();
-		m_matrixBuffer = nullptr;
-	}
-	if (m_layout)
-	{
-		m_layout->Release();
-		m_layout = nullptr;
-	}
-	if (m_pixelShader)
-	{
-		m_pixelShader->Release();
-		m_pixelShader = nullptr;
-	}
-	if (m_vertexShader)
-	{
-		m_vertexShader->Release();
-		m_vertexShader = nullptr;
-	}
-	if (m_sampleState)
-	{
-		m_sampleState->Release();
-		m_sampleState = nullptr;
-	}
+	bool result;
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, textureColors, textureNormals, diffuseColors, lightDirections, lightCount, ambientColor);
+	if (!result) return false;
+
+	RenderShader(deviceContext, indexCount);
+
+	return true;
 }
 
-
-void TextureShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, LPCSTR sFilename)
-{
-	char* compileErrors;
-	unsigned long bufferSize;
-	ofstream fout;
-
-	compileErrors = (char*)(errorMessage->GetBufferPointer());
-	bufferSize = errorMessage->GetBufferSize();
-
-	fout.open("shader-error.txt");
-	for (int i = 0; i < bufferSize; i++)
-	{
-		fout << compileErrors[i];
-	}
-	fout.close();
-
-	errorMessage->Release();
-	errorMessage = nullptr;
-
-	MessageBox(hwnd, "Error compiling shader. Check shader-error.txt for message. ", sFilename, MB_OK);
-}
-
-
-bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, float blend)
+bool LightDeferredShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
+	ID3D11ShaderResourceView* textureColors, ID3D11ShaderResourceView* textureNormals, D3DXVECTOR4 diffuseColors[], D3DXVECTOR4 lightDirections[], unsigned int lightCount, D3DXVECTOR4 ambientColor)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBuffer* dataPtr;
 	unsigned int bufferNumber;
+	LightBuffer* dataPtr02;
+	AmbientBuffer* dataPtr03;
 
 	// TRANSPOSING MATRICES!!!!!! REQUIREMENT IN DX11
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
@@ -253,34 +216,33 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DX
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	// set shader resource in pixel shader
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, 1, &textureColors);
+	deviceContext->PSSetShaderResources(1, 1, &textureNormals);
 
-	//// setting the blendAmount value inside pixel shader before rendering same as above
-	//result = deviceContext->Map(m_transparentBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	//if (FAILED(result)) return false;
+	// setting the light constant buffer
+	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result)) return false;
 
-	//dataPtr02 = (TransparentBuffer*)mappedResource.pData;
-	//dataPtr02->blendAmount = blend;
-	//deviceContext->Unmap(m_transparentBuffer, 0);
+	dataPtr02 = (LightBuffer*)mappedResource.pData;
 
-	//bufferNumber = 0;
-	//deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_transparentBuffer);
+	for (int i = 0; i < lightCount; i++)
+	{
+		dataPtr02->diffuseColor[i] = diffuseColors[i];
+		dataPtr02->lightDirection[i] = lightDirections[i];
+	}
+	dataPtr02->lightDirection[0].w = lightCount;
+
+	deviceContext->Unmap(m_lightBuffer, 0);
+
+	result = deviceContext->Map(m_ambientBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result)) return false;
+	dataPtr03 = (AmbientBuffer*)mappedResource.pData;
+	dataPtr03->ambientColor = ambientColor;
+	deviceContext->Unmap(m_ambientBuffer, 0);
+
+	bufferNumber = 0;
+	ID3D11Buffer** buffers[2] = { &m_lightBuffer, &m_ambientBuffer };
+	deviceContext->PSSetConstantBuffers(bufferNumber, 2, buffers[0]);
 
 	return true;
-}
-
-void TextureShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
-{
-	// set vertex input layout
-	deviceContext->IASetInputLayout(m_layout);
-
-	// set vertex and pixel shaders
-	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
-	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
-
-	// including sampler state
-	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
-
-	// RENDER THE SHIT OUT OF IT!!!!!!!!!!
-	deviceContext->DrawIndexed(indexCount, 0, 0);
 }
