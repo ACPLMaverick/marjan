@@ -39,7 +39,7 @@ bool System::Initialize()
 	if (!result) return false;
 
 	myScene = new Scene();
-	myScene->Initialize(myGraphics, m_hwnd, "./Scenes/TestScene.sc");
+	myScene->Initialize(myGraphics, m_hwnd, "./Scenes/TestSceneDeferred.sc");
 
 	m_FPS = new FPSCounter();
 	m_FPS->Initialize();
@@ -164,7 +164,7 @@ bool System::Frame()
 		goTab[i] = gameObjects.at(j);
 	}*/
 	
-	result = myGraphics->Frame(myScene->GetGameObjectsAsArray(), myScene->GetGameObjectsSize());
+	result = myGraphics->Frame(myScene->GetGameObjectsAsArray(), myScene->GetGameObjectsSize(), myScene->GetLightArray());
 	if (!result) return false;
 
 	return true;

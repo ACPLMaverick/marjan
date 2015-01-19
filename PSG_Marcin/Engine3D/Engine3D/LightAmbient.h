@@ -1,8 +1,7 @@
 #pragma once
-#include <D3DX10math.h>
 #include "Light.h"
 
-class LightAmbient : Light
+class LightAmbient : public Light
 {
 private:
 	D3DXVECTOR4 m_diffuseColor;
@@ -10,6 +9,7 @@ private:
 public:
 	LightAmbient();
 	LightAmbient(D3DXVECTOR4 diffuseColor);
+	LightAmbient(ifstream &is);
 	LightAmbient(const LightAmbient&);
 	~LightAmbient();
 

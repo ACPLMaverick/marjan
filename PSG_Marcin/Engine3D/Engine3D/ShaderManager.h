@@ -4,6 +4,8 @@
 #include "TextureShader.h"
 #include "LightShader.h"
 #include "SpecularShader.h"
+#include "DeferredShader.h"
+#include "LightDeferredShader.h"
 
 class ShaderManager
 {

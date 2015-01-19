@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.w3schools.com"
+xmlns:my="http://www.w3schools.com"
+elementFormDefault="qualified">
+
+  <xs:simpleType name="typNrAlbumu">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{6}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="typLab">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="dzien" type="xs:string" fixed="Poniedziałek"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="typInfo">
+    <xs:sequence>
+      <xs:sequence maxOccurs='2'>
+        <xs:element name="imię_i_nazwisko" type="xs:string"/>
+        <xs:element name="nr_albumu" type="my:typNrAlbumu"/>
+      </xs:sequence>
+      <xs:element name="laboratorium" type="my:typLab"/>
+      <xs:element name="prowadząca" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="typGatunek">
+    <xs:attribute name="typ" type="xs:string" use="required"/>
+  </xs:complexType>
+  
+  <xs:complexType name="typGatunki">
+    <xs:sequence minOccurs='1' maxOccurs='unbounded'>
+      <xs:element name="gatunek" type="my:typGatunek"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="typTytuł">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="gatunekPłyty" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="typAutor">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="kraj" type="my:typKraj" use="optional" default="WielkaBrytania"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="typCenaExt">
+    <xs:simpleContent>
+      <xs:extension base="my:typCena">
+        <xs:attribute name="waluta" type="my:typWaluta" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:simpleType name="typCena">
+    <xs:restriction base="xs:decimal">
+      <xs:totalDigits value="4"/>
+      <xs:fractionDigits value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typLiczbaPorządkowa">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{0,1}[0-9]. "/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="typUtwory">
+    <xs:sequence minOccurs="5" maxOccurs="40">
+      <xs:element name="utwór">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="numer" type="my:typLiczbaPorządkowa"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="czas" type="xs:time"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="typKraj">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="WielkaBrytania"/>
+      <xs:enumeration value="USA"/>
+      <xs:enumeration value="Holandia"/>
+      <xs:enumeration value="Finlandia"/>
+      <xs:enumeration value="Niemcy"/>
+      <xs:enumeration value="Szwecja"/>
+      <xs:enumeration value="Australia"/>
+      <xs:enumeration value="Kuba"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typWaluta">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PLN"/>
+      <xs:enumeration value="EUR"/>
+      <xs:enumeration value="GBP"/>
+      <xs:enumeration value="USD"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="typPłyta">
+    <xs:sequence>
+      <xs:element name="tytuł" type="my:typTytuł"/>
+      <xs:element name="autor" type="my:typAutor"/>
+      <xs:element name="rok" type="xs:gYear"/>
+      <xs:element name="czas_całkowity" type="xs:time"/>
+      <xs:element name="cena" type="my:typCenaExt"/>
+      <xs:element name="utwory" type="my:typUtwory"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="typTYTUŁ" mixed="true">
+    <xs:choice>
+      <xs:element name="płyta" type="my:typPłyta" minOccurs ="0" maxOccurs="unbounded"/>
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:complexType name="typPłyty">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:element name="TYTUŁ" type="my:typTYTUŁ"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="płytoteka">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="nagłówek" type="xs:string"/>
+        <xs:element name="info" type ="my:typInfo"/>
+        <xs:element name="gatunki" type="my:typGatunki"/>
+        <xs:element name="płyty" type="my:typPłyty">
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:key name="unikalnyGatunek">
+      <xs:selector xpath="my:gatunki/my:gatunek"/>
+      <xs:field xpath="@typ"/>
+    </xs:key>
+    <xs:keyref name="gatunekRef" refer="my:unikalnyGatunek">
+      <xs:selector xpath="my:płyty/my:tytuł"/>
+      <xs:field xpath="@gatunekPłyty"/>
+    </xs:keyref>
+  </xs:element>
+ 
+</xs:schema>

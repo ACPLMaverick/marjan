@@ -1,8 +1,7 @@
 #pragma once
-#include <D3DX10math.h>
 #include "Light.h"
 
-class LightDirectional : Light
+class LightDirectional : public Light
 {
 private:
 	D3DXVECTOR4 m_diffuseColor;
@@ -10,6 +9,7 @@ private:
 public:
 	LightDirectional();
 	LightDirectional(D3DXVECTOR4 diffuseColor, D3DXVECTOR3 direction);
+	LightDirectional(ifstream &is);
 	LightDirectional(const LightDirectional&);
 	~LightDirectional();
 

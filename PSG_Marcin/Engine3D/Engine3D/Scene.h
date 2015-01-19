@@ -25,8 +25,11 @@ private:
 	vector<GameObject*> gameObjects;
 	GameObject* player;
 
+	Light* lights[LIGHT_MAX_COUNT];
+
 	void InitializeGameObjects();
 	//void InitializeTerrain();
+	void InitializeLights();
 	void LoadFromFile();
 public:
 	static unsigned int checkGameObjects;
@@ -49,6 +52,7 @@ public:
 
 	GameObject* GetPlayer();
 	GameObject** GetGameObjectsAsArray();
+	Light** GetLightArray();
 	unsigned int GetGameObjectsSize();
 	GameObject* GetGameObjectByName(LPCSTR name);
 	void GetGameObjectsByTag(LPCSTR tag, GameObject** ptr, unsigned int &count);

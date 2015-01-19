@@ -8,7 +8,6 @@ TextureShader::TextureShader()
 	m_layout = nullptr;
 	m_matrixBuffer = nullptr;
 	m_sampleState = nullptr;
-	m_transparentBuffer = nullptr;
 }
 
 TextureShader::TextureShader(const TextureShader& other)
@@ -57,7 +56,6 @@ bool TextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsF
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
-	D3D11_BUFFER_DESC transparentBufferDesc;
 
 	D3D11_SAMPLER_DESC samplerDesc;
 
@@ -166,17 +164,6 @@ bool TextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsF
 	result = device->CreateSamplerState(&samplerDesc, &m_sampleState);
 	if (FAILED(result)) return false;
 
-	// setup the constant buffer in the transparency pixel shader
-	transparentBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	transparentBufferDesc.ByteWidth = sizeof(TransparentBuffer);
-	transparentBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; 
-	transparentBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	transparentBufferDesc.MiscFlags = 0;
-	transparentBufferDesc.StructureByteStride = 0;
-
-	result = device->CreateBuffer(&transparentBufferDesc, NULL, &m_transparentBuffer);
-	if (FAILED(result)) return false;
-
 	return true;
 }
 
@@ -207,11 +194,6 @@ void TextureShader::ShutdownShader()
 	{
 		m_sampleState->Release();
 		m_sampleState = nullptr;
-	}
-	if (m_transparentBuffer)
-	{
-		m_transparentBuffer->Release();
-		m_transparentBuffer = nullptr;
 	}
 }
 
@@ -245,7 +227,6 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DX
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBuffer* dataPtr;
 	unsigned int bufferNumber;
-	TransparentBuffer* dataPtr02;
 
 	// TRANSPOSING MATRICES!!!!!! REQUIREMENT IN DX11
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);
@@ -274,16 +255,16 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DX
 	// set shader resource in pixel shader
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
-	// setting the blendAmount value inside pixel shader before rendering same as above
-	result = deviceContext->Map(m_transparentBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (FAILED(result)) return false;
+	//// setting the blendAmount value inside pixel shader before rendering same as above
+	//result = deviceContext->Map(m_transparentBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	//if (FAILED(result)) return false;
 
-	dataPtr02 = (TransparentBuffer*)mappedResource.pData;
-	dataPtr02->blendAmount = blend;
-	deviceContext->Unmap(m_transparentBuffer, 0);
+	//dataPtr02 = (TransparentBuffer*)mappedResource.pData;
+	//dataPtr02->blendAmount = blend;
+	//deviceContext->Unmap(m_transparentBuffer, 0);
 
-	bufferNumber = 0;
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_transparentBuffer);
+	//bufferNumber = 0;
+	//deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_transparentBuffer);
 
 	return true;
 }

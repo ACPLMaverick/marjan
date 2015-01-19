@@ -58,9 +58,9 @@ GameObject::GameObject(ifstream &is, Graphics* myGraphics, HWND hwnd) : GameObje
 	D3DXVECTOR3 rot;
 	D3DXVECTOR3 scl;
 
-	is >> line;
+	//is >> line;
 
-	if (line != "GameObject{") GameObject();
+	//if (line != "GameObject{") GameObject();
 
 	is >> myName;
 	is >> myTag;
@@ -99,12 +99,26 @@ GameObject::~GameObject()
 	// possible memory leak?
 }
 
-bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, LightDirectional* light, LightAmbient* ambient, D3DXVECTOR3 viewVector)
+bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, Light* lights[], D3DXVECTOR3 viewVector)
 {
 	if (myTag == "player") canAnimate = System::playerAnimation;
 	if (animationTextures.size() > 0 && canAnimate)AnimateTexture();
 	bool result;
 	myModel->Render(deviceContext);
+
+	LightAmbient* ambient = (LightAmbient*)lights[0];
+	int count = 0;
+	for (; lights[count + 1] != nullptr; count++);
+	D3DXVECTOR4 cols[LIGHT_MAX_COUNT];
+	D3DXVECTOR4 dirs[LIGHT_MAX_COUNT];
+	
+	for (int i = 0; i < count; i++)
+	{
+		cols[i] = ((LightDirectional*) lights[i + 1])->GetDiffuseColor();
+		dirs[i] = D3DXVECTOR4(((LightDirectional*)lights[i + 1])->GetDirection().x, ((LightDirectional*)lights[i + 1])->GetDirection().y, ((LightDirectional*)lights[i + 1])->GetDirection().z, 0);
+	}
+	cols[0].w = count;
+
 	if (myShader->myID == 0)
 	{
 		result = myShader->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), 1.0f);
@@ -112,13 +126,13 @@ bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatr
 	else if (myShader->myID == 1)
 	{
 		LightShader* ls = (LightShader*)myShader;
-		result = ls->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), light->GetDiffuseColor(), light->GetDirection(), ambient->GetDiffuseColor());
+		result = ls->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), cols, dirs, count, ambient->GetDiffuseColor());
 	}
 	else if (myShader->myID == 2)
 	{
 		SpecularShader* ls = (SpecularShader*)myShader;
 		result = ls->Render(deviceContext, myModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, myTexture->GetTexture(), 
-			light->GetDiffuseColor(), light->GetDirection(), ambient->GetDiffuseColor(), viewVector, this->specularColor, this->specularIntensity, this->specularGlossiness);
+			cols, dirs, count, ambient->GetDiffuseColor(), viewVector, this->specularColor, this->specularIntensity, this->specularGlossiness);
 	}
 	
 	if (!result) return false;

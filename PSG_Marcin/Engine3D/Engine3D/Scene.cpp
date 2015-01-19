@@ -5,6 +5,11 @@ Scene::Scene()
 {
 	checkGameObjects = false;
 	player = nullptr;
+
+	for (int i = 0; i < LIGHT_MAX_COUNT; i++)
+	{
+		lights[i] = nullptr;
+	}
 }
 
 Scene::Scene(const Scene &other)
@@ -33,6 +38,7 @@ void Scene::Initialize(Graphics* myGraphics, HWND hwnd, string filePath)
 	this->filePath = filePath;
 
 	this->LoadFromFile();
+	//InitializeLights();
 	//InitializeGameObjects();
 	//SaveToFile();
 }
@@ -50,9 +56,21 @@ void Scene::LoadFromFile()
 	is >> placek;
 	name = placek;
 
+	int i = 0;
 	while (!is.eof())
 	{
-		gameObjects.push_back(new GameObject(is, myGraphics, m_hwnd));
+		is >> placek;
+		if (placek == "GameObject{") gameObjects.push_back(new GameObject(is, myGraphics, m_hwnd));
+		else if (placek == "LightAmbient{" && i < LIGHT_MAX_COUNT)
+		{
+			lights[i] = new LightAmbient(is);
+			i++;
+		}
+		else if (placek == "LightDirectional{" && i < LIGHT_MAX_COUNT)
+		{
+			lights[i] = new LightDirectional(is);
+			i++;
+		}
 	}
 
 	is.close();
@@ -83,6 +101,11 @@ void Scene::Shutdown()
 		(*it) = nullptr;
 	}
 	gameObjects.clear();
+
+	for (int i = 0; i < LIGHT_MAX_COUNT; i++)
+	{
+		if (lights[i] != nullptr) delete lights[i];
+	}
 }
 
 void Scene::InitializeGameObjects()
@@ -121,6 +144,13 @@ void Scene::InitializeGameObjects()
 //	terrain = new Terrain("Configs/TerrainProperties.xml", myGraphics->GetTextures(), (myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0), myGraphics->GetD3D());
 //	terrain->Initialize();
 //}
+
+void Scene::InitializeLights()
+{
+	lights[0] = new LightAmbient(D3DXVECTOR4(0.0f, 0.0f, 0.15f, 1.0f));
+	lights[1] = new LightDirectional(D3DXVECTOR4(1.0f, 0.8f, 0.6f, 1.0f), D3DXVECTOR3(-0.5f, -0.7f, 1.0f));
+	lights[2] = new LightDirectional(D3DXVECTOR4(0.5f, 0.0f, 0.0f, 1.0f), D3DXVECTOR3(0.5f, -0.7f, -1.0f));
+}
 
 void Scene::Add(GameObject* obj)
 {
@@ -165,6 +195,11 @@ void Scene::CheckGameObjects()
 GameObject* Scene::GetPlayer()
 {
 	return player;
+}
+
+Light** Scene::GetLightArray()
+{
+	return lights;
 }
 
 GameObject* Scene::GetGameObjectByName(LPCSTR name)
