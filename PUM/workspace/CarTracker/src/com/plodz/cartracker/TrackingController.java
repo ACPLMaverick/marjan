@@ -17,6 +17,7 @@ public class TrackingController {
 	public static final int STAT_COUNT = 7;
 	
 	public boolean ifUpdate = true;
+	public boolean isTripSaved = false;
 	
 	private MapController mc;
 	private TrackActivity activity;
@@ -46,7 +47,7 @@ public class TrackingController {
 	public void initialize()
 	{
 		mc = new MapController(activity);
-		trip = new Trip(activity.getApplicationContext());
+		trip = new Trip(activity);
 		
 		statConsTxt = (TextView) activity.findViewById(R.id.statConsumedFuelTxt);
 		statCostTxt = (TextView) activity.findViewById(R.id.statCostTxt);
@@ -133,6 +134,7 @@ public class TrackingController {
 		saveTripToDB();
 		
 		ifRunning = false;
+		isTripSaved = true;
 		
 		mc.disconnectLocationClient();
 		

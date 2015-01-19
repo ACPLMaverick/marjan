@@ -112,6 +112,7 @@ public class LogStatisticsController {
 		// reset map to default
 		CameraUpdate defupd = CameraUpdateFactory.newCameraPosition(defaultPos);
 		statMap.animateCamera(defupd, 1, null);
+		statMap.clear();
 		if(currentPolyline != null) currentPolyline.remove();
 		
 		if(loclist.size() > 1)

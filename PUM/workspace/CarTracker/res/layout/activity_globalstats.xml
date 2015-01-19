@@ -4,17 +4,99 @@
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
     
-    <TableLayout
+   	<TableLayout
         android:layout_width="match_parent"
     	android:layout_height="wrap_content"
     	android:id="@+id/gs_filtersLayout"
        	>
        	
-        
-        <TextView
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:text="filters" />
+       <TableRow 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+            	android:orientation="vertical"
+                >
+                
+           <TextView
+			       style="@style/FilterStyle"
+			       android:layout_width="wrap_content"
+			       android:layout_height="wrap_content"
+			       android:layout_weight="1"
+			       android:gravity="left"
+			       android:text="@string/str_gs_filter_datefrom" />
+           <Spinner
+			        android:id="@+id/spFilterDateFrom"
+			        android:layout_width="wrap_content"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="right" />
+                
+       </TableRow>
+       
+       <TableRow 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+            	android:orientation="vertical"
+                >
+                
+           <TextView
+			       style="@style/FilterStyle"
+			       android:layout_width="wrap_content"
+			       android:layout_height="wrap_content"
+			       android:layout_weight="1"
+			       android:gravity="left"
+			       android:text="@string/str_gs_filter_dateto" />
+           <Spinner
+			        android:id="@+id/spFilterDateTo"
+			        android:layout_width="wrap_content"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="right" />
+                
+       </TableRow>
+       
+       <TableRow 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+            	android:orientation="vertical"
+                >
+                
+           <TextView
+			       style="@style/FilterStyle"
+			       android:layout_width="wrap_content"
+			       android:layout_height="wrap_content"
+			       android:layout_weight="1"
+			       android:gravity="left"
+			       android:text="@string/str_gs_filter_startloc" />
+           <Spinner
+			        android:id="@+id/spFilterStartLoc"
+			        android:layout_width="wrap_content"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="right" />
+                
+       </TableRow>
+       
+       <TableRow 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+            	android:orientation="vertical"
+                >
+                
+           <TextView
+			       style="@style/FilterStyle"
+			       android:layout_width="wrap_content"
+			       android:layout_height="wrap_content"
+			       android:layout_weight="1"
+			       android:gravity="left"
+			       android:text="@string/str_gs_filter_endloc" />
+           <Spinner
+			        android:id="@+id/spFilterEndLoc"
+			        android:layout_width="wrap_content"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="right" />
+                
+       </TableRow>
         
     </TableLayout>
 
