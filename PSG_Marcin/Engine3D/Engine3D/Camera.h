@@ -10,7 +10,10 @@ private:
 	D3DXVECTOR3 m_rotation;
 	D3DXVECTOR3 m_target;
 
+	D3DXVECTOR3 m_yawPitchRoll;
+
 	D3DXMATRIX m_viewMatrix;
+	D3DXMATRIX m_baseViewMatrix;
 public:
 	Camera();
 	Camera(const Camera&);
@@ -25,6 +28,9 @@ public:
 	D3DXVECTOR3 GetTarget();
 
 	void Render();
+	void RenderBaseViewMatrix();
 	void GetViewMatrix(D3DXMATRIX&);
+	void GetBaseViewMatrix(D3DXMATRIX&);
+	D3DXVECTOR3 GetYawPitchRoll();
 };
 

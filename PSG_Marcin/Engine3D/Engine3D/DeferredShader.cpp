@@ -33,7 +33,6 @@ bool DeferredShader::InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vs
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
-	D3D11_BUFFER_DESC transparentBufferDesc;
 
 	D3D11_SAMPLER_DESC samplerDesc;
 

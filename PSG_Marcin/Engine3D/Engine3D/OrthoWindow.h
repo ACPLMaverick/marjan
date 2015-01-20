@@ -3,10 +3,10 @@
 class OrthoWindow :
 	public Model
 {
-private:
+protected:
 	unsigned int mWindowWidth;
 	unsigned int mWindowHeight;
-	virtual VertexIndex* LoadGeometry(bool ind);
+	virtual VertexIndex* LoadGeometry(bool ind, string filePath);
 public:
 	OrthoWindow();
 	OrthoWindow(const OrthoWindow &other);

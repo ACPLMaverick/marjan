@@ -46,6 +46,8 @@ public:
 	GameObject();
 	GameObject(string name, string tag, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	GameObject(string name, string tag, string modelPath, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
+	GameObject(string name, string tag, string modelPath, Texture* texture, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale,
+		D3DXVECTOR4 specularColor, float specularIntensity, float specularGlossiness);
 	GameObject(string name, string tag, Texture* animationTextures[], unsigned int textureCount, TextureShader* shader, ID3D11Device*, D3DXVECTOR3 position, D3DXVECTOR3 rotation, D3DXVECTOR3 scale);
 	GameObject(ifstream &is, Graphics* myGraphics, HWND hwnd);
 	GameObject(const GameObject&);

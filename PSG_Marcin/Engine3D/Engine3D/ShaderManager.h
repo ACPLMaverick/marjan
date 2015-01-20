@@ -6,6 +6,7 @@
 #include "SpecularShader.h"
 #include "DeferredShader.h"
 #include "LightDeferredShader.h"
+#include "SpecularDeferredShader.h"
 
 class ShaderManager
 {

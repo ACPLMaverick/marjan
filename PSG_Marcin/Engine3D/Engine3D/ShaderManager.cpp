@@ -56,6 +56,11 @@ bool ShaderManager::AddShaders(ID3D11Device* device, HWND hwnd)
 	if (result) shaders.insert(pair<LPCSTR, TextureShader*>("LightDeferredShader", myLightDefer));
 	else return false;
 
+	SpecularDeferredShader* mySpecDefer = new SpecularDeferredShader();
+	result = mySpecDefer->Initialize(device, hwnd, 5);
+	if (result) shaders.insert(pair<LPCSTR, TextureShader*>("SpecularDeferredShader", mySpecDefer));
+	else return false;
+
 	return result;
 }
 

@@ -41,7 +41,6 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	D3D11_RASTERIZER_DESC rasterDesc;
-	D3D11_VIEWPORT viewport;
 	ID3D11BlendState* blendState;
 	D3D11_BLEND_DESC blendStateDescription;
 	float fieldOfView, screenAspect;
@@ -460,4 +459,14 @@ void Direct3D::ZBufferOn()
 void Direct3D::ZBufferOff()
 {
 	m_deviceContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
+}
+
+void Direct3D::SetBackBufferRenderTarget()
+{
+	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+}
+
+void Direct3D::ResetViewport()
+{
+	m_deviceContext->RSSetViewports(1, &viewport);
 }

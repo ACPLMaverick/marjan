@@ -32,6 +32,8 @@ private:
 	ID3D11BlendState* m_blendState;
 	ID3D11DepthStencilState* m_depthDisabledStencilState;
 
+	D3D11_VIEWPORT viewport;
+
 	D3DXMATRIX m_projectionMatrix;
 	D3DXMATRIX m_worldMatrix;
 	D3DXMATRIX m_orthoMatrix;
@@ -57,6 +59,9 @@ public:
 
 	void ZBufferOn();
 	void ZBufferOff();
+
+	void SetBackBufferRenderTarget();
+	void ResetViewport();
 };
 
 #endif

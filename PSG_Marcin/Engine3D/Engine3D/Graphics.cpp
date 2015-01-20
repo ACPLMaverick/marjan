@@ -21,7 +21,6 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
 	myHwnd = hwnd;
-	D3DXMATRIX baseViewMatrix;
 
 	m_D3D = new Direct3D();
 	if (!m_D3D) return false;
@@ -39,6 +38,12 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Camera->SetTarget(D3DXVECTOR3(0.0f, 0.0f, 1.0f));
 	m_Camera->Render();
 	m_Camera->GetViewMatrix(baseViewMatrix);
+
+	mFullScreenWindow = new OrthoWindow();
+	mFullScreenWindow->Initialize(m_D3D->GetDevice(), SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	mDeferredBuffer = new DeferredBuffer();
+	mDeferredBuffer->Initialize(m_D3D->GetDevice(), SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_DEPTH, SCREEN_NEAR);
 
 	InitializeManagers(myHwnd);
 
@@ -86,6 +91,15 @@ void Graphics::Shutdown()
 		delete debugText;
 		debugText = nullptr;
 	}
+
+	if (mDeferredBuffer)
+	{
+		mDeferredBuffer->Shutdown();
+	}
+	if (mFullScreenWindow)
+	{
+		mFullScreenWindow->Shutdown();
+	}
 }
 
 bool Graphics::Frame(GameObject* objects[], unsigned int objectCount, Light* lights[])
@@ -105,35 +119,109 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount, Light* li
 		D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
 		bool result;
 
-		m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
-		
-		m_Camera->GetViewMatrix(viewMatrix);
-		m_Camera->Render();
-
-		m_D3D->GetWorldnMatrix(worldMatrix);
-		m_D3D->GetProjectionMatrix(projectionMatrix);
-		m_D3D->GetOrthoMatrix(orthoMatrix);
-
-		result = debugText->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
-		if (!result) return false;
-
-		D3DXVECTOR3 viewVector;
-		D3DXVec3Subtract(&viewVector, &m_Camera->GetPosition(), &m_Camera->GetTarget());
-
-		GameObject* obj;
-		for (int i = 0; i < objectCount; i++)
+		if (DEFERRED)
 		{
-			obj = objects[i];
-			obj->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights, viewVector);
+			result = RenderSceneToTexture(objects, objectCount);
+			if (!result) return false;
+
+			m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
+			m_Camera->Render();
+
+			m_Camera->GetViewMatrix(viewMatrix);
+			m_D3D->GetWorldnMatrix(worldMatrix);
+			m_D3D->GetOrthoMatrix(orthoMatrix);
+
+			m_D3D->ZBufferOff();
+
+			mFullScreenWindow->Render(m_D3D->GetDeviceContext());
+
+			LightAmbient* ambient = (LightAmbient*)lights[0];
+			int count = 0;
+			for (; lights[count + 1] != nullptr && count <= LIGHT_MAX_COUNT; count++);
+			D3DXVECTOR4 cols[LIGHT_MAX_COUNT];
+			D3DXVECTOR4 dirs[LIGHT_MAX_COUNT];
+
+			for (int i = 1; i <= count; i++)
+			{
+				cols[i - 1] = ((LightDirectional*)lights[i])->GetDiffuseColor();
+				dirs[i - 1] = D3DXVECTOR4(((LightDirectional*)lights[i])->GetDirection().x, ((LightDirectional*)lights[i])->GetDirection().y, 
+					((LightDirectional*)lights[i])->GetDirection().z, 0);
+			}
+			cols[0].w = count;
+
+			D3DXVECTOR3 viewVector;
+			D3DXVec3Subtract(&viewVector, &m_Camera->GetPosition(), &m_Camera->GetTarget());
+
+			SpecularDeferredShader* shader = (SpecularDeferredShader*)shaderManager->LoadShader(m_D3D->GetDevice(), myHwnd, 5);
+			result = shader->Render(m_D3D->GetDeviceContext(), mFullScreenWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix, mDeferredBuffer->GetShaderResourceView(0),
+				mDeferredBuffer->GetShaderResourceView(1), cols, dirs, count, ambient->GetDiffuseColor(), viewVector, D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 100.0f);
+			
+			m_D3D->ZBufferOn();
+
+			m_D3D->EndScene();
+
+			return true;
 		}
-		delete[] objects;
+		else
+		{
+			m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-		m_D3D->EndScene();
 
-		return true;
+			m_Camera->GetViewMatrix(viewMatrix);
+			m_Camera->Render();
+
+			m_D3D->GetWorldnMatrix(worldMatrix);
+			m_D3D->GetProjectionMatrix(projectionMatrix);
+			m_D3D->GetOrthoMatrix(orthoMatrix);
+
+			result = debugText->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
+			if (!result) return false;
+
+			D3DXVECTOR3 viewVector;
+			D3DXVec3Subtract(&viewVector, &m_Camera->GetPosition(), &m_Camera->GetTarget());
+
+			GameObject* obj;
+			for (int i = 0; i < objectCount; i++)
+			{
+				obj = objects[i];
+				obj->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights, viewVector);
+			}
+			delete[] objects;
+			
+			m_D3D->EndScene();
+
+			return true;
+		}
+		
 	}
 	else return false;
+}
+
+bool Graphics::RenderSceneToTexture(GameObject* objects[], unsigned int objectCount)
+{
+	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
+
+	mDeferredBuffer->SetRenderTargets(m_D3D->GetDeviceContext());
+	mDeferredBuffer->ClearRenderTargets(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 0.0f);
+
+	m_Camera->GetViewMatrix(viewMatrix);
+
+	m_D3D->GetWorldnMatrix(worldMatrix);
+	m_D3D->GetProjectionMatrix(projectionMatrix);
+
+	GameObject* obj;
+	for (int i = 0; i < objectCount; i++)
+	{
+		obj = objects[i];
+		obj->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, NULL, D3DXVECTOR3(0.0f,0.0f,0.0f));
+	}
+	delete[] objects;
+
+	m_D3D->SetBackBufferRenderTarget();
+	m_D3D->ResetViewport();
+
+	return true;
 }
 
 bool Graphics::InitializeManagers(HWND hwnd)

@@ -17,7 +17,9 @@
 #include "TextureManager.h"
 #include "ShaderManager.h"
 #include "GameObject.h"
+#include "OrthoWindow.h"
 #include "Text.h"
+#include "DeferredBuffer.h"
 
 // globals
 const bool FULL_SCREEN = false;
@@ -38,12 +40,18 @@ private:
 	Text* debugText;
 	HWND myHwnd;
 
+	D3DXMATRIX baseViewMatrix;
+
 	TextureManager* textureManager;
 	ShaderManager* shaderManager;
+
+	OrthoWindow* mFullScreenWindow;
+	DeferredBuffer* mDeferredBuffer;
 
 	bool Render(GameObject* objects[], unsigned int objectCount, Light* lights[]);
 	//bool InitializeModels();
 	bool InitializeManagers(HWND hwnd);
+	bool RenderSceneToTexture(GameObject* objects[], unsigned int objectCount);
 	//void RelaseModels();
 public:
 	Graphics();

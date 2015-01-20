@@ -6,6 +6,8 @@ Input::Input()
 	m_directInput = 0;
 	m_keyboard = 0;
 	m_mouse = 0;
+	prevMouseX = 0;
+	prevMouseY = 0;
 }
 
 Input::Input(const Input& other)

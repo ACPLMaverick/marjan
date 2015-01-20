@@ -4,8 +4,8 @@ SamplerState sampleType;
 
 cbuffer LightBuffer
 {
-	float4 diffuseColors[16];
-	float4 lightDirections[16];
+	float4 diffuseColors[1000];
+	float4 lightDirections[1000];
 };
 
 cbuffer AmbientLightBuffer

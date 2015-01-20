@@ -1,7 +1,7 @@
 #include "OrthoWindow.h"
 
 
-OrthoWindow::OrthoWindow()
+OrthoWindow::OrthoWindow() : Model(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), D3D11_USAGE_DEFAULT, "")
 {
 }
 
@@ -31,7 +31,7 @@ bool OrthoWindow::Initialize(ID3D11Device* device, unsigned int windowWidth, uns
 	return true;
 }
 
-OrthoWindow::VertexIndex* OrthoWindow::LoadGeometry(bool ind)
+OrthoWindow::VertexIndex* OrthoWindow::LoadGeometry(bool ind, string filePath)
 {
 	m_vertexCount = 6;
 	m_indexCount = 6;
@@ -39,7 +39,7 @@ OrthoWindow::VertexIndex* OrthoWindow::LoadGeometry(bool ind)
 	unsigned long* indices;
 	vertices = new Vertex[m_vertexCount];
 
-	float left = (float)((mWindowWidth / 2)*-1);
+	float left = (((float)mWindowWidth / 2.0f)*-1.0f);
 	float right = left + (float)mWindowWidth;
 	float top = (float)(mWindowHeight / 2);
 	float bottom = top - (float)mWindowHeight;

@@ -37,10 +37,15 @@ void Scene::Initialize(Graphics* myGraphics, HWND hwnd, string filePath)
 	this->m_hwnd = hwnd;
 	this->filePath = filePath;
 
-	this->LoadFromFile();
-	//InitializeLights();
-	//InitializeGameObjects();
-	//SaveToFile();
+	if (TESTMODE)
+	{
+		InitializeLights();
+		InitializeGameObjects();
+	}
+	else
+	{
+		this->LoadFromFile();
+	}
 }
 
 void Scene::LoadFromFile()
@@ -110,33 +115,57 @@ void Scene::Shutdown()
 
 void Scene::InitializeGameObjects()
 {
+	int shaderCode = DEFERRED ? 3 : 2;
 	string texPath = "./Assets/Textures/noTexture.dds";
 	string texPath02 = "./Assets/Textures/test.dds";
 	string texPath03 = "./Assets/Textures/metal01_d.dds";
-	GameObject* go01 = new GameObject(
-		"player",
-		"player",
-		"./Assets/Models/DefaultSphere.obj",
-		(myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texPath02.c_str())),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
-		myGraphics->GetD3D()->GetDevice(),
-		D3DXVECTOR3(0.0f, 1.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 180.0f, 0.0f),
-		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	player = go01;
-	gameObjects.push_back(go01);
 
-	GameObject* go02 = new GameObject(
+	GameObject* ter = new GameObject(
 		"plane",
 		"terrain_collid",
 		"./Assets/Models/BaseTerrain.obj",
 		(myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texPath03.c_str())),
-		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 0),
+		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, shaderCode),
 		myGraphics->GetD3D()->GetDevice(),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	gameObjects.push_back(go02);
+		D3DXVECTOR3(1.0f, 1.0f, 1.0f),
+		D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f),
+		1.0f,
+		100.0f);
+	gameObjects.push_back(ter);
+
+	GameObject* go;
+	float newx, newy, newz;
+	int inlin = ((int)sqrt(OBJECTS_COUNT));
+	int rozstrz = 4;
+
+	for (int i = 0, j = 0, k = 0; i < OBJECTS_COUNT; i++)
+	{
+		newx = (float)(rozstrz * (j - inlin / 2));
+		newy = 1.8f;
+		newz = (float)(rozstrz * (k - inlin / 2));
+		go = new GameObject(
+			"ball",
+			"ball_test",
+			"./Assets/Models/DefaultSphere.obj",
+			(myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texPath02.c_str())),
+			(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, shaderCode),
+			myGraphics->GetD3D()->GetDevice(),
+			D3DXVECTOR3(newx, newy, newz),
+			D3DXVECTOR3(0.0f, 180.0f, 0.0f),
+			D3DXVECTOR3(1.0f, 1.0f, 1.0f),
+			D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f),
+			1.0f,
+			100.0f);
+		gameObjects.push_back(go);
+		if (i % inlin == 0 && i != 0)
+		{
+			j = 0;
+			k++;
+		}
+		else j++;
+	}
 }
 //
 //void Scene::InitializeTerrain()
@@ -148,8 +177,12 @@ void Scene::InitializeGameObjects()
 void Scene::InitializeLights()
 {
 	lights[0] = new LightAmbient(D3DXVECTOR4(0.0f, 0.0f, 0.15f, 1.0f));
-	lights[1] = new LightDirectional(D3DXVECTOR4(1.0f, 0.8f, 0.6f, 1.0f), D3DXVECTOR3(-0.5f, -0.7f, 1.0f));
-	lights[2] = new LightDirectional(D3DXVECTOR4(0.5f, 0.0f, 0.0f, 1.0f), D3DXVECTOR3(0.5f, -0.7f, -1.0f));
+	float genNumber;
+	for (int i = 1; i <= LIGHT_MAX_COUNT - 1; i++)
+	{
+		genNumber = (float)(i / LIGHT_MAX_COUNT);
+		lights[i] = new LightDirectional(D3DXVECTOR4(genNumber, genNumber, genNumber, 1.0f), D3DXVECTOR3(genNumber, genNumber, genNumber));
+	}
 }
 
 void Scene::Add(GameObject* obj)

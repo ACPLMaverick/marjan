@@ -24,6 +24,7 @@ private:
 	void ProcessInput();
 public:
 	float movementDistance = 0.01f;
+	float prevMouseX, prevMouseY;
 
 	Input();
 	Input(const Input&);

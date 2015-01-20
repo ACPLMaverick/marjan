@@ -5,7 +5,7 @@ player
 player
 Assets/Models/DefaultSphere.obj
 Assets/Textures/test.dds
-2
+3
 1.000000 1.000000 1.000000 1.000000
 1.000000
 100.000000
@@ -18,7 +18,7 @@ player2
 player2
 Assets/Models/DefaultSphere.obj
 Assets/Textures/test.dds
-2
+3
 1.000000 1.000000 1.000000 1.000000
 1.000000
 100.000000
@@ -31,10 +31,10 @@ plane
 terrain_collid
 Assets/Models/BaseTerrain.obj
 Assets/Textures/metal01_d.dds
-2
-1.000000 1.000000 1.000000 1.000000
-1.000000
-100.000000
+3
+0.000000 0.000000 0.000000 1.000000
+0.000000
+0.000000
 0.000000 0.000000 0.000000
 0.000000 0.000000 0.000000
 1.000000 1.000000 1.000000
@@ -47,24 +47,4 @@ LightDirectional{
 mainDirectional
 1.000000 0.800000 0.800000
 -0.500000 -0.700000 1.000000
-}
-LightDirectional{
-additionalDirectional1
-0.300000 0.000000 0.000000
-0.500000 -0.700000 -1.000000
-}
-LightDirectional{
-additionalDirectional2
-0.000000 0.400000 0.000000
-0.000000 -1.000000 1.000000
-}
-LightDirectional{
-additionalDirectional3
-0.000000 0.500000 0.500000
-0.000000 0.000000 1.000000
-}
-LightDirectional{
-additionalDirectional4
-0.800000 0.200000 0.000000
-0.800000 -0.300000 -1.000000
 }

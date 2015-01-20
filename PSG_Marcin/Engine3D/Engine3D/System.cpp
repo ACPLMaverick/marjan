@@ -39,7 +39,7 @@ bool System::Initialize()
 	if (!result) return false;
 
 	myScene = new Scene();
-	myScene->Initialize(myGraphics, m_hwnd, "./Scenes/TestSceneDeferred.sc");
+	myScene->Initialize(myGraphics, m_hwnd, SCENE_PATH);
 
 	m_FPS = new FPSCounter();
 	m_FPS->Initialize();
@@ -151,6 +151,7 @@ bool System::Frame()
 
 	myScene->CheckGameObjects();
 	ProcessCamera();
+	//TransformCamera();
 
 	/*vector<GameObject*> terVec = terrain->GetTiles();
 	GameObject** goTab = new GameObject*[gameObjects.size() + terVec.size()];
@@ -261,6 +262,7 @@ void System::ProcessCamera()
 
 	cam->SetTarget(lookAt);
 }
+
 //
 //void System::PlayerShoot()
 //{
@@ -351,8 +353,8 @@ void System::InitializeWindows(int& screenWidth, int& screenHeight)
 	else
 	{
 		// 800x600 resolution
-		screenWidth = 800;
-		screenHeight = 600;
+		screenWidth = SCREEN_WIDTH;
+		screenHeight = SCREEN_HEIGHT;
 
 		// position window in the middle
 		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
