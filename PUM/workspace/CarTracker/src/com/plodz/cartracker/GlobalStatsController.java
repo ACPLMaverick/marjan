@@ -17,8 +17,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -53,6 +58,8 @@ public class GlobalStatsController {
 	private GregorianCalendar filterEndDate;
 	private String filterStartAddress;
 	private String filterEndAddress;
+	ArrayList<Long> filteredDatesFrom = new ArrayList<Long>();
+	ArrayList<Long> filteredDatesTo = new ArrayList<Long>();
 	
 	private TextView tvGStotaltripcount;
 	private TextView tvGStotalfuelcost;
@@ -64,6 +71,11 @@ public class GlobalStatsController {
 	private TextView tvGStotaldistance;
 	private TextView tvGSavgtime;
 	private TextView tvGStotaltime;
+	
+	private Spinner spFilterStartDate;
+	private Spinner spFilterEndDate;
+	private Spinner spFilterStartAddress;
+	private Spinner spFilterEndAddress;
 	
 	private int tripCount = 0;
 	private float totalCost = 0.0f;
@@ -130,10 +142,13 @@ public class GlobalStatsController {
 		
 		updateFilters();
 		updateData();
+		
+		initializeSpinners();
+		
 		if(tripsFiltered.size() > 0)
 		{
 			initializeCharts();
-			updateCharts();
+			//updateCharts();
 		}
 	}
 	
@@ -327,30 +342,35 @@ public class GlobalStatsController {
 		{
 	    case 1:
 	    	trCost = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutCons);
+	    	trCost.removeAllViews();
 	    	gvCons = ChartFactory.getTimeChartView(activity, dsCost, renderer, dateFormat);
 			trCost.addView(gvCons, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			trCost.invalidate();
 	    	break;
 	    case 2:
 	    	trCost = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutDist);
+	    	trCost.removeAllViews();
 	    	gvDist = ChartFactory.getTimeChartView(activity, dsCost, renderer, dateFormat);
 			trCost.addView(gvDist, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			trCost.invalidate();
 	    	break;
 	    case 3:
 	    	trCost = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutAvgSpd);
+	    	trCost.removeAllViews();
 	    	gvAvgSpd = ChartFactory.getTimeChartView(activity, dsCost, renderer, dateFormat);
 			trCost.addView(gvAvgSpd, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			trCost.invalidate();
 	    	break;
 	    case 4:
 	    	trCost = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutTime);
+	    	trCost.removeAllViews();
 	    	gvTime = ChartFactory.getTimeChartView(activity, dsCost, renderer, dateFormat);
 			trCost.addView(gvTime, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			trCost.invalidate();
 	    	break;
 	    default:
 	    	trCost = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutCost);
+	    	trCost.removeAllViews();
 	    	gvCost = ChartFactory.getTimeChartView(activity, dsCost, renderer, dateFormat);
 			trCost.addView(gvCost, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			trCost.invalidate();
@@ -380,7 +400,187 @@ public class GlobalStatsController {
 	
 	private void updateCharts()
 	{
+		TimeSeries sCost = new TimeSeries("");
+		TimeSeries sCons = new TimeSeries("");
+		TimeSeries sDist = new TimeSeries("");
+		TimeSeries sAvgSpd = new TimeSeries("");
+		TimeSeries sTime = new TimeSeries("");
 		
+		for(Trip trip : tripsFiltered)
+		{
+		    	sCons.add(trip.startTime.getTime(), trip.fuelConsumed);
+		    	sDist.add(trip.startTime.getTime(), trip.distance);
+		    	sAvgSpd.add(trip.startTime.getTime(), trip.avgSpeed);
+		    	sTime.add(trip.startTime.getTime(), (trip.endTime.getTimeInMillis() - trip.startTime.getTimeInMillis()));
+		    	sCost.add(trip.startTime.getTime(), trip.fuelCost);
+		}
+		
+	}
+	
+	private void initializeSpinners()
+	{
+		spFilterStartDate = (Spinner) activity.findViewById(R.id.spFilterDateFrom);
+		spFilterEndDate = (Spinner) activity.findViewById(R.id.spFilterDateTo);
+		spFilterStartAddress = (Spinner) activity.findViewById(R.id.spFilterStartLoc);
+		spFilterEndAddress = (Spinner) activity.findViewById(R.id.spFilterEndLoc);
+		
+		ArrayList<String> contentDateFrom = new ArrayList<String>();
+		ArrayList<String> contentDateTo = new ArrayList<String>();
+		ArrayList<String> contentAdrFrom = new ArrayList<String>();
+		ArrayList<String> contentAdrTo = new ArrayList<String>();
+		long prevDateFrom = 0;
+		long prevDateTo = 0;
+		String prevAdrFrom = "";
+		String prevAdrTo = "";
+		
+		contentDateFrom.add(activity.getString(R.string.str_gs_filter_anyloc));
+		contentDateTo.add(activity.getString(R.string.str_gs_filter_anyloc));
+		contentAdrFrom.add(activity.getString(R.string.str_gs_filter_anyloc));
+		contentAdrTo.add(activity.getString(R.string.str_gs_filter_anyloc));
+		filteredDatesFrom.add((long)0);
+		filteredDatesTo.add(Long.MAX_VALUE);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+		
+		for(Trip trip : trips)
+		{
+			if(prevDateFrom != trip.startTime.getTimeInMillis())
+			{
+				prevDateFrom = trip.startTime.getTimeInMillis();
+				contentDateFrom.add(sdf.format(trip.startTime.getTimeInMillis()));
+				filteredDatesFrom.add(trip.startTime.getTimeInMillis());
+			}
+			if(prevDateTo != trip.endTime.getTimeInMillis())
+			{
+				prevDateFrom = trip.endTime.getTimeInMillis();
+				contentDateTo.add(sdf.format(trip.endTime.getTimeInMillis()));
+				filteredDatesTo.add(trip.startTime.getTimeInMillis());
+			}
+			if(!prevAdrFrom.equals(trip.startAddress))
+			{
+				prevAdrFrom = trip.startAddress;
+				contentAdrFrom.add(trip.startAddress);
+			}
+			if(!prevAdrTo.equals(trip.endAddress))
+			{
+				prevAdrTo = trip.endAddress;
+				contentAdrTo.add(trip.endAddress);
+			}
+		}
+		
+		ArrayAdapter<String> adDateFrom = new ArrayAdapter<String>(activity, R.layout.gs_filterlayout, contentDateFrom);
+		ArrayAdapter<String> adDateTo = new ArrayAdapter<String>(activity, R.layout.gs_filterlayout, contentDateTo);
+		ArrayAdapter<String> adAdrFrom = new ArrayAdapter<String>(activity, R.layout.gs_filterlayout, contentAdrFrom);
+		ArrayAdapter<String> adAdrTo = new ArrayAdapter<String>(activity, R.layout.gs_filterlayout, contentAdrTo);
+		
+		spFilterStartDate.setAdapter(adDateFrom);
+		spFilterEndDate.setAdapter(adDateTo);
+		spFilterStartAddress.setAdapter(adAdrFrom);
+		spFilterEndAddress.setAdapter(adAdrTo);
+		
+		adDateFrom.notifyDataSetChanged();
+		adDateTo.notifyDataSetChanged();
+		adAdrFrom.notifyDataSetChanged();
+		adAdrTo.notifyDataSetChanged();
+		
+		spFilterStartDate.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				filterStartDate.setTimeInMillis(filteredDatesFrom.get(arg2));
+				
+				updateFilters();
+				updateData();
+				if(tripsFiltered.size() > 1) initializeCharts();
+				else removeCharts();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+			
+		});
+		spFilterEndDate.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				filterEndDate.setTimeInMillis(filteredDatesTo.get(arg2));
+				
+				updateFilters();
+				updateData();
+				if(tripsFiltered.size() > 1) initializeCharts();
+				else removeCharts();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+			
+		});
+		spFilterStartAddress.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				if(arg2 == 0)
+				{
+					filterStartAddress = "";
+				}
+				else filterStartAddress = ((TextView)arg1).getText().toString();
+				
+				updateFilters();
+				updateData();
+				if(tripsFiltered.size() > 1) initializeCharts();
+				else removeCharts();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+			
+		});
+		spFilterEndAddress.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				if(arg2 == 0)
+				{
+					filterEndAddress = "";
+				}
+				else filterEndAddress = ((TextView)arg1).getText().toString();
+				
+				updateFilters();
+				updateData();
+				if(tripsFiltered.size() > 1) initializeCharts();
+				else removeCharts();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+			
+		});
+	}
+	
+	private void removeCharts()
+	{
+		TableLayout chartParentCost = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutCost);
+		TableLayout chartParentCons = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutCons);
+		TableLayout chartParentDist = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutDist);
+		TableLayout chartParentAvgSpd = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutAvgSpd);
+		TableLayout chartParentTime = (TableLayout) activity.findViewById(R.id.gs_chartsLayoutTime);
+		chartParentCost.removeAllViews();
+		chartParentCons.removeAllViews();
+		chartParentDist.removeAllViews();
+		chartParentAvgSpd.removeAllViews();
+		chartParentTime.removeAllViews();
 	}
 	
 	private String timeToString(long time)

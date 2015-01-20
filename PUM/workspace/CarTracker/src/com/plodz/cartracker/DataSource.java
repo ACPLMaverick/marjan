@@ -179,6 +179,13 @@ public class DataSource {
 		return true;
 	}
 	
+	public void removeTripAt(long sTime)
+	{
+		database.delete(MySQLiteHelper.TABLE_TRIPS, 
+				MySQLiteHelper.COLUMN_STARTTIME + " = " + String.valueOf(sTime),
+				null);
+	}
+	
 	public void clearMiscTable()
 	{
 		database.delete(MySQLiteHelper.TABLE_MISC, null, null);

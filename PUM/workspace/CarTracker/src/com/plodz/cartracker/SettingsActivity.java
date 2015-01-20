@@ -54,7 +54,7 @@ public class SettingsActivity extends Activity {
 	protected void initializeSettings()
     {
 	   	settingFuelConsumption.setText(String.valueOf(Globals.myFuelConsumption));
-    	settingUpdateRatio.setText(String.valueOf(Globals.DBG_updateRatio));
+    	settingUpdateRatio.setText(String.format("%.7f",Globals.DBG_updateRatio));
     	settingCheckRatio.setText(String.valueOf(Globals.checkDelay));
     	
     	settingUpdateRatio.addTextChangedListener(new TextWatcher() {

@@ -40,7 +40,7 @@ public class TrackActivity extends Activity {
 	protected void onStop()
 	{
 		super.onStop();
-		//controller.endTracking();
+		if(!controller.isTripSaved) controller.endTracking(); 
 	}
 	
 	@Override
@@ -48,12 +48,15 @@ public class TrackActivity extends Activity {
 	{
 		super.onDestroy();
 		// TOOD: what happens when we quit tracking?
-		//controller.endTracking();
+		if(!controller.isTripSaved) controller.endTracking(); 
 	}
 	
 	public void startTracking() { controller.startTracking(); }
 	
-	public void endTrackingButtonClick(View v) { controller.endTracking(); }
+	public void endTrackingButtonClick(View v)
+	{ 
+		if(!controller.isTripSaved) controller.endTracking(); 
+	}
 	
 	public void pauseTrackingButtonClick(View v) { controller.pauseTracking(v); }
 }

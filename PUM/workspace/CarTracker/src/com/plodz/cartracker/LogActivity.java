@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -101,6 +102,23 @@ public class LogActivity extends FragmentActivity {
 			}
     		
     	});
+    	
+    	lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				long remTime = tmList.get(arg2).getStartTime();
+				tmList.remove(arg2);
+				MainActivity.data.open();
+				MainActivity.data.removeTripAt(remTime);
+				MainActivity.data.close();
+				
+				initializeListView();
+				return true;
+			}
+    		
+		});
 	}
 	
 	

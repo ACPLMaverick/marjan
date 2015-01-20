@@ -187,7 +187,10 @@ public class Trip {
 //		average /= nodes.size();
 //		avgSpeed = average;
 		
-		avgSpeed = (distance / (float)((currentTime.getTimeInMillis())/3600000));
+		float t = currentTime.get(GregorianCalendar.SECOND) + 60*currentTime.get(GregorianCalendar.MINUTE) + 
+				3600*currentTime.get(GregorianCalendar.HOUR);
+		t = t/3600.0f;
+		avgSpeed = (distance / t);
 	}
 
 	private void updateFuelCost()

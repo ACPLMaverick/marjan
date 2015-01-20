@@ -75,5 +75,10 @@
     <string name="str_chart_dist">Distance travelled</string>
     <string name="str_chart_time">Time taken</string>
     <string name="str_chart_val_date">Date</string>
+    <string name="str_gs_filter_datefrom">Date from:</string>
+    <string name="str_gs_filter_dateto">Date to:</string>
+    <string name="str_gs_filter_startloc">Start address:</string>
+    <string name="str_gs_filter_endloc">End address:</string>
+    <string name="str_gs_filter_anyloc">all</string>
 
 </resources>
