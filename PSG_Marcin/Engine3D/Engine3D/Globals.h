@@ -11,10 +11,11 @@
 #define VK_LETTER_D 0x44
 #define VK_LETTER_E 0x45
 
-#define LIGHT_MAX_COUNT 1000
-#define OBJECTS_COUNT 50
+#define LIGHT_MAX_COUNT 100
+#define OBJECTS_COUNT 5
 
-#define DEFERRED 0
-#define TESTMODE 0
+static int DEFERRED = 0;
+static const int TESTMODE = 1;
 
-#define SCENE_PATH "./Scenes/TestScene.sc"
+static const char* SCENE_PATH_DEFERRED = "./Scenes/TestSceneDeferred.sc";
+static const char* SCENE_PATH = "./Scenes/TestScene.sc";

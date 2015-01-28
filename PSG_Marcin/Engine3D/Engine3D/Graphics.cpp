@@ -119,7 +119,7 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount, Light* li
 		D3DXMATRIX viewMatrix, projectionMatrix, worldMatrix, orthoMatrix;
 		bool result;
 
-		if (DEFERRED)
+		if (System::deferredFlag)
 		{
 			result = RenderSceneToTexture(objects, objectCount);
 			if (!result) return false;
@@ -142,7 +142,7 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount, Light* li
 			D3DXVECTOR4 cols[LIGHT_MAX_COUNT];
 			D3DXVECTOR4 dirs[LIGHT_MAX_COUNT];
 
-			for (int i = 1; i <= count; i++)
+			for (int i = 1; i <= count && i < LIGHT_MAX_COUNT; i++)
 			{
 				cols[i - 1] = ((LightDirectional*)lights[i])->GetDiffuseColor();
 				dirs[i - 1] = D3DXVECTOR4(((LightDirectional*)lights[i])->GetDirection().x, ((LightDirectional*)lights[i])->GetDirection().y, 
@@ -150,12 +150,9 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount, Light* li
 			}
 			cols[0].w = count;
 
-			D3DXVECTOR3 viewVector;
-			D3DXVec3Subtract(&viewVector, &m_Camera->GetPosition(), &m_Camera->GetTarget());
-
 			SpecularDeferredShader* shader = (SpecularDeferredShader*)shaderManager->LoadShader(m_D3D->GetDevice(), myHwnd, 5);
 			result = shader->Render(m_D3D->GetDeviceContext(), mFullScreenWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix, mDeferredBuffer->GetShaderResourceView(0),
-				mDeferredBuffer->GetShaderResourceView(1), cols, dirs, count, ambient->GetDiffuseColor(), viewVector, D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 100.0f);
+				mDeferredBuffer->GetShaderResourceView(1), cols, dirs, count, ambient->GetDiffuseColor(), m_Camera->GetPosition(), D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 50.0f);
 			
 			m_D3D->ZBufferOn();
 
@@ -178,14 +175,11 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount, Light* li
 			result = debugText->Render(m_D3D->GetDeviceContext(), worldMatrix, orthoMatrix);
 			if (!result) return false;
 
-			D3DXVECTOR3 viewVector;
-			D3DXVec3Subtract(&viewVector, &m_Camera->GetPosition(), &m_Camera->GetTarget());
-
 			GameObject* obj;
 			for (int i = 0; i < objectCount; i++)
 			{
 				obj = objects[i];
-				obj->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights, viewVector);
+				obj->Render(m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, lights, m_Camera->GetPosition());
 			}
 			delete[] objects;
 			

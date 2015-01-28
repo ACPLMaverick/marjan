@@ -107,15 +107,15 @@ void Scene::Shutdown()
 	}
 	gameObjects.clear();
 
-	for (int i = 0; i < LIGHT_MAX_COUNT; i++)
-	{
-		if (lights[i] != nullptr) delete lights[i];
-	}
+	//for (int i = 0; i < LIGHT_MAX_COUNT; i++)
+	//{
+	//	if (lights[i] != nullptr) delete lights[i];
+	//}
 }
 
 void Scene::InitializeGameObjects()
 {
-	int shaderCode = DEFERRED ? 3 : 2;
+	int shaderCode = System::deferredFlag ? 3 : 2;
 	string texPath = "./Assets/Textures/noTexture.dds";
 	string texPath02 = "./Assets/Textures/test.dds";
 	string texPath03 = "./Assets/Textures/metal01_d.dds";
@@ -126,6 +126,7 @@ void Scene::InitializeGameObjects()
 		"./Assets/Models/BaseTerrain.obj",
 		(myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texPath03.c_str())),
 		(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, shaderCode),
+		(DeferredShader*)(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 3),
 		myGraphics->GetD3D()->GetDevice(),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
@@ -151,6 +152,7 @@ void Scene::InitializeGameObjects()
 			"./Assets/Models/DefaultSphere.obj",
 			(myGraphics->GetTextures()->LoadTexture(myGraphics->GetD3D()->GetDevice(), texPath02.c_str())),
 			(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, shaderCode),
+			(DeferredShader*)(myGraphics->GetShaders())->LoadShader(myGraphics->GetD3D()->GetDevice(), m_hwnd, 3),
 			myGraphics->GetD3D()->GetDevice(),
 			D3DXVECTOR3(newx, newy, newz),
 			D3DXVECTOR3(0.0f, 180.0f, 0.0f),
@@ -176,12 +178,13 @@ void Scene::InitializeGameObjects()
 
 void Scene::InitializeLights()
 {
+	srand(0);
+	float random;
 	lights[0] = new LightAmbient(D3DXVECTOR4(0.0f, 0.0f, 0.15f, 1.0f));
-	float genNumber;
 	for (int i = 1; i <= LIGHT_MAX_COUNT - 1; i++)
 	{
-		genNumber = (float)(i / LIGHT_MAX_COUNT);
-		lights[i] = new LightDirectional(D3DXVECTOR4(genNumber, genNumber, genNumber, 1.0f), D3DXVECTOR3(genNumber, genNumber, genNumber));
+		random = ((float)(rand() % 1001))/1000.0f;
+		lights[i] = new LightDirectional(D3DXVECTOR4(random, random, random, 1.0f), D3DXVECTOR3(random, random, random));
 	}
 }
 

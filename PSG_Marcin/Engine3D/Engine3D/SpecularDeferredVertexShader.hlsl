@@ -17,6 +17,7 @@ struct PixelInput
 {
 	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
+	matrix worldMatrix : TEXCOORD1;
 };
 //////////////////////
 PixelInput SpecularDeferredVertexShader(VertexInput input)
@@ -31,6 +32,7 @@ PixelInput SpecularDeferredVertexShader(VertexInput input)
 
 	// store texture coordinates for pixel shader!
 	output.tex = input.tex;
+	output.worldMatrix = worldMatrix;
 
 	return output;
 }

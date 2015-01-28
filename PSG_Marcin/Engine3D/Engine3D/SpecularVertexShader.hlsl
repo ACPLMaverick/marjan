@@ -19,6 +19,7 @@ struct PixelInput
 	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
+	matrix worldMatrix : TEXCOORD1;
 };
 //////////////////////
 PixelInput SpecularVertexShader(VertexInput input)
@@ -39,6 +40,7 @@ PixelInput SpecularVertexShader(VertexInput input)
 
 	//normalize vector
 	output.normal = normalize(output.normal);
+	output.worldMatrix = worldMatrix;
 
 	return output;
 }

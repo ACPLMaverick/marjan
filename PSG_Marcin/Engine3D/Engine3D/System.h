@@ -43,11 +43,13 @@ private:
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 	//void PlayerShoot();
+	unsigned long keyTime;
 public:
 	static unsigned long frameCount;
 	static bool playerAnimation;
 	static float time;
 	static unsigned long systemTime;
+	static bool deferredFlag;
 
 	System();
 	System(const System&);

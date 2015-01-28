@@ -4,6 +4,7 @@ unsigned long System::frameCount;
 bool System::playerAnimation;
 float System::time;
 unsigned long System::systemTime;
+bool System::deferredFlag = DEFERRED;
 
 System::System()
 {
@@ -13,6 +14,7 @@ System::System()
 	m_CPU = nullptr;
 	m_FPS = nullptr;
 	m_Timer = nullptr;
+	keyTime = 0;
 }
 
 
@@ -39,7 +41,7 @@ bool System::Initialize()
 	if (!result) return false;
 
 	myScene = new Scene();
-	myScene->Initialize(myGraphics, m_hwnd, SCENE_PATH);
+	myScene->Initialize(myGraphics, m_hwnd, DEFERRED ? SCENE_PATH_DEFERRED : SCENE_PATH);
 
 	m_FPS = new FPSCounter();
 	m_FPS->Initialize();
@@ -221,6 +223,14 @@ bool System::ProcessKeys()
 		cam->SetPosition(newerVec);
 		playerAnimation = true;
 		toReturn = true;
+	}
+	if (myInput->IsKeyDown(DIK_E))
+	{
+		if (timeGetTime() - keyTime > 500)
+		{
+			keyTime = timeGetTime();
+			deferredFlag ? deferredFlag = false : deferredFlag = true;
+		}
 	}
 	
 	if (myInput->IsKeyDown(DIK_SPACE))

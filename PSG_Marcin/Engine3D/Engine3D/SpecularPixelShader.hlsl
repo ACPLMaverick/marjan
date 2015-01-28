@@ -4,8 +4,8 @@ SamplerState sampleType;
 
 cbuffer LightBuffer
 {
-	float4 diffuseColors[1000];
-	float4 lightDirections[1000];
+	float4 diffuseColors[100];
+	float4 lightDirections[100];
 };
 
 cbuffer AmbientLightBuffer
@@ -29,6 +29,7 @@ struct PixelInput
 	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
+	matrix worldMatrix : TEXCOORD1;
 };
 
 float4 SpecularPixelShader(PixelInput input) : SV_TARGET
@@ -53,8 +54,8 @@ float4 SpecularPixelShader(PixelInput input) : SV_TARGET
 		lightIntensity = saturate(dot(input.normal, lightDir));
 
 		// compute for specular
-		r = normalize(lightDir - 2 * dot(-lightDir, input.normal) * input.normal);
-		v = viewVector;
+		r = normalize(lightDir - 2 * dot(lightDir, input.normal) * input.normal);
+		v = normalize(mul(viewVector, input.worldMatrix) - mul(input.position, input.worldMatrix));
 
 		float dotProduct = saturate(dot(r, v));
 		specular = specularIntensity * specularColor * max(pow(dotProduct, glossiness), 0) * length(textureColor) * lightIntensity;

@@ -3,6 +3,7 @@
 #include <vector>
 #include <Windows.h>
 #include <string>
+#include <cstdlib>
 
 #include "Graphics.h"
 #include "GameObject.h"
