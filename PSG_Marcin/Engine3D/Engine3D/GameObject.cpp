@@ -131,8 +131,8 @@ bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatr
 		for (int i = 1; i <= count && i < LIGHT_MAX_COUNT; i++)
 		{
 			cols[i - 1] = ((LightDirectional*)lights[i])->GetDiffuseColor();
-			dirs[i - 1] = D3DXVECTOR4(((LightDirectional*)lights[i])->GetDirection().x, ((LightDirectional*)lights[i])->GetDirection().y,
-				((LightDirectional*)lights[i])->GetDirection().z, 0);
+			dirs[i - 1] = D3DXVECTOR4(((LightPoint*)lights[i])->GetPosition().x, ((LightPoint*)lights[i])->GetPosition().y,
+				((LightPoint*)lights[i])->GetPosition().z, ((LightPoint*)lights[i])->GetAttenuation());
 		}
 		cols[0].w = count;
 	}

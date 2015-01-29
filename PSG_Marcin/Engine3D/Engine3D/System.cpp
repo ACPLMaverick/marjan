@@ -2,6 +2,7 @@
 
 unsigned long System::frameCount;
 bool System::playerAnimation;
+bool System::cameraFixed;
 float System::time;
 unsigned long System::systemTime;
 bool System::deferredFlag = DEFERRED;
@@ -15,6 +16,7 @@ System::System()
 	m_FPS = nullptr;
 	m_Timer = nullptr;
 	keyTime = 0;
+	cameraFixed = false;
 }
 
 
@@ -52,6 +54,8 @@ bool System::Initialize()
 	m_Timer = new Timer();
 	m_Timer->Initialize();
 	time = m_Timer->GetTime();
+
+	FixCamera();
 
 	return true;
 }
@@ -152,7 +156,7 @@ bool System::Frame()
 	if (!ProcessKeys()) return false;
 
 	myScene->CheckGameObjects();
-	ProcessCamera();
+	if(!cameraFixed) ProcessCamera();
 	//TransformCamera();
 
 	/*vector<GameObject*> terVec = terrain->GetTiles();
@@ -179,50 +183,53 @@ bool System::ProcessKeys()
 	playerAnimation = false;
 	Camera* cam = myGraphics->GetCamera();
 	if (myInput->IsKeyDown(DIK_ESCAPE)) toReturn = false;
-	if (myInput->IsKeyDown(DIK_A) /*&& player->GetPosition().x > -(signed int)(terrain->GetWidth()*terrain->GetSize())*/)
+	if (!cameraFixed)
 	{
-		D3DXVECTOR3 target = cam->GetTarget();
-		D3DXVECTOR3 newVec;
-		D3DXVec3Normalize(&newVec, &target);
-		RotateVector(newVec, D3DXVECTOR3(0.0f, 1.57079632679f, 0.0f));
-		newVec.y = 0;
-		D3DXVECTOR3 newerVec = cam->GetPosition() - (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
-		
-		cam->SetPosition(newerVec);
-		playerAnimation = true;
-		toReturn = true;
-	}
-	if (myInput->IsKeyDown(DIK_D))
-	{
-		D3DXVECTOR3 target = cam->GetTarget();
-		D3DXVECTOR3 newVec;
-		D3DXVec3Normalize(&newVec, &target);
-		RotateVector(newVec, D3DXVECTOR3(0.0f, 1.57079632679f, 0.0f));
-		newVec.y = 0;
-		D3DXVECTOR3 newerVec = cam->GetPosition() + (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
-		cam->SetPosition(newerVec);
-		playerAnimation = true;
-		toReturn = true;
-	}
-	if (myInput->IsKeyDown(DIK_W))
-	{
-		D3DXVECTOR3 target = cam->GetTarget();
-		D3DXVECTOR3 newVec;
-		D3DXVec3Normalize(&newVec, &target);
-		D3DXVECTOR3 newerVec = cam->GetPosition() + (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
-		cam->SetPosition(newerVec);
-		playerAnimation = true;
-		toReturn = true;
-	}
-	if (myInput->IsKeyDown(DIK_S))
-	{
-		D3DXVECTOR3 target = cam->GetTarget();
-		D3DXVECTOR3 newVec;
-		D3DXVec3Normalize(&newVec, &target);
-		D3DXVECTOR3 newerVec = cam->GetPosition() - (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
-		cam->SetPosition(newerVec);
-		playerAnimation = true;
-		toReturn = true;
+		if (myInput->IsKeyDown(DIK_A))
+		{
+			D3DXVECTOR3 target = cam->GetTarget();
+			D3DXVECTOR3 newVec;
+			D3DXVec3Normalize(&newVec, &target);
+			RotateVector(newVec, D3DXVECTOR3(0.0f, 1.57079632679f, 0.0f));
+			newVec.y = 0;
+			D3DXVECTOR3 newerVec = cam->GetPosition() - (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
+
+			cam->SetPosition(newerVec);
+			playerAnimation = true;
+			toReturn = true;
+		}
+		if (myInput->IsKeyDown(DIK_D))
+		{
+			D3DXVECTOR3 target = cam->GetTarget();
+			D3DXVECTOR3 newVec;
+			D3DXVec3Normalize(&newVec, &target);
+			RotateVector(newVec, D3DXVECTOR3(0.0f, 1.57079632679f, 0.0f));
+			newVec.y = 0;
+			D3DXVECTOR3 newerVec = cam->GetPosition() + (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
+			cam->SetPosition(newerVec);
+			playerAnimation = true;
+			toReturn = true;
+		}
+		if (myInput->IsKeyDown(DIK_W))
+		{
+			D3DXVECTOR3 target = cam->GetTarget();
+			D3DXVECTOR3 newVec;
+			D3DXVec3Normalize(&newVec, &target);
+			D3DXVECTOR3 newerVec = cam->GetPosition() + (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
+			cam->SetPosition(newerVec);
+			playerAnimation = true;
+			toReturn = true;
+		}
+		if (myInput->IsKeyDown(DIK_S))
+		{
+			D3DXVECTOR3 target = cam->GetTarget();
+			D3DXVECTOR3 newVec;
+			D3DXVec3Normalize(&newVec, &target);
+			D3DXVECTOR3 newerVec = cam->GetPosition() - (newVec*((myInput->movementDistance)*(m_Timer->GetTime())));
+			cam->SetPosition(newerVec);
+			playerAnimation = true;
+			toReturn = true;
+		}
 	}
 	if (myInput->IsKeyDown(DIK_E))
 	{
@@ -230,6 +237,15 @@ bool System::ProcessKeys()
 		{
 			keyTime = timeGetTime();
 			deferredFlag ? deferredFlag = false : deferredFlag = true;
+		}
+	}
+
+	if (myInput->IsKeyDown(DIK_F))
+	{
+		if (timeGetTime() - keyTime > 500)
+		{
+			keyTime = timeGetTime();
+			FixCamera();
 		}
 	}
 	
@@ -240,6 +256,20 @@ bool System::ProcessKeys()
 		toReturn = true;*/
 	}
 	return toReturn;
+}
+
+void System::FixCamera()
+{
+	if (cameraFixed)
+	{
+		cameraFixed = false;
+	}
+	else
+	{
+		myGraphics->GetCamera()->SetPosition(D3DXVECTOR3(-109.770866, 25.6654243, 56.7220802));
+		myGraphics->GetCamera()->SetTarget(D3DXVECTOR3(0.855238199, -0.232111573, -0.463344365));
+		cameraFixed = true;
+	}
 }
 
 void System::ProcessCamera()

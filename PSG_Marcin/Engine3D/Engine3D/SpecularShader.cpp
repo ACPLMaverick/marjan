@@ -302,7 +302,7 @@ bool SpecularShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3D
 		dataPtr02->diffuseColor[i] = diffuseColors[i];
 		dataPtr02->lightDirection[i] = lightDirections[i];
 	}
-	dataPtr02->lightDirection[0].w = lightCount;
+	dataPtr02->diffuseColor[0].w = lightCount;
 
 	deviceContext->Unmap(m_lightBuffer, 0);
 

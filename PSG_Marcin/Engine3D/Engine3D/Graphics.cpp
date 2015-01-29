@@ -145,14 +145,14 @@ bool Graphics::Render(GameObject* objects[], unsigned int objectCount, Light* li
 			for (int i = 1; i <= count && i < LIGHT_MAX_COUNT; i++)
 			{
 				cols[i - 1] = ((LightDirectional*)lights[i])->GetDiffuseColor();
-				dirs[i - 1] = D3DXVECTOR4(((LightDirectional*)lights[i])->GetDirection().x, ((LightDirectional*)lights[i])->GetDirection().y, 
-					((LightDirectional*)lights[i])->GetDirection().z, 0);
+				dirs[i - 1] = D3DXVECTOR4(((LightPoint*)lights[i])->GetPosition().x, ((LightPoint*)lights[i])->GetPosition().y,
+					((LightPoint*)lights[i])->GetPosition().z, ((LightPoint*)lights[i])->GetAttenuation());
 			}
 			cols[0].w = count;
 
 			SpecularDeferredShader* shader = (SpecularDeferredShader*)shaderManager->LoadShader(m_D3D->GetDevice(), myHwnd, 5);
 			result = shader->Render(m_D3D->GetDeviceContext(), mFullScreenWindow->GetIndexCount(), worldMatrix, baseViewMatrix, orthoMatrix, mDeferredBuffer->GetShaderResourceView(0),
-				mDeferredBuffer->GetShaderResourceView(1), cols, dirs, count, ambient->GetDiffuseColor(), m_Camera->GetPosition(), D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 50.0f);
+				mDeferredBuffer->GetShaderResourceView(1), mDeferredBuffer->GetShaderResourceView(2), cols, dirs, count, ambient->GetDiffuseColor(), m_Camera->GetPosition(), D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f), 1.0f, 10.0f);
 			
 			m_D3D->ZBufferOn();
 

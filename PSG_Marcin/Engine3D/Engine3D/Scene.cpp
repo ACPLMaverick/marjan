@@ -39,7 +39,7 @@ void Scene::Initialize(Graphics* myGraphics, HWND hwnd, string filePath)
 
 	if (TESTMODE)
 	{
-		InitializeLights();
+		//InitializeLights();
 		InitializeGameObjects();
 	}
 	else
@@ -74,6 +74,11 @@ void Scene::LoadFromFile()
 		else if (placek == "LightDirectional{" && i < LIGHT_MAX_COUNT)
 		{
 			lights[i] = new LightDirectional(is);
+			i++;
+		}
+		else if (placek == "LightPoint{" && i < LIGHT_MAX_COUNT)
+		{
+			lights[i] = new LightPoint(is);
 			i++;
 		}
 	}
@@ -136,10 +141,13 @@ void Scene::InitializeGameObjects()
 		100.0f);
 	gameObjects.push_back(ter);
 
+	lights[0] = new LightAmbient(D3DXVECTOR4(0.0f, 0.0f, 0.15f, 1.0f));
+
 	GameObject* go;
-	float newx, newy, newz;
+	float newx, newy, newz, randr, randg, randb;
 	int inlin = ((int)sqrt(OBJECTS_COUNT));
-	int rozstrz = 4;
+	int rozstrz = 20;
+	srand(0);
 
 	for (int i = 0, j = 0, k = 0; i < OBJECTS_COUNT; i++)
 	{
@@ -161,6 +169,12 @@ void Scene::InitializeGameObjects()
 			1.0f,
 			100.0f);
 		gameObjects.push_back(go);
+
+		randr = ((float)(rand() % 1001)) / 1000.0f;
+		randg = ((float)(rand() % 1001)) / 1000.0f;
+		randb = ((float)(rand() % 1001)) / 1000.0f;
+		lights[i+1] = new LightPoint(D3DXVECTOR4(randr, randg, randb, 1.0f), D3DXVECTOR3(newx + 1.0f, 3*newy, newz - 1.0f), 0.5f);
+
 		if (i % inlin == 0 && i != 0)
 		{
 			j = 0;
@@ -179,12 +193,24 @@ void Scene::InitializeGameObjects()
 void Scene::InitializeLights()
 {
 	srand(0);
-	float random;
+	float random, newx, newy, newz;
 	lights[0] = new LightAmbient(D3DXVECTOR4(0.0f, 0.0f, 0.15f, 1.0f));
-	for (int i = 1; i <= LIGHT_MAX_COUNT - 1; i++)
+	int inlin = ((int)sqrt(OBJECTS_COUNT));
+	int rozstrz = 10;
+	for (int i = 1, j = 0, k = 0; i <= LIGHT_MAX_COUNT - 1; i++)
 	{
+		newx = (float)(rozstrz * (j - inlin / 2));
+		newy = 3.0f;
+		newz = (float)(rozstrz * (k - inlin / 2));
+
 		random = ((float)(rand() % 1001))/1000.0f;
-		lights[i] = new LightDirectional(D3DXVECTOR4(random, random, random, 1.0f), D3DXVECTOR3(random, random, random));
+		lights[i] = new LightPoint(D3DXVECTOR4(random, random, random, 1.0f), D3DXVECTOR3(newx, newy, newz), 0.5f);
+		if (i % inlin == 0 && i != 1)
+		{
+			j = 0;
+			k++;
+		}
+		else j++;
 	}
 }
 

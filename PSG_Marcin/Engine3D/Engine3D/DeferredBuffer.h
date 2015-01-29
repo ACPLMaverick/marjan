@@ -8,7 +8,7 @@
 /////////////
 // DEFINES //
 /////////////
-const int BUFFER_COUNT = 2;
+const int BUFFER_COUNT = 3;
 
 
 //////////////

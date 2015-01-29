@@ -13,6 +13,7 @@
 #include "Light.h"
 #include "LightDirectional.h"
 #include "LightAmbient.h"
+#include "LightPoint.h"
 #include "TextureShader.h"
 #include "TextureManager.h"
 #include "ShaderManager.h"

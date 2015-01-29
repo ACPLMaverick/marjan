@@ -40,6 +40,7 @@ private:
 	bool Frame();
 	bool ProcessKeys();
 	void ProcessCamera();
+	void FixCamera();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 	//void PlayerShoot();
@@ -50,6 +51,7 @@ public:
 	static float time;
 	static unsigned long systemTime;
 	static bool deferredFlag;
+	static bool cameraFixed;
 
 	System();
 	System(const System&);

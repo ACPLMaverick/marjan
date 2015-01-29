@@ -180,11 +180,11 @@ bool SpecularDeferredShader::InitializeShader(ID3D11Device* device, HWND hwnd, L
 }
 
 bool SpecularDeferredShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
-	D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* textureColors, ID3D11ShaderResourceView* textureNormals, D3DXVECTOR4 diffuseColors[], D3DXVECTOR4 lightDirections[],
+	D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* textureColors, ID3D11ShaderResourceView* textureNormals, ID3D11ShaderResourceView* textureWorldPos, D3DXVECTOR4 diffuseColors[], D3DXVECTOR4 lightDirections[],
 	unsigned int lightCount, D3DXVECTOR4 ambientColor, D3DXVECTOR3 viewVector, D3DXVECTOR4 specularColor, float specularIntensity, float specularGlossiness)
 {
 	bool result;
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, textureColors, textureNormals, diffuseColors, 
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, textureColors, textureNormals, textureWorldPos, diffuseColors, 
 		lightDirections, lightCount, ambientColor, viewVector, specularColor, specularIntensity, specularGlossiness);
 	if (!result) return false;
 
@@ -194,7 +194,7 @@ bool SpecularDeferredShader::Render(ID3D11DeviceContext* deviceContext, int inde
 }
 
 bool SpecularDeferredShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix,
-	ID3D11ShaderResourceView* textureColors, ID3D11ShaderResourceView* textureNormals, D3DXVECTOR4 diffuseColors[], D3DXVECTOR4 lightDirections[], unsigned int lightCount, D3DXVECTOR4 ambientColor, 
+	ID3D11ShaderResourceView* textureColors, ID3D11ShaderResourceView* textureNormals, ID3D11ShaderResourceView* textureWorldPos, D3DXVECTOR4 diffuseColors[], D3DXVECTOR4 lightDirections[], unsigned int lightCount, D3DXVECTOR4 ambientColor,
 	D3DXVECTOR3 viewVector, D3DXVECTOR4 specularColor, float specularIntensity, float specularGlossiness)
 {
 	HRESULT result;
@@ -232,6 +232,7 @@ bool SpecularDeferredShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 	// set shader resource in pixel shader
 	deviceContext->PSSetShaderResources(0, 1, &textureColors);
 	deviceContext->PSSetShaderResources(1, 1, &textureNormals);
+	deviceContext->PSSetShaderResources(2, 1, &textureWorldPos);
 
 	// setting the light constant buffer
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -244,7 +245,7 @@ bool SpecularDeferredShader::SetShaderParameters(ID3D11DeviceContext* deviceCont
 		dataPtr02->diffuseColor[i] = diffuseColors[i];
 		dataPtr02->lightDirection[i] = lightDirections[i];
 	}
-	dataPtr02->lightDirection[0].w = lightCount;
+	dataPtr02->diffuseColor[0].w = lightCount;
 
 	deviceContext->Unmap(m_lightBuffer, 0);
 

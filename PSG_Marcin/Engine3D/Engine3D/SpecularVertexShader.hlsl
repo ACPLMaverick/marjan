@@ -19,7 +19,8 @@ struct PixelInput
 	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
-	matrix worldMatrix : TEXCOORD1;
+	float4 worldPos : POSITION;
+	matrix wm : TEXCOORD2;
 };
 //////////////////////
 PixelInput SpecularVertexShader(VertexInput input)
@@ -29,6 +30,7 @@ PixelInput SpecularVertexShader(VertexInput input)
 	input.position.w = 1.0f;
 
 	output.position = mul(input.position, worldMatrix);
+	output.worldPos = mul(input.position, worldMatrix);
 	output.position = mul(output.position, viewMatrix);
 	output.position = mul(output.position, projectionMatrix);
 
@@ -40,7 +42,8 @@ PixelInput SpecularVertexShader(VertexInput input)
 
 	//normalize vector
 	output.normal = normalize(output.normal);
-	output.worldMatrix = worldMatrix;
+
+	output.wm = worldMatrix;
 
 	return output;
 }

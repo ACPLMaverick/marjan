@@ -90,6 +90,7 @@
     <ClCompile Include="LightAmbient.cpp" />
     <ClCompile Include="LightDeferredShader.cpp" />
     <ClCompile Include="LightDirectional.cpp" />
+    <ClCompile Include="LightPoint.cpp" />
     <ClCompile Include="LightShader.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="CPUCounter.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="LightAmbient.h" />
     <ClInclude Include="LightDeferredShader.h" />
     <ClInclude Include="LightDirectional.h" />
+    <ClInclude Include="LightPoint.h" />
     <ClInclude Include="LightShader.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="CPUCounter.h" />
