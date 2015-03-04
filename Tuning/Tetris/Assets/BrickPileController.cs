@@ -5,10 +5,12 @@ public class BrickPileController : MonoBehaviour {
 
     public static int width = 10;
     ArrayList myBricks;
+    private ParticleController particleContr;
 
 	// Use this for initialization
 	void Start () {
         myBricks = new ArrayList();
+        particleContr = (GameObject.Find("particles")).GetComponent<ParticleController>();
 	}
 	
 	// Update is called once per frame
@@ -86,6 +88,7 @@ public class BrickPileController : MonoBehaviour {
                         {
                             //Debug.Log("Point!");
                             points += 1;
+                            particleContr.FireParticle(new Vector3(0.0f, tempBricks[0].transform.position.y, -3.0f));
                             for(int j = 0; j< width; j++)
                             {
                                 //Debug.Log("Destroy!" + j);

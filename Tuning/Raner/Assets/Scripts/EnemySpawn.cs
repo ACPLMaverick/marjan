@@ -5,6 +5,7 @@ public class EnemySpawn : MonoBehaviour {
 
     public GameObject enemy = null;
     public GameObject obstacle = null;
+    public GameObject warning = null;
     //private Vector3 spawnPoint;
     private float spawnTime = 3.0f;
     private bool isAlive;
@@ -12,12 +13,14 @@ public class EnemySpawn : MonoBehaviour {
     private GameObject player;
     private GameObject clone;
     private GameObject obstacleClone;
+    private GameObject warningClone;
 
 	// Use this for initialization
 	void Start () {
         clone = GameObject.FindWithTag("Enemy");
         obstacleClone = GameObject.FindWithTag("Obstacle");
         player = GameObject.FindWithTag("Player");
+        warning = GameObject.FindWithTag("Warning");
         if(enemy != null) InvokeRepeating("Spawn", spawnTime, spawnTime);
         if(obstacle != null) InvokeRepeating("ObstacleSpawn", spawnTime, spawnTime);
 	}
@@ -30,6 +33,7 @@ public class EnemySpawn : MonoBehaviour {
     
     void Spawn()
     {
+        WarningSpawn();
         float isSpawned = Random.Range(0.0f, 1.0f);
         Vector3 spawnPoint = new Vector3(player.transform.position.x + 20.0f, player.transform.position.y, -1.5f);
         if (isSpawned > 0.5f)
@@ -57,5 +61,11 @@ public class EnemySpawn : MonoBehaviour {
             obstacleClone = (GameObject)Instantiate(obstacle, spawnPoint, spawnRotate);
             Destroy(obstacleClone, 8.0f);
         }
+    }
+
+    void WarningSpawn()
+    {
+        Vector3 spawnPoint = new Vector3(player.transform.position.x + 10.0f, player.transform.position.y, -1.5f);
+        warningClone = (GameObject)Instantiate(warning, spawnPoint, Quaternion.identity);
     }
 }

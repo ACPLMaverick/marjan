@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour {
     float refTime;
     bool collision;
     int score = 0;
+    private ParticleController particleContr;
 
     public static Color[] brickColors;
 
@@ -23,8 +24,8 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		brickColors = new Color[7] { Color.blue, Color.yellow, Color.red, Color.magenta, Color.cyan, Color.green, Color.gray}; 
-
+		brickColors = new Color[7] { Color.blue, Color.yellow, Color.red, Color.magenta, Color.cyan, Color.green, Color.gray};
+        particleContr = (GameObject.Find("particles")).GetComponent<ParticleController>();
         createBlock();
         brickPile = GameObject.Find("BrickPile");
         upperCollider = GameObject.Find("UpperCollider");
@@ -84,6 +85,10 @@ public class GameController : MonoBehaviour {
                     Vector3 newPos = new Vector3(currentBlock.transform.position.x, currentBlock.transform.position.y - distance,
                         currentBlock.transform.position.z);
                     currentBlock.transform.position = newPos;
+                }
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    particleContr.FireParticle(new Vector3(0.0f, 0.0f, -2.0f));
                 }
             }
             else

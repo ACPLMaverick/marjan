@@ -13,7 +13,7 @@
     0.5f
   </TileSize>
   <ZPos>
-    -1.0f
+    1.0f
   </ZPos>
   <TerrainTiles>
     <!-- LAST TilePath is the border texture -->

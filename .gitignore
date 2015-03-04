@@ -375,3 +375,7 @@ PUM/workspace/CarTracker/bin/
 *.sdf
 *.opensdf
 *.idb
+Tuning/Tetris/Library/
+Tuning/Tetris/Assets/Materials/partikl.mat.meta
+Tuning/Tetris/Assets/Gwiazdka.png.meta
+Tuning/Raner/Library/metadata/3d/3df23eb4258f20b4c819354e311aa0fc

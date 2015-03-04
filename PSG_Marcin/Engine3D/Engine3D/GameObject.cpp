@@ -120,7 +120,7 @@ bool GameObject::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatr
 	int count = 0;
 	D3DXVECTOR4 cols[LIGHT_MAX_COUNT];
 	D3DXVECTOR4 dirs[LIGHT_MAX_COUNT];
-	LightAmbient* ambient;
+	LightAmbient* ambient = NULL;
 
 	if (lights != NULL)
 	{
