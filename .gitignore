@@ -375,3 +375,7 @@ PUM/workspace/CarTracker/bin/
 *.sdf
 *.opensdf
 *.idb
+*.cachefile
+XNA/Shit/Shit/Shit/bin/
+XNA/Shit/Shit/Shit/obj/
+XNA/Shit/Shit/ShitContent/obj/x86/Debug/ShitContent.contentproj.FileListAbsolute.txt
