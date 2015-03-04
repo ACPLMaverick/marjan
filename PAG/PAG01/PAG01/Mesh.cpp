@@ -24,7 +24,7 @@ bool Mesh::Initialize()
 
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data,
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data[0])*3*g_vertex_count, g_vertex_buffer_data,
 		GL_STATIC_DRAW);
 
 	return true;

@@ -9,6 +9,7 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <glm\glm\glm.hpp>
+#include <glm\glm\gtc\matrix_transform.hpp>
 using namespace glm;
 using namespace std;
 
@@ -24,7 +25,11 @@ class Graphics
 private:
 	GLFWwindow* m_window;
 	Mesh* m_mesh;
+
 	GLuint programID;
+	GLuint matrixID;
+
+	mat4 modelMatrix, viewMatrix, projectionMatrix, mvpMatrix;
 
 	GLuint LoadShaders(const char* vertexFilePath, const char* fragmentFilePath);
 public:

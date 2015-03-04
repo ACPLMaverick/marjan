@@ -40,12 +40,24 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+	modelMatrix = mat4(1.0f);
+	viewMatrix = lookAt(
+		vec3(4.0f, 3.0f, 3.0f),
+		vec3(0.0f, 0.0f, 0.0f),
+		vec3(0.0f, 1.0f, 0.0f)
+		);
+	projectionMatrix = perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+
+	mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
 	m_mesh = new Mesh();
 	if(!m_mesh->Initialize()) return false;
 
 	programID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
+
+	matrixID = glGetUniformLocation(programID, "mvpMatrix");
 
 	return true;
 }
@@ -74,6 +86,7 @@ void Graphics::Frame()
 
 	glEnableVertexAttribArray(0);
 
+	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
 	m_mesh->Draw();
 
 	glDisableVertexAttribArray(0);
