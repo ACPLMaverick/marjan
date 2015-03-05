@@ -15,6 +15,7 @@ using namespace std;
 
 #include "Mesh.h"
 #include "Camera.h"
+#include "Light.h"
 
 #define GLFW_SAMPLES_VALUE 4
 #define WINDOW_WIDTH 1024
@@ -25,19 +26,23 @@ using namespace std;
 #define WINDOW_FAR 100.0f
 static const float WINDOW_RATIO = ((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT);
 
+static const string PATH_DIFFUSE = "D:\\_projects\\Engine2DAssets\\water01.dds";
+static const string PATH_SPECULAR = "D:\\_projects\\Engine2DAssets\\water02.dds";
+
 class Graphics
 {
 private:
 	GLFWwindow* m_window;
 	Mesh* m_mesh;
+	Texture* m_texture;
 	Camera* m_camera;
+	Light* m_light;
 
 	GLuint programID;
-	GLuint matrixID;
 
 	GLuint m_vertexBuffer;
 
-	mat4 projectionMatrix, mvpMatrix;
+	mat4 projectionMatrix;
 
 	GLuint LoadShaders(const char* vertexFilePath, const char* fragmentFilePath);
 public:

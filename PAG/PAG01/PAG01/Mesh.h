@@ -4,6 +4,9 @@
 #include <glm\glm\glm.hpp>
 #include <glm\glm\gtx\transform.hpp>
 
+#include "Texture.h"
+#include "Light.h"
+
 struct VertexData
 {
 	GLfloat* vertexPositionBuffer;
@@ -13,31 +16,44 @@ struct VertexData
 	unsigned int vertexCount;
 };
 
+struct VertexID
+{
+	GLuint vertexArrayID;
+	GLuint vertexBuffer;
+	GLuint colorBuffer;
+	GLuint uvBuffer;
+	GLuint normalBuffer;
+};
+
 class Mesh
 {
 private:
-	glm::mat4 modelMatrix;
+	glm::mat4 modelMatrix, mvpMatrix;
 	glm::vec3 position, rotation, scale;
 
-	GLuint m_vertexArrayID;
+	
+
 	VertexData* m_vertexData;
-	GLuint m_vertexBuffer;
-	GLuint m_colorBuffer;
+	VertexID* m_vertexID;
+
+	Texture* m_texture;
 
 public:
+	GLuint mvpMatrixID;
 
 	Mesh();
 	~Mesh();
 
-	bool Initialize();
+	bool Initialize(GLuint programID);
 	void Shutdown();
 
-	void Draw();
+	void Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light);
 
 	void Transform(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale);
 	glm::vec3 GetPosition();
 	glm::vec3 GetRotation();
 	glm::vec3 GetScale();
 	glm::mat4* GetModelMatrix();
+	void SetTexture(Texture* texture);
 };
 

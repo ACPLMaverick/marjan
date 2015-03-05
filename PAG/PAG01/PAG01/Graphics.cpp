@@ -6,6 +6,8 @@ Graphics::Graphics()
 	m_camera = nullptr;
 	m_mesh = nullptr;
 	m_window = nullptr;
+	m_texture = nullptr;
+	m_light = nullptr;
 }
 
 
@@ -31,7 +33,7 @@ bool Graphics::Initialize()
 	if (m_window == NULL)
 	{
 		fprintf(stderr, "Failed to open GLFW window");
-		glfwTerminate;
+		glfwTerminate();
 		return false;
 	}
 
@@ -51,15 +53,22 @@ bool Graphics::Initialize()
 
 	m_camera = new Camera();
 	if (!m_camera->Initialize()) return false;
-	m_camera->Transform(vec3(3.0f, 2.0f, 4.0f), vec3(0.0f, 0.0f, 0.0f));
+	m_camera->Transform(vec3(0.0f, 2.0f, -4.0f), vec3(0.0f, 0.0f, 0.0f));
 
-	m_mesh = new Mesh();
-	if(!m_mesh->Initialize()) return false;
-	m_mesh->Transform(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f));
+	m_texture = new Texture();
+	if (!m_texture->Initialize(&PATH_DIFFUSE)) return false;
 
 	programID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
 
-	matrixID = glGetUniformLocation(programID, "mvpMatrix");
+	m_mesh = new Mesh();
+	if (!m_mesh->Initialize(programID)) return false;
+	m_mesh->SetTexture(m_texture);
+	m_mesh->Transform(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f));
+
+	m_light = new Light(&vec4(1.0f, -1.0f, 1.0f, 0.0f), &vec4(0.0f, 0.8f, 0.2f, 1.0f), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(0.1f, 0.1f, 0.2f, 1.0f), 100.0f, programID);
+
+	m_camera->m_eyeVectorID = glGetUniformLocation(programID, "eyeVector");
+
 	return true;
 }
 
@@ -74,10 +83,19 @@ void Graphics::Shutdown()
 		m_mesh->Shutdown();
 		delete m_mesh;
 	}
+	if (m_texture != nullptr)
+	{
+		m_texture->Shutdown();
+		delete m_texture;
+	}
 	if (m_camera != nullptr)
 	{
 		m_camera->Shutdown();
 		delete m_camera;
+	}
+	if (m_light != nullptr)
+	{
+		delete m_light;
 	}
 
 	glDeleteProgram(programID);
@@ -92,12 +110,10 @@ void Graphics::Frame()
 
 	m_mesh->Transform(
 		m_mesh->GetPosition(), 
-		vec3(m_mesh->GetRotation().x, m_mesh->GetRotation().y + 0.001f, m_mesh->GetRotation().z),
+		vec3(m_mesh->GetRotation().x, m_mesh->GetRotation().y + 0.01f, m_mesh->GetRotation().z),
 		m_mesh->GetScale());
 
-	mvpMatrix = projectionMatrix * (*(m_camera->GetViewMatrix())) * (*(m_mesh->GetModelMatrix()));
-	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
-	m_mesh->Draw();
+	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &m_camera->GetEyeVector(), m_camera->m_eyeVectorID, m_light);
 
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();

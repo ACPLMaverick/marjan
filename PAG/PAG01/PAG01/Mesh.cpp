@@ -4,6 +4,7 @@
 Mesh::Mesh()
 {
 	m_vertexData = nullptr;
+	m_vertexID = nullptr;
 }
 
 
@@ -11,17 +12,19 @@ Mesh::~Mesh()
 {
 }
 
-bool Mesh::Initialize()
+bool Mesh::Initialize(GLuint programID)
 {
-	glGenVertexArrays(1, &m_vertexArrayID);
-	glBindVertexArray(m_vertexArrayID);
+	m_vertexID = new VertexID;
+	m_vertexData = new VertexData;
+
+	glGenVertexArrays(1, &m_vertexID->vertexArrayID);
+	glBindVertexArray(m_vertexID->vertexArrayID);
 
 	modelMatrix = glm::mat4();
 	this->position = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->scale = glm::vec3(1.0f, 1.0f, 1.0f);
- 
-	m_vertexData = new VertexData;
+
 	m_vertexData->vertexColorBuffer = nullptr;
 	m_vertexData->vertexNormalBuffer = nullptr;
 	m_vertexData->vertexPositionBuffer = nullptr;
@@ -66,56 +69,93 @@ bool Mesh::Initialize()
 			-1.0f, 1.0f, 1.0f,
 			1.0f, -1.0f, 1.0f
 	};
+	m_vertexData->vertexColorBuffer = new GLfloat[3 * m_vertexData->vertexCount];
+	for (int i = 0; i < (3 * m_vertexData->vertexCount); i++)
+		m_vertexData->vertexColorBuffer[i] = 1.0f;
 
-	m_vertexData->vertexColorBuffer = new GLfloat[3*m_vertexData->vertexCount]
+	m_vertexData->vertexUVBuffer = new GLfloat[3 * m_vertexData->vertexCount] 
 	{
-			0.583f, 0.771f, 0.014f,
-			0.609f, 0.115f, 0.436f,
-			0.327f, 0.483f, 0.844f,
-			0.822f, 0.569f, 0.201f,
-			0.435f, 0.602f, 0.223f,
-			0.310f, 0.747f, 0.185f,
-			0.597f, 0.770f, 0.761f,
-			0.559f, 0.436f, 0.730f,
-			0.359f, 0.583f, 0.152f,
-			0.483f, 0.596f, 0.789f,
-			0.559f, 0.861f, 0.639f,
-			0.195f, 0.548f, 0.859f,
-			0.014f, 0.184f, 0.576f,
-			0.771f, 0.328f, 0.970f,
-			0.406f, 0.615f, 0.116f,
-			0.676f, 0.977f, 0.133f,
-			0.971f, 0.572f, 0.833f,
-			0.140f, 0.616f, 0.489f,
-			0.997f, 0.513f, 0.064f,
-			0.945f, 0.719f, 0.592f,
-			0.543f, 0.021f, 0.978f,
-			0.279f, 0.317f, 0.505f,
-			0.167f, 0.620f, 0.077f,
-			0.347f, 0.857f, 0.137f,
-			0.055f, 0.953f, 0.042f,
-			0.714f, 0.505f, 0.345f,
-			0.783f, 0.290f, 0.734f,
-			0.722f, 0.645f, 0.174f,
-			0.302f, 0.455f, 0.848f,
-			0.225f, 0.587f, 0.040f,
-			0.517f, 0.713f, 0.338f,
-			0.053f, 0.959f, 0.120f,
-			0.393f, 0.621f, 0.362f,
-			0.673f, 0.211f, 0.457f,
-			0.820f, 0.883f, 0.371f,
-			0.982f, 0.099f, 0.879f
+			0.000059f, 1.0f - 0.000004f,
+			0.000103f, 1.0f - 0.336048f,
+			0.335973f, 1.0f - 0.335903f,
+			1.000023f, 1.0f - 0.000013f,
+			0.667979f, 1.0f - 0.335851f,
+			0.999958f, 1.0f - 0.336064f,
+			0.667979f, 1.0f - 0.335851f,
+			0.336024f, 1.0f - 0.671877f,
+			0.667969f, 1.0f - 0.671889f,
+			1.000023f, 1.0f - 0.000013f,
+			0.668104f, 1.0f - 0.000013f,
+			0.667979f, 1.0f - 0.335851f,
+			0.000059f, 1.0f - 0.000004f,
+			0.335973f, 1.0f - 0.335903f,
+			0.336098f, 1.0f - 0.000071f,
+			0.667979f, 1.0f - 0.335851f,
+			0.335973f, 1.0f - 0.335903f,
+			0.336024f, 1.0f - 0.671877f,
+			1.000004f, 1.0f - 0.671847f,
+			0.999958f, 1.0f - 0.336064f,
+			0.667979f, 1.0f - 0.335851f,
+			0.668104f, 1.0f - 0.000013f,
+			0.335973f, 1.0f - 0.335903f,
+			0.667979f, 1.0f - 0.335851f,
+			0.335973f, 1.0f - 0.335903f,
+			0.668104f, 1.0f - 0.000013f,
+			0.336098f, 1.0f - 0.000071f,
+			0.000103f, 1.0f - 0.336048f,
+			0.000004f, 1.0f - 0.671870f,
+			0.336024f, 1.0f - 0.671877f,
+			0.000103f, 1.0f - 0.336048f,
+			0.336024f, 1.0f - 0.671877f,
+			0.335973f, 1.0f - 0.335903f,
+			0.667969f, 1.0f - 0.671889f,
+			1.000004f, 1.0f - 0.671847f,
+			0.667979f, 1.0f - 0.335851f
 	};
 
-	glGenBuffers(1, &m_vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	m_vertexData->vertexNormalBuffer = new GLfloat[3 * m_vertexData->vertexCount];
+	glm::vec3 v1, v2, v3, edge1, edge2, normal;
+	for (int i = 0; i < (3 * m_vertexData->vertexCount) - 1; i += 9)
+	{
+		v1 = glm::vec3(m_vertexData->vertexPositionBuffer[i], m_vertexData->vertexPositionBuffer[i + 1], m_vertexData->vertexPositionBuffer[i + 2]);
+		v2 = glm::vec3(m_vertexData->vertexPositionBuffer[i + 3], m_vertexData->vertexPositionBuffer[i + 4], m_vertexData->vertexPositionBuffer[i + 5]);
+		v3 = glm::vec3(m_vertexData->vertexPositionBuffer[i + 6], m_vertexData->vertexPositionBuffer[i + 7], m_vertexData->vertexPositionBuffer[i + 8]);
+		edge1 = v2 - v1;
+		edge2 = v3 - v1;
+		normal = normalize(glm::cross(edge1, edge2));
+
+		m_vertexData->vertexNormalBuffer[i] = normal.x;
+		m_vertexData->vertexNormalBuffer[i+1] = normal.y;
+		m_vertexData->vertexNormalBuffer[i+2] = normal.z;
+		m_vertexData->vertexNormalBuffer[i+3] = normal.x;
+		m_vertexData->vertexNormalBuffer[i+4] = normal.y;
+		m_vertexData->vertexNormalBuffer[i+5] = normal.z;
+		m_vertexData->vertexNormalBuffer[i+6] = normal.x;
+		m_vertexData->vertexNormalBuffer[i+7] = normal.y;
+		m_vertexData->vertexNormalBuffer[i+8] = normal.z;
+	}
+
+	glGenBuffers(1, &m_vertexID->vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->vertexPositionBuffer[0]) * 3 * m_vertexData->vertexCount, 
 		m_vertexData->vertexPositionBuffer, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &m_colorBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_colorBuffer);
+	glGenBuffers(1, &m_vertexID->colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->vertexColorBuffer[0]) * 3 * m_vertexData->vertexCount,
 		m_vertexData->vertexColorBuffer, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_vertexID->uvBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->uvBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->vertexUVBuffer[0]) * 2 * m_vertexData->vertexCount,
+		m_vertexData->vertexUVBuffer, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_vertexID->normalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->vertexNormalBuffer[0]) * 3 * m_vertexData->vertexCount,
+		m_vertexData->vertexNormalBuffer, GL_STATIC_DRAW);
+
+	mvpMatrixID = glGetUniformLocation(programID, "mvpMatrix");
 
 	return true;
 }
@@ -135,18 +175,38 @@ void Mesh::Shutdown()
 
 		delete m_vertexData;
 	}
+
+	if (m_vertexID != nullptr)
+		delete m_vertexID;
 	
 
-	glDeleteBuffers(1, &m_vertexBuffer);
-	glDeleteVertexArrays(1, &m_vertexArrayID);
+	glDeleteBuffers(1, &m_vertexID->vertexBuffer);
+	glDeleteVertexArrays(1, &m_vertexID->vertexArrayID);
+	glDeleteBuffers(1, &m_vertexID->colorBuffer);
+	glDeleteBuffers(1, &m_vertexID->uvBuffer);
+	glDeleteBuffers(1, &m_vertexID->normalBuffer);
 }
 
-void Mesh::Draw()
+void Mesh::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light)
 {
+	mvpMatrix = (*projectionMatrix) * (*viewMatrix) * modelMatrix;
+	glm::vec4 temp = light->lightDirection * modelMatrix;
+	glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
+	glUniform4f(eyeVectorID, eyeVector->x, eyeVector->y, eyeVector->z, 1.0f);
+	glUniform4f(light->lightDirID, temp.x, temp.y, temp.z, temp.w);
+	glUniform4f(light->lightDifID, light->lightDiffuse.x, light->lightDiffuse.y, light->lightDiffuse.z, light->lightDiffuse.w);
+	glUniform4f(light->lightSpecID, light->lightSpecular.x, light->lightSpecular.y, light->lightSpecular.z, light->lightSpecular.w);
+	glUniform4f(light->lightAmbID, light->lightAmbient.x, light->lightAmbient.y, light->lightAmbient.z, light->lightAmbient.w);
+	glUniform1f(light->glossID, light->glossiness);
+
+	glBindTexture(GL_TEXTURE_2D, m_texture->GetID());
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->vertexBuffer);
 	glVertexAttribPointer(
 		0,
 		3,
@@ -156,9 +216,29 @@ void Mesh::Draw()
 		(void*)0
 		);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->colorBuffer);
 	glVertexAttribPointer(
 		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->uvBuffer);
+	glVertexAttribPointer(
+		2,
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->normalBuffer);
+	glVertexAttribPointer(
+		3,
 		3,
 		GL_FLOAT,
 		GL_FALSE,
@@ -170,6 +250,8 @@ void Mesh::Draw()
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(3);
 	return;
 }
 
@@ -207,4 +289,9 @@ glm::vec3 Mesh::GetRotation()
 glm::vec3 Mesh::GetScale()
 {
 	return scale;
+}
+
+void Mesh::SetTexture(Texture* texture)
+{
+	m_texture = texture;
 }
