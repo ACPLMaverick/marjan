@@ -2,15 +2,30 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <glm\glm\glm.hpp>
+#include <glm\glm\gtx\transform.hpp>
+
+struct VertexData
+{
+	GLfloat* vertexPositionBuffer;
+	GLfloat* vertexColorBuffer;
+	GLfloat* vertexUVBuffer;
+	GLfloat* vertexNormalBuffer;
+	unsigned int vertexCount;
+};
 
 class Mesh
 {
 private:
+	glm::mat4 modelMatrix;
+	glm::vec3 position, rotation, scale;
+
 	GLuint m_vertexArrayID;
-	GLfloat* g_vertex_buffer_data;
-	unsigned int g_vertex_count;
+	VertexData* m_vertexData;
 	GLuint m_vertexBuffer;
+	GLuint m_colorBuffer;
+
 public:
+
 	Mesh();
 	~Mesh();
 
@@ -18,5 +33,11 @@ public:
 	void Shutdown();
 
 	void Draw();
+
+	void Transform(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale);
+	glm::vec3 GetPosition();
+	glm::vec3 GetRotation();
+	glm::vec3 GetScale();
+	glm::mat4* GetModelMatrix();
 };
 

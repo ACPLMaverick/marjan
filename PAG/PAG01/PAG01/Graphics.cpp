@@ -3,6 +3,9 @@
 
 Graphics::Graphics()
 {
+	m_camera = nullptr;
+	m_mesh = nullptr;
+	m_window = nullptr;
 }
 
 
@@ -41,24 +44,22 @@ bool Graphics::Initialize()
 	}
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
-	modelMatrix = mat4(1.0f);
-	viewMatrix = lookAt(
-		vec3(4.0f, 3.0f, 3.0f),
-		vec3(0.0f, 0.0f, 0.0f),
-		vec3(0.0f, 1.0f, 0.0f)
-		);
-	projectionMatrix = perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+	projectionMatrix = perspective(WINDOW_FOV, WINDOW_RATIO, WINDOW_NEAR, WINDOW_FAR);
 
-	mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
+	m_camera = new Camera();
+	if (!m_camera->Initialize()) return false;
+	m_camera->Transform(vec3(3.0f, 2.0f, 4.0f), vec3(0.0f, 0.0f, 0.0f));
 
 	m_mesh = new Mesh();
 	if(!m_mesh->Initialize()) return false;
+	m_mesh->Transform(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f));
 
 	programID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
 
 	matrixID = glGetUniformLocation(programID, "mvpMatrix");
-
 	return true;
 }
 
@@ -73,6 +74,11 @@ void Graphics::Shutdown()
 		m_mesh->Shutdown();
 		delete m_mesh;
 	}
+	if (m_camera != nullptr)
+	{
+		m_camera->Shutdown();
+		delete m_camera;
+	}
 
 	glDeleteProgram(programID);
 	glfwTerminate();
@@ -84,12 +90,14 @@ void Graphics::Frame()
 
 	glUseProgram(programID);
 
-	glEnableVertexAttribArray(0);
+	m_mesh->Transform(
+		m_mesh->GetPosition(), 
+		vec3(m_mesh->GetRotation().x, m_mesh->GetRotation().y + 0.001f, m_mesh->GetRotation().z),
+		m_mesh->GetScale());
 
+	mvpMatrix = projectionMatrix * (*(m_camera->GetViewMatrix())) * (*(m_mesh->GetModelMatrix()));
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
 	m_mesh->Draw();
-
-	glDisableVertexAttribArray(0);
 
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();

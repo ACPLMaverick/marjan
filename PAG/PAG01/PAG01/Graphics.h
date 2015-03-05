@@ -14,22 +14,30 @@ using namespace glm;
 using namespace std;
 
 #include "Mesh.h"
+#include "Camera.h"
 
 #define GLFW_SAMPLES_VALUE 4
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
 #define WINDOW_NAME "PAG01"
+#define WINDOW_FOV 45.0f
+#define WINDOW_NEAR 0.1f
+#define WINDOW_FAR 100.0f
+static const float WINDOW_RATIO = ((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT);
 
 class Graphics
 {
 private:
 	GLFWwindow* m_window;
 	Mesh* m_mesh;
+	Camera* m_camera;
 
 	GLuint programID;
 	GLuint matrixID;
 
-	mat4 modelMatrix, viewMatrix, projectionMatrix, mvpMatrix;
+	GLuint m_vertexBuffer;
+
+	mat4 projectionMatrix, mvpMatrix;
 
 	GLuint LoadShaders(const char* vertexFilePath, const char* fragmentFilePath);
 public:
@@ -41,5 +49,6 @@ public:
 	void Frame();
 
 	GLFWwindow* GetWindowPtr();
+
 };
 
