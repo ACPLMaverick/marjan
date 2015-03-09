@@ -94,6 +94,12 @@ namespace Shit
 
             UpdateBullets(gameTime);
 
+            if(enemiesThisLevel == levelInfoList[currentLevel].NumberEnemies && models.Count == 0)
+            {
+                currentLevel++;
+                ((ShitGame)Game).level++;
+            }
+
             base.Update(gameTime);
         }
 
@@ -113,7 +119,7 @@ namespace Shit
 
         public void AddBullet(Vector3 position, Vector3 direction)
         {
-            bullets.Add(new SpinningEnemy(crate, ((ShitGame)Game).texture_c, position, direction, 0, 0, 0.1f, 0.7f));
+            bullets.Add(new SpinningEnemy(crate, ((ShitGame)Game).texture_c, position, direction, 0, 0, 0.1f, 0.3f, -1));
             Debug.WriteLine(bullets.Count.ToString());
         }
 
@@ -149,6 +155,10 @@ namespace Shit
                         if (bullets[i].CollidesWith(models[j].MyModel, models[j].GetWorldMatrix()))
                         {
                             // collision!
+                            ((ShitGame)Game).PlayCue("death");
+                            if (models[j].ID == 0) ((ShitGame)Game).points_p++;
+                            else if (models[j].ID == 1) ((ShitGame)Game).points_m++;
+
                             models.RemoveAt(j);
                             bullets.RemoveAt(i);
                             --i;
@@ -174,11 +184,9 @@ namespace Shit
             Vector3 direction = new Vector3(0, 0, rnd.Next(levelInfoList[currentLevel].MinSpeed, levelInfoList[currentLevel].MaxSpeed));
             float rollRotation = (float)(rnd.NextDouble() * maxRollAngle - (maxRollAngle / 2));
             int randTex = rnd.Next(2);
-            Texture2D tex;
-            if (randTex == 0) tex = ((ShitGame)Game).texture;
-            else tex = ((ShitGame)Game).texture_m;
+            if (randTex == 0) models.Add(new SpinningEnemy(plane, ((ShitGame)Game).texture, position, direction, 0.5f, 0.5f, rollRotation, 2.0f, 0));
+            else models.Add(new SpinningEnemy(plane, ((ShitGame)Game).texture_m, position, direction, 0.5f, 0.5f, rollRotation, 1.5f, 1));
 
-            models.Add(new SpinningEnemy(plane, tex, position, direction, 0.5f, 0.5f, rollRotation, 1.5f));
             ++enemiesThisLevel;
             SetNextSpawnTime();
         }

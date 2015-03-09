@@ -16,7 +16,7 @@ namespace Shit
         Vector3 direction;
 
         public SpinningEnemy(Model m, Texture2D tex, Vector3 position, Vector3 direction,
-            float yaw, float pitch, float roll, float scale) : base(m, tex, scale)
+            float yaw, float pitch, float roll, float scale, int ID) : base(m, tex, scale, ID)
         {
             WorldMatrix = Matrix.CreateTranslation(position);
             rotationMatrix = Matrix.Identity;

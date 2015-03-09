@@ -13,13 +13,15 @@ namespace Shit
         public Texture2D MyTexture { get; protected set; }
         protected Matrix WorldMatrix;
         protected float scale;
+        public int ID;
 
-        public BasicModel(Model m, Texture2D tex, float scale)
+        public BasicModel(Model m, Texture2D tex, float scale, int ID)
         {
             MyModel = m;
             MyTexture = tex;
             WorldMatrix = Matrix.Identity;
             this.scale = scale;
+            this.ID = ID;
 
             foreach(ModelMesh mm in MyModel.Meshes)
             {
@@ -52,6 +54,7 @@ namespace Shit
                     be.Projection = camera.ProjectionMatrix;
                     be.View = camera.ViewMatrix;
                     be.World = Matrix.CreateScale(scale) * GetWorldMatrix() * mm.ParentBone.Transform;
+                    be.Texture = MyTexture;
                 }
 
                 mm.Draw();
