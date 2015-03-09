@@ -12,27 +12,35 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Shit
 {
-    public class GameObject : Microsoft.Xna.Framework.GameComponent
+    /// <summary>
+    /// This is a game component that implements IUpdateable.
+    /// </summary>
+    public class Camera : Microsoft.Xna.Framework.GameComponent
     {
-        public readonly string name;
-        public Texture2D texture;
-        public Vector2 position;
-        public float rotation;
-        public float scale;
-        public Color color;
+        public Matrix ViewMatrix
+        {
+            get;
+            protected set;
+        }
 
-        public Vector2 speed;
+        public Matrix ProjectionMatrix
+        {
+            get;
+            protected set;
+        }
 
-        public GameObject(Game game, string name, Texture2D texture, Vector2 position, float rotation, float scale, Color color)
+        public Camera(Game game, Vector3 pos, Vector3 target, Vector3 up)
             : base(game)
         {
-            this.name = name;
-            this.texture = texture;
-            this.position = position;
-            this.rotation = rotation;
-            this.scale = scale;
-            this.color = color;
-            this.speed = Vector2.Zero;
+            ViewMatrix = Matrix.CreateLookAt(pos, target, up);
+
+            ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView
+            (
+                MathHelper.PiOver4,
+                (float)Game.Window.ClientBounds.Width/(float)Game.Window.ClientBounds.Height,
+                1.0f,
+                100.0f
+            );
         }
 
         /// <summary>
@@ -41,6 +49,7 @@ namespace Shit
         /// </summary>
         public override void Initialize()
         {
+            // TODO: Add your initialization code here
 
             base.Initialize();
         }
@@ -51,11 +60,7 @@ namespace Shit
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            if(speed != Vector2.Zero)
-            {
-                int time = gameTime.ElapsedGameTime.Milliseconds;
-                this.position = this.position + speed * (float)time;
-            }
+            // TODO: Add your update code here
 
             base.Update(gameTime);
         }

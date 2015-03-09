@@ -10,7 +10,7 @@ namespace Shit
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game1 game = new Game1())
+            using (ShitGame game = new ShitGame())
             {
                 game.Run();
             }
