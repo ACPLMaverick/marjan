@@ -19,18 +19,23 @@ namespace Shit
         // components
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Camera camera;
+        public Camera camera { get; private set; }
+        ModelManager modelManager;
 
         // variables
         bool fullScreen = false;
-        VertexPositionTexture[] verts;
-        int[] inds;
-        VertexBuffer vertexBuffer;
-        IndexBuffer indexBuffer;
+       
         BasicEffect effect;
         Matrix worldTranslationMatrix = Matrix.Identity;
         Matrix worldRotationMatrix = Matrix.Identity;
-        Texture2D texture;
+        public Texture2D texture { get; private set; }
+        public Texture2D texture_m { get; private set; }
+        public Texture2D texture_c { get; private set; }
+        public Random random { get; private set; }
+
+        float bulletSpeed = 10.0f;
+        int bulletDelay = 300;
+        int bulletCountdown = 0;
 
         public ShitGame()
         {
@@ -46,6 +51,7 @@ namespace Shit
         /// </summary>
         protected override void Initialize()
         {
+            random = new Random();
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             RasterizerState rasterizer = new RasterizerState();
@@ -53,10 +59,15 @@ namespace Shit
             graphics.GraphicsDevice.RasterizerState = rasterizer;
             graphics.ApplyChanges();
 
-            camera = new Camera(this, new Vector3(3.0f, 2.0f, 5.0f), Vector3.Zero, Vector3.Up);
+            texture = Content.Load<Texture2D>(@"Textures\aftertable");
+            texture_m = Content.Load<Texture2D>(@"Textures\moravsky");
+            texture_c = Content.Load<Texture2D>(@"Textures\dynamiteCrate_diffuse");
+
+            camera = new Camera(this, new Vector3(0.0f, 0.0f, 6.0f), Vector3.Zero, Vector3.Up, 0.1f);
             Components.Add(camera);
 
-            texture = Content.Load<Texture2D>(@"Textures\cargo");
+            modelManager = new ModelManager(this);
+            Components.Add(modelManager);
 
             base.Initialize();
         }
@@ -69,20 +80,6 @@ namespace Shit
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            verts = new VertexPositionTexture[4];
-            verts[0] = new VertexPositionTexture(new Vector3(-1.0f, 1.0f, 0.0f), new Vector2(0.0f, 0.0f));
-            verts[1] = new VertexPositionTexture(new Vector3(1.0f, 1.0f, 0.0f), new Vector2(1.0f, 0.0f));
-            verts[2] = new VertexPositionTexture(new Vector3(1.0f, -1.0f, 0.0f), new Vector2(1.0f, 1.0f));
-            verts[3] = new VertexPositionTexture(new Vector3(-1.0f, -1.0f, 0.0f), new Vector2(0.0f, 1.0f));
-
-            inds = new int[6] {0, 2, 3, 0, 1, 2};
-
-            vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionTexture), verts.Length, BufferUsage.None);
-            vertexBuffer.SetData(verts);
-
-            indexBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, inds.Length, BufferUsage.None);
-            indexBuffer.SetData(inds);
 
             effect = new BasicEffect(GraphicsDevice);
             effect.Texture = texture;
@@ -108,6 +105,8 @@ namespace Shit
             // Allows the game to exit
             ProcessKeys();
 
+            FireBullets(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -117,19 +116,15 @@ namespace Shit
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            GraphicsDevice.SetVertexBuffer(vertexBuffer);
+            GraphicsDevice.Clear(Color.Red);
             
-            effect.World = worldRotationMatrix * worldTranslationMatrix;
+            effect.World = Matrix.Identity;
             effect.View = camera.ViewMatrix;
             effect.Projection = camera.ProjectionMatrix;
 
             foreach(EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-
-                GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionTexture>(PrimitiveType.TriangleList, verts, 0, verts.Length, inds, 0, 2);
             }
 
             base.Draw(gameTime);
@@ -137,25 +132,47 @@ namespace Shit
 
         protected void ProcessKeys()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape) ||
+                GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start))
                 this.Exit();
             if (Keyboard.GetState().IsKeyDown(Keys.R))
                 ToggleFullscreen();
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                worldTranslationMatrix *= Matrix.CreateTranslation(new Vector3(-0.1f, 0.0f, 0.0f));
-                worldRotationMatrix *= Matrix.CreateRotationY(0.1f);
+                camera.Position += (camera.Speed * camera.Direction);
             }  
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                worldTranslationMatrix *= Matrix.CreateTranslation(new Vector3(0.1f, 0.0f, 0.0f));
-                worldRotationMatrix *= Matrix.CreateRotationY(-0.1f);
+                camera.Position -= (camera.Speed * camera.Direction);
             }
-               
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                camera.Position -= (camera.Speed * camera.Right);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                camera.Position += (camera.Speed * camera.Right);
+            }
+            camera.Position += ((GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.Y) * camera.Speed * camera.Direction);
+            camera.Position += ((GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X) * camera.Speed * camera.Right);
+
             if(Keyboard.GetState().IsKeyDown(Keys.V))
             {
                 this.IsFixedTimeStep = false;
             }
+        }
+
+        protected void FireBullets(GameTime gameTime)
+        {
+            if (bulletCountdown <= 0)
+            {
+                if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A))
+                {
+                    modelManager.AddBullet(camera.Position + new Vector3(0, -10, 0), bulletSpeed * camera.GetDirection());
+                    bulletCountdown = bulletDelay;
+                }
+            }
+            else bulletCountdown -= gameTime.ElapsedGameTime.Milliseconds;
         }
 
         protected void ToggleFullscreen()
@@ -173,6 +190,11 @@ namespace Shit
                 fullScreen = true;
             }
             graphics.ToggleFullScreen();
+        }
+
+        private Vector3 FlipYZAxes(Vector3 vec)
+        {
+            return new Vector3(vec.X, vec.Y, -vec.Z);
         }
     }
 }
