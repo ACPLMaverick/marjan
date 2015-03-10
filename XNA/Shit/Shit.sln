@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shit", "Shit\Shit\Shit.csproj", "{2B92D8E6-90C1-4F2D-95B0-AF2ABAF3C214}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shit", "Shit\Shit\Shit.csproj", "{9BA92C0D-A466-4267-AA12-7CA19A1FF850}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "ShitContent", "Shit\ShitContent\ShitContent.contentproj", "{ED0C40E0-BD82-4537-A0E6-E44DE96446AD}"
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "ShitContent", "Shit\ShitContent\ShitContent.contentproj", "{674FAF54-0AA1-4135-B01A-5B3AEE3B1E9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,12 +13,12 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2B92D8E6-90C1-4F2D-95B0-AF2ABAF3C214}.Debug|x86.ActiveCfg = Debug|x86
-		{2B92D8E6-90C1-4F2D-95B0-AF2ABAF3C214}.Debug|x86.Build.0 = Debug|x86
-		{2B92D8E6-90C1-4F2D-95B0-AF2ABAF3C214}.Release|x86.ActiveCfg = Release|x86
-		{2B92D8E6-90C1-4F2D-95B0-AF2ABAF3C214}.Release|x86.Build.0 = Release|x86
-		{ED0C40E0-BD82-4537-A0E6-E44DE96446AD}.Debug|x86.ActiveCfg = Debug|x86
-		{ED0C40E0-BD82-4537-A0E6-E44DE96446AD}.Release|x86.ActiveCfg = Release|x86
+		{9BA92C0D-A466-4267-AA12-7CA19A1FF850}.Debug|x86.ActiveCfg = Debug|x86
+		{9BA92C0D-A466-4267-AA12-7CA19A1FF850}.Debug|x86.Build.0 = Debug|x86
+		{9BA92C0D-A466-4267-AA12-7CA19A1FF850}.Release|x86.ActiveCfg = Release|x86
+		{9BA92C0D-A466-4267-AA12-7CA19A1FF850}.Release|x86.Build.0 = Release|x86
+		{674FAF54-0AA1-4135-B01A-5B3AEE3B1E9E}.Debug|x86.ActiveCfg = Debug|x86
+		{674FAF54-0AA1-4135-B01A-5B3AEE3B1E9E}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
