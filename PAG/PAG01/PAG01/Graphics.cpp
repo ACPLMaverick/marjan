@@ -53,7 +53,7 @@ bool Graphics::Initialize()
 
 	m_camera = new Camera();
 	if (!m_camera->Initialize()) return false;
-	m_camera->Transform(vec3(0.0f, 2.0f, -4.0f), vec3(0.0f, 0.0f, 0.0f));
+	m_camera->Transform(&vec3(0.0f, 0.0f, -4.0f), &vec3(0.0f, 0.0f, 0.0f), &m_camera->GetUp(), &m_camera->GetRight());
 
 	m_texture = new Texture();
 	if (!m_texture->Initialize(&PATH_DIFFUSE)) return false;
@@ -65,7 +65,7 @@ bool Graphics::Initialize()
 	m_mesh->SetTexture(m_texture);
 	m_mesh->Transform(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f));
 
-	m_light = new Light(&vec4(1.0f, -1.0f, 1.0f, 0.0f), &vec4(0.0f, 0.8f, 0.2f, 1.0f), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(0.1f, 0.1f, 0.2f, 1.0f), 100.0f, programID);
+	m_light = new Light(&vec4(0.0f, -1.0f, 1.0f, 0.0f), &vec4(0.0f, 0.8f, 0.2f, 1.0f), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(0.5f, 0.1f, 0.2f, 1.0f), 100.0f, programID);
 
 	m_camera->m_eyeVectorID = glGetUniformLocation(programID, "eyeVector");
 
@@ -108,10 +108,10 @@ void Graphics::Frame()
 
 	glUseProgram(programID);
 
-	m_mesh->Transform(
+	/*m_mesh->Transform(
 		m_mesh->GetPosition(), 
-		vec3(m_mesh->GetRotation().x, m_mesh->GetRotation().y + 0.01f, m_mesh->GetRotation().z),
-		m_mesh->GetScale());
+		vec3(m_mesh->GetRotation().x, m_mesh->GetRotation().y + 0.005f, m_mesh->GetRotation().z),
+		m_mesh->GetScale());*/
 
 	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &m_camera->GetEyeVector(), m_camera->m_eyeVectorID, m_light);
 
@@ -122,6 +122,11 @@ void Graphics::Frame()
 GLFWwindow* Graphics::GetWindowPtr()
 {
 	return m_window;
+}
+
+Camera* Graphics::GetCameraPtr()
+{
+	return m_camera;
 }
 
 GLuint Graphics::LoadShaders(const char* vertexFilePath, const char* fragmentFilePath)

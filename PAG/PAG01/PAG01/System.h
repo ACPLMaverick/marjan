@@ -18,6 +18,7 @@ private:
 	Input* m_input;
 
 	bool isRunning;
+	void ProcessInput();
 public:
 	System();
 	~System();

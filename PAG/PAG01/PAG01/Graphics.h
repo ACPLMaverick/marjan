@@ -26,8 +26,8 @@ using namespace std;
 #define WINDOW_FAR 100.0f
 static const float WINDOW_RATIO = ((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT);
 
-static const string PATH_DIFFUSE = "D:\\_projects\\Engine2DAssets\\water01.dds";
-static const string PATH_SPECULAR = "D:\\_projects\\Engine2DAssets\\water02.dds";
+static const string PATH_DIFFUSE = "E:\\_projects\\Engine2DAssets\\water01.dds";
+static const string PATH_SPECULAR = "E:\\_projects\\Engine2DAssets\\water02.dds";
 
 class Graphics
 {
@@ -54,6 +54,6 @@ public:
 	void Frame();
 
 	GLFWwindow* GetWindowPtr();
-
+	Camera* GetCameraPtr();
 };
 

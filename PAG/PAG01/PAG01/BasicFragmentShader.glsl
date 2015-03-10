@@ -18,11 +18,12 @@ uniform float glossiness;
 void main()
 {
 	vec3 tempColor = clamp(texture(sampler, UV).rgb*fragmentColor, 0.0f, 1.0f);
-	vec3 diff = dot(-(lightDirection).xyz, normal) * lightDiffuse.xyz;
+	float lightPower = dot(-(lightDirection).xyz, normal);
+	vec3 diff = lightPower * lightDiffuse.xyz;
 
 	vec3 r = reflect(-lightDirection.xyz, normal);
 	float spec = clamp(dot(eyeVector.xyz, r), 0.0f, 1.0f);
-	vec3 specFinal = lightSpecular.xyz * diff * pow(spec, glossiness);
+	vec3 specFinal = lightSpecular.xyz * lightPower * pow(spec, glossiness);
 
 	color = clamp((diff + lightAmbient.rgb)*tempColor + specFinal, 0.0f, 1.0f);
 }

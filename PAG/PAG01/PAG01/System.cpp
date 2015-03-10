@@ -21,6 +21,8 @@ void System::Initialize()
 	m_input->Initialize(m_graphics->GetWindowPtr());
 
 	isRunning = true;
+
+	glfwSetCursorPos(m_graphics->GetWindowPtr(), WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 }
 
 void System::Shutdown()
@@ -41,10 +43,55 @@ void System::GameLoop()
 {
 	while (isRunning)
 	{
-		// Check if we should quit
-		if (m_input->IsKeyDown(GLFW_KEY_ESCAPE)) isRunning = false;
+		ProcessInput();
 
 		// Render one frame.
 		m_graphics->Frame();
 	}
+}
+
+void System::ProcessInput()
+{
+	// Check if we should quit
+	if (m_input->IsKeyDown(GLFW_KEY_ESCAPE)) isRunning = false;
+
+	// process mouse to rotate camera
+	if (m_input->IsMouseButtonDown(GLFW_MOUSE_BUTTON_2))
+	{
+		glfwGetCursorPos(m_graphics->GetWindowPtr(), &m_input->mouseX, &m_input->mouseY);
+
+		m_input->horizontalAngle = MOUSE_SPEED * (WINDOW_WIDTH / 2 - m_input->mouseX);
+
+		m_input->verticalAngle = MOUSE_SPEED * (WINDOW_HEIGHT / 2 - m_input->mouseY);
+
+		m_input->verticalActual += m_input->verticalAngle;
+		if (m_input->verticalActual > (1.4f) || m_input->verticalActual < (-1.4f))
+		{
+			m_input->verticalActual -= m_input->verticalAngle;
+			m_input->verticalAngle = 0.0f;
+		}
+
+		Camera* cam = m_graphics->GetCameraPtr();
+		mat4 rotationPitch, rotationYaw;
+		rotationYaw = rotate(m_input->horizontalAngle, cam->GetUp());
+		rotationPitch = rotate(m_input->verticalAngle, cam->GetRight());
+		vec4 newPosition, /*newUp,*/ newRight;
+		newPosition = vec4(cam->GetPosition(), 1.0f);
+		//newUp = vec4(cam->GetUp(), 1.0f);
+		newRight = vec4(cam->GetRight(), 1.0f);
+
+		newPosition = newPosition*rotationPitch*rotationYaw;
+		//newUp = newUp*rotationPitch;
+		newRight = newRight*rotationYaw;
+
+		m_graphics->GetCameraPtr()->Transform(
+			&vec3(newPosition),
+			&vec3(0.0f, 0.0f, 0.0f),
+			&cam->GetUp(),
+			&vec3(newRight)
+			);
+	}
+
+	// reset mouse for the next frame
+	glfwSetCursorPos(m_graphics->GetWindowPtr(), WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 }
