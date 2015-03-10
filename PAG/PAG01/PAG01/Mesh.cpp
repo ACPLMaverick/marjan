@@ -12,8 +12,10 @@ Mesh::~Mesh()
 {
 }
 
-bool Mesh::Initialize(GLuint programID)
+bool Mesh::Initialize(GLuint programID, Mesh* parent)
 {
+	this->parent = parent;
+
 	m_vertexID = new VertexID;
 	m_vertexData = new VertexData;
 
@@ -162,6 +164,14 @@ bool Mesh::Initialize(GLuint programID)
 
 void Mesh::Shutdown()
 {
+	if (children.size() > 0)
+	{
+		for (vector<Mesh*>::iterator it = children.begin(); it != children.end(); ++it)
+		{
+			(*it)->Shutdown();
+			delete (*it);
+		}
+	}
 	if (m_vertexData != nullptr)
 	{
 		if (m_vertexData->vertexPositionBuffer != nullptr)
@@ -191,8 +201,9 @@ void Mesh::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* e
 {
 	mvpMatrix = (*projectionMatrix) * (*viewMatrix) * modelMatrix;
 	glm::vec4 temp = light->lightDirection * modelMatrix;
+	glm::vec4 tempEye = glm::vec4(*eyeVector, 1.0f) * modelMatrix;
 	glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
-	glUniform4f(eyeVectorID, eyeVector->x, eyeVector->y, eyeVector->z, 1.0f);
+	glUniform4f(eyeVectorID, tempEye.x, tempEye.y, tempEye.z, tempEye.w);
 	glUniform4f(light->lightDirID, temp.x, temp.y, temp.z, temp.w);
 	glUniform4f(light->lightDifID, light->lightDiffuse.x, light->lightDiffuse.y, light->lightDiffuse.z, light->lightDiffuse.w);
 	glUniform4f(light->lightSpecID, light->lightSpecular.x, light->lightSpecular.y, light->lightSpecular.z, light->lightSpecular.w);
@@ -252,23 +263,56 @@ void Mesh::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* e
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
-	return;
+	
+	for (vector<Mesh*>::iterator it = children.begin(); it != children.end(); ++it)
+	{
+		(*it)->Draw(projectionMatrix, viewMatrix, eyeVector, eyeVectorID, light);
+	}
 }
 
-void Mesh::Transform(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale_v)
+void Mesh::Transform(const glm::vec3* position, const glm::vec3* rotation, const glm::vec3* scale_v)
 {
-	this->position = position;
-	this->rotation = rotation;
-	this->scale = scale;
+	this->position = *position;
+	this->rotation = *rotation;
+	this->scale = *scale_v;
 
-	glm::mat4 translation, rotation_x, rotation_y, rotation_z, scale_m;
-	translation = glm::translate(position);
-	rotation_x = glm::rotate(rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	rotation_y = glm::rotate(rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	rotation_z = glm::rotate(rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-	scale_m = glm::scale(scale_v);
 
-	modelMatrix = translation*(rotation_x*rotation_y*rotation_z)*scale_m;
+	glm::mat4 translation, rotation_x, rotation_y, rotation_z, scale_m, parentMatrix;
+	translation = glm::translate(this->position);
+	rotation_x = glm::rotate(this->rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	rotation_y = glm::rotate(this->rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	rotation_z = glm::rotate(this->rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	scale_m = glm::scale(this->scale);
+
+	(parent != NULL) ? (parentMatrix = *parent->GetModelMatrix()) : (parentMatrix = glm::mat4(1.0f));
+
+	modelMatrix = parentMatrix*translation*(rotation_x*rotation_y*rotation_z)*scale_m;
+
+	for (vector<Mesh*>::iterator it = children.begin(); it != children.end(); ++it)
+	{
+		(*it)->Transform((*it)->GetPosition(), (*it)->GetRotation(), (*it)->GetScale());
+	}
+}
+
+void Mesh::AddChild(Mesh* child)
+{
+	children.push_back(child);
+	child->SetParent(this);
+}
+
+vector<Mesh*>* Mesh::GetChildren()
+{
+	return &children;
+}
+
+Mesh* Mesh::GetParent()
+{
+	return parent;
+}
+
+void Mesh::SetParent(Mesh* parent)
+{
+	this->parent = parent;
 }
 
 glm::mat4* Mesh::GetModelMatrix()
@@ -276,19 +320,19 @@ glm::mat4* Mesh::GetModelMatrix()
 	return &modelMatrix;
 }
 
-glm::vec3 Mesh::GetPosition()
+glm::vec3* Mesh::GetPosition()
 {
-	return position;
+	return &position;
 }
 
-glm::vec3 Mesh::GetRotation()
+glm::vec3* Mesh::GetRotation()
 {
-	return rotation;
+	return &rotation;
 }
 
-glm::vec3 Mesh::GetScale()
+glm::vec3* Mesh::GetScale()
 {
-	return scale;
+	return &scale;
 }
 
 void Mesh::SetTexture(Texture* texture)

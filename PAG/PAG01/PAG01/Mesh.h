@@ -3,6 +3,7 @@
 #include <GLFW\glfw3.h>
 #include <glm\glm\glm.hpp>
 #include <glm\glm\gtx\transform.hpp>
+#include <vector>
 
 #include "Texture.h"
 #include "Light.h"
@@ -31,7 +32,10 @@ private:
 	glm::mat4 modelMatrix, mvpMatrix;
 	glm::vec3 position, rotation, scale;
 
-	
+	// hierarchy
+	Mesh* parent;
+	vector<Mesh*> children;
+	////
 
 	VertexData* m_vertexData;
 	VertexID* m_vertexID;
@@ -44,16 +48,21 @@ public:
 	Mesh();
 	~Mesh();
 
-	bool Initialize(GLuint programID);
+	bool Initialize(GLuint programID, Mesh* parent);
 	void Shutdown();
 
 	void Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light);
 
-	void Transform(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale);
-	glm::vec3 GetPosition();
-	glm::vec3 GetRotation();
-	glm::vec3 GetScale();
+	void Transform(const glm::vec3* position, const glm::vec3* rotation, const glm::vec3* scale);
+	glm::vec3* GetPosition();
+	glm::vec3* GetRotation();
+	glm::vec3* GetScale();
 	glm::mat4* GetModelMatrix();
 	void SetTexture(Texture* texture);
+
+	void AddChild(Mesh* child);
+	vector<Mesh*>* GetChildren();
+	Mesh* GetParent();
+	void SetParent(Mesh* parent);
 };
 

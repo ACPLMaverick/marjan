@@ -4,9 +4,7 @@
 Graphics::Graphics()
 {
 	m_camera = nullptr;
-	m_mesh = nullptr;
 	m_window = nullptr;
-	m_texture = nullptr;
 	m_light = nullptr;
 }
 
@@ -55,19 +53,16 @@ bool Graphics::Initialize()
 	if (!m_camera->Initialize()) return false;
 	m_camera->Transform(&vec3(0.0f, 0.0f, -4.0f), &vec3(0.0f, 0.0f, 0.0f), &m_camera->GetUp(), &m_camera->GetRight());
 
-	m_texture = new Texture();
-	if (!m_texture->Initialize(&PATH_DIFFUSE)) return false;
-
 	programID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
 
-	m_mesh = new Mesh();
-	if (!m_mesh->Initialize(programID)) return false;
-	m_mesh->SetTexture(m_texture);
-	m_mesh->Transform(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f));
-
-	m_light = new Light(&vec4(0.0f, -1.0f, 1.0f, 0.0f), &vec4(0.0f, 0.8f, 0.2f, 1.0f), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(0.5f, 0.1f, 0.2f, 1.0f), 100.0f, programID);
+	m_light = new Light(&vec4(0.0f, -1.0f, 1.0f, 0.0f), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(0.5f, 0.1f, 0.2f, 1.0f), 100.0f, programID);
 
 	m_camera->m_eyeVectorID = glGetUniformLocation(programID, "eyeVector");
+
+	m_manager = new MeshManager();
+	m_manager->Initialize(programID);
+	m_mesh = m_manager->GetMesh(0);
+	//test = m_manager->GetMesh(0)->GetChildren()->at(0);
 
 	return true;
 }
@@ -78,16 +73,6 @@ void Graphics::Shutdown()
 	{
 		glfwDestroyWindow(m_window);
 	}
-	if (m_mesh != nullptr)
-	{
-		m_mesh->Shutdown();
-		delete m_mesh;
-	}
-	if (m_texture != nullptr)
-	{
-		m_texture->Shutdown();
-		delete m_texture;
-	}
 	if (m_camera != nullptr)
 	{
 		m_camera->Shutdown();
@@ -96,6 +81,11 @@ void Graphics::Shutdown()
 	if (m_light != nullptr)
 	{
 		delete m_light;
+	}
+	if (m_manager != nullptr)
+	{
+		m_manager->Shutdown();
+		delete m_manager;
 	}
 
 	glDeleteProgram(programID);
@@ -110,10 +100,15 @@ void Graphics::Frame()
 
 	/*m_mesh->Transform(
 		m_mesh->GetPosition(), 
-		vec3(m_mesh->GetRotation().x, m_mesh->GetRotation().y + 0.005f, m_mesh->GetRotation().z),
-		m_mesh->GetScale());*/
+		&vec3((*m_mesh->GetRotation()).x, (*m_mesh->GetRotation()).y + 0.005f, (*m_mesh->GetRotation()).z),
+		m_mesh->GetScale());
 
-	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &m_camera->GetEyeVector(), m_camera->m_eyeVectorID, m_light);
+	test->Transform(
+		test->GetPosition(),
+		&vec3((*test->GetRotation()).x, (*test->GetRotation()).y, (*test->GetRotation()).z + 0.005f),
+		test->GetScale());*/
+
+	//m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &m_camera->GetEyeVector(), m_camera->m_eyeVectorID, m_light);
 
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();

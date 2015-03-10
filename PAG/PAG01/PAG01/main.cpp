@@ -4,10 +4,10 @@
 
 int main()
 {
-	System* system = new System();
+	System* system = System::GetInstance();
 	system->Initialize();
 	system->GameLoop();
 	system->Shutdown();
-	delete system;
+	System::DestroyInstance();
 	return 0;
 }

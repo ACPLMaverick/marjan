@@ -1,5 +1,5 @@
 #include "System.h"
-
+System* System::me;
 
 System::System()
 {
@@ -12,13 +12,30 @@ System::~System()
 {
 }
 
+System* System::GetInstance()
+{
+	if (me == NULL)
+	{
+		System::me = new System();
+	}
+	return System::me;
+}
+
+void System::DestroyInstance()
+{
+	if (System::me != NULL)
+	{
+		delete System::me;
+	}
+}
+
 void System::Initialize()
 {
 	m_graphics = new Graphics();
 	m_graphics->Initialize();
 
 	m_input = new Input();
-	m_input->Initialize(m_graphics->GetWindowPtr());
+	m_input->Initialize(m_graphics->GetWindowPtr(), MouseScrollCallback);
 
 	isRunning = true;
 
@@ -94,4 +111,21 @@ void System::ProcessInput()
 
 	// reset mouse for the next frame
 	glfwSetCursorPos(m_graphics->GetWindowPtr(), WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+}
+
+void System::MouseScrollCallback(GLFWwindow* window, double x, double y)
+{
+	//printf((to_string(x) + " " + to_string(y) + " " + to_string(System::me->m_graphics->GetCameraPtr()->GetPositionLength()) + "\n").c_str());
+
+	if (System::me != NULL)
+	{
+		int direction = (int)y;
+		if ((System::me->m_graphics->GetCameraPtr()->GetPositionLength()) + (float)direction*SCROLL_SPEED >= 0.01f)
+		{
+			Graphics* graph = System::me->m_graphics;
+			Camera* cam = graph->GetCameraPtr();
+			cam->Transform(&cam->GetPosition(), &cam->GetTarget(), &cam->GetUp(), &cam->GetRight(),
+				cam->GetPositionLength() + (float)direction*SCROLL_SPEED);
+		}
+	}
 }

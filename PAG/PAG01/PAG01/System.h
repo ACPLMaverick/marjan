@@ -14,13 +14,17 @@ using namespace std;
 class System
 {
 private:
+	static System* me;
 	Graphics* m_graphics;
 	Input* m_input;
 
 	bool isRunning;
 	void ProcessInput();
-public:
+	static void MouseScrollCallback(GLFWwindow* window, double x, double y);
 	System();
+public:
+	static System* GetInstance();
+	static void DestroyInstance();
 	~System();
 
 	void Initialize();

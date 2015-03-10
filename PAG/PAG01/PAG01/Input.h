@@ -2,7 +2,8 @@
 
 #include <GLFW\glfw3.h>
 
-#define MOUSE_SPEED 0.01
+#define MOUSE_SPEED 0.01f
+#define SCROLL_SPEED 0.1f
 
 class Input
 {
@@ -15,7 +16,7 @@ public:
 	Input();
 	~Input();
 
-	bool Initialize(GLFWwindow* window);
+	bool Initialize(GLFWwindow* window, GLFWscrollfun fun);
 	void Shutdown();
 
 	bool IsKeyDown(int keyCode);
