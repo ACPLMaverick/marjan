@@ -14,7 +14,9 @@ struct VertexData
 	GLfloat* vertexColorBuffer;
 	GLfloat* vertexUVBuffer;
 	GLfloat* vertexNormalBuffer;
+	(unsigned int)* indexBuffer;
 	unsigned int vertexCount;
+	unsigned int indexCount;
 };
 
 struct VertexID
@@ -24,11 +26,14 @@ struct VertexID
 	GLuint colorBuffer;
 	GLuint uvBuffer;
 	GLuint normalBuffer;
+	GLuint indexBuffer;
 };
 
 class Mesh
 {
 private:
+	string m_name;
+
 	glm::mat4 modelMatrix, mvpMatrix;
 	glm::vec3 position, rotation, scale;
 
@@ -48,7 +53,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	bool Initialize(GLuint programID, Mesh* parent);
+	bool Initialize(GLuint programID, Mesh* parent, string name, VertexData* data);
 	void Shutdown();
 
 	void Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light);

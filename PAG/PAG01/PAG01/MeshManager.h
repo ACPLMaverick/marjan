@@ -4,9 +4,11 @@
 #include <glm\glm\glm.hpp>
 #include <glm\glm\gtx\transform.hpp>
 #include <vector>
+#include <list>
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <io.h>
 
 #include "Texture.h"
 #include "Light.h"
@@ -26,9 +28,8 @@
 #define ID_OBJECT_NAME 0xB010
 #define ID_HIERARCHY_POSITION 0xB030
 
-static const string TEST_DIFFUSE = "E:\\_projects\\Cave\\canteen\\maps\\canteen_albedo.dds";
-static const string TEST_SPECULAR = "E:\\_projects\\Engine2DAssets\\water02.dds";
-static const string FILEPATH_FIXED = "E:\\_projects\\Cave\\canteen\\mesh\\Canteen.3DS";
+static const string TEST_DIFFUSE = "canteen_albedo.dds";
+static const string FILEPATH_FIXED = "Canteen_q2.3ds";
 
 using namespace std;
 
@@ -37,6 +38,7 @@ class MeshManager
 private:
 	vector<Mesh*> meshes;
 	vector<Texture*> textures;
+	GLuint m_programID;
 public:
 	MeshManager();
 	~MeshManager();
@@ -46,7 +48,7 @@ public:
 
 	void Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light);
 
-	bool Load3DS(string filePath);
+	bool Load3DS(const string* filePath);
 
 	void AddMesh(Mesh* mesh);
 	Mesh* GetMesh(unsigned int i);

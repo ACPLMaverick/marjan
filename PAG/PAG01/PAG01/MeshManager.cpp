@@ -12,12 +12,13 @@ MeshManager::~MeshManager()
 
 bool MeshManager::Initialize(GLuint programID)
 {
+	m_programID = programID;
 	// load textures - test
 	Texture* m_texture = new Texture();
 	if (!m_texture->Initialize(&TEST_DIFFUSE)) return false;
 	textures.push_back(m_texture);
 
-	if(!Load3DS(FILEPATH_FIXED)) return false;
+	if(!Load3DS(&FILEPATH_FIXED)) return false;
 
 	/*
 	// load meshes - test
@@ -66,19 +67,152 @@ void MeshManager::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::
 	}
 }
 
-bool MeshManager::Load3DS(string filePath)
+bool MeshManager::Load3DS(const string* filePath)
 {
-	ifstream stream = ifstream(filePath.c_str(), ios::in | ios::binary);
-	string file, buffer;
-	while (!stream.eof())
+	printf("Loading 3DS...\n");
+	string name;
+	FILE* myFile;
+	VertexData* data = new VertexData;
+	list<GLfloat> vertices, uvs, normals;
+	list<unsigned int> indices;
+	// DONT FORGET ABOUT COLORS!!!oneoneone
+	unsigned short chunkID;
+	unsigned int chunkLength;
+	unsigned char oneByte;
+	unsigned short quantity;
+	unsigned short quantityPolygons;
+	unsigned short faceFlags;
+
+	char tempChar = 'a';
+	float tempFloat;
+	unsigned short tempIndex;
+
+	if ((fopen_s(&myFile, (*filePath).c_str(), "rb")) != 0)
 	{
-		stream >> buffer;
-		file += buffer;
+		return false;
 	}
-	stream.close();
 
-	
+	while (ftell(myFile) < _filelength(_fileno(myFile)))
+	{
+		fread(&chunkID, 2, 1, myFile);
+		fread(&chunkLength, 4, 1, myFile);
 
+		switch (chunkID)
+		{
+			case ID_MAIN_CHUNK:
+				oneByte = 5;
+				break;
+			case ID_EDITOR_CHUNK:
+				oneByte = 5;
+				break;
+			case ID_OBJECT_BLOCK:
+
+				oneByte = 5;
+				for (int i = 0; i < 20 && tempChar != '\0'; i++)
+				{
+					fread(&tempChar, 1, 1, myFile);
+					name.push_back(tempChar);
+				}
+				break;
+			case ID_VERTICES_LIST:
+
+				fread(&quantity, sizeof(unsigned short), 1, myFile);
+				printf("Number of vertices: %d\n", quantity);
+				
+				for (int i = 0; i < 3*quantity; i++)
+				{
+					fread(&tempFloat, sizeof(float), 1, myFile);
+					vertices.push_back(tempFloat);
+				}
+				break;
+			case ID_FACES_DESCRIPTION:
+
+				fread(&quantityPolygons, sizeof(unsigned short), 1, myFile);
+				printf("Number of polygons: %d\n", quantityPolygons);
+
+				for (int i = 0; i < quantityPolygons; i++)
+				{
+					fread(&tempIndex, sizeof(unsigned short), 1, myFile);
+					indices.push_back(tempIndex);
+					fread(&tempIndex, sizeof(unsigned short), 1, myFile);
+					indices.push_back(tempIndex);
+					fread(&tempIndex, sizeof(unsigned short), 1, myFile);
+					indices.push_back(tempIndex);
+					fread(&tempIndex, sizeof(unsigned short), 1, myFile);
+				}
+				break;
+			case ID_MAPPING_COORDINATES_LIST:
+
+				fread(&quantity, sizeof(unsigned short), 1, myFile);
+				for (int i = 0; i < 2 * quantity; i++)
+				{
+					fread(&tempFloat, sizeof(float), 1, myFile);
+					uvs.push_back(tempFloat);
+				}
+				break;
+			default:
+				//fseek(myFile, chunkLength - 6, SEEK_CUR);
+				break;
+		}
+	}
+
+	data->vertexCount = quantity;
+	data->indexCount = quantityPolygons;
+	data->indexBuffer = new unsigned int[3 * quantityPolygons];
+	data->vertexPositionBuffer = new GLfloat[3 * quantity];
+	data->vertexColorBuffer = new GLfloat[3 * quantity];
+	data->vertexUVBuffer = new GLfloat[2 * quantity];
+	data->vertexNormalBuffer = new GLfloat[3 * quantity];
+
+	list<GLfloat>::iterator itP, itUV;
+	list<unsigned int>::iterator itI = indices.begin();
+	itP = vertices.begin();
+	itUV = uvs.begin();
+	for (int i = 0; i < (3 * quantity); ++i, ++itP)
+	{
+		data->vertexPositionBuffer[i] = (*itP);
+		data->vertexColorBuffer[i] = 1.0f;
+	}
+
+	for (int i = 0; i < (2 * quantity); ++i, ++itUV)
+	{
+		data->vertexUVBuffer[i] = (*itUV);
+	}
+
+	for (int i = 0; i < (3 * quantityPolygons); i++, ++itI)
+	{
+		data->indexBuffer[i] = (*itI);
+	}
+
+	//temporarily generate normals
+	glm::vec3 v1, v2, v3, edge1, edge2, normal;
+	for (int i = 0; i < (3 * quantity) - 6; i += 9)
+	{
+		v1 = glm::vec3(data->vertexPositionBuffer[i], data->vertexPositionBuffer[i + 1], data->vertexPositionBuffer[i + 2]);
+		v2 = glm::vec3(data->vertexPositionBuffer[i + 3], data->vertexPositionBuffer[i + 4], data->vertexPositionBuffer[i + 5]);
+		v3 = glm::vec3(data->vertexPositionBuffer[i + 6], data->vertexPositionBuffer[i + 7], data->vertexPositionBuffer[i + 8]);
+		edge1 = v2 - v1;
+		edge2 = v3 - v1;
+		normal = normalize(glm::cross(edge1, edge2));
+
+		data->vertexNormalBuffer[i] = normal.x;
+		data->vertexNormalBuffer[i+1] = normal.y;
+		data->vertexNormalBuffer[i+2] = normal.z;
+		data->vertexNormalBuffer[i+3] = normal.x;
+		data->vertexNormalBuffer[i+4] = normal.y;
+		data->vertexNormalBuffer[i+5] = normal.z;
+		data->vertexNormalBuffer[i+6] = normal.x;
+		data->vertexNormalBuffer[i+7] = normal.y;
+		data->vertexNormalBuffer[i+8] = normal.z;
+	}
+	///////
+
+	Mesh* mesh = new Mesh();
+	mesh->Initialize(m_programID, NULL, name, data);
+	mesh->SetTexture(textures.at(0));
+	AddMesh(mesh);
+
+	oneByte = 5;
 	return true;
 }
 

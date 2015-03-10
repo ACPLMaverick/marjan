@@ -47,6 +47,7 @@ bool Graphics::Initialize()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
+
 	projectionMatrix = perspective(WINDOW_FOV, WINDOW_RATIO, WINDOW_NEAR, WINDOW_FAR);
 
 	m_camera = new Camera();
@@ -62,7 +63,11 @@ bool Graphics::Initialize()
 	m_manager = new MeshManager();
 	m_manager->Initialize(programID);
 	m_mesh = m_manager->GetMesh(0);
+	m_mesh->Transform(&vec3(0.0f, -2.0f, 0.0f), &vec3(-(3.14f / 2.0f), 0.0f, 0.0f), &vec3(0.1f, 0.1f, 0.1f));
 	//test = m_manager->GetMesh(0)->GetChildren()->at(0);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	return true;
 }
@@ -108,7 +113,7 @@ void Graphics::Frame()
 		&vec3((*test->GetRotation()).x, (*test->GetRotation()).y, (*test->GetRotation()).z + 0.005f),
 		test->GetScale());*/
 
-	//m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &m_camera->GetEyeVector(), m_camera->m_eyeVectorID, m_light);
+	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &m_camera->GetEyeVector(), m_camera->m_eyeVectorID, m_light);
 
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
