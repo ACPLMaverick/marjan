@@ -16,7 +16,7 @@ namespace Shit
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class ModelManager : Microsoft.Xna.Framework.DrawableGameComponent
+    public class ModelManager : IGameComponent, IDrawable, IUpdateable
     {
         private List<BasicModel> models;
         private List<BasicModel> bullets;

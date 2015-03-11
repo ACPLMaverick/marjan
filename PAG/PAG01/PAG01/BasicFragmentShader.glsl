@@ -25,5 +25,5 @@ void main()
 	float spec = clamp(dot(eyeVector.xyz, r), 0.0f, 1.0f);
 	vec3 specFinal = lightSpecular.xyz * lightPower * pow(spec, glossiness);
 
-	color = clamp((diff + lightAmbient.rgb)*tempColor + specFinal, 0.0f, 1.0f);
+	color = clamp((diff + lightAmbient.rgb)*tempColor/* + specFinal*/, 0.0f, 1.0f);
 }

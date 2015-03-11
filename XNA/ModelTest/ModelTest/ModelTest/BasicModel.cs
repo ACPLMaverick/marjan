@@ -57,7 +57,7 @@ namespace ModelTest
                 {
                     be.Projection = camera.ProjectionMatrix;
                     be.View = camera.ViewMatrix;
-                    be.World = Matrix.CreateScale(scale) * GetWorldMatrix() * mm.ParentBone.Transform;
+                    be.World = Matrix.CreateScale(scale) * GetWorldMatrix();
                     be.Texture = MyTexture;
                 }
 
@@ -75,6 +75,6 @@ namespace ModelTest
             rotationMatrix *= Matrix.CreateFromYawPitchRoll(vec.X, vec.Y, vec.Z);
         }
 
-        public virtual Matrix GetWorldMatrix() { return rotationMatrix*WorldMatrix*preRotationMatrix; }
+        public virtual Matrix GetWorldMatrix() { return rotationMatrix*WorldMatrix/**preRotationMatrix*/; }
     }
 }

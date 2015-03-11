@@ -157,7 +157,7 @@ bool MeshManager::Load3DS(const string* filePath)
 	}
 
 	data->vertexCount = quantity;
-	data->indexCount = quantityPolygons;
+	data->indexCount = 3* quantityPolygons;
 	data->indexBuffer = new unsigned int[3 * quantityPolygons];
 	data->vertexPositionBuffer = new GLfloat[3 * quantity];
 	data->vertexColorBuffer = new GLfloat[3 * quantity];
@@ -184,27 +184,39 @@ bool MeshManager::Load3DS(const string* filePath)
 		data->indexBuffer[i] = (*itI);
 	}
 
-	//temporarily generate normals
-	glm::vec3 v1, v2, v3, edge1, edge2, normal;
-	for (int i = 0; i < (3 * quantity) - 6; i += 9)
+	glm::mat4 chuj = glm::rotate((3.14f / 2.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	for (int i = 0; i < 3 * quantity; i += 3)
 	{
-		v1 = glm::vec3(data->vertexPositionBuffer[i], data->vertexPositionBuffer[i + 1], data->vertexPositionBuffer[i + 2]);
-		v2 = glm::vec3(data->vertexPositionBuffer[i + 3], data->vertexPositionBuffer[i + 4], data->vertexPositionBuffer[i + 5]);
-		v3 = glm::vec3(data->vertexPositionBuffer[i + 6], data->vertexPositionBuffer[i + 7], data->vertexPositionBuffer[i + 8]);
-		edge1 = v2 - v1;
-		edge2 = v3 - v1;
-		normal = normalize(glm::cross(edge1, edge2));
-
-		data->vertexNormalBuffer[i] = normal.x;
-		data->vertexNormalBuffer[i+1] = normal.y;
-		data->vertexNormalBuffer[i+2] = normal.z;
-		data->vertexNormalBuffer[i+3] = normal.x;
-		data->vertexNormalBuffer[i+4] = normal.y;
-		data->vertexNormalBuffer[i+5] = normal.z;
-		data->vertexNormalBuffer[i+6] = normal.x;
-		data->vertexNormalBuffer[i+7] = normal.y;
-		data->vertexNormalBuffer[i+8] = normal.z;
+		glm::vec3 dupa = glm::vec3(0.0f, 0.0f, -1.0f);
+		dupa = glm::vec3(chuj * glm::vec4(dupa, 1.0f));
+		data->vertexNormalBuffer[i] = dupa.x;
+		data->vertexNormalBuffer[i + 1] = dupa.y;
+		data->vertexNormalBuffer[i + 2] = dupa.z;
+		printf((to_string(dupa.x) + " " + to_string(dupa.y)+ " " + to_string(dupa.z) + "\n").c_str());
 	}
+	//temporarily generate normals
+
+	
+	//glm::vec3 v1, v2, v3, edge1, edge2, normal;
+	//for (int i = 0; i < (3 * quantity) - 6; i += 9)
+	//{
+	//	v1 = glm::vec3(data->vertexPositionBuffer[3*data->indexBuffer[i]], data->vertexPositionBuffer[3*data->indexBuffer[i]+1], data->vertexPositionBuffer[3*data->indexBuffer[i]+2]);
+	//	v2 = glm::vec3(data->vertexPositionBuffer[3*data->indexBuffer[i + 1]], data->vertexPositionBuffer[3*data->indexBuffer[i + 1]+1], data->vertexPositionBuffer[3*data->indexBuffer[i + 1]+2]);
+	//	v3 = glm::vec3(data->vertexPositionBuffer[3*data->indexBuffer[i + 2]], data->vertexPositionBuffer[3*data->indexBuffer[i + 2]+1], data->vertexPositionBuffer[3*data->indexBuffer[i + 2]+2]);
+	//	edge1 = v2 - v1;
+	//	edge2 = v3 - v1;
+	//	normal = normalize(glm::cross(edge1, edge2));
+
+	//	data->vertexNormalBuffer[data->indexBuffer[i]] = normal.x;
+	//	data->vertexNormalBuffer[data->indexBuffer[i + 1]] = normal.y;
+	//	data->vertexNormalBuffer[data->indexBuffer[i + 2]] = normal.z;
+	//	data->vertexNormalBuffer[data->indexBuffer[i + 3]] = normal.x;
+	//	data->vertexNormalBuffer[data->indexBuffer[i + 4]] = normal.y;
+	//	data->vertexNormalBuffer[data->indexBuffer[i + 5]] = normal.z;
+	//	data->vertexNormalBuffer[data->indexBuffer[i + 6]] = normal.x;
+	//	data->vertexNormalBuffer[data->indexBuffer[i + 7]] = normal.y;
+	//	data->vertexNormalBuffer[data->indexBuffer[i + 8]] = normal.z;
+	//}
 	///////
 
 	Mesh* mesh = new Mesh();

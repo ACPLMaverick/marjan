@@ -45,27 +45,27 @@ namespace ModelTest
         protected override void LoadContent()
         {
             plane = Game.Content.Load<Model>(@"Models\SquarePlane");
-            crate = Game.Content.Load<Model>(@"Models\dynamiteCrate01n");
+            crate = Game.Content.Load<Model>(@"Models\dynamiteCrate01");
 
             texture = Game.Content.Load<Texture2D>(@"Textures\dynamiteCrate_diffuse");
 
             BasicModel bm = new BasicModel(crate, texture, 1.0f, 0);
 
-            foreach(ModelMesh mm in crate.Meshes)
-            {
-                foreach(ModelMeshPart mp in mm.MeshParts)
-                {
-                    VertexPositionNormalTexture[] data = new VertexPositionNormalTexture[mp.VertexBuffer.VertexCount];
-                    Matrix rotation = Matrix.CreateRotationX(-MathHelper.PiOver2);
-                    mp.VertexBuffer.GetData<VertexPositionNormalTexture>(data);
-                    for (int i = 0; i < mp.VertexBuffer.VertexCount; i++ )
-                    {
-                        //data[i].Position = Vector3.Transform(data[i].Position, rotation);
-                        data[i].Normal = Vector3.Transform(data[i].Normal, rotation);
-                    }
-                    mp.VertexBuffer.SetData<VertexPositionNormalTexture>(data);
-                }
-            }
+            //foreach(ModelMesh mm in crate.Meshes)
+            //{
+            //    foreach(ModelMeshPart mp in mm.MeshParts)
+            //    {
+            //        VertexPositionNormalTexture[] data = new VertexPositionNormalTexture[mp.VertexBuffer.VertexCount];
+            //        Matrix rotation = Matrix.CreateRotationX(-MathHelper.PiOver2);
+            //        mp.VertexBuffer.GetData<VertexPositionNormalTexture>(data);
+            //        for (int i = 0; i < mp.VertexBuffer.VertexCount; i++ )
+            //        {
+            //            //data[i].Position = Vector3.Transform(data[i].Position, rotation);
+            //            data[i].Normal = Vector3.Transform(data[i].Normal, rotation);
+            //        }
+            //        mp.VertexBuffer.SetData<VertexPositionNormalTexture>(data);
+            //    }
+            //}
             
             models.Add(bm);
             models.Add(new BasicModel(Game.Content.Load<Model>(@"Models\dynamiteCrate01n"), texture, 1.0f, 0));
