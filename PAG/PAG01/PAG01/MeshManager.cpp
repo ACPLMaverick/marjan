@@ -87,7 +87,8 @@ bool MeshManager::Load3DS(const string* filePath)
 	float tempFloat;
 	unsigned short tempIndex;
 
-	if ((fopen_s(&myFile, (*filePath).c_str(), "rb")) != 0)
+	int error = (fopen_s(&myFile, (*filePath).c_str(), "rb"));
+	if (error != 0)
 	{
 		return false;
 	}
@@ -184,40 +185,55 @@ bool MeshManager::Load3DS(const string* filePath)
 		data->indexBuffer[i] = (*itI);
 	}
 
-	glm::mat4 chuj = glm::rotate((3.14f / 2.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	for (int i = 0; i < 3 * quantity; i += 3)
+	// powrzucaæ vertexy do struktur vec3
+	glm::vec3* ver = new glm::vec3[quantity];
+	glm::vec3** verS = new glm::vec3*[quantityPolygons];
+	for (int i = 0; i < quantityPolygons; i++)
+		verS[i] = new glm::vec3[3];
+	glm::vec3* nrmS = new glm::vec3[quantityPolygons];
+	glm::vec3* nrm = new glm::vec3[quantity];
+	for (int i = 0, j = 0; i < 3 * quantity; i+=3, ++j)
 	{
-		glm::vec3 dupa = glm::vec3(0.0f, 0.0f, -1.0f);
-		dupa = glm::vec3(chuj * glm::vec4(dupa, 1.0f));
-		data->vertexNormalBuffer[i] = dupa.x;
-		data->vertexNormalBuffer[i + 1] = dupa.y;
-		data->vertexNormalBuffer[i + 2] = dupa.z;
-		printf((to_string(dupa.x) + " " + to_string(dupa.y)+ " " + to_string(dupa.z) + "\n").c_str());
+		ver[j] = glm::vec3(data->vertexPositionBuffer[i], data->vertexPositionBuffer[i + 1], data->vertexPositionBuffer[i + 2]);
+		nrm[j] = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
-	//temporarily generate normals
+	// posortowaæ wg polygonów
+	for (int i = 0, j = 0; i < 3 * quantityPolygons; i+=3, ++j)
+	{
+		verS[j][0] = glm::vec3(ver[data->indexBuffer[i]]);
+		verS[j][1] = glm::vec3(ver[data->indexBuffer[i + 1]]);
+		verS[j][2] = glm::vec3(ver[data->indexBuffer[i + 2]]);
+	}
+	// policzyæ normalne dla ka¿dego vertexa
+	glm::vec3 e1, e2;
+	for (int i = 0; i < quantityPolygons; i++)
+	{
+		e1 = verS[i][1] - verS[i][0];
+		e2 = verS[i][2] - verS[i][0];
+		nrmS[i] = glm::normalize(glm::cross(e1, e2));
+	}
+	// wgraæ je do wektora o d³ugoœci wierzcho³ków, normalizuj¹c
+	for (int i = 0, j = -1; i < 3 * quantityPolygons; ++i)
+	{
+		if (i % 3 == 0) ++j;
+		nrm[data->indexBuffer[i]] = glm::normalize(nrm[data->indexBuffer[i]] + nrmS[j]);
+		
+	}
+	// sp³aszczyæ wektor normalnych bo te¿ ponoæ s¹ indeksowane
+	for (int i = 0, j = 0; i < 3 * quantity; i+=3, ++j)
+	{
+		data->vertexNormalBuffer[i] = nrm[j].x;
+		data->vertexNormalBuffer[i + 1] = nrm[j].y;
+		data->vertexNormalBuffer[i + 2] = nrm[j].z;
+		printf((to_string(nrm[j].x) + " " + to_string(nrm[j].y) + " " + to_string(nrm[j].z) + "\n").c_str());
+	}
 
-	
-	//glm::vec3 v1, v2, v3, edge1, edge2, normal;
-	//for (int i = 0; i < (3 * quantity) - 6; i += 9)
-	//{
-	//	v1 = glm::vec3(data->vertexPositionBuffer[3*data->indexBuffer[i]], data->vertexPositionBuffer[3*data->indexBuffer[i]+1], data->vertexPositionBuffer[3*data->indexBuffer[i]+2]);
-	//	v2 = glm::vec3(data->vertexPositionBuffer[3*data->indexBuffer[i + 1]], data->vertexPositionBuffer[3*data->indexBuffer[i + 1]+1], data->vertexPositionBuffer[3*data->indexBuffer[i + 1]+2]);
-	//	v3 = glm::vec3(data->vertexPositionBuffer[3*data->indexBuffer[i + 2]], data->vertexPositionBuffer[3*data->indexBuffer[i + 2]+1], data->vertexPositionBuffer[3*data->indexBuffer[i + 2]+2]);
-	//	edge1 = v2 - v1;
-	//	edge2 = v3 - v1;
-	//	normal = normalize(glm::cross(edge1, edge2));
-
-	//	data->vertexNormalBuffer[data->indexBuffer[i]] = normal.x;
-	//	data->vertexNormalBuffer[data->indexBuffer[i + 1]] = normal.y;
-	//	data->vertexNormalBuffer[data->indexBuffer[i + 2]] = normal.z;
-	//	data->vertexNormalBuffer[data->indexBuffer[i + 3]] = normal.x;
-	//	data->vertexNormalBuffer[data->indexBuffer[i + 4]] = normal.y;
-	//	data->vertexNormalBuffer[data->indexBuffer[i + 5]] = normal.z;
-	//	data->vertexNormalBuffer[data->indexBuffer[i + 6]] = normal.x;
-	//	data->vertexNormalBuffer[data->indexBuffer[i + 7]] = normal.y;
-	//	data->vertexNormalBuffer[data->indexBuffer[i + 8]] = normal.z;
-	//}
-	///////
+	delete[] ver;
+	for (int i = 0; i < quantityPolygons; i++)
+		delete[] verS[i];
+	delete[] verS;
+	delete[] nrmS;
+	delete[] nrm;
 
 	Mesh* mesh = new Mesh();
 	mesh->Initialize(m_programID, NULL, name, data);
