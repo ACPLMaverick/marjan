@@ -63,7 +63,7 @@ bool Graphics::Initialize()
 	m_manager = new MeshManager();
 	m_manager->Initialize(programID);
 	m_mesh = m_manager->GetMesh(0);
-	m_mesh->Transform(&vec3(0.0f, -1.0f, 0.0f), &vec3(-3.14f / 2.0f, 0.0f, 0.0f), &vec3(0.1f, 0.1f, 0.1f));
+	m_mesh->Transform(&vec3(0.0f, -1.0f, 0.0f), &vec3(0.0f, 0.0f, 3.14f), &vec3(0.1f, 0.1f, 0.1f));
 	//test = m_manager->GetMesh(0)->GetChildren()->at(0);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -105,7 +105,7 @@ void Graphics::Frame()
 
 	m_mesh->Transform(
 		m_mesh->GetPosition(), 
-		&vec3((*m_mesh->GetRotation()).x, (*m_mesh->GetRotation()).y, (*m_mesh->GetRotation()).z + 0.005f),
+		&vec3((*m_mesh->GetRotation()).x, (*m_mesh->GetRotation()).y + 0.005f, (*m_mesh->GetRotation()).z),
 		m_mesh->GetScale());
 		/*
 	test->Transform(
