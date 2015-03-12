@@ -20,22 +20,6 @@ bool MeshManager::Initialize(GLuint programID)
 
 	if(!Load3DS(&FILEPATH_FIXED)) return false;
 
-	/*
-	// load meshes - test
-	Mesh* m_mesh = new Mesh();
-	if (!m_mesh->Initialize(programID, NULL)) return false;
-	m_mesh->SetTexture(m_texture);
-	m_mesh->Transform(&glm::vec3(0.0f, 1.0f, 0.0f), &glm::vec3(0.0f, 0.0f, 0.0f), &glm::vec3(1.0f, 1.0f, 1.0f));
-
-	Mesh* test = new Mesh();
-	if (!test->Initialize(programID, NULL)) return false;
-	test->SetTexture(m_texture);
-	m_mesh->AddChild(test);
-	test->Transform(&glm::vec3(-3.0f, 0.0f, 0.0f), &glm::vec3(0.0f, 0.0f, 0.0f), &glm::vec3(1.0f, 1.0f, 1.0f));
-
-	meshes.push_back(m_mesh);
-	*/
-
 	return true;
 }
 
@@ -225,7 +209,7 @@ bool MeshManager::Load3DS(const string* filePath)
 		data->vertexNormalBuffer[i] = nrm[j].x;
 		data->vertexNormalBuffer[i + 1] = nrm[j].y;
 		data->vertexNormalBuffer[i + 2] = nrm[j].z;
-		printf((to_string(nrm[j].x) + " " + to_string(nrm[j].y) + " " + to_string(nrm[j].z) + "\n").c_str());
+		//printf((to_string(nrm[j].x) + " " + to_string(nrm[j].y) + " " + to_string(nrm[j].z) + "\n").c_str());
 	}
 
 	delete[] ver;

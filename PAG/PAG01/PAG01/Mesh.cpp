@@ -50,10 +50,11 @@ bool Mesh::Initialize(GLuint programID, Mesh* parent, string name, VertexData* d
 
 	glGenBuffers(1, &m_vertexID->indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexID->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->indexBuffer[0]) * 3 * m_vertexData->indexCount,
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->indexBuffer[0]) * m_vertexData->indexCount,
 		m_vertexData->indexBuffer, GL_STATIC_DRAW);
 
 	mvpMatrixID = glGetUniformLocation(programID, "mvpMatrix");
+	modelID = glGetUniformLocation(programID, "model");
 
 	return true;
 }
@@ -97,8 +98,9 @@ void Mesh::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* e
 {
 	mvpMatrix = (*projectionMatrix) * (*viewMatrix) * modelMatrix;
 	glm::vec4 temp = light->lightDirection * modelMatrix;
-	glm::vec4 tempEye = glm::vec4(*eyeVector, 1.0f) * modelMatrix;
+	glm::vec4 tempEye = glm::normalize(glm::vec4(*eyeVector, 1.0f) * (modelMatrix));
 	glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &modelMatrix[0][0]);
 	glUniform4f(eyeVectorID, tempEye.x, tempEye.y, tempEye.z, tempEye.w);
 	glUniform4f(light->lightDirID, temp.x, temp.y, temp.z, temp.w);
 	glUniform4f(light->lightDifID, light->lightDiffuse.x, light->lightDiffuse.y, light->lightDiffuse.z, light->lightDiffuse.w);

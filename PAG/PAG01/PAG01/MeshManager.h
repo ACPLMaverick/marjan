@@ -29,7 +29,7 @@
 #define ID_HIERARCHY_POSITION 0xB030
 
 static const string TEST_DIFFUSE = "canteen_albedo.dds";
-static const string FILEPATH_FIXED = "Sphere.3ds";
+static const string FILEPATH_FIXED = "Plane.3ds";
 
 using namespace std;
 

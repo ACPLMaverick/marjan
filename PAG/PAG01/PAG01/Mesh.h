@@ -49,6 +49,7 @@ private:
 
 public:
 	GLuint mvpMatrixID;
+	GLuint modelID;
 
 	Mesh();
 	~Mesh();

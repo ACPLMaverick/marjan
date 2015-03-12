@@ -47,7 +47,6 @@ bool Graphics::Initialize()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-
 	projectionMatrix = perspective(WINDOW_FOV, WINDOW_RATIO, WINDOW_NEAR, WINDOW_FAR);
 
 	m_camera = new Camera();
@@ -56,7 +55,7 @@ bool Graphics::Initialize()
 
 	programID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
 
-	m_light = new Light(&vec4(0.0f, -1.0f, 1.0f, 0.0f), &(15.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(0.0f, 0.0f, 0.0f, 1.0f), 100.0f, programID);
+	m_light = new Light(&vec4(0.0f, -1.0f, 1.0f, 0.0f), &(1.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &(1.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &vec4(0.0f, 0.0f, 0.02f, 1.0f), 50.0f, programID);
 
 	m_camera->m_eyeVectorID = glGetUniformLocation(programID, "eyeVector");
 
@@ -103,17 +102,17 @@ void Graphics::Frame()
 
 	glUseProgram(programID);
 
-	m_mesh->Transform(
-		m_mesh->GetPosition(), 
-		&vec3((*m_mesh->GetRotation()).x, (*m_mesh->GetRotation()).y + 0.005f, (*m_mesh->GetRotation()).z),
-		m_mesh->GetScale());
+	//m_mesh->Transform(
+	//	m_mesh->GetPosition(), 
+	//	&vec3((*m_mesh->GetRotation()).x, (*m_mesh->GetRotation()).y + 0.005f, (*m_mesh->GetRotation()).z),
+	//	m_mesh->GetScale());
 		/*
 	test->Transform(
 		test->GetPosition(),
 		&vec3((*test->GetRotation()).x, (*test->GetRotation()).y, (*test->GetRotation()).z + 0.005f),
 		test->GetScale());*/
 
-	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &m_camera->GetEyeVector(), m_camera->m_eyeVectorID, m_light);
+	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &(m_camera->GetEyeVector()), m_camera->m_eyeVectorID, m_light);
 
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
