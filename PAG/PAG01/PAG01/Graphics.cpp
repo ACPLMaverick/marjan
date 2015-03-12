@@ -56,14 +56,14 @@ bool Graphics::Initialize()
 
 	programID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
 
-	m_light = new Light(&vec4(0.0f, 0.0f, 1.0f, 0.0f), &(5.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(0.0f, 0.0f, 0.0f, 1.0f), 100.0f, programID);
+	m_light = new Light(&vec4(0.0f, -1.0f, 1.0f, 0.0f), &(15.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &vec4(1.0f, 1.0f, 1.0f, 1.0f), &vec4(0.0f, 0.0f, 0.0f, 1.0f), 100.0f, programID);
 
 	m_camera->m_eyeVectorID = glGetUniformLocation(programID, "eyeVector");
 
 	m_manager = new MeshManager();
 	m_manager->Initialize(programID);
 	m_mesh = m_manager->GetMesh(0);
-	m_mesh->Transform(&vec3(0.0f, 0.0f, 0.0f), &vec3(-(3.14f / 2.0f), 0.0f, 0.0f), &vec3(0.1f, 0.1f, 0.1f));
+	m_mesh->Transform(&vec3(0.0f, -1.0f, 0.0f), &vec3(-3.14f / 2.0f, 0.0f, 0.0f), &vec3(0.1f, 0.1f, 0.1f));
 	//test = m_manager->GetMesh(0)->GetChildren()->at(0);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
