@@ -13,10 +13,6 @@ MeshManager::~MeshManager()
 bool MeshManager::Initialize(GLuint programID)
 {
 	m_programID = programID;
-	// load textures - test
-	Texture* m_texture = new Texture();
-	if (!m_texture->Initialize(&TEST_DIFFUSE)) return false;
-	textures.push_back(m_texture);
 
 	if(!Load3DS(&FILEPATH_FIXED)) return false;
 
@@ -33,14 +29,6 @@ void MeshManager::Shutdown()
 			delete (*it);
 		}
 	}
-	if (textures.size() > 0)
-	{
-		for (vector<Texture*>::iterator it = textures.begin(); it != textures.end(); ++it)
-		{
-			(*it)->Shutdown();
-			delete (*it);
-		}
-	}
 }
 
 void MeshManager::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light)
@@ -51,20 +39,22 @@ void MeshManager::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::
 	}
 }
 
-bool MeshManager::Load3DS(const string* filePath)
+bool MeshManager::Load3DS(const string* filePath) 
 {
-	printf("Loading 3DS...\n");
+	printf("Loading 3DS \"%s\" ... \n", (*filePath).c_str());
 	string name;
+	string textureNameTemp;
+	string textureName;
 	FILE* myFile;
 	VertexData* data = new VertexData;
 	list<GLfloat> vertices, uvs, normals;
 	list<unsigned int> indices;
 	// DONT FORGET ABOUT COLORS!!!oneoneone
 	unsigned short chunkID;
-	unsigned int chunkLength;
+	GLuint chunkLength;
 	unsigned char oneByte;
-	unsigned short quantity;
-	unsigned short quantityPolygons;
+	unsigned short quantity = 0;
+	unsigned short quantityPolygons = 0;
 	unsigned short faceFlags;
 
 	char tempChar = 'a';
@@ -91,13 +81,20 @@ bool MeshManager::Load3DS(const string* filePath)
 				oneByte = 5;
 				break;
 			case ID_OBJECT_BLOCK:
-
-				oneByte = 5;
+				//tempChar = 'a'; <-- this makes you unable to load more meshes than one
 				for (int i = 0; i < 20 && tempChar != '\0'; i++)
 				{
 					fread(&tempChar, 1, 1, myFile);
 					name.push_back(tempChar);
 				}
+				printf(("Name: " + name).c_str());
+				printf(("\n"));
+				break;
+			case ID_TRIANGULAR_MESH:
+				oneByte = 5;
+				break;
+			case ID_TRIANGULAR_MESH_02:
+				oneByte = 5;
 				break;
 			case ID_VERTICES_LIST:
 
@@ -135,11 +132,28 @@ bool MeshManager::Load3DS(const string* filePath)
 					uvs.push_back(tempFloat);
 				}
 				break;
+			case ID_MATERIAL_BLOCK:
+				oneByte = 5;
+				break;
+			case ID_DIFFUSE_COLOR:
+				// tu powinna byæ nazwa tekstury
+				for (int i = 0; i < 26; i++)
+				{
+					fread(&tempChar, 1, 1, myFile);
+					if(i > 13 && i < 26) textureName.push_back(tempChar);
+				}
+				printf(("Texture name: " + textureName + "\n").c_str());
+				myFile->_ptr -= 26;
+				myFile->_cnt += 26;
+				oneByte = 5;
+				break;
 			default:
-				//fseek(myFile, chunkLength - 6, SEEK_CUR);
+				fseek(myFile, chunkLength - 6, SEEK_CUR);
 				break;
 		}
 	}
+
+	printf("Finished loading \"%s\".\n", (*filePath).c_str());
 
 	data->vertexCount = quantity;
 	data->indexCount = 3* quantityPolygons;
@@ -209,7 +223,6 @@ bool MeshManager::Load3DS(const string* filePath)
 		data->vertexNormalBuffer[i] = nrm[j].x;
 		data->vertexNormalBuffer[i + 1] = nrm[j].y;
 		data->vertexNormalBuffer[i + 2] = nrm[j].z;
-		//printf((to_string(nrm[j].x) + " " + to_string(nrm[j].y) + " " + to_string(nrm[j].z) + "\n").c_str());
 	}
 
 	delete[] ver;
@@ -219,13 +232,33 @@ bool MeshManager::Load3DS(const string* filePath)
 	delete[] nrmS;
 	delete[] nrm;
 
+
 	Mesh* mesh = new Mesh();
 	mesh->Initialize(m_programID, NULL, name, data);
-	mesh->SetTexture(textures.at(0));
+
+	// loadin textures
+	if (textureName.size() > 0)
+	{
+		Texture* m_texture = new Texture();
+		if (!m_texture->Initialize(&textureName)) return false;
+		mesh->SetTexture(m_texture);
+	}
+
 	AddMesh(mesh);
 
-	oneByte = 5;
+	printf("Model successfully generated.");
 	return true;
+}
+
+// this function is mainly for generating normals and filling mesh with data, and then - initializing it
+Mesh* MeshManager::GenerateMesh(Mesh* mesh, VertexData* data, string* name, GLuint programID)
+{
+	printf("Generating mesh %s \n", name->c_str());
+
+
+
+	printf("Mesh %s successfully generated.\n", name->c_str());
+	return mesh;
 }
 
 void MeshManager::AddMesh(Mesh* mesh)

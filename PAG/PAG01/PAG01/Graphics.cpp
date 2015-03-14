@@ -112,7 +112,7 @@ void Graphics::Frame()
 		&vec3((*test->GetRotation()).x, (*test->GetRotation()).y, (*test->GetRotation()).z + 0.005f),
 		test->GetScale());*/
 
-	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &(m_camera->GetEyeVector()), m_camera->m_eyeVectorID, m_light);
+	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &(m_camera->GetPosition()), m_camera->m_eyeVectorID, m_light);
 
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();

@@ -21,14 +21,14 @@ uniform float glossiness;
 
 void main()
 {
-	//vec3 eyeP = normalize(modelPos - eyeVector.xyz);
-	vec3 tempColor = clamp(texture(sampler, UV).rgb*fragmentColor, 0.0f, 1.0f);
+	vec3 eyeP = normalize(modelPos - eyeVector.xyz);
+	vec4 tempColor = clamp(texture(sampler, UV)*fragmentColor, 0.0f, 1.0f);
 	float lightPower = clamp(dot(-(lightDirection).xyz, normal), 0.0f, 1.0f);
 	vec3 diff = POWER_CORRECTION * lightPower * lightDiffuse.xyz;
 
 	vec3 r = normalize(reflect(-lightDirection.xyz, normal));
-	float spec = max(0.0f, dot(normalize(eyeVector.xyz), r));
-	vec3 specFinal = POWER_CORRECTION * lightSpecular.xyz * lightPower * pow(spec, glossiness);
+	float spec = max(0.0f, dot(eyeP, r));
+	vec3 specFinal = POWER_CORRECTION * lightSpecular.xyz * lightPower * pow(spec, glossiness) * tempColor.x;
 
-	color = clamp((diff + POWER_CORRECTION * lightAmbient.rgb)*tempColor + specFinal, 0.0f, 1.0f);
+	color = clamp((diff + POWER_CORRECTION * lightAmbient.rgb)*tempColor.xyz + specFinal, 0.0f, 1.0f);
 }

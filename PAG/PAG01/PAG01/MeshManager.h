@@ -5,6 +5,7 @@
 #include <glm\glm\gtx\transform.hpp>
 #include <vector>
 #include <list>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -18,6 +19,7 @@
 #define ID_EDITOR_CHUNK 0x3D3D
 #define ID_OBJECT_BLOCK 0x4000
 #define ID_TRIANGULAR_MESH 0x4100
+#define ID_TRIANGULAR_MESH_02 0x4200
 #define ID_VERTICES_LIST 0x4110
 #define ID_FACES_DESCRIPTION 0x4120
 #define ID_MAPPING_COORDINATES_LIST 0x4140
@@ -27,9 +29,12 @@
 #define ID_FRAMES 0xB008
 #define ID_OBJECT_NAME 0xB010
 #define ID_HIERARCHY_POSITION 0xB030
+#define ID_UNKNOWN_01 0x13A3
+#define ID_MATERIAL_BLOCK 0xAFFF
+#define ID_DIFFUSE_COLOR 0xA200
 
-static const string TEST_DIFFUSE = "canteen_albedo.dds";
-static const string FILEPATH_FIXED = "Plane.3ds";
+static const string TEST_DIFFUSE = "canteenD.dds";
+static const string FILEPATH_FIXED = "Canteen.3ds";
 
 using namespace std;
 
@@ -37,8 +42,8 @@ class MeshManager
 {
 private:
 	vector<Mesh*> meshes;
-	vector<Texture*> textures;
 	GLuint m_programID;
+	Mesh* GenerateMesh(Mesh* mesh, VertexData* data, string* name, GLuint programID);
 public:
 	MeshManager();
 	~MeshManager();

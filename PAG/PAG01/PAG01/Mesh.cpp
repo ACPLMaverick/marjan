@@ -82,6 +82,11 @@ void Mesh::Shutdown()
 
 		delete m_vertexData;
 	}
+	if (m_texture != nullptr)
+	{
+		m_texture->Shutdown();
+		delete m_texture;
+	}
 
 	if (m_vertexID != nullptr)
 		delete m_vertexID;
@@ -97,7 +102,7 @@ void Mesh::Shutdown()
 void Mesh::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light)
 {
 	mvpMatrix = (*projectionMatrix) * (*viewMatrix) * modelMatrix;
-	glm::vec4 temp = light->lightDirection * modelMatrix;
+	glm::vec4 temp = glm::normalize(light->lightDirection * modelMatrix);
 	glm::vec4 tempEye = glm::normalize(glm::vec4(*eyeVector, 1.0f) * (modelMatrix));
 	glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &modelMatrix[0][0]);
