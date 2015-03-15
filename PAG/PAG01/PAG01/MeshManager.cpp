@@ -351,7 +351,7 @@ Mesh* MeshManager::GenerateMesh(string* name, string* textureName,
 	for (int i = 0; i < 3 * data->vertexCount; i += 3)
 	{
 		data->vertexPositionBuffer[i] -= pivotPos.x;
-		data->vertexPositionBuffer[i + 1] -= pivotPos.y;
+		data->vertexPositionBuffer[i + 1] -= (pivotPos.y - pivotPos.z);
 		data->vertexPositionBuffer[i + 2] -= pivotPos.z;
 	}
 
@@ -408,7 +408,7 @@ Mesh* MeshManager::GenerateMesh(string* name, string* textureName,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// returning to origin
-	//mesh->Transform(&(pivotPos), &glm::vec3(0.0f, 0.0f, 0.0f), &glm::vec3(1.0f, 1.0f, 1.0f));
+	mesh->Transform(&(-glm::vec3(pivotPos.x, pivotPos.z, pivotPos.y)), &glm::vec3(0.0f, 0.0f, 0.0f), &glm::vec3(1.0f, 1.0f, 1.0f));
 
 	printf("Mesh %s successfully generated.\n", name->c_str());
 	return mesh;
