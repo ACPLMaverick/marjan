@@ -31,9 +31,10 @@ struct VertexID
 
 struct BoundingSphere
 {
+	glm::vec4 d_position;
+	GLfloat d_radius;
 	glm::vec4 position;
 	GLfloat radius;
-	glm::vec3 padding;
 };
 
 class Mesh

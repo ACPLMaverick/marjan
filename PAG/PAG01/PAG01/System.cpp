@@ -83,101 +83,104 @@ void System::ProcessInput()
 	// Check if we should quit
 	if (m_input->IsKeyDown(GLFW_KEY_ESCAPE)) isRunning = false;
 
-	if (m_input->IsKeyDown(GLFW_KEY_W))
+	if (m_graphics->GetCurrentlySelected() != nullptr)
 	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(0.0f, 0.0f, TRANSLATION_AMOUNT*m_timer->GetDeltaTime())),
-			m_graphics->GetCurrentlySelected()->GetRotation(),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_S))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(0.0f, 0.0f, -TRANSLATION_AMOUNT*m_timer->GetDeltaTime())),
-			m_graphics->GetCurrentlySelected()->GetRotation(),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_A))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(TRANSLATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f, 0.0f)),
-			m_graphics->GetCurrentlySelected()->GetRotation(),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_D))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(-TRANSLATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f, 0.0f)),
-			m_graphics->GetCurrentlySelected()->GetRotation(),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_Q))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(0.0f, TRANSLATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f)),
-			m_graphics->GetCurrentlySelected()->GetRotation(),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_Z))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(0.0f, -TRANSLATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f)),
-			m_graphics->GetCurrentlySelected()->GetRotation(),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_E))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			m_graphics->GetCurrentlySelected()->GetPosition(),
-			&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(ROTATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f, 0.0f)),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_R))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			m_graphics->GetCurrentlySelected()->GetPosition(),
-			&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(0.0f, ROTATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f)),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_T))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			m_graphics->GetCurrentlySelected()->GetPosition(),
-			&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(0.0f, 0.0f, ROTATION_AMOUNT*m_timer->GetDeltaTime())),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_F))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			m_graphics->GetCurrentlySelected()->GetPosition(),
-			&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(-ROTATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f, 0.0f)),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_G))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			m_graphics->GetCurrentlySelected()->GetPosition(),
-			&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(0.0f, -ROTATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f)),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
-	}
-	if (m_input->IsKeyDown(GLFW_KEY_H))
-	{
-		m_graphics->GetCurrentlySelected()->Transform(
-			m_graphics->GetCurrentlySelected()->GetPosition(),
-			&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(0.0f, 0.0f, -ROTATION_AMOUNT*m_timer->GetDeltaTime())),
-			m_graphics->GetCurrentlySelected()->GetScale()
-			);
+		if (m_input->IsKeyDown(GLFW_KEY_W))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(0.0f, 0.0f, TRANSLATION_AMOUNT*m_timer->GetDeltaTime())),
+				m_graphics->GetCurrentlySelected()->GetRotation(),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_S))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(0.0f, 0.0f, -TRANSLATION_AMOUNT*m_timer->GetDeltaTime())),
+				m_graphics->GetCurrentlySelected()->GetRotation(),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_A))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(TRANSLATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f, 0.0f)),
+				m_graphics->GetCurrentlySelected()->GetRotation(),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_D))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(-TRANSLATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f, 0.0f)),
+				m_graphics->GetCurrentlySelected()->GetRotation(),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_Q))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(0.0f, TRANSLATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f)),
+				m_graphics->GetCurrentlySelected()->GetRotation(),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_Z))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				&((*m_graphics->GetCurrentlySelected()->GetPosition()) + vec3(0.0f, -TRANSLATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f)),
+				m_graphics->GetCurrentlySelected()->GetRotation(),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_E))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				m_graphics->GetCurrentlySelected()->GetPosition(),
+				&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(ROTATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f, 0.0f)),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_R))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				m_graphics->GetCurrentlySelected()->GetPosition(),
+				&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(0.0f, ROTATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f)),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_T))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				m_graphics->GetCurrentlySelected()->GetPosition(),
+				&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(0.0f, 0.0f, ROTATION_AMOUNT*m_timer->GetDeltaTime())),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_F))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				m_graphics->GetCurrentlySelected()->GetPosition(),
+				&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(-ROTATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f, 0.0f)),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_G))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				m_graphics->GetCurrentlySelected()->GetPosition(),
+				&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(0.0f, -ROTATION_AMOUNT*m_timer->GetDeltaTime(), 0.0f)),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
+		if (m_input->IsKeyDown(GLFW_KEY_H))
+		{
+			m_graphics->GetCurrentlySelected()->Transform(
+				m_graphics->GetCurrentlySelected()->GetPosition(),
+				&((*m_graphics->GetCurrentlySelected()->GetRotation()) + vec3(0.0f, 0.0f, -ROTATION_AMOUNT*m_timer->GetDeltaTime())),
+				m_graphics->GetCurrentlySelected()->GetScale()
+				);
+		}
 	}
 
 	// process mouse to rotate camera

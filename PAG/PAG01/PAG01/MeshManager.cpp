@@ -348,20 +348,49 @@ Mesh* MeshManager::GenerateMesh(string* name, string* textureName,
 	// solving transformations...
 	glm::vec3 pivotPos = glm::vec3(localTrans[3][0], localTrans[3][1], localTrans[3][2]);
 	glm::mat4 mat = glm::translate(pivotPos);
-	GLfloat radius = 0.0f;
 	for (int i = 0; i < 3 * data->vertexCount; i += 3)
 	{
 		data->vertexPositionBuffer[i] -= pivotPos.x;
 		data->vertexPositionBuffer[i + 1] -= pivotPos.y;
 		data->vertexPositionBuffer[i + 2] -= pivotPos.z;
-		if (data->vertexPositionBuffer[i] > radius) radius = data->vertexPositionBuffer[i];
-		if (data->vertexPositionBuffer[i + 1] > radius) radius = data->vertexPositionBuffer[i + 1];
-		if (data->vertexPositionBuffer[i + 2] > radius) radius = data->vertexPositionBuffer[i + 2];
 	}
 
 	// calculating bounding sphere
+	GLfloat radius = 0.0f;
+	GLfloat tempDist = 0.0f;
+	glm::vec3 maxPosA = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 maxPosB = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 tempPosA = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 tempPosB = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 centerPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	for (int i = 0; i < 3 * data->vertexCount; i += 3)
+	{
+		tempPosA.x = data->vertexPositionBuffer[i];
+		tempPosA.y = data->vertexPositionBuffer[i + 1];
+		tempPosA.z = data->vertexPositionBuffer[i + 2];
+		for (int j = 0; j < 3 * data->vertexCount; j += 3)
+		{
+			tempPosB.x = data->vertexPositionBuffer[j];
+			tempPosB.y = data->vertexPositionBuffer[j + 1];
+			tempPosB.z = data->vertexPositionBuffer[j + 2];
+			tempDist = glm::length(tempPosA - tempPosB);
+			if (tempDist > radius)
+			{
+				radius = tempDist;
+				maxPosA = tempPosA;
+				maxPosB = tempPosB;
+			}
+		}
+	}
+	radius /= 2.0f;
+	centerPos.x = (maxPosA.x + maxPosB.x) / 2.0f;
+	centerPos.y = (maxPosA.y + maxPosB.y) / 2.0f;
+	centerPos.z = (maxPosA.z + maxPosB.z) / 2.0f;
+
 	BoundingSphere* sphere = new BoundingSphere;
-	sphere->position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	sphere->d_position = glm::vec4(centerPos, 1.0f);
+	sphere->d_radius = radius;
+	sphere->position = glm::vec4(centerPos, 1.0f);
 	sphere->radius = radius;
 
 	Mesh* mesh = new Mesh();

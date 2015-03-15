@@ -233,8 +233,10 @@ void Mesh::Transform(const glm::vec3* position, const glm::vec3* rotation, const
 	translationOnlyMatrix = parentTransMatrix*translation;
 	scaleOnlyMatrix = parentScaleMatrix*scale_m;
 
-	boundingSphere->position = boundingSphere->position * translationOnlyMatrix * rotationOnlyMatrix * scaleOnlyMatrix;
-	boundingSphere->radius = boundingSphere->radius * scale.x;
+	boundingSphere->position = modelMatrix * boundingSphere->d_position;
+	glm::vec4 radiusVec = glm::vec4(0.0f, 0.0f, boundingSphere->d_radius, 0.0f);
+	radiusVec = radiusVec * scaleOnlyMatrix;
+	boundingSphere->radius = radiusVec.z;
 
 	for (vector<Mesh*>::iterator it = children.begin(); it != children.end(); ++it)
 	{

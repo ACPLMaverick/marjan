@@ -64,6 +64,7 @@ bool Graphics::Initialize()
 	m_mesh = m_manager->GetMesh(0);
 	//m_mesh->visible = false;
 	m_mesh->Transform(m_mesh->GetPosition(), &vec3(0.0f, 0.0f, pi<GLfloat>()), &vec3(0.1f, 0.1f, 0.1f));
+	m_mesh = nullptr;
 	//test = m_manager->GetMesh(0)->GetChildren()->at(0);
 
 	return true;
@@ -149,11 +150,16 @@ void Graphics::RayCastAndSelect(double mX, double mY)
 			meshPtr = SearchMeshTree(*it, &ray_wrd);
 			if (meshPtr != nullptr)
 			{
-				m_mesh->DisableHighlight();
+				if(m_mesh != nullptr) m_mesh->DisableHighlight();
 				m_mesh = meshPtr;
 				m_mesh->Highlight();
 				return;
 			}
+		}
+		if (m_mesh != nullptr)
+		{
+			m_mesh->DisableHighlight();
+			m_mesh = nullptr;
 		}
 	}
 }
