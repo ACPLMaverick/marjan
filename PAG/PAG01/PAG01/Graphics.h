@@ -24,7 +24,7 @@ using namespace std;
 #define WINDOW_NAME "PAG01"
 #define WINDOW_FOV 70.0f
 #define WINDOW_NEAR 0.1f
-#define WINDOW_FAR 100.0f
+#define WINDOW_FAR 1000.0f
 static const float WINDOW_RATIO = ((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT);
 
 class Graphics
@@ -44,6 +44,7 @@ private:
 	mat4 projectionMatrix;
 
 	GLuint LoadShaders(const char* vertexFilePath, const char* fragmentFilePath);
+	Mesh* SearchMeshTree(Mesh* node, vec3* ray);
 public:
 	Graphics();
 	~Graphics();
@@ -54,5 +55,8 @@ public:
 
 	GLFWwindow* GetWindowPtr();
 	Camera* GetCameraPtr();
+
+	Mesh* GetCurrentlySelected();
+	void RayCastAndSelect(double mX, double mY);
 };
 

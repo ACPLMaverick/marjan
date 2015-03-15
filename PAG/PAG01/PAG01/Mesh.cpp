@@ -5,6 +5,7 @@ Mesh::Mesh()
 {
 	m_vertexData = nullptr;
 	m_vertexID = nullptr;
+	boundingSphere = nullptr;
 }
 
 
@@ -12,10 +13,17 @@ Mesh::~Mesh()
 {
 }
 
-bool Mesh::Initialize(GLuint programID, Mesh* parent, string name, VertexData* data)
+bool Mesh::Initialize(GLuint programID, Mesh* parent, string name, VertexData* data, BoundingSphere* bs, short myID, short parentID)
 {
 	this->parent = parent;
-	m_name = name;
+	this->myID = myID;
+	this->parentID = parentID;
+	this->visible = true;
+	m_name = string(name);
+
+	this->boundingSphere = bs;
+
+	this->highlight = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	m_vertexID = new VertexID;
 	m_vertexData = data;
@@ -55,6 +63,7 @@ bool Mesh::Initialize(GLuint programID, Mesh* parent, string name, VertexData* d
 
 	mvpMatrixID = glGetUniformLocation(programID, "mvpMatrix");
 	modelID = glGetUniformLocation(programID, "model");
+	highlightID = glGetUniformLocation(programID, "highlight");
 
 	return true;
 }
@@ -87,6 +96,10 @@ void Mesh::Shutdown()
 		m_texture->Shutdown();
 		delete m_texture;
 	}
+	if (boundingSphere != nullptr)
+	{
+		delete boundingSphere;
+	}
 
 	if (m_vertexID != nullptr)
 		delete m_vertexID;
@@ -101,79 +114,83 @@ void Mesh::Shutdown()
 
 void Mesh::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light)
 {
-	mvpMatrix = (*projectionMatrix) * (*viewMatrix) * modelMatrix;
-	glm::vec4 temp = glm::normalize(light->lightDirection * modelMatrix);
-	glm::vec4 tempEye = glm::normalize(glm::vec4(*eyeVector, 1.0f) * (modelMatrix));
-	glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &modelMatrix[0][0]);
-	glUniform4f(eyeVectorID, tempEye.x, tempEye.y, tempEye.z, tempEye.w);
-	glUniform4f(light->lightDirID, temp.x, temp.y, temp.z, temp.w);
-	glUniform4f(light->lightDifID, light->lightDiffuse.x, light->lightDiffuse.y, light->lightDiffuse.z, light->lightDiffuse.w);
-	glUniform4f(light->lightSpecID, light->lightSpecular.x, light->lightSpecular.y, light->lightSpecular.z, light->lightSpecular.w);
-	glUniform4f(light->lightAmbID, light->lightAmbient.x, light->lightAmbient.y, light->lightAmbient.z, light->lightAmbient.w);
-	glUniform1f(light->glossID, light->glossiness);
+	if (visible)
+	{
+		mvpMatrix = (*projectionMatrix) * (*viewMatrix) * modelMatrix;
+		glm::vec4 temp = light->lightDirection * rotationOnlyMatrix;
+		glm::vec4 tempEye = glm::vec4(*eyeVector, 1.0f) * (rotationOnlyMatrix);
+		glUniformMatrix4fv(mvpMatrixID, 1, GL_FALSE, &mvpMatrix[0][0]);
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &modelMatrix[0][0]);
+		glUniform4f(eyeVectorID, tempEye.x, tempEye.y, tempEye.z, tempEye.w);
+		glUniform4f(light->lightDirID, temp.x, temp.y, temp.z, temp.w);
+		glUniform4f(light->lightDifID, light->lightDiffuse.x, light->lightDiffuse.y, light->lightDiffuse.z, light->lightDiffuse.w);
+		glUniform4f(light->lightSpecID, light->lightSpecular.x, light->lightSpecular.y, light->lightSpecular.z, light->lightSpecular.w);
+		glUniform4f(light->lightAmbID, light->lightAmbient.x, light->lightAmbient.y, light->lightAmbient.z, light->lightAmbient.w);
+		glUniform4f(highlightID, highlight.x, highlight.y, highlight.z, highlight.w);
+		glUniform1f(light->glossID, light->glossiness);
 
-	glBindTexture(GL_TEXTURE_2D, m_texture->GetID());
+		glBindTexture(GL_TEXTURE_2D, m_texture->GetID());
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->vertexBuffer);
-	glVertexAttribPointer(
-		0,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-		);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->vertexBuffer);
+		glVertexAttribPointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+			);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->colorBuffer);
-	glVertexAttribPointer(
-		1,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-		);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->colorBuffer);
+		glVertexAttribPointer(
+			1,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+			);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->uvBuffer);
-	glVertexAttribPointer(
-		2,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-		);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->uvBuffer);
+		glVertexAttribPointer(
+			2,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+			);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->normalBuffer);
-	glVertexAttribPointer(
-		3,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-		);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexID->normalBuffer);
+		glVertexAttribPointer(
+			3,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+			);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexID->indexBuffer);
-	
-	glDrawElements
-		(
-		GL_TRIANGLES,
-		m_vertexData->indexCount,
-		GL_UNSIGNED_INT, 
-		(void*)0
-	);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexID->indexBuffer);
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(3);
+		glDrawElements
+			(
+			GL_TRIANGLES,
+			m_vertexData->indexCount,
+			GL_UNSIGNED_INT,
+			(void*)0
+			);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(3);
+	}
 	
 	for (vector<Mesh*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
@@ -188,21 +205,46 @@ void Mesh::Transform(const glm::vec3* position, const glm::vec3* rotation, const
 	this->scale = *scale_v;
 
 
-	glm::mat4 translation, rotation_x, rotation_y, rotation_z, scale_m, parentMatrix;
+	glm::mat4 translation, rotation_x, rotation_y, rotation_z, scale_m, 
+		parentMatrix, parentRotMatrix, parentTransMatrix, parentScaleMatrix;
 	translation = glm::translate(this->position);
 	rotation_x = glm::rotate(this->rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 	rotation_y = glm::rotate(this->rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 	rotation_z = glm::rotate(this->rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 	scale_m = glm::scale(this->scale);
 
-	(parent != NULL) ? (parentMatrix = *parent->GetModelMatrix()) : (parentMatrix = glm::mat4(1.0f));
+	if (parent != NULL)
+	{
+		parentMatrix = *parent->GetModelMatrix();
+		parentRotMatrix = *parent->GetRotationOnlyMatrix();
+		parentTransMatrix = *parent->GetTranslationOnlyMatrix();
+		parentScaleMatrix = *parent->GetScaleOnlyMatrix();
+	}
+	else
+	{
+		parentMatrix = glm::mat4(1.0f);
+		parentRotMatrix = glm::mat4(1.0f);
+		parentTransMatrix = glm::mat4(1.0f);
+		parentScaleMatrix = glm::mat4(1.0f);
+	}
 
 	modelMatrix = parentMatrix*translation*(rotation_x*rotation_y*rotation_z)*scale_m;
+	rotationOnlyMatrix = parentRotMatrix*(rotation_x*rotation_y*rotation_z);
+	translationOnlyMatrix = parentTransMatrix*translation;
+	scaleOnlyMatrix = parentScaleMatrix*scale_m;
+
+	boundingSphere->position = boundingSphere->position * translationOnlyMatrix * rotationOnlyMatrix * scaleOnlyMatrix;
+	boundingSphere->radius = boundingSphere->radius * scale.x;
 
 	for (vector<Mesh*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		(*it)->Transform((*it)->GetPosition(), (*it)->GetRotation(), (*it)->GetScale());
 	}
+}
+
+void Mesh::Transform(const glm::mat4* matrix)
+{
+	modelMatrix = modelMatrix * *matrix;
 }
 
 void Mesh::AddChild(Mesh* child)
@@ -231,6 +273,21 @@ glm::mat4* Mesh::GetModelMatrix()
 	return &modelMatrix;
 }
 
+glm::mat4* Mesh::GetRotationOnlyMatrix()
+{
+	return &rotationOnlyMatrix;
+}
+
+glm::mat4* Mesh::GetTranslationOnlyMatrix()
+{
+	return &translationOnlyMatrix;
+}
+
+glm::mat4* Mesh::GetScaleOnlyMatrix()
+{
+	return &scaleOnlyMatrix;
+}
+
 glm::vec3* Mesh::GetPosition()
 {
 	return &position;
@@ -249,4 +306,19 @@ glm::vec3* Mesh::GetScale()
 void Mesh::SetTexture(Texture* texture)
 {
 	m_texture = texture;
+}
+
+BoundingSphere* Mesh::GetBoundingSphere()
+{
+	return boundingSphere;
+}
+
+void Mesh::Highlight()
+{
+	highlight = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+}
+
+void Mesh::DisableHighlight()
+{
+	highlight = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }

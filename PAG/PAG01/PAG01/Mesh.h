@@ -29,18 +29,29 @@ struct VertexID
 	GLuint indexBuffer;
 };
 
+struct BoundingSphere
+{
+	glm::vec4 position;
+	GLfloat radius;
+	glm::vec3 padding;
+};
+
 class Mesh
 {
 private:
 	string m_name;
 
-	glm::mat4 modelMatrix, mvpMatrix;
+	glm::mat4 modelMatrix, mvpMatrix, rotationOnlyMatrix, translationOnlyMatrix, scaleOnlyMatrix;
 	glm::vec3 position, rotation, scale;
+	GLuint highlightID;
+	glm::vec4 highlight;
 
 	// hierarchy
 	Mesh* parent;
 	vector<Mesh*> children;
 	////
+
+	BoundingSphere* boundingSphere;
 
 	VertexData* m_vertexData;
 	VertexID* m_vertexID;
@@ -50,25 +61,35 @@ private:
 public:
 	GLuint mvpMatrixID;
 	GLuint modelID;
+	short myID, parentID;
+	bool visible;
 
 	Mesh();
 	~Mesh();
 
-	bool Initialize(GLuint programID, Mesh* parent, string name, VertexData* data);
+	bool Initialize(GLuint programID, Mesh* parent, string name, VertexData* data, BoundingSphere* bs, short myID, short parentID);
 	void Shutdown();
 
 	void Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* eyeVector, GLuint eyeVectorID, Light* light);
 
 	void Transform(const glm::vec3* position, const glm::vec3* rotation, const glm::vec3* scale);
+	void Transform(const glm::mat4* matrix);
 	glm::vec3* GetPosition();
 	glm::vec3* GetRotation();
 	glm::vec3* GetScale();
 	glm::mat4* GetModelMatrix();
+	glm::mat4* GetRotationOnlyMatrix();
+	glm::mat4* GetTranslationOnlyMatrix();
+	glm::mat4* GetScaleOnlyMatrix();
 	void SetTexture(Texture* texture);
 
 	void AddChild(Mesh* child);
 	vector<Mesh*>* GetChildren();
 	Mesh* GetParent();
 	void SetParent(Mesh* parent);
+	BoundingSphere* GetBoundingSphere();
+
+	void Highlight();
+	void DisableHighlight();
 };
 

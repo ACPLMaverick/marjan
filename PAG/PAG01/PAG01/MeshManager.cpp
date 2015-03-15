@@ -43,22 +43,25 @@ bool MeshManager::Load3DS(const string* filePath)
 {
 	printf("Loading 3DS \"%s\" ... \n", (*filePath).c_str());
 	string name;
-	string textureNameTemp;
 	string textureName;
 	FILE* myFile;
-	VertexData* data = new VertexData;
-	list<GLfloat> vertices, uvs, normals;
+	list<GLfloat> vertices, uvs;
 	list<unsigned int> indices;
-	// DONT FORGET ABOUT COLORS!!!oneoneone
 	unsigned short chunkID;
 	GLuint chunkLength;
 	unsigned char oneByte;
 	unsigned short quantity = 0;
 	unsigned short quantityPolygons = 0;
 	unsigned short faceFlags;
+	GLfloat localTransform[4][4];
+
+	vector<Mesh*> hierarchyArray;
+	Mesh* hPtr;
+	short myID = -2, parentID = -2;
+	unsigned int counter = -1;
 
 	char tempChar = 'a';
-	float tempFloat;
+	GLfloat tempFloat;
 	unsigned short tempIndex;
 
 	int error = (fopen_s(&myFile, (*filePath).c_str(), "rb"));
@@ -81,7 +84,16 @@ bool MeshManager::Load3DS(const string* filePath)
 				oneByte = 5;
 				break;
 			case ID_OBJECT_BLOCK:
-				//tempChar = 'a'; <-- this makes you unable to load more meshes than one
+				// this is the beginning of loading new mesh. Clearing the lists and values then.
+				counter++;
+				name = "";
+				vertices.clear();
+				uvs.clear();
+				indices.clear();
+				quantity = 0;
+				quantityPolygons = 0;
+				tempChar = 'a';	// <-- this makes you unable to load more meshes than one
+				////////////////////////////
 				for (int i = 0; i < 20 && tempChar != '\0'; i++)
 				{
 					fread(&tempChar, 1, 1, myFile);
@@ -122,6 +134,35 @@ bool MeshManager::Load3DS(const string* filePath)
 					indices.push_back(tempIndex);
 					fread(&tempIndex, sizeof(unsigned short), 1, myFile);
 				}
+
+				// this is the end of loading a single mesh
+				hPtr = GenerateMesh
+					(
+						&name,
+						&textureName,
+						&vertices,
+						&uvs,
+						&indices,
+						quantity,
+						quantityPolygons,
+						localTransform,
+						myID,
+						parentID
+					);
+				hierarchyArray.push_back(hPtr);
+				//////////////////
+				break;
+			case ID_LOCAL_COORDINATES_SYSTEM:
+				//fseek(myFile, chunkLength - 6, SEEK_CUR);
+				for (int i = 0; i < 4; i++)
+				{
+					for (int j = 0; j < 3; j++)
+					{
+						fread(&tempFloat, sizeof(float), 1, myFile);
+						localTransform[i][j] = tempFloat;
+					}
+					localTransform[i][3] = 1.0f;
+				}
 				break;
 			case ID_MAPPING_COORDINATES_LIST:
 
@@ -153,10 +194,82 @@ bool MeshManager::Load3DS(const string* filePath)
 		}
 	}
 
-	printf("Finished loading \"%s\".\n", (*filePath).c_str());
+	// reading file once more for hierarchy positions and in result number of meshes;
+	// B010 - name and hierarchy parent B030 - hierarchy number
+	rewind(myFile);
+	signed short hier = 0;
+	signed short father = 0;
+	counter = -1;
+	while (ftell(myFile) < _filelength(_fileno(myFile)))
+	{
+		fread(&chunkID, 2, 1, myFile);
+		fread(&chunkLength, 4, 1, myFile);
+
+		switch (chunkID)
+		{
+		case ID_MAIN_CHUNK:
+			break;
+		case ID_EDITOR_CHUNK:
+			break;
+		case ID_KEYFRAMER_CHUNK:
+			break;
+		case ID_FRAMES:
+			fseek(myFile, chunkLength - 6, SEEK_CUR);
+			break;
+		case ID_UNKNOWN_01:
+			counter++;
+			break;
+		case ID_HIERARCHY_POSITION:
+			hier = 0;
+			fread(&hier, 2, 1, myFile);
+			break;
+		case ID_OBJECT_NAME:
+			fseek(myFile, chunkLength - 8, SEEK_CUR);
+			fread(&father, 2, 1, myFile);
+
+			// saving to hierarchy vector
+			hierarchyArray[counter]->myID = hier;
+			hierarchyArray[counter]->parentID = father;
+			break;
+		default:
+			fseek(myFile, chunkLength - 6, SEEK_CUR);
+			break;
+		}
+	}
+
+	printf("Finished loading \"%s\". Generating models...\n", (*filePath).c_str());
+
+	// sort out hierarchical shit
+	if(hierarchyArray.size() > 1) SolveHierarchy(&hierarchyArray);
+	else if (hierarchyArray.size() == 1) AddMesh(hierarchyArray[0]);
+	else
+	{
+		printf("3DS loading failed - no meshes found.\n");
+		return false;
+	}
+
+	//for (vector<MeshHierarchy*>::iterator it = hierarchyArray.begin(); it != hierarchyArray.end(); ++it)
+	//{
+	//	AddMesh((*it)->mesh);
+	//	delete (*it);
+	//}
+
+	printf("3DS Successfully loaded.\n");
+	return true;
+}
+
+// this function is mainly for generating normals and filling mesh with data, and then - initializing it
+Mesh* MeshManager::GenerateMesh(string* name, string* textureName,
+	list<GLfloat>* vertices, list<GLfloat>* uvs, list<unsigned int>* indices,
+	unsigned short quantity, unsigned short quantityPolygons, GLfloat localTrans[][4],
+	short myID, short parentID)
+{
+	printf("Generating mesh %s \n", name->c_str());
+
+	VertexData* data = new VertexData;
 
 	data->vertexCount = quantity;
-	data->indexCount = 3* quantityPolygons;
+	data->indexCount = 3 * quantityPolygons;
 	data->indexBuffer = new unsigned int[3 * quantityPolygons];
 	data->vertexPositionBuffer = new GLfloat[3 * quantity];
 	data->vertexColorBuffer = new GLfloat[3 * quantity];
@@ -164,9 +277,9 @@ bool MeshManager::Load3DS(const string* filePath)
 	data->vertexNormalBuffer = new GLfloat[3 * quantity];
 
 	list<GLfloat>::iterator itP, itUV;
-	list<unsigned int>::iterator itI = indices.begin();
-	itP = vertices.begin();
-	itUV = uvs.begin();
+	list<unsigned int>::iterator itI = indices->begin();
+	itP = vertices->begin();
+	itUV = uvs->begin();
 	for (int i = 0; i < (3 * quantity); ++i, ++itP)
 	{
 		data->vertexPositionBuffer[i] = (*itP);
@@ -190,13 +303,13 @@ bool MeshManager::Load3DS(const string* filePath)
 		verS[i] = new glm::vec3[3];
 	glm::vec3* nrmS = new glm::vec3[quantityPolygons];
 	glm::vec3* nrm = new glm::vec3[quantity];
-	for (int i = 0, j = 0; i < 3 * quantity; i+=3, ++j)
+	for (int i = 0, j = 0; i < 3 * quantity; i += 3, ++j)
 	{
 		ver[j] = glm::vec3(data->vertexPositionBuffer[i], data->vertexPositionBuffer[i + 1], data->vertexPositionBuffer[i + 2]);
 		nrm[j] = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 	// posortowaæ wg polygonów
-	for (int i = 0, j = 0; i < 3 * quantityPolygons; i+=3, ++j)
+	for (int i = 0, j = 0; i < 3 * quantityPolygons; i += 3, ++j)
 	{
 		verS[j][0] = glm::vec3(ver[data->indexBuffer[i]]);
 		verS[j][1] = glm::vec3(ver[data->indexBuffer[i + 1]]);
@@ -215,10 +328,10 @@ bool MeshManager::Load3DS(const string* filePath)
 	{
 		if (i % 3 == 0) ++j;
 		nrm[data->indexBuffer[i]] = glm::normalize(nrm[data->indexBuffer[i]] + nrmS[j]);
-		
+
 	}
 	// sp³aszczyæ wektor normalnych bo te¿ ponoæ s¹ indeksowane
-	for (int i = 0, j = 0; i < 3 * quantity; i+=3, ++j)
+	for (int i = 0, j = 0; i < 3 * quantity; i += 3, ++j)
 	{
 		data->vertexNormalBuffer[i] = nrm[j].x;
 		data->vertexNormalBuffer[i + 1] = nrm[j].y;
@@ -232,33 +345,71 @@ bool MeshManager::Load3DS(const string* filePath)
 	delete[] nrmS;
 	delete[] nrm;
 
+	// solving transformations...
+	glm::vec3 pivotPos = glm::vec3(localTrans[3][0], localTrans[3][1], localTrans[3][2]);
+	glm::mat4 mat = glm::translate(pivotPos);
+	GLfloat radius = 0.0f;
+	for (int i = 0; i < 3 * data->vertexCount; i += 3)
+	{
+		data->vertexPositionBuffer[i] -= pivotPos.x;
+		data->vertexPositionBuffer[i + 1] -= pivotPos.y;
+		data->vertexPositionBuffer[i + 2] -= pivotPos.z;
+		if (data->vertexPositionBuffer[i] > radius) radius = data->vertexPositionBuffer[i];
+		if (data->vertexPositionBuffer[i + 1] > radius) radius = data->vertexPositionBuffer[i + 1];
+		if (data->vertexPositionBuffer[i + 2] > radius) radius = data->vertexPositionBuffer[i + 2];
+	}
+
+	// calculating bounding sphere
+	BoundingSphere* sphere = new BoundingSphere;
+	sphere->position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	sphere->radius = radius;
 
 	Mesh* mesh = new Mesh();
-	mesh->Initialize(m_programID, NULL, name, data);
+	mesh->Initialize(m_programID, NULL, *name, data, sphere, myID, parentID);
 
 	// loadin textures
-	if (textureName.size() > 0)
+	if (textureName->size() > 0)
 	{
 		Texture* m_texture = new Texture();
-		if (!m_texture->Initialize(&textureName)) return false;
+		if (!m_texture->Initialize(textureName)) return false;
 		mesh->SetTexture(m_texture);
 	}
 
-	AddMesh(mesh);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	printf("Model successfully generated.");
-	return true;
-}
-
-// this function is mainly for generating normals and filling mesh with data, and then - initializing it
-Mesh* MeshManager::GenerateMesh(Mesh* mesh, VertexData* data, string* name, GLuint programID)
-{
-	printf("Generating mesh %s \n", name->c_str());
-
-
+	// returning to origin
+	//mesh->Transform(&(pivotPos), &glm::vec3(0.0f, 0.0f, 0.0f), &glm::vec3(1.0f, 1.0f, 1.0f));
 
 	printf("Mesh %s successfully generated.\n", name->c_str());
 	return mesh;
+}
+
+void MeshManager::SolveHierarchy(vector<Mesh*>* meshHierarchies)
+{
+	unsigned int currentLevel = 0;
+	Mesh* lastPtr = (*meshHierarchies)[0];
+	if (lastPtr->parentID == -1) AddMesh(lastPtr);
+	Mesh* currentPtr;
+	for (vector<Mesh*>::iterator it = meshHierarchies->begin() + 1; it != meshHierarchies->end(); ++it)
+	{
+		currentPtr = (*it);
+		if (currentPtr->parentID == -1)
+		{
+			AddMesh(currentPtr);
+			lastPtr = currentPtr;
+		}
+		if (lastPtr->myID == currentPtr->parentID)
+		{
+			lastPtr->AddChild(currentPtr);
+			lastPtr = currentPtr;
+		}
+		if (lastPtr->myID < currentPtr->parentID)
+		{
+			lastPtr = lastPtr->GetParent();
+			--it;
+		}
+	}
 }
 
 void MeshManager::AddMesh(Mesh* mesh)
@@ -270,4 +421,9 @@ Mesh* MeshManager::GetMesh(unsigned int i)
 {
 	if (meshes.size() > 0) return meshes.at(i);
 	else return NULL;
+}
+
+vector<Mesh*>* MeshManager::GetMeshCollection()
+{
+	return &meshes;
 }

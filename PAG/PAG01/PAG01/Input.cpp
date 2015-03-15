@@ -18,7 +18,7 @@ bool Input::Initialize(GLFWwindow* window, GLFWscrollfun fun)
 {
 	m_window = window;
 	glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE);
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	glfwSetInputMode(m_window, GLFW_STICKY_MOUSE_BUTTONS, GL_TRUE);
 
 	glfwSetScrollCallback(window, fun);

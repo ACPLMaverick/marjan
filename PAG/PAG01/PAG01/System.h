@@ -10,6 +10,10 @@ using namespace std;
 
 #include "Graphics.h"
 #include "Input.h"
+#include "Timer.h"
+
+#define TRANSLATION_AMOUNT 0.01f
+#define ROTATION_AMOUNT 0.01f
 
 class System
 {
@@ -17,9 +21,12 @@ private:
 	static System* me;
 	Graphics* m_graphics;
 	Input* m_input;
+	Timer* m_timer;
 
 	bool isRunning;
 	void ProcessInput();
+	void ProcessCameraMovement();
+	void ProcessMouseClick();
 	static void MouseScrollCallback(GLFWwindow* window, double x, double y);
 	System();
 public:

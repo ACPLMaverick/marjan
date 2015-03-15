@@ -55,18 +55,16 @@ bool Graphics::Initialize()
 
 	programID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
 
-	m_light = new Light(&vec4(0.0f, -1.0f, 1.0f, 0.0f), &(1.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &(1.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &vec4(0.0f, 0.0f, 0.02f, 1.0f), 50.0f, programID);
+	m_light = new Light(&vec4(0.0f, -1.0f, 1.0f, 1.0f), &(1.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &(1.0f*vec4(1.0f, 1.0f, 1.0f, 1.0f)), &vec4(0.0f, 0.0f, 0.02f, 1.0f), 50.0f, programID);
 
 	m_camera->m_eyeVectorID = glGetUniformLocation(programID, "eyeVector");
 
 	m_manager = new MeshManager();
 	m_manager->Initialize(programID);
 	m_mesh = m_manager->GetMesh(0);
-	m_mesh->Transform(&vec3(0.0f, -1.0f, 0.0f), &vec3(0.0f, 0.0f, 3.14f), &vec3(0.1f, 0.1f, 0.1f));
+	//m_mesh->visible = false;
+	m_mesh->Transform(m_mesh->GetPosition(), &vec3(0.0f, 0.0f, pi<GLfloat>()), &vec3(0.1f, 0.1f, 0.1f));
 	//test = m_manager->GetMesh(0)->GetChildren()->at(0);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	return true;
 }
@@ -106,16 +104,98 @@ void Graphics::Frame()
 	//	m_mesh->GetPosition(), 
 	//	&vec3((*m_mesh->GetRotation()).x, (*m_mesh->GetRotation()).y + 0.005f, (*m_mesh->GetRotation()).z),
 	//	m_mesh->GetScale());
-		/*
-	test->Transform(
-		test->GetPosition(),
-		&vec3((*test->GetRotation()).x, (*test->GetRotation()).y, (*test->GetRotation()).z + 0.005f),
-		test->GetScale());*/
+		
+	//test->Transform(
+	//	test->GetPosition(),
+	//	&vec3((*test->GetRotation()).x, (*test->GetRotation()).y, (*test->GetRotation()).z - 0.01f),
+	//	test->GetScale());
 
-	m_mesh->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &(m_camera->GetPosition()), m_camera->m_eyeVectorID, m_light);
+	m_manager->Draw(&projectionMatrix, m_camera->GetViewMatrix(), &(m_camera->GetPosition()), m_camera->m_eyeVectorID, m_light);
 
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
+}
+
+Mesh* Graphics::GetCurrentlySelected()
+{
+	return m_mesh;
+}
+
+void Graphics::RayCastAndSelect(double mX, double mY)
+{
+	//m_mesh->Highlight();
+	// projection coords
+	float x = (2.0f * (float)mX) / (float)WINDOW_WIDTH - 1.0f;
+	float y = 1.0f - (2.0f * (float)mY) / (float)WINDOW_HEIGHT;
+	vec4 ray_clip = vec4(x, y, -1.0f, 1.0f);
+
+	// view coords
+	vec4 ray_eye = inverse(projectionMatrix) * ray_clip;
+	ray_eye.z = -1.0f; 
+	ray_eye.w = 0.0f;
+
+	// world coords
+	vec3 ray_wrd = vec3(inverse(*(m_camera->GetViewMatrix())) * ray_eye);
+	ray_wrd = normalize(ray_wrd);
+
+	printf("X: %f, Y: %f, Z: %f\n", ray_wrd.x, ray_wrd.y, ray_wrd.z);
+
+	if (m_manager->GetMeshCollection()->size() > 0)
+	{
+		Mesh* meshPtr;
+		for (vector<Mesh*>::iterator it = m_manager->GetMeshCollection()->begin();
+			it != m_manager->GetMeshCollection()->end(); ++it)
+		{
+			meshPtr = SearchMeshTree(*it, &ray_wrd);
+			if (meshPtr != nullptr)
+			{
+				m_mesh->DisableHighlight();
+				m_mesh = meshPtr;
+				m_mesh->Highlight();
+				return;
+			}
+		}
+	}
+}
+
+// check for sphere collision with myself,
+// if false, check recursively for every child
+// if no child return nullptr
+Mesh* Graphics::SearchMeshTree(Mesh* node, vec3* ray)
+{
+	vec3 p = m_camera->GetPosition()*m_camera->GetPositionLength();
+	vec3 c = vec3(node->GetBoundingSphere()->position);
+	GLfloat r = node->GetBoundingSphere()->radius;
+	vec3 vpc, pc;
+	GLfloat l;
+
+	vpc = c - p;
+	if (dot(normalize(vpc), *ray) > 0)
+	{
+		// pc = projection of c on the line
+		pc = p + dot(*ray, vpc) * (*ray);
+		l = length(c - pc);
+		if (l <= r)
+		{
+			// intersection
+			return node;
+		}
+	}
+
+	Mesh* meshPtr;
+	if (node->GetChildren()->size() > 0)
+	{
+		for (vector<Mesh*>::iterator it = node->GetChildren()->begin();
+			it != node->GetChildren()->end(); ++it)
+		{
+			meshPtr = SearchMeshTree((*it), ray);
+			if (meshPtr != nullptr) return meshPtr;
+		}
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 GLFWwindow* Graphics::GetWindowPtr()

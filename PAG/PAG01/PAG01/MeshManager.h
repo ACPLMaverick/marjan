@@ -5,7 +5,6 @@
 #include <glm\glm\gtx\transform.hpp>
 #include <vector>
 #include <list>
-#include <map>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -27,9 +26,9 @@
 #define ID_LOCAL_COORDINATES_SYSTEM 0x4160
 #define ID_KEYFRAMER_CHUNK 0xB000
 #define ID_FRAMES 0xB008
+#define ID_UNKNOWN_01 0xB002
 #define ID_OBJECT_NAME 0xB010
 #define ID_HIERARCHY_POSITION 0xB030
-#define ID_UNKNOWN_01 0x13A3
 #define ID_MATERIAL_BLOCK 0xAFFF
 #define ID_DIFFUSE_COLOR 0xA200
 
@@ -43,7 +42,11 @@ class MeshManager
 private:
 	vector<Mesh*> meshes;
 	GLuint m_programID;
-	Mesh* GenerateMesh(Mesh* mesh, VertexData* data, string* name, GLuint programID);
+	Mesh* GenerateMesh(string* name, string* textureName,
+		list<GLfloat>* vertices, list<GLfloat>* uvs, list<unsigned int>* indices, 
+		unsigned short quantity, unsigned short quantityPolygons, GLfloat localTrans[][4],
+		short myID, short parentID);
+	void SolveHierarchy(vector<Mesh*>* meshHierarchies);
 public:
 	MeshManager();
 	~MeshManager();
@@ -57,5 +60,6 @@ public:
 
 	void AddMesh(Mesh* mesh);
 	Mesh* GetMesh(unsigned int i);
+	vector<Mesh*>* GetMeshCollection();
 };
 
