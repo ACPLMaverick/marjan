@@ -129,7 +129,7 @@ void Mesh::Draw(glm::mat4* projectionMatrix, glm::mat4* viewMatrix, glm::vec3* e
 		glUniform4f(highlightID, highlight.x, highlight.y, highlight.z, highlight.w);
 		glUniform1f(light->glossID, light->glossiness);
 
-		glBindTexture(GL_TEXTURE_2D, m_texture->GetID());
+		if(m_texture != nullptr) glBindTexture(GL_TEXTURE_2D, m_texture->GetID());
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

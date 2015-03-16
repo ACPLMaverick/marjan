@@ -33,7 +33,7 @@
 #define ID_DIFFUSE_COLOR 0xA200
 
 static const string TEST_DIFFUSE = "canteenD.dds";
-static const string FILEPATH_FIXED = "Canteen.3ds";
+static const string FILEPATH_FIXED = "Test.3ds";
 
 using namespace std;
 

@@ -200,7 +200,7 @@ void System::ProcessInput()
 
 	if (m_input->IsMouseButtonDown(GLFW_MOUSE_BUTTON_1))
 	{
-		if (m_timer->GetCurrentTime() - m_timer->GetFlag(0) > 1000)
+		if (m_timer->GetCurrentTime() - m_timer->GetFlag(0) > 250)
 		{
 			m_timer->SetFlag(0);
 			ProcessMouseClick();

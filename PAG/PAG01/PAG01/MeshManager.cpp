@@ -428,12 +428,12 @@ void MeshManager::SolveHierarchy(vector<Mesh*>* meshHierarchies)
 			AddMesh(currentPtr);
 			lastPtr = currentPtr;
 		}
-		if (lastPtr->myID == currentPtr->parentID)
+		else if (lastPtr->myID == currentPtr->parentID)
 		{
 			lastPtr->AddChild(currentPtr);
 			lastPtr = currentPtr;
 		}
-		if (lastPtr->myID < currentPtr->parentID)
+		else if (currentPtr->parentID < lastPtr->myID)
 		{
 			lastPtr = lastPtr->GetParent();
 			--it;
