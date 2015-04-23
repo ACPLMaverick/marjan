@@ -41,6 +41,7 @@ public:
 struct mapState
 {
 	int neighbours[4];
+	int distances[16];
 	int emptyI = 3;
 	int emptyJ = 3;
 	int direction = -1;
@@ -81,6 +82,7 @@ mapState state;
 bool isSolved = false;
 
 //METHODS//
+
 void ShowMatrix()
 {
 	for (int i = 0; i < 4; ++i)
@@ -242,6 +244,39 @@ void DecodeRiddle(riddle &r)
 		base[3][i] &= 0x000f;
 	}
 }
+
+//METHODS NEW//
+
+void SetDistances(int table[])
+{
+	int targetI, targetJ;
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			if (base[i][j] == 0)
+			{
+				targetI = 3;
+				targetJ = 3;
+				table[15] = (abs(i - targetI)) + (abs(j - targetJ));
+			}
+			else
+			{
+				targetJ = (base[i][j] - 1) % 4;
+				targetI = (base[i][j] - j) / 4;
+				int it = base[i][j];
+				table[it-1] = (abs(i - targetI)) + (abs(j - targetJ));
+			}
+		}
+	}
+	for (int k = 0; k < 16; ++k)
+	{
+		cout << table[k] << " ";
+	}
+	cout << endl;
+}
+
+//ALGORITHMS//
 
 bool DFS(mapState &root) //TO DO: clean and try to achieve the shortest path by walking through ancestors
 {
@@ -409,12 +444,18 @@ bool BFS(mapState &root) //TODO: optimalize (throws bad_alloc when difficulty of
 	return false;
 }
 
+bool ASTAR(mapState &root)
+{
 
+	return false;
+}
+
+//MAIN//
 
 int main(int argc, char* argv[])
 {
 	srand(time(NULL));
-	if (!GenerateRiddle(50))
+	if (!GenerateRiddle(30))
 		return 0;
 
 	int direction;
@@ -423,11 +464,12 @@ int main(int argc, char* argv[])
 	cout << endl;
 	GetNeighbours(state.emptyI, state.emptyJ, state.neighbours);
 	state.riddleState = CodeRiddle();
+	SetDistances(state.distances);
 
-	if (!BFS(state))
-	{
-		std::cout << "Something went wrong" << endl;
-	}
+	//if (!BFS(state))
+	//{
+	//	std::cout << "Something went wrong" << endl;
+	//}
 
 	system("PAUSE");
 	return 0;
