@@ -4,6 +4,7 @@
 #include <time.h>
 #include <vector>
 #include <stack>
+#include <queue>
 
 #include "Header.h"
 
@@ -17,6 +18,7 @@ struct Node
 	unsigned char currentY;
 	unsigned char board[RIDDLE_SIZE][RIDDLE_SIZE];
 
+	Node* parent;
 	Node* neighbours[4];
 	bool ifMarked = false;
 
@@ -106,6 +108,8 @@ Node* GenerateStartNode()
 	state->board[RIDDLE_SIZE - 1][RIDDLE_SIZE - 1] = CURRENT_FIELD;
 	state->currentX = RIDDLE_SIZE - 1;
 	state->currentY = RIDDLE_SIZE - 1;
+	state->ifMarked = false;
+	state->parent = NULL;
 
 	globalNodeList.push_back(state);
 
@@ -175,9 +179,11 @@ void ShuffleNode(Node* state, const unsigned int level)
 	}
 }
 
-bool CreateNodeFromMove(const Node* oldState, Node* newState, unsigned int dir)
+bool CreateNodeFromMove(Node* oldState, Node* newState, unsigned int dir)
 {
 	(*newState) = (*oldState);
+	newState->ifMarked = false;
+	newState->parent = oldState;
 	unsigned char temp;
 
 	switch (dir)
@@ -264,6 +270,45 @@ bool CheckIfNodeMatchesStartNode(const Node* state)
 
 //////////////////////////////////////////////
 
+inline void GenerateAdjacentStates(Node* node)
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		Node* dir = new Node;
+
+		if (!CreateNodeFromMove(node, dir, 3 - i))
+		{
+			delete dir;
+			node->neighbours[i] = NULL;
+		}
+		else if ((*dir) == (*(dir->parent)))
+		{
+			node->neighbours[i] = dir->parent;
+			delete dir;
+		}
+		else
+		{
+			bool assigned = false;
+			for (vector<Node*>::iterator it = globalNodeList.begin(); it != globalNodeList.end(); ++it)
+			{
+				if ((*dir) == (*(*it)))
+				{
+					node->neighbours[i] = (*it);
+					delete dir;
+					assigned = true;
+					break;
+				}
+			}
+
+			if (!assigned)
+			{
+				globalNodeList.push_back(dir);
+				node->neighbours[i] = dir;
+			}
+		}
+	}
+}
+
 bool DFS(Node* node, stack<Node*>* returnStack)
 {
 	node->ifMarked = true;
@@ -275,41 +320,7 @@ bool DFS(Node* node, stack<Node*>* returnStack)
 	}
 	else
 	{
-		// create adjacent nodes
-		Node* parent = returnStack->top();
-
-		for (int i = 0; i < 4; ++i)
-		{
-			Node* dir = new Node;
-			CreateNodeFromMove(node, dir, i);
-
-			// compare with parent
-			if (dir == parent)
-			{
-				node->neighbours[i] = parent;
-				delete dir;
-			}
-			else
-			{
-				bool assigned = false;
-				for (vector<Node*>::iterator it = globalNodeList.begin(); it != globalNodeList.end(); ++it)
-				{
-					if (dir == (*it))
-					{
-						node->neighbours[i] = (*it);
-						delete dir;
-						assigned = true;
-						break;
-					}
-				}
-
-				if (!assigned)
-				{
-					globalNodeList.push_back(dir);
-					node->neighbours[i] = dir;
-				}
-			}
-		}
+		GenerateAdjacentStates(node);
 
 		// traverse every one of them
 		for (int i = 0; i < 4; ++i)
@@ -328,12 +339,94 @@ bool DFS(Node* node, stack<Node*>* returnStack)
 	}
 }
 
+bool DFSIterative(Node* node, stack<Node*>* returnStack)
+{
+	stack<Node*> st;
+	st.push(node);
+
+	while (!st.empty())
+	{
+		Node* n = st.top();
+		st.pop();
+
+		if (n != NULL && !n->ifMarked)
+		{
+			if (CheckIfNodeMatchesStartNode(n))
+			{
+				Node* retNode = n;
+				do
+				{
+					returnStack->push(retNode);
+					retNode = retNode->parent;
+				} while (retNode != NULL);
+				return true;
+			}
+
+			GenerateAdjacentStates(n);
+
+			n->ifMarked = true;
+
+			for (int i = 0; i < 4; ++i)
+			{
+				st.push(n->neighbours[3 - i]);
+			}
+		}
+	}
+
+	return false;
+}
+
+bool BFS(Node* node, stack<Node*>* returnStack)
+{
+	queue<Node*> q;
+
+	q.push(node);
+	node->ifMarked = true;
+
+	while (!q.empty())
+	{
+		Node* n = q.front();
+		q.pop();
+
+		GenerateAdjacentStates(n);
+		for (int i = 0; i < 4; ++i)
+		{
+			if (n->neighbours[i] != NULL && !(n->neighbours[i]->ifMarked))
+			{
+				q.push(n->neighbours[i]);
+				n->neighbours[i]->ifMarked = true;
+
+				if (CheckIfNodeMatchesStartNode(n->neighbours[i]))
+				{
+					Node* retNode = n->neighbours[i];
+					do
+					{
+						returnStack->push(retNode);
+						retNode = retNode->parent;
+					} while (retNode != NULL);
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
 void Search(Node* start, unsigned int method, stack<Node*>* returnStack)
 {
+	bool result;
+
 	switch (method)
 	{
 	case 0:
-		DFS(start, returnStack);
+		result = DFS(start, returnStack);
+		break;
+	case 1:
+		result = DFSIterative(start, returnStack);
+		break;
+	case 2:
+		result = BFS(start, returnStack);
 		break;
 	default:
 		cout << "ERROR: Wrong method ID given to Search() function.";
@@ -369,13 +462,13 @@ int main()
 {
 	Node* startNode = GenerateStartNode();
 
-	ShuffleNode(startNode, 1);
+	ShuffleNode(startNode, 2);
 
 	cout << "Shuffled start state: " << endl << endl;
 	PrintNode(startNode);
 
 	stack<Node*> returnStack;
-	Search(startNode, 0, &returnStack);
+	Search(startNode, 1, &returnStack);
 
 	cout << "Solution path: " << endl << endl;
 	TraverseAndPrintPath(&returnStack);
