@@ -1,4 +1,5 @@
 // Piêtnastka.cpp : Defines the entry point for the console application.
+// REPOSITORY VERSION
 //
 
 #include<iostream>
@@ -40,6 +41,7 @@ public:
 struct mapState
 {
 	int neighbours[4];
+	int distances[16];
 	int emptyI = 3;
 	int emptyJ = 3;
 	int direction = -1;
@@ -47,7 +49,8 @@ struct mapState
 	//long long int state;
 	riddle riddleState;
 	vector<mapState> nodes;
-	riddle previousState;
+	vector<mapState> parent;
+	mapState* previousState = nullptr;
 
 public:
 	bool CheckSolved()
@@ -58,12 +61,28 @@ public:
 		else
 			return false;
 	}
+
+	void operator==(const mapState& s)
+	{
+		neighbours[0] = s.neighbours[0];
+		neighbours[1] = s.neighbours[1];
+		neighbours[2] = s.neighbours[2];
+		neighbours[3] = s.neighbours[3];
+		emptyI = s.emptyI;
+		emptyJ = s.emptyJ;
+		direction = s.direction;
+		id = s.id;
+		riddleState = s.riddleState;
+		nodes = s.nodes;
+		parent = s.parent;
+	}
 };
 
 mapState state;
 bool isSolved = false;
 
 //METHODS//
+
 void ShowMatrix()
 {
 	for (int i = 0; i < 4; ++i)
@@ -226,6 +245,39 @@ void DecodeRiddle(riddle &r)
 	}
 }
 
+//METHODS NEW//
+
+void SetDistances(int table[])
+{
+	int targetI, targetJ;
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			if (base[i][j] == 0)
+			{
+				targetI = 3;
+				targetJ = 3;
+				table[15] = (abs(i - targetI)) + (abs(j - targetJ));
+			}
+			else
+			{
+				targetJ = (base[i][j] - 1) % 4;
+				targetI = (base[i][j] - j) / 4;
+				int it = base[i][j];
+				table[it-1] = (abs(i - targetI)) + (abs(j - targetJ));
+			}
+		}
+	}
+	for (int k = 0; k < 16; ++k)
+	{
+		cout << table[k] << " ";
+	}
+	cout << endl;
+}
+
+//ALGORITHMS//
+
 bool DFS(mapState &root) //TO DO: clean and try to achieve the shortest path by walking through ancestors
 {
 	unsigned int steps = 0;
@@ -302,7 +354,7 @@ bool DFS(mapState &root) //TO DO: clean and try to achieve the shortest path by 
 	return false;
 }
 
-bool BFS(mapState &root) //TODO: pointers to go back through the graph
+bool BFS(mapState &root) //TODO: optimalize (throws bad_alloc when difficulty of riddle is high :<)
 {
 	unsigned int steps = 0;
 	unsigned int id = 0;
@@ -316,10 +368,20 @@ bool BFS(mapState &root) //TODO: pointers to go back through the graph
 		stateQueue.pop();
 		DecodeRiddle(currentState.riddleState);
 		ShowMatrix();
-		steps++;
+		//steps++;
 		//processing node
 		if (currentState.CheckSolved())
 		{
+			if (currentState.parent.size() != 0)
+			{
+				mapState tmp;
+				do
+				{
+					tmp = currentState.parent[0];
+					currentState.operator==(tmp);
+					steps++;
+				} while (!currentState.riddleState.operator==(root.riddleState));
+			}
 			std::cout << "Riddle solved using " << steps << " steps." << endl;
 			isSolved = true;
 			return true;
@@ -334,6 +396,8 @@ bool BFS(mapState &root) //TODO: pointers to go back through the graph
 				else
 				{
 					mapState newState;
+					mapState oldState;
+					oldState.operator==(currentState);
 					DecodeRiddle(currentState.riddleState);
 					newState.neighbours[0] = 0;
 					newState.neighbours[1] = 0;
@@ -341,7 +405,7 @@ bool BFS(mapState &root) //TODO: pointers to go back through the graph
 					newState.neighbours[3] = 0;
 					newState.emptyI = visited.at(currentState.id).emptyI;
 					newState.emptyJ = visited.at(currentState.id).emptyJ;
-					newState.previousState = currentState.riddleState;
+					newState.parent.push_back(oldState);
 					Move(i, newState.emptyI, newState.emptyJ);
 					newState.riddleState = CodeRiddle();
 					GetNeighbours(newState.emptyI, newState.emptyJ, newState.neighbours);
@@ -360,6 +424,7 @@ bool BFS(mapState &root) //TODO: pointers to go back through the graph
 							newState.id = id;
 						}
 					}
+					//cout << newState.id << " - his parent: " << newState.previousState->id << endl;
 					currentState.nodes.push_back(newState);
 				}
 			}
@@ -379,10 +444,18 @@ bool BFS(mapState &root) //TODO: pointers to go back through the graph
 	return false;
 }
 
+bool ASTAR(mapState &root)
+{
+
+	return false;
+}
+
+//MAIN//
+
 int main(int argc, char* argv[])
 {
 	srand(time(NULL));
-	if (!GenerateRiddle(3))
+	if (!GenerateRiddle(30))
 		return 0;
 
 	int direction;
@@ -391,11 +464,12 @@ int main(int argc, char* argv[])
 	cout << endl;
 	GetNeighbours(state.emptyI, state.emptyJ, state.neighbours);
 	state.riddleState = CodeRiddle();
+	SetDistances(state.distances);
 
-	if (!BFS(state))
-	{
-		std::cout << "Something went wrong" << endl;
-	}
+	//if (!BFS(state))
+	//{
+	//	std::cout << "Something went wrong" << endl;
+	//}
 
 	system("PAUSE");
 	return 0;
