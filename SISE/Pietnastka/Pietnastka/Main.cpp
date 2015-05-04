@@ -1,79 +1,42 @@
-#include <conio.h>
-#include <cstdlib>
-#include <iostream>
-#include <time.h>
-#include <vector>
-#include <stack>
-#include <queue>
-
 #include "Header.h"
 
 using namespace std;
-
-///////////////////////////////////////////////
-
-struct Node
-{
-	unsigned char currentX;
-	unsigned char currentY;
-	unsigned char board[RIDDLE_SIZE][RIDDLE_SIZE];
-
-	Node* parent;
-	Node* neighbours[4];
-	bool ifMarked = false;
-
-	bool operator==(const Node &other)
-	{
-		if (currentX != other.currentX || currentY != other.currentY)
-			return false;
-
-		int ctr = 1;
-		for (int i = 0; i < RIDDLE_SIZE; ++i)
-		{
-			for (int j = 0; j < RIDDLE_SIZE; ++j)
-			{
-				if (board[i][j] != other.board[i][j])
-					return false;
-			}
-		}
-		return true;
-	}
-
-	bool operator!=(const Node &other)
-	{
-		return !(operator==(other));
-	}
-
-	Node& operator=(const Node &first)
-	{
-		currentX = first.currentX;
-		currentY = first.currentY;
-
-		for (int i = 0; i < RIDDLE_SIZE; ++i)
-		{
-			for (int j = 0; j < RIDDLE_SIZE; ++j)
-			{
-				board[i][j] = first.board[i][j];
-			}
-		}
-
-		for (int i = 0; i < 4; ++i)
-		{
-			neighbours[i] = first.neighbours[i];
-		}
-
-		ifMarked = first.ifMarked;
-
-		return *this;
-	}
-};
 
 //////////////////////////////////////////////
 ////// GLOBALS
 
 vector<Node*> globalNodeList;
 
+class node_priority_queue : public priority_queue<Node*, vector<Node*>, NodeComparator> 
+{
+public:
+	bool contains(Node* node)
+	{
+		for (vector<Node*>::iterator it = this->c.begin(); it != this->c.end(); ++it)
+		{
+			if ((*node) == (*(*it)))
+				return true;
+		}
+		return false;
+	}
+
+	bool containsSameDistanceLowerCost(Node* node)
+	{
+		for (vector<Node*>::iterator it = this->c.begin(); it != this->c.end(); ++it)
+		{
+			if (node->distance == (*it)->distance && node->cost >= (*it)->cost)
+				return true;
+		}
+		return false;
+	}
+};
+
 //////////////////////////////////////////////
+
+inline cost_t Abs(cost_t a)
+{
+	return (a) > 0 ? (a) : (-a);
+}
 
 void PrintNode(const Node* state)
 {
@@ -179,6 +142,35 @@ void ShuffleNode(Node* state, const unsigned int level)
 	}
 }
 
+cost_t GenerateCostManhattan(const Node* node)
+{
+	cost_t cost = 0.0f;
+	cost_t tempCost;
+	unsigned char endX, endY;
+
+	for (int i = 0; i < RIDDLE_SIZE; ++i)
+	{
+		for (int j = 0; j < RIDDLE_SIZE; ++j)
+		{
+			if (node->board[i][j] != CURRENT_FIELD)
+			{
+				endX = (node->board[i][j] - 1) % 4;
+				endY = (node->board[i][j] - 1) / 4;
+			}
+			else
+			{
+				endX = 3;
+				endY = 3;
+			}
+
+			tempCost = (Abs(j - endX) + Abs(i - endY));
+			cost += tempCost;
+		}
+	}
+
+	return cost;
+}
+
 bool CreateNodeFromMove(Node* oldState, Node* newState, unsigned int dir)
 {
 	(*newState) = (*oldState);
@@ -234,6 +226,9 @@ bool CreateNodeFromMove(Node* oldState, Node* newState, unsigned int dir)
 		break;
 	}
 
+	if (oldState->cost < FLT_MAX)
+		newState->cost = (cost_t)(oldState->distance + 1) + GenerateCostManhattan(newState);
+
 	return true;
 }
 
@@ -244,6 +239,16 @@ Node* CreateNode()
 	globalNodeList.push_back(state);
 
 	return state;
+}
+
+inline void FillReturnStack(Node* current, stack<Node*>* returnStack)
+{
+	Node* retNode = current;
+	do
+	{
+		returnStack->push(retNode);
+		retNode = retNode->parent;
+	} while (retNode != NULL);
 }
 
 bool CheckIfNodeMatchesStartNode(const Node* state)
@@ -353,12 +358,7 @@ bool DFSIterative(Node* node, stack<Node*>* returnStack)
 		{
 			if (CheckIfNodeMatchesStartNode(n))
 			{
-				Node* retNode = n;
-				do
-				{
-					returnStack->push(retNode);
-					retNode = retNode->parent;
-				} while (retNode != NULL);
+				FillReturnStack(n, returnStack);
 				return true;
 			}
 
@@ -398,16 +398,51 @@ bool BFS(Node* node, stack<Node*>* returnStack)
 
 				if (CheckIfNodeMatchesStartNode(n->neighbours[i]))
 				{
-					Node* retNode = n->neighbours[i];
-					do
-					{
-						returnStack->push(retNode);
-						retNode = retNode->parent;
-					} while (retNode != NULL);
+					FillReturnStack(n->neighbours[i], returnStack);
 					return true;
 				}
 			}
 		}
+	}
+
+	return false;
+}
+
+bool AStar(Node* node, stack<Node*>* returnStack)
+{
+	node_priority_queue open;
+	node_priority_queue closed;
+	node->cost = 0;
+	open.push(node);
+
+	while (!open.empty())
+	{
+		Node* n = open.top();
+		open.pop();
+
+		GenerateAdjacentStates(n);
+
+		for (int i = 0; i < 4; ++i)
+		{
+			if (n->neighbours[i] != NULL)
+			{
+				if (CheckIfNodeMatchesStartNode(n->neighbours[i]))
+				{
+					FillReturnStack(n->neighbours[i], returnStack);
+					return true;
+				}
+
+				n->neighbours[i]->distance = n->distance + 1;
+				n->neighbours[i]->cost = GenerateCostManhattan(n->neighbours[i]) + n->neighbours[i]->distance;
+
+				if (!(open.containsSameDistanceLowerCost(n->neighbours[i]) || closed.containsSameDistanceLowerCost(n->neighbours[i])))
+				{
+					open.push(n->neighbours[i]);
+				}
+			}
+		}
+
+		closed.push(n);
 	}
 
 	return false;
@@ -427,6 +462,9 @@ void Search(Node* start, unsigned int method, stack<Node*>* returnStack)
 		break;
 	case 2:
 		result = BFS(start, returnStack);
+		break;
+	case 3:
+		result = AStar(start, returnStack);
 		break;
 	default:
 		cout << "ERROR: Wrong method ID given to Search() function.";
@@ -462,13 +500,13 @@ int main()
 {
 	Node* startNode = GenerateStartNode();
 
-	ShuffleNode(startNode, 2);
+	ShuffleNode(startNode, 3);
 
 	cout << "Shuffled start state: " << endl << endl;
 	PrintNode(startNode);
 
 	stack<Node*> returnStack;
-	Search(startNode, 1, &returnStack);
+	Search(startNode, 3, &returnStack);
 
 	cout << "Solution path: " << endl << endl;
 	TraverseAndPrintPath(&returnStack);
