@@ -20,11 +20,35 @@ public:
 		return false;
 	}
 
-	bool containsSameDistanceLowerCost(Node* node)
+	bool containsLowerCost(Node* node)
 	{
 		for (vector<Node*>::iterator it = this->c.begin(); it != this->c.end(); ++it)
 		{
-			if (node->distance == (*it)->distance && node->cost >= (*it)->cost)
+			if (node->cost > (*it)->cost && node->distance == (*it)->distance)
+				return true;
+		}
+		return false;
+	}
+};
+
+class node_vector : public vector<Node*>
+{
+public:
+	bool contains(Node* node)
+	{
+		for (vector<Node*>::iterator it = this->begin(); it != this->end(); ++it)
+		{
+			if ((*node) == (*(*it)))
+				return true;
+		}
+		return false;
+	}
+
+	bool containsLowerCost(Node* node)
+	{
+		for (vector<Node*>::iterator it = this->begin(); it != this->end(); ++it)
+		{
+			if (node->cost > (*it)->cost && node->distance == (*it)->distance)
 				return true;
 		}
 		return false;
@@ -33,7 +57,7 @@ public:
 
 //////////////////////////////////////////////
 
-inline cost_t Abs(cost_t a)
+inline int Abs(int a)
 {
 	return (a) > 0 ? (a) : (-a);
 }
@@ -142,9 +166,9 @@ void ShuffleNode(Node* state, const unsigned int level)
 	}
 }
 
-cost_t GenerateCostManhattan(const Node* node)
+inline cost_t GenerateCostManhattan(const Node* node)
 {
-	cost_t cost = 0.0f;
+	cost_t cost = 0;
 	cost_t tempCost;
 	unsigned char endX, endY;
 
@@ -171,7 +195,7 @@ cost_t GenerateCostManhattan(const Node* node)
 	return cost;
 }
 
-bool CreateNodeFromMove(Node* oldState, Node* newState, unsigned int dir)
+inline bool CreateNodeFromMove(Node* oldState, Node* newState, unsigned int dir)
 {
 	(*newState) = (*oldState);
 	newState->ifMarked = false;
@@ -251,7 +275,7 @@ inline void FillReturnStack(Node* current, stack<Node*>* returnStack)
 	} while (retNode != NULL);
 }
 
-bool CheckIfNodeMatchesStartNode(const Node* state)
+inline bool CheckIfNodeMatchesStartNode(const Node* state)
 {
 	if (state->currentX != RIDDLE_SIZE - 1 || state->currentY != RIDDLE_SIZE - 1)
 		return false;
@@ -411,8 +435,9 @@ bool BFS(Node* node, stack<Node*>* returnStack)
 bool AStar(Node* node, stack<Node*>* returnStack)
 {
 	node_priority_queue open;
-	node_priority_queue closed;
-	node->cost = 0;
+	node_vector closed;
+	node->distance = 0;
+	node->cost = GenerateCostManhattan(node) + node->distance;
 	open.push(node);
 
 	while (!open.empty())
@@ -420,29 +445,34 @@ bool AStar(Node* node, stack<Node*>* returnStack)
 		Node* n = open.top();
 		open.pop();
 
+		if (CheckIfNodeMatchesStartNode(n))
+		{
+			FillReturnStack(n, returnStack);
+			return true;
+		}
+
 		GenerateAdjacentStates(n);
+		for (int i = 0; i < 4; ++i)
+		{
+			if (n->neighbours[i] != NULL)
+			{
+				n->neighbours[i]->distance = n->distance + 1;
+				n->neighbours[i]->cost = GenerateCostManhattan(n->neighbours[i]) + n->neighbours[i]->distance;
+			}
+		}
+		
+		closed.push_back(n);
 
 		for (int i = 0; i < 4; ++i)
 		{
 			if (n->neighbours[i] != NULL)
 			{
-				if (CheckIfNodeMatchesStartNode(n->neighbours[i]))
-				{
-					FillReturnStack(n->neighbours[i], returnStack);
-					return true;
-				}
-
-				n->neighbours[i]->distance = n->distance + 1;
-				n->neighbours[i]->cost = GenerateCostManhattan(n->neighbours[i]) + n->neighbours[i]->distance;
-
-				if (!(open.containsSameDistanceLowerCost(n->neighbours[i]) || closed.containsSameDistanceLowerCost(n->neighbours[i])))
+				if (!(open.containsLowerCost(n->neighbours[i]) || closed.containsLowerCost(n->neighbours[i])))
 				{
 					open.push(n->neighbours[i]);
 				}
 			}
 		}
-
-		closed.push(n);
 	}
 
 	return false;
@@ -496,19 +526,43 @@ inline void DeleteAllNodes()
 
 //////////////////////////////////////////////
 
+inline void GenerateTestNode(Node* node)
+{
+	node->board[0][0] = 1;
+	node->board[0][1] = 2;
+	node->board[0][2] = 3;
+	node->board[0][3] = 4;
+	node->board[1][0] = 5;
+	node->board[1][1] = 6;
+	node->board[1][2] = 7;
+	node->board[1][3] = 8;
+	node->board[2][0] = 9;
+	node->board[2][1] = 14;
+	node->board[2][2] = CURRENT_FIELD;
+	node->board[2][3] = 10;
+	node->board[3][0] = 13;
+	node->board[3][1] = 11;
+	node->board[3][2] = 15;
+	node->board[3][3] = 12;
+	node->currentX = 2;
+	node->currentY = 2;
+}
+
 int main()
 {
 	Node* startNode = GenerateStartNode();
 
-	ShuffleNode(startNode, 3);
+	//ShuffleNode(startNode, 8);
+	GenerateTestNode(startNode);
 
 	cout << "Shuffled start state: " << endl << endl;
 	PrintNode(startNode);
 
+	cout << "Searching starts... " << endl << endl;
 	stack<Node*> returnStack;
-	Search(startNode, 3, &returnStack);
+	Search(startNode, 2, &returnStack);
 
-	cout << "Solution path: " << endl << endl;
+	cout << "Searching finished. Solution path: " << endl << endl;
 	TraverseAndPrintPath(&returnStack);
 
 	getch();

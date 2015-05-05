@@ -51,6 +51,16 @@ struct Node
 		return !(operator==(other));
 	}
 
+	bool operator<(const Node &other)
+	{
+		return cost < other.cost;
+	}
+
+	bool operator>(const Node &other)
+	{
+		return cost > other.cost;
+	}
+
 	Node& operator=(const Node &first)
 	{
 		currentX = first.currentX;
@@ -68,8 +78,11 @@ struct Node
 		{
 			neighbours[i] = first.neighbours[i];
 		}
+		parent = first.parent;
 
 		ifMarked = first.ifMarked;
+		cost = first.cost;
+		distance = first.distance;
 
 		return *this;
 	}
@@ -78,11 +91,6 @@ struct Node
 class NodeComparator
 {
 public:
-	NodeComparator()
-	{
-
-	}
-
 	bool operator() (const Node* lv, const Node* rv) const
 	{
 		return lv->cost > rv->cost;
