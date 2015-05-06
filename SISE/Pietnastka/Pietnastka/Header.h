@@ -96,3 +96,86 @@ public:
 		return lv->cost > rv->cost;
 	}
 };
+
+class node_stack : public std::stack<Node*>
+{
+public:
+
+	bool containsPtr(Node* node)
+	{
+		std::deque<Node*>::iterator end = c.end();
+		for (std::deque<Node*>::iterator it = c.begin(); it != end; ++it)
+		{
+			if (node == (*it))
+				return true;
+		}
+
+		return false;
+	}
+};
+
+class node_priority_queue : public std::priority_queue<Node*, std::vector<Node*>, NodeComparator>
+{
+public:
+	bool contains(Node* node)
+	{
+		for (std::vector<Node*>::iterator it = this->c.begin(); it != this->c.end(); ++it)
+		{
+			if ((*node) == (*(*it)))
+				return true;
+		}
+		return false;
+	}
+
+	bool containsPtr(Node* node)
+	{
+		for (std::vector<Node*>::iterator it = this->c.begin(); it != this->c.end(); ++it)
+		{
+			if (node == (*it))
+				return true;
+		}
+		return false;
+	}
+
+	bool containsLowerCost(Node* node)
+	{
+		for (std::vector<Node*>::iterator it = this->c.begin(); it != this->c.end(); ++it)
+		{
+			if (node->cost > (*it)->cost && node->distance == (*it)->distance)
+				return true;
+		}
+		return false;
+	}
+
+	Node* remove(Node* node)
+	{
+		std::vector<Node*> tmpVec;
+		Node* tmpNode = nullptr;
+		bool found = false;
+
+		while (!this->empty())
+		{
+			tmpNode = this->top();
+			this->pop();
+
+			if ((tmpNode) == (node))
+			{
+				found = true;
+				break;
+			}
+			else
+			{
+				tmpVec.push_back(tmpNode);
+			}
+		}
+
+		unsigned int vecSize = tmpVec.size();
+		for (unsigned int i = 0; i < vecSize; ++i)
+		{
+			this->push(tmpVec[i]);
+		}
+
+		if (!found) tmpNode = nullptr;
+		return tmpNode;
+	}
+};

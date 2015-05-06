@@ -1,4 +1,6 @@
 #include "Header.h"
+#include "Tester.h"
+#include <Windows.h>
 
 using namespace std;
 
@@ -7,53 +9,26 @@ using namespace std;
 
 vector<Node*> globalNodeList;
 
-class node_priority_queue : public priority_queue<Node*, vector<Node*>, NodeComparator> 
+double pcFreq = 0.0;
+__int64 counterStart = 0;
+
+void StartCounter()
 {
-public:
-	bool contains(Node* node)
-	{
-		for (vector<Node*>::iterator it = this->c.begin(); it != this->c.end(); ++it)
-		{
-			if ((*node) == (*(*it)))
-				return true;
-		}
-		return false;
-	}
+	LARGE_INTEGER li;
+	QueryPerformanceFrequency(&li);
 
-	bool containsLowerCost(Node* node)
-	{
-		for (vector<Node*>::iterator it = this->c.begin(); it != this->c.end(); ++it)
-		{
-			if (node->cost > (*it)->cost && node->distance == (*it)->distance)
-				return true;
-		}
-		return false;
-	}
-};
+	pcFreq = double(li.QuadPart) / 1000.0;
 
-class node_vector : public vector<Node*>
+	QueryPerformanceCounter(&li);
+	counterStart = li.QuadPart;
+}
+
+double GetCounter()
 {
-public:
-	bool contains(Node* node)
-	{
-		for (vector<Node*>::iterator it = this->begin(); it != this->end(); ++it)
-		{
-			if ((*node) == (*(*it)))
-				return true;
-		}
-		return false;
-	}
-
-	bool containsLowerCost(Node* node)
-	{
-		for (vector<Node*>::iterator it = this->begin(); it != this->end(); ++it)
-		{
-			if (node->cost > (*it)->cost && node->distance == (*it)->distance)
-				return true;
-		}
-		return false;
-	}
-};
+	LARGE_INTEGER li;
+	QueryPerformanceCounter(&li);
+	return double(li.QuadPart - counterStart) / pcFreq;
+}
 
 //////////////////////////////////////////////
 
@@ -96,7 +71,7 @@ Node* GenerateStartNode()
 	state->currentX = RIDDLE_SIZE - 1;
 	state->currentY = RIDDLE_SIZE - 1;
 	state->ifMarked = false;
-	state->parent = NULL;
+	state->parent = nullptr;
 
 	globalNodeList.push_back(state);
 
@@ -105,7 +80,7 @@ Node* GenerateStartNode()
 
 void ShuffleNode(Node* state, const unsigned int level)
 {
-	srand(time(NULL));
+	srand(time(nullptr));
 	unsigned char move;
 	unsigned char temp;
 	unsigned char lastMove = 4;
@@ -265,14 +240,14 @@ Node* CreateNode()
 	return state;
 }
 
-inline void FillReturnStack(Node* current, stack<Node*>* returnStack)
+inline void FillReturnStack(Node* current, node_stack* returnStack)
 {
 	Node* retNode = current;
 	do
 	{
 		returnStack->push(retNode);
 		retNode = retNode->parent;
-	} while (retNode != NULL);
+	} while (retNode != nullptr);
 }
 
 inline bool CheckIfNodeMatchesStartNode(const Node* state)
@@ -308,7 +283,7 @@ inline void GenerateAdjacentStates(Node* node)
 		if (!CreateNodeFromMove(node, dir, 3 - i))
 		{
 			delete dir;
-			node->neighbours[i] = NULL;
+			node->neighbours[i] = nullptr;
 		}
 		else if ((*dir) == (*(dir->parent)))
 		{
@@ -338,7 +313,38 @@ inline void GenerateAdjacentStates(Node* node)
 	}
 }
 
-bool DFS(Node* node, stack<Node*>* returnStack)
+inline void GenerateDumbAdjacentStates(Node* node)
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		Node* dir = new Node;
+
+		if (!CreateNodeFromMove(node, dir, 3 - i))
+		{
+			delete dir;
+			node->neighbours[i] = nullptr;
+		}
+		else
+		{
+			globalNodeList.push_back(dir);
+			node->neighbours[i] = dir;
+		}
+	}
+}
+
+inline bool CheckForExistingNode(Node* node, vector<Node*>* vec)
+{
+	for (vector<Node*>::iterator it = vec->begin(); it != vec->end(); ++it)
+	{
+		if (node == (*it))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool DFS(Node* node, node_stack* returnStack, unsigned long &steps, unsigned long maxSteps)
 {
 	node->ifMarked = true;
 	returnStack->push(node);
@@ -349,14 +355,18 @@ bool DFS(Node* node, stack<Node*>* returnStack)
 	}
 	else
 	{
+		++steps;
+		if (steps >= maxSteps)
+			return false;
+
 		GenerateAdjacentStates(node);
 
 		// traverse every one of them
 		for (int i = 0; i < 4; ++i)
 		{
-			if (node->neighbours[i] != NULL && !(node->neighbours[i]->ifMarked))
+			if (node->neighbours[i] != nullptr && !(node->neighbours[i]->ifMarked))
 			{
-				if (DFS(node->neighbours[i], returnStack))
+				if (DFS(node->neighbours[i], returnStack, steps, maxSteps))
 				{
 					return true;
 				}
@@ -368,17 +378,22 @@ bool DFS(Node* node, stack<Node*>* returnStack)
 	}
 }
 
-bool DFSIterative(Node* node, stack<Node*>* returnStack)
+bool DFSIterative(Node* node, node_stack* returnStack, unsigned long &steps, unsigned long maxSteps)
 {
-	stack<Node*> st;
+	node_stack st; 
+	Node* n;
 	st.push(node);
 
 	while (!st.empty())
 	{
-		Node* n = st.top();
+		++steps;
+		if (steps >= maxSteps)
+			return false;
+
+		n = st.top();
 		st.pop();
 
-		if (n != NULL && !n->ifMarked)
+		if (n != nullptr && !n->ifMarked)
 		{
 			if (CheckIfNodeMatchesStartNode(n))
 			{
@@ -400,50 +415,22 @@ bool DFSIterative(Node* node, stack<Node*>* returnStack)
 	return false;
 }
 
-bool BFS(Node* node, stack<Node*>* returnStack)
+bool BFS(Node* node, node_stack* returnStack, unsigned long &steps, unsigned long maxSteps)
 {
 	queue<Node*> q;
+	Node* n;
 
 	q.push(node);
 	node->ifMarked = true;
 
 	while (!q.empty())
 	{
-		Node* n = q.front();
+		++steps;
+		if (steps >= maxSteps)
+			return false;
+
+		n = q.front();
 		q.pop();
-
-		GenerateAdjacentStates(n);
-		for (int i = 0; i < 4; ++i)
-		{
-			if (n->neighbours[i] != NULL && !(n->neighbours[i]->ifMarked))
-			{
-				q.push(n->neighbours[i]);
-				n->neighbours[i]->ifMarked = true;
-
-				if (CheckIfNodeMatchesStartNode(n->neighbours[i]))
-				{
-					FillReturnStack(n->neighbours[i], returnStack);
-					return true;
-				}
-			}
-		}
-	}
-
-	return false;
-}
-
-bool AStar(Node* node, stack<Node*>* returnStack)
-{
-	node_priority_queue open;
-	node_vector closed;
-	node->distance = 0;
-	node->cost = GenerateCostManhattan(node) + node->distance;
-	open.push(node);
-
-	while (!open.empty())
-	{
-		Node* n = open.top();
-		open.pop();
 
 		if (CheckIfNodeMatchesStartNode(n))
 		{
@@ -454,23 +441,10 @@ bool AStar(Node* node, stack<Node*>* returnStack)
 		GenerateAdjacentStates(n);
 		for (int i = 0; i < 4; ++i)
 		{
-			if (n->neighbours[i] != NULL)
+			if (n->neighbours[i] != nullptr && !(n->neighbours[i]->ifMarked))
 			{
-				n->neighbours[i]->distance = n->distance + 1;
-				n->neighbours[i]->cost = GenerateCostManhattan(n->neighbours[i]) + n->neighbours[i]->distance;
-			}
-		}
-		
-		closed.push_back(n);
-
-		for (int i = 0; i < 4; ++i)
-		{
-			if (n->neighbours[i] != NULL)
-			{
-				if (!(open.containsLowerCost(n->neighbours[i]) || closed.containsLowerCost(n->neighbours[i])))
-				{
-					open.push(n->neighbours[i]);
-				}
+				q.push(n->neighbours[i]);
+				n->neighbours[i]->ifMarked = true;
 			}
 		}
 	}
@@ -478,41 +452,71 @@ bool AStar(Node* node, stack<Node*>* returnStack)
 	return false;
 }
 
-void Search(Node* start, unsigned int method, stack<Node*>* returnStack)
+bool AStar(Node* node, node_stack* returnStack, unsigned long &steps, unsigned long maxSteps)
 {
-	bool result;
+	node_priority_queue open;
+	vector<Node*> closed;
+	Node* tmpNode;
+	Node* n;
+	bool check;
+	node->distance = 0;
+	node->cost = GenerateCostManhattan(node) + node->distance;
+	open.push(node);
 
-	switch (method)
+	while (!open.empty())
 	{
-	case 0:
-		result = DFS(start, returnStack);
-		break;
-	case 1:
-		result = DFSIterative(start, returnStack);
-		break;
-	case 2:
-		result = BFS(start, returnStack);
-		break;
-	case 3:
-		result = AStar(start, returnStack);
-		break;
-	default:
-		cout << "ERROR: Wrong method ID given to Search() function.";
-		break;
-	}
-}
+		++steps;
+		if (steps >= maxSteps)
+			return false;
 
-//////////////////////////////////////////////
+		n = open.top();
+		open.pop();
 
-inline void TraverseAndPrintPath(stack<Node*>* returnStack)
-{
-	Node* ours;
-	while (!returnStack->empty())
-	{
-		ours = returnStack->top();
-		PrintNode(ours);
-		returnStack->pop();
+		if (CheckIfNodeMatchesStartNode(n))
+		{
+			FillReturnStack(n, returnStack);
+			return true;
+		}
+
+		GenerateDumbAdjacentStates(n);
+		for (int i = 0; i < 4; ++i)
+		{
+			if (n->neighbours[i] != nullptr)
+			{
+				check = CheckForExistingNode(n->neighbours[i], &closed);
+				if (!check)
+				{
+					n->neighbours[i]->parent = n;
+					n->neighbours[i]->distance = n->distance + 1;
+					n->neighbours[i]->cost = GenerateCostManhattan(n->neighbours[i]) + n->neighbours[i]->distance;
+					open.push(n->neighbours[i]);
+					closed.push_back(n->neighbours[i]);
+				}
+				else
+				{
+					tmpNode = open.remove(n->neighbours[i]);
+					if (tmpNode != nullptr)
+					{
+						n->neighbours[i] = tmpNode;
+						n->neighbours[i]->parent = n;
+						n->neighbours[i]->distance = n->distance + 1;
+						n->neighbours[i]->cost = GenerateCostManhattan(n->neighbours[i]) + n->neighbours[i]->distance;
+
+						if (tmpNode->cost > n->neighbours[i]->cost)
+						{
+							open.push(n->neighbours[i]);
+						}
+						else
+						{
+							open.push(tmpNode);
+						}
+					}
+				}
+			}
+		}
 	}
+
+	return false;
 }
 
 inline void DeleteAllNodes()
@@ -523,6 +527,68 @@ inline void DeleteAllNodes()
 	}
 	globalNodeList.clear();
 }
+
+inline void DeleteAllNodes(node_stack* st)
+{
+	for (vector<Node*>::iterator it = globalNodeList.begin(); it != globalNodeList.end(); ++it)
+	{
+		if (!(st->containsPtr(*it)))
+			delete (*it);
+	}
+	globalNodeList.clear();
+}
+
+bool Search(unsigned char difficulty, unsigned char method, unsigned long maxSteps, node_stack* returnStack, unsigned long &steps, unsigned long &path, double &timer)
+{
+	bool result;
+	Node* start = GenerateStartNode();
+	ShuffleNode(start, difficulty);
+
+	switch (method)
+	{
+	case 2:
+		StartCounter();
+		result = DFSIterative(start, returnStack, steps, maxSteps);
+		timer = GetCounter();
+		break;
+	case 0:
+		StartCounter();
+		result = BFS(start, returnStack, steps, maxSteps);
+		timer = GetCounter();
+		break;
+	case 1:
+		StartCounter();
+		result = AStar(start, returnStack, steps, maxSteps);
+		timer = GetCounter();
+		break;
+	default:
+		cout << "ERROR: Wrong method ID given to Search() function.";
+		result = false;
+		break;
+	}
+
+	DeleteAllNodes(returnStack);
+
+	if (returnStack->size() == 0)
+		path = 0;
+	else
+		path = returnStack->size() - 1;
+	return result;
+}
+
+//////////////////////////////////////////////
+
+inline void TraverseAndPrintPath(node_stack* returnStack)
+{
+	Node* ours;
+	while (!returnStack->empty())
+	{
+		ours = returnStack->top();
+		PrintNode(ours);
+		returnStack->pop();
+	}
+}
+
 
 //////////////////////////////////////////////
 
@@ -550,24 +616,42 @@ inline void GenerateTestNode(Node* node)
 
 int main()
 {
-	Node* startNode = GenerateStartNode();
+	unsigned int testsPerDifficultyLevel = 5;
+	unsigned int maxDifficultyLevel = 10;
+	unsigned char maxAlgorithmID = 3;
+	unsigned long maxSteps = 100000;
 
-	//ShuffleNode(startNode, 8);
-	GenerateTestNode(startNode);
+	cout << "Maximum difficulty level : ";
+	cin >> maxDifficultyLevel;
 
-	cout << "Shuffled start state: " << endl << endl;
-	PrintNode(startNode);
+	cout << "Number of tests per difficulty level : ";
+	cin >> testsPerDifficultyLevel;
+
+	cout << "Maximum steps of algorithm : ";
+	cin >> maxSteps;
+
+	Tester tester(testsPerDifficultyLevel, maxDifficultyLevel, maxAlgorithmID, maxSteps, Search);
+
+	tester.StartTests();
+
+	string path = "results.txt";
+	tester.WriteResults(&path);
+	/*
+	double timer;
+	unsigned long steps = 0, path = 0;
 
 	cout << "Searching starts... " << endl << endl;
-	stack<Node*> returnStack;
-	Search(startNode, 2, &returnStack);
+	node_stack returnStack;
+	Search(10, 3, &returnStack, steps, path, timer);
 
-	cout << "Searching finished. Solution path: " << endl << endl;
 	TraverseAndPrintPath(&returnStack);
-
+	cout << "Searching finished." << endl
+		<< "Time taken: " << timer << " ms" << endl
+		<< "Steps taken: " << steps << endl
+		<< "Solution path length: " << path << endl 
+		<< endl;
+*/
 	getch();
-
-	DeleteAllNodes();
 
 	return 0;
 }
