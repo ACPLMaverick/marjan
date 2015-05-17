@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+
+   <asset>
+	<name>
+		AN-38C Laser Rifle
+	</name>
+	<description>
+		Here will be some description in the future.
+	</description>
+	<pics>
+		<pic path="pictures/caetus/caetus01.png"/>
+		<pic path="pictures/caetus/caetus02.png"/>
+		<pic path="pictures/caetus/caetus03.png"/>
+		<pic path="pictures/caetus/caetus04.png"/>
+		<pic path="pictures/caetus/caetus05.png"/>
+	</pics>
+	<model path="models/Caetus.awd" meshes="body;GL" scale="0.5" />
+   </asset>
+   
+   <asset>
+	<name>
+		Test2
+	</name>
+	<description>
+		TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2 TestDesc2  
+	</description>
+	<pics>
+		<pic />
+	</pics>
+   </asset>
+   
+   <asset>
+	<name>
+		Some video
+	</name>
+	<description>
+		TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3 TestDesc3  
+	</description>
+	<videos>
+		<video path="videos/SomeVideo.flv" thumb="pictures/SomeVideo_th.jpg"/>
+	</videos>
+   </asset>
+   
+</info>
