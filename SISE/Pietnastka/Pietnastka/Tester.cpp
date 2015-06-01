@@ -120,6 +120,8 @@ void Tester::WriteResults()
 
 void Tester::WriteResults(std::string* filename)
 {
+	std::string s = "S"; std::string f = "F";
+	std::string* r;
 	std::ofstream strm(*filename, std::ofstream::out);
 	for (int i = 0; i < maxAlgorithmID; ++i)
 	{
@@ -133,14 +135,15 @@ void Tester::WriteResults(std::string* filename)
 					<< testerBlock[j][k][i]->stepsTaken << ", "
 					<< testerBlock[j][k][i]->pathLength << ", ";
 
-				if (testerBlock[j][j][i]->ifSucceeded)
+				if (testerBlock[j][k][i]->ifSucceeded)
 				{
-					strm << "SUCCEEDED." << std::endl;
+					r = &s;
 				}
 				else
 				{
-					strm << "FAILED." << std::endl;
+					r = &f;
 				}
+				strm << (*r).c_str() << std::endl;
 			}
 			strm << std::endl;
 		}
