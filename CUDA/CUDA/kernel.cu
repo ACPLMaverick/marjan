@@ -22,14 +22,8 @@ __global__ void BlurKernel(uchar3* inputData, uchar3* outputData, unsigned int w
 	unsigned int size = width*height;
 	int iLevel = (int)level;
 
-	if (offset < size)
-	{
 		float oR = 0.0f, oG = 0.0f, oB = 0.0f;
 		unsigned int sum = 0;
-
-		//oR = ((float)inputData[offset].z / 255.0f);
-		//oG = ((float)inputData[offset].y / 255.0f);
-		//oB = ((float)inputData[offset].x / 255.0f);
 
 		for (int i = -iLevel; i < iLevel + 1; ++i)
 		{
@@ -52,7 +46,6 @@ __global__ void BlurKernel(uchar3* inputData, uchar3* outputData, unsigned int w
 		outputData[offset].z = (unsigned char)(oR / sum * 255.0f);
 		outputData[offset].y = (unsigned char)(oG / sum * 255.0f);
 		outputData[offset].x = (unsigned char)(oB / sum * 255.0f);
-	}
 }
 
 int main()
