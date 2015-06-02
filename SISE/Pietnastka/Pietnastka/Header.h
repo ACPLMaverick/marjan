@@ -19,16 +19,15 @@ typedef unsigned int cost_t;
 
 struct Node
 {
-	unsigned char currentX;
-	unsigned char currentY;
-	unsigned char board[RIDDLE_SIZE][RIDDLE_SIZE];
-
 	Node* parent;
 	Node* neighbours[4];
-	bool ifMarked = false;
 	cost_t cost = UINT_MAX;
 	cost_t distance = 0;
-
+	unsigned char board[RIDDLE_SIZE][RIDDLE_SIZE];
+	unsigned char currentX;
+	unsigned char currentY;
+	bool ifMarked = false;
+	
 	bool operator==(const Node &other)
 	{
 		if (currentX != other.currentX || currentY != other.currentY)
