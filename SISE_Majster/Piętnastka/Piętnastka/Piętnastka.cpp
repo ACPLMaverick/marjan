@@ -58,12 +58,12 @@ public:
 
 struct mapState
 {
-	int neighbours[4];
-	int distances[16];
-	int emptyI;
-	int emptyJ;
-	int weight;
-	int depth;
+	short neighbours[4];
+	short distances[16];
+	short emptyI;
+	short emptyJ;
+	short weight;
+	short depth;
 	string id;
 	riddle riddleState;
 	mapState* parent;
@@ -129,6 +129,7 @@ public:
 
 mapState state;
 bool isSolved = false;
+vector<mapState*> pointers;
 
 //METHODS//
 
@@ -151,9 +152,9 @@ void ShowMatrix()
 	}
 }
 
-void Move(int direction, int &emptyI, int &emptyJ)
+void Move(short direction, short &emptyI, short &emptyJ)
 {
-	int tmp;
+	short tmp;
 	switch (direction)
 	{
 	case 0:
@@ -167,16 +168,6 @@ void Move(int direction, int &emptyI, int &emptyJ)
 		}
 		break;
 	case 1:
-		//down
-		if (emptyI < 3)
-		{
-			tmp = base[emptyI][emptyJ];
-			base[emptyI][emptyJ] = base[emptyI + 1][emptyJ];
-			base[emptyI + 1][emptyJ] = tmp;
-			emptyI++;
-		}
-		break;
-	case 2:
 		//left
 		if (emptyJ > 0)
 		{
@@ -184,6 +175,16 @@ void Move(int direction, int &emptyI, int &emptyJ)
 			base[emptyI][emptyJ] = base[emptyI][emptyJ - 1];
 			base[emptyI][emptyJ - 1] = tmp;
 			emptyJ--;
+		}
+		break;
+	case 2:
+		//down
+		if (emptyI < 3)
+		{
+			tmp = base[emptyI][emptyJ];
+			base[emptyI][emptyJ] = base[emptyI + 1][emptyJ];
+			base[emptyI + 1][emptyJ] = tmp;
+			emptyI++;
 		}
 		break;
 	case 3:
@@ -199,19 +200,19 @@ void Move(int direction, int &emptyI, int &emptyJ)
 	}
 }
 
-void GetNeighbours(int &emptyI, int &emptyJ, int a[])
+void GetNeighbours(short &emptyI, short &emptyJ, short* a)
 {
 	if (emptyI > 0) //neighbour up
 	{
 		a[0] = base[emptyI - 1][emptyJ];
 	}
-	if (emptyI < 3) //neighbour down
-	{
-		a[1] = base[emptyI + 1][emptyJ];
-	}
 	if (emptyJ > 0) //neighbour left
 	{
-		a[2] = base[emptyI][emptyJ - 1];
+		a[1] = base[emptyI][emptyJ - 1];
+	}
+	if (emptyI < 3) //neighbour down
+	{
+		a[2] = base[emptyI + 1][emptyJ];
 	}
 	if (emptyJ < 3) //neighbour right
 	{
@@ -244,13 +245,10 @@ bool GenerateRiddle(int steps)
 			direction = rand() % 4;
 		} while (direction == (oldDirection + 2) % 4);
 		Move(direction, state.emptyI, state.emptyJ);
-		cout << oldDirection << ", " << direction << endl;
 		oldDirection = direction;
 	}
 	return true;
 }
-
-//TODO: Generate Riddle with Pre-check algorithm [BFS i z grafu wyci¹gn¹æ losowy stan dla danego poziomu]
 
 //unsigned int GenerateID(map<unsigned int, mapState> &m)
 //{
@@ -304,7 +302,7 @@ void DecodeRiddle(riddle &r)
 
 //METHODS NEW//
 
-void SetDistances(int* table)
+void SetDistances(short* table)
 {
 	int targetI, targetJ;
 	for (int i = 0; i < 4; ++i)
@@ -328,7 +326,7 @@ void SetDistances(int* table)
 	}
 }
 
-void SetWeight(mapState &current, int* table)
+void SetWeight(mapState &current, short* table)
 {
 	for (int i = 0; i < 16; ++i)
 	{
@@ -344,14 +342,6 @@ struct mapStateCompare
 	}
 };
 
-bool operator<(const mapState&t, const mapState& s)
-{
-	if (t.weight < s.weight)
-		return true;
-	else
-		return false;
-}
-
 bool Contains(list<string> *graph, string s)
 {
 	for (list<string>::iterator it = graph->begin(); it != graph->end(); ++it)
@@ -363,82 +353,87 @@ bool Contains(list<string> *graph, string s)
 
 //ALGORITHMS//
 
-//bool DFS(mapState &root) //TO DO: clean and try to achieve the shortest path by walking through ancestors
-//{
-//	unsigned int steps = 0;
-//	unsigned int id = 0;
-//	stack<mapState> stateStack;
-//	map<unsigned int, mapState> visited;
-//	stateStack.push(root);
-//	visited.insert(pair<unsigned int, mapState>(root.id, root));
-//	while (!stateStack.empty())
-//	{
-//		mapState currentState = stateStack.top();
-//		stateStack.pop();
-//		DecodeRiddle(currentState.riddleState);
-//		steps++;
-//		//processing node
-//		if (currentState.CheckSolved())
-//		{
-//			std::cout << "Riddle solved using " << steps << " steps." << endl;
-//			isSolved = true;
-//			return true;
-//		}
-//		else
-//		{
-//			//generate neighbours
-//			for (int i = 0; i < 4; ++i)
-//			{
-//				if (currentState.neighbours[i] == 0)
-//					continue;
-//				else
-//				{
-//					mapState newState;
-//					DecodeRiddle(currentState.riddleState);
-//					newState.neighbours[0] = 0;
-//					newState.neighbours[1] = 0;
-//					newState.neighbours[2] = 0;
-//					newState.neighbours[3] = 0;
-//					newState.emptyI = visited.at(currentState.id).emptyI;
-//					newState.emptyJ = visited.at(currentState.id).emptyJ;
-//					Move(i, newState.emptyI, newState.emptyJ);
-//					newState.riddleState = CodeRiddle();
-//					GetNeighbours(newState.emptyI, newState.emptyJ, newState.neighbours);
-//					newState.direction = i;
-//					id++;
-//					for (unsigned int k = 0; k < visited.size(); ++k)
-//					{
-//						if (newState.riddleState.operator==(visited.at(k).riddleState))
-//						{
-//							newState.id = visited.at(k).id;
-//							id--;
-//							break;
-//						}
-//						else
-//						{
-//							newState.id = id;
-//						}
-//					}
-//					currentState.nodes.push_back(newState);
-//				}
-//			}
-//			//for each neighbour in currentState make the algorithm
-//			for (int j = 0; j < currentState.nodes.capacity(); ++j)
-//			{
-//				if (visited.find(currentState.nodes[j].id) != visited.end())
-//					continue;
-//				else
-//				{
-//					stateStack.push(currentState.nodes[j]);
-//					visited.insert(pair<unsigned int, mapState>(currentState.nodes[j].id, currentState.nodes[j]));
-//				}
-//			}
-//		}
-//	}
-//	return false;
-//}
+bool DFS(mapState &root)
+{
+	unsigned int steps = 0;
+	unsigned int path = 0;
+	stack<mapState*> stateStack;
+	mapState* currentState;
+	list<string> visited;
+	stateStack.push(&root);
+	visited.push_back(root.id);
+	while (!stateStack.empty() || steps < 100000)
+	{
+		currentState = stateStack.top();
+		stateStack.pop();
+		DecodeRiddle(currentState->riddleState);
+		steps++;
+		//processing node
+		if (currentState->CheckSolved())
+		{
+			clock_t startTime = std::clock();
+			if (currentState->parent != nullptr)
+			{
+				mapState* tmp;
+				do
+				{
+					tmp = currentState->parent;
+					currentState = tmp;
+					path++;
+					//steps++;
+				} while (!currentState->riddleState.operator==(root.riddleState));
+			}
+			std::cout << "DFS - Riddle solved using " << steps << " steps." << endl;
+			std::cout << "Shortest path counts " << path << " steps." << endl;
+			isSolved = true;
+			visited.clear();
+			while (!stateStack.empty())
+			{
+				stateStack.pop();
+			}
+			cout << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n";
+			return true;
+		}
+		else
+		{
+			//generate neighbours
+			for (int i = 0; i < 4; ++i)
+			{
+				if (currentState->neighbours[i] == 0)
+					continue;
+				else
+				{
+					mapState* newState = new mapState();
+					mapState* oldState = new mapState();
 
-bool BFS(mapState &root) //TODO: optimalize (throws bad_alloc when difficulty of riddle is high :<)
+					pointers.push_back(newState);
+					pointers.push_back(oldState);
+
+					oldState = currentState;
+					DecodeRiddle(currentState->riddleState);
+					newState->emptyI = currentState->emptyI;
+					newState->emptyJ = currentState->emptyJ;
+					newState->parent = oldState;
+					Move(i, newState->emptyI, newState->emptyJ);
+					newState->riddleState = CodeRiddle();
+					GetNeighbours(newState->emptyI, newState->emptyJ, newState->neighbours);
+					newState->GenerateKey();
+					newState->depth += oldState->depth;
+					newState->depth++;
+
+					if (!Contains(&visited, newState->id))
+					{
+						stateStack.push(newState);
+						visited.push_back(newState->id);
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool BFS(mapState &root)
 {
 	unsigned int steps = 0;
 	unsigned int path = 0;
@@ -447,7 +442,7 @@ bool BFS(mapState &root) //TODO: optimalize (throws bad_alloc when difficulty of
 	list<string> visited;
 	stateQueue.push(&root);
 	visited.push_back(root.id);
-	while (!stateQueue.empty())
+	while (!stateQueue.empty() || steps < 100000)
 	{
 		currentState = stateQueue.front();
 		stateQueue.pop();
@@ -465,10 +460,10 @@ bool BFS(mapState &root) //TODO: optimalize (throws bad_alloc when difficulty of
 					tmp = currentState->parent;
 					currentState = tmp;
 					path++;
-					steps++;
+					//steps++;
 				} while (!currentState->riddleState.operator==(root.riddleState));
 			}
-			std::cout << "Riddle solved using " << steps << " steps." << endl;
+			std::cout << "BFS - Riddle solved using " << steps << " steps." << endl;
 			std::cout << "Shortest path counts " << path << " steps." << endl;
 			isSolved = true;
 			visited.clear();
@@ -489,6 +484,9 @@ bool BFS(mapState &root) //TODO: optimalize (throws bad_alloc when difficulty of
 				{
 					mapState* newState = new mapState();
 					mapState* oldState = new mapState();
+
+					pointers.push_back(newState);
+					pointers.push_back(oldState);
 
 					oldState = currentState;
 					DecodeRiddle(currentState->riddleState);
@@ -519,6 +517,7 @@ bool ASTAR(mapState &root)
 	unsigned int steps = 0;
 	priority_queue<mapState*, std::vector<mapState*>, mapStateCompare> stateQueue;
 	mapState* currentState;
+	vector<mapState*> pointersLocal;
 	list<string> visited;
 	stateQueue.push(&root);
 	visited.push_back(root.id);
@@ -543,17 +542,26 @@ bool ASTAR(mapState &root)
 					tmp = currentState->parent;
 					currentState = tmp;
 					path++;
-					steps++;
+					//steps++;
 				} while (!currentState->riddleState.operator==(root.riddleState));
 			}
-			std::cout << "Riddle solved using " << steps << " steps." << endl;
+			std::cout << "A* - Riddle solved using " << steps << " steps." << endl;
 			std::cout << "Shortest path counts " << path << " steps." << endl;
 			isSolved = true;
-			visited.clear();
+			while (!visited.empty())
+			{
+				visited.pop_back();
+			}
 			while (!stateQueue.empty())
 			{
 				stateQueue.pop();
 			}
+			for (int i = 0; i < pointersLocal.size(); ++i)
+			{
+				if (pointersLocal.at(i) != nullptr)
+					delete pointersLocal.at(i);
+			}
+
 			return true;
 		}
 		else
@@ -567,6 +575,9 @@ bool ASTAR(mapState &root)
 				{
 					mapState* newState = new mapState();
 					mapState* oldState = new mapState();
+
+					pointersLocal.push_back(newState);
+					pointersLocal.push_back(oldState);
 
 					oldState = currentState;
 					DecodeRiddle(currentState->riddleState);
@@ -582,7 +593,7 @@ bool ASTAR(mapState &root)
 
 					SetDistances(newState->distances);
 					SetWeight(*newState, newState->distances);
-					newState->weight += currentState->weight + 1;
+					newState->weight += oldState->weight + 1;
 
 					if (!Contains(&visited, newState->id))
 					{
@@ -602,7 +613,11 @@ int main(int argc, char* argv[])
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	srand(time(NULL));
-	if (!GenerateRiddle(20))
+	int difficulty = 0;
+	cout << "Set maximum depth: " << endl;
+	cin >> difficulty;
+
+	if (!GenerateRiddle(difficulty))
 		return 0;
 
 	int direction;
@@ -610,26 +625,49 @@ int main(int argc, char* argv[])
 	ShowMatrix();
 	cout << endl;
 	GetNeighbours(state.emptyI, state.emptyJ, state.neighbours);
-	mapState state0;
+	mapState state0, state1;
 	state.riddleState = CodeRiddle();
 	SetDistances(state.distances);
 	state0 = state;
 
+	clock_t startTime = std::clock();
+	cout << "A* processing..." << endl;
 	if (!ASTAR(state))
 	{
 		std::cout << "Something went wrong" << endl;
 	}
+	cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n";
+
 	//ShowMatrix();
 
 	cout << endl;
 
 	state = state0;
 	DecodeRiddle(state0.riddleState);
-	ShowMatrix();
 
+	startTime = std::clock();
+	cout << "BFS processing..." << endl;
 	if (!BFS(state))
 	{
 		std::cout << "Something went wrong" << endl;
+	}
+	cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n\n";
+
+	state = state0;
+	DecodeRiddle(state0.riddleState);
+
+	startTime = std::clock();
+	cout << "DFS processing..." << endl;
+	if (!DFS(state))
+	{
+		std::cout << "Something went wrong" << endl;
+	}
+	cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms";
+
+	for (int i = 0; i < pointers.size(); ++i)
+	{
+		if (pointers.at(i) != nullptr)
+			delete pointers.at(i);
 	}
 
 	cout << endl;
