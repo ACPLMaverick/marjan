@@ -58,6 +58,8 @@ unsigned int Renderer::Initialize()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
+	glfwSwapInterval(CSSET_VSYNC_ENALBED);
+
 	return err;
 }
 
@@ -92,6 +94,11 @@ unsigned int Renderer::Run()
 	glfwPollEvents();
 
 	return err;
+}
+
+GLuint Renderer::GetCurrentShaderID()
+{
+	return m_shaderID;
 }
 
 GLuint Renderer::LoadShaders(const char* vertexFilePath, const char* fragmentFilePath)

@@ -35,5 +35,7 @@ public:
 	unsigned int Initialize();
 	unsigned int Shutdown();
 	unsigned int Run();
+
+	GLuint GetCurrentShaderID();
 };
 
