@@ -8,6 +8,8 @@
 #include "Common.h"
 #include "SimObject.h"
 #include "Camera.h"
+#include "LightAmbient.h"
+#include "LightDirectional.h"
 
 #include <string>
 #include <vector>
@@ -18,6 +20,9 @@ class Scene
 {
 protected:
 	string m_name;
+
+	LightAmbient* m_lAmbient;
+	vector<LightDirectional*> m_lDirectionals;
 
 	vector<SimObject*> m_objects;
 	vector<Camera*> m_cameras;
@@ -37,14 +42,23 @@ public:
 	unsigned int GetCurrentObjectID();
 	unsigned int GetCurrentCameraID();
 
+	void SetAmbientLight(LightAmbient*);
+	void SetAmbientLightDestroyCurrent(LightAmbient*);
+	void AddDirectionalLight(LightDirectional*);
 	void AddObject(SimObject*);
 	void AddCamera(Camera*);
 
+	void RemoveAmbientLight();
+	void RemoveDirectionalLight(LightDirectional*);
+	void RemoveDirectionalLight(unsigned int);
 	void RemoveObject(SimObject*);
 	void RemoveCamera(Camera*);
 	void RemoveObject(unsigned int);
 	void RemoveCamera(unsigned int);
 
+	LightAmbient* GetAmbientLight();
+	LightDirectional* GetLightDirectional(unsigned int);
+	unsigned int GetLightDirectionalCount();
 	SimObject* GetObject();
 	Camera* GetCamera();
 	SimObject* GetObject(unsigned int);

@@ -34,6 +34,9 @@
     <Filter Include="Core\Scenes">
       <UniqueIdentifier>{00263472-e6c8-4abf-b590-be11aba6d01c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Components">
+      <UniqueIdentifier>{64780c45-1899-487a-913a-7ffd875a3bc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -50,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="System.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsSettings.h">
-      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Core</Filter>
@@ -83,6 +83,24 @@
     </ClInclude>
     <ClInclude Include="MeshGLRect.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="LightAmbient.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="LightDirectional.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateMe.h">
+      <Filter>Core\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SimController.h">
+      <Filter>Core\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +145,21 @@
     </ClCompile>
     <ClCompile Include="MeshGLRect.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LightAmbient.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LightDirectional.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateMe.cpp">
+      <Filter>Core\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SimController.cpp">
+      <Filter>Core\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

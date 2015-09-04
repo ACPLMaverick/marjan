@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Common.h"
-#include "GraphicsSettings.h"
+#include "Settings.h"
 #include "System.h"
 
 #include <GL\glew.h>
@@ -38,5 +38,6 @@ public:
 	unsigned int Run();
 
 	GLuint GetCurrentShaderID();
+	GLFWwindow* GetWindow();
 };
 

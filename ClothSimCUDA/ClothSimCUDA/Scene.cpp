@@ -4,6 +4,9 @@
 Scene::Scene(string n)
 {
 	m_name = n;
+
+	m_lAmbient = nullptr;
+
 	m_currentObjectID = 0;
 	m_currentCameraID = 0;
 }
@@ -20,6 +23,14 @@ Scene::~Scene()
 unsigned int Scene::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
+
+	delete m_lAmbient;
+
+	for (vector<LightDirectional*>::iterator it = m_lDirectionals.begin(); it != m_lDirectionals.end(); ++it)
+	{
+		delete (*it);
+	}
+	m_lDirectionals.clear();
 
 	for (vector<SimObject*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
@@ -58,6 +69,14 @@ unsigned int Scene::Update()
 			return err;
 	}
 
+	for (vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	{
+		err = (*it)->Update();
+
+		if (err != CS_ERR_NONE)
+			return err;
+	}
+
 	return CS_ERR_NONE;
 }
 
@@ -88,7 +107,24 @@ unsigned int Scene::GetCurrentCameraID()
 	return m_currentCameraID;
 }
 
+void Scene::SetAmbientLight(LightAmbient* amb)
+{
+	m_lAmbient = amb;
+}
 
+void Scene::SetAmbientLightDestroyCurrent(LightAmbient* amb)
+{
+	if (m_lAmbient != nullptr)
+	{
+		delete m_lAmbient;
+	}
+	m_lAmbient = amb;
+}
+
+void Scene::AddDirectionalLight(LightDirectional* dir)
+{
+	m_lDirectionals.push_back(dir);
+}
 
 void Scene::AddObject(SimObject* obj)
 {
@@ -101,6 +137,36 @@ void Scene::AddCamera(Camera* cam)
 }
 
 
+void Scene::RemoveAmbientLight()
+{
+	delete m_lAmbient;
+	m_lAmbient = nullptr;
+}
+
+void Scene::RemoveDirectionalLight(LightDirectional* ptr)
+{
+	for (vector<LightDirectional*>::iterator it = m_lDirectionals.begin(); it != m_lDirectionals.end(); ++it)
+	{
+		if (ptr == (*it))
+		{
+			m_lDirectionals.erase(it);
+			break;
+		}
+	}
+}
+
+void Scene::RemoveDirectionalLight(unsigned int which)
+{
+	unsigned int ctr = 0;
+	for (vector<LightDirectional*>::iterator it = m_lDirectionals.begin(); it != m_lDirectionals.end(); ++it, ++ctr)
+	{
+		if (ctr == which)
+		{
+			m_lDirectionals.erase(it);
+			break;
+		}
+	}
+}
 
 void Scene::RemoveObject(SimObject* ptr)
 {
@@ -129,7 +195,7 @@ void Scene::RemoveCamera(Camera* ptr)
 void Scene::RemoveObject(unsigned int which)
 {
 	int ctr = 0;
-	for (vector<SimObject*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
+	for (vector<SimObject*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it, ++ctr)
 	{
 		if (ctr == which)
 		{
@@ -142,7 +208,7 @@ void Scene::RemoveObject(unsigned int which)
 void Scene::RemoveCamera(unsigned int which)
 {
 	int ctr = 0;
-	for (vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	for (vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it, ++ctr)
 	{
 		if (ctr == which)
 		{
@@ -153,6 +219,23 @@ void Scene::RemoveCamera(unsigned int which)
 }
 
 
+LightAmbient* Scene::GetAmbientLight()
+{
+	return m_lAmbient;
+}
+
+LightDirectional* Scene::GetLightDirectional(unsigned int which)
+{
+	if (which < m_lDirectionals.size())
+		return m_lDirectionals.at(which);
+	else
+		return nullptr;
+}
+
+unsigned int Scene::GetLightDirectionalCount()
+{
+	return m_lDirectionals.size();
+}
 
 SimObject* Scene::GetObject()
 {
@@ -166,14 +249,16 @@ Camera* Scene::GetCamera()
 
 SimObject* Scene::GetObject(unsigned int which)
 {
-	if (m_objects.size() < which)
+	if (which < m_objects.size())
+		return m_objects.at(which);
+	else
 		return nullptr;
-	return m_objects.at(which);
 }
 
 Camera* Scene::GetCamera(unsigned int which)
 {
-	if (m_cameras.size() < which)
+	if (which < m_cameras.size())
+		return m_cameras.at(which);
+	else
 		return nullptr;
-	return m_cameras.at(which);
 }

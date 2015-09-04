@@ -103,6 +103,7 @@ unsigned int System::Run()
 	while (m_running)
 	{
 		// update input
+		InputManager::GetInstance()->Run();
 
 		// update gui
 
@@ -120,6 +121,10 @@ unsigned int System::Run()
 	return err;
 }
 
+void System::Stop()
+{
+	m_running = false;
+}
 
 
 Scene* System::GetCurrentScene()

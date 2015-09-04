@@ -96,7 +96,7 @@ void Camera::CalculateViewProjection()
 	(*m_viewMatrix) = glm::lookAt(*m_position, *m_target, *m_up);
 	(*m_viewProjMatrix) = (*m_projMatrix) * (*m_viewMatrix);
 
-	(*m_direction) = glm::normalize((*m_position) - (*m_target));
+	(*m_direction) = glm::normalize((*m_target) - (*m_position));
 	(*m_right) = glm::normalize(glm::cross(*m_direction, *m_up));
 }
 

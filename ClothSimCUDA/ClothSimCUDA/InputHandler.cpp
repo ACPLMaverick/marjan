@@ -31,3 +31,14 @@ void InputHandler::DestroyInstance()
 	if (InputHandler::instance != nullptr)
 		delete InputHandler::instance;
 }
+
+
+
+bool InputHandler::ExitPressed()
+{
+	if (InputManager::GetInstance()->GetKey(GLFW_KEY_ESCAPE))
+	{
+		return true;
+	}
+	else return false;
+}

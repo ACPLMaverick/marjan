@@ -6,6 +6,7 @@ SimObject::SimObject()
 	m_name = "";
 	m_id = -1;
 	m_visible = true;
+	m_transform = nullptr;
 }
 
 SimObject::SimObject(const SimObject*)
@@ -19,8 +20,6 @@ SimObject::~SimObject()
 
 unsigned int SimObject::Initialize(string name)
 {
-	m_transform = nullptr;
-
 	m_name = name;
 	hash<string> h = hash<string>();
 	m_id = h(m_name);
@@ -48,7 +47,9 @@ unsigned int SimObject::Shutdown()
 	}
 	m_components.clear();
 
-	err = m_transform->Shutdown();
+	if (m_transform != nullptr)
+		err = m_transform->Shutdown();
+
 	if (err != CS_ERR_NONE) return err;
 	delete m_transform;
 
@@ -65,7 +66,9 @@ unsigned int SimObject::Update()
 		if (err != CS_ERR_NONE) return err;
 	}
 
-	err = m_transform->Update();
+	if (m_transform != nullptr)
+		err = m_transform->Update();
+
 	if (err != CS_ERR_NONE) return err;
 
 	return CS_ERR_NONE;
@@ -141,7 +144,7 @@ void SimObject::RemoveMesh(Mesh* ptr)
 void SimObject::RemoveComponent(int which)
 {
 	int ctr = 0;
-	for (vector<Component*>::iterator it = m_components.begin(); it != m_components.end(); ++it)
+	for (vector<Component*>::iterator it = m_components.begin(); it != m_components.end(); ++it, ++ctr)
 	{
 		if (ctr == which)
 		{

@@ -54,13 +54,13 @@ unsigned int Transform::Shutdown()
 	if (m_worldMatrix != nullptr)
 		delete m_worldMatrix;
 	if (m_worldInverseTransposeMatrix != nullptr)
-		delete m_worldMatrix;
+		delete m_worldInverseTransposeMatrix;
 	if (m_position != nullptr)
-		delete m_worldMatrix;
+		delete m_position;
 	if (m_rotation != nullptr)
-		delete m_worldMatrix;
+		delete m_rotation;
 	if (m_scale != nullptr)
-		delete m_worldMatrix;
+		delete m_scale;
 
 	return CS_ERR_NONE;
 }
@@ -167,7 +167,7 @@ void Transform::SetScale(glm::vec3* newScl)
 {
 	for (int i = 0; i < 3; ++i)
 	{
-		(*m_rotation)[i] = (*newScl)[i];
+		(*m_scale)[i] = (*newScl)[i];
 	}
 
 	m_isWorldMatrixDirty = true;

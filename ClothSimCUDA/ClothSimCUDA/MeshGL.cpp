@@ -89,12 +89,35 @@ unsigned int MeshGL::Draw()
 	glUniformMatrix4fv(id_world, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldMatrix())[0][0]);
 	glUniformMatrix4fv(id_worldInvTrans, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldInverseTransposeMatrix())[0][0]);
 
-	glm::vec4 tempEye = glm::vec4((*System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection()), 1.0f);
-	glUniform4f(id_eyeVector, tempEye.x, tempEye.y, tempEye.z, tempEye.w);
+	glm::vec3* tempEye = System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection();
+	glUniform4f(id_eyeVector, -tempEye->x, -tempEye->y, -tempEye->z, 1.0f);
 
 	// here we will set up light from global lighting in the scene
+	if (System::GetInstance()->GetCurrentScene()->GetAmbientLight() != nullptr)
+	{
+		LightAmbient* amb = System::GetInstance()->GetCurrentScene()->GetAmbientLight();
+		glm::vec3* diff = amb->GetDiffuseColor();
+		glUniform4f(id_lightAmb, diff->x, diff->y, diff->z, 1.0f);
+	}
+
+	if (System::GetInstance()->GetCurrentScene()->GetLightDirectionalCount() > 0 )
+	{
+		LightDirectional* firstDiff = System::GetInstance()->GetCurrentScene()->GetLightDirectional(0);
+		if (firstDiff != nullptr)
+		{
+			glm::vec3 *d, *s;
+			d = firstDiff->GetDiffuseColor();
+			s = firstDiff->GetSpecularColor();
+			glm::vec3* dir = firstDiff->GetDirection();
+			glUniform4f(id_lightDiff, d->x, d->y, d->z, 1.0f);
+			glUniform4f(id_lightSpec, s->x, s->y, s->z, 1.0f);
+			glUniform4f(id_lightDir, dir->x, dir->y, dir->z, 1.0f);
+		}
+		
+	}
 	// here we will set up highlight?
 	// here we will set up glossiness
+	glUniform1f(id_gloss, 100.0f);
 
 	// here we will set up texture?
 

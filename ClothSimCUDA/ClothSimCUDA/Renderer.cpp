@@ -113,10 +113,19 @@ unsigned int Renderer::Run()
 	return err;
 }
 
+
+
 GLuint Renderer::GetCurrentShaderID()
 {
 	return m_shaderID;
 }
+
+GLFWwindow* Renderer::GetWindow()
+{
+	return m_window;
+}
+
+
 
 GLuint Renderer::LoadShaders(const char* vertexFilePath, const char* fragmentFilePath)
 {

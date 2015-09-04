@@ -11,8 +11,6 @@ in vec2 UV;
 out vec4 color;
 
 // uniform sampler2D sampler;
-// uniform mat4 mvpMatrix;
-// uniform mat4 modelMatrix;
 uniform vec4 EyeVector;
 uniform vec4 LightDir;
 uniform vec4 LightDiff;
@@ -23,16 +21,18 @@ uniform float Gloss;
 
 void main()
 {
-	// vec3 eyeP = normalize(modelPos - eyeVector.xyz);
-	// vec4 vertexColor = vec4(fragmentColor.xyz, 1.0f);
-	// vec4 tempColor = clamp(texture(sampler, UV)*vertexColor, 0.0f, 1.0f);
-	// float lightPower = clamp(dot(-(lightDirection).xyz, normal), 0.0f, 1.0f);
-	// vec3 diff = POWER_CORRECTION * lightPower * lightDiffuse.xyz * highlight.xyz;
+	vec4 finalColor = Vcol;
+	vec3 normal = normalize(Normal);
+	
+	float lightPower = clamp(dot((LightDir).xyz, normal), 0.0f, 1.0f);
+	finalColor.xyz *= lightPower;
+	finalColor.xyz *= LightDiff.xyz;
 
-	// vec3 r = normalize(reflect(-lightDirection.xyz, normal));
-	// float spec = max(0.0f, dot(eyeP, r));
-	// vec3 specFinal = POWER_CORRECTION * lightSpecular.xyz * lightPower * pow(spec, glossiness) * tempColor.a;
+	vec3 R = normalize(reflect(LightDir.xyz, normal));
+	float specGloss = max(0.0f, dot(EyeVector.xyz, R));
+	vec3 spec = LightSpec.xyz * lightPower * pow(specGloss, Gloss);
 
-	// color = clamp(((diff + POWER_CORRECTION * lightAmbient.rgb)*tempColor.xyz + specFinal), 0.0f, 1.0f);
-	color = Vcol;
+	finalColor.xyz += spec + LightAmb.xyz;
+
+	color = finalColor;
 }

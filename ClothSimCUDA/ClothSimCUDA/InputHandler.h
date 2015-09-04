@@ -17,5 +17,8 @@ public:
 
 	static InputHandler* GetInstance();
 	static void DestroyInstance();
+
+
+	bool ExitPressed();
 };
 

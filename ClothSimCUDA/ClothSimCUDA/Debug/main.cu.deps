@@ -384,7 +384,7 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\swprintf.inl
 d:\repositories\marjan\clothsimcuda\clothsimcuda\System.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Renderer.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\GraphicsSettings.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\Settings.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\GL\glew.h
 C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/glu.h
 C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winapifamily.h
@@ -566,7 +566,12 @@ c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\gtc\const
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\gtc\matrix_transform.inl
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\gtx\transform.inl
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Camera.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\LightAmbient.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\Light.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\LightDirectional.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\SceneTest.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\RotateMe.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\SimController.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\SceneSim.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.0\include\cuda_runtime.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.0\include\device_launch_parameters.h

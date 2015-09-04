@@ -6,6 +6,8 @@ This is an abstract representation of a Mesh rendered by OpenGL 3.3.
 
 #include "Mesh.h"
 #include "Renderer.h"
+#include "LightAmbient.h"
+#include "LightDirectional.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>

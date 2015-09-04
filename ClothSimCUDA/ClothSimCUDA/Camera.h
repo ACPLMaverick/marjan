@@ -7,7 +7,7 @@
 */
 
 #include "Common.h"
-#include "GraphicsSettings.h"
+#include "Settings.h"
 #include "Component.h"
 
 #include <glm\glm\glm.hpp>

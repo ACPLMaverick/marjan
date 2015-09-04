@@ -4,6 +4,8 @@
 	This scene is used only for testing.
 */
 #include "Scene.h"
+#include "RotateMe.h"
+#include "SimController.h"
 
 class SceneTest :
 	public Scene
