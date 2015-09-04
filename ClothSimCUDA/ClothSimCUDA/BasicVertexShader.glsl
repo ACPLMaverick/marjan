@@ -1,25 +1,29 @@
 #version 400 core
 
-layout(location = 0) in vec3 vertexPosition_modelspace;
-layout(location = 1) in vec3 vertexColor;
-layout(location = 2) in vec2 vertexUV;
-layout(location = 3) in vec3 vertexNormal;
-uniform mat4 mvpMatrix;
-uniform mat4 modelMatrix;
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec2 vertexUV;
+layout(location = 2) in vec3 vertexNormal;
+layout(location = 3) in vec4 vertexColor;
 
-out vec3 modelPos;
-out vec3 fragmentColor;
+uniform mat4 WorldViewProj;
+uniform mat4 World;
+uniform mat4 WorldInvTrans;
+
+out vec4 ProjPos;
+out vec4 WorldPos;
+out vec4 Vcol;
+out vec3 Normal;
 out vec2 UV;
-out vec3 normal;
-out vec4 lightDiff;
 
 void main()
 {
-	vec4 v = vec4(vertexPosition_modelspace, 1.0f);
-	modelPos = vec3(vec4(vertexPosition_modelspace, 1.0f) * modelMatrix);
-	gl_Position = mvpMatrix * v;
-	fragmentColor = vertexColor;
+	vec4 v = vec4(vertexPosition, 1.0f);
+	gl_Position = WorldViewProj * v;
+
+	ProjPos = v * WorldViewProj;
+	WorldPos = v * World;
+
+	Vcol = vertexColor;
 	UV = vertexUV;
-	normal = vertexNormal;
-	//normal = vec3(vec4(vertexNormal, 1.0f) * modelMatrix);
+	Normal = normalize(vec3((vec4(vertexNormal, 1.0f) * WorldInvTrans)));
 }

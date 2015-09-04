@@ -10,10 +10,8 @@
 int main()
 {
 	int error;
-
-	System sys = System::GetInstance();
 	
-	error = sys.Initialize();
+	error = System::GetInstance()->Initialize();
 
 	if (error != CS_ERR_NONE)
 	{
@@ -24,7 +22,7 @@ int main()
 		return error;
 	}
 
-	error = sys.Run();
+	error = System::GetInstance()->Run();
 
 	if (error != CS_ERR_NONE)
 	{
@@ -35,7 +33,7 @@ int main()
 		return error;
 	}
 
-	error = sys.Shutdown();
+	error = System::GetInstance()->Shutdown();
 
 	if (error != CS_ERR_NONE)
 	{

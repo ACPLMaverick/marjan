@@ -4,10 +4,13 @@
 	This class encapsulates all data needed to generate world matrix for specified SimObject
 */
 
+#include "SimObject.h"
 #include "Component.h"
 
 #include <glm\glm\glm.hpp>
 #include <glm\glm\gtx\transform.hpp>
+
+class SimObject;
 
 class Transform : public Component
 {

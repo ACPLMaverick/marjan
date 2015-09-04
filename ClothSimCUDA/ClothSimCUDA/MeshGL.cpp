@@ -82,7 +82,84 @@ unsigned int MeshGL::Shutdown()
 
 unsigned int MeshGL::Draw()
 {
+	glm::mat4 wvp = (*System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewProjMatrix()) * 
+		(* m_obj->GetTransform()->GetWorldMatrix());
 
+	glUniformMatrix4fv(id_worldViewProj, 1, GL_FALSE, &wvp[0][0]);
+	glUniformMatrix4fv(id_world, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldMatrix())[0][0]);
+	glUniformMatrix4fv(id_worldInvTrans, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldInverseTransposeMatrix())[0][0]);
+
+	glm::vec4 tempEye = glm::vec4((*System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection()), 1.0f);
+	glUniform4f(id_eyeVector, tempEye.x, tempEye.y, tempEye.z, tempEye.w);
+
+	// here we will set up light from global lighting in the scene
+	// here we will set up highlight?
+	// here we will set up glossiness
+
+	// here we will set up texture?
+
+	//////////////////////////////////////////
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
+	glVertexAttribPointer(
+		0,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
+	glVertexAttribPointer(
+		1,
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->normalBuffer);
+	glVertexAttribPointer(
+		2,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->colorBuffer);
+	glVertexAttribPointer(
+		3,
+		4,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);
+
+
+	glDrawElements(
+		GL_TRIANGLES,
+		m_vertexData->data->indexCount,
+		GL_UNSIGNED_INT,
+		(void*)0
+		);
+
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(3);
 
 	return CS_ERR_NONE;
 }
@@ -98,4 +175,18 @@ void MeshGL::UpdateShaderIDs(unsigned int shaderID)
 	id_lightSpec = glGetUniformLocation(shaderID, "LightSpec");
 	id_lightAmb = glGetUniformLocation(shaderID, "LightAmb");
 	id_gloss = glGetUniformLocation(shaderID, "Gloss");
+}
+
+
+
+void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount)
+{
+	m_vertexData->data->vertexCount = vCount;
+	m_vertexData->data->indexCount = iCount;
+
+	m_vertexData->data->positionBuffer = new glm::vec3[m_vertexData->data->vertexCount];
+	m_vertexData->data->indexBuffer = new unsigned int[m_vertexData->data->indexCount];		// ?
+	m_vertexData->data->uvBuffer = new glm::vec2[m_vertexData->data->vertexCount];
+	m_vertexData->data->normalBuffer = new glm::vec3[m_vertexData->data->vertexCount];
+	m_vertexData->data->colorBuffer = new glm::vec4[m_vertexData->data->vertexCount];
 }

@@ -5,11 +5,13 @@ This class represents an abstraction of a single drawable mesh.
 */
 
 #include "Common.h"
-#include "Component.h"
 #include "SimObject.h"
+#include "Component.h"
 
 #include <vector>
 
+class SimObject;
+class Component;
 
 class Mesh : public Component
 {

@@ -54,11 +54,28 @@ unsigned int Renderer::Initialize()
 
 	m_shaderID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
 
+
+	//////////// options go here
+
 	glClearColor(CSSET_CLEAR_COLORS[0], CSSET_CLEAR_COLORS[1], CSSET_CLEAR_COLORS[2], CSSET_CLEAR_COLORS[3]);
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
 
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glFrontFace(GL_CCW);
+
+	glEnable(GL_STENCIL);
+	glStencilFunc(GL_LEQUAL, 0, 0xFF);
+	glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	glDepthFunc(GL_LESS);
+	
 	glfwSwapInterval(CSSET_VSYNC_ENALBED);
+
+	/////////////////////////
 
 	return err;
 }
@@ -87,7 +104,7 @@ unsigned int Renderer::Run()
 	glUseProgram(m_shaderID);
 
 	// here comes the drawing
-
+	System::GetInstance()->GetCurrentScene()->Draw();
 	//////
 
 	glfwSwapBuffers(m_window);

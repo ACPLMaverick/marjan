@@ -28,9 +28,9 @@ unsigned int Camera::Initialize()
 	m_projMatrix = new glm::mat4();
 	m_viewProjMatrix = new glm::mat4();
 	
-	m_position = new glm::vec3(0.0f, 0.0f, -10.0f);
+	m_position = new glm::vec3(0.0f, 0.0f, 10.0f);
 	m_target = new glm::vec3();
-	m_up = new glm::vec3();
+	m_up = new glm::vec3(0.0f, 1.0f, 0.0f);
 	
 	m_direction = new glm::vec3();
 	m_right = new glm::vec3();
@@ -94,10 +94,10 @@ void Camera::CalculateProjection()
 void Camera::CalculateViewProjection()
 {
 	(*m_viewMatrix) = glm::lookAt(*m_position, *m_target, *m_up);
-	(*m_viewProjMatrix) = (*m_viewMatrix) * (*m_projMatrix);
+	(*m_viewProjMatrix) = (*m_projMatrix) * (*m_viewMatrix);
 
-	(*m_direction) = (*m_position) - (*m_target);
-	(*m_right) = glm::cross(*m_direction, *m_up);
+	(*m_direction) = glm::normalize((*m_position) - (*m_target));
+	(*m_right) = glm::normalize(glm::cross(*m_direction, *m_up));
 }
 
 

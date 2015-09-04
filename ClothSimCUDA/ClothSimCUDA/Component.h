@@ -4,7 +4,7 @@
 	Component.
 */
 
-#include "SimObject.h"
+class SimObject;
 
 class Component
 {

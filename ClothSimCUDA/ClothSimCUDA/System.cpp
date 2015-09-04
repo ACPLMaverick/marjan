@@ -49,6 +49,9 @@ unsigned int System::Initialize()
 	InputHandler::GetInstance();
 
 	// initializing scene and objects
+	m_scene = new SceneTest("SceneTest");
+	err = m_scene->Initialize();
+	if (err != CS_ERR_NONE) return err;
 
 	// initializing gui
 
@@ -79,6 +82,8 @@ unsigned int System::Shutdown()
 	InputHandler::DestroyInstance();
 
 	// shutting down scene and objects
+	err = m_scene->Shutdown();
+	if (err != CS_ERR_NONE) return err;
 
 	// shutting down gui
 
@@ -99,7 +104,10 @@ unsigned int System::Run()
 	{
 		// update input
 
-		// update camera & gui
+		// update gui
+
+		// update scene
+		m_scene->Update();
 
 		// compute cloth physics
 
@@ -112,3 +120,9 @@ unsigned int System::Run()
 	return err;
 }
 
+
+
+Scene* System::GetCurrentScene()
+{
+	return m_scene;
+}

@@ -13,6 +13,11 @@
 #include "Renderer.h"
 #include "InputManager.h"
 #include "InputHandler.h"
+#include "Scene.h"
+#include "SceneTest.h"
+#include "SceneSim.h"
+
+class Renderer;
 
 class System
 {
@@ -21,6 +26,8 @@ private:
 	System();
 
 	bool m_running;
+
+	Scene* m_scene;
 public:
 	System(const System*);
 	~System();
@@ -31,5 +38,7 @@ public:
 	unsigned int Initialize();
 	unsigned int Shutdown();
 	unsigned int Run();
+
+	Scene* GetCurrentScene();
 };
 

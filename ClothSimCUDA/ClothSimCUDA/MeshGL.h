@@ -26,7 +26,7 @@ struct Vertex
 struct VertexDataRaw
 {
 	glm::vec3* positionBuffer;
-	glm::vec3* uvBuffer;
+	glm::vec2* uvBuffer;
 	glm::vec3* normalBuffer;
 	glm::vec4* colorBuffer;
 	(unsigned int)* indexBuffer;
@@ -125,6 +125,7 @@ protected:
 	////
 
 	virtual void GenerateVertexData() = 0;
+	void CreateVertexDataBuffers(unsigned int, unsigned int);
 public:
 	MeshGL(SimObject*);
 	MeshGL(const MeshGL*);
