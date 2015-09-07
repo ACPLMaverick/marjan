@@ -41,10 +41,10 @@ unsigned int SceneTest::Initialize()
 	triangle->Initialize();
 	testObj->AddMesh(triangle);
 
-	RotateMe* rm = new RotateMe(testObj);
+	/*RotateMe* rm = new RotateMe(testObj);
 	rm->Initialize();
 	rm->SetRotation(&(glm::vec3(0.0f, 0.00003f, 0.0f)));
-	testObj->AddComponent(rm);
+	testObj->AddComponent(rm);*/
 
 	m_objects.push_back(testObj);
 

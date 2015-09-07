@@ -68,6 +68,23 @@ unsigned int InputManager::Run()
 	m_mouseData.mouseX = mx;
 	m_mouseData.mouseY = my;
 
+	if (m_mouseData.scroll != m_scrollHelper)
+	{
+		if (m_mouseData.scroll > m_scrollHelper)
+		{
+			m_mouseData.scrollRelative = 1;
+		}
+		else
+		{
+			m_mouseData.scrollRelative = -1;
+		}
+		m_scrollHelper = m_mouseData.scroll;
+	}
+	else
+	{
+		m_mouseData.scrollRelative = 0;
+	}
+
 	return err;
 }
 
@@ -102,5 +119,4 @@ void InputManager::MouseScrollCallback(GLFWwindow* window, double x, double y)
 {
 	int value = (int)y;
 	instance->m_mouseData.scroll += value;
-	instance->m_mouseData.scrollRelative += value;
 }

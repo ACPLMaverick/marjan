@@ -8,9 +8,12 @@
 #include "Component.h"
 #include "InputHandler.h"
 
+
 class SimController :
 	public Component
 {
+private:
+	bool cursorHideHelper = false;
 public:
 	SimController(SimObject* obj);
 	SimController(const SimController*);

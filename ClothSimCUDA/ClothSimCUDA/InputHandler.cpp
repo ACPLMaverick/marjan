@@ -42,3 +42,56 @@ bool InputHandler::ExitPressed()
 	}
 	else return false;
 }
+
+glm::vec2 InputHandler::GetCursorPosition()
+{
+	glm::vec2 pos;
+	MouseData* m = InputManager::GetInstance()->GetMouseData();
+
+	pos.x = m->mouseX;
+	pos.y = m->mouseY;
+
+	return pos;
+}
+
+glm::vec2 InputHandler::GetCursorVector()
+{
+	glm::vec2 pos;
+	MouseData* m = InputManager::GetInstance()->GetMouseData();
+
+	pos.x = m->mouseXRelative;
+	pos.y = m->mouseYRelative;
+
+	return pos;
+}
+
+int InputHandler::GetZoomValue()
+{
+	MouseData* m = InputManager::GetInstance()->GetMouseData();
+	return m->scrollRelative;
+}
+
+bool InputHandler::ActionButtonPressed()
+{
+	return InputManager::GetInstance()->GetKey(GLFW_MOUSE_BUTTON_LEFT);
+}
+
+bool InputHandler::ActionButtonClicked()
+{
+	return false;
+}
+
+bool InputHandler::CameraRotateButtonPressed()
+{
+	return InputManager::GetInstance()->GetKey(GLFW_MOUSE_BUTTON_RIGHT);
+}
+
+bool InputHandler::CameraMoveButtonPressed()
+{
+	return InputManager::GetInstance()->GetKey(GLFW_MOUSE_BUTTON_MIDDLE);
+}
+
+bool InputHandler::WireframeButtonClicked()
+{
+	return InputManager::GetInstance()->GetKey(GLFW_KEY_W);
+}

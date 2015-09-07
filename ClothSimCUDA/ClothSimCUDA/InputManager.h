@@ -29,6 +29,7 @@ protected:
 	InputManager();
 
 	MouseData m_mouseData;
+	int m_scrollHelper = 0;
 
 	static void MouseScrollCallback(GLFWwindow*, double, double);
 public:
