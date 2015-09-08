@@ -93,5 +93,5 @@ bool InputHandler::CameraMoveButtonPressed()
 
 bool InputHandler::WireframeButtonClicked()
 {
-	return InputManager::GetInstance()->GetKey(GLFW_KEY_W);
+	return InputManager::GetInstance()->GetKeyDown(GLFW_KEY_W);
 }

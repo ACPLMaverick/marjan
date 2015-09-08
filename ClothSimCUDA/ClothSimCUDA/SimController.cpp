@@ -37,6 +37,17 @@ unsigned int SimController::Update()
 
 	///////////////////////////
 
+	// CHANIGNG DRAW MODE
+
+	if (InputHandler::GetInstance()->WireframeButtonClicked())
+	{
+		DrawMode m = Renderer::GetInstance()->GetDrawMode();
+		int newMode = (((int)m + 1) % 3);
+		Renderer::GetInstance()->SetDrawMode((DrawMode)newMode);
+	}
+
+	///////////////////////////
+
 	// ROTATING CAMERA
 
 	if (InputHandler::GetInstance()->CameraRotateButtonPressed())

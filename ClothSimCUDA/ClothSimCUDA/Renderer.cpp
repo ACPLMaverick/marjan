@@ -52,8 +52,13 @@ unsigned int Renderer::Initialize()
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK) return CS_ERR_GLEW_INITIALIZE_FAILED;
 
-	m_shaderID = LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl");
+	string nameBasic = "Basic";
+	string nameWf = "Wireframe";
+	LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl", &nameBasic);
+	LoadShaders("BasicVertexShader.glsl", "WireframeFragmentShader.glsl", &nameWf);
+	m_shaderID = m_shaders.at(0);
 
+	m_mode = BASIC;
 
 	//////////// options go here
 
@@ -70,8 +75,11 @@ unsigned int Renderer::Initialize()
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glLineWidth(8.0f);
+	glPointSize(5.0f);
 	
-	glDepthFunc(GL_LESS);
+	glDepthFunc(GL_LEQUAL);
 	
 	glfwSwapInterval(CSSET_VSYNC_ENALBED);
 
@@ -90,7 +98,7 @@ unsigned int Renderer::Shutdown()
 		m_window = nullptr;
 	}
 
-	glDeleteProgram(m_shaderID);
+	glDeleteProgram(m_shaderID.id);
 
 	return err;
 }
@@ -101,11 +109,31 @@ unsigned int Renderer::Run()
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glUseProgram(m_shaderID);
+	// Drawing models with basic shader
+	if (m_mode == BASIC || m_mode == BASIC_WIREFRAME)
+	{
+		m_shaderID = m_shaders.at(0);
+		glUseProgram(m_shaderID.id);
 
-	// here comes the drawing
-	System::GetInstance()->GetCurrentScene()->Draw();
-	//////
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		System::GetInstance()->GetCurrentScene()->Draw();
+	}
+
+	// Drawing wireframe
+	if (m_mode == WIREFRAME || m_mode == BASIC_WIREFRAME)
+	{
+		m_shaderID = m_shaders.at(1);
+		glUseProgram(m_shaderID.id);
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		System::GetInstance()->GetCurrentScene()->Draw();
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
+		System::GetInstance()->GetCurrentScene()->Draw();
+	}
 
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
@@ -113,11 +141,28 @@ unsigned int Renderer::Run()
 	return err;
 }
 
-
-
-GLuint Renderer::GetCurrentShaderID()
+void Renderer::SetDrawMode(DrawMode mode)
 {
-	return m_shaderID;
+	m_mode = mode;
+}
+
+
+
+ShaderID* Renderer::GetCurrentShaderID()
+{
+	return &m_shaderID;
+}
+
+ShaderID* Renderer::GetShaderIDByName(const string* name)
+{
+	for (vector<ShaderID>::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it)
+	{
+		if (it->name == *name)
+		{
+			return &(*it);
+		}
+	}
+	return nullptr;
 }
 
 GLFWwindow* Renderer::GetWindow()
@@ -125,9 +170,14 @@ GLFWwindow* Renderer::GetWindow()
 	return m_window;
 }
 
+DrawMode Renderer::GetDrawMode()
+{
+	return m_mode;
+}
 
 
-GLuint Renderer::LoadShaders(const char* vertexFilePath, const char* fragmentFilePath)
+
+ShaderID Renderer::LoadShaders(const char* vertexFilePath, const char* fragmentFilePath, const string* newName)
 {
 	GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -199,5 +249,33 @@ GLuint Renderer::LoadShaders(const char* vertexFilePath, const char* fragmentFil
 	glDeleteShader(vertexShaderID);
 	glDeleteShader(fragmentShaderID);
 
-	return ProgramID;
+	for (vector<ShaderID>::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it)
+	{
+		if ((*it).id == ProgramID)
+		{
+#ifdef _DEBUG
+			printf("Renderer WARNING: Shader with the same ID is already in database!\n");
+#endif
+			return (*it);
+		}
+	}
+
+	ShaderID n;
+	n.id = ProgramID;
+	n.name = (*newName);
+
+	n.id_worldViewProj = glGetUniformLocation(ProgramID, "WorldViewProj");
+	n.id_world = glGetUniformLocation(ProgramID, "World");
+	n.id_worldInvTrans = glGetUniformLocation(ProgramID, "WorldInvTrans");
+	n.id_eyeVector = glGetUniformLocation(ProgramID, "EyeVector");
+	n.id_lightDir = glGetUniformLocation(ProgramID, "LightDir");
+	n.id_lightDiff = glGetUniformLocation(ProgramID, "LightDiff");
+	n.id_lightSpec = glGetUniformLocation(ProgramID, "LightSpec");
+	n.id_lightAmb = glGetUniformLocation(ProgramID, "LightAmb");
+	n.id_gloss = glGetUniformLocation(ProgramID, "Gloss");
+	n.id_highlight = glGetUniformLocation(ProgramID, "Highlight");
+
+	m_shaders.push_back(n);
+
+	return n;
 }

@@ -28,7 +28,7 @@ void main()
 	finalColor.xyz *= lightPower;
 	finalColor.xyz *= LightDiff.xyz;
 
-	vec3 R = normalize(reflect(LightDir.xyz, normal));
+	vec3 R = normalize(reflect(LightDir.xyz, normalize(normal)));
 	float specGloss = max(0.0f, dot(EyeVector.xyz, R));
 	vec3 spec = LightSpec.xyz * lightPower * pow(specGloss, Gloss);
 

@@ -29,7 +29,5 @@ public:
 
 	virtual unsigned int Update() final;
 	virtual unsigned int Draw() = 0;
-
-	virtual void UpdateShaderIDs(unsigned int) = 0;
 };
 

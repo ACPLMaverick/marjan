@@ -58,6 +58,22 @@ unsigned int InputManager::Run()
 {
 	unsigned int err = CS_ERR_NONE;
 
+	// update pressed buttons removing
+	bool finished;
+	do
+	{
+		finished = true;
+		for (vector<int>::iterator it = m_pressed.begin(); it != m_pressed.end(); ++it)
+		{
+			if (!GetKey(*it))
+			{
+				m_pressed.erase(it);
+				finished = false;
+				break;
+			}
+		}
+	} while (!finished);
+
 	// update mouse
 	double mx, my;
 	glfwGetCursorPos(Renderer::GetInstance()->GetWindow(), &mx, &my);
@@ -88,6 +104,16 @@ unsigned int InputManager::Run()
 	return err;
 }
 
+bool InputManager::IsPressed(int code)
+{
+	for (vector<int>::iterator it = m_pressed.begin(); it != m_pressed.end(); ++it)
+	{
+		if (code == (*it))
+			return true;
+	}
+	return false;
+}
+
 bool InputManager::GetKey(int code)
 {
 	if (code > 7 )
@@ -96,13 +122,22 @@ bool InputManager::GetKey(int code)
 		return glfwGetMouseButton(Renderer::GetInstance()->GetWindow(), code);
 }
 
-bool InputManager::GetKeyDown(int)
+bool InputManager::GetKeyDown(int code)
 {
+	if (GetKey(code) && !IsPressed(code))
+	{
+		m_pressed.push_back(code);
+		return true;
+	}
 	return false;
 }
 
-bool InputManager::GetKeyUp(int)
+bool InputManager::GetKeyUp(int code)
 {
+	if (!GetKey(code) && IsPressed(code))
+	{
+		return true;
+	}
 	return false;
 }
 

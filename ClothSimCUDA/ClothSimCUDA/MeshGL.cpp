@@ -55,9 +55,6 @@ unsigned int MeshGL::Initialize()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->data->indexBuffer[0]) * m_vertexData->data->indexCount,
 		m_vertexData->data->indexBuffer, GL_STATIC_DRAW);
 
-	// obtaining IDs of Renderer's current shader
-	UpdateShaderIDs(Renderer::GetInstance()->GetCurrentShaderID());
-
 	return CS_ERR_NONE;
 }
 
@@ -85,19 +82,21 @@ unsigned int MeshGL::Draw()
 	glm::mat4 wvp = (*System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewProjMatrix()) * 
 		(* m_obj->GetTransform()->GetWorldMatrix());
 
-	glUniformMatrix4fv(id_worldViewProj, 1, GL_FALSE, &wvp[0][0]);
-	glUniformMatrix4fv(id_world, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldMatrix())[0][0]);
-	glUniformMatrix4fv(id_worldInvTrans, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldInverseTransposeMatrix())[0][0]);
+	ShaderID* ids = Renderer::GetInstance()->GetCurrentShaderID();
+
+	glUniformMatrix4fv(ids->id_worldViewProj, 1, GL_FALSE, &wvp[0][0]);
+	glUniformMatrix4fv(ids->id_world, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldMatrix())[0][0]);
+	glUniformMatrix4fv(ids->id_worldInvTrans, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldInverseTransposeMatrix())[0][0]);
 
 	glm::vec3* tempEye = System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection();
-	glUniform4f(id_eyeVector, -tempEye->x, -tempEye->y, -tempEye->z, 1.0f);
+	glUniform4f(ids->id_eyeVector, -tempEye->x, -tempEye->y, -tempEye->z, 1.0f);
 
 	// here we will set up light from global lighting in the scene
 	if (System::GetInstance()->GetCurrentScene()->GetAmbientLight() != nullptr)
 	{
 		LightAmbient* amb = System::GetInstance()->GetCurrentScene()->GetAmbientLight();
 		glm::vec3* diff = amb->GetDiffuseColor();
-		glUniform4f(id_lightAmb, diff->x, diff->y, diff->z, 1.0f);
+		glUniform4f(ids->id_lightAmb, diff->x, diff->y, diff->z, 1.0f);
 	}
 
 	if (System::GetInstance()->GetCurrentScene()->GetLightDirectionalCount() > 0 )
@@ -109,15 +108,15 @@ unsigned int MeshGL::Draw()
 			d = firstDiff->GetDiffuseColor();
 			s = firstDiff->GetSpecularColor();
 			glm::vec3* dir = firstDiff->GetDirection();
-			glUniform4f(id_lightDiff, d->x, d->y, d->z, 1.0f);
-			glUniform4f(id_lightSpec, s->x, s->y, s->z, 1.0f);
-			glUniform4f(id_lightDir, dir->x, dir->y, dir->z, 1.0f);
+			glUniform4f(ids->id_lightDiff, d->x, d->y, d->z, 1.0f);
+			glUniform4f(ids->id_lightSpec, s->x, s->y, s->z, 1.0f);
+			glUniform4f(ids->id_lightDir, dir->x, dir->y, dir->z, 1.0f);
 		}
 		
 	}
 	// here we will set up highlight?
 	// here we will set up glossiness
-	glUniform1f(id_gloss, 100.0f);
+	glUniform1f(ids->id_gloss, 100.0f);
 
 	// here we will set up texture?
 
@@ -186,20 +185,6 @@ unsigned int MeshGL::Draw()
 
 	return CS_ERR_NONE;
 }
-
-void MeshGL::UpdateShaderIDs(unsigned int shaderID)
-{
-	id_worldViewProj = glGetUniformLocation(shaderID, "WorldViewProj");
-	id_world = glGetUniformLocation(shaderID, "World");
-	id_worldInvTrans = glGetUniformLocation(shaderID, "WorldInvTrans");
-	id_eyeVector = glGetUniformLocation(shaderID, "EyeVector");
-	id_lightDir = glGetUniformLocation(shaderID, "LightDir");
-	id_lightDiff = glGetUniformLocation(shaderID, "LightDiff");
-	id_lightSpec = glGetUniformLocation(shaderID, "LightSpec");
-	id_lightAmb = glGetUniformLocation(shaderID, "LightAmb");
-	id_gloss = glGetUniformLocation(shaderID, "Gloss");
-}
-
 
 
 void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount)

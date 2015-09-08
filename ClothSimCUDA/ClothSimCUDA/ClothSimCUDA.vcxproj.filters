@@ -169,5 +169,8 @@
     <None Include="BasicVertexShader.glsl">
       <Filter>Graphics\Shaders</Filter>
     </None>
+    <None Include="WireframeFragmentShader.glsl">
+      <Filter>Graphics\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

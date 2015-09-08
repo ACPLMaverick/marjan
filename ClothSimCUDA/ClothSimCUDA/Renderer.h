@@ -15,17 +15,38 @@ using namespace std;
 
 class System;
 
+struct ShaderID
+{
+	int id;
+	string name;
+
+	int id_worldViewProj;
+	int id_world;
+	int id_worldInvTrans;
+	int id_eyeVector;
+	int id_lightDir;
+	int id_lightDiff;
+	int id_lightSpec;
+	int id_lightAmb;
+	int id_gloss;
+	int id_highlight;
+};
+
+enum DrawMode { BASIC, WIREFRAME, BASIC_WIREFRAME };
+
 class Renderer
 {
 protected:
 	static Renderer* instance;
 	Renderer();
 
+	DrawMode m_mode;
+
 	GLFWwindow* m_window;
-	GLuint m_shaderID;
+	ShaderID m_shaderID;
+	vector<ShaderID> m_shaders;
 
-
-	GLuint LoadShaders(const char* vertexFilePath, const char* fragmentFilePath);
+	ShaderID LoadShaders(const char*, const char*, const string*);
 public:
 	Renderer(const Renderer*);
 	~Renderer();
@@ -37,7 +58,11 @@ public:
 	unsigned int Shutdown();
 	unsigned int Run();
 
-	GLuint GetCurrentShaderID();
+	void SetDrawMode(DrawMode mode);
+
+	ShaderID* GetCurrentShaderID();
+	ShaderID* GetShaderIDByName(const string*);
 	GLFWwindow* GetWindow();
+	DrawMode GetDrawMode();
 };
 

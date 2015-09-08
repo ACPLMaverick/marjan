@@ -114,18 +114,6 @@ protected:
 	VertexData* m_vertexData;
 	Vertex* m_vertexArray;
 
-	// ids for shader
-	GLuint id_worldViewProj;
-	GLuint id_world;
-	GLuint id_worldInvTrans;
-	GLuint id_eyeVector;
-	GLuint id_lightDir;
-	GLuint id_lightDiff;
-	GLuint id_lightSpec;
-	GLuint id_lightAmb;
-	GLuint id_gloss;
-	////
-
 	virtual void GenerateVertexData() = 0;
 	void CreateVertexDataBuffers(unsigned int, unsigned int);
 public:
@@ -137,7 +125,5 @@ public:
 	virtual unsigned int Shutdown();
 
 	virtual unsigned int Draw();
-
-	virtual void UpdateShaderIDs(unsigned int);
 };
 

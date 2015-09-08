@@ -9,6 +9,7 @@
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
+#include <vector>
 
 struct MouseData
 {
@@ -28,10 +29,12 @@ protected:
 	static InputManager* instance;
 	InputManager();
 
+	std::vector<int> m_pressed;	// this vector stores pressed buttons WHICH WE HAVE QUERIED
 	MouseData m_mouseData;
 	int m_scrollHelper = 0;
 
 	static void MouseScrollCallback(GLFWwindow*, double, double);
+	bool IsPressed(int);
 public:
 	InputManager(const InputManager*);
 	~InputManager();
