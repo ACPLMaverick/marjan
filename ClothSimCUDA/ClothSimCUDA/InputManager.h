@@ -5,6 +5,7 @@
 */
 
 #include "Common.h"
+#include "Singleton.h"
 #include "Renderer.h"
 
 #include <GL\glew.h>
@@ -23,10 +24,11 @@ struct MouseData
 	}
 };
 
-class InputManager
+class InputManager : public Singleton<InputManager>
 {
+	friend class Singleton<InputManager>;
+
 protected:
-	static InputManager* instance;
 	InputManager();
 
 	std::vector<int> m_pressed;	// this vector stores pressed buttons WHICH WE HAVE QUERIED
@@ -38,9 +40,6 @@ protected:
 public:
 	InputManager(const InputManager*);
 	~InputManager();
-
-	static InputManager* GetInstance();
-	static void DestroyInstance();
 
 	unsigned int Initialize();
 	unsigned int Shutdown();

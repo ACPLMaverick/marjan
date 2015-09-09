@@ -9,6 +9,7 @@
 //
 
 #include "Common.h"
+#include "Singleton.h"
 
 #include "Renderer.h"
 #include "InputManager.h"
@@ -16,13 +17,15 @@
 #include "Scene.h"
 #include "SceneTest.h"
 #include "SceneSim.h"
+#include "Timer.h"
 
 class Renderer;
 
-class System
+class System : public Singleton<System>
 {
+	friend class Singleton<System>;
+
 private:
-	static System* instance;
 	System();
 
 	bool m_running;
@@ -31,9 +34,6 @@ private:
 public:
 	System(const System*);
 	~System();
-
-	static System* GetInstance();
-	static void DestroyInstance();
 
 	unsigned int Initialize();
 	unsigned int Shutdown();

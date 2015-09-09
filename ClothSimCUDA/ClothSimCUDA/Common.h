@@ -20,4 +20,5 @@ Header file for common includes and switches
 #define CS_ERR_GLFW_INITIALIZE_FAILED 2
 #define CS_ERR_WINDOW_FAILED 3
 #define CS_ERR_GLEW_INITIALIZE_FAILED 4
+#define CS_ERR_RESOURCE_READ_ERROR 5
 //////////////////

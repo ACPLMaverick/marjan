@@ -4,22 +4,20 @@
 */
 
 #include "Common.h"
+#include "Singleton.h"
 #include "InputManager.h"
 
 #include <glm\glm\glm.hpp>
 
-class InputHandler
+class InputHandler : public Singleton<InputHandler>
 {
+	friend class Singleton<InputHandler>;
+
 protected:
-	static InputHandler* instance;
 	InputHandler();
 public:
 	InputHandler(const InputHandler*);
 	~InputHandler();
-
-	static InputHandler* GetInstance();
-	static void DestroyInstance();
-
 
 	bool ExitPressed();
 	glm::vec2 GetCursorPosition();

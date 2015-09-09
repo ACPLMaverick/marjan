@@ -1,5 +1,4 @@
 #include "InputManager.h"
-InputManager* InputManager::instance;
 
 InputManager::InputManager()
 {
@@ -16,21 +15,6 @@ InputManager::~InputManager()
 
 }
 
-InputManager* InputManager::GetInstance()
-{
-	if (InputManager::instance == nullptr)
-	{
-		InputManager::instance = new InputManager();
-	}
-
-	return InputManager::instance;
-}
-
-void InputManager::DestroyInstance()
-{
-	if (InputManager::instance != nullptr)
-		delete InputManager::instance;
-}
 
 unsigned int InputManager::Initialize()
 {

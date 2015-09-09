@@ -1,7 +1,5 @@
 #include "System.h"
 
-System* System::instance;
-
 System::System()
 {
 
@@ -18,19 +16,7 @@ System::~System()
 
 }
 
-System* System::GetInstance()
-{
-	if (System::instance == nullptr)
-		System::instance = new System();
 
-	return System::instance;
-}
-
-void System::DestroyInstance()
-{
-	if (System::instance != nullptr)
-		delete System::instance;
-}
 
 unsigned int System::Initialize()
 {
@@ -40,6 +26,9 @@ unsigned int System::Initialize()
 
 	// initializing main singletons
 
+	err = ResourceManager::GetInstance()->Initialize();
+	if (err != CS_ERR_NONE) return err;
+
 	err = Renderer::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
 
@@ -47,6 +36,8 @@ unsigned int System::Initialize()
 	if (err != CS_ERR_NONE) return err;
 
 	InputHandler::GetInstance();
+
+	Timer::GetInstance()->Initialize();
 
 	// initializing scene and objects
 	m_scene = new SceneTest("SceneTest");
@@ -102,6 +93,9 @@ unsigned int System::Run()
 
 	while (m_running)
 	{
+		// update timer
+		Timer::GetInstance()->Run();
+
 		// update input
 		InputManager::GetInstance()->Run();
 

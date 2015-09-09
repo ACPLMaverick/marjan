@@ -1,12 +1,15 @@
 #pragma once
 
 #include "Common.h"
+#include "Singleton.h"
 #include "Settings.h"
 #include "System.h"
+#include "ResourceManager.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <glm\glm\glm.hpp>
+#include <SOIL2\SOIL2.h>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -14,45 +17,27 @@
 using namespace std;
 
 class System;
-
-struct ShaderID
-{
-	int id;
-	string name;
-
-	int id_worldViewProj;
-	int id_world;
-	int id_worldInvTrans;
-	int id_eyeVector;
-	int id_lightDir;
-	int id_lightDiff;
-	int id_lightSpec;
-	int id_lightAmb;
-	int id_gloss;
-	int id_highlight;
-};
+class ResourceManager;
 
 enum DrawMode { BASIC, WIREFRAME, BASIC_WIREFRAME };
 
-class Renderer
+class Renderer : public Singleton<Renderer>
 {
+	friend class Singleton<Renderer>;
+
 protected:
-	static Renderer* instance;
 	Renderer();
 
 	DrawMode m_mode;
 
 	GLFWwindow* m_window;
-	ShaderID m_shaderID;
-	vector<ShaderID> m_shaders;
+	ShaderID* m_shaderID;
 
-	ShaderID LoadShaders(const char*, const char*, const string*);
+	string sn_nameBasic = "Basic";
+	string sn_nameWf = "Wireframe";
 public:
 	Renderer(const Renderer*);
 	~Renderer();
-
-	static Renderer* GetInstance();
-	static void DestroyInstance();
 
 	unsigned int Initialize();
 	unsigned int Shutdown();
@@ -61,8 +46,11 @@ public:
 	void SetDrawMode(DrawMode mode);
 
 	ShaderID* GetCurrentShaderID();
-	ShaderID* GetShaderIDByName(const string*);
 	GLFWwindow* GetWindow();
 	DrawMode GetDrawMode();
+
+	static void LoadShaders(const string*, const string*, const string*, ShaderID*);
+	static void ShutdownShader(ShaderID*);
+	static void LoadTexture(const string*, TextureID*);
 };
 

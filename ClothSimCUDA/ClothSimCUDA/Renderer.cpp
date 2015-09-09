@@ -1,5 +1,4 @@
 #include "Renderer.h"
-Renderer* Renderer::instance;
 
 Renderer::Renderer()
 {
@@ -13,21 +12,6 @@ Renderer::~Renderer()
 {
 }
 
-Renderer* Renderer::GetInstance()
-{
-	if (Renderer::instance == nullptr)
-	{
-		Renderer::instance = new Renderer();
-	}
-
-	return Renderer::instance;
-}
-
-void Renderer::DestroyInstance()
-{
-	if (Renderer::instance != nullptr)
-		delete Renderer::instance;
-}
 
 unsigned int Renderer::Initialize()
 {
@@ -52,11 +36,11 @@ unsigned int Renderer::Initialize()
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK) return CS_ERR_GLEW_INITIALIZE_FAILED;
 
-	string nameBasic = "Basic";
-	string nameWf = "Wireframe";
-	LoadShaders("BasicVertexShader.glsl", "BasicFragmentShader.glsl", &nameBasic);
-	LoadShaders("BasicVertexShader.glsl", "WireframeFragmentShader.glsl", &nameWf);
-	m_shaderID = m_shaders.at(0);
+	// Shaders Loading
+	
+	ResourceManager::GetInstance()->LoadShader(&sn_nameBasic);
+	ResourceManager::GetInstance()->LoadShader(&sn_nameBasic, &sn_nameWf);
+	m_shaderID = ResourceManager::GetInstance()->GetShader((unsigned int)0);
 
 	m_mode = BASIC;
 
@@ -98,8 +82,6 @@ unsigned int Renderer::Shutdown()
 		m_window = nullptr;
 	}
 
-	glDeleteProgram(m_shaderID.id);
-
 	return err;
 }
 
@@ -112,8 +94,8 @@ unsigned int Renderer::Run()
 	// Drawing models with basic shader
 	if (m_mode == BASIC || m_mode == BASIC_WIREFRAME)
 	{
-		m_shaderID = m_shaders.at(0);
-		glUseProgram(m_shaderID.id);
+		m_shaderID = ResourceManager::GetInstance()->GetShader(&sn_nameBasic);
+		glUseProgram(m_shaderID->id);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -123,8 +105,8 @@ unsigned int Renderer::Run()
 	// Drawing wireframe
 	if (m_mode == WIREFRAME || m_mode == BASIC_WIREFRAME)
 	{
-		m_shaderID = m_shaders.at(1);
-		glUseProgram(m_shaderID.id);
+		m_shaderID = ResourceManager::GetInstance()->GetShader(&sn_nameWf);
+		glUseProgram(m_shaderID->id);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -150,20 +132,9 @@ void Renderer::SetDrawMode(DrawMode mode)
 
 ShaderID* Renderer::GetCurrentShaderID()
 {
-	return &m_shaderID;
+	return m_shaderID;
 }
 
-ShaderID* Renderer::GetShaderIDByName(const string* name)
-{
-	for (vector<ShaderID>::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it)
-	{
-		if (it->name == *name)
-		{
-			return &(*it);
-		}
-	}
-	return nullptr;
-}
 
 GLFWwindow* Renderer::GetWindow()
 {
@@ -177,14 +148,16 @@ DrawMode Renderer::GetDrawMode()
 
 
 
-ShaderID Renderer::LoadShaders(const char* vertexFilePath, const char* fragmentFilePath, const string* newName)
+void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentFilePath, const string* newName, ShaderID* n)
 {
+	string extension = ".glsl";
+
 	GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 	// Read vs code from file
 	string vertexShaderCode;
-	ifstream vertexShaderStream(vertexFilePath, ios::in);
+	ifstream vertexShaderStream((*vertexFilePath + extension).c_str(), ios::in);
 	if (vertexShaderStream.is_open())
 	{
 		string Line = "";
@@ -194,7 +167,7 @@ ShaderID Renderer::LoadShaders(const char* vertexFilePath, const char* fragmentF
 	}
 
 	string fragmentShaderCode;
-	ifstream fragmentShaderStream(fragmentFilePath, ios::in);
+	ifstream fragmentShaderStream((*fragmentFilePath + extension).c_str(), ios::in);
 	if (fragmentShaderStream.is_open())
 	{
 		string Line = "";
@@ -249,33 +222,29 @@ ShaderID Renderer::LoadShaders(const char* vertexFilePath, const char* fragmentF
 	glDeleteShader(vertexShaderID);
 	glDeleteShader(fragmentShaderID);
 
-	for (vector<ShaderID>::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it)
-	{
-		if ((*it).id == ProgramID)
-		{
-#ifdef _DEBUG
-			printf("Renderer WARNING: Shader with the same ID is already in database!\n");
-#endif
-			return (*it);
-		}
-	}
+	n->id = ProgramID;
+	n->name = (*newName);
 
-	ShaderID n;
-	n.id = ProgramID;
-	n.name = (*newName);
+	n->id_worldViewProj = glGetUniformLocation(ProgramID, "WorldViewProj");
+	n->id_world = glGetUniformLocation(ProgramID, "World");
+	n->id_worldInvTrans = glGetUniformLocation(ProgramID, "WorldInvTrans");
+	n->id_eyeVector = glGetUniformLocation(ProgramID, "EyeVector");
+	n->id_lightDir = glGetUniformLocation(ProgramID, "LightDir");
+	n->id_lightDiff = glGetUniformLocation(ProgramID, "LightDiff");
+	n->id_lightSpec = glGetUniformLocation(ProgramID, "LightSpec");
+	n->id_lightAmb = glGetUniformLocation(ProgramID, "LightAmb");
+	n->id_gloss = glGetUniformLocation(ProgramID, "Gloss");
+	n->id_highlight = glGetUniformLocation(ProgramID, "Highlight");
+}
 
-	n.id_worldViewProj = glGetUniformLocation(ProgramID, "WorldViewProj");
-	n.id_world = glGetUniformLocation(ProgramID, "World");
-	n.id_worldInvTrans = glGetUniformLocation(ProgramID, "WorldInvTrans");
-	n.id_eyeVector = glGetUniformLocation(ProgramID, "EyeVector");
-	n.id_lightDir = glGetUniformLocation(ProgramID, "LightDir");
-	n.id_lightDiff = glGetUniformLocation(ProgramID, "LightDiff");
-	n.id_lightSpec = glGetUniformLocation(ProgramID, "LightSpec");
-	n.id_lightAmb = glGetUniformLocation(ProgramID, "LightAmb");
-	n.id_gloss = glGetUniformLocation(ProgramID, "Gloss");
-	n.id_highlight = glGetUniformLocation(ProgramID, "Highlight");
+void Renderer::ShutdownShader(ShaderID* sid)
+{
+	glDeleteProgram(sid->id);
+}
 
-	m_shaders.push_back(n);
-
-	return n;
+void Renderer::LoadTexture(const string* filePath, TextureID* id)
+{
+	id->name = *filePath;
+	id->id = SOIL_load_OGL_texture((*filePath).c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 }

@@ -102,6 +102,17 @@
     <ClInclude Include="SimController.h">
       <Filter>Core\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="GUIElement.h" />
+    <ClInclude Include="GUIText.h" />
+    <ClInclude Include="GUIButton.h" />
+    <ClInclude Include="Singleton.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -160,6 +171,17 @@
     </ClCompile>
     <ClCompile Include="SimController.cpp">
       <Filter>Core\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="GUIElement.cpp" />
+    <ClCompile Include="GUIText.cpp" />
+    <ClCompile Include="GUIButton.cpp" />
+    <ClCompile Include="Singleton.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
