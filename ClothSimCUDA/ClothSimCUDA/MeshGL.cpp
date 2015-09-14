@@ -119,6 +119,10 @@ unsigned int MeshGL::Draw()
 	glUniform1f(ids->id_gloss, 100.0f);
 
 	// here we will set up texture?
+	if (m_texID != nullptr)
+		glBindTexture(GL_TEXTURE_2D, m_texID->id);
+	else
+		glBindTexture(GL_TEXTURE_2D, NULL);
 
 	//////////////////////////////////////////
 
@@ -189,6 +193,33 @@ unsigned int MeshGL::Draw()
 
 void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount)
 {
+	if (m_vertexData->data->positionBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->positionBuffer;
+		m_vertexData->data->positionBuffer = nullptr; 
+	}
+	if (m_vertexData->data->indexBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->indexBuffer;
+		m_vertexData->data->indexBuffer = nullptr;
+	}
+	if (m_vertexData->data->uvBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->uvBuffer;
+		m_vertexData->data->uvBuffer = nullptr;
+	}
+	if (m_vertexData->data->normalBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->normalBuffer;
+		m_vertexData->data->normalBuffer = nullptr;
+	}
+	if (m_vertexData->data->colorBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->colorBuffer;
+		m_vertexData->data->colorBuffer = nullptr;
+	}
+		
+
 	m_vertexData->data->vertexCount = vCount;
 	m_vertexData->data->indexCount = iCount;
 

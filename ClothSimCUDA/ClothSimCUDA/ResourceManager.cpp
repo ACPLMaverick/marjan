@@ -4,6 +4,7 @@
 
 ResourceManager::ResourceManager()
 {
+	h_textures = new TextureID*[1];
 }
 
 ResourceManager::ResourceManager(const ResourceManager*)
@@ -21,6 +22,16 @@ unsigned int ResourceManager::Initialize()
 	////////////// HARD-CODED INITIALIZATION GOES HERE
 
 	// Textures
+	h_whiteTexture = new unsigned char[4];
+	h_whiteTexture[0] = h_whiteTexture[1] = h_whiteTexture[2] = h_whiteTexture[3] = 255;
+	TextureID* whiteID = new TextureID;
+	string tW = "White";
+	whiteID->name = tW;
+	Renderer::LoadTexture(&tW, h_whiteTexture, 4, 1, 1, 3, whiteID);
+	h_textures[0] = whiteID;
+
+	string t1 = "..\\files\\ExportedFont.bmp";
+	LoadTexture(&t1);
 
 	return CS_ERR_NONE;
 }
@@ -29,15 +40,18 @@ unsigned int ResourceManager::Shutdown()
 {
 	for (std::map<std::string, TextureID*>::iterator it = m_texturesNames.begin(); it != m_texturesNames.end(); ++it)
 	{
-		// shutdown
+		Renderer::ShutdownTexture(it->second);
 		delete it->second;
 	}
 
 	for (std::map<std::string, ShaderID*>::iterator it = m_shadersNames.begin(); it != m_shadersNames.end(); ++it)
 	{
-		// shutdown
+		Renderer::ShutdownShader(it->second);
 		delete it->second;
 	}
+
+	delete[] h_whiteTexture;
+	delete h_textures;
 
 	return CS_ERR_NONE;
 }
@@ -91,6 +105,11 @@ TextureID* ResourceManager::GetTexture(unsigned int id)
 	else return nullptr;
 }
 
+TextureID* ResourceManager::GetTextureWhite()
+{
+	return h_textures[0];
+}
+
 ShaderID* ResourceManager::GetShader(const std::string* name)
 {
 	if (m_shadersNames.find(*name) != m_shadersNames.end())
@@ -118,14 +137,21 @@ TextureID* ResourceManager::LoadTextureData(const std::string* path)
 
 	Renderer::LoadTexture(path, ntex);
 
-	if (ntex->id == -1)
+	if (ntex->id == 0)
 	{
 		delete ntex;
+#ifdef _DEBUG
+		printf(("ResourceManager: Loading texture " + *path + " failed.\n").c_str());
+#endif
 		return nullptr;
 	}
 
 	m_texturesNames.emplace(ntex->name, ntex);
 	m_texturesIds.emplace(ntex->id, ntex);
+
+#ifdef _DEBUG
+	printf(("ResourceManager: Successfully loaded texture " + *path + "\n").c_str());
+#endif
 
 	return ntex;
 }

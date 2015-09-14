@@ -26,10 +26,10 @@ unsigned int System::Initialize()
 
 	// initializing main singletons
 
-	err = ResourceManager::GetInstance()->Initialize();
+	err = Renderer::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
 
-	err = Renderer::GetInstance()->Initialize();
+	err = ResourceManager::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
 
 	err = InputManager::GetInstance()->Initialize();

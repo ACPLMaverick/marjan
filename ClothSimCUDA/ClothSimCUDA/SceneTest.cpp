@@ -39,6 +39,7 @@ unsigned int SceneTest::Initialize()
 
 	MeshGLRect* triangle = new MeshGLRect(testObj);
 	triangle->Initialize();
+	triangle->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testObj->AddMesh(triangle);
 
 	/*RotateMe* rm = new RotateMe(testObj);

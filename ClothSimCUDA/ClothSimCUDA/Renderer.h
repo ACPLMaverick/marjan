@@ -52,5 +52,7 @@ public:
 	static void LoadShaders(const string*, const string*, const string*, ShaderID*);
 	static void ShutdownShader(ShaderID*);
 	static void LoadTexture(const string*, TextureID*);
+	static void LoadTexture(const string*, const unsigned char*, int, int, int, int, TextureID*);
+	static void ShutdownTexture(TextureID*);
 };
 

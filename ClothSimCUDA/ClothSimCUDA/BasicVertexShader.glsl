@@ -12,7 +12,7 @@ uniform mat4 WorldInvTrans;
 out vec4 ProjPos;
 out vec4 WorldPos;
 out vec4 Vcol;
-out vec3 Normal;
+smooth out vec3 Normal;
 out vec2 UV;
 
 void main()

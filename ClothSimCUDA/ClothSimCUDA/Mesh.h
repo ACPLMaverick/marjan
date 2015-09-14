@@ -16,8 +16,8 @@ class Component;
 class Mesh : public Component
 {
 protected:
-
-	// collection of textures?
+	TextureID* m_texID;
+	
 	virtual void GenerateVertexData() = 0;
 public:
 	Mesh(SimObject* obj);
@@ -29,5 +29,8 @@ public:
 
 	virtual unsigned int Update() final;
 	virtual unsigned int Draw() = 0;
+
+	virtual void SetTextureID(TextureID*) final;
+	virtual TextureID* GetTextureID() final;
 };
 

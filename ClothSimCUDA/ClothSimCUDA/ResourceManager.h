@@ -6,33 +6,9 @@
 
 #include "Common.h"
 #include "Singleton.h"
-#include "Texture.h"
 
 #include <string>
 #include <map>
-
-struct TextureID
-{
-	int id;
-	std::string name;
-};
-
-struct ShaderID
-{
-	int id;
-	std::string name;
-
-	int id_worldViewProj;
-	int id_world;
-	int id_worldInvTrans;
-	int id_eyeVector;
-	int id_lightDir;
-	int id_lightDiff;
-	int id_lightSpec;
-	int id_lightAmb;
-	int id_gloss;
-	int id_highlight;
-};
 
 class ResourceManager : public Singleton<ResourceManager>
 {
@@ -44,6 +20,10 @@ private:
 
 	std::map<unsigned int, TextureID*> m_texturesIds;
 	std::map<unsigned int, ShaderID*> m_shadersIds;
+
+	// helpers
+	unsigned char* h_whiteTexture;
+	TextureID** h_textures;
 
 	ResourceManager();
 	TextureID* LoadTextureData(const std::string*);
@@ -61,6 +41,7 @@ public:
 
 	TextureID* GetTexture(const std::string*);
 	TextureID* GetTexture(unsigned int);
+	TextureID* GetTextureWhite();
 	ShaderID* GetShader(const std::string*);
 	ShaderID* GetShader(unsigned int);
 };

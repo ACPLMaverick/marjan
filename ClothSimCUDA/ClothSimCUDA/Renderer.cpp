@@ -180,7 +180,7 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	int infoLogLength;
 
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertexFilePath);
+	printf("Compiling shader : %s\n", vertexFilePath->c_str());
 	char const * VertexSourcePointer = vertexShaderCode.c_str();
 	glShaderSource(vertexShaderID, 1, &VertexSourcePointer, NULL);
 	glCompileShader(vertexShaderID);
@@ -193,7 +193,7 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
 
 	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragmentFilePath);
+	printf("Compiling shader : %s\n", fragmentFilePath->c_str());
 	char const * FragmentSourcePointer = fragmentShaderCode.c_str();
 	glShaderSource(fragmentShaderID, 1, &FragmentSourcePointer, NULL);
 	glCompileShader(fragmentShaderID);
@@ -247,4 +247,28 @@ void Renderer::LoadTexture(const string* filePath, TextureID* id)
 	id->name = *filePath;
 	id->id = SOIL_load_OGL_texture((*filePath).c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+}
+
+void Renderer::LoadTexture(const string* name, const unsigned char* data, int dataLength, int width, int height, int channels, TextureID* id)
+{
+	id->name = *name;
+	
+	glGenTextures(1, (GLuint*)&(id->id));
+	glBindTexture(GL_TEXTURE_2D, (GLuint)(id->id));
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,
+		GL_RGBA,
+		width,
+		height,
+		0,
+		GL_RGBA,
+		GL_UNSIGNED_BYTE,
+		data
+		);
+}
+
+void Renderer::ShutdownTexture(TextureID* id)
+{
+	glDeleteTextures(1, (GLuint*)&(id->id));
 }

@@ -5,12 +5,12 @@
 in vec4 ProjPos;
 in vec4 WorldPos;
 in vec4 Vcol;
-in vec3 Normal;
+smooth in vec3 Normal;
 in vec2 UV;
 
 out vec4 color;
 
-// uniform sampler2D sampler;
+uniform sampler2D sampler;
 uniform vec4 EyeVector;
 uniform vec4 LightDir;
 uniform vec4 LightDiff;
@@ -21,7 +21,7 @@ uniform float Gloss;
 
 void main()
 {
-	vec4 finalColor = Vcol;
+	vec4 finalColor = Vcol * texture(sampler, UV);
 	vec3 normal = normalize(Normal);
 	
 	float lightPower = clamp(dot((LightDir).xyz, normal), 0.0f, 1.0f);
