@@ -8,16 +8,21 @@
 #include "Component.h"
 #include "InputHandler.h"
 
+class GUIText;
 
-class SimController :
+class GUIController :
 	public Component
 {
 private:
 	bool cursorHideHelper = false;
+
+	GUIText* m_fpsText;
+	GUIText* m_dtText;
+	GUIText* m_ttText;
 public:
-	SimController(SimObject* obj);
-	SimController(const SimController*);
-	~SimController();
+	GUIController(SimObject* obj);
+	GUIController(const GUIController*);
+	~GUIController();
 
 	virtual unsigned int Initialize();
 	virtual unsigned int Shutdown();

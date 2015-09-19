@@ -38,8 +38,9 @@ unsigned int Renderer::Initialize()
 
 	// Shaders Loading
 	
-	ResourceManager::GetInstance()->LoadShader(&sn_nameBasic);
-	ResourceManager::GetInstance()->LoadShader(&sn_nameBasic, &sn_nameWf);
+	ResourceManager::GetInstance()->LoadShader(&SN_BASIC);
+	ResourceManager::GetInstance()->LoadShader(&SN_BASIC, &SN_WIREFRAME);
+	ResourceManager::GetInstance()->LoadShader(&SN_FONT);
 	m_shaderID = ResourceManager::GetInstance()->GetShader((unsigned int)0);
 
 	m_mode = BASIC;
@@ -94,7 +95,7 @@ unsigned int Renderer::Run()
 	// Drawing models with basic shader
 	if (m_mode == BASIC || m_mode == BASIC_WIREFRAME)
 	{
-		m_shaderID = ResourceManager::GetInstance()->GetShader(&sn_nameBasic);
+		m_shaderID = ResourceManager::GetInstance()->GetShader(&SN_BASIC);
 		glUseProgram(m_shaderID->id);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -105,7 +106,7 @@ unsigned int Renderer::Run()
 	// Drawing wireframe
 	if (m_mode == WIREFRAME || m_mode == BASIC_WIREFRAME)
 	{
-		m_shaderID = ResourceManager::GetInstance()->GetShader(&sn_nameWf);
+		m_shaderID = ResourceManager::GetInstance()->GetShader(&SN_WIREFRAME);
 		glUseProgram(m_shaderID->id);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -126,6 +127,14 @@ unsigned int Renderer::Run()
 void Renderer::SetDrawMode(DrawMode mode)
 {
 	m_mode = mode;
+}
+
+
+
+void Renderer::SetCurrentShader(ShaderID* id)
+{
+	m_shaderID = id;
+	glUseProgram(id->id);
 }
 
 

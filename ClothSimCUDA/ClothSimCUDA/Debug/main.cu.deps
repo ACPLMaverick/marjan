@@ -575,9 +575,10 @@ d:\repositories\marjan\clothsimcuda\clothsimcuda\Camera.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\LightAmbient.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Light.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\LightDirectional.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\GUIElement.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\SceneTest.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\RotateMe.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\SimController.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\GUIController.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\SceneSim.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Timer.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\chrono

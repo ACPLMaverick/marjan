@@ -7,6 +7,13 @@ MeshGLText::MeshGLText(SimObject* obj, const string* text) : MeshGL(obj)
 	m_textLetterCount = text->length();
 }
 
+MeshGLText::MeshGLText(GUIText* obj, const string* text) : MeshGL((SimObject*)nullptr)
+{
+	m_guiText = obj;
+	m_text = text;
+	m_textLetterCount = text->length();
+}
+
 MeshGLText::MeshGLText(const MeshGLText* m) : MeshGL(m)
 {
 }
@@ -17,15 +24,70 @@ MeshGLText::~MeshGLText()
 	// we assume we do not need to delete the text as it is deleted by arbitrary class
 }
 
+unsigned int MeshGLText::Initialize()
+{
+	m_vertexData = new VertexData;
+	m_vertexData->data = new VertexDataRaw;
+	m_vertexData->ids = new VertexDataID;
+
+	// generate vertex data and vertex array
+	GenerateVertexData();
+
+	// setting up buffers
+
+	glGenVertexArrays(1, &m_vertexData->ids->vertexArrayID);
+	glBindVertexArray(m_vertexData->ids->vertexArrayID);
+
+	glGenBuffers(1, &m_vertexData->ids->vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->positionBuffer[0]) * m_vertexData->data->vertexCount,
+		m_vertexData->data->positionBuffer, GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &m_vertexData->ids->uvBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->uvBuffer[0]) * m_vertexData->data->vertexCount,
+		m_vertexData->data->uvBuffer, GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &m_vertexData->ids->normalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->normalBuffer[0]) * m_vertexData->data->vertexCount,
+		m_vertexData->data->normalBuffer, GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &m_vertexData->ids->colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->colorBuffer[0]) * m_vertexData->data->vertexCount,
+		m_vertexData->data->colorBuffer, GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &m_vertexData->ids->indexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->data->indexBuffer[0]) * m_vertexData->data->indexCount,
+		m_vertexData->data->indexBuffer, GL_DYNAMIC_DRAW);
+
+	// assign the font shader from resourceManager.
+	std::string font = "Font";
+	m_fontShaderID = ResourceManager::GetInstance()->GetShader(&font);
+
+	return CS_ERR_NONE;
+}
 
 unsigned int MeshGLText::Draw()
 {
-	glm::mat4 wvp = (*System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewProjMatrix()) *
-		(*m_obj->GetTransform()->GetWorldMatrix());
-
+	//if (Renderer::GetInstance()->GetDrawMode() == BASIC)
 	ShaderID* ids = Renderer::GetInstance()->GetCurrentShaderID();
+	Renderer::GetInstance()->SetCurrentShader(m_fontShaderID);
 
-	glUniformMatrix4fv(ids->id_worldViewProj, 1, GL_FALSE, &(wvp)[0][0]);
+	glm::mat4* wvp;
+	if (m_guiText == nullptr)
+	{
+		wvp = &((*System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewProjMatrix()) *
+			(*m_obj->GetTransform()->GetWorldMatrix()));
+	}
+	else
+	{
+		wvp = m_guiText->GetTransformMatrix();
+	}
+
+	glUniformMatrix4fv(m_fontShaderID->id_worldViewProj, 1, GL_FALSE, &(*wvp)[0][0]);
 
 	// here we will set up texture?
 	if (m_texID != nullptr)
@@ -96,12 +158,21 @@ unsigned int MeshGLText::Draw()
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
 
+	Renderer::GetInstance()->SetCurrentShader(ids);
+
 	return CS_ERR_NONE;
 }
 
 
 void MeshGLText::GenerateVertexData()
 {
+	// invalidate buffers
+	glInvalidateBufferData(m_vertexData->ids->vertexBuffer);
+	glInvalidateBufferData(m_vertexData->ids->indexBuffer);
+	glInvalidateBufferData(m_vertexData->ids->uvBuffer);
+	glInvalidateBufferData(m_vertexData->ids->normalBuffer);
+	glInvalidateBufferData(m_vertexData->ids->colorBuffer);
+
 	// for changing number of letters in runtime, we need to update buffers (their lengths) accordingly.
 	CreateVertexDataBuffers(m_textLetterCount * 4, m_textLetterCount * 6);
 
@@ -110,8 +181,8 @@ void MeshGLText::GenerateVertexData()
 	{
 		m_vertexData->data->positionBuffer[4 * i] = glm::vec3(0.0f + j, 0.0f, 0.0f);
 		m_vertexData->data->positionBuffer[4 * i + 1] = glm::vec3((float)FIELD_WIDTH * SIZE_MULTIPLIER + j, 0.0f, 0.0f);
-		m_vertexData->data->positionBuffer[4 * i + 2] = glm::vec3(0.0f + j, (float)FIELD_HEIGHT * SIZE_MULTIPLIER, 0.0f);
-		m_vertexData->data->positionBuffer[4 * i + 3] = glm::vec3((float)FIELD_WIDTH * SIZE_MULTIPLIER + j, (float)FIELD_HEIGHT * SIZE_MULTIPLIER, 0.0f);
+		m_vertexData->data->positionBuffer[4 * i + 2] = glm::vec3(0.0f + j, (float)FIELD_HEIGHT * SIZE_MULTIPLIER * Y_COMPENSATION, 0.0f);
+		m_vertexData->data->positionBuffer[4 * i + 3] = glm::vec3((float)FIELD_WIDTH * SIZE_MULTIPLIER + j, (float)FIELD_HEIGHT * SIZE_MULTIPLIER * Y_COMPENSATION, 0.0f);
 
 		m_vertexData->data->indexBuffer[6 * i] = 4 * i;
 		m_vertexData->data->indexBuffer[6 * i + 1] = 4 * i + 1;
@@ -141,10 +212,14 @@ void MeshGLText::GenerateVertexData()
 
 void MeshGLText::UpdateVertexDataUV()
 {
+	// invalidate buffer
+	glClearBufferData(GL_ARRAY_BUFFER, GL_R32F, GL_R32F, GL_FLOAT, (void*)m_vertexData->ids->uvBuffer);
+
 	int ctr = 0;
 	char temp = m_text->at(ctr);
 	float uvX, uvY;
 	float one = 1.0f / 16.0f;
+	float oneX = one * SPACE_BETWEEN_LETTERS;
 
 	while (ctr < m_textLetterCount && temp != '\0')
 	{
@@ -152,19 +227,21 @@ void MeshGLText::UpdateVertexDataUV()
 			temp += 255;
 
 		temp -= START_CHAR;
-		uvX = (temp % 16) / 16.0f;
-		uvY = (temp / 16) / 16.0f;
+		uvX = (temp % 16) / 16.0f + 0.002f;
+		uvY = ((255-temp) / 16) / 16.0f;
 
 		m_vertexData->data->uvBuffer[4 * ctr] = glm::vec2(uvX, uvY);
-		m_vertexData->data->uvBuffer[4 * ctr + 1] = glm::vec2(uvX + one, uvY);
+		m_vertexData->data->uvBuffer[4 * ctr + 1] = glm::vec2(uvX + oneX, uvY);
 		m_vertexData->data->uvBuffer[4 * ctr + 2] = glm::vec2(uvX, uvY + one);
-		m_vertexData->data->uvBuffer[4 * ctr + 3] = glm::vec2(uvX + one, uvY + one);
+		m_vertexData->data->uvBuffer[4 * ctr + 3] = glm::vec2(uvX + oneX, uvY + one);
 
 		// load next char
 		++ctr;
 		if (ctr < m_textLetterCount)
 			temp = m_text->at(ctr);
 	}
+
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertexData->data->vertexCount * 2, m_vertexData->data->uvBuffer);
 }
 
 const string* MeshGLText::GetText()

@@ -177,7 +177,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneSim.h" />
     <ClInclude Include="SceneTest.h" />
-    <ClInclude Include="SimController.h" />
+    <ClInclude Include="GUIController.h" />
     <ClInclude Include="SimObject.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="System.h" />
@@ -205,7 +205,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneSim.cpp" />
     <ClCompile Include="SceneTest.cpp" />
-    <ClCompile Include="SimController.cpp" />
+    <ClCompile Include="GUIController.cpp" />
     <ClCompile Include="SimObject.cpp" />
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="System.cpp" />
@@ -215,6 +215,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <None Include="BasicFragmentShader.glsl" />
     <None Include="BasicVertexShader.glsl" />
+    <None Include="FontFragmentShader.glsl" />
+    <None Include="FontVertexShader.glsl" />
     <None Include="WireframeFragmentShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

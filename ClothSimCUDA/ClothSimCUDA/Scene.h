@@ -10,9 +10,11 @@
 #include "Camera.h"
 #include "LightAmbient.h"
 #include "LightDirectional.h"
+#include "GUIElement.h"
 
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -28,6 +30,8 @@ protected:
 	vector<Camera*> m_cameras;
 	unsigned int m_currentObjectID;
 	unsigned int m_currentCameraID;
+
+	map<string, GUIElement*> m_guiElements;
 public:
 	Scene(string);
 	Scene(const Scene*);
@@ -47,6 +51,7 @@ public:
 	void AddDirectionalLight(LightDirectional*);
 	void AddObject(SimObject*);
 	void AddCamera(Camera*);
+	void AddGUIElement(GUIElement*);
 
 	void RemoveAmbientLight();
 	void RemoveDirectionalLight(LightDirectional*);
@@ -55,6 +60,7 @@ public:
 	void RemoveCamera(Camera*);
 	void RemoveObject(unsigned int);
 	void RemoveCamera(unsigned int);
+	void RemoveGUIElement(GUIElement*);
 
 	LightAmbient* GetAmbientLight();
 	LightDirectional* GetLightDirectional(unsigned int);
@@ -63,5 +69,6 @@ public:
 	Camera* GetCamera();
 	SimObject* GetObject(unsigned int);
 	Camera* GetCamera(unsigned int);
+	GUIElement* GetGUIElement(std::string*);
 };
 

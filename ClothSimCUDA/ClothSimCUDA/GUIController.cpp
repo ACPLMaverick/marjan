@@ -1,32 +1,39 @@
-#include "SimController.h"
+#include "GUIController.h"
+#include "GUIText.h"
 
-
-SimController::SimController(SimObject* obj) : Component(obj)
+GUIController::GUIController(SimObject* obj) : Component(obj)
 {
 }
 
-SimController::SimController(const SimController* c) : Component(c)
+GUIController::GUIController(const GUIController* c) : Component(c)
 {
 }
 
 
-SimController::~SimController()
+GUIController::~GUIController()
 {
 }
 
-unsigned int SimController::Initialize()
+unsigned int GUIController::Initialize()
+{
+	string tval01 = "FPSvalue";
+	string tval02 = "DTvalue";
+	string tval03 = "TTvalue";
+	m_fpsText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval01);
+	m_dtText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval02);
+	m_ttText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval03);
+
+	return CS_ERR_NONE;
+}
+
+unsigned int GUIController::Shutdown()
 {
 	return CS_ERR_NONE;
 }
 
-unsigned int SimController::Shutdown()
-{
-	return CS_ERR_NONE;
-}
 
 
-
-unsigned int SimController::Update()
+unsigned int GUIController::Update()
 {
 	// EXITING
 
@@ -45,6 +52,19 @@ unsigned int SimController::Update()
 		int newMode = (((int)m + 1) % 3);
 		Renderer::GetInstance()->SetDrawMode((DrawMode)newMode);
 	}
+
+	///////////////////////////
+	
+	// UPDATING UI INFORMATION
+
+	float fps, dt, tt;
+	fps = Timer::GetInstance()->GetFps();
+	dt = Timer::GetInstance()->GetDeltaTime();
+	tt = Timer::GetInstance()->GetTotalTime();
+
+	m_fpsText->SetText(&(to_string(fps)));
+	m_dtText->SetText(&(to_string(dt)));
+	m_ttText->SetText(&(to_string(tt)));
 
 	///////////////////////////
 
@@ -138,7 +158,7 @@ unsigned int SimController::Update()
 	return CS_ERR_NONE;
 }
 
-unsigned int SimController::Draw()
+unsigned int GUIController::Draw()
 {
 	return CS_ERR_NONE;
 }

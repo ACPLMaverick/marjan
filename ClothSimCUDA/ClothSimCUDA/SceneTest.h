@@ -5,7 +5,7 @@
 */
 #include "Scene.h"
 #include "RotateMe.h"
-#include "SimController.h"
+#include "GUIController.h"
 
 class SceneTest :
 	public Scene

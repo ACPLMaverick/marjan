@@ -99,9 +99,6 @@
     <ClInclude Include="RotateMe.h">
       <Filter>Core\Components</Filter>
     </ClInclude>
-    <ClInclude Include="SimController.h">
-      <Filter>Core\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -116,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="MeshGLText.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIController.h">
+      <Filter>Core\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -173,9 +173,6 @@
     <ClCompile Include="RotateMe.cpp">
       <Filter>Core\Components</Filter>
     </ClCompile>
-    <ClCompile Include="SimController.cpp">
-      <Filter>Core\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -191,6 +188,9 @@
     <ClCompile Include="MeshGLText.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="GUIController.cpp">
+      <Filter>Core\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicFragmentShader.glsl">
@@ -200,6 +200,12 @@
       <Filter>Graphics\Shaders</Filter>
     </None>
     <None Include="WireframeFragmentShader.glsl">
+      <Filter>Graphics\Shaders</Filter>
+    </None>
+    <None Include="FontFragmentShader.glsl">
+      <Filter>Graphics\Shaders</Filter>
+    </None>
+    <None Include="FontVertexShader.glsl">
       <Filter>Graphics\Shaders</Filter>
     </None>
   </ItemGroup>

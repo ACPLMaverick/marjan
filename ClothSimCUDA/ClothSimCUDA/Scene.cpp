@@ -26,6 +26,12 @@ unsigned int Scene::Shutdown()
 
 	delete m_lAmbient;
 
+	for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
+	{
+		delete it->second;
+	}
+	m_guiElements.clear();
+
 	for (vector<LightDirectional*>::iterator it = m_lDirectionals.begin(); it != m_lDirectionals.end(); ++it)
 	{
 		delete (*it);
@@ -61,6 +67,14 @@ unsigned int Scene::Update()
 {
 	unsigned int err = CS_ERR_NONE;
 
+	for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
+	{
+		err = it->second->Update();
+
+		if (err != CS_ERR_NONE)
+			return err;
+	}
+
 	for (vector<SimObject*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
 		err = (*it)->Update();
@@ -87,6 +101,14 @@ unsigned int Scene::Draw()
 	for (vector<SimObject*>::iterator it = m_objects.begin(); it != m_objects.end(); ++it)
 	{
 		err = (*it)->Draw();
+
+		if (err != CS_ERR_NONE)
+			return err;
+	}
+
+	for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
+	{
+		err = it->second->Draw();
 
 		if (err != CS_ERR_NONE)
 			return err;
@@ -134,6 +156,11 @@ void Scene::AddObject(SimObject* obj)
 void Scene::AddCamera(Camera* cam)
 {
 	m_cameras.push_back(cam);
+}
+
+void Scene::AddGUIElement(GUIElement* gui)
+{
+	m_guiElements.emplace(*gui->GetID(), gui);
 }
 
 
@@ -218,6 +245,11 @@ void Scene::RemoveCamera(unsigned int which)
 	}
 }
 
+void Scene::RemoveGUIElement(GUIElement* gui)
+{
+	m_guiElements.erase(*gui->GetID());
+}
+
 
 LightAmbient* Scene::GetAmbientLight()
 {
@@ -261,4 +293,9 @@ Camera* Scene::GetCamera(unsigned int which)
 		return m_cameras.at(which);
 	else
 		return nullptr;
+}
+
+GUIElement* Scene::GetGUIElement(std::string* id)
+{
+	return m_guiElements.at(*id);
 }

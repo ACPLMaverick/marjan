@@ -21,6 +21,10 @@ class ResourceManager;
 
 enum DrawMode { BASIC, WIREFRAME, BASIC_WIREFRAME };
 
+const string SN_BASIC = "Basic";
+const string SN_WIREFRAME = "Wireframe";
+const string SN_FONT = "Font";
+
 class Renderer : public Singleton<Renderer>
 {
 	friend class Singleton<Renderer>;
@@ -32,9 +36,6 @@ protected:
 
 	GLFWwindow* m_window;
 	ShaderID* m_shaderID;
-
-	string sn_nameBasic = "Basic";
-	string sn_nameWf = "Wireframe";
 public:
 	Renderer(const Renderer*);
 	~Renderer();
@@ -44,6 +45,7 @@ public:
 	unsigned int Run();
 
 	void SetDrawMode(DrawMode mode);
+	void SetCurrentShader(ShaderID* id);
 
 	ShaderID* GetCurrentShaderID();
 	GLFWwindow* GetWindow();
