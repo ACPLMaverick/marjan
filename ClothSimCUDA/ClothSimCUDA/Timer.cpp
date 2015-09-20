@@ -19,7 +19,7 @@ Timer::~Timer()
 
 unsigned int Timer::Initialize()
 {
-	m_start = high_resolution_clock::now();
+	glfwSetTime(0.0);
 	return CS_ERR_NONE;
 }
 
@@ -30,10 +30,11 @@ unsigned int Timer::Shutdown()
 
 unsigned int Timer::Run()
 {
-	high_resolution_clock::time_point point = high_resolution_clock::now();
-	duration<long double> timeSpan = duration_cast<duration<long double>>(point - m_start);
+	//high_resolution_clock::time_point point = high_resolution_clock::now();
+	//duration<long double> timeSpan = duration_cast<duration<long double>>(point - m_start);
 	
-	long double newTime = timeSpan.count() * 1000.0;
+	//long double newTime = timeSpan.count() * 1000.0;
+	long double newTime = glfwGetTime() * 1000.0;
 	m_deltaTime = newTime - m_totalTime;
 	m_totalTime = newTime;
 

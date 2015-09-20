@@ -32,6 +32,7 @@ protected:
 	ShaderID* m_fontShaderID;
 
 	virtual void GenerateVertexData();
+	void BindVertexData();
 	void UpdateVertexDataUV();
 public:
 	MeshGLText(SimObject*, const string*);

@@ -73,7 +73,7 @@ unsigned int SceneTest::Initialize()
 	string t2n = "DeltaTimetitle";
 	string t2v = "Delta time [ms]: ";
 	string t3n = "TotalTimetitle";
-	string t3v = "Total time [ms]: ";
+	string t3v = "Total time [s]: ";
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
 	string tval03 = "TTvalue";

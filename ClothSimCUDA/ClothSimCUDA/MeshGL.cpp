@@ -191,41 +191,96 @@ unsigned int MeshGL::Draw()
 }
 
 
-void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount)
+void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, GLenum target)
 {
+	m_vertexData->data->vertexCount = vCount;
+	m_vertexData->data->indexCount = iCount;
+
+	bool ifPos, ifInd, ifUv, ifNrm, ifCol;
+	ifPos = ifInd = ifUv = ifNrm = ifCol = false;
+
 	if (m_vertexData->data->positionBuffer != nullptr)
 	{
+		ifPos = true;
+		glDeleteBuffers(1, &m_vertexData->ids->vertexBuffer);
+		
 		delete[] m_vertexData->data->positionBuffer;
 		m_vertexData->data->positionBuffer = nullptr; 
 	}
 	if (m_vertexData->data->indexBuffer != nullptr)
 	{
+		ifInd = true;
+		glDeleteBuffers(1, &m_vertexData->ids->indexBuffer);
+
 		delete[] m_vertexData->data->indexBuffer;
 		m_vertexData->data->indexBuffer = nullptr;
 	}
 	if (m_vertexData->data->uvBuffer != nullptr)
 	{
+		ifUv = true;
+		glDeleteBuffers(1, &m_vertexData->ids->uvBuffer);
+		
 		delete[] m_vertexData->data->uvBuffer;
 		m_vertexData->data->uvBuffer = nullptr;
 	}
 	if (m_vertexData->data->normalBuffer != nullptr)
 	{
+		ifNrm = true;
+		glDeleteBuffers(1, &m_vertexData->ids->normalBuffer);
+		
 		delete[] m_vertexData->data->normalBuffer;
 		m_vertexData->data->normalBuffer = nullptr;
 	}
 	if (m_vertexData->data->colorBuffer != nullptr)
 	{
+		ifCol = true;
+		glDeleteBuffers(1, &m_vertexData->ids->colorBuffer);
+
 		delete[] m_vertexData->data->colorBuffer;
 		m_vertexData->data->colorBuffer = nullptr;
 	}
-		
-
-	m_vertexData->data->vertexCount = vCount;
-	m_vertexData->data->indexCount = iCount;
 
 	m_vertexData->data->positionBuffer = new glm::vec3[m_vertexData->data->vertexCount];
-	m_vertexData->data->indexBuffer = new unsigned int[m_vertexData->data->indexCount];		// ?
+	m_vertexData->data->indexBuffer = new unsigned int[m_vertexData->data->indexCount];	
 	m_vertexData->data->uvBuffer = new glm::vec2[m_vertexData->data->vertexCount];
 	m_vertexData->data->normalBuffer = new glm::vec3[m_vertexData->data->vertexCount];
 	m_vertexData->data->colorBuffer = new glm::vec4[m_vertexData->data->vertexCount];
+
+	if (ifPos)
+	{
+		glGenBuffers(1, &m_vertexData->ids->vertexBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->positionBuffer[0]) * m_vertexData->data->vertexCount,
+			m_vertexData->data->positionBuffer, target);
+	}
+	if (ifUv)
+	{
+		glGenBuffers(1, &m_vertexData->ids->uvBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->uvBuffer[0]) * m_vertexData->data->vertexCount,
+			m_vertexData->data->uvBuffer, target);
+	}
+	if (ifNrm)
+	{
+
+		glGenBuffers(1, &m_vertexData->ids->normalBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->normalBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->normalBuffer[0]) * m_vertexData->data->vertexCount,
+			m_vertexData->data->normalBuffer, target);
+	}
+	if (ifCol)
+	{
+
+		glGenBuffers(1, &m_vertexData->ids->colorBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->colorBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->colorBuffer[0]) * m_vertexData->data->vertexCount,
+			m_vertexData->data->colorBuffer, target);
+	}
+	if (ifInd)
+	{
+		glGenBuffers(1, &m_vertexData->ids->indexBuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->data->indexBuffer[0]) * m_vertexData->data->indexCount,
+			m_vertexData->data->indexBuffer, target);
+	}
 }

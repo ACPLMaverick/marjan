@@ -8,6 +8,9 @@
 #include "Component.h"
 #include "InputHandler.h"
 
+#include <sstream>
+#include <iomanip>
+
 class GUIText;
 
 class GUIController :
@@ -19,6 +22,8 @@ private:
 	GUIText* m_fpsText;
 	GUIText* m_dtText;
 	GUIText* m_ttText;
+
+	void DoubleToStringPrecision(double, int, std::string*);
 public:
 	GUIController(SimObject* obj);
 	GUIController(const GUIController*);

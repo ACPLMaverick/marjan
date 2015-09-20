@@ -57,13 +57,18 @@ unsigned int GUIController::Update()
 	
 	// UPDATING UI INFORMATION
 
-	float fps, dt, tt;
+	double fps, dt;
+	long tt;
+	string fpsTxt, dtTxt;
 	fps = Timer::GetInstance()->GetFps();
 	dt = Timer::GetInstance()->GetDeltaTime();
 	tt = Timer::GetInstance()->GetTotalTime();
 
-	m_fpsText->SetText(&(to_string(fps)));
-	m_dtText->SetText(&(to_string(dt)));
+	DoubleToStringPrecision(fps, 2, &fpsTxt);
+	DoubleToStringPrecision(dt, 4, &dtTxt);
+
+	m_fpsText->SetText(&fpsTxt);
+	m_dtText->SetText(&dtTxt);
 	m_ttText->SetText(&(to_string(tt)));
 
 	///////////////////////////
@@ -161,4 +166,16 @@ unsigned int GUIController::Update()
 unsigned int GUIController::Draw()
 {
 	return CS_ERR_NONE;
+}
+
+
+
+void GUIController::DoubleToStringPrecision(double value, int decimals, std::string* str)
+{
+	std::ostringstream ss;
+	ss << std::fixed << std::setprecision(decimals) << value;
+	*str = ss.str();
+	if (decimals > 0 && (*str)[str->find_last_not_of('0')] == '.') {
+		str->erase(str->size() - decimals + 1);
+	}
 }

@@ -7,6 +7,8 @@
 #include "Common.h"
 #include "Singleton.h"
 
+#include <GL\glew.h>
+#include <GLFW\glfw3.h>
 #include <chrono>
 
 using namespace std::chrono;
@@ -18,7 +20,6 @@ class Timer : public Singleton<Timer>
 private:
 	Timer();
 
-	high_resolution_clock::time_point m_start;
 	long double m_totalTime;
 	long double m_deltaTime;
 	long double m_fps;

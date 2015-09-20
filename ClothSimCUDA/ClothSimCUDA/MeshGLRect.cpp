@@ -17,7 +17,7 @@ MeshGLRect::~MeshGLRect()
 
 void MeshGLRect::GenerateVertexData()
 {
-	CreateVertexDataBuffers(4, 6);
+	CreateVertexDataBuffers(4, 6, GL_STATIC_DRAW);
 
 	////////////////
 

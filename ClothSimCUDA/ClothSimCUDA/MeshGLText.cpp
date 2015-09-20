@@ -31,7 +31,7 @@ unsigned int MeshGLText::Initialize()
 	m_vertexData->ids = new VertexDataID;
 
 	// generate vertex data and vertex array
-	GenerateVertexData();
+	
 
 	// setting up buffers
 
@@ -39,33 +39,18 @@ unsigned int MeshGLText::Initialize()
 	glBindVertexArray(m_vertexData->ids->vertexArrayID);
 
 	glGenBuffers(1, &m_vertexData->ids->vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->positionBuffer[0]) * m_vertexData->data->vertexCount,
-		m_vertexData->data->positionBuffer, GL_DYNAMIC_DRAW);
-
 	glGenBuffers(1, &m_vertexData->ids->uvBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->uvBuffer[0]) * m_vertexData->data->vertexCount,
-		m_vertexData->data->uvBuffer, GL_DYNAMIC_DRAW);
-
 	glGenBuffers(1, &m_vertexData->ids->normalBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->normalBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->normalBuffer[0]) * m_vertexData->data->vertexCount,
-		m_vertexData->data->normalBuffer, GL_DYNAMIC_DRAW);
-
 	glGenBuffers(1, &m_vertexData->ids->colorBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->colorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->colorBuffer[0]) * m_vertexData->data->vertexCount,
-		m_vertexData->data->colorBuffer, GL_DYNAMIC_DRAW);
-
 	glGenBuffers(1, &m_vertexData->ids->indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->data->indexBuffer[0]) * m_vertexData->data->indexCount,
-		m_vertexData->data->indexBuffer, GL_DYNAMIC_DRAW);
+	GenerateVertexData();
 
 	// assign the font shader from resourceManager.
 	std::string font = "Font";
 	m_fontShaderID = ResourceManager::GetInstance()->GetShader(&font);
+
+	BindVertexData();
+	UpdateVertexDataUV();
 
 	return CS_ERR_NONE;
 }
@@ -166,15 +151,8 @@ unsigned int MeshGLText::Draw()
 
 void MeshGLText::GenerateVertexData()
 {
-	// invalidate buffers
-	glInvalidateBufferData(m_vertexData->ids->vertexBuffer);
-	glInvalidateBufferData(m_vertexData->ids->indexBuffer);
-	glInvalidateBufferData(m_vertexData->ids->uvBuffer);
-	glInvalidateBufferData(m_vertexData->ids->normalBuffer);
-	glInvalidateBufferData(m_vertexData->ids->colorBuffer);
-
 	// for changing number of letters in runtime, we need to update buffers (their lengths) accordingly.
-	CreateVertexDataBuffers(m_textLetterCount * 4, m_textLetterCount * 6);
+	CreateVertexDataBuffers(m_textLetterCount * 4, m_textLetterCount * 6, GL_DYNAMIC_DRAW);
 
 	float j = 0.0f;
 	for (int i = 0; i < m_textLetterCount; ++i, j += ((float)FIELD_WIDTH * SIZE_MULTIPLIER))
@@ -206,21 +184,42 @@ void MeshGLText::GenerateVertexData()
 		m_vertexData->data->colorBuffer[4 * i + 2] = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		m_vertexData->data->colorBuffer[4 * i + 3] = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
+}
 
-	UpdateVertexDataUV();
+void MeshGLText::BindVertexData()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->positionBuffer[0]) * m_vertexData->data->vertexCount,
+		m_vertexData->data->positionBuffer, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->uvBuffer[0]) * m_vertexData->data->vertexCount,
+		m_vertexData->data->uvBuffer, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->normalBuffer[0]) * m_vertexData->data->vertexCount,
+		m_vertexData->data->normalBuffer, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->colorBuffer[0]) * m_vertexData->data->vertexCount,
+		m_vertexData->data->colorBuffer, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->data->indexBuffer[0]) * m_vertexData->data->indexCount,
+		m_vertexData->data->indexBuffer, GL_DYNAMIC_DRAW);
 }
 
 void MeshGLText::UpdateVertexDataUV()
 {
-	// invalidate buffer
-	glClearBufferData(GL_ARRAY_BUFFER, GL_R32F, GL_R32F, GL_FLOAT, (void*)m_vertexData->ids->uvBuffer);
-
 	int ctr = 0;
 	char temp = m_text->at(ctr);
 	float uvX, uvY;
 	float one = 1.0f / 16.0f;
 	float oneX = one * SPACE_BETWEEN_LETTERS;
-
+	
+	//glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
+	//float* mapped = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
 	while (ctr < m_textLetterCount && temp != '\0')
 	{
 		if (temp < START_CHAR)
@@ -235,13 +234,26 @@ void MeshGLText::UpdateVertexDataUV()
 		m_vertexData->data->uvBuffer[4 * ctr + 2] = glm::vec2(uvX, uvY + one);
 		m_vertexData->data->uvBuffer[4 * ctr + 3] = glm::vec2(uvX + oneX, uvY + one);
 
+		//write to mapped buffer
+		//mapped[ctr] = m_vertexData->data->uvBuffer[4 * ctr].y;
+		//mapped[4 * ctr + 1] = m_vertexData->data->uvBuffer[4 * ctr + 1];
+		//mapped[4 * ctr + 2] = m_vertexData->data->uvBuffer[4 * ctr + 2];
+		//mapped[4 * ctr + 3] = m_vertexData->data->uvBuffer[4 * ctr + 3];
+
 		// load next char
 		++ctr;
 		if (ctr < m_textLetterCount)
 			temp = m_text->at(ctr);
 	}
+	//glUnmapBuffer(GL_ARRAY_BUFFER);
 
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, m_vertexData->data->vertexCount * 2, m_vertexData->data->uvBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
+	glBufferSubData(GL_ARRAY_BUFFER, 0,
+		sizeof(m_vertexData->data->uvBuffer[0]) * m_vertexData->data->vertexCount, m_vertexData->data->uvBuffer);
+
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->uvBuffer[0]) * m_vertexData->data->vertexCount,
+	//	m_vertexData->data->uvBuffer, GL_DYNAMIC_DRAW);
+	//const GLubyte* b = glewGetErrorString(glGetError());
 }
 
 const string* MeshGLText::GetText()
@@ -255,13 +267,15 @@ void MeshGLText::SetText(const string* text)
 
 	m_text = text;
 	
-	if (m_textLetterCount != newLength)
+	//if (m_textLetterCount != newLength)
+	//{
+	//	m_textLetterCount = newLength;
+	//	GenerateVertexData();
+	//	BindVertexData();
+	//}
+	if (newLength <= m_textLetterCount)
 	{
 		m_textLetterCount = newLength;
-		GenerateVertexData();
 	}
-	else
-	{
-		UpdateVertexDataUV();
-	}
+	UpdateVertexDataUV();
 }

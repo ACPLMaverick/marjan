@@ -115,7 +115,7 @@ protected:
 	Vertex* m_vertexArray;
 
 	virtual void GenerateVertexData() = 0;
-	void CreateVertexDataBuffers(unsigned int, unsigned int);
+	void CreateVertexDataBuffers(unsigned int, unsigned int, GLenum);
 public:
 	MeshGL(SimObject*);
 	MeshGL(const MeshGL*);
