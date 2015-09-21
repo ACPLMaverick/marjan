@@ -33,8 +33,8 @@ unsigned int Timer::Run()
 	//high_resolution_clock::time_point point = high_resolution_clock::now();
 	//duration<long double> timeSpan = duration_cast<duration<long double>>(point - m_start);
 	
-	//long double newTime = timeSpan.count() * 1000.0;
-	long double newTime = glfwGetTime() * 1000.0;
+	//double newTime = timeSpan.count() * 1000.0;
+	double newTime = glfwGetTime() * 1000.0;
 	m_deltaTime = newTime - m_totalTime;
 	m_totalTime = newTime;
 
@@ -43,6 +43,20 @@ unsigned int Timer::Run()
 	//printf("%f, %f, %f\n", m_totalTime, m_deltaTime, m_fps);
 
 	return CS_ERR_NONE;
+}
+
+
+void Timer::AddTimeStamp(unsigned int id)
+{
+	std::map<unsigned int, double>::iterator it;
+	if ((it = m_timeStamps.find(id)) != m_timeStamps.end())
+	{
+		it->second = GetTotalTime();
+	}
+	else
+	{
+		m_timeStamps.emplace(id, GetTotalTime());
+	}
 }
 
 
@@ -61,3 +75,17 @@ double Timer::GetFps()
 {
 	return m_fps;
 }
+
+double Timer::GetTimeStamp(unsigned int id)
+{
+	return m_timeStamps.at(id);
+}
+
+double Timer::GetTimeStampClear(unsigned int id)
+{
+	double t = GetTimeStamp(id);
+	m_timeStamps.erase(id);
+
+	return t;
+}
+

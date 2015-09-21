@@ -13,11 +13,14 @@
 
 class GUIText;
 
+#define INFO_UPDATE_RATE 40.0
+
 class GUIController :
 	public Component
 {
 private:
 	bool cursorHideHelper = false;
+	double infoTimeDisplayHelper = 0.0;
 
 	GUIText* m_fpsText;
 	GUIText* m_dtText;

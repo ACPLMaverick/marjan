@@ -14,8 +14,6 @@ void main()
 	vec4 v = vec4(vertexPosition, 1.0f);
 	gl_Position = WorldViewProj * v;
 
-	ProjPos = v * WorldViewProj;
-
 	Vcol = vertexColor;
 	UV = vertexUV;
 }

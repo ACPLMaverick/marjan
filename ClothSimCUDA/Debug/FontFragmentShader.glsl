@@ -9,6 +9,6 @@ uniform sampler2D sampler;
 
 void main()
 {
-	vec4 finalColor = Vcol * texture(sampler, UV);
-	color = finalColor;
+	color = Vcol * texture(sampler, UV);
+	color.a = color.r * color.r;
 }

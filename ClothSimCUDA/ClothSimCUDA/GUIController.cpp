@@ -57,19 +57,23 @@ unsigned int GUIController::Update()
 	
 	// UPDATING UI INFORMATION
 
-	double fps, dt;
-	long tt;
-	string fpsTxt, dtTxt;
-	fps = Timer::GetInstance()->GetFps();
-	dt = Timer::GetInstance()->GetDeltaTime();
-	tt = Timer::GetInstance()->GetTotalTime();
+	if (Timer::GetInstance()->GetTotalTime() - infoTimeDisplayHelper >= INFO_UPDATE_RATE)
+	{
+		double fps, dt;
+		long tt;
+		string fpsTxt, dtTxt;
+		fps = Timer::GetInstance()->GetFps();
+		dt = Timer::GetInstance()->GetDeltaTime();
+		tt = Timer::GetInstance()->GetTotalTime();
+		infoTimeDisplayHelper = tt;
 
-	DoubleToStringPrecision(fps, 2, &fpsTxt);
-	DoubleToStringPrecision(dt, 4, &dtTxt);
+		DoubleToStringPrecision(fps, 2, &fpsTxt);
+		DoubleToStringPrecision(dt, 4, &dtTxt);
 
-	m_fpsText->SetText(&fpsTxt);
-	m_dtText->SetText(&dtTxt);
-	m_ttText->SetText(&(to_string(tt / 1000)));
+		m_fpsText->SetText(&fpsTxt);
+		m_dtText->SetText(&dtTxt);
+		m_ttText->SetText(&(to_string(tt / 1000)));
+	}
 
 	///////////////////////////
 
