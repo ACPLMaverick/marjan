@@ -69,7 +69,7 @@ unsigned int GUIController::Update()
 
 	m_fpsText->SetText(&fpsTxt);
 	m_dtText->SetText(&dtTxt);
-	m_ttText->SetText(&(to_string(tt)));
+	m_ttText->SetText(&(to_string(tt / 1000)));
 
 	///////////////////////////
 

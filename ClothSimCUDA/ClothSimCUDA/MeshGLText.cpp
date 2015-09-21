@@ -172,7 +172,7 @@ void MeshGLText::GenerateVertexData()
 		m_vertexData->data->uvBuffer[4 * i] = glm::vec2(0.0f, 0.0f);
 		m_vertexData->data->uvBuffer[4 * i + 1] = glm::vec2(1.0f, 0.0f);
 		m_vertexData->data->uvBuffer[4 * i + 2] = glm::vec2(0.0f, 1.0f);
-		m_vertexData->data->uvBuffer[4 * +3] = glm::vec2(1.0f, 1.0f);
+		m_vertexData->data->uvBuffer[4 * i + 3] = glm::vec2(1.0f, 1.0f);
 
 		m_vertexData->data->normalBuffer[4 * i] = glm::vec3(0.0f, 0.0f, -1.0f);
 		m_vertexData->data->normalBuffer[4 * i + 1] = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -267,12 +267,12 @@ void MeshGLText::SetText(const string* text)
 
 	m_text = text;
 	
-	//if (m_textLetterCount != newLength)
-	//{
-	//	m_textLetterCount = newLength;
-	//	GenerateVertexData();
-	//	BindVertexData();
-	//}
+	if (m_textLetterCount != newLength)
+	{
+		m_textLetterCount = newLength;
+		GenerateVertexData();
+		BindVertexData();
+	}
 	if (newLength <= m_textLetterCount)
 	{
 		m_textLetterCount = newLength;
