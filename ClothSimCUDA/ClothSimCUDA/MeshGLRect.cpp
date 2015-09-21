@@ -2,6 +2,12 @@
 
 MeshGLRect::MeshGLRect(SimObject* obj) : MeshGL(obj)
 {
+	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+MeshGLRect::MeshGLRect(SimObject* obj, glm::vec4* col) : MeshGL(obj)
+{
+	m_color = *col;
 }
 
 MeshGLRect::MeshGLRect(const MeshGLRect* m) : MeshGL(m)
@@ -43,8 +49,8 @@ void MeshGLRect::GenerateVertexData()
 	m_vertexData->data->normalBuffer[2] = glm::vec3(0.0f, 0.0f, -1.0f);
 	m_vertexData->data->normalBuffer[3] = glm::vec3(0.0f, 0.0f, -1.0f);
 
-	m_vertexData->data->colorBuffer[0] = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_vertexData->data->colorBuffer[1] = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_vertexData->data->colorBuffer[2] = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_vertexData->data->colorBuffer[3] = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_vertexData->data->colorBuffer[0] = m_color;
+	m_vertexData->data->colorBuffer[1] = m_color;
+	m_vertexData->data->colorBuffer[2] = m_color;
+	m_vertexData->data->colorBuffer[3] = m_color;
 }

@@ -89,7 +89,7 @@ unsigned int MeshGL::Draw()
 	glUniformMatrix4fv(ids->id_worldInvTrans, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldInverseTransposeMatrix())[0][0]);
 
 	glm::vec3* tempEye = System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection();
-	glUniform4f(ids->id_eyeVector, -tempEye->x, -tempEye->y, -tempEye->z, 1.0f);
+	glUniform4f(ids->id_eyeVector, tempEye->x, tempEye->y, tempEye->z, 1.0f);
 
 	// here we will set up light from global lighting in the scene
 	if (System::GetInstance()->GetCurrentScene()->GetAmbientLight() != nullptr)
@@ -116,7 +116,7 @@ unsigned int MeshGL::Draw()
 	}
 	// here we will set up highlight?
 	// here we will set up glossiness
-	glUniform1f(ids->id_gloss, 100.0f);
+	glUniform1f(ids->id_gloss, m_gloss);
 
 	// here we will set up texture?
 	if (m_texID != nullptr)

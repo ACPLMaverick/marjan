@@ -50,9 +50,12 @@ unsigned int Renderer::Initialize()
 	glClearColor(CSSET_CLEAR_COLORS[0], CSSET_CLEAR_COLORS[1], CSSET_CLEAR_COLORS[2], CSSET_CLEAR_COLORS[3]);
 	glEnable(GL_DEPTH_TEST);
 
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
-	//glFrontFace(GL_CCW);
+	if (CSSET_BACKFACE_CULLING)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glFrontFace(GL_CCW);
+	}
 
 	glEnable(GL_STENCIL);
 	glStencilFunc(GL_LEQUAL, 0, 0xFF);

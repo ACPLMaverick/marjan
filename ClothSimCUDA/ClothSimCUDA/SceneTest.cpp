@@ -1,5 +1,6 @@
 #include "SceneTest.h"
 #include "MeshGLRect.h"
+#include "MeshGLBox.h"
 #include "GUIText.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
@@ -22,19 +23,32 @@ unsigned int SceneTest::Initialize()
 	////////////////////////
 	/////////// Objects
 
-	SimObject* testObj = new SimObject();
-	testObj->Initialize("testObj");
-
-	Transform* testObjTransform = new Transform(testObj);
-	testObjTransform->Initialize();
-	testObjTransform->SetPosition(&(glm::vec3(0.0f, 0.0f, 0.0f)));
-	testObjTransform->SetScale(&(glm::vec3(3.0f, 1.0f, 1.0f)));
-	testObj->SetTransform(testObjTransform);
-
-	MeshGLRect* triangle = new MeshGLRect(testObj);
+	SimObject* ground = new SimObject();
+	ground->Initialize("Ground");
+	Transform* groundTransform = new Transform(ground);
+	groundTransform->Initialize();
+	groundTransform->SetRotation(&(glm::vec3(-3.14f / 2.0f, 0.0f, 0.0f)));
+	groundTransform->SetScale(&(glm::vec3(100.0f, 100.0f, 100.0f)));
+	ground->SetTransform(groundTransform);
+	MeshGLRect* triangle = new MeshGLRect(ground, &(glm::vec4(0.6f, 0.6f, 0.6f, 1.0f)));
 	triangle->Initialize();
 	triangle->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
-	testObj->AddMesh(triangle);
+	ground->AddMesh(triangle);
+
+	AddObject(ground);
+
+	SimObject* testObj = new SimObject();
+	testObj->Initialize("testObj");
+	Transform* testObjTransform = new Transform(testObj);
+	testObjTransform->Initialize();
+	testObjTransform->SetPosition(&(glm::vec3(0.0f, 0.5f, 0.0f)));
+	testObjTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
+	testObj->SetTransform(testObjTransform);
+	MeshGLBox* box = new MeshGLBox(testObj, 1.5f, 2.0f, 1.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
+	box->Initialize();
+	box->SetGloss(50.0f);
+	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
+	testObj->AddMesh(box);
 
 	/*RotateMe* rm = new RotateMe(testObj);
 	rm->Initialize();
@@ -62,7 +76,7 @@ unsigned int SceneTest::Initialize()
 	/////////// Lights
 
 	SetAmbientLight(new LightAmbient(&(glm::vec3(0.1f, 0.1f, 0.2f))));
-	LightDirectional* dir1 = new LightDirectional(&(glm::vec3(1.0f, 0.8f, 0.8f)), &(glm::vec3(0.0f, 1.0f, 0.0f)), &(glm::vec3(-1.0f, -1.0f, -1.0f)));
+	LightDirectional* dir1 = new LightDirectional(&(glm::vec3(1.0f, 0.9f, 0.6f)), &(glm::vec3(1.0f, 0.9f, 0.9f)), &(glm::vec3(-0.8f, -0.8f, -1.0f)));
 	AddDirectionalLight(dir1);
 
 	////////////////////////

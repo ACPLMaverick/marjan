@@ -12,6 +12,7 @@
 #define CSSET_WINDOW_NEAR 0.1f
 #define CSSET_WINDOW_FAR 1000.0f
 #define CSSET_VSYNC_ENALBED 0
+#define CSSET_BACKFACE_CULLING 1
 static const float CSSET_WINDOW_RATIO = ((float)CSSET_WINDOW_WIDTH / (float)CSSET_WINDOW_HEIGHT);
 static const float CSSET_CLEAR_COLORS[4] { 0.2f, 0.2f, 0.2f, 1.0f };
 

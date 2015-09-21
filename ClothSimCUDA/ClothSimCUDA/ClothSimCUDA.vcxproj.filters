@@ -25,9 +25,6 @@
     <Filter Include="Graphics\Shaders">
       <UniqueIdentifier>{5fe3b088-8f57-4199-b8a6-7c70bf8ac228}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GUI">
-      <UniqueIdentifier>{5ac18fb8-2b65-4e4f-9647-339380b61e96}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2453e808-8f08-4879-a124-f964a7ee9417}</UniqueIdentifier>
     </Filter>
@@ -36,6 +33,12 @@
     </Filter>
     <Filter Include="Core\Components">
       <UniqueIdentifier>{64780c45-1899-487a-913a-7ffd875a3bc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\GUI">
+      <UniqueIdentifier>{0127880f-9643-43af-97d3-732a9e90f9c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Meshes">
+      <UniqueIdentifier>{e8c81155-fc5b-45ae-87b2-7f5d99d80955}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,12 +63,6 @@
     <ClInclude Include="SimObject.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshGL.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -80,9 +77,6 @@
     </ClInclude>
     <ClInclude Include="SceneTest.h">
       <Filter>Core\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshGLRect.h">
-      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Graphics</Filter>
@@ -102,21 +96,40 @@
     <ClInclude Include="Timer.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="GUIElement.h" />
-    <ClInclude Include="GUIText.h" />
-    <ClInclude Include="GUIButton.h" />
     <ClInclude Include="Singleton.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="MeshGLText.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="GUIController.h">
       <Filter>Core\Components</Filter>
     </ClInclude>
+    <ClInclude Include="GUIText.h">
+      <Filter>Core\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIElement.h">
+      <Filter>Core\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIButton.h">
+      <Filter>Core\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGLText.h">
+      <Filter>Graphics\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGLRect.h">
+      <Filter>Graphics\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGL.h">
+      <Filter>Graphics\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Graphics\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGLBox.h">
+      <Filter>Graphics\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGLPlane.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -137,12 +150,6 @@
     <ClCompile Include="SimObject.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshGL.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -157,9 +164,6 @@
     </ClCompile>
     <ClCompile Include="SceneTest.cpp">
       <Filter>Core\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshGLRect.cpp">
-      <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Graphics</Filter>
@@ -176,21 +180,40 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="GUIElement.cpp" />
-    <ClCompile Include="GUIText.cpp" />
-    <ClCompile Include="GUIButton.cpp" />
     <ClCompile Include="Singleton.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="MeshGLText.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="GUIController.cpp">
       <Filter>Core\Components</Filter>
     </ClCompile>
+    <ClCompile Include="GUIText.cpp">
+      <Filter>Core\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIElement.cpp">
+      <Filter>Core\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIButton.cpp">
+      <Filter>Core\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGLText.cpp">
+      <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGLRect.cpp">
+      <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGL.cpp">
+      <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGLBox.cpp">
+      <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGLPlane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicFragmentShader.glsl">

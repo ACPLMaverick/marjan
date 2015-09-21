@@ -23,16 +23,14 @@ void main()
 {
 	vec4 finalColor = Vcol * texture(sampler, UV);
 	vec3 normal = normalize(Normal);
-	vec3 lDir = vec3(-LightDir.x, -LightDir.y, LightDir.z);
 	
-	vec3 surfaceToCamera = normalize(-EyeVector.xyz - WorldPos.xyz);
-	vec3 H = normalize(surfaceToCamera + lDir);
-	float intensity = max(dot(lDir, normal), 0.0f);
-
-	finalColor.xyz *= intensity;
+	float lightPower = clamp(dot((LightDir).xyz, normal), 0.0f, 1.0f);
+	finalColor.xyz *= lightPower;
 	finalColor.xyz *= LightDiff.xyz;
-	
-	vec3 spec = pow(max(0.0000001f, dot(H, normal)), Gloss) * LightSpec.xyz * length(LightSpec.xyz) * intensity;
+
+	vec3 R = normalize(reflect(LightDir.xyz, normalize(normal)));
+	float specGloss = max(0.0f, dot(EyeVector.xyz, R));
+	vec3 spec = LightSpec.xyz * lightPower * pow(specGloss, Gloss);
 
 	finalColor.xyz += spec + LightAmb.xyz;
 

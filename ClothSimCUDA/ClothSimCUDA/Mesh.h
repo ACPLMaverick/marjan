@@ -17,6 +17,7 @@ class Mesh : public Component
 {
 protected:
 	TextureID* m_texID;
+	float m_gloss;
 	
 	virtual void GenerateVertexData() = 0;
 public:
@@ -31,6 +32,8 @@ public:
 	virtual unsigned int Draw() = 0;
 
 	virtual void SetTextureID(TextureID*) final;
+	virtual void SetGloss(float);
 	virtual TextureID* GetTextureID() final;
+	virtual float GetGloss() final;
 };
 
