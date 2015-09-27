@@ -77,6 +77,19 @@ unsigned int GUIController::Update()
 
 	///////////////////////////
 
+	// MOVING BOX
+
+	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject();
+	glm::vec3 mVector = InputHandler::GetInstance()->GetArrowsMovementVector();
+	glm::vec3 cPosVector = cObj->GetTransform()->GetPositionCopy();
+
+	mVector = mVector * BOX_SPEED * (float)Timer::GetInstance()->GetDeltaTime();
+
+	cObj->GetTransform()->SetPosition(&(cPosVector + mVector));
+
+
+	///////////////////////////
+
 	// ROTATING CAMERA
 
 	if (InputHandler::GetInstance()->CameraRotateButtonPressed())

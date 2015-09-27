@@ -14,6 +14,7 @@
 class GUIText;
 
 #define INFO_UPDATE_RATE 40.0
+#define BOX_SPEED 0.01f
 
 class GUIController :
 	public Component

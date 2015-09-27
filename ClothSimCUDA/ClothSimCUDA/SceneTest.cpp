@@ -58,7 +58,7 @@ unsigned int SceneTest::Initialize()
 
 	AddObject(testObj);
 
-	m_currentObjectID = 0;
+	m_currentObjectID = 1;
 
 	SimObject* testCloth = new SimObject();
 	testCloth->Initialize("testCloth");

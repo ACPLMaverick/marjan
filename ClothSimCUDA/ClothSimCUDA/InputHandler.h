@@ -22,6 +22,7 @@ public:
 	bool ExitPressed();
 	glm::vec2 GetCursorPosition();
 	glm::vec2 GetCursorVector();
+	glm::vec3 GetArrowsMovementVector();
 	int GetZoomValue();
 	bool ActionButtonPressed();
 	bool ActionButtonClicked();
