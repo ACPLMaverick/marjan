@@ -33,6 +33,7 @@ unsigned int SceneTest::Initialize()
 	ground->SetTransform(groundTransform);
 	MeshGLRect* triangle = new MeshGLRect(ground, &(glm::vec4(0.6f, 0.6f, 0.6f, 1.0f)));
 	triangle->Initialize();
+	//triangle->SetGloss(100.0f);
 	triangle->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	ground->AddMesh(triangle);
 
@@ -47,7 +48,7 @@ unsigned int SceneTest::Initialize()
 	testObj->SetTransform(testObjTransform);
 	MeshGLBox* box = new MeshGLBox(testObj, 1.5f, 2.0f, 3.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
 	box->Initialize();
-	box->SetGloss(50.0f);
+	box->SetGloss(100.0f);
 	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testObj->AddMesh(box);
 

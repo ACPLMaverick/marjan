@@ -10,7 +10,7 @@ uniform mat4 World;
 uniform mat4 WorldInvTrans;
 
 out vec4 ProjPos;
-out vec4 WorldPos;
+smooth out vec4 WorldPos;
 out vec4 Vcol;
 smooth out vec3 Normal;
 out vec2 UV;
@@ -25,5 +25,5 @@ void main()
 
 	Vcol = vertexColor;
 	UV = vertexUV;
-	Normal = normalize(vec3((vec4(vertexNormal, 1.0f) * WorldInvTrans)));
+	Normal = normalize(vec3((vec4(vertexNormal, 0.0f) * WorldInvTrans)));
 }

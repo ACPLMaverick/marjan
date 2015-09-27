@@ -3,7 +3,7 @@
 #define POWER_CORRECTION 1.0f
 
 in vec4 ProjPos;
-in vec4 WorldPos;
+smooth in vec4 WorldPos;
 in vec4 Vcol;
 smooth in vec3 Normal;
 in vec2 UV;
@@ -25,8 +25,8 @@ void main()
 	vec3 normal = normalize(Normal);
 	vec3 lDir = vec3(-LightDir.x, -LightDir.y, LightDir.z);
 	
-	vec3 surfaceToCamera = normalize(-EyeVector.xyz - WorldPos.xyz);
-	vec3 H = normalize(surfaceToCamera + lDir);
+	vec3 surfaceToCamera = normalize(EyeVector.xyz - WorldPos.xyz);
+	vec3 H = normalize(surfaceToCamera + normalize(lDir));
 	float intensity = max(dot(lDir, normal), 0.0f);
 
 	finalColor.xyz *= intensity;

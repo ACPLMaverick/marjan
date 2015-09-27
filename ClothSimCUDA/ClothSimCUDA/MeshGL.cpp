@@ -88,7 +88,7 @@ unsigned int MeshGL::Draw()
 	glUniformMatrix4fv(ids->id_world, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldMatrix())[0][0]);
 	glUniformMatrix4fv(ids->id_worldInvTrans, 1, GL_FALSE, &(*m_obj->GetTransform()->GetWorldInverseTransposeMatrix())[0][0]);
 
-	glm::vec3* tempEye = System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection();
+	glm::vec3* tempEye = System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition();
 	glUniform4f(ids->id_eyeVector, tempEye->x, tempEye->y, tempEye->z, 1.0f);
 
 	// here we will set up light from global lighting in the scene
