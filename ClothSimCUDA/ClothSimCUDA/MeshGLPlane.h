@@ -18,6 +18,7 @@ protected:
 	virtual void GenerateVertexData();
 public:
 	MeshGLPlane(SimObject*);
+	MeshGLPlane(SimObject*, float, float);
 	MeshGLPlane(SimObject*, float, float, unsigned int, unsigned int);
 	MeshGLPlane(const MeshGLPlane*);
 	~MeshGLPlane();

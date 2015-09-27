@@ -1,6 +1,7 @@
 #include "SceneTest.h"
 #include "MeshGLRect.h"
 #include "MeshGLBox.h"
+#include "MeshGLPlane.h"
 #include "GUIText.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
@@ -41,10 +42,10 @@ unsigned int SceneTest::Initialize()
 	testObj->Initialize("testObj");
 	Transform* testObjTransform = new Transform(testObj);
 	testObjTransform->Initialize();
-	testObjTransform->SetPosition(&(glm::vec3(0.0f, 0.5f, 0.0f)));
+	testObjTransform->SetPosition(&(glm::vec3(0.0f, 1.5f, 0.0f)));
 	testObjTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
 	testObj->SetTransform(testObjTransform);
-	MeshGLBox* box = new MeshGLBox(testObj, 1.5f, 2.0f, 1.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
+	MeshGLBox* box = new MeshGLBox(testObj, 1.5f, 2.0f, 3.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
 	box->Initialize();
 	box->SetGloss(50.0f);
 	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
@@ -58,6 +59,20 @@ unsigned int SceneTest::Initialize()
 	AddObject(testObj);
 
 	m_currentObjectID = 0;
+
+	SimObject* testCloth = new SimObject();
+	testCloth->Initialize("testCloth");
+	Transform* testClothTransform = new Transform(testCloth);
+	testClothTransform->Initialize();
+	testClothTransform->SetPosition(&(glm::vec3(0.0f, 7.5f, 0.0f)));
+	testClothTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
+	testCloth->SetTransform(testClothTransform);
+	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 100, 69);
+	clothMesh->Initialize();
+	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
+	testCloth->AddMesh(clothMesh);
+
+	AddObject(testCloth);
 
 	////////////////////////
 	/////////// Camera

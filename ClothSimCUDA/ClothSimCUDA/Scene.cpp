@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Renderer.h"
 
 
 Scene::Scene(string n)
@@ -106,12 +107,15 @@ unsigned int Scene::Draw()
 			return err;
 	}
 
-	for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
+	if (Renderer::GetInstance()->GetDrawMode() != WIREFRAME)
 	{
-		err = it->second->Draw();
+		for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
+		{
+			err = it->second->Draw();
 
-		if (err != CS_ERR_NONE)
-			return err;
+			if (err != CS_ERR_NONE)
+				return err;
+		}
 	}
 
 	return CS_ERR_NONE;
