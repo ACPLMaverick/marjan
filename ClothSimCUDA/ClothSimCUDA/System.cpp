@@ -35,6 +35,9 @@ unsigned int System::Initialize()
 	err = InputManager::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
 
+	err = PhysicsManager::GetInstance()->Initialize();
+	if (err != CS_ERR_NONE) return err;
+
 	InputHandler::GetInstance();
 
 	Timer::GetInstance()->Initialize();
@@ -68,9 +71,13 @@ unsigned int System::Shutdown()
 	err = InputManager::GetInstance()->Shutdown();
 	if (err != CS_ERR_NONE) return err;
 
+	err = PhysicsManager::GetInstance()->Shutdown();
+	if (err != CS_ERR_NONE) return err;
+
 	Renderer::DestroyInstance();
 	InputManager::DestroyInstance();
 	InputHandler::DestroyInstance();
+	PhysicsManager::DestroyInstance();
 
 	// shutting down scene and objects
 	err = m_scene->Shutdown();
@@ -107,6 +114,7 @@ unsigned int System::Run()
 		// compute cloth physics
 
 		// compute collisions
+		PhysicsManager::GetInstance()->Run();
 
 		// draw one frame
 		Renderer::GetInstance()->Run();

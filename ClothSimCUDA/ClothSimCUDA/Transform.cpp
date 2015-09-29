@@ -5,6 +5,7 @@ Transform::Transform(SimObject* obj) : Component(obj)
 {
 	m_worldMatrix = nullptr;
 	m_worldInverseTransposeMatrix = nullptr;
+	m_lastWorldMatrix = nullptr;
 
 	m_position = nullptr;
 	m_rotation = nullptr;
@@ -23,19 +24,11 @@ unsigned int Transform::Initialize()
 {
 	m_worldMatrix = new glm::mat4;
 	m_worldInverseTransposeMatrix = new glm::mat4;
+	m_lastWorldMatrix = new glm::mat4;
 
 	m_position = new glm::vec3;
 	m_rotation = new glm::vec3;
 	m_scale = new glm::vec3;
-
-	//for (int i = 0; i < 4; ++i)
-	//{
-	//	for (int j = 0; j < 4; ++j)
-	//	{
-	//		(*m_worldMatrix)[i][j] = 0.0f;
-	//		(*m_worldInverseTransposeMatrix)[i][j] = 0.0f;
-	//	}
-	//}
 
 	for (int i = 0; i < 3; ++i)
 	{
@@ -86,6 +79,7 @@ unsigned int Transform::Draw()
 
 void Transform::CalculateWorldMatrix()
 {
+	(*m_lastWorldMatrix) = (*m_worldMatrix);
 	(*m_worldMatrix) = glm::translate(*m_position) *
 						glm::rotate((*m_rotation).x, glm::vec3(1.0f, 0.0f, 0.0f)) *
 						glm::rotate((*m_rotation).y, glm::vec3(0.0f, 1.0f, 0.0f)) *
@@ -93,8 +87,23 @@ void Transform::CalculateWorldMatrix()
 						glm::scale(*m_scale);
 
 	(*m_worldInverseTransposeMatrix) = glm::transpose(glm::inverse(*m_worldMatrix));
+
+	m_obj->UpdateCollidersFast();
 }
 
+bool Transform::HasMovedLastFrame()
+{
+	if ((*m_worldMatrix) == (*m_lastWorldMatrix))
+	{
+		return false;
+	}
+	else return true;
+}
+
+bool Transform::HasMovedLastFrameFast()
+{
+	return m_isWorldMatrixDirty;
+}
 
 
 glm::mat4* Transform::GetWorldMatrix()

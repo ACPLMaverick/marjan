@@ -17,6 +17,7 @@ class Transform : public Component
 private:
 	glm::mat4* m_worldMatrix;
 	glm::mat4* m_worldInverseTransposeMatrix;
+	glm::mat4* m_lastWorldMatrix;
 
 	glm::vec3* m_position;
 	glm::vec3* m_rotation;
@@ -35,6 +36,9 @@ public:
 
 	virtual unsigned int Update();
 	virtual unsigned int Draw();
+
+	bool HasMovedLastFrame();
+	bool HasMovedLastFrameFast();
 
 	glm::mat4* GetWorldMatrix();
 	glm::mat4* GetWorldInverseTransposeMatrix();

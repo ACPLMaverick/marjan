@@ -14,6 +14,7 @@
 #include "Renderer.h"
 #include "InputManager.h"
 #include "InputHandler.h"
+#include "PhysicsManager.h"
 #include "Scene.h"
 #include "SceneTest.h"
 #include "SceneSim.h"

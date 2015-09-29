@@ -560,9 +560,10 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\fstream
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\vector
 d:\repositories\marjan\clothsimcuda\clothsimcuda\InputManager.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\InputHandler.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\Scene.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\SimObject.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\PhysicsManager.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\Collider.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Component.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\SimObject.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Mesh.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Transform.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\glm\glm\gtx\transform.hpp
@@ -571,6 +572,7 @@ c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\gtc\../gt
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\gtc\constants.inl
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\gtc\matrix_transform.inl
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\gtx\transform.inl
+d:\repositories\marjan\clothsimcuda\clothsimcuda\Scene.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Camera.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\LightAmbient.h
 d:\repositories\marjan\clothsimcuda\clothsimcuda\Light.h

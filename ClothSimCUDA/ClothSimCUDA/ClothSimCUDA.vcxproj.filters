@@ -129,7 +129,21 @@
     <ClInclude Include="MeshGLBox.h">
       <Filter>Graphics\Meshes</Filter>
     </ClInclude>
-    <ClInclude Include="MeshGLPlane.h" />
+    <ClInclude Include="MeshGLPlane.h">
+      <Filter>Graphics\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsManager.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxAACollider.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -213,7 +227,21 @@
     <ClCompile Include="MeshGLBox.cpp">
       <Filter>Graphics\Meshes</Filter>
     </ClCompile>
-    <ClCompile Include="MeshGLPlane.cpp" />
+    <ClCompile Include="MeshGLPlane.cpp">
+      <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsManager.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxAACollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicFragmentShader.glsl">

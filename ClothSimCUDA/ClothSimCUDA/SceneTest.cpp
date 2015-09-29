@@ -3,6 +3,7 @@
 #include "MeshGLBox.h"
 #include "MeshGLPlane.h"
 #include "GUIText.h"
+#include "BoxAACollider.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
 {
@@ -43,7 +44,7 @@ unsigned int SceneTest::Initialize()
 	testObj->Initialize("testObj");
 	Transform* testObjTransform = new Transform(testObj);
 	testObjTransform->Initialize();
-	testObjTransform->SetPosition(&(glm::vec3(0.0f, 1.5f, 0.0f)));
+	testObjTransform->SetPosition(&(glm::vec3(0.0f, 2.5f, 0.0f)));
 	testObjTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
 	testObj->SetTransform(testObjTransform);
 	MeshGLBox* box = new MeshGLBox(testObj, 1.5f, 2.0f, 3.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
@@ -51,6 +52,9 @@ unsigned int SceneTest::Initialize()
 	box->SetGloss(100.0f);
 	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testObj->AddMesh(box);
+	BoxAACollider* tObjCollider = new BoxAACollider(testObj, &(glm::vec3(-0.75f, -1.0f, -1.5f)), &(glm::vec3(0.75f, 1.0f, 1.5f)));
+	tObjCollider->Initialize();
+	testObj->AddCollider(tObjCollider);
 
 	/*RotateMe* rm = new RotateMe(testObj);
 	rm->Initialize();
@@ -60,6 +64,25 @@ unsigned int SceneTest::Initialize()
 	AddObject(testObj);
 
 	m_currentObjectID = 1;
+
+
+	SimObject* colObj = new SimObject();
+	testObj->Initialize("colObj");
+	Transform* colObjTransform = new Transform(colObj);
+	colObjTransform->Initialize();
+	colObjTransform->SetPosition(&(glm::vec3(5.0f, 2.5f, 0.0f)));
+	colObjTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
+	colObj->SetTransform(colObjTransform);
+	MeshGLBox* colBox = new MeshGLBox(colObj, 1.5f, 2.0f, 3.0f, &(glm::vec4(0.8f, 0.2f, 0.2f, 1.0f)));
+	colBox->Initialize();
+	colBox->SetGloss(600.0f);
+	colBox->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
+	colObj->AddMesh(colBox);
+	BoxAACollider* cObjCollider = new BoxAACollider(colObj, &(glm::vec3(-0.75f, -1.0f, -1.5f)), &(glm::vec3(0.75f, 1.0f, 1.5f)));
+	cObjCollider->Initialize();
+	colObj->AddCollider(cObjCollider);
+	AddObject(colObj);
+
 
 	SimObject* testCloth = new SimObject();
 	testCloth->Initialize("testCloth");
@@ -91,7 +114,7 @@ unsigned int SceneTest::Initialize()
 	////////////////////////
 	/////////// Lights
 
-	SetAmbientLight(new LightAmbient(&(glm::vec3(0.1f, 0.1f, 0.2f))));
+	SetAmbientLight(new LightAmbient(&(glm::vec3(0.1f, 0.05f, 0.1f))));
 	LightDirectional* dir1 = new LightDirectional(&(glm::vec3(1.0f, 0.9f, 0.6f)), &(glm::vec3(1.0f, 0.9f, 0.9f)), &(glm::vec3(-0.8f, -0.8f, -1.0f)));
 	AddDirectionalLight(dir1);
 

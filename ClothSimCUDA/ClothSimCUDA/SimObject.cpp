@@ -23,6 +23,7 @@ unsigned int SimObject::Initialize(string name)
 	m_name = name;
 	hash<string> h = hash<string>();
 	m_id = h(m_name);
+	m_collidersDirty = false;
 
 	return CS_ERR_NONE;
 }
@@ -47,6 +48,14 @@ unsigned int SimObject::Shutdown()
 	}
 	m_components.clear();
 
+	for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+	{
+		err = (*it)->Shutdown();
+		if (err != CS_ERR_NONE) return err;
+		delete (*it);
+	}
+	m_colliders.clear();
+
 	if (m_transform != nullptr)
 		err = m_transform->Shutdown();
 
@@ -69,6 +78,16 @@ unsigned int SimObject::Update()
 	if (m_transform != nullptr)
 		err = m_transform->Update();
 
+	if (m_collidersDirty)
+	{
+		for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+		{
+			err = (*it)->Update();
+			if (err != CS_ERR_NONE) return err;
+		}
+		m_collidersDirty = false;
+	}
+
 	if (err != CS_ERR_NONE) return err;
 
 	return CS_ERR_NONE;
@@ -90,7 +109,31 @@ unsigned int SimObject::Draw()
 		if (err != CS_ERR_NONE) return err;
 	}
 
+	if (PhysicsManager::GetInstance()->GetIfDrawColliders())
+	{
+		for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+		{
+			err = (*it)->Draw();
+			if (err != CS_ERR_NONE) return err;
+		}
+	}
+
 	return CS_ERR_NONE;
+}
+
+
+
+void SimObject::UpdateColliders()
+{
+	for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+	{
+		(*it)->Update();
+	}
+}
+
+void SimObject::UpdateCollidersFast()
+{
+	m_collidersDirty = true;
 }
 
 
@@ -103,6 +146,11 @@ void SimObject::AddComponent(Component* ptr)
 void SimObject::AddMesh(Mesh* ptr)
 {
 	m_meshes.push_back(ptr);
+}
+
+void SimObject::AddCollider(Collider* ptr)
+{
+	m_colliders.push_back(ptr);
 }
 
 void SimObject::SetTransform(Transform* ptr)
@@ -141,6 +189,18 @@ void SimObject::RemoveMesh(Mesh* ptr)
 	}
 }
 
+void SimObject::RemoveCollider(Collider* ptr)
+{
+	for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+	{
+		if (ptr == (*it))
+		{
+			m_colliders.erase(it);
+			break;
+		}
+	}
+}
+
 void SimObject::RemoveComponent(int which)
 {
 	int ctr = 0;
@@ -171,6 +231,14 @@ void SimObject::RemoveTransform()
 {
 	m_transform->Shutdown();
 	delete m_transform;
+}
+
+Collider* SimObject::GetCollider(unsigned int w)
+{
+	if (w < m_colliders.size())
+	{
+		return m_colliders.at(w);
+	}
 }
 
 
