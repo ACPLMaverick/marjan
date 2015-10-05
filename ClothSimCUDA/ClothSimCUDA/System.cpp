@@ -63,6 +63,10 @@ unsigned int System::Shutdown()
 
 	m_running = false;
 
+	// shutting down scene and objects
+	err = m_scene->Shutdown();
+	if (err != CS_ERR_NONE) return err;
+
 	// shutting down main singletons
 
 	err = Renderer::GetInstance()->Shutdown();
@@ -78,10 +82,6 @@ unsigned int System::Shutdown()
 	InputManager::DestroyInstance();
 	InputHandler::DestroyInstance();
 	PhysicsManager::DestroyInstance();
-
-	// shutting down scene and objects
-	err = m_scene->Shutdown();
-	if (err != CS_ERR_NONE) return err;
 
 	// shutting down gui
 

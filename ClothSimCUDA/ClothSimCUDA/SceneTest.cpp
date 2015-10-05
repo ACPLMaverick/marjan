@@ -47,12 +47,12 @@ unsigned int SceneTest::Initialize()
 	testObjTransform->SetPosition(&(glm::vec3(0.0f, 2.5f, 0.0f)));
 	testObjTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
 	testObj->SetTransform(testObjTransform);
-	MeshGLBox* box = new MeshGLBox(testObj, 1.5f, 2.0f, 3.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
+	MeshGLBox* box = new MeshGLBox(testObj, 4.0f, 3.0f, 3.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
 	box->Initialize();
 	box->SetGloss(100.0f);
 	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testObj->AddMesh(box);
-	BoxAACollider* tObjCollider = new BoxAACollider(testObj, &(glm::vec3(-0.75f, -1.0f, -1.5f)), &(glm::vec3(0.75f, 1.0f, 1.5f)));
+	BoxAACollider* tObjCollider = new BoxAACollider(testObj, &(glm::vec3(-2.0f, -1.5f, -1.5f)), &(glm::vec3(2.0f, 1.5f, 1.5f)));
 	tObjCollider->Initialize();
 	testObj->AddCollider(tObjCollider);
 
@@ -73,12 +73,12 @@ unsigned int SceneTest::Initialize()
 	colObjTransform->SetPosition(&(glm::vec3(5.0f, 2.5f, 0.0f)));
 	colObjTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
 	colObj->SetTransform(colObjTransform);
-	MeshGLBox* colBox = new MeshGLBox(colObj, 1.5f, 2.0f, 3.0f, &(glm::vec4(0.8f, 0.2f, 0.2f, 1.0f)));
+	MeshGLBox* colBox = new MeshGLBox(colObj, 1.0f, 1.0f, 1.0f, &(glm::vec4(0.8f, 0.2f, 0.2f, 1.0f)));
 	colBox->Initialize();
 	colBox->SetGloss(600.0f);
 	colBox->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	colObj->AddMesh(colBox);
-	BoxAACollider* cObjCollider = new BoxAACollider(colObj, &(glm::vec3(-0.75f, -1.0f, -1.5f)), &(glm::vec3(0.75f, 1.0f, 1.5f)));
+	BoxAACollider* cObjCollider = new BoxAACollider(colObj, &(glm::vec3(-0.5f, -0.5f, -0.5f)), &(glm::vec3(0.5f, 0.5f, 0.5f)));
 	cObjCollider->Initialize();
 	colObj->AddCollider(cObjCollider);
 	AddObject(colObj);

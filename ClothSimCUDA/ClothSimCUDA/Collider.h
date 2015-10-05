@@ -9,6 +9,8 @@ This is an abstract representation of a Collider.
 #include "PhysicsManager.h"
 
 #include <vector>
+#include <GL\glew.h>
+#include <GLFW\glfw3.h>
 #include <glm\glm\glm.hpp>
 
 class SimObject;

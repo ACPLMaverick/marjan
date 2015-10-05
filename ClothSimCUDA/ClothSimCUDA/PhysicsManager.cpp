@@ -16,7 +16,7 @@ unsigned int PhysicsManager::Initialize()
 {
 	// HARD CODED VALUES
 	m_gravity = 10.0f;
-	m_ifDrawColliders = false;
+	m_ifDrawColliders = true;
 	///////////////////////////
 
 	return CS_ERR_NONE;
@@ -103,14 +103,18 @@ void PhysicsManager::AddCollider(Collider* col)
 
 bool PhysicsManager::RemoveCollider(Collider* col)
 {
-	for (std::vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+	if (m_colliders.size() > 0)
 	{
-		if (*it == col)
+		for (std::vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
 		{
-			m_colliders.erase(it);
-			return true;
+			if (*it == col)
+			{
+				m_colliders.erase(it);
+				return true;
+			}
 		}
 	}
+	
 
 	return false;
 }
