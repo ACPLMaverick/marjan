@@ -44,19 +44,28 @@ unsigned int BoxAACollider::Shutdown()
 
 unsigned int BoxAACollider::Update()
 {
-	glm::vec4 min = glm::vec4(m_min, 1.0f);
-	glm::vec4 max = glm::vec4(m_max, 1.0f);
+	if (m_obj->GetTransform() != nullptr)
+	{
+		glm::vec4 min = glm::vec4(m_min, 1.0f);
+		glm::vec4 max = glm::vec4(m_max, 1.0f);
+
+		min = (*m_obj->GetTransform()->GetWorldMatrix()) * min;
+		max = (*m_obj->GetTransform()->GetWorldMatrix()) * max;
+
+		m_minEffective.x = min.x;
+		m_minEffective.y = min.y;
+		m_minEffective.z = min.z;
+
+		m_maxEffective.x = max.x;
+		m_maxEffective.y = max.y;
+		m_maxEffective.z = max.z;
+	}
+	else
+	{
+		m_minEffective = m_min;
+		m_maxEffective = m_max;
+	}
 	
-	min = (*m_obj->GetTransform()->GetWorldMatrix()) * min;
-	max = (*m_obj->GetTransform()->GetWorldMatrix()) * max;
-
-	m_minEffective.x = min.x;
-	m_minEffective.y = min.y;
-	m_minEffective.z = min.z;
-
-	m_maxEffective.x = max.x;
-	m_maxEffective.y = max.y;
-	m_maxEffective.z = max.z;
 
 	return CS_ERR_NONE;
 }
@@ -86,6 +95,8 @@ CollisonTestResult BoxAACollider::TestWithBoxAA(BoxAACollider* other)
 		max.z >= 0.0f
 		)
 	{
+		res.ifCollision = true;
+
 		glm::vec3 negAbs, posAbs;
 		negAbs.x = glm::abs(min.x);
 		negAbs.y = glm::abs(min.y);
@@ -165,6 +176,21 @@ CollisonTestResult BoxAACollider::TestWithBoxAA(BoxAACollider* other)
 CollisonTestResult BoxAACollider::TestWithSphere(SphereCollider* other)
 {
 	CollisonTestResult res;
+
+	glm::vec3 cls, closest;
+
+	Vec3Max(&other->m_effectiveCenter, &m_minEffective, &cls);
+	Vec3Min(&cls, &m_maxEffective, &closest);
+
+	float distance = Vec3LengthSquared(&(closest - other->m_effectiveCenter));
+
+	if (distance < (other->m_effectiveRadius * other->m_effectiveRadius))
+	{
+		closest = other->m_effectiveCenter - closest;
+		res.ifCollision = true;
+		res.colVector = glm::normalize(closest) * (other->m_effectiveRadius - glm::sqrt(distance));
+		//printf("Collision! %f %f %f\n", closest.x, closest.y, closest.z);
+	}
 
 	return res;
 }

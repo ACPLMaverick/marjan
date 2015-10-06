@@ -4,6 +4,7 @@
 #include "MeshGLPlane.h"
 #include "GUIText.h"
 #include "BoxAACollider.h"
+#include "SphereCollider.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
 {
@@ -55,6 +56,9 @@ unsigned int SceneTest::Initialize()
 	BoxAACollider* tObjCollider = new BoxAACollider(testObj, &(glm::vec3(-2.0f, -1.5f, -1.5f)), &(glm::vec3(2.0f, 1.5f, 1.5f)));
 	tObjCollider->Initialize();
 	testObj->AddCollider(tObjCollider);
+	//SphereCollider* tObjCollider = new SphereCollider(testObj, &(glm::vec3(0.0f, 0.0f, 0.0f)), 1.0f);
+	//tObjCollider->Initialize();
+	//testObj->AddCollider(tObjCollider);
 
 	/*RotateMe* rm = new RotateMe(testObj);
 	rm->Initialize();
@@ -81,6 +85,10 @@ unsigned int SceneTest::Initialize()
 	BoxAACollider* cObjCollider = new BoxAACollider(colObj, &(glm::vec3(-0.5f, -0.5f, -0.5f)), &(glm::vec3(0.5f, 0.5f, 0.5f)));
 	cObjCollider->Initialize();
 	colObj->AddCollider(cObjCollider);
+	//SphereCollider* cObjCollider = new SphereCollider(colObj, &(glm::vec3(0.0f, 0.0f, 0.0f)), 1.0f);
+	//cObjCollider->Initialize();
+	//colObj->AddCollider(cObjCollider);
+
 	AddObject(colObj);
 
 

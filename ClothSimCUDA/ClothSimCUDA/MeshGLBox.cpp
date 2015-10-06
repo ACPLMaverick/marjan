@@ -8,7 +8,7 @@ MeshGLBox::MeshGLBox(SimObject* obj) : MeshGL(obj)
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-MeshGLBox::MeshGLBox(SimObject* obj, float w, float l, float h) : MeshGL(obj)
+MeshGLBox::MeshGLBox(SimObject* obj, float w, float h, float l) : MeshGL(obj)
 {
 	m_width = w;
 	m_height = h;
@@ -16,7 +16,7 @@ MeshGLBox::MeshGLBox(SimObject* obj, float w, float l, float h) : MeshGL(obj)
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-MeshGLBox::MeshGLBox(SimObject* obj, float w, float l, float h, glm::vec4* col) : MeshGLBox(obj, w, l , h)
+MeshGLBox::MeshGLBox(SimObject* obj, float w, float h, float l, glm::vec4* col) : MeshGLBox(obj, w, h, l)
 {
 	m_color = *col;
 }

@@ -13,6 +13,7 @@ class Collider;
 class BoxAACollider :
 	public Collider
 {
+	friend class SphereCollider;
 protected:
 	glm::vec3 m_min;
 	glm::vec3 m_max;

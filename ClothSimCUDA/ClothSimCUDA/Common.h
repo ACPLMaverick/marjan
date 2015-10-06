@@ -5,6 +5,7 @@ Header file for common includes and switches
 
 #include <stdio.h>
 #include <string>
+#include <glm\glm\glm.hpp>
 
 // MAKE SURE THERE'S ONLY AND EXACTLY ONE SWITCH TURNED ON AT A TIME
 #define BUILD_CUDA
@@ -47,4 +48,12 @@ struct ShaderID
 	int id_gloss;
 	int id_highlight;
 };
+/////////////////
+
+// functions
+
+void Vec3Min(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret);
+void Vec3Max(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret);
+float Vec3LengthSquared(const glm::vec3*);
+
 /////////////////

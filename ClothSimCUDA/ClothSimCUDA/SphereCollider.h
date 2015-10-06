@@ -13,9 +13,12 @@ class Collider;
 class SphereCollider :
 	public Collider
 {
+	friend class BoxAACollider;
 protected:
-	glm::vec3 m_offset;
+	glm::vec3 m_center;
+	glm::vec3 m_effectiveCenter;
 	float m_radius;
+	float m_effectiveRadius;
 public:
 	SphereCollider(SimObject*);
 	SphereCollider(SimObject*, glm::vec3*, float);

@@ -456,20 +456,6 @@ C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cerrno
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\errno.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\crtdefs.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\share.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\System.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\Singleton.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\Renderer.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\Settings.h
-d:\repositories\marjan\clothsimcuda\clothsimcuda\ResourceManager.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\map
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xtree
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\tuple
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\GL\glew.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/glu.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winapifamily.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\GLFW\glfw3.h
-C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\glm\glm\glm.hpp
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\detail/_fixes.hpp
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\cassert
@@ -555,6 +541,20 @@ c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\vector_re
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\integer.hpp
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\detail/func_integer.hpp
 c:\program files (x86)\microsoft visual studio 12.0\vc\include\glm\glm\detail\func_integer.inl
+d:\repositories\marjan\clothsimcuda\clothsimcuda\System.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\Singleton.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\Renderer.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\Settings.h
+d:\repositories\marjan\clothsimcuda\clothsimcuda\ResourceManager.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\map
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xtree
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\tuple
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\GL\glew.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/glu.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winapifamily.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\GLFW\glfw3.h
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\GL/gl.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\SOIL2\SOIL2.h
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\fstream
 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\vector

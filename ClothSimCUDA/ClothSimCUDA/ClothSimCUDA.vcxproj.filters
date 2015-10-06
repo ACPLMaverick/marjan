@@ -242,6 +242,9 @@
     <ClCompile Include="SphereCollider.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Common.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicFragmentShader.glsl">
