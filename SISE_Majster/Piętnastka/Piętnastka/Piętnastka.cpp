@@ -355,6 +355,7 @@ bool Contains(list<string> *graph, string s)
 
 bool DFS(mapState &root)
 {
+	clock_t startTime = std::clock();
 	unsigned int steps = 0;
 	unsigned int path = 0;
 	stack<mapState*> stateStack;
@@ -367,11 +368,10 @@ bool DFS(mapState &root)
 		currentState = stateStack.top();
 		stateStack.pop();
 		DecodeRiddle(currentState->riddleState);
-		steps++;
+		++steps;
 		//processing node
 		if (currentState->CheckSolved())
 		{
-			clock_t startTime = std::clock();
 			if (currentState->parent != nullptr)
 			{
 				mapState* tmp;
@@ -383,15 +383,15 @@ bool DFS(mapState &root)
 					//steps++;
 				} while (!currentState->riddleState.operator==(root.riddleState));
 			}
-			std::cout << "DFS - Riddle solved using " << steps << " steps." << endl;
+			std::cout << "DFS - Riddle solved using " << steps - 1 << " steps." << endl;
 			std::cout << "Shortest path counts " << path << " steps." << endl;
 			isSolved = true;
+			cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n";
 			visited.clear();
 			while (!stateStack.empty())
 			{
 				stateStack.pop();
 			}
-			cout << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n";
 			return true;
 		}
 		else
@@ -435,6 +435,7 @@ bool DFS(mapState &root)
 
 bool BFS(mapState &root)
 {
+	clock_t startTime = std::clock();
 	unsigned int steps = 0;
 	unsigned int path = 0;
 	queue<mapState*> stateQueue;
@@ -448,7 +449,7 @@ bool BFS(mapState &root)
 		stateQueue.pop();
 		DecodeRiddle(currentState->riddleState);
 		//ShowMatrix();
-		steps++;
+		++steps;
 		//processing node
 		if (currentState->CheckSolved())
 		{
@@ -463,9 +464,10 @@ bool BFS(mapState &root)
 					//steps++;
 				} while (!currentState->riddleState.operator==(root.riddleState));
 			}
-			std::cout << "BFS - Riddle solved using " << steps << " steps." << endl;
+			std::cout << "BFS - Riddle solved using " << steps - 1 << " steps." << endl;
 			std::cout << "Shortest path counts " << path << " steps." << endl;
 			isSolved = true;
+			cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n\n";
 			visited.clear();
 			while (!stateQueue.empty())
 			{
@@ -514,6 +516,7 @@ bool BFS(mapState &root)
 
 bool ASTAR(mapState &root)
 {
+	clock_t startTime = std::clock();
 	unsigned int steps = 0;
 	priority_queue<mapState*, std::vector<mapState*>, mapStateCompare> stateQueue;
 	mapState* currentState;
@@ -527,7 +530,7 @@ bool ASTAR(mapState &root)
 		stateQueue.pop();
 		DecodeRiddle(currentState->riddleState);
 		//ShowMatrix();
-		steps++;
+		++steps;
 		//system("CLS");
 		//cout << steps;
 		//processing node
@@ -545,9 +548,10 @@ bool ASTAR(mapState &root)
 					//steps++;
 				} while (!currentState->riddleState.operator==(root.riddleState));
 			}
-			std::cout << "A* - Riddle solved using " << steps << " steps." << endl;
+			std::cout << "A* - Riddle solved using " << steps - 1 << " steps." << endl;
 			std::cout << "Shortest path counts " << path << " steps." << endl;
 			isSolved = true;
+			cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n\n";
 			while (!visited.empty())
 			{
 				visited.pop_back();
@@ -630,39 +634,30 @@ int main(int argc, char* argv[])
 	SetDistances(state.distances);
 	state0 = state;
 
-	clock_t startTime = std::clock();
+	
 	cout << "A* processing..." << endl;
 	if (!ASTAR(state))
 	{
 		std::cout << "Something went wrong" << endl;
 	}
-	cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n";
-
-	//ShowMatrix();
-
-	cout << endl;
 
 	state = state0;
 	DecodeRiddle(state0.riddleState);
 
-	startTime = std::clock();
 	cout << "BFS processing..." << endl;
 	if (!BFS(state))
 	{
 		std::cout << "Something went wrong" << endl;
 	}
-	cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms\n\n";
 
 	state = state0;
 	DecodeRiddle(state0.riddleState);
 
-	startTime = std::clock();
 	cout << "DFS processing..." << endl;
 	if (!DFS(state))
 	{
 		std::cout << "Something went wrong" << endl;
 	}
-	cout << "Total time: " << ((std::clock() - startTime) / (double)CLOCKS_PER_SEC) * 1000.0f << "ms";
 
 	for (int i = 0; i < pointers.size(); ++i)
 	{
