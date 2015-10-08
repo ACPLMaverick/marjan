@@ -144,6 +144,15 @@
     <ClInclude Include="SphereCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="ClothSimulator.h">
+      <Filter>Core\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ClothCollider.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="functions.h">
+      <Filter>CUDA</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -244,6 +253,12 @@
     </ClCompile>
     <ClCompile Include="Common.cpp">
       <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="ClothSimulator.cpp">
+      <Filter>Core\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ClothCollider.cpp">
+      <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

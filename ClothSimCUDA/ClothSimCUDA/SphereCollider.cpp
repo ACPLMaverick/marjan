@@ -126,3 +126,10 @@ CollisonTestResult SphereCollider::TestWithSphere(SphereCollider* other)
 
 	return res;
 }
+
+CollisonTestResult SphereCollider::TestWithCloth(ClothCollider* other)
+{
+	CollisonTestResult res;
+
+	return res;
+}

@@ -31,7 +31,8 @@ public:
 	virtual unsigned int Update();
 	virtual unsigned int Draw();
 
-	virtual CollisonTestResult TestWithBoxAA(BoxAACollider*);
-	virtual CollisonTestResult TestWithSphere(SphereCollider*);
+	virtual CollisonTestResult TestWithBoxAA(BoxAACollider* other);
+	virtual CollisonTestResult TestWithSphere(SphereCollider* other);
+	virtual CollisonTestResult TestWithCloth(ClothCollider* other);
 };
 

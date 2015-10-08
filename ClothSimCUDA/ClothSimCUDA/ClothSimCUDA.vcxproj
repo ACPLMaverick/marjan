@@ -157,12 +157,15 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="BoxAACollider.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ClothSimulator.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="functions.h" />
     <ClInclude Include="GUIButton.h" />
     <ClInclude Include="GUIElement.h" />
     <ClInclude Include="GUIText.h" />
+    <ClInclude Include="ClothCollider.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Light.h" />
@@ -193,12 +196,14 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="BoxAACollider.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ClothSimulator.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="GUIButton.cpp" />
     <ClCompile Include="GUIElement.cpp" />
     <ClCompile Include="GUIText.cpp" />
+    <ClCompile Include="ClothCollider.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Light.cpp" />

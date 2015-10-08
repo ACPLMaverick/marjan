@@ -194,3 +194,10 @@ CollisonTestResult BoxAACollider::TestWithSphere(SphereCollider* other)
 
 	return res;
 }
+
+CollisonTestResult BoxAACollider::TestWithCloth(ClothCollider* other)
+{
+	CollisonTestResult res;
+
+	return res;
+}

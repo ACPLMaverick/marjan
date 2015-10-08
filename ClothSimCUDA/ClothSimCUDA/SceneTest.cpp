@@ -5,6 +5,8 @@
 #include "GUIText.h"
 #include "BoxAACollider.h"
 #include "SphereCollider.h"
+#include "ClothCollider.h"
+#include "ClothSimulator.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
 {
@@ -99,10 +101,19 @@ unsigned int SceneTest::Initialize()
 	testClothTransform->SetPosition(&(glm::vec3(0.0f, 7.5f, 0.0f)));
 	testClothTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
 	testCloth->SetTransform(testClothTransform);
+
 	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 100, 69);
 	clothMesh->Initialize();
 	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testCloth->AddMesh(clothMesh);
+
+	ClothCollider* clothCol = new ClothCollider(testCloth);
+	testCloth->AddCollider(clothCol);
+	clothCol->Initialize();
+
+	ClothSimulator* cSim = new ClothSimulator(testCloth);
+	testCloth->AddComponent(cSim);
+	cSim->Initialize();
 
 	AddObject(testCloth);
 

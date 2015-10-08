@@ -4,6 +4,11 @@ Collider::Collider(SimObject* obj) : Component(obj)
 {
 }
 
+Collider::Collider(const Collider* c) : Component(c)
+{
+
+}
+
 
 Collider::~Collider()
 {
