@@ -23,6 +23,9 @@ Header file for common includes and switches
 #define CS_ERR_WINDOW_FAILED 3
 #define CS_ERR_GLEW_INITIALIZE_FAILED 4
 #define CS_ERR_RESOURCE_READ_ERROR 5
+#define CS_ERR_CLOTHCOLLIDER_MESH_OBTAINING_ERROR 6
+#define CS_ERR_CLOTHSIMULATOR_MESH_OBTAINING_ERROR 7
+#define CS_ERR_CLOTHSIMULATOR_COLLIDER_OBTAINING_ERROR 8
 //////////////////
 
 // structure definitions

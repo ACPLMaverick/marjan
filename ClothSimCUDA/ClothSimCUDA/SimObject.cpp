@@ -239,6 +239,7 @@ Collider* SimObject::GetCollider(unsigned int w)
 	{
 		return m_colliders.at(w);
 	}
+	else return nullptr;
 }
 
 
