@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <CudaCompile Include="main.cu" />
-    <CudaCompile Include="functions.cu">
+    <CudaCompile Include="clothSpringSimulation.cu">
       <Filter>CUDA</Filter>
     </CudaCompile>
   </ItemGroup>
@@ -150,7 +150,7 @@
     <ClInclude Include="ClothCollider.h">
       <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="functions.h">
+    <ClInclude Include="clothSpringSimulation.h">
       <Filter>CUDA</Filter>
     </ClInclude>
   </ItemGroup>

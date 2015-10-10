@@ -12,13 +12,15 @@
 #include "Common.h"
 #include "MeshGLPlane.h"
 #include "ClothCollider.h"
-#include "functions.h"
+#include "clothSpringSimulation.h"
 
 
 class ClothSimulator :
 	public Component
 {
 protected:
+	clothSpringSimulation* m_simulator;
+
 	MeshGLPlane* m_meshPlane;
 	ClothCollider* m_collider;
 public:

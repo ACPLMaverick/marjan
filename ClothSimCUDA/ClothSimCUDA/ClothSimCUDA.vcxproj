@@ -151,7 +151,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="functions.cu" />
+    <CudaCompile Include="clothSpringSimulation.cu" />
     <CudaCompile Include="main.cu" />
   </ItemGroup>
   <ItemGroup>
@@ -161,7 +161,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Component.h" />
-    <ClInclude Include="functions.h" />
+    <ClInclude Include="clothSpringSimulation.h" />
     <ClInclude Include="GUIButton.h" />
     <ClInclude Include="GUIElement.h" />
     <ClInclude Include="GUIText.h" />
