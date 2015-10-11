@@ -16,11 +16,6 @@ Mesh::~Mesh()
 {
 }
 
-unsigned int Mesh::Update()
-{
-	return CS_ERR_NONE;
-}
-
 
 
 void Mesh::SetTextureID(TextureID* id)

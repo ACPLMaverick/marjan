@@ -75,6 +75,12 @@ unsigned int SimObject::Update()
 		if (err != CS_ERR_NONE) return err;
 	}
 
+	for (vector<Mesh*>::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
+	{
+		err = (*it)->Update();
+		if (err != CS_ERR_NONE) return err;
+	}
+
 	if (m_transform != nullptr)
 		err = m_transform->Update();
 

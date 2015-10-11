@@ -190,6 +190,10 @@ unsigned int MeshGL::Draw()
 	return CS_ERR_NONE;
 }
 
+unsigned int MeshGL::Update()
+{
+	return CS_ERR_NONE;
+}
 
 void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, GLenum target)
 {

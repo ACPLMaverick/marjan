@@ -28,7 +28,7 @@ public:
 	virtual unsigned int Initialize() = 0;
 	virtual unsigned int Shutdown() = 0;
 
-	virtual unsigned int Update() final;
+	virtual unsigned int Update() = 0;
 	virtual unsigned int Draw() = 0;
 
 	virtual void SetTextureID(TextureID*) final;

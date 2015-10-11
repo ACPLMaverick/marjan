@@ -124,6 +124,7 @@ public:
 	virtual unsigned int Initialize();
 	virtual unsigned int Shutdown();
 
+	virtual unsigned int Update();
 	virtual unsigned int Draw();
 };
 

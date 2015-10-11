@@ -22,5 +22,12 @@ public:
 	MeshGLPlane(SimObject*, float, float, unsigned int, unsigned int);
 	MeshGLPlane(const MeshGLPlane*);
 	~MeshGLPlane();
+
+	virtual unsigned int Initialize();
+	virtual unsigned int Update();
+
+	VertexData* GetVertexDataPtr();
+	unsigned int GetEdgesWidth();
+	unsigned int GetEdgesLength();
 };
 
