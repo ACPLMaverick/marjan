@@ -101,7 +101,7 @@ namespace Zad1_CSharp
         {
             while(network.RecursionCtr < network.RecursionSteps)
             {
-                //System.Console.WriteLine("Neuron " + ID.ToString() + ": DUPA!");
+                System.Console.WriteLine("Neuron " + ID.ToString() + ": DUPA!");
 
                 // check if we can calculate activation
 
