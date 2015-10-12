@@ -13,9 +13,9 @@ namespace Zad1_CSharp
     {
         #region tempConstants
 
-        const int NEURON_COUNT = 3;
-        const int RECURSION_COUNT = 200;
-        const int TRIALS_COUNT = 20;
+        public const int NEURON_COUNT = 8;
+        private const int RECURSION_COUNT = 1000;
+        private const int TRIALS_COUNT = 1;
 
         #endregion
 
@@ -49,17 +49,17 @@ namespace Zad1_CSharp
             // acquire certain network parameters and its pattern and then send them to the network to initialize it.
 
             Network = new NeuralNetwork();
-            Network.Initialize(NEURON_COUNT, RECURSION_COUNT, 0x00000000);
+            Network.Initialize(NEURON_COUNT, RECURSION_COUNT, new byte[] { 1, 0, 1, 0, 1, 0, 1, 0 });
         }
 
         public bool Run()
         {
-            if (trialCounter > TRIALS_COUNT)
+            if (trialCounter >= TRIALS_COUNT)
                 return false;
 
             // generate similar pattern to the one saved in network and send it to the network in attempt to correct it.
 
-            bool retVal = Network.Run(0x00000001);
+            bool retVal = Network.Run(new byte[] { 0, 0, 1, 0, 1, 0, 1, 1 });
             if (!retVal)
                 return retVal;
 
