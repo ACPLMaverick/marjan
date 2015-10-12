@@ -60,7 +60,7 @@ namespace Zad1_CSharp
             this.network = network;
         }
 
-        public void StartThread(byte[] falsePattern, AutoResetEvent ev)
+        public void StartThread(byte[] falsePattern)
         {
             falsePattern.CopyTo(this.Input, 0);
 
@@ -101,16 +101,28 @@ namespace Zad1_CSharp
         {
             while(network.RecursionCtr < network.RecursionSteps)
             {
-                System.Console.WriteLine("Neuron " + ID.ToString() + ": DUPA!");
+                //System.Console.WriteLine("Neuron " + ID.ToString() + ": DUPA!");
+
+                // check if we can calculate activation
+
 
                 // increment recursion counter
-                ++network.RecursionCtr;
+                IncrementRecursionCtr();
             }
         }
 
         private int CalculateActivation()
         {
             return 0;
+        }
+
+        private void IncrementRecursionCtr()
+        {
+            network.SemRecursionCtr.WaitOne();
+
+            ++network.RecursionCtr;
+
+            network.SemRecursionCtr.Release();
         }
 
         #endregion

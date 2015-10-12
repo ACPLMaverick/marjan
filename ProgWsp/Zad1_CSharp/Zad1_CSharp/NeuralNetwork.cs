@@ -20,8 +20,6 @@ namespace Zad1_CSharp
 
         #region variables
 
-        private AutoResetEvent waitHandle;
-
         #endregion
 
         #region properties
@@ -59,6 +57,7 @@ namespace Zad1_CSharp
                 this.Neurons[i].Initialize(i, NeuronCount, this.Neurons, tab, this);
             }
 
+            this.SemRecursionCtr = new Semaphore(1, 1, "Przemek");
         }
 
         public byte[] Run(byte[] falsePattern)
@@ -66,7 +65,7 @@ namespace Zad1_CSharp
             // run neurons
             for (int i = 0; i < NeuronCount; ++i )
             {
-                Neurons[i].StartThread(falsePattern, waitHandle);
+                Neurons[i].StartThread(falsePattern);
             }
 
             // go to sleep until all neuron threads finish
@@ -90,6 +89,12 @@ namespace Zad1_CSharp
             }
             else
             {
+                // stop all threads as they have stalled somehow
+                for (int i = 0; i < NeuronCount; ++i)
+                {
+                    Neurons[i].Thread.Abort();
+                }
+
                 System.Console.WriteLine("NeuralNetwork: Failed. Reason: Timeout.");
                 return null;
             }
