@@ -16,6 +16,7 @@ namespace Zad1_CSharp
         public const int NEURON_COUNT = 8;
         private const int RECURSION_COUNT = 1000;
         private const int TRIALS_COUNT = 1;
+        private byte[] PATTERN = new byte[] { 1, 0, 1, 0, 1, 0, 1, 0 };
 
         #endregion
 
@@ -49,7 +50,7 @@ namespace Zad1_CSharp
             // acquire certain network parameters and its pattern and then send them to the network to initialize it.
 
             Network = new NeuralNetwork();
-            Network.Initialize(NEURON_COUNT, RECURSION_COUNT, new byte[] { 1, 0, 1, 0, 1, 0, 1, 0 });
+            Network.Initialize(NEURON_COUNT, RECURSION_COUNT, PATTERN);
         }
 
         public bool Run()
@@ -59,9 +60,24 @@ namespace Zad1_CSharp
 
             // generate similar pattern to the one saved in network and send it to the network in attempt to correct it.
 
-            bool retVal = Network.Run(new byte[] { 0, 0, 1, 0, 1, 0, 1, 1 });
-            if (!retVal)
-                return retVal;
+            // run neural network
+            byte[] fPattern = new byte[] { 0, 0, 1, 0, 1, 0, 1, 1 };
+
+            System.Console.WriteLine("Controller: Start neural network. Trial #" + (trialCounter + 1).ToString());
+            System.Console.WriteLine("Controller: Pattern is:       " + PatternToString(PATTERN, NEURON_COUNT));
+            System.Console.WriteLine("Controller: False Pattern is: " + PatternToString(fPattern, NEURON_COUNT));
+
+            byte[] retVal = Network.Run(fPattern);
+
+            if (retVal != null)
+            {
+                System.Console.WriteLine("Controller: Finished trial #" + (trialCounter + 1).ToString() + ". Pattern is:    " + PatternToString(retVal, NEURON_COUNT));
+                System.Console.WriteLine();
+            }
+            else
+            {
+                System.Console.WriteLine("Controller: Failed trial #" + (trialCounter + 1).ToString());
+            }
 
             ++trialCounter;
 
@@ -71,6 +87,18 @@ namespace Zad1_CSharp
         public void Shutdown()
         {
             Network.Shutdown();
+        }
+
+        private string PatternToString(byte[] pattern, int length)
+        {
+            string str = "";
+
+            for (int i = 0; i < length; ++i)
+            {
+                str += pattern[i].ToString();
+            }
+
+            return str;
         }
 
         #endregion

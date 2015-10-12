@@ -12,7 +12,15 @@ namespace Zad1_CSharp
     /// </summary>
     public class NeuralNetwork
     {
+        #region constants
+
+        private const int TIMEOUT = 10000;
+
+        #endregion
+
         #region variables
+
+        private AutoResetEvent waitHandle;
 
         #endregion
 
@@ -50,38 +58,46 @@ namespace Zad1_CSharp
                 tab[i] = 0;
                 this.Neurons[i].Initialize(i, NeuronCount, this.Neurons, tab, this);
             }
+
         }
 
-        public bool Run(byte[] falsePattern)
+        public byte[] Run(byte[] falsePattern)
         {
-            System.Console.WriteLine("NeuralNetwork: Run.");
-            System.Console.WriteLine("NeuralNetwork: Pattern is:       " + PatternToString(Pattern, NeuronCount));
-            System.Console.WriteLine("NeuralNetwork: False Pattern is: " + PatternToString(falsePattern, NeuronCount));
-
             // run neurons
+            for (int i = 0; i < NeuronCount; ++i )
+            {
+                Neurons[i].StartThread(falsePattern, waitHandle);
+            }
 
-            // go to sleep until awaken by some neuron thread
+            // go to sleep until all neuron threads finish
+            for (int i = 0; i < NeuronCount; ++i)
+            {
+                Neurons[i].Thread.Join(TIMEOUT);
+            }
 
-            System.Console.WriteLine("NeuralNetwork: Finished.");
 
-            return true;
+            if(RecursionCtr >= RecursionSteps)
+            {
+                System.Console.WriteLine("NeuralNetwork: Finished.");
+
+                byte[] ret = new byte[NeuronCount];
+                for (int i = 0; i < NeuronCount; ++i )
+                {
+                    ret[i] = (byte)(Neurons[i].Activation);
+                }
+
+                return ret;
+            }
+            else
+            {
+                System.Console.WriteLine("NeuralNetwork: Failed. Reason: Timeout.");
+                return null;
+            }
         }
 
         public void Shutdown()
         {
 
-        }
-
-        private string PatternToString(byte[] pattern, int length)
-        {
-            string str = "";
-
-            for (int i = 0; i < length; ++i )
-            {
-                str += pattern[i].ToString();
-            }
-
-            return str;
         }
 
         #endregion

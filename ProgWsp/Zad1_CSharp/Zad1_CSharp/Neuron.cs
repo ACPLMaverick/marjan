@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Zad1_CSharp
 {
@@ -13,7 +13,7 @@ namespace Zad1_CSharp
     {
         #region variables
 
-        private NeuralNetwork network;
+        protected NeuralNetwork network;
 
         #endregion
 
@@ -25,6 +25,8 @@ namespace Zad1_CSharp
         public byte[] Weights { get; protected set; }
         public int Activation { get; protected set; }
         public Neuron[] OtherNeurons { get; protected set; }
+
+        public Thread Thread { get; protected set; }
 
         #endregion
 
@@ -58,9 +60,14 @@ namespace Zad1_CSharp
             this.network = network;
         }
 
-        public void StartThread()
+        public void StartThread(byte[] falsePattern, AutoResetEvent ev)
         {
+            falsePattern.CopyTo(this.Input, 0);
 
+            Thread = new Thread(new ThreadStart(Run));
+            Thread.Start();
+
+            while (!Thread.IsAlive) ;
         }
 
         public void StopThread()
@@ -92,7 +99,13 @@ namespace Zad1_CSharp
         /// </summary>
         private void Run()
         {
-            
+            while(network.RecursionCtr < network.RecursionSteps)
+            {
+                System.Console.WriteLine("Neuron " + ID.ToString() + ": DUPA!");
+
+                // increment recursion counter
+                ++network.RecursionCtr;
+            }
         }
 
         private int CalculateActivation()
