@@ -10,11 +10,21 @@ __global__ void AddKernel(int *c, const int *a, const int *b)
 
 __global__ void CalculateForcesKernel(glm::vec3* posPtr, glm::vec3* nrmPtr, glm::vec4* colPtr, const float* grav)
 {
-	int i = threadIdx.x;
-	int j = threadIdx.y;
+	int i = blockIdx.x;
+	int j = blockIdx.y;
 
-	posPtr[i + j].y -= 0.00025f;
-	colPtr[i + j].r = fmaxf(0.0f, colPtr[i + j].r - 0.0001f);
+	int v_cur = (i * gridDim.y) + j;
+	
+	// array of neighbouring four vertices, i.e. their positions in the grid
+	// -1 in the array means that vertex is nonexistant
+	// this array goes as follows: UP, DOWN, LEFT, RIGHT
+	int v[4];
+	v[0] = imaxi(-1, v_cur - 1);
+
+	// test
+	posPtr[v_cur].y -= 0.00025f;
+	colPtr[v_cur].r = fmaxf(0.0f, colPtr[v_cur].r - 0.0001f);
+	///
 }
 
 //////////////////////////////////////////////////////
@@ -45,6 +55,15 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 	m_allEdgesWidth = edgesWidth;
 	m_allEdgesLength = edgesLength;
 	m_vertexCount = m_allEdgesLength * m_allEdgesWidth;
+
+	// Get Device info
+	m_deviceProperties = new cudaDeviceProp;
+	cudaStatus = cudaGetDeviceProperties(m_deviceProperties, 0);
+	if (cudaStatus != cudaSuccess) {
+		printf("CUDA: cudaGetDeviceProperties failed!  Do you have a CUDA-capable GPU installed?");
+		FreeMemory();
+		return cudaStatus;
+	}
 
 	// Choose which GPU to run on, change this on a multi-GPU system.
 	cudaStatus = cudaSetDevice(0);
@@ -104,6 +123,8 @@ unsigned int clothSpringSimulation::ClothSpringSimulationShutdown()
 {
 	cudaError_t cudaStatus;
 
+	delete m_deviceProperties;
+
 	FreeMemory();
 
 	// cudaDeviceReset must be called before exiting in order for profiling and
@@ -156,8 +177,8 @@ inline cudaError_t clothSpringSimulation::CalculateForces(glm::vec3* vertexPosit
 	}
 
 	// launch kernel
-	dim3 grid(1, 1, 1);
-	dim3 block(m_allEdgesWidth, m_allEdgesLength, 1);
+	dim3 grid(m_allEdgesWidth, m_allEdgesLength, 1);
+	dim3 block(1, 1, 1);
 	CalculateForcesKernel <<< grid, block >>> (i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr);
 
 	// Check for any errors launching the kernel

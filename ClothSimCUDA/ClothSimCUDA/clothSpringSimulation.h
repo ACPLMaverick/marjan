@@ -15,6 +15,8 @@
 class clothSpringSimulation
 {
 private:
+	cudaDeviceProp* m_deviceProperties;
+
 	unsigned int m_vertexCount;
 	unsigned int m_vertexPositionSize;
 	unsigned int m_vertexNormalSize;
