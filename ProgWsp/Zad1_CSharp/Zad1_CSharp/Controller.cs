@@ -16,7 +16,7 @@ namespace Zad1_CSharp
         public const int NEURON_COUNT = 8;
         private const int RECURSION_COUNT = 1000;
         private const int TRIALS_COUNT = 1;
-        private byte[] PATTERN = new byte[] { 1, 0, 1, 0, 1, 0, 1, 0 };
+        private sbyte[] PATTERN = new sbyte[] { 1, 0, 1, 0, 1, 0, 1, 0 };
 
         #endregion
 
@@ -61,13 +61,13 @@ namespace Zad1_CSharp
             // generate similar pattern to the one saved in network and send it to the network in attempt to correct it.
 
             // run neural network
-            byte[] fPattern = new byte[] { 0, 0, 1, 0, 1, 0, 1, 1 };
+            sbyte[] fPattern = new sbyte[] { 0, 0, 1, 0, 1, 0, 1, 1 };
 
             System.Console.WriteLine("Controller: Start neural network. Trial #" + (trialCounter + 1).ToString());
             System.Console.WriteLine("Controller: Pattern is:       " + PatternToString(PATTERN, NEURON_COUNT));
             System.Console.WriteLine("Controller: False Pattern is: " + PatternToString(fPattern, NEURON_COUNT));
 
-            byte[] retVal = Network.Run(fPattern);
+            sbyte[] retVal = Network.Run(fPattern);
 
             if (retVal != null)
             {
@@ -89,7 +89,7 @@ namespace Zad1_CSharp
             Network.Shutdown();
         }
 
-        private string PatternToString(byte[] pattern, int length)
+        private string PatternToString(sbyte[] pattern, int length)
         {
             string str = "";
 

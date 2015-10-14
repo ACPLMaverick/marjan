@@ -21,8 +21,8 @@ namespace Zad1_CSharp
 
         public int ID { get; protected set; }
         public int WeightCount { get; protected set; }
-        public byte[] Input { get; set; }
-        public byte[] Weights { get; protected set; }
+        public sbyte Input { get; set; }
+        public sbyte[] Weights { get; protected set; }
         public int Activation { get; protected set; }
         public Neuron[] OtherNeurons { get; protected set; }
 
@@ -42,7 +42,7 @@ namespace Zad1_CSharp
 
         }
 
-        public void Initialize(int id, int weightCount, Neuron[] allNeurons, byte[] weights, NeuralNetwork network)
+        public void Initialize(int id, int weightCount, Neuron[] allNeurons, sbyte[] weights, NeuralNetwork network)
         {
             this.ID = id;
             this.WeightCount = weightCount;
@@ -50,19 +50,14 @@ namespace Zad1_CSharp
             OtherNeurons = allNeurons;
 
             this.Weights = weights;
-            this.Input = new byte[this.WeightCount];
-
-            for (int i = 0; i < this.WeightCount; ++i)
-            {
-                this.Input[i] = Byte.MinValue;
-            }
+            this.Input = 0;
 
             this.network = network;
         }
 
-        public void StartThread(byte[] falsePattern)
+        public void StartThread(sbyte[] falsePattern)
         {
-            falsePattern.CopyTo(this.Input, 0);
+            this.Input = falsePattern[ID];
 
             Thread = new Thread(new ThreadStart(Run));
             Thread.Start();
@@ -101,11 +96,25 @@ namespace Zad1_CSharp
         {
             while(network.RecursionCtr < network.RecursionSteps)
             {
-                System.Console.WriteLine("Neuron " + ID.ToString() + ": DUPA!");
+                //System.Console.WriteLine("Neuron " + ID.ToString() + ": WSZEDŁ");
+                network.SemRecursionCtr.WaitOne();
 
+                network.Sum = 0;
+
+                for(int i = 0; i<network.NeuronCount; i++)
+                    if (i != ID)
+                        network.Sum += (sbyte)(OtherNeurons[i].Input*Weights[ID*network.NeuronCount + i]);
+                if (network.Sum >= 0)
+                    this.Input = 1;
+                else
+                    this.Input = 0;
+
+                //System.Console.WriteLine("Neuron " + ID.ToString() + ": DUPA!");
+                
                 // check if we can calculate activation
 
-
+                network.SemRecursionCtr.Release();
+                //System.Console.WriteLine("Neuron " + ID.ToString() + ": WYSZEDŁ");
                 // increment recursion counter
                 IncrementRecursionCtr();
             }
@@ -118,11 +127,11 @@ namespace Zad1_CSharp
 
         private void IncrementRecursionCtr()
         {
-            network.SemRecursionCtr.WaitOne();
+            //network.SemRecursionCtr.WaitOne();
 
             ++network.RecursionCtr;
 
-            network.SemRecursionCtr.Release();
+            //network.SemRecursionCtr.Release();
         }
 
         #endregion

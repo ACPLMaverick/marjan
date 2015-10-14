@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -26,18 +27,19 @@ namespace Zad1_CSharp
 
         public int NeuronCount { get; private set; }
         public int RecursionSteps { get; private set; }
-        public byte[] Pattern { get; private set; } // Pattern length = NeuronCount. Always.
+        public sbyte[] Pattern { get; private set; } // Pattern length = NeuronCount. Always.
 
         public Neuron[] Neurons { get; private set; }
 
         public Semaphore SemRecursionCtr { get; private set; }
         public int RecursionCtr { get; set; }
+        public sbyte Sum { get; set; }
 
         #endregion
 
         #region methods
 
-        public void Initialize(int neuronCount, int recursionSteps, byte[] pattern)
+        public void Initialize(int neuronCount, int recursionSteps, sbyte[] pattern)
         {
             this.NeuronCount = neuronCount;
             this.RecursionSteps = recursionSteps;
@@ -50,17 +52,19 @@ namespace Zad1_CSharp
             {
                 this.Neurons[i] = new Neuron();
             }
+
+            sbyte[] tab = CreateWeightMatrix();
+            DrawWeightMatrix(tab);
+
             for (int i = 0; i < this.NeuronCount; ++i)
             {
-                byte[] tab = new byte[] { 3, 3, 3, 3, 3, 3, 3, 3 };
-                tab[i] = 0;
                 this.Neurons[i].Initialize(i, NeuronCount, this.Neurons, tab, this);
             }
 
             this.SemRecursionCtr = new Semaphore(1, 1, "Przemek");
         }
 
-        public byte[] Run(byte[] falsePattern)
+        public sbyte[] Run(sbyte[] falsePattern)
         {
             // run neurons
             for (int i = 0; i < NeuronCount; ++i )
@@ -79,10 +83,10 @@ namespace Zad1_CSharp
             {
                 System.Console.WriteLine("NeuralNetwork: Finished.");
 
-                byte[] ret = new byte[NeuronCount];
+                sbyte[] ret = new sbyte[NeuronCount];
                 for (int i = 0; i < NeuronCount; ++i )
                 {
-                    ret[i] = (byte)(Neurons[i].Activation);
+                    ret[i] = (sbyte)(Neurons[i].Input);
                 }
 
                 return ret;
@@ -104,6 +108,44 @@ namespace Zad1_CSharp
         {
 
         }
+
+
+        public sbyte[] CreateWeightMatrix()
+        {
+            sbyte[] ret = new sbyte[NeuronCount * NeuronCount];
+            sbyte sum;
+
+            for (int j = 0; j < NeuronCount; j++)
+            {
+                for (int i = j; i < NeuronCount; i++)
+                {
+                    if (i == j)
+                        ret[j*NeuronCount + i] = 0;
+                    else
+                    {
+                        sum = 0;
+                        sum += (sbyte) ((Pattern[i]*2 - 1)*(Pattern[j]*2 - 1));
+                        ret[j*NeuronCount + i] = sum;
+                        ret[i*NeuronCount + j] = sum;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public void DrawWeightMatrix(sbyte[] matrix)
+        {
+            for (int i = 0; i < NeuronCount; i++)
+            {
+                for (int j = 0; j < NeuronCount; j++)
+                {
+                    Console.Write(matrix[i * NeuronCount + j]);
+                }
+                Console.WriteLine("");
+            }
+        }
+
 
         #endregion
     }
