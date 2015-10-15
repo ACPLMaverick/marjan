@@ -46,7 +46,10 @@ unsigned int ClothSimulator::Initialize()
 		sizeof(clothData->data->normalBuffer[0]),
 		sizeof(clothData->data->colorBuffer[0]),
 		m_meshPlane->GetEdgesWidth() + 2,
-		m_meshPlane->GetEdgesLength() + 2
+		m_meshPlane->GetEdgesLength() + 2,
+		clothData->data->positionBuffer,
+		clothData->data->normalBuffer,
+		clothData->data->colorBuffer
 		);
 
 	return err;
@@ -71,9 +74,6 @@ unsigned int ClothSimulator::Update()
 	VertexData* clothData = m_meshPlane->GetVertexDataPtr();
 
 	err = m_simulator->ClothSpringSimulationUpdate(
-		clothData->data->positionBuffer, 
-		clothData->data->normalBuffer,
-		clothData->data->colorBuffer,
 		PhysicsManager::GetInstance()->GetGravity());
 
 	return err;

@@ -3,7 +3,6 @@
 
 MeshGL::MeshGL(SimObject* obj) : Mesh(obj)
 {
-	m_vertexArray = nullptr;
 	m_vertexData = nullptr;
 }
 
@@ -70,9 +69,6 @@ unsigned int MeshGL::Shutdown()
 
 	if (m_vertexData != nullptr)
 		delete m_vertexData;
-
-	if (m_vertexArray != nullptr)
-		delete m_vertexArray;
 
 	return CS_ERR_NONE;
 }

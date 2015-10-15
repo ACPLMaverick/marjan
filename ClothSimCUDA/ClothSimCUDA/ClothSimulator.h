@@ -14,7 +14,6 @@
 #include "ClothCollider.h"
 #include "clothSpringSimulation.h"
 
-
 class ClothSimulator :
 	public Component
 {
@@ -23,6 +22,9 @@ protected:
 
 	MeshGLPlane* m_meshPlane;
 	ClothCollider* m_collider;
+
+	unsigned int m_vertexCount;
+	unsigned int m_springCount;
 public:
 	ClothSimulator(SimObject* obj);
 	ClothSimulator(const ClothSimulator* c);

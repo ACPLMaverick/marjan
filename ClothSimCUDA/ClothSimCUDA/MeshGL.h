@@ -16,15 +16,6 @@ This is an abstract representation of a Mesh rendered by OpenGL 3.3.
 
 ////////////
 
-struct Vertex
-{
-	unsigned int id;
-	glm::vec3* position;
-	glm::vec2* uv;
-	glm::vec3* normal;
-	glm::vec4* color;
-};
-
 struct VertexDataRaw
 {
 	glm::vec3* positionBuffer;
@@ -112,7 +103,6 @@ class MeshGL :
 {
 protected:
 	VertexData* m_vertexData;
-	Vertex* m_vertexArray;
 
 	virtual void GenerateVertexData() = 0;
 	void CreateVertexDataBuffers(unsigned int, unsigned int, GLenum);
