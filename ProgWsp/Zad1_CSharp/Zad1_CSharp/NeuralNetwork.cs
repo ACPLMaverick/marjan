@@ -54,7 +54,7 @@ namespace Zad1_CSharp
             }
 
             sbyte[] tab = CreateWeightMatrix();
-            DrawWeightMatrix(tab);
+            //DrawWeightMatrix(tab);
 
             for (int i = 0; i < this.NeuronCount; ++i)
             {
@@ -104,11 +104,26 @@ namespace Zad1_CSharp
             }
         }
 
-        public void Shutdown()
+        public void Restart()
         {
+            sbyte[] beginWeights = CreateWeightMatrix();
 
+            for (int i = 0; i < this.NeuronCount; ++i)
+            {
+                this.Neurons[i].Restart(beginWeights);
+            }
+
+            RecursionCtr = 0;
+
+            try
+            {
+                SemRecursionCtr.Release();
+            }
+            catch
+            {
+                
+            }
         }
-
 
         public sbyte[] CreateWeightMatrix()
         {

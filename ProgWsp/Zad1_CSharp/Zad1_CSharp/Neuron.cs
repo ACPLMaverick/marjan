@@ -65,24 +65,10 @@ namespace Zad1_CSharp
             while (!Thread.IsAlive) ;
         }
 
-        public void StopThread()
+        public void Restart(sbyte[] weights)
         {
-
-        }
-
-        public void SleepThread()
-        {
-
-        }
-
-        public void AwakeThread()
-        {
-
-        }
-
-        public void Shutdown()
-        {
-
+            this.Input = 0;
+            this.Weights = weights;
         }
 
         /// <summary>
@@ -127,11 +113,11 @@ namespace Zad1_CSharp
 
         private void IncrementRecursionCtr()
         {
-            //network.SemRecursionCtr.WaitOne();
+            network.SemRecursionCtr.WaitOne();
 
             ++network.RecursionCtr;
 
-            //network.SemRecursionCtr.Release();
+            network.SemRecursionCtr.Release();
         }
 
         #endregion

@@ -15,7 +15,7 @@ namespace Zad1_CSharp
 
         public const int NEURON_COUNT = 8;
         private const int RECURSION_COUNT = 1000;
-        private const int TRIALS_COUNT = 1;
+        private const int TRIALS_COUNT = 10;
         private sbyte[] PATTERN = new sbyte[] { 1, 0, 1, 0, 1, 0, 1, 0 };
 
         #endregion
@@ -80,13 +80,9 @@ namespace Zad1_CSharp
             }
 
             ++trialCounter;
+            Network.Restart();
 
             return true;
-        }
-
-        public void Shutdown()
-        {
-            Network.Shutdown();
         }
 
         private string PatternToString(sbyte[] pattern, int length)

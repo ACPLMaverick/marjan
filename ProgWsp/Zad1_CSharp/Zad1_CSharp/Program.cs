@@ -16,8 +16,6 @@ namespace Zad1_CSharp
 
             while (contr.Run()) ;
 
-            contr.Shutdown();
-
             System.Console.WriteLine("Program terminated. Press any key to exit.");
             System.Console.ReadKey();
         }
