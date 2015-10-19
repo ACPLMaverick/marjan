@@ -82,8 +82,7 @@ namespace Zad1_CSharp
         {
             while(network.RecursionCtr < network.RecursionSteps)
             {
-                //System.Console.WriteLine("Neuron " + ID.ToString() + ": WSZEDŁ");
-                network.SemRecursionCtr.WaitOne();
+                //network.SemRecursionCtr.WaitOne();
 
                 network.Sum = 0;
 
@@ -94,13 +93,12 @@ namespace Zad1_CSharp
                     this.Input = 1;
                 else
                     this.Input = 0;
-
-                //System.Console.WriteLine("Neuron " + ID.ToString() + ": DUPA!");
                 
                 // check if we can calculate activation
 
-                network.SemRecursionCtr.Release();
-                //System.Console.WriteLine("Neuron " + ID.ToString() + ": WYSZEDŁ");
+                //network.SemRecursionCtr.Release();
+                network.BarrierN.SignalAndWait();
+
                 // increment recursion counter
                 IncrementRecursionCtr();
             }

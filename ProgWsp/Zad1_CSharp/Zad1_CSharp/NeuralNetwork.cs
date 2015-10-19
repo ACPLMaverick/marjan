@@ -32,6 +32,7 @@ namespace Zad1_CSharp
         public Neuron[] Neurons { get; private set; }
 
         public Semaphore SemRecursionCtr { get; private set; }
+        public Barrier BarrierN { get; private set; }
         public int RecursionCtr { get; set; }
         public sbyte Sum { get; set; }
 
@@ -62,6 +63,7 @@ namespace Zad1_CSharp
             }
 
             this.SemRecursionCtr = new Semaphore(1, 1, "Przemek");
+            this.BarrierN = new Barrier(NeuronCount);
         }
 
         public sbyte[] Run(sbyte[] falsePattern)
