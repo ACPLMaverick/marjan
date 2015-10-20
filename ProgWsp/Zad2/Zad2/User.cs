@@ -19,7 +19,8 @@ namespace Zad2
         public enum UserType
         {
             RANDOM,
-            FIXED
+            FIXED,
+            NONE
         };
 
         #endregion
@@ -55,8 +56,6 @@ namespace Zad2
             myThread.Start();
 
             while (!myThread.IsAlive) ;
-
-
         }
 
         protected void ModifyValue()
@@ -67,14 +66,17 @@ namespace Zad2
                 int valIndex = SelectValue();
                 //Console.WriteLine("User " + typeStr + String.Format("{0}", ID) + " modifies item " + String.Format("{0}", valIndex));
 
-                // obtain current value from database
-                int data = db.GetItem(valIndex);
+                // modify an element in database, what takes some time
+                db.ModifyItem(valIndex, AddValue, this);
 
-                // update value in database
-                db.SetItem(valIndex, data + AddValue);
-
-                // sleep a bit
-                //Thread.Sleep(SLEEP_AFTER_ACTION_MS);
+                if(Type == UserType.FIXED)
+                {
+                    ++db.FCtr;
+                }
+                else if(Type == UserType.RANDOM)
+                {
+                    ++db.RCtr;
+                }
             }
         }
 
