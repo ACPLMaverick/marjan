@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Zad2
 {
@@ -15,7 +15,7 @@ namespace Zad2
 
         #region variables
 
-        private int[] items;
+        private Data[] items;
 
         #endregion
 
@@ -31,22 +31,45 @@ namespace Zad2
         {
             ItemCount = itemCount;
 
-            items = new int[ItemCount];
+            items = new Data[ItemCount];
 
             for(int i = 0; i < ItemCount; ++i)
             {
-                items[i] = 0;
+                items[i] = new Data();
+                items[i].Value = 0;
             }
         }
 
-        public int GetItem(uint i)
+        public int GetItem(int i)
         {
-            return 0;
+            int dataToRet;
+            Monitor.Enter(items[i]);
+            dataToRet = items[i].Value;
+            Monitor.Exit(items[i]);
+
+            return dataToRet;
         }
 
-        public void SetItem(uint i)
+        public void SetItem(int i, int val)
         {
+            Monitor.Enter(items[i]);
 
+            items[i].Value = val;
+            
+            Monitor.Exit(items[i]);
+        }
+
+        public override string ToString()
+        {
+            string str = "";
+
+            for (int i = 0; i < ItemCount; ++i )
+            {
+                str += String.Format("{0}", items[i].Value) + " ";
+            }
+            str += "\n";
+
+            return str;
         }
 
         #endregion

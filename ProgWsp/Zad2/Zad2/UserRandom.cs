@@ -27,6 +27,8 @@ namespace Zad2
         public UserRandom(uint id, int addValue, Database db) : base(id, addValue, db)
         {
             random = new Random();
+            Type = UserType.RANDOM;
+            typeStr = "R";
         }
 
         protected override int SelectValue()

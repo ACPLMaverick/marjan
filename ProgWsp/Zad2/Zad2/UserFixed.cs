@@ -27,6 +27,8 @@ namespace Zad2
         public UserFixed(uint id, int addValue, Database db, int position) : base(id, addValue, db)
         {
             pos = position;
+            Type = UserType.FIXED;
+            typeStr = "F";
         }
 
         protected override int SelectValue()

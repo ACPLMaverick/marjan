@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Zad2
 {
@@ -11,6 +11,7 @@ namespace Zad2
         #region constants
 
         public const int ITEM_COUNT = 8;
+        private const int DISPLAY_SLEEP = 100;
 
         #endregion
 
@@ -64,6 +65,14 @@ namespace Zad2
             for (int i = 0; i < fixedCount; ++i)
             {
                 MUsersFixed[i].Run();
+            }
+
+            while(true)
+            {
+                Console.Clear();
+                Console.WriteLine(MDatabase.ToString());
+
+                Thread.Sleep(DISPLAY_SLEEP);
             }
         }
 
