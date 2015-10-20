@@ -45,6 +45,8 @@
     <Compile Include="Database.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserFixed.cs" />
+    <Compile Include="UserRandom.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

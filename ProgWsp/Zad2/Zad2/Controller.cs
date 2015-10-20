@@ -10,15 +10,22 @@ namespace Zad2
     {
         #region constants
 
-        public const uint OBJECT_COUNT = 8;
+        public const int ITEM_COUNT = 8;
 
         #endregion
 
         #region variables 
 
+        private int randomCount;
+        private int fixedCount;
+
         #endregion
 
         #region properties
+
+        public Database MDatabase { get; private set; }
+        public User[] MUsersRandom { get; private set; }
+        public User[] MUsersFixed { get; private set; }
 
         #endregion
 
@@ -26,12 +33,38 @@ namespace Zad2
 
         public Controller()
         {
+            MDatabase = new Database(ITEM_COUNT);
+            randomCount = ITEM_COUNT + 1;
+            fixedCount = ITEM_COUNT;
+            MUsersRandom = new User[randomCount];
+            MUsersFixed = new User[fixedCount];
+
+            for (int i = 0; i < randomCount; ++i )
+            {
+                MUsersRandom[i] = new UserRandom((uint)i, -1, MDatabase);
+            }
+
+            for (int i = 0; i < fixedCount; ++i)
+            {
+                MUsersFixed[i] = new UserFixed((uint)i, 1, MDatabase, i);
+            }
+
             Console.WriteLine("Controller initialized.");
         }
 
         public void Run()
         {
             Console.WriteLine("Running controller...");
+
+            for (int i = 0; i < randomCount; ++i)
+            {
+                MUsersRandom[i].Run();
+            }
+
+            for (int i = 0; i < fixedCount; ++i)
+            {
+                MUsersFixed[i].Run();
+            }
         }
 
         #endregion
