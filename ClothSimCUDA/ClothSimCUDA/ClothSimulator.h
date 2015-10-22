@@ -12,6 +12,7 @@
 #include "Common.h"
 #include "MeshGLPlane.h"
 #include "ClothCollider.h"
+#include "Timer.h"
 #include "clothSpringSimulation.h"
 
 class ClothSimulator :

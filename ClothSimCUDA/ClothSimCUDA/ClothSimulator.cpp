@@ -74,7 +74,9 @@ unsigned int ClothSimulator::Update()
 	VertexData* clothData = m_meshPlane->GetVertexDataPtr();
 
 	err = m_simulator->ClothSpringSimulationUpdate(
-		PhysicsManager::GetInstance()->GetGravity());
+		PhysicsManager::GetInstance()->GetGravity(),
+		Timer::GetInstance()->GetDeltaTime()
+		);
 
 	return err;
 }

@@ -15,37 +15,35 @@
 struct Vertex
 {
 	glm::vec3 force;
-	glm::vec3 speed;
+	glm::vec3 velocity;
+	glm::vec3 prevPosition;
 
 	unsigned int neighbours[VERTEX_NEIGHBOURING_VERTICES];
+	float neighbourMultipliers[VERTEX_NEIGHBOURING_VERTICES];
+	float springLengths[VERTEX_NEIGHBOURING_VERTICES];
 
 	unsigned int id;
 	float mass;
+	float dampCoeff;
 	float lockMultiplier;
-
-	glm::vec3* positionPtr;
-	glm::vec2* uvPtr;
-	glm::vec3* normalPtr;
-	glm::vec4* colorPtr;
 
 	Vertex()
 	{
 		force = glm::vec3(0.0f, 0.0f, 0.0f);
-		speed = glm::vec3(0.0f, 0.0f, 0.0f);
+		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+		prevPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
 		{
 			neighbours[i] = 0xFFFFFFFF;
+			neighbourMultipliers[i] = 1.0f;
+			springLengths[i] = 0.0f;
 		}
 
 		id = 0xFFFFFFFF;
 		mass = 0.0f;
+		dampCoeff = 0.0f;
 		lockMultiplier = 1.0f;
-
-		positionPtr = nullptr;
-		uvPtr = nullptr;
-		normalPtr = nullptr;
-		colorPtr = nullptr;
 	}
 };
 
@@ -66,8 +64,9 @@ class clothSpringSimulation
 private:
 	cudaDeviceProp* m_deviceProperties;
 
-	const float VERTEX_MASS = 0.1f;
-	const float SPRING_ELASTICITY = 5.0f;
+	const float VERTEX_MASS = 0.000001f;
+	const float VERTEX_DAMP = 0.00001f;
+	const float SPRING_ELASTICITY = 0.00005f;	
 
 	unsigned int m_vertexCount;
 	unsigned int m_springCount;
@@ -93,7 +92,7 @@ private:
 	float* i_gravPtr;
 	/////////////////
 
-	inline cudaError_t CalculateForces(float gravity);
+	inline cudaError_t CalculateForces(float gravity, double delta);
 	inline void FreeMemory();
 public:
 	clothSpringSimulation();
@@ -109,7 +108,7 @@ public:
 		glm::vec3* vertexNormalPtr, 
 		glm::vec4* vertexColorPtr
 		);
-	unsigned int ClothSpringSimulationUpdate(float gravity);
+	unsigned int ClothSpringSimulationUpdate(float gravity, double delta);
 	unsigned int ClothSpringSimulationShutdown();
 };
 

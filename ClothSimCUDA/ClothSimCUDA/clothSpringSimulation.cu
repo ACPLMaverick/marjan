@@ -2,32 +2,133 @@
 #include "clothSpringSimulation.h"
 
 
-__global__ void CalculateSpringsKernel(Vertex* vertPtr, Spring* springPtr, glm::vec3* posPtr, glm::vec3* nrmPtr, glm::vec4* colPtr, const float* grav)
+__global__ void CalculateSpringsKernel(
+	Vertex* vertPtr, 
+	Spring* springPtr, 
+	glm::vec3* posPtr, 
+	glm::vec3* nrmPtr, 
+	glm::vec4* colPtr, 
+	const float* grav,
+	const int N
+	)
 {
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+	int v_cur = (i * gridDim.y * blockDim.y) + j;
 
+	if (v_cur >= N)
+		return;
+
+	posPtr[springPtr[v_cur].idFirst].y = posPtr[springPtr[v_cur].idFirst].y - 0.00055f;
+	//posPtr[springPtr[v_cur].idSecond].y -= 0.00055f;
 }
 
-__global__ void CalculateForcesKernel(Vertex* vertPtr, Spring* springPtr, glm::vec3* posPtr, glm::vec3* nrmPtr, glm::vec4* colPtr, const float* grav)
+__global__ void CalculateForcesKernel(
+	Vertex* vertPtr, 
+	Spring* springPtr, 
+	glm::vec3* posPtr, 
+	glm::vec3* nrmPtr, 
+	glm::vec4* colPtr, 
+	const float* grav, 
+	const float delta,
+	const unsigned int N
+	)
 {
-	int i = blockIdx.x;
-	int j = blockIdx.y;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+	int v_cur = (i * gridDim.y * blockDim.y) + j;
 
-	int v_cur = (i * gridDim.y) + j;
+	if (v_cur >= N)
+		return;
+	
+	vertPtr[v_cur].force = glm::vec3(0.0f, 0.0f, 0.0f);
+	vertPtr[v_cur].velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+	float el = 0.1f;
+	int id = vertPtr[v_cur].id;
 
-	// test
-	posPtr[v_cur].y -= 0.00025f;
-	colPtr[v_cur].r = fmaxf(0.0f, colPtr[v_cur].r - 0.0001f);
-	///
+	// calculate elasticity force for each neighbouring vertices
+	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
+	{
+		vertPtr[v_cur].force.x +=
+			-el * (abs(posPtr[id].x - posPtr[vertPtr[v_cur].neighbours[i]].x) - vertPtr[v_cur].springLengths[i]) *
+			(posPtr[id].x - posPtr[vertPtr[v_cur].neighbours[i]].x) /
+			((abs(posPtr[id].x - posPtr[vertPtr[v_cur].neighbours[i]].x))) * 
+			vertPtr[v_cur].neighbourMultipliers[i];
+
+		vertPtr[v_cur].force.y +=
+			-el * (abs(posPtr[id].y - posPtr[vertPtr[v_cur].neighbours[i]].y) - vertPtr[v_cur].springLengths[i]) *
+			(posPtr[id].y - posPtr[vertPtr[v_cur].neighbours[i]].y) /
+			((abs(posPtr[id].y - posPtr[vertPtr[v_cur].neighbours[i]].y))) *
+			vertPtr[v_cur].neighbourMultipliers[i];
+
+		vertPtr[v_cur].force.z +=
+			-el * (abs(posPtr[id].z - posPtr[vertPtr[v_cur].neighbours[i]].z) - vertPtr[v_cur].springLengths[i]) *
+			(posPtr[id].z - posPtr[vertPtr[v_cur].neighbours[i]].z) /
+			((abs(posPtr[id].z - posPtr[vertPtr[v_cur].neighbours[i]].z))) *
+			vertPtr[v_cur].neighbourMultipliers[i];
+	}
+
+
+	// calculate gravity force
+	vertPtr[v_cur].force +=
+		vertPtr[v_cur].mass * glm::vec3(0.0f, -(*grav) / 10.0f, 0.0f);
+
+	// calculate air damp force
+	vertPtr[v_cur].force +=
+		-vertPtr[v_cur].dampCoeff * vertPtr[v_cur].velocity;
+
+	// ?calculate repulsive force?
+
+	// check hooks
+	vertPtr[v_cur].force *= vertPtr[v_cur].lockMultiplier;
+
+
+	// calculate acceleration and use Verelet integration to calculate position
+	glm::vec3 newPos;
+	glm::vec3 acc = vertPtr[v_cur].force / vertPtr[v_cur].mass;
+
+	newPos = 2.0f * posPtr[id] - vertPtr[v_cur].prevPosition + acc * delta * delta;
+	vertPtr[v_cur].prevPosition = posPtr[id];
+	posPtr[id] = newPos;
+
+	// update velocity
+	vertPtr[v_cur].velocity = (newPos - vertPtr[v_cur].prevPosition) / delta;
 }
 
-__global__ void CalculatePositionsKernel(Vertex* vertPtr, Spring* springPtr, glm::vec3* posPtr, glm::vec3* nrmPtr, glm::vec4* colPtr, const float* grav)
+__global__ void CalculatePositionsKernel(
+	Vertex* vertPtr, 
+	Spring* springPtr, 
+	glm::vec3* posPtr, 
+	glm::vec3* nrmPtr, 
+	glm::vec4* colPtr, 
+	const float* grav,
+	const int N
+	)
 {
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+	int v_cur = (i * gridDim.y * blockDim.y) + j;
 
+	if (v_cur >= N)
+		return;
 }
 
-__global__ void CalculateNormalsKernel(Vertex* vertPtr, Spring* springPtr, glm::vec3* posPtr, glm::vec3* nrmPtr, glm::vec4* colPtr, const float* grav)
+__global__ void CalculateNormalsKernel(
+	Vertex* vertPtr, 
+	Spring* springPtr, 
+	glm::vec3* posPtr, 
+	glm::vec3* nrmPtr, 
+	glm::vec4* colPtr, 
+	const float* grav, 
+	const int N
+	)
 {
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+	int v_cur = (i * gridDim.y * blockDim.y) + j;
 
+	if (v_cur >= N)
+		return;
 }
 
 //////////////////////////////////////////////////////
@@ -75,36 +176,65 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		m_vertices[i].id = i;
 		m_vertices[i].mass = VERTEX_MASS;
 		m_vertices[i].lockMultiplier = 1.0f;
+		m_vertices[i].prevPosition = m_posPtr[i];
+		m_vertices[i].dampCoeff = VERTEX_DAMP;
 
-		// calculating neighbouring vertices ids ------------------------------------------------ CHECK IT!
+		// calculating neighbouring vertices ids and spring lengths
+
+		float lengthX = abs(m_posPtr[0].x - m_posPtr[m_vertexCount - 1].x) / (float)(m_allEdgesLength - 1);
+		float lengthZ = abs(m_posPtr[0].z - m_posPtr[m_vertexCount - 1].z) / (float)(m_allEdgesWidth - 1);
+
 		// upper
+		m_vertices[i].neighbours[0] = (i - 1) % m_vertexCount;
 		if (i % m_allEdgesLength)
-			m_vertices[i].neighbours[0] = i - 1;
+		{
+			m_vertices[i].neighbourMultipliers[0] = 1.0f;
+			m_vertices[i].springLengths[0] = lengthZ;
+		}	
 		else
-			m_vertices[i].neighbours[0] = i;
+		{
+			m_vertices[i].neighbourMultipliers[0] = 0.0f;
+			m_vertices[i].springLengths[0] = 0.0f;
+		}
 
 		// lower
+		m_vertices[i].neighbours[1] = (i + 1) % m_vertexCount;
 		if (i % m_allEdgesLength != (m_allEdgesLength - 1))
-			m_vertices[i].neighbours[1] = i + 1;
+		{
+			m_vertices[i].neighbourMultipliers[1] = 1.0f;
+			m_vertices[i].springLengths[1] = lengthZ;
+		}
 		else
-			m_vertices[i].neighbours[1] = i;
+		{
+			m_vertices[i].neighbourMultipliers[1] = 0.0f;
+			m_vertices[i].springLengths[1] = 0.0f;
+		}
 
 		// left
+		m_vertices[i].neighbours[2] = (i - m_allEdgesLength) % m_vertexCount;
 		if (i >= m_allEdgesLength)
-			m_vertices[i].neighbours[2] = i - m_allEdgesLength;
+		{
+			m_vertices[i].neighbourMultipliers[2] = 1.0f;
+			m_vertices[i].springLengths[1] = lengthX;
+		}
 		else
-			m_vertices[i].neighbours[2] = i;
+		{
+			m_vertices[i].neighbourMultipliers[2] = 0.0f;
+			m_vertices[i].springLengths[2] = 0.0f;
+		}
 
 		// right
+		m_vertices[i].neighbours[3] = (i + m_allEdgesLength) % m_vertexCount;
 		if (i < (m_vertexCount - m_allEdgesLength))
-			m_vertices[i].neighbours[3] = i + m_allEdgesLength;
+		{
+			m_vertices[i].neighbourMultipliers[3] = 1.0f;
+			m_vertices[i].springLengths[3] = lengthX;
+		}
 		else
-			m_vertices[i].neighbours[3] = i;
-
-		// assigning data pointers
-		m_vertices[i].positionPtr = &m_posPtr[i];
-		m_vertices[i].normalPtr = &m_nrmPtr[i];
-		m_vertices[i].colorPtr = &m_colPtr[i];
+		{
+			m_vertices[i].neighbourMultipliers[3] = 0.0f;
+			m_vertices[i].springLengths[3] = 0.0f;
+		}
 	}
 
 
@@ -215,10 +345,10 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 	}
 }
 
-unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity)
+unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, double delta)
 {
 	// Add vectors in parallel.
-	cudaError_t cudaStatus = CalculateForces(gravity);
+	cudaError_t cudaStatus = CalculateForces(gravity, delta);
 	if (cudaStatus != cudaSuccess) {
 		printf("CUDA: AddWithCuda failed!");
 		return CS_ERR_CLOTHSIMULATOR_CUDA_FAILED;
@@ -255,12 +385,12 @@ unsigned int clothSpringSimulation::ClothSpringSimulationShutdown()
 /////////////////////////////////////////////////////
 
 
-inline cudaError_t clothSpringSimulation::CalculateForces(float gravity)
+inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double delta)
 {
 	cudaError_t status;
 
 	// copy vertex data and simulation variables to device memory
-	/*
+
 	status = cudaMemcpy(i_vertexPtr, m_vertices, m_vertexCount * sizeof(Vertex), cudaMemcpyHostToDevice);
 	if (status != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
@@ -268,6 +398,7 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity)
 		return status;
 	}
 
+	/*
 	status = cudaMemcpy(i_springPtr, m_springs, m_springCount * sizeof(Spring), cudaMemcpyHostToDevice);
 	if (status != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
@@ -305,14 +436,18 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity)
 	}
 
 	// launch kernel
-	dim3 gridVerts(m_allEdgesWidth, m_allEdgesLength, 1);
-	dim3 gridSprings((m_allEdgesWidth - 1) * m_allEdgesLength, (m_allEdgesLength - 1) * m_allEdgesWidth, 1);
-	dim3 blockVerts(1, 1, 1);
-	dim3 blockSprings(m_allEdgesLength, m_allEdgesWidth);
-	CalculateSpringsKernel << < gridSprings, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr);
-	CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr);
-	CalculatePositionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr);
-	CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr);
+	int p = m_deviceProperties->warpSize;
+	int sX = (m_allEdgesWidth - 1) * m_allEdgesLength;
+	int sY = (m_allEdgesLength - 1) * m_allEdgesWidth;
+	dim3 gridVerts((m_allEdgesWidth + p - 1) / p, (m_allEdgesLength + p - 1) / p, 1);
+	dim3 gridSprings((sX + p - 1) / p, (sY + p - 1) / p, 1);
+	dim3 blockVerts(p, p, 1);
+	dim3 blockSprings(p, p, 1);
+
+	//CalculateSpringsKernel << < gridSprings, blockSprings >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_springCount);
+	CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, delta / 1000.0f, m_vertexCount);
+	//CalculatePositionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
+	//CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
 
 	// Check for any errors launching the kernel
 	status = cudaGetLastError();
@@ -324,7 +459,7 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity)
 
 	// copy calculated data out of device memory
 
-	/*
+
 	status = cudaMemcpy(m_vertices, i_vertexPtr, m_vertexCount * sizeof(Vertex), cudaMemcpyDeviceToHost);
 	if (status != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
@@ -332,6 +467,7 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity)
 		return status;
 	}
 
+	/*
 	status = cudaMemcpy(m_springs, i_springPtr, m_springCount * sizeof(Spring), cudaMemcpyDeviceToHost);
 	if (status != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");

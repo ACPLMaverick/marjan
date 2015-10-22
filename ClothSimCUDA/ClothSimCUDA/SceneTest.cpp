@@ -102,7 +102,7 @@ unsigned int SceneTest::Initialize()
 	testClothTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
 	testCloth->SetTransform(testClothTransform);
 
-	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 100, 100);
+	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 0, 0);
 	clothMesh->Initialize();
 	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testCloth->AddMesh(clothMesh);
