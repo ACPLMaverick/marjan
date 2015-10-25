@@ -10,11 +10,13 @@ namespace Zad2
     {
         public int Value { get; set; }
         public User.UserType LastUserAccess { get; set; }
+        public uint LastUserAccessID { get; set; }
 
         public Data()
         {
             Value = 0;
             LastUserAccess = User.UserType.NONE;
+            LastUserAccessID = UInt32.MaxValue;
         }
     }
 }

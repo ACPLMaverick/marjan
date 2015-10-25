@@ -62,13 +62,14 @@ namespace Zad2
         {
             while(true)
             {
-                // select value we want to modify
+                // wybór wartości do modyfikacji, zależnie od grupy wątku
                 int valIndex = SelectValue();
-                //Console.WriteLine("User " + typeStr + String.Format("{0}", ID) + " modifies item " + String.Format("{0}", valIndex));
 
-                // modify an element in database, what takes some time
+                // modfyikacja elementu w bazie danych, całą synchronizację obsługuje klasa Database
                 db.ModifyItem(valIndex, AddValue, this);
 
+                // inkrementacja liczników modyfikacji w bazie, tu synchronizacja także jest obsługiwana
+                // przez klasę Database, przy pomocy semafora
                 if(Type == UserType.FIXED)
                 {
                     ++db.FCtr;
