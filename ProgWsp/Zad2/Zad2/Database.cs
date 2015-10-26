@@ -12,6 +12,7 @@ namespace Zad2
 
         public const int MODIFY_TIME_MIN = 100;
         public const int MODIFY_TIME_MAX = 2000;
+        protected const int MAX_WAIT_ON_MONITOR = 10000;
 
         #endregion
 
@@ -82,31 +83,33 @@ namespace Zad2
             RCtr = 0;
         }
 
-        public void ModifyItem(int i, int val, User u)
+        public void ModifyItem(int rid, int val, User u)
         {
             // wchodzimy do monitora
-            Monitor.Enter(items[i]);
+            Monitor.Enter(items[rid]);
 
             // jeśli ostatni obsługiwany wątek należał do tej samej kategorii
             // ustępujemy miejsca następnemu wątkowi
-            if(u.Type == items[i].LastUserAccess)
+            // robimy to tyle razy ile jest zasobów
+            for (int i = 0; i < Controller.ITEM_COUNT; ++i )
             {
-                Monitor.Wait(items[i]);
+                if (u.Type == items[rid].LastUserAccess)
+                {
+                    Monitor.Wait(items[rid]);
+                }
             }
+                
 
             // usypianie by zasymulować przetwarzanie zasobu
             Thread.Sleep(rand.Next(MODIFY_TIME_MIN, MODIFY_TIME_MAX));
-            items[i].Value += val;
+            items[rid].Value += val;
 
-            // jeśli jesteśmy "nowym" wątkiem, budzimy ten poprzedni, uśpiony
-            if (u.Type != items[i].LastUserAccess)
-            {
-                items[i].LastUserAccess = u.Type;
-                Monitor.Pulse(items[i]);
-            }
+            // budzimy ten poprzedni, uśpiony
+            items[rid].LastUserAccess = u.Type;
+            Monitor.PulseAll(items[rid]);
             
             // wychodzimy z monitora
-            Monitor.Exit(items[i]);
+            Monitor.Exit(items[rid]);
         }
 
         public override string ToString()
