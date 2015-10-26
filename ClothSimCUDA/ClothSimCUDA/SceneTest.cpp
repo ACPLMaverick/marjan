@@ -102,7 +102,7 @@ unsigned int SceneTest::Initialize()
 	testClothTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
 	testCloth->SetTransform(testClothTransform);
 
-	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 0, 0);
+	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 16, 16);
 	clothMesh->Initialize();
 	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testCloth->AddMesh(clothMesh);
@@ -111,7 +111,7 @@ unsigned int SceneTest::Initialize()
 	testCloth->AddCollider(clothCol);
 	clothCol->Initialize();
 
-	ClothSimulator* cSim = new ClothSimulator(testCloth);
+	ClothSimulator* cSim = new ClothSimulator(testCloth, 1);
 	testCloth->AddComponent(cSim);
 	cSim->Initialize();
 

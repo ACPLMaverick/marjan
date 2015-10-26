@@ -1,8 +1,9 @@
 #include "ClothSimulator.h"
 
 
-ClothSimulator::ClothSimulator(SimObject* obj) : Component(obj)
+ClothSimulator::ClothSimulator(SimObject* obj, int steps) : Component(obj)
 {
+	m_steps = steps;
 }
 
 ClothSimulator::ClothSimulator(const ClothSimulator* c) : Component(c)
@@ -75,7 +76,8 @@ unsigned int ClothSimulator::Update()
 
 	err = m_simulator->ClothSpringSimulationUpdate(
 		PhysicsManager::GetInstance()->GetGravity(),
-		Timer::GetInstance()->GetDeltaTime()
+		Timer::GetInstance()->GetDeltaTime(),
+		m_steps
 		);
 
 	return err;

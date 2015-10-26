@@ -26,8 +26,10 @@ protected:
 
 	unsigned int m_vertexCount;
 	unsigned int m_springCount;
+
+	int m_steps;
 public:
-	ClothSimulator(SimObject* obj);
+	ClothSimulator(SimObject* obj, int steps);
 	ClothSimulator(const ClothSimulator* c);
 	~ClothSimulator();
 

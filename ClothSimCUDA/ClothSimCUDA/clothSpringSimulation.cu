@@ -31,7 +31,8 @@ __global__ void CalculateForcesKernel(
 	glm::vec4* colPtr, 
 	const float* grav, 
 	const float delta,
-	const unsigned int N
+	const unsigned int N,
+	const int steps
 	)
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -41,58 +42,84 @@ __global__ void CalculateForcesKernel(
 	if (v_cur >= N)
 		return;
 	
-	vertPtr[v_cur].force = glm::vec3(0.0f, 0.0f, 0.0f);
-	vertPtr[v_cur].velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	float el = 0.1f;
-	int id = vertPtr[v_cur].id;
-
-	// calculate elasticity force for each neighbouring vertices
-	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
+	for (int r = 1; r <= steps; ++r)
 	{
-		vertPtr[v_cur].force.x +=
-			-el * (abs(posPtr[id].x - posPtr[vertPtr[v_cur].neighbours[i]].x) - vertPtr[v_cur].springLengths[i]) *
-			(posPtr[id].x - posPtr[vertPtr[v_cur].neighbours[i]].x) /
-			((abs(posPtr[id].x - posPtr[vertPtr[v_cur].neighbours[i]].x))) * 
-			vertPtr[v_cur].neighbourMultipliers[i];
+		vertPtr[v_cur].force = glm::vec3(0.0f, 0.0f, 0.0f);
+		vertPtr[v_cur].velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+		int id = vertPtr[v_cur].id;
 
-		vertPtr[v_cur].force.y +=
-			-el * (abs(posPtr[id].y - posPtr[vertPtr[v_cur].neighbours[i]].y) - vertPtr[v_cur].springLengths[i]) *
-			(posPtr[id].y - posPtr[vertPtr[v_cur].neighbours[i]].y) /
-			((abs(posPtr[id].y - posPtr[vertPtr[v_cur].neighbours[i]].y))) *
-			vertPtr[v_cur].neighbourMultipliers[i];
+		// calculate elasticity force for each neighbouring vertices
+		for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
+		{
+			/*
+			glm::vec3 mPos = posPtr[vertPtr[v_cur].id];
+			glm::vec3 nPos = posPtr[vertPtr[v_cur].neighbours[i]];
 
-		vertPtr[v_cur].force.z +=
-			-el * (abs(posPtr[id].z - posPtr[vertPtr[v_cur].neighbours[i]].z) - vertPtr[v_cur].springLengths[i]) *
-			(posPtr[id].z - posPtr[vertPtr[v_cur].neighbours[i]].z) /
-			((abs(posPtr[id].z - posPtr[vertPtr[v_cur].neighbours[i]].z))) *
-			vertPtr[v_cur].neighbourMultipliers[i];
+			// direction of the force
+			glm::vec3 f = mPos - nPos;
+			glm::vec3 n = glm::normalize(f);
+			float m = glm::length(f) - vertPtr[v_cur].springLengths[i];
+
+			vertPtr[v_cur].force += -vertPtr[v_cur].elasticity * m * n * vertPtr[v_cur].neighbourMultipliers[i];
+			*/
+
+			glm::vec3 nPos = posPtr[vertPtr[v_cur].neighbours[i]];
+			double n1, n2, n3;
+
+			n1 = (double)-vertPtr[v_cur].elasticity * (abs((double)posPtr[id].x - (double)nPos.x) - (double)vertPtr[v_cur].springLengths[i].x);
+			n2 = (double)posPtr[id].x - (double)nPos.x;
+			n3 = -(double)signbit(n2) * 2.0f + 1.0f;
+
+			vertPtr[v_cur].force.x +=
+				n1 * n3 *
+				(double)vertPtr[v_cur].neighbourMultipliers[i];
+
+			n1 = (double)-vertPtr[v_cur].elasticity * (abs((double)posPtr[id].y - (double)nPos.y) - (double)vertPtr[v_cur].springLengths[i].y);
+			n2 = (double)posPtr[id].y - (double)nPos.y;
+			n3 = -(double)signbit(n2) * 2.0f + 1.0f;
+
+			vertPtr[v_cur].force.y +=
+				n1 * n3 *
+				(double)vertPtr[v_cur].neighbourMultipliers[i];
+
+			n1 = (double)-vertPtr[v_cur].elasticity * (abs((double)posPtr[id].z - (double)nPos.z) - (double)vertPtr[v_cur].springLengths[i].z);
+			n2 = (double)posPtr[id].z - (double)nPos.z;
+			n3 = -(double)signbit(n2) * 2.0f + 1.0f;
+
+			vertPtr[v_cur].force.z +=
+				n1 * n3 *
+				(double)vertPtr[v_cur].neighbourMultipliers[i];
+
+		}
+
+
+		// calculate gravity force
+		vertPtr[v_cur].force +=
+			vertPtr[v_cur].mass * glm::vec3(0.0f, -(*grav) / 100.0f, 0.0f);
+
+		// calculate air damp force
+		vertPtr[v_cur].force +=
+			-vertPtr[v_cur].dampCoeff * vertPtr[v_cur].velocity;
+
+		// ?calculate repulsive force?
+
+		// check hooks
+		vertPtr[v_cur].force *= vertPtr[v_cur].lockMultiplier;
+
+
+		// calculate acceleration and use Verelet integration to calculate position
+		glm::vec3 newPos;
+		glm::vec3 acc = vertPtr[v_cur].force / vertPtr[v_cur].mass;
+
+		float d = delta / (float)steps;
+
+		newPos = 2.0f * posPtr[id] - vertPtr[v_cur].prevPosition + acc * d * d;
+		vertPtr[v_cur].prevPosition = posPtr[id];
+		posPtr[id] = newPos;
+
+		// update velocity
+		vertPtr[v_cur].velocity = (newPos - vertPtr[v_cur].prevPosition) / d;
 	}
-
-
-	// calculate gravity force
-	vertPtr[v_cur].force +=
-		vertPtr[v_cur].mass * glm::vec3(0.0f, -(*grav) / 10.0f, 0.0f);
-
-	// calculate air damp force
-	vertPtr[v_cur].force +=
-		-vertPtr[v_cur].dampCoeff * vertPtr[v_cur].velocity;
-
-	// ?calculate repulsive force?
-
-	// check hooks
-	vertPtr[v_cur].force *= vertPtr[v_cur].lockMultiplier;
-
-
-	// calculate acceleration and use Verelet integration to calculate position
-	glm::vec3 newPos;
-	glm::vec3 acc = vertPtr[v_cur].force / vertPtr[v_cur].mass;
-
-	newPos = 2.0f * posPtr[id] - vertPtr[v_cur].prevPosition + acc * delta * delta;
-	vertPtr[v_cur].prevPosition = posPtr[id];
-	posPtr[id] = newPos;
-
-	// update velocity
-	vertPtr[v_cur].velocity = (newPos - vertPtr[v_cur].prevPosition) / delta;
 }
 
 __global__ void CalculatePositionsKernel(
@@ -178,23 +205,27 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		m_vertices[i].lockMultiplier = 1.0f;
 		m_vertices[i].prevPosition = m_posPtr[i];
 		m_vertices[i].dampCoeff = VERTEX_DAMP;
+		m_vertices[i].elasticity = SPRING_ELASTICITY;
 
 		// calculating neighbouring vertices ids and spring lengths
 
-		float lengthX = abs(m_posPtr[0].x - m_posPtr[m_vertexCount - 1].x) / (float)(m_allEdgesLength - 1);
-		float lengthZ = abs(m_posPtr[0].z - m_posPtr[m_vertexCount - 1].z) / (float)(m_allEdgesWidth - 1);
+		glm::vec3 baseLength = glm::vec3(
+			abs(m_posPtr[0].x - m_posPtr[m_vertexCount - 1].x) / (float)(m_allEdgesLength - 1),
+			0.0f,
+			abs(m_posPtr[0].z - m_posPtr[m_vertexCount - 1].z) / (float)(m_allEdgesWidth - 1)
+			);
 
 		// upper
 		m_vertices[i].neighbours[0] = (i - 1) % m_vertexCount;
 		if (i % m_allEdgesLength)
 		{
 			m_vertices[i].neighbourMultipliers[0] = 1.0f;
-			m_vertices[i].springLengths[0] = lengthZ;
+			m_vertices[i].springLengths[0] = baseLength;
 		}	
 		else
 		{
 			m_vertices[i].neighbourMultipliers[0] = 0.0f;
-			m_vertices[i].springLengths[0] = 0.0f;
+			m_vertices[i].springLengths[0] = glm::vec3();
 		}
 
 		// lower
@@ -202,12 +233,12 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		if (i % m_allEdgesLength != (m_allEdgesLength - 1))
 		{
 			m_vertices[i].neighbourMultipliers[1] = 1.0f;
-			m_vertices[i].springLengths[1] = lengthZ;
+			m_vertices[i].springLengths[1] = baseLength;
 		}
 		else
 		{
 			m_vertices[i].neighbourMultipliers[1] = 0.0f;
-			m_vertices[i].springLengths[1] = 0.0f;
+			m_vertices[i].springLengths[1] = glm::vec3();
 		}
 
 		// left
@@ -215,12 +246,12 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		if (i >= m_allEdgesLength)
 		{
 			m_vertices[i].neighbourMultipliers[2] = 1.0f;
-			m_vertices[i].springLengths[1] = lengthX;
+			m_vertices[i].springLengths[1] = baseLength;
 		}
 		else
 		{
 			m_vertices[i].neighbourMultipliers[2] = 0.0f;
-			m_vertices[i].springLengths[2] = 0.0f;
+			m_vertices[i].springLengths[2] = glm::vec3();
 		}
 
 		// right
@@ -228,15 +259,19 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		if (i < (m_vertexCount - m_allEdgesLength))
 		{
 			m_vertices[i].neighbourMultipliers[3] = 1.0f;
-			m_vertices[i].springLengths[3] = lengthX;
+			m_vertices[i].springLengths[3] = baseLength;
 		}
 		else
 		{
 			m_vertices[i].neighbourMultipliers[3] = 0.0f;
-			m_vertices[i].springLengths[3] = 0.0f;
+			m_vertices[i].springLengths[3] = glm::vec3();
 		}
 	}
 
+	// hard-coded locks
+	m_vertices[0].lockMultiplier = 0.0f;
+	m_vertices[m_vertexCount - m_allEdgesLength].lockMultiplier = 0.0f;
+	m_colPtr[1].r = 0.0f;
 
 	m_springs = new Spring[m_springCount];
 
@@ -345,18 +380,16 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 	}
 }
 
-unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, double delta)
+unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, double delta, int steps)
 {
 	// Add vectors in parallel.
-	cudaError_t cudaStatus = CalculateForces(gravity, delta);
+	cudaError_t cudaStatus = CalculateForces(gravity, delta, steps);
 	if (cudaStatus != cudaSuccess) {
 		printf("CUDA: AddWithCuda failed!");
 		return CS_ERR_CLOTHSIMULATOR_CUDA_FAILED;
 	}
 
-	//printf("%f\n",m_posPtr[0].y);
-	//printf("{1,2,3,4,5} + {10,20,30,40,50} = {%d,%d,%d,%d,%d}\n",
-	//	c[0], c[1], c[2], c[3], c[4]);
+	//printf("%f\n",m_vertices[1].force.z);
 
 	return CS_ERR_NONE;
 }
@@ -385,7 +418,7 @@ unsigned int clothSpringSimulation::ClothSpringSimulationShutdown()
 /////////////////////////////////////////////////////
 
 
-inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double delta)
+inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double delta, int steps)
 {
 	cudaError_t status;
 
@@ -445,7 +478,7 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 	dim3 blockSprings(p, p, 1);
 
 	//CalculateSpringsKernel << < gridSprings, blockSprings >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_springCount);
-	CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, delta / 1000.0f, m_vertexCount);
+	CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, delta / 1000.0f, m_vertexCount, steps);
 	//CalculatePositionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
 	//CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
 
