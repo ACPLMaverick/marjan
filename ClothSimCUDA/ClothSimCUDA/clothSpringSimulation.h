@@ -21,11 +21,12 @@ struct Vertex
 
 	unsigned int neighbours[VERTEX_NEIGHBOURING_VERTICES];
 	float neighbourMultipliers[VERTEX_NEIGHBOURING_VERTICES];
-	glm::vec3 springLengths[VERTEX_NEIGHBOURING_VERTICES];
+	float springLengths[VERTEX_NEIGHBOURING_VERTICES];
 
 	unsigned int id;
 	float mass;
 	float elasticity;
+	float elasticityDamp;
 	float dampCoeff;
 	float lockMultiplier;
 
@@ -39,10 +40,11 @@ struct Vertex
 		{
 			neighbours[i] = 0xFFFFFFFF;
 			neighbourMultipliers[i] = 1.0f;
-			springLengths[i] = glm::vec3(0.0f, 0.0f, 0.0f);
+			springLengths[i] = 0.0f;
 		}
 
 		id = 0xFFFFFFFF;
+		elasticityDamp = 0.0f;
 		mass = 0.0f;
 		dampCoeff = 0.0f;
 		lockMultiplier = 1.0f;
@@ -68,8 +70,10 @@ private:
 	cudaDeviceProp* m_deviceProperties;
 
 	const float VERTEX_MASS = 0.001f;
-	const float VERTEX_DAMP = 0.01f;
-	const float SPRING_ELASTICITY = 0.00001f;
+	const float VERTEX_AIR_DAMP = 0.01f;
+	const float SPRING_ELASTICITY = 0.5f;
+	const float SPRING_ELASTICITY_DAMP = 0.5f;
+	const double MAX_DELTA = 33.3;
 
 	unsigned int m_vertexCount;
 	unsigned int m_springCount;
