@@ -31,8 +31,7 @@ __global__ void CalculateForcesKernel(
 	glm::vec4* colPtr, 
 	const float* grav, 
 	const float delta,
-	const unsigned int N,
-	const int steps
+	const unsigned int N
 	)
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -42,10 +41,7 @@ __global__ void CalculateForcesKernel(
 	if (v_cur >= N)
 		return;
 	
-	for (int r = 1; r <= steps; ++r)
-	{
 		vertPtr[v_cur].force = glm::vec3(0.0f, 0.0f, 0.0f);
-		vertPtr[v_cur].velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 		int id = vertPtr[v_cur].id;
 
 		// calculate elasticity force for each neighbouring vertices
@@ -61,42 +57,11 @@ __global__ void CalculateForcesKernel(
 			float fLength = glm::length(f);
 			float spring = fLength - vertPtr[v_cur].springLengths[i];
 
-			vertPtr[v_cur].force += -vertPtr[v_cur].elasticity * spring * n * vertPtr[v_cur].neighbourMultipliers[i];
+			vertPtr[v_cur].force += -vertPtr[vertPtr[v_cur].neighbours[i]].elasticity * spring * n * vertPtr[v_cur].neighbourMultipliers[i];
 
 			glm::vec3 dV = vertPtr[v_cur].velocity - vertPtr[vertPtr[v_cur].neighbours[i]].velocity;
 			float damp = vertPtr[v_cur].elasticityDamp * (glm::dot(dV, f) / fLength);
 			vertPtr[v_cur].force += damp * n * vertPtr[v_cur].neighbourMultipliers[i];
-			
-			/*
-			glm::vec3 nPos = posPtr[vertPtr[v_cur].neighbours[i]];
-			double n1, n2, n3;
-
-			n1 = (double)-vertPtr[v_cur].elasticity * (abs((double)posPtr[id].x - (double)nPos.x) - (double)vertPtr[v_cur].springLengths[i].x);
-			n2 = (double)posPtr[id].x - (double)nPos.x;
-			n3 = -(double)signbit(n2) * 2.0f + 1.0f;
-
-			vertPtr[v_cur].force.x +=
-				n1 * n3 *
-				(double)vertPtr[v_cur].neighbourMultipliers[i];
-
-
-			
-			n1 = (double)-vertPtr[v_cur].elasticity * (abs((double)posPtr[id].y - (double)nPos.y) - (double)vertPtr[v_cur].springLengths[i].y);
-			n2 = (double)posPtr[id].y - (double)nPos.y;
-			n3 = -(double)signbit(n2) * 2.0f + 1.0f;
-
-			vertPtr[v_cur].force.y +=
-				n1 * n3 *
-				(double)vertPtr[v_cur].neighbourMultipliers[i];
-
-			n1 = (double)-vertPtr[v_cur].elasticity * (abs((double)posPtr[id].z - (double)nPos.z) - (double)vertPtr[v_cur].springLengths[i].z);
-			n2 = (double)posPtr[id].z - (double)nPos.z;
-			n3 = -(double)signbit(n2) * 2.0f + 1.0f;
-
-			vertPtr[v_cur].force.z +=
-				n1 * n3 *
-				(double)vertPtr[v_cur].neighbourMultipliers[i];
-				*/
 		}
 
 
@@ -113,20 +78,17 @@ __global__ void CalculateForcesKernel(
 		// check hooks
 		vertPtr[v_cur].force *= vertPtr[v_cur].lockMultiplier;
 
-
 		// calculate acceleration and use Verelet integration to calculate position
 		glm::vec3 newPos;
 		glm::vec3 acc = vertPtr[v_cur].force / vertPtr[v_cur].mass;
 
-		float d = delta / (float)steps;
 
-		newPos = 2.0f * posPtr[id] - vertPtr[v_cur].prevPosition + acc * d * d;
+		newPos = 2.0f * posPtr[id] - vertPtr[v_cur].prevPosition + acc * delta * delta;
 		vertPtr[v_cur].prevPosition = posPtr[id];
 		posPtr[id] = newPos;
 
 		// update velocity
-		vertPtr[v_cur].velocity = (newPos - vertPtr[v_cur].prevPosition) / d;
-	}
+		vertPtr[v_cur].velocity = (newPos - vertPtr[v_cur].prevPosition) / delta;
 }
 
 __global__ void CalculatePositionsKernel(
@@ -212,7 +174,18 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		m_vertices[i].lockMultiplier = 1.0f;
 		m_vertices[i].prevPosition = m_posPtr[i];
 		m_vertices[i].dampCoeff = VERTEX_AIR_DAMP;
+
 		m_vertices[i].elasticity = SPRING_ELASTICITY;
+		if (i < m_allEdgesLength ||
+			i >= (m_vertexCount - m_allEdgesLength) ||
+			i % m_allEdgesLength == 0 ||
+			i % m_allEdgesLength == (m_allEdgesLength - 1)
+			)
+		{
+			m_vertices[i].elasticity *= SPRING_BORDER_MULTIPLIER;
+		}
+
+
 		m_vertices[i].elasticityDamp = SPRING_ELASTICITY_DAMP;
 
 		// calculating neighbouring vertices ids and spring lengths
@@ -277,8 +250,8 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 	}
 
 	// hard-coded locks
-	//m_vertices[0].lockMultiplier = 0.0f;
-	//m_vertices[(m_vertexCount - m_allEdgesLength) / 2].lockMultiplier = 0.0f;
+	m_vertices[0].lockMultiplier = 0.0f;
+	m_vertices[(m_vertexCount - m_allEdgesLength)].lockMultiplier = 0.0f;
 
 	m_springs = new Spring[m_springCount];
 
@@ -404,6 +377,7 @@ unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, d
 	}
 	printf("\n");
 	*/
+	//printf("%f \n", m_vertices[50].velocity.x);
 	
 
 	return CS_ERR_NONE;
@@ -492,10 +466,12 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 	dim3 blockVerts(p, p, 1);
 	dim3 blockSprings(p, p, 1);
 
-	//CalculateSpringsKernel << < gridSprings, blockSprings >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_springCount);
-	CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, glm::min(delta / 1000.0f, MAX_DELTA), m_vertexCount, steps);
-	//CalculatePositionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
-	//CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
+	for (int i = 1; i <= steps; ++i)
+	{
+		//CalculateSpringsKernel << < gridSprings, blockSprings >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_springCount);
+		CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, FIXED_DELTA / steps, m_vertexCount);
+		//CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
+	}
 
 	// Check for any errors launching the kernel
 	status = cudaGetLastError();

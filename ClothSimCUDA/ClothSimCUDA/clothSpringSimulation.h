@@ -70,10 +70,12 @@ private:
 	cudaDeviceProp* m_deviceProperties;
 
 	const float VERTEX_MASS = 0.001f;
-	const float VERTEX_AIR_DAMP = 0.01f;
+	const float VERTEX_AIR_DAMP = 0.0001f;
 	const float SPRING_ELASTICITY = 0.5f;
-	const float SPRING_ELASTICITY_DAMP = 0.5f;
+	const float SPRING_BORDER_MULTIPLIER = 50.0f;
+	const float SPRING_ELASTICITY_DAMP = 0.000005f;
 	const double MAX_DELTA = 33.3;
+	const double FIXED_DELTA = 0.006f;
 
 	unsigned int m_vertexCount;
 	unsigned int m_springCount;
