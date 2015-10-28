@@ -91,24 +91,6 @@ __global__ void CalculateForcesKernel(
 		vertPtr[v_cur].velocity = (newPos - vertPtr[v_cur].prevPosition) / delta;
 }
 
-__global__ void CalculatePositionsKernel(
-	Vertex* vertPtr, 
-	Spring* springPtr, 
-	glm::vec3* posPtr, 
-	glm::vec3* nrmPtr, 
-	glm::vec4* colPtr, 
-	const float* grav,
-	const int N
-	)
-{
-	int i = blockIdx.x * blockDim.x + threadIdx.x;
-	int j = blockIdx.y * blockDim.y + threadIdx.y;
-	int v_cur = (i * gridDim.y * blockDim.y) + j;
-
-	if (v_cur >= N)
-		return;
-}
-
 __global__ void CalculateNormalsKernel(
 	Vertex* vertPtr, 
 	Spring* springPtr, 
@@ -125,6 +107,21 @@ __global__ void CalculateNormalsKernel(
 
 	if (v_cur >= N)
 		return;
+
+	Vertex* vert = &(vertPtr[v_cur]);
+	glm::vec3 normal = glm::vec3();
+
+	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
+	{
+		glm::vec3 diff1 = posPtr[vert->id] - posPtr[vert->neighbours[i]];
+		glm::vec3 diff2 = posPtr[vert->id] - posPtr[vert->neighbours[(i + 1) % VERTEX_NEIGHBOURING_VERTICES]];
+
+		normal += (glm::cross(diff1, diff2) * vert->neighbourMultipliers[i] * vert->neighbourMultipliers[(i + 1) % VERTEX_NEIGHBOURING_VERTICES]);
+	}
+
+	normal = glm::normalize(normal);
+	normal.z = -normal.z;
+	nrmPtr[vert->id] = normal;
 }
 
 //////////////////////////////////////////////////////
@@ -191,9 +188,9 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		// calculating neighbouring vertices ids and spring lengths
 
 		glm::vec3 baseLength = glm::vec3(
-			abs(m_posPtr[0].x - m_posPtr[m_vertexCount - 1].x) / (float)(m_allEdgesLength - 1),
+			abs(m_posPtr[0].x - m_posPtr[m_vertexCount - 1].x) / (float)(m_allEdgesWidth - 1),
 			0.0f,
-			abs(m_posPtr[0].z - m_posPtr[m_vertexCount - 1].z) / (float)(m_allEdgesWidth - 1)
+			abs(m_posPtr[0].z - m_posPtr[m_vertexCount - 1].z) / (float)(m_allEdgesLength - 1)
 			);
 
 		// upper
@@ -209,12 +206,12 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 			m_vertices[i].springLengths[0] = 0.0f;
 		}
 
-		// lower
-		m_vertices[i].neighbours[1] = (i + 1) % m_vertexCount;
-		if (i % m_allEdgesLength != (m_allEdgesLength - 1))
+		// left
+		m_vertices[i].neighbours[1] = (i - m_allEdgesLength) % m_vertexCount;
+		if (i >= m_allEdgesLength)
 		{
 			m_vertices[i].neighbourMultipliers[1] = 1.0f;
-			m_vertices[i].springLengths[1] = baseLength.z;
+			m_vertices[i].springLengths[1] = baseLength.x;
 		}
 		else
 		{
@@ -222,12 +219,12 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 			m_vertices[i].springLengths[1] = 0.0f;
 		}
 
-		// left
-		m_vertices[i].neighbours[2] = (i - m_allEdgesLength) % m_vertexCount;
-		if (i >= m_allEdgesLength)
+		// lower
+		m_vertices[i].neighbours[2] = (i + 1) % m_vertexCount;
+		if (i % m_allEdgesLength != (m_allEdgesLength - 1))
 		{
 			m_vertices[i].neighbourMultipliers[2] = 1.0f;
-			m_vertices[i].springLengths[2] = baseLength.x;
+			m_vertices[i].springLengths[2] = baseLength.z;
 		}
 		else
 		{
@@ -377,7 +374,7 @@ unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, d
 	}
 	printf("\n");
 	*/
-	//printf("%f \n", m_vertices[50].velocity.x);
+	//printf("%f %f %f \n", m_nrmPtr[0].x, m_nrmPtr[0].y, m_nrmPtr[0].z);
 	
 
 	return CS_ERR_NONE;
@@ -468,9 +465,8 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 
 	for (int i = 1; i <= steps; ++i)
 	{
-		//CalculateSpringsKernel << < gridSprings, blockSprings >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_springCount);
 		CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, FIXED_DELTA / steps, m_vertexCount);
-		//CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
+		CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
 	}
 
 	// Check for any errors launching the kernel
