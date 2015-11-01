@@ -46,6 +46,8 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\_Scripts\ComboBox.cs" />
+     <Compile Include="Assets\_Scripts\ComboBoxItem.cs" />
      <Compile Include="Assets\_Scripts\FluidContainer.cs" />
      <Compile Include="Assets\_Scripts\FluidController.cs" />
      <Compile Include="Assets\_Scripts\FluidParticle.cs" />

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -11,9 +12,14 @@ public class FluidController : Singleton<FluidController> {
 	public FluidParticle[] particles;
 	public FluidContainer container;
 	public FluidParticle baseObject;
+	public InteractiveObject baseInteractiveObject;
 	public List<InteractiveObject> objects = new List<InteractiveObject>();
 
 	public GameObject initialPosition;
+	public uint IDController;
+	public bool canDelete;
+
+	public bool startSimulation = false;
 
 	protected FluidController() { }
 
@@ -21,6 +27,7 @@ public class FluidController : Singleton<FluidController> {
 	{
 		particleCount = 50;
 		particles = new FluidParticle[50];
+		IDController = 0;
 	}
 
 	public void Update()
@@ -32,8 +39,6 @@ public class FluidController : Singleton<FluidController> {
 	{
 		DestroyParticles ();
 		particles = new FluidParticle[particleCount];
-		//float x = -container.transform.localScale.x;
-		//float y = -container.transform.localScale.y;
 
 		float x = initialPosition.transform.position.x;
 		float y = initialPosition.transform.position.y;
@@ -65,5 +70,15 @@ public class FluidController : Singleton<FluidController> {
 				Destroy (particles [i].gameObject);
 			}
 		}
+	}
+
+	public void DestroyInteractiveObject(InteractiveObject io)
+	{
+		Debug.Log ("Destroy");
+
+		objects.Remove (io);
+		Destroy (io.gameObject);
+
+		canDelete = false;
 	}
 }
