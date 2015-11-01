@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour {
 	public Button startSimulationButton;
 
 	public Text currentPositionText;
+	public Animator myAnimator;
 
 	private Text particleViscositySliderText;
 	private Text containerHeightSliderText;
@@ -125,6 +126,8 @@ public class UIManager : MonoBehaviour {
 	{
 		FluidController.Instance.CreateParticles ();
 		startSimulationButton.interactable = true;
+		if (inputField.placeholder != null)
+			inputField.text = "50";
 	}
 
 	public void OnInputFieldValueChange()
@@ -256,5 +259,15 @@ public class UIManager : MonoBehaviour {
 		addObjectButton.interactable = value;
 		deleteObjectButton.interactable = value;
 		generateButton.interactable = value;
+	}
+
+	public void ShowUI()
+	{
+		myAnimator.SetBool ("Show", true);
+	}
+
+	public void HideUI()
+	{
+		myAnimator.SetBool ("Show", false);
 	}
 }
