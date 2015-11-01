@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class FluidController : Singleton<FluidController> {
 
-	public uint particleCount;
+	public uint particleCount; //na szerokość zmieści się 51 rzędów particli, na wysokość zmieści się 38 rzędów - wynik: 1938 particli max
 	public double particleMass;
 	public double particleVelocity;
 
@@ -30,14 +30,26 @@ public class FluidController : Singleton<FluidController> {
 	{
 		DestroyParticles ();
 		particles = new FluidParticle[particleCount];
-		float j = 0;
+		float x = -container.MyCollider.size.x / 2.2f;
+		float y = -container.MyCollider.size.y / 2.2f;
+
 		for (int i = 0; i < particleCount; i++) {
-			if (i % 10 == 0) {
-				j += 0.25f;
-			}
-			particles [i] = (FluidParticle)Instantiate (baseObject, new Vector3 (j - 4.5f, (i % 10) - (1.5f + 0.75f * (i % 10))), Quaternion.identity);
+			particles [i] = (FluidParticle)Instantiate (baseObject, new Vector2(x, y), Quaternion.identity);
 			particles [i].viscosity = baseObject.viscosity;
 			particles [i].position = particles [i].transform.position;
+			CalculatePosition(ref x, ref y);
+		}
+	}
+
+	public void CalculatePosition(ref float inputX, ref float inputY)
+	{
+		float i = inputX + 0.25f;
+
+		if (i > container.MyCollider.size.x / 2.2f) {
+			inputX = -container.MyCollider.size.x / 2.2f;
+			inputY += 0.25f;
+		} else {
+			inputX += 0.25f;
 		}
 	}
 

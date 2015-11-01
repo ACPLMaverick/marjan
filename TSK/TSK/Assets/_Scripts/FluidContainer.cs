@@ -9,6 +9,12 @@ public class FluidContainer : MonoBehaviour {
 
 	private BoxCollider2D myCollider;
 
+	public BoxCollider2D MyCollider {
+		get {
+			return myCollider;
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		myCollider = GetComponent<BoxCollider2D> ();
