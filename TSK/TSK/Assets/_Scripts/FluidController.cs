@@ -13,6 +13,8 @@ public class FluidController : Singleton<FluidController> {
 	public FluidParticle baseObject;
 	public List<InteractiveObject> objects = new List<InteractiveObject>();
 
+	public GameObject initialPosition;
+
 	protected FluidController() { }
 
 	public void Start()
@@ -30,8 +32,11 @@ public class FluidController : Singleton<FluidController> {
 	{
 		DestroyParticles ();
 		particles = new FluidParticle[particleCount];
-		float x = -container.MyCollider.size.x / 2.2f;
-		float y = -container.MyCollider.size.y / 2.2f;
+		//float x = -container.transform.localScale.x;
+		//float y = -container.transform.localScale.y;
+
+		float x = initialPosition.transform.position.x;
+		float y = initialPosition.transform.position.y;
 
 		for (int i = 0; i < particleCount; i++) {
 			particles [i] = (FluidParticle)Instantiate (baseObject, new Vector2(x, y), Quaternion.identity);
@@ -45,8 +50,8 @@ public class FluidController : Singleton<FluidController> {
 	{
 		float i = inputX + 0.25f;
 
-		if (i > container.MyCollider.size.x / 2.2f) {
-			inputX = -container.MyCollider.size.x / 2.2f;
+		if (i >= container.MySprite.bounds.max.x - 0.25f) {
+			inputX = initialPosition.transform.position.x;
 			inputY += 0.25f;
 		} else {
 			inputX += 0.25f;

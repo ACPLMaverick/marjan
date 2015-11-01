@@ -6,23 +6,24 @@ public class FluidContainer : MonoBehaviour {
 	public double elasticity;
 	public float containerBase;
 	public float containerHeight;
+	
+	private SpriteRenderer mySprite;
 
-	private BoxCollider2D myCollider;
-
-	public BoxCollider2D MyCollider {
+	public SpriteRenderer MySprite {
 		get {
-			return myCollider;
+			return mySprite;
 		}
 	}
 
 	// Use this for initialization
 	void Start () {
-		myCollider = GetComponent<BoxCollider2D> ();
+		mySprite = GetComponent<SpriteRenderer> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		myCollider.size = new Vector2 (containerBase/10, containerHeight/10);
+		Vector2 size = new Vector2 (containerBase/10, containerHeight/10);
+		transform.localScale = new Vector2 (size.x / 2.5f, size.y / 2.5f);
 	}
 
 	public void OnCollisionEnter2D(Collision2D other)
