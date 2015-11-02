@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class FluidController : Singleton<FluidController> {
 
-	public uint particleCount; //na szerokość zmieści się 51 rzędów particli, na wysokość zmieści się 38 rzędów - wynik: 1938 particli max
+	public uint particleCount;
 	public double particleMass;
 	public double particleVelocity;
 
@@ -20,14 +20,18 @@ public class FluidController : Singleton<FluidController> {
 	public bool canDelete;
 
 	public bool startSimulation = false;
+	public float particleOffsetX;
+	public float particleOffsetY;
 
 	protected FluidController() { }
 
 	public void Start()
 	{
-		particleCount = 50;
-		particles = new FluidParticle[50];
+		particleCount = 1024;
+		particles = new FluidParticle[1024];
 		IDController = 0;
+		particleOffsetX = 0.25f;
+		particleOffsetY = 0.25f;
 	}
 
 	public void Update()
@@ -43,23 +47,40 @@ public class FluidController : Singleton<FluidController> {
 		float x = initialPosition.transform.position.x;
 		float y = initialPosition.transform.position.y;
 
-		for (int i = 0; i < particleCount; i++) {
-			particles [i] = (FluidParticle)Instantiate (baseObject, new Vector2(x, y), Quaternion.identity);
-			particles [i].viscosity = baseObject.viscosity;
-			particles [i].position = particles [i].transform.position;
-			CalculatePosition(ref x, ref y);
+		int width = (int)Mathf.Sqrt (particleCount);
+
+		for (int i = 0; i<width; ++i) {
+			for (int j = 0; j < width; ++j) {
+				particles[j + width * i] = (FluidParticle)Instantiate (baseObject, new Vector2(x, y), Quaternion.identity);
+				particles[j + width * i].viscosity = baseObject.viscosity;
+				particles[j + width * i].position = particles[j + width * i].transform.position;
+				CalculatePosition(ref x, ref y, particleCount, false);
+			}
+			CalculatePosition(ref x, ref y, particleCount, true);
 		}
 	}
 
-	public void CalculatePosition(ref float inputX, ref float inputY)
+	public void CalculatePosition(ref float inputX, ref float inputY, uint count, bool moveUp)
 	{
-		float i = inputX + 0.25f;
+		switch (count) {
+		case 1024:
+			particleOffsetX = 0.285f;
+			particleOffsetY = 0.285f;
+			break;
+		case 4096:
+			particleOffsetX = 0.143f;
+			particleOffsetY = 0.143f;
+			break;
+		case 16384:
+			particleOffsetX = 0.072f;
+			particleOffsetY = 0.072f;
+			break;
+		}
 
-		if (i >= container.MySprite.bounds.max.x - 0.25f) {
+		inputX += particleOffsetX;
+		if (moveUp) {
 			inputX = initialPosition.transform.position.x;
-			inputY += 0.25f;
-		} else {
-			inputX += 0.25f;
+			inputY += particleOffsetY;
 		}
 	}
 

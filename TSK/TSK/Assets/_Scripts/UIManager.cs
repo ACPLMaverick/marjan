@@ -4,11 +4,11 @@ using System.Collections;
 
 public class UIManager : MonoBehaviour {
 
-	public InputField inputField;
+	public Slider particleCountSlider;
 	public Slider particleViscositySlider;
 
-	public Slider containerHeightSlider;
-	public Slider containerBaseSlider;
+	//public Slider containerHeightSlider;
+	//public Slider containerBaseSlider;
 	public Slider containerElasticitySlider;
 
 	public GameObject interactiveObjectPanel;
@@ -24,9 +24,10 @@ public class UIManager : MonoBehaviour {
 	public Text currentPositionText;
 	public Animator myAnimator;
 
+	private Text particleCountSliderText;
 	private Text particleViscositySliderText;
-	private Text containerHeightSliderText;
-	private Text containerBaseSliderText;
+	//private Text containerHeightSliderText;
+	//private Text containerBaseSliderText;
 	private Text containerElasticitySliderText;
 
 	private Text interactiveObjectTypeSliderText;
@@ -35,23 +36,24 @@ public class UIManager : MonoBehaviour {
 
 	private Text startSimulationButtonText;
 
-	private int particleCountMinBound, particleCountMaxBound;
+	//private int particleCountMinBound, particleCountMaxBound;
 	private float positionX, positionY;
 	private bool settingPosition = false;
 	private bool deletingObject = false;
 
 	// Use this for initialization
 	void Start () {
+		particleCountSliderText = particleCountSlider.GetComponentInChildren<Text> ();
 		particleViscositySliderText = particleViscositySlider.GetComponentInChildren<Text> ();
-		containerBaseSliderText = containerBaseSlider.GetComponentInChildren<Text> ();
-		containerHeightSliderText = containerHeightSlider.GetComponentInChildren<Text> ();
+		//containerBaseSliderText = containerBaseSlider.GetComponentInChildren<Text> ();
+		//containerHeightSliderText = containerHeightSlider.GetComponentInChildren<Text> ();
 		containerElasticitySliderText = containerElasticitySlider.GetComponentInChildren<Text> ();
 
 		startSimulationButton.interactable = false;
 		startSimulationButtonText = startSimulationButton.GetComponentInChildren<Text> ();
 
-		particleCountMinBound = 10;
-		particleCountMaxBound = 10;
+		//particleCountMinBound = 10;
+		//particleCountMaxBound = 10;
 
 		positionX = 0;
 		positionY = 0;
@@ -79,9 +81,10 @@ public class UIManager : MonoBehaviour {
 	
 	void UpdateStrings()
 	{
+		particleCountSliderText.text = "Particle count: " + SetParticleCount ().ToString();
 		particleViscositySliderText.text = "Particle viscosity: " + particleViscositySlider.value.ToString ("0.00") + " mPa * s";
-		containerHeightSliderText.text = "Container Height: " + containerHeightSlider.value.ToString() + " cm";
-		containerBaseSliderText.text = "Container Base: " + containerBaseSlider.value.ToString() + " cm";
+		//containerHeightSliderText.text = "Container Height: " + containerHeightSlider.value.ToString() + " cm";
+		//containerBaseSliderText.text = "Container Base: " + containerBaseSlider.value.ToString() + " cm";
 		containerElasticitySliderText.text = "Container Elasticity: " + containerElasticitySlider.value.ToString () + " GPa";
 
 		if(interactiveObjectVelocitySliderText != null)
@@ -102,20 +105,57 @@ public class UIManager : MonoBehaviour {
 			currentPositionText.text = positionX.ToString ("0.0") + ", " + positionY.ToString ("0.0");
 	}
 
+	public void OnPCSliderValueChange()
+	{
+		FluidController.Instance.DestroyParticles ();
+		FluidController.Instance.particleCount = (uint)SetParticleCount ();
+		switch (SetParticleCount ()) {
+		case 1024:
+			FluidController.Instance.baseObject.transform.localScale = new Vector3(1, 1, 1);
+			FluidController.Instance.initialPosition.transform.localPosition = new Vector2(-1.13f, -1.13f);
+			break;
+		case 4096:
+			FluidController.Instance.baseObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+			FluidController.Instance.initialPosition.transform.localPosition = new Vector2(-1.15f, -1.15f);
+			break;
+		case 16384:
+			FluidController.Instance.baseObject.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+			FluidController.Instance.initialPosition.transform.localPosition = new Vector2(-1.17f, -1.17f);
+			break;
+		}
+	}
+
+	int SetParticleCount()
+	{
+		int i = 0;
+		switch ((int)particleCountSlider.value) {
+		case 0:
+			i = 1024;
+			break;
+		case 1:
+			i = 4096;
+			break;
+		case 2:
+			i = 16384;
+			break;
+		}
+		return i;
+	}
+
 	public void OnPVSliderValueChange()
 	{
 		FluidController.Instance.baseObject.viscosity = particleViscositySlider.value;
 	}
 
-	public void OnCHSliderValueChange()
-	{
-		FluidController.Instance.container.containerHeight = containerHeightSlider.value;
-	}
-
-	public void OnCBSliderValueChange()
-	{
-		FluidController.Instance.container.containerBase = containerBaseSlider.value;
-	}
+//	public void OnCHSliderValueChange()
+//	{
+//		FluidController.Instance.container.containerHeight = containerHeightSlider.value;
+//	}
+//
+//	public void OnCBSliderValueChange()
+//	{
+//		FluidController.Instance.container.containerBase = containerBaseSlider.value;
+//	}
 
 	public void OnCESliderValueChange()
 	{
@@ -126,67 +166,8 @@ public class UIManager : MonoBehaviour {
 	{
 		FluidController.Instance.CreateParticles ();
 		startSimulationButton.interactable = true;
-		if (inputField.placeholder != null)
-			inputField.text = "50";
-	}
-
-	public void OnInputFieldValueChange()
-	{
-		particleCountMinBound = 10;
-		particleCountMaxBound = 10;
-		containerBaseSlider.minValue = 25;
-		containerHeightSlider.minValue = 25;
-	}
-
-	//NIE DOTYKAĆ NAWET JEŚLI WYGLĄDA PASKUDNIE (chyba że spowoduje spadki plynności w co wątpię)
-	public void OnInputFieldEndEdit()
-	{
-		FluidController.Instance.DestroyParticles ();
-		FluidController.Instance.particleCount = (uint)int.Parse(inputField.text);
-
-		if (int.Parse (inputField.text) > 1800)
-			inputField.text = "1800";
-		if(int.Parse(inputField.text) < 50)
-		   	inputField.text = "50";
-		
-		int i = Mathf.CeilToInt (Mathf.Sqrt (int.Parse(inputField.text)));
-		
-		if (int.Parse(inputField.text) > 100 /*&& particleCountSlider.value <= 1100*/) {
-			if (i > particleCountMaxBound) {
-				particleCountMaxBound = i;
-				particleCountMinBound = i - 1;
-				if(int.Parse(inputField.text) <= 1100)
-				{
-					containerHeightSlider.minValue += (i - 10) * 3;
-					containerBaseSlider.minValue += (i - 10) * 3;
-				}
-				else
-				{
-					containerHeightSlider.minValue = 98;
-					containerBaseSlider.minValue += (i - 10) * 6;
-				}
-				if(containerBaseSlider.minValue > 130)
-					containerBaseSlider.minValue = 130;
-			} else if (i <= particleCountMinBound) {
-				particleCountMaxBound = i;
-				particleCountMinBound = i - 1;
-				if(int.Parse(inputField.text) <= 1100)
-				{
-					containerHeightSlider.minValue -= (i - 10) * 3;
-					containerBaseSlider.minValue -= (i - 10) * 3;
-				}
-				else
-				{
-					containerHeightSlider.minValue = 98;
-					containerBaseSlider.minValue -= (i - 10) * 6;
-				}
-			}
-		} else if (int.Parse(inputField.text) <= 100) {
-			particleCountMinBound = 10;
-			particleCountMaxBound = 10;
-			containerHeightSlider.minValue = 25;
-			containerBaseSlider.minValue = 25;
-		}
+		//if (inputField.placeholder != null)
+		//	inputField.text = "50";
 	}
 
 	public void OpenInteractiveObjectSettings()
@@ -251,10 +232,11 @@ public class UIManager : MonoBehaviour {
 
 	void ChangeInteractionUI(bool value)
 	{
-		inputField.interactable = value;
+		//inputField.interactable = value;
+		particleCountSlider.interactable = value;
 		particleViscositySlider.interactable = value;
-		containerHeightSlider.interactable = value;
-		containerBaseSlider.interactable = value;
+		//containerHeightSlider.interactable = value;
+		//containerBaseSlider.interactable = value;
 		containerElasticitySlider.interactable = value;
 		addObjectButton.interactable = value;
 		deleteObjectButton.interactable = value;
