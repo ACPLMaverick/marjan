@@ -32,6 +32,7 @@ unsigned int SceneTest::Initialize()
 	ground->Initialize("Ground");
 	Transform* groundTransform = new Transform(ground);
 	groundTransform->Initialize();
+	groundTransform->SetPosition(&(glm::vec3(0.0f, -10.0f, 0.0f)));
 	groundTransform->SetRotation(&(glm::vec3(-3.14f / 2.0f, 0.0f, 0.0f)));
 	groundTransform->SetScale(&(glm::vec3(100.0f, 100.0f, 100.0f)));
 	ground->SetTransform(groundTransform);
