@@ -147,9 +147,6 @@
     <ClInclude Include="ClothSimulator.h">
       <Filter>Core\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ClothCollider.h">
-      <Filter>Physics</Filter>
-    </ClInclude>
     <ClInclude Include="clothSpringSimulation.h">
       <Filter>CUDA</Filter>
     </ClInclude>
@@ -256,9 +253,6 @@
     </ClCompile>
     <ClCompile Include="ClothSimulator.cpp">
       <Filter>Core\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ClothCollider.cpp">
-      <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

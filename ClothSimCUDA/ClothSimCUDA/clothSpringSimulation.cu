@@ -1,6 +1,25 @@
 
 #include "clothSpringSimulation.h"
 
+__device__ void CUDAVec3Min(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret)
+{
+	ret->x = glm::min(vec1->x, vec2->x);
+	ret->y = glm::min(vec1->y, vec2->y);
+	ret->z = glm::min(vec1->z, vec2->z);
+}
+
+__device__ void CUDAVec3Max(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret)
+{
+	ret->x = glm::max(vec1->x, vec2->x);
+	ret->y = glm::max(vec1->y, vec2->y);
+	ret->z = glm::max(vec1->z, vec2->z);
+}
+
+__device__ float CUDAVec3LengthSquared(const glm::vec3* vec)
+{
+	return vec->x * vec->x + vec->y * vec->y + vec->z * vec->z;
+}
+
 
 __global__ void CalculateSpringsKernel(
 	Vertex* vertPtr, 
@@ -8,7 +27,7 @@ __global__ void CalculateSpringsKernel(
 	glm::vec3* posPtr, 
 	glm::vec3* nrmPtr, 
 	glm::vec4* colPtr, 
-	const float* grav,
+	const float grav,
 	const int N
 	)
 {
@@ -25,11 +44,10 @@ __global__ void CalculateSpringsKernel(
 
 __global__ void CalculateForcesKernel(
 	Vertex* vertPtr, 
-	Spring* springPtr, 
 	glm::vec3* posPtr, 
 	glm::vec3* nrmPtr, 
 	glm::vec4* colPtr, 
-	const float* grav, 
+	const float grav, 
 	const float delta,
 	const unsigned int N
 	)
@@ -67,7 +85,7 @@ __global__ void CalculateForcesKernel(
 
 		// calculate gravity force
 		vertPtr[v_cur].force +=
-			vertPtr[v_cur].mass * glm::vec3(0.0f, -(*grav) / 100.0f, 0.0f);
+			vertPtr[v_cur].mass * glm::vec3(0.0f, -grav / 100.0f, 0.0f);
 
 		// calculate air damp force
 		vertPtr[v_cur].force +=
@@ -91,13 +109,102 @@ __global__ void CalculateForcesKernel(
 		vertPtr[v_cur].velocity = (newPos - vertPtr[v_cur].prevPosition) / delta;
 }
 
+__global__ void CalculateExternalCollisionsKernel(
+	Vertex* vertPtr,
+	glm::vec3* posPtr,
+	BoxAAData* boxColliders,
+	SphereData* sphereColliders,
+	float* worldMatrix,
+	const int boxColliderCount,
+	const int sphereColliderCount,
+	const int N
+	)
+{
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+	int v_cur = (i * gridDim.y * blockDim.y) + j;
+
+	if (v_cur >= N)
+		return;
+
+	/// calculate vertex position in world space
+	glm::vec4 v = glm::vec4(posPtr[v_cur], 1.0f);
+	glm::vec4 r;
+
+	// matrix by vector multiplication
+	r.x = v.x * (worldMatrix)[0] + v.y * (worldMatrix)[4] + v.z * (worldMatrix)[8] + v.w * (worldMatrix)[12];
+	r.y = v.x * (worldMatrix)[1] + v.y * (worldMatrix)[5] + v.z * (worldMatrix)[9] + v.w * (worldMatrix)[13];
+	r.z = v.x * (worldMatrix)[2] + v.y * (worldMatrix)[6] + v.z * (worldMatrix)[10] + v.w * (worldMatrix)[14];
+	r.w = v.x * (worldMatrix)[3] + v.y * (worldMatrix)[7] + v.z * (worldMatrix)[11] + v.w * (worldMatrix)[15];
+
+	glm::vec3 wPos;
+	wPos.x = r.x;
+	wPos.y = r.y;
+	wPos.z = r.z;
+	////////////////////
+
+	float radius = 0.0f;
+	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
+	{
+		radius += vertPtr[v_cur].springLengths[i];
+	}
+	radius = radius / (float)VERTEX_NEIGHBOURING_VERTICES * vertPtr[v_cur].colliderMultiplier;
+
+	glm::vec3 colVec;
+	// solve for boxes
+	for (int i = 0; i < boxColliderCount; ++i)
+	{
+		glm::vec3 cls, closest;
+
+		CUDAVec3Max(&wPos, &boxColliders[i].min, &cls);
+		CUDAVec3Min(&cls, &boxColliders[i].max, &closest);
+
+		float distance = CUDAVec3LengthSquared(&(closest - wPos));
+
+
+		if (distance < (radius * radius))
+		{
+			closest = wPos - closest;
+			colVec += normalize(closest) * (radius - sqrt(distance));
+		}
+	}
+
+	// solve for spheres
+	for (int i = 0; i < sphereColliderCount; ++i)
+	{
+		glm::vec3 diff = wPos - sphereColliders[i].center;
+		float diffLength = CUDAVec3LengthSquared(&diff);
+
+		if (diffLength < (radius + sphereColliders[i].radius) * (radius + sphereColliders[i].radius))
+		{
+			diff = glm::normalize(diff);
+			diff = diff * ((radius + sphereColliders[i].radius) - glm::sqrt(diffLength));
+
+			colVec += diff;
+		}
+	}
+
+	posPtr[v_cur] += colVec;
+}
+
+__global__ void CalculateInternalCollisionsKernel(
+	Vertex* vertPtr,
+	glm::vec3* posPtr,
+	const int N
+	)
+{
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+	int v_cur = (i * gridDim.y * blockDim.y) + j;
+
+	if (v_cur >= N)
+		return;
+}
+
 __global__ void CalculateNormalsKernel(
-	Vertex* vertPtr, 
-	Spring* springPtr, 
+	Vertex* vertPtr,  
 	glm::vec3* posPtr, 
 	glm::vec3* nrmPtr, 
-	glm::vec4* colPtr, 
-	const float* grav, 
 	const int N
 	)
 {
@@ -141,6 +248,8 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 	unsigned int vertexColorSize,
 	unsigned int edgesWidth,
 	unsigned int edgesLength,
+	unsigned int boxColliderCount,
+	unsigned int sphereColliderCount,
 	glm::vec3* vertexPositionPtr,
 	glm::vec3* vertexNormalPtr,
 	glm::vec4* vertexColorPtr
@@ -156,6 +265,8 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 	m_allEdgesLength = edgesLength;
 	m_vertexCount = m_allEdgesLength * m_allEdgesWidth;
 	m_springCount = (m_allEdgesLength - 1) * (m_allEdgesWidth) + (m_allEdgesWidth - 1) * m_allEdgesLength;
+	m_boxColliderCount = boxColliderCount;
+	m_sphereColliderCount = sphereColliderCount;
 	m_posPtr = vertexPositionPtr;
 	m_nrmPtr = vertexNormalPtr;
 	m_colPtr = vertexColorPtr;
@@ -184,6 +295,7 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 
 
 		m_vertices[i].elasticityDamp = SPRING_ELASTICITY_DAMP;
+		m_vertices[i].colliderMultiplier = VERTEX_COLLIDER_MULTIPLIER;
 
 		// calculating neighbouring vertices ids and spring lengths
 
@@ -306,12 +418,12 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		return cudaStatus;
 	}
 
-	cudaStatus = cudaMalloc((void**)&i_springPtr, m_springCount * sizeof(Spring));
-	if (cudaStatus != cudaSuccess) {
-		printf("CUDA: cudaMalloc for spring helper buffer failed!");
-		FreeMemory();
-		return cudaStatus;
-	}
+	//cudaStatus = cudaMalloc((void**)&i_springPtr, m_springCount * sizeof(Spring));
+	//if (cudaStatus != cudaSuccess) {
+	//	printf("CUDA: cudaMalloc for spring helper buffer failed!");
+	//	FreeMemory();
+	//	return cudaStatus;
+	//}
 
 	cudaStatus = cudaMalloc((void**)&i_posPtr, m_vertexCount * m_vertexPositionSize);
 	if (cudaStatus != cudaSuccess) {
@@ -334,9 +446,23 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		return cudaStatus;
 	}
 
-	cudaStatus = cudaMalloc((void**)&i_gravPtr, sizeof(float));
+	cudaStatus = cudaMalloc((void**)&i_bcldPtr, m_boxColliderCount * sizeof(BoxAACollider));
 	if (cudaStatus != cudaSuccess) {
-		printf("CUDA: cudaMalloc for gravity variable failed!");
+		printf("CUDA: cudaMalloc for box colliders failed!");
+		FreeMemory();
+		return cudaStatus;
+	}
+
+	cudaStatus = cudaMalloc((void**)&i_scldPtr, m_sphereColliderCount * sizeof(SphereCollider));
+	if (cudaStatus != cudaSuccess) {
+		printf("CUDA: cudaMalloc for box colliders failed!");
+		FreeMemory();
+		return cudaStatus;
+	}
+
+	cudaStatus = cudaMalloc((void**)&i_wmPtr, sizeof(glm::mat4));
+	if (cudaStatus != cudaSuccess) {
+		printf("CUDA: cudaMalloc for world matrix failed!");
 		FreeMemory();
 		return cudaStatus;
 	}
@@ -349,18 +475,19 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		return cudaStatus;
 	}
 
-	cudaStatus = cudaMemcpy(i_springPtr, m_springs, m_springCount * sizeof(Spring), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) {
-		fprintf(stderr, "cudaMemcpy failed!");
-		FreeMemory();
-		return cudaStatus;
-	}
+	//cudaStatus = cudaMemcpy(i_springPtr, m_springs, m_springCount * sizeof(Spring), cudaMemcpyHostToDevice);
+	//if (cudaStatus != cudaSuccess) {
+	//	fprintf(stderr, "cudaMemcpy failed!");
+	//	FreeMemory();
+	//	return cudaStatus;
+	//}
 }
 
-unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, double delta, int steps)
+unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, double delta, int steps,
+	BoxAAData* boxColliders, SphereData* sphereColliders, glm::mat4* transform)
 {
 	// Add vectors in parallel.
-	cudaError_t cudaStatus = CalculateForces(gravity, delta, steps);
+	cudaError_t cudaStatus = CalculateForces(gravity, delta, steps, boxColliders, sphereColliders, transform);
 	if (cudaStatus != cudaSuccess) {
 		printf("CUDA: AddWithCuda failed!");
 		return CS_ERR_CLOTHSIMULATOR_CUDA_FAILED;
@@ -404,7 +531,8 @@ unsigned int clothSpringSimulation::ClothSpringSimulationShutdown()
 /////////////////////////////////////////////////////
 
 
-inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double delta, int steps)
+inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double delta, int steps, 
+	BoxAAData* boxColliders, SphereData* sphereColliders, glm::mat4* transform)
 {
 	cudaError_t status;
 
@@ -447,12 +575,30 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 		return status;
 	}
 
-	status = cudaMemcpy(i_gravPtr, &gravity, sizeof(float), cudaMemcpyHostToDevice);
+	// copy colliders
+
+	status = cudaMemcpy(i_bcldPtr, boxColliders, m_boxColliderCount * sizeof(BoxAACollider), cudaMemcpyHostToDevice);
 	if (status != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
 		FreeMemory();
 		return status;
 	}
+
+	status = cudaMemcpy(i_scldPtr, boxColliders, m_sphereColliderCount * sizeof(SphereCollider), cudaMemcpyHostToDevice);
+	if (status != cudaSuccess) {
+		fprintf(stderr, "cudaMemcpy failed!");
+		FreeMemory();
+		return status;
+	}
+
+	status = cudaMemcpy(i_wmPtr, transform, sizeof(glm::mat4), cudaMemcpyHostToDevice);
+	if (status != cudaSuccess) {
+		fprintf(stderr, "cudaMemcpy failed!");
+		FreeMemory();
+		return status;
+	}
+	///////////////
+
 
 	// launch kernel
 	int p = m_deviceProperties->warpSize;
@@ -465,8 +611,11 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 
 	for (int i = 1; i <= steps; ++i)
 	{
-		CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, FIXED_DELTA / steps, m_vertexCount);
-		CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_springPtr, i_posPtr, i_nrmPtr, i_colPtr, i_gravPtr, m_vertexCount);
+		CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_nrmPtr, i_colPtr, gravity, FIXED_DELTA / steps, m_vertexCount);
+		CalculateExternalCollisionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_bcldPtr, i_scldPtr, 
+			i_wmPtr, m_boxColliderCount, m_sphereColliderCount, m_vertexCount);
+		CalculateInternalCollisionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, m_vertexCount);
+		CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_nrmPtr, m_vertexCount);
 	}
 
 	// Check for any errors launching the kernel
@@ -528,5 +677,6 @@ void clothSpringSimulation::FreeMemory()
 	cudaFree(i_posPtr);
 	cudaFree(i_nrmPtr);
 	cudaFree(i_colPtr);
-	cudaFree(i_gravPtr);
+	cudaFree(i_bcldPtr);
+	cudaFree(i_scldPtr);
 }

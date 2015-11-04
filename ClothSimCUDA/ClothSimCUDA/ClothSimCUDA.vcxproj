@@ -165,7 +165,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="GUIButton.h" />
     <ClInclude Include="GUIElement.h" />
     <ClInclude Include="GUIText.h" />
-    <ClInclude Include="ClothCollider.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Light.h" />
@@ -203,7 +202,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="GUIButton.cpp" />
     <ClCompile Include="GUIElement.cpp" />
     <ClCompile Include="GUIText.cpp" />
-    <ClCompile Include="ClothCollider.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Light.cpp" />

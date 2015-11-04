@@ -1,7 +1,8 @@
 #include "Collider.h"
 
-Collider::Collider(SimObject* obj) : Component(obj)
+Collider::Collider(SimObject* obj, unsigned int cDataID) : Component(obj)
 {
+	m_cDataID = cDataID;
 }
 
 Collider::Collider(const Collider* c) : Component(c)
@@ -18,14 +19,12 @@ Collider::~Collider()
 
 unsigned int Collider::Initialize()
 {
-	PhysicsManager::GetInstance()->AddCollider(this);
 
 	return CS_ERR_NONE;
 }
 
 unsigned int Collider::Shutdown()
 {
-	PhysicsManager::GetInstance()->RemoveCollider(this);
 	m_collisionsSolvedWith.clear();
 
 	return CS_ERR_NONE;

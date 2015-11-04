@@ -1,5 +1,6 @@
 #include "PhysicsManager.h"
-
+#include "BoxAACollider.h"
+#include "SphereCollider.h"
 
 PhysicsManager::PhysicsManager()
 {
@@ -24,6 +25,10 @@ unsigned int PhysicsManager::Initialize()
 
 unsigned int PhysicsManager::Shutdown()
 {
+	m_colliders.clear();
+	m_boxCollidersData.clear();
+	m_sphereCollidersData.clear();
+
 	return CS_ERR_NONE;
 }
 
@@ -95,10 +100,29 @@ unsigned int PhysicsManager::Run()
 }
 
 
-
+/*
 void PhysicsManager::AddCollider(Collider* col)
 {
 	m_colliders.push_back(col);
+}
+*/
+
+BoxAACollider* PhysicsManager::CreateBoxAACollider(SimObject* obj, glm::vec3* min, glm::vec3* max)
+{
+	m_boxCollidersData.push_back(BoxAAData(min, max));
+	BoxAACollider* colPtr = new BoxAACollider(obj, min, max, m_boxCollidersData.size() - 1);
+	m_colliders.push_back(colPtr);
+	colPtr->Initialize();
+	return colPtr;
+}
+
+SphereCollider* PhysicsManager::CreateSphereCollider(SimObject* obj, glm::vec3* offset, float radius)
+{
+	m_sphereCollidersData.push_back(SphereData(offset, radius));
+	SphereCollider* colPtr = new SphereCollider(obj, offset, radius, m_sphereCollidersData.size() - 1);
+	m_colliders.push_back(colPtr);
+	colPtr->Initialize();
+	return colPtr;
 }
 
 bool PhysicsManager::RemoveCollider(Collider* col)
@@ -129,4 +153,24 @@ float PhysicsManager::GetGravity()
 bool PhysicsManager::GetIfDrawColliders()
 {
 	return m_ifDrawColliders;
+}
+
+std::vector<Collider*>* PhysicsManager::GetColliders()
+{
+	return &m_colliders;
+}
+
+std::vector<BoxAAData>* PhysicsManager::GetBoxCollidersData()
+{
+	return &m_boxCollidersData;
+}
+
+std::vector<SphereData>* PhysicsManager::GetSphereCollidersData()
+{
+	return &m_sphereCollidersData;
+}
+
+int PhysicsManager::GetCollidersCount()
+{
+	return m_colliders.size();
 }

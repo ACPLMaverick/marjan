@@ -52,7 +52,6 @@ unsigned int SimObject::Shutdown()
 	{
 		err = (*it)->Shutdown();
 		if (err != CS_ERR_NONE) return err;
-		delete (*it);
 	}
 	m_colliders.clear();
 

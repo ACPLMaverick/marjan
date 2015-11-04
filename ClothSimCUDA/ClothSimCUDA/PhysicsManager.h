@@ -11,6 +11,32 @@ It is also responsible for solving forces and object movements.
 #include <vector>
 
 class Collider;
+class BoxAACollider;
+class SphereCollider;
+
+struct BoxAAData
+{
+	glm::vec3 min;
+	glm::vec3 max;
+
+	BoxAAData(glm::vec3* min, glm::vec3* max)
+	{
+		this->min = *min;
+		this->max = *max;
+	}
+};
+
+struct SphereData
+{
+	glm::vec3 center;
+	float radius;
+
+	SphereData(glm::vec3* center, float radius)
+	{
+		this->center = *center;
+		this->radius = radius;
+	}
+};
 
 class PhysicsManager :
 	public Singleton<PhysicsManager>
@@ -18,6 +44,8 @@ class PhysicsManager :
 	friend class Singleton<PhysicsManager>;
 private:
 	std::vector<Collider*> m_colliders;
+	std::vector<BoxAAData> m_boxCollidersData;
+	std::vector<SphereData> m_sphereCollidersData;
 
 	float m_gravity;
 	bool m_ifDrawColliders;
@@ -31,10 +59,15 @@ public:
 	unsigned int Shutdown();
 	unsigned int Run();
 
-	void AddCollider(Collider*);
+	BoxAACollider* CreateBoxAACollider(SimObject* obj, glm::vec3* min, glm::vec3* max);
+	SphereCollider* CreateSphereCollider(SimObject* obj, glm::vec3* offset, float radius);
 	bool RemoveCollider(Collider*);
 
 	float GetGravity();
 	bool GetIfDrawColliders();
+	std::vector<Collider*>* GetColliders();
+	std::vector<BoxAAData>* GetBoxCollidersData();
+	std::vector<SphereData>* GetSphereCollidersData();
+	int GetCollidersCount();
 };
 

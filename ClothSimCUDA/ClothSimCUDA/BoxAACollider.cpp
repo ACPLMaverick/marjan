@@ -2,14 +2,7 @@
 #include "SphereCollider.h"
 #include "Timer.h"
 
-
-BoxAACollider::BoxAACollider(SimObject* obj) : Collider(obj)
-{
-	m_min = glm::vec3(-0.5f, -0.5f, -0.5f);
-	m_max = glm::vec3(0.5f, 0.5f, 0.5f);
-}
-
-BoxAACollider::BoxAACollider(SimObject* obj, glm::vec3* min, glm::vec3* max) : Collider(obj)
+BoxAACollider::BoxAACollider(SimObject* obj, glm::vec3* min, glm::vec3* max, unsigned int cDataID) : Collider(obj, cDataID)
 {
 	m_min = *min;
 	m_max = *max;
@@ -59,6 +52,9 @@ unsigned int BoxAACollider::Update()
 		m_maxEffective.x = max.x;
 		m_maxEffective.y = max.y;
 		m_maxEffective.z = max.z;
+
+		PhysicsManager::GetInstance()->GetBoxCollidersData()->at(m_cDataID).min = m_minEffective;
+		PhysicsManager::GetInstance()->GetBoxCollidersData()->at(m_cDataID).max = m_maxEffective;
 	}
 	else
 	{
@@ -191,13 +187,6 @@ CollisonTestResult BoxAACollider::TestWithSphere(SphereCollider* other)
 		res.colVector = glm::normalize(closest) * (other->m_effectiveRadius - glm::sqrt(distance));
 		//printf("Collision! %f %f %f\n", closest.x, closest.y, closest.z);
 	}
-
-	return res;
-}
-
-CollisonTestResult BoxAACollider::TestWithCloth(ClothCollider* other)
-{
-	CollisonTestResult res;
 
 	return res;
 }

@@ -11,7 +11,6 @@
 #include "Component.h"
 #include "Common.h"
 #include "MeshGLPlane.h"
-#include "ClothCollider.h"
 #include "Timer.h"
 #include "clothSpringSimulation.h"
 
@@ -22,7 +21,6 @@ protected:
 	clothSpringSimulation* m_simulator;
 
 	MeshGLPlane* m_meshPlane;
-	ClothCollider* m_collider;
 
 	unsigned int m_vertexCount;
 	unsigned int m_springCount;

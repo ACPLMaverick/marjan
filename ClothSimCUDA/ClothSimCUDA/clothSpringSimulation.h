@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Common.h"
+#include "BoxAACollider.h"
+#include "SphereCollider.h"
 
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <stdio.h>
+#include <vector>
 
 /*
 	Header file for Cloth Spring Simulation CUDA class.
@@ -29,6 +32,7 @@ struct Vertex
 	float elasticityDamp;
 	float dampCoeff;
 	float lockMultiplier;
+	float colliderMultiplier;
 
 	Vertex()
 	{
@@ -49,6 +53,7 @@ struct Vertex
 		dampCoeff = 0.0f;
 		lockMultiplier = 1.0f;
 		elasticity = 0.0f;
+		colliderMultiplier = 0.0f;
 	}
 };
 
@@ -74,6 +79,7 @@ private:
 	const float SPRING_ELASTICITY = 0.5f;
 	const float SPRING_BORDER_MULTIPLIER = 50.0f;
 	const float SPRING_ELASTICITY_DAMP = 0.000005f;
+	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
 	const double MAX_DELTA = 33.3;
 	const double FIXED_DELTA = 0.006f;
 
@@ -84,6 +90,8 @@ private:
 	unsigned int m_vertexColorSize;
 	unsigned int m_allEdgesWidth;
 	unsigned int m_allEdgesLength;
+	unsigned int m_boxColliderCount;
+	unsigned int m_sphereColliderCount;
 
 	Vertex* m_vertices;
 	Spring* m_springs;
@@ -98,10 +106,13 @@ private:
 	glm::vec3* i_posPtr;
 	glm::vec3* i_nrmPtr;
 	glm::vec4* i_colPtr;
-	float* i_gravPtr;
+	float* i_wmPtr;
+	BoxAAData* i_bcldPtr;
+	SphereData* i_scldPtr;
 	/////////////////
 
-	inline cudaError_t CalculateForces(float gravity, double delta, int steps);
+	inline cudaError_t CalculateForces(float gravity, double delta, int steps, 
+		BoxAAData* boxColliders, SphereData* sphereColliders, glm::mat4* transform);
 	inline void FreeMemory();
 public:
 	clothSpringSimulation();
@@ -113,11 +124,14 @@ public:
 		unsigned int vertexColorSize,
 		unsigned int edgesWidth,
 		unsigned int edgesLength,
+		unsigned int boxColliderCount,
+		unsigned int sphereColliderCount,
 		glm::vec3* vertexPositionPtr, 
 		glm::vec3* vertexNormalPtr, 
 		glm::vec4* vertexColorPtr
 		);
-	unsigned int ClothSpringSimulationUpdate(float gravity, double delta, int steps);
+	unsigned int ClothSpringSimulationUpdate(float gravity, double delta, int steps, 
+		BoxAAData* boxColliders, SphereData* sphereColliders, glm::mat4* transform);
 	unsigned int ClothSpringSimulationShutdown();
 };
 

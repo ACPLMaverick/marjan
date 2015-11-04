@@ -5,7 +5,6 @@
 #include "GUIText.h"
 #include "BoxAACollider.h"
 #include "SphereCollider.h"
-#include "ClothCollider.h"
 #include "ClothSimulator.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
@@ -56,12 +55,8 @@ unsigned int SceneTest::Initialize()
 	box->SetGloss(100.0f);
 	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testObj->AddMesh(box);
-	BoxAACollider* tObjCollider = new BoxAACollider(testObj, &(glm::vec3(-2.0f, -1.5f, -1.5f)), &(glm::vec3(2.0f, 1.5f, 1.5f)));
-	tObjCollider->Initialize();
+	BoxAACollider* tObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(testObj, &(glm::vec3(-2.0f, -1.5f, -1.5f)), &(glm::vec3(2.0f, 1.5f, 1.5f)));
 	testObj->AddCollider(tObjCollider);
-	//SphereCollider* tObjCollider = new SphereCollider(testObj, &(glm::vec3(0.0f, 0.0f, 0.0f)), 1.0f);
-	//tObjCollider->Initialize();
-	//testObj->AddCollider(tObjCollider);
 
 	/*RotateMe* rm = new RotateMe(testObj);
 	rm->Initialize();
@@ -74,7 +69,7 @@ unsigned int SceneTest::Initialize()
 
 
 	SimObject* colObj = new SimObject();
-	testObj->Initialize("colObj");
+	colObj->Initialize("colObj");
 	Transform* colObjTransform = new Transform(colObj);
 	colObjTransform->Initialize();
 	colObjTransform->SetPosition(&(glm::vec3(5.0f, 2.5f, 0.0f)));
@@ -85,12 +80,8 @@ unsigned int SceneTest::Initialize()
 	colBox->SetGloss(600.0f);
 	colBox->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	colObj->AddMesh(colBox);
-	BoxAACollider* cObjCollider = new BoxAACollider(colObj, &(glm::vec3(-0.5f, -0.5f, -0.5f)), &(glm::vec3(0.5f, 0.5f, 0.5f)));
-	cObjCollider->Initialize();
+	BoxAACollider* cObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(colObj, &(glm::vec3(-0.5f, -0.5f, -0.5f)), &(glm::vec3(0.5f, 0.5f, 0.5f)));
 	colObj->AddCollider(cObjCollider);
-	//SphereCollider* cObjCollider = new SphereCollider(colObj, &(glm::vec3(0.0f, 0.0f, 0.0f)), 1.0f);
-	//cObjCollider->Initialize();
-	//colObj->AddCollider(cObjCollider);
 
 	AddObject(colObj);
 
@@ -101,16 +92,13 @@ unsigned int SceneTest::Initialize()
 	testClothTransform->Initialize();
 	testClothTransform->SetPosition(&(glm::vec3(0.0f, 7.5f, 0.0f)));
 	testClothTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
+	testClothTransform->Update();
 	testCloth->SetTransform(testClothTransform);
 
 	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 62, 62);
 	clothMesh->Initialize();
 	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testCloth->AddMesh(clothMesh);
-
-	ClothCollider* clothCol = new ClothCollider(testCloth);
-	testCloth->AddCollider(clothCol);
-	clothCol->Initialize();
 
 	ClothSimulator* cSim = new ClothSimulator(testCloth, 1);
 	testCloth->AddComponent(cSim);

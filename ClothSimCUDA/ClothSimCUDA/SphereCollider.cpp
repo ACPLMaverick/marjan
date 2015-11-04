@@ -1,14 +1,8 @@
 #include "SphereCollider.h"
 #include "BoxAACollider.h"
 
-SphereCollider::SphereCollider(SimObject* obj) : Collider(obj)
-{
-	m_center = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_effectiveCenter = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_radius = 1.0f;
-}
 
-SphereCollider::SphereCollider(SimObject* obj, glm::vec3* offset, float radius) : Collider(obj)
+SphereCollider::SphereCollider(SimObject* obj, glm::vec3* offset, float radius, unsigned int cDataID) : Collider(obj, cDataID)
 {
 	m_effectiveCenter = glm::vec3(0.0f, 0.0f, 0.0f);
 	m_center = *offset;
@@ -57,6 +51,9 @@ unsigned int SphereCollider::Update()
 		float sclModifier = (scale->x + scale->y + scale->z) / 3.0f;
 
 		m_effectiveRadius = m_radius * sclModifier;
+
+		PhysicsManager::GetInstance()->GetSphereCollidersData()->at(m_cDataID).center = m_effectiveCenter;
+		PhysicsManager::GetInstance()->GetSphereCollidersData()->at(m_cDataID).radius = m_effectiveRadius;
 	}
 	else
 	{
@@ -123,13 +120,6 @@ CollisonTestResult SphereCollider::TestWithSphere(SphereCollider* other)
 		res.ifCollision = true;
 		res.colVector = glm::vec3(0.0f, m_effectiveRadius + other->m_effectiveRadius, 0.0f);
 	}
-
-	return res;
-}
-
-CollisonTestResult SphereCollider::TestWithCloth(ClothCollider* other)
-{
-	CollisonTestResult res;
 
 	return res;
 }

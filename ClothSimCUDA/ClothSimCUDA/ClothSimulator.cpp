@@ -31,14 +31,6 @@ unsigned int ClothSimulator::Initialize()
 	}
 	else return CS_ERR_CLOTHSIMULATOR_MESH_OBTAINING_ERROR;
 
-	if (
-		m_obj->GetCollider(0) != nullptr
-		)
-	{
-		m_collider = (ClothCollider*)m_obj->GetCollider(0);
-	}
-	else return CS_ERR_CLOTHSIMULATOR_COLLIDER_OBTAINING_ERROR;
-
 	// initializing CUDA
 	m_simulator = new clothSpringSimulation();
 	VertexData* clothData = m_meshPlane->GetVertexDataPtr();
@@ -48,6 +40,8 @@ unsigned int ClothSimulator::Initialize()
 		sizeof(clothData->data->colorBuffer[0]),
 		m_meshPlane->GetEdgesWidth() + 2,
 		m_meshPlane->GetEdgesLength() + 2,
+		PhysicsManager::GetInstance()->GetBoxCollidersData()->size(),
+		PhysicsManager::GetInstance()->GetSphereCollidersData()->size(),
 		clothData->data->positionBuffer,
 		clothData->data->normalBuffer,
 		clothData->data->colorBuffer
@@ -73,11 +67,25 @@ unsigned int ClothSimulator::Update()
 	unsigned int err = CS_ERR_NONE;
 
 	VertexData* clothData = m_meshPlane->GetVertexDataPtr();
+	BoxAAData* boxData = nullptr;
+	SphereData* sphereData = nullptr;
+	if (PhysicsManager::GetInstance()->GetBoxCollidersData()->size() != 0)
+		boxData = &(PhysicsManager::GetInstance()->GetBoxCollidersData()->at(0));
+	if (PhysicsManager::GetInstance()->GetSphereCollidersData()->size() != 0)
+		sphereData = &(PhysicsManager::GetInstance()->GetSphereCollidersData()->at(0));
+
+	glm::mat4* wm = &glm::mat4();
+
+	if (m_obj->GetTransform() != nullptr)
+		wm = m_obj->GetTransform()->GetWorldMatrix();
 
 	err = m_simulator->ClothSpringSimulationUpdate(
 		PhysicsManager::GetInstance()->GetGravity(),
 		Timer::GetInstance()->GetDeltaTime(),
-		m_steps
+		m_steps,
+		boxData,
+		sphereData,
+		wm
 		);
 
 	return err;

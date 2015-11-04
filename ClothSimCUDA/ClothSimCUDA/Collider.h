@@ -16,7 +16,6 @@ This is an abstract representation of a Collider.
 class SimObject;
 class SphereCollider;
 class BoxAACollider;
-class ClothCollider;
 
 struct CollisonTestResult
 {
@@ -46,10 +45,12 @@ class Collider :
 protected:
 	std::vector<Collider*> m_collisionsSolvedWith;
 	ColliderType m_type;
-	
+	unsigned int m_cDataID;
+
+	Collider(SimObject* obj, unsigned int cDataID);
 	bool HasAlreadyCollidedWith(Collider*);
 public:
-	Collider(SimObject* obj);
+	
 	Collider(const Collider* c);
 	~Collider();
 
@@ -61,7 +62,6 @@ public:
 
 	virtual CollisonTestResult TestWithBoxAA(BoxAACollider* other) = 0;
 	virtual CollisonTestResult TestWithSphere(SphereCollider* other) = 0;
-	virtual CollisonTestResult TestWithCloth(ClothCollider* other) = 0;
 
 	ColliderType GetType();
 };
