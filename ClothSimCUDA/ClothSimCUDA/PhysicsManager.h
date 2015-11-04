@@ -19,6 +19,12 @@ struct BoxAAData
 	glm::vec3 min;
 	glm::vec3 max;
 
+	BoxAAData()
+	{
+		min = glm::vec3(0.0f, 0.0f, 0.0f);
+		max = glm::vec3(0.0f, 0.0f, 0.0f);
+	}
+
 	BoxAAData(glm::vec3* min, glm::vec3* max)
 	{
 		this->min = *min;
@@ -30,6 +36,12 @@ struct SphereData
 {
 	glm::vec3 center;
 	float radius;
+
+	SphereData()
+	{
+		this->center = glm::vec3(0.0f, 0.0f, 0.0f);
+		this->radius = 0.0f;
+	}
 
 	SphereData(glm::vec3* center, float radius)
 	{

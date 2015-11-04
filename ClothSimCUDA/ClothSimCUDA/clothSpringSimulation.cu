@@ -1,23 +1,54 @@
 
 #include "clothSpringSimulation.h"
 
-__device__ void CUDAVec3Min(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret)
+__device__ inline void CUDAVec3Min(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret)
 {
 	ret->x = glm::min(vec1->x, vec2->x);
 	ret->y = glm::min(vec1->y, vec2->y);
 	ret->z = glm::min(vec1->z, vec2->z);
 }
 
-__device__ void CUDAVec3Max(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret)
+__device__ inline void CUDAVec3Max(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret)
 {
 	ret->x = glm::max(vec1->x, vec2->x);
 	ret->y = glm::max(vec1->y, vec2->y);
 	ret->z = glm::max(vec1->z, vec2->z);
 }
 
-__device__ float CUDAVec3LengthSquared(const glm::vec3* vec)
+__device__ inline float CUDAVec3LengthSquared(const glm::vec3* vec)
 {
 	return vec->x * vec->x + vec->y * vec->y + vec->z * vec->z;
+}
+
+__device__ inline void CUDASolveBoxAACollision(const glm::vec3* boxMin, const glm::vec3* boxMax, const glm::vec3* center, const float radius, const float multiplier, glm::vec3* ret)
+{
+	glm::vec3 cls, closest;
+
+	CUDAVec3Max(center, boxMin, &cls);
+	CUDAVec3Min(&cls, boxMax, &closest);
+
+	float distance = CUDAVec3LengthSquared(&(closest - *center));
+
+
+	if (distance < (radius * radius))
+	{
+		closest = *center - closest;
+		*ret += normalize(closest) * (radius - sqrt(distance)) * multiplier;
+	}
+}
+
+__device__ inline void CUDASolveSphereCollision(const glm::vec3* sphereCenter, const float sphereRadius, const glm::vec3* center, const float radius, const float multiplier, glm::vec3* ret)
+{
+	glm::vec3 diff = *center - *sphereCenter;
+	float diffLength = CUDAVec3LengthSquared(&diff);
+
+	if (diffLength < (radius + sphereRadius) * (radius + sphereRadius))
+	{
+		diff = glm::normalize(diff);
+		diff = diff * ((radius + sphereRadius) - glm::sqrt(diffLength)) * multiplier;
+
+		*ret += diff;
+	}
 }
 
 
@@ -144,50 +175,136 @@ __global__ void CalculateExternalCollisionsKernel(
 	////////////////////
 
 	float radius = 0.0f;
+	float divisor = 0.0f;
 	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
 	{
-		radius += vertPtr[v_cur].springLengths[i];
+		radius += vertPtr[v_cur].springLengths[i] * vertPtr[v_cur].neighbourMultipliers[i];
+		divisor += vertPtr[v_cur].neighbourMultipliers[i];
 	}
-	radius = radius / (float)VERTEX_NEIGHBOURING_VERTICES * vertPtr[v_cur].colliderMultiplier;
+	radius = radius / divisor * vertPtr[v_cur].colliderMultiplier;
 
 	glm::vec3 colVec;
 	// solve for boxes
 	for (int i = 0; i < boxColliderCount; ++i)
 	{
-		glm::vec3 cls, closest;
-
-		CUDAVec3Max(&wPos, &boxColliders[i].min, &cls);
-		CUDAVec3Min(&cls, &boxColliders[i].max, &closest);
-
-		float distance = CUDAVec3LengthSquared(&(closest - wPos));
-
-
-		if (distance < (radius * radius))
-		{
-			closest = wPos - closest;
-			colVec += normalize(closest) * (radius - sqrt(distance));
-		}
+		CUDASolveBoxAACollision(&boxColliders[i].min, &boxColliders[i].max, &wPos, radius, 1.0f, &colVec);
 	}
 
 	// solve for spheres
 	for (int i = 0; i < sphereColliderCount; ++i)
 	{
-		glm::vec3 diff = wPos - sphereColliders[i].center;
-		float diffLength = CUDAVec3LengthSquared(&diff);
-
-		if (diffLength < (radius + sphereColliders[i].radius) * (radius + sphereColliders[i].radius))
-		{
-			diff = glm::normalize(diff);
-			diff = diff * ((radius + sphereColliders[i].radius) - glm::sqrt(diffLength));
-
-			colVec += diff;
-		}
+		CUDASolveSphereCollision(&sphereColliders[i].center, sphereColliders[i].radius, &wPos, radius, 1.0f, &colVec);
 	}
 
 	posPtr[v_cur] += colVec;
 }
 
-__global__ void CalculateInternalCollisionsKernel(
+__global__ void CalculateInternalCollisionsSpatialSubdivisionKernel(
+	Vertex* vertPtr,
+	glm::vec3* posPtr,
+	cBoxAAData globalCol,
+	float cellSize,
+	const int N
+	)
+{
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+	int v_cur = (i * gridDim.y * blockDim.y) + j;
+
+	if (v_cur >= N)
+		return;
+
+	// UTL, UTR, UBR, UBL, DTL, DTR, DBR, DBL
+	cBoxAAData mCol = globalCol;
+	glm::vec3 diff = mCol.max - mCol.min;
+	cBoxAAData children[8];
+	while (
+		diff.x > cellSize &&
+		diff.y > cellSize &&
+		diff.z > cellSize
+		)
+	{
+		glm::vec3 center;
+		center.x = mCol.min.x + mCol.max.x / 2.0f;
+		center.y = mCol.min.y + mCol.max.y / 2.0f;
+		center.z = mCol.min.z + mCol.max.z / 2.0f;
+		//// generate children
+
+		// UTL
+		children[0].min = glm::vec3(mCol.min.x, center.y, mCol.min.z);
+		children[0].max = glm::vec3(center.x, mCol.max.y, center.z);
+
+		// UTR
+		children[1].min = glm::vec3(center.x, center.y, mCol.min.z);
+		children[1].max = glm::vec3(mCol.max.x, mCol.max.y, center.z);
+
+		// UBR
+		children[2].min = glm::vec3(center.x, center.y, center.z);
+		children[2].max = glm::vec3(mCol.max.x, mCol.max.y, mCol.max.z);
+
+		// UBL
+		children[3].min = glm::vec3(mCol.min.x, center.y, center.z);
+		children[3].max = glm::vec3(center.x, mCol.max.y, mCol.max.z);
+
+		// DTL
+		children[4].min = glm::vec3(mCol.min.x, mCol.min.y, mCol.min.z);
+		children[4].max = glm::vec3(center.x, center.y, center.z);
+
+		// DTR
+		children[5].min = glm::vec3(center.x, mCol.min.y, mCol.min.z);
+		children[5].max = glm::vec3(mCol.max.x, center.y, center.z);
+
+		// DBR
+		children[6].min = glm::vec3(center.x, mCol.min.y, center.z);
+		children[6].max = glm::vec3(mCol.max.x, center.y, mCol.max.z);
+
+		// DBL
+		children[7].min = glm::vec3(mCol.min.x, mCol.min.y, center.z);
+		children[7].max = glm::vec3(center.x, center.y, mCol.max.z);
+
+		/////////////
+
+		//// pick one
+		mCol = children[0];
+
+		diff = mCol.max - mCol.min;
+	}
+
+	glm::vec3 mCenter = posPtr[v_cur];
+
+
+	float radius = 0.0f;
+	float divisor = 0.0f;
+	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
+	{
+		radius += vertPtr[v_cur].springLengths[i] * vertPtr[v_cur].neighbourMultipliers[i];
+		divisor += vertPtr[v_cur].neighbourMultipliers[i];
+	}
+	radius = radius / divisor * vertPtr[v_cur].colliderMultiplier;
+
+	for (int i = 0; i < N; ++i)
+	{
+		glm::vec3 colVec;
+
+		glm::vec3 oCenter = posPtr[i];
+		if (
+			oCenter.x >= mCol.min.x &&
+			oCenter.y >= mCol.min.y &&
+			oCenter.z >= mCol.min.z &&
+			oCenter.x <= mCol.max.x &&
+			oCenter.y <= mCol.max.y &&
+			oCenter.z <= mCol.max.z &&
+			i != v_cur
+			)
+		{
+			CUDASolveSphereCollision(&posPtr[i], radius, &mCenter, radius, 0.5f, &colVec);
+		}
+
+		posPtr[v_cur] += colVec;
+	}
+}
+
+__global__ void CalculateInternalCollisionsSimpleKernel(
 	Vertex* vertPtr,
 	glm::vec3* posPtr,
 	const int N
@@ -199,6 +316,76 @@ __global__ void CalculateInternalCollisionsKernel(
 
 	if (v_cur >= N)
 		return;
+
+	glm::vec3 colVec;
+	glm::vec3 mCenter = posPtr[v_cur];
+	glm::vec3 oCenter;
+	float radius = 0.0f;
+	float divisor = 0.0f;
+	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
+	{
+		radius += vertPtr[v_cur].springLengths[i] * vertPtr[v_cur].neighbourMultipliers[i];
+		divisor += vertPtr[v_cur].neighbourMultipliers[i];
+	}
+	radius = radius / divisor * vertPtr[v_cur].colliderMultiplier * 0.1f;
+
+	for (int i = 0; i < N; ++i)
+	{
+		if (i == v_cur)
+			continue;
+
+		CUDASolveSphereCollision(&posPtr[i], radius, &mCenter, radius, 0.5f, &colVec);
+	}
+
+	posPtr[v_cur] += colVec;
+}
+
+__global__ void CalculateInternalCollisionsNeighboursOnlyKernel(
+	Vertex* vertPtr,
+	glm::vec3* posPtr,
+	const unsigned int edgesLength,
+	const int N
+	)
+{
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+	int v_cur = (i * gridDim.y * blockDim.y) + j;
+
+	if (v_cur >= N)
+		return;
+
+	unsigned int nCount = (2 * COLLISION_CHECK_WINDOW_SIZE + 1)*(2 * COLLISION_CHECK_WINDOW_SIZE + 1) - 1;
+	unsigned int nIds[(2 * COLLISION_CHECK_WINDOW_SIZE + 1)*(2 * COLLISION_CHECK_WINDOW_SIZE + 1) - 1];
+
+	unsigned int w = 0;
+	for (int i = -COLLISION_CHECK_WINDOW_SIZE; i <= COLLISION_CHECK_WINDOW_SIZE; ++i)
+	{
+		for (int j = -COLLISION_CHECK_WINDOW_SIZE; j <= COLLISION_CHECK_WINDOW_SIZE; ++j)
+		{
+			if (i == 0 && j == 0)
+				continue;
+
+			nIds[w] = abs((i * (int)edgesLength + j + v_cur) % N);
+			++w;
+		}
+	}
+
+	glm::vec3 colVec;
+	float radius = 0.0f;
+	float divisor = 0.0f;
+	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
+	{
+		radius += vertPtr[v_cur].springLengths[i] * vertPtr[v_cur].neighbourMultipliers[i];
+		divisor += vertPtr[v_cur].neighbourMultipliers[i];
+	}
+	radius = radius / divisor * vertPtr[v_cur].colliderMultiplier * 0.1f;
+
+	for (int i = 0; i < nCount; ++i)
+	{
+		CUDASolveSphereCollision(&posPtr[i], radius, &posPtr[v_cur], radius, 0.5f, &colVec);
+	}
+
+	posPtr[v_cur] += colVec;
 }
 
 __global__ void CalculateNormalsKernel(
@@ -271,9 +458,21 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 	m_nrmPtr = vertexNormalPtr;
 	m_colPtr = vertexColorPtr;
 
+	lastDelta = FIXED_DELTA;
+
+	m_globalBounds = new cBoxAAData;
+
 	// generate vertex and spring arrays, to help with computations
 
 	m_vertices = new Vertex[m_vertexCount];
+
+	glm::vec3 baseLength = glm::vec3(
+		abs(m_posPtr[0].x - m_posPtr[m_vertexCount - 1].x) / (float)(m_allEdgesWidth - 1),
+		0.0f,
+		abs(m_posPtr[0].z - m_posPtr[m_vertexCount - 1].z) / (float)(m_allEdgesLength - 1)
+		);
+
+	m_cellSize = glm::max(baseLength.x, baseLength.z) * 1.5f;
 
 	for (int i = 0; i < m_vertexCount; ++i)
 	{
@@ -298,12 +497,6 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		m_vertices[i].colliderMultiplier = VERTEX_COLLIDER_MULTIPLIER;
 
 		// calculating neighbouring vertices ids and spring lengths
-
-		glm::vec3 baseLength = glm::vec3(
-			abs(m_posPtr[0].x - m_posPtr[m_vertexCount - 1].x) / (float)(m_allEdgesWidth - 1),
-			0.0f,
-			abs(m_posPtr[0].z - m_posPtr[m_vertexCount - 1].z) / (float)(m_allEdgesLength - 1)
-			);
 
 		// upper
 		m_vertices[i].neighbours[0] = (i - 1) % m_vertexCount;
@@ -361,7 +554,7 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 	// hard-coded locks
 	m_vertices[0].lockMultiplier = 0.0f;
 	m_vertices[(m_vertexCount - m_allEdgesLength)].lockMultiplier = 0.0f;
-
+	/*
 	m_springs = new Spring[m_springCount];
 
 	for (int i = 0, s = 0; i < m_vertexCount; ++i)
@@ -390,6 +583,10 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 			++s;
 		}
 	}
+	*/
+
+	// that fucking tree
+
 
 	//////////////////////////////
 
@@ -486,7 +683,35 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, double delta, int steps,
 	BoxAAData* boxColliders, SphereData* sphereColliders, glm::mat4* transform)
 {
-	// Add vectors in parallel.
+	// Update bounds
+	m_globalBounds->min = glm::vec3();
+	m_globalBounds->max = glm::vec3();
+
+	for (int i = 0; i < m_vertexCount; ++i)
+	{
+		glm::vec3 c = m_posPtr[i];
+		if (
+			c.x < m_globalBounds->min.x ||
+			c.y < m_globalBounds->min.y ||
+			c.z < m_globalBounds->min.z
+			)
+		{
+			m_globalBounds->min = c;
+		}
+
+		if (
+			c.x > m_globalBounds->max.x ||
+			c.y > m_globalBounds->max.y ||
+			c.z > m_globalBounds->max.z
+			)
+		{
+			m_globalBounds->max = c;
+		}
+	}
+	m_globalBounds->min -= glm::vec3(CELL_OFFSET, CELL_OFFSET, CELL_OFFSET);
+	m_globalBounds->max += glm::vec3(CELL_OFFSET, CELL_OFFSET, CELL_OFFSET);
+
+	// Calculate forces
 	cudaError_t cudaStatus = CalculateForces(gravity, delta, steps, boxColliders, sphereColliders, transform);
 	if (cudaStatus != cudaSuccess) {
 		printf("CUDA: AddWithCuda failed!");
@@ -512,6 +737,8 @@ unsigned int clothSpringSimulation::ClothSpringSimulationShutdown()
 	cudaError_t cudaStatus;
 
 	delete m_deviceProperties;
+	delete m_vertices;
+	delete m_globalBounds;
 
 	FreeMemory();
 
@@ -591,6 +818,7 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 		return status;
 	}
 
+	// and world matrix -_-
 	status = cudaMemcpy(i_wmPtr, transform, sizeof(glm::mat4), cudaMemcpyHostToDevice);
 	if (status != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
@@ -605,18 +833,22 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 	int sX = (m_allEdgesWidth - 1) * m_allEdgesLength;
 	int sY = (m_allEdgesLength - 1) * m_allEdgesWidth;
 	dim3 gridVerts((m_allEdgesWidth + p - 1) / p, (m_allEdgesLength + p - 1) / p, 1);
-	dim3 gridSprings((sX + p - 1) / p, (sY + p - 1) / p, 1);
+	//dim3 gridSprings((sX + p - 1) / p, (sY + p - 1) / p, 1);
 	dim3 blockVerts(p, p, 1);
-	dim3 blockSprings(p, p, 1);
+	//dim3 blockSprings(p, p, 1);
 
+	
 	for (int i = 1; i <= steps; ++i)
 	{
 		CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_nrmPtr, i_colPtr, gravity, FIXED_DELTA / steps, m_vertexCount);
 		CalculateExternalCollisionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_bcldPtr, i_scldPtr, 
 			i_wmPtr, m_boxColliderCount, m_sphereColliderCount, m_vertexCount);
-		CalculateInternalCollisionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, m_vertexCount);
+		//CalculateInternalCollisionsSimpleKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, m_vertexCount);
+		//CalculateInternalCollisionsSpatialSubdivisionKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, *m_globalBounds, m_cellSize, m_vertexCount);
+		CalculateInternalCollisionsNeighboursOnlyKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, m_allEdgesLength, m_vertexCount);
 		CalculateNormalsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_nrmPtr, m_vertexCount);
 	}
+	lastDelta = delta;
 
 	// Check for any errors launching the kernel
 	status = cudaGetLastError();

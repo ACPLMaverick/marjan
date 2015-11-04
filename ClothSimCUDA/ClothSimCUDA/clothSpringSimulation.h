@@ -6,14 +6,17 @@
 
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
+#include <thrust\device_vector.h>
 #include <stdio.h>
 #include <vector>
+#include <stack>
 
 /*
 	Header file for Cloth Spring Simulation CUDA class.
 */
 
 #define VERTEX_NEIGHBOURING_VERTICES 4
+#define COLLISION_CHECK_WINDOW_SIZE 1
 #define ALMOST_ZERO 0.000000001f
 
 struct Vertex
@@ -69,9 +72,18 @@ struct Spring
 	float elasticity;
 };
 
+struct cBoxAAData
+{
+	glm::vec3 min;
+	glm::vec3 max;
+};
+
 class clothSpringSimulation
 {
 private:
+	const double MAX_DELTA = 33.3;
+	const double FIXED_DELTA = 0.006f;
+
 	cudaDeviceProp* m_deviceProperties;
 
 	const float VERTEX_MASS = 0.001f;
@@ -80,8 +92,9 @@ private:
 	const float SPRING_BORDER_MULTIPLIER = 50.0f;
 	const float SPRING_ELASTICITY_DAMP = 0.000005f;
 	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
-	const double MAX_DELTA = 33.3;
-	const double FIXED_DELTA = 0.006f;
+	const float CELL_OFFSET = 0.01f;
+	
+	double lastDelta;
 
 	unsigned int m_vertexCount;
 	unsigned int m_springCount;
@@ -92,9 +105,13 @@ private:
 	unsigned int m_allEdgesLength;
 	unsigned int m_boxColliderCount;
 	unsigned int m_sphereColliderCount;
+	unsigned int m_cTreeNodeDepth;
 
 	Vertex* m_vertices;
 	Spring* m_springs;
+	cBoxAAData* m_globalBounds;
+	
+	float m_cellSize;
 
 	glm::vec3* m_posPtr;
 	glm::vec3* m_nrmPtr;
