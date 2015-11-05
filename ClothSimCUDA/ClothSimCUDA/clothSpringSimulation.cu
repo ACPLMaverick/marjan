@@ -42,7 +42,7 @@ __device__ inline void CUDASolveSphereCollision(const glm::vec3* sphereCenter, c
 	glm::vec3 diff = *center - *sphereCenter;
 	float diffLength = CUDAVec3LengthSquared(&diff);
 
-	if (diffLength < (radius + sphereRadius) * (radius + sphereRadius))
+	if (diffLength < (radius + sphereRadius) * (radius + sphereRadius) && diffLength != 0.0f)
 	{
 		diff = glm::normalize(diff);
 		diff = diff * ((radius + sphereRadius) - glm::sqrt(diffLength)) * multiplier;
