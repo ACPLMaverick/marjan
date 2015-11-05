@@ -351,7 +351,7 @@ __global__ void CalculateInternalCollisionsNeighboursOnlyKernel(
 	int j = blockIdx.y * blockDim.y + threadIdx.y;
 	int v_cur = (i * gridDim.y * blockDim.y) + j;
 
-	if (v_cur >= N)
+	if (v_cur != 0)
 		return;
 
 	unsigned int nCount = (2 * COLLISION_CHECK_WINDOW_SIZE + 1)*(2 * COLLISION_CHECK_WINDOW_SIZE + 1) - 1;
@@ -370,7 +370,7 @@ __global__ void CalculateInternalCollisionsNeighboursOnlyKernel(
 		}
 	}
 
-	glm::vec3 colVec;
+	glm::vec3 colVec = glm::vec3(0.0f, 0.0f, 0.0f);
 	float radius = 0.0f;
 	float divisor = 0.0f;
 	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
@@ -382,7 +382,7 @@ __global__ void CalculateInternalCollisionsNeighboursOnlyKernel(
 
 	for (int i = 0; i < nCount; ++i)
 	{
-		CUDASolveSphereCollision(&posPtr[i], radius, &posPtr[v_cur], radius, 0.5f, &colVec);
+		CUDASolveSphereCollision(&posPtr[nIds[i]], radius, &posPtr[v_cur], radius, 0.5f, &colVec);
 	}
 
 	posPtr[v_cur] += colVec;
