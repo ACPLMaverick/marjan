@@ -164,7 +164,8 @@ public class UIManager : MonoBehaviour {
 
 	public void OnGenerateButtonClick()
 	{
-		FluidController.Instance.CreateParticles ();
+        FluidController.Instance.CreateParticles();
+        FluidController.Instance.InitializeVectorField();
 		startSimulationButton.interactable = true;
 		//if (inputField.placeholder != null)
 		//	inputField.text = "50";

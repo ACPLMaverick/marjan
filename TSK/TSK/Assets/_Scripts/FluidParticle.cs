@@ -15,7 +15,8 @@ public class FluidParticle : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        // THIS IS ONLY FOR TEST PURPOSES!!!!!!!!!!!
+        this.GetComponent<Renderer>().enabled = false;
 	}
 	
 	// Update is called once per frame
