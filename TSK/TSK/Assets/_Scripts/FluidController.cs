@@ -29,9 +29,12 @@ public class FluidController : Singleton<FluidController> {
 
     #region simRelated
 
+    const uint JACOBI_ITERATIONS = 30;
+
     private bool vfInitialized = false;
-    private Color[] vectorField;
-    private Color[] vectorFieldNew;
+    private Color[] velocityField;
+    private Color[] velocityFieldNew;
+    private Color[] pressureField;
     private Texture2D vectorFieldTexture;
 
     #endregion
@@ -66,16 +69,17 @@ public class FluidController : Singleton<FluidController> {
     {
         vectorFieldTexture = new Texture2D((int)particleWidth, (int)particleWidth);
         vectorFieldTexture.wrapMode = TextureWrapMode.Clamp;
-        vectorField = new Color[particleCount];
-        vectorFieldNew = new Color[particleCount];
+        velocityField = new Color[particleCount];
+        velocityFieldNew = new Color[particleCount];
+        pressureField = new Color[particleCount];
 
         for (uint i = 0; i < particleCount; ++i )
         {
-            vectorField[i] = new Color(0.0f, 0.0f, 0.0f);
-            vectorFieldNew[i] = new Color(0.0f, 0.0f, 0.0f);
+            velocityField[i] = new Color(0.0f, 0.0f, 0.0f);
+            velocityFieldNew[i] = new Color(0.0f, 0.0f, 0.0f);
         }
 
-        ApplyTextureData(ref vectorFieldTexture, vectorField);
+        ApplyTextureData(ref vectorFieldTexture, velocityField);
         MaterialPropertyBlock mp = new MaterialPropertyBlock();
         mp.AddTexture(0, vectorFieldTexture);
         container.MySprite.SetPropertyBlock(mp);
@@ -87,11 +91,12 @@ public class FluidController : Singleton<FluidController> {
     {
         Advect();
         Diffuse();
+        SolveBoundaries();
         ApplyForces();
         ComputePressure();
         SubtractPressureGradient();
 
-        ApplyTextureData(ref vectorFieldTexture, vectorField);
+        ApplyTextureData(ref vectorFieldTexture, velocityField);
 
         ApplyVectorField();
     }
@@ -101,7 +106,7 @@ public class FluidController : Singleton<FluidController> {
         for (uint i = 0; i < particleCount; ++i)
         {
             Vector2 cPos = Square1DCoords(i, particleWidth);
-            Vector2 backPos = cPos - Time.fixedDeltaTime * new Vector2(vectorField[i].r, vectorField[i].g);
+            Vector2 backPos = cPos - Time.fixedDeltaTime * new Vector2(velocityField[i].r, velocityField[i].g);
 
             backPos.x = Mathf.Clamp(backPos.x, 0.0f, (float)particleWidth);
             backPos.y = Mathf.Clamp(backPos.y, 0.0f, (float)particleWidth);
@@ -113,21 +118,57 @@ public class FluidController : Singleton<FluidController> {
             bl = new Vector2(Mathf.Floor(backPos.x), Mathf.Floor(backPos.y));
 
             Color newVelocity =
-                vectorField[Flatten2DCoords(tl, particleWidth)] +
-                vectorField[Flatten2DCoords(tr, particleWidth)] +
-                vectorField[Flatten2DCoords(br, particleWidth)] +
-                vectorField[Flatten2DCoords(bl, particleWidth)];
+                velocityField[Flatten2DCoords(tl, particleWidth)] +
+                velocityField[Flatten2DCoords(tr, particleWidth)] +
+                velocityField[Flatten2DCoords(br, particleWidth)] +
+                velocityField[Flatten2DCoords(bl, particleWidth)];
             newVelocity /= 4.0f;
 
-            vectorFieldNew[i] = newVelocity;
+            velocityFieldNew[i] = newVelocity;
         }
 
-        SwapColor(ref vectorField, ref vectorFieldNew);
+        SwapColor(ref velocityField, ref velocityFieldNew);
     }
 
     private void Diffuse()
     {
-        
+        float alpha, rBeta;
+        for(uint t = 0; t < JACOBI_ITERATIONS; ++t)
+        {
+            for(uint i = 0; i < particleCount; ++i)
+            {
+                alpha = (particles[i].radius * particles[i].radius * 4.0f) / ((float)particles[i].viscosity * Time.fixedDeltaTime);
+                rBeta = 1.0f / (4.0f + alpha);
+
+                Jacobi(i, out velocityFieldNew[i], alpha, rBeta, velocityField, velocityField, particleWidth);
+            }
+            SwapColor(ref velocityField, ref velocityFieldNew);
+        }
+    }
+
+    // container elasticity will have to be taken into account here, I guess
+    private void SolveBoundaries()
+    {
+        for(int i = 0; i < particleCount; ++i)
+        {
+            //left-right
+            if(
+                (i > 0 && i < particleWidth - 1) ||
+                (i > (particleCount - particleWidth) && i != particleCount - 1)
+                )
+            {
+                velocityField[i].r = 0.0f;
+            }
+            //top-down
+            else if (
+                (i % particleWidth == 0) ||
+                (i % particleWidth == particleWidth - 1)
+                )
+            {
+                velocityField[i].g = 0.0f;
+            }
+            
+        }
     }
 
     private void ApplyForces()
@@ -148,8 +189,14 @@ public class FluidController : Singleton<FluidController> {
                     divisor
                     );
 
-                vectorField[i].r = Mathf.Clamp(vectorField[i].r + vel.x * dropper.InsertedDensity, 0.0f, 1.0f);
-                vectorField[i].g = Mathf.Clamp(vectorField[i].g + vel.y * dropper.InsertedDensity, 0.0f, 1.0f);
+                velocityField[i].r = Mathf.Clamp(velocityField[i].r + vel.x * dropper.InsertedDensity, 0.0f, 1.0f);
+                velocityField[i].g = Mathf.Clamp(velocityField[i].g + vel.y * dropper.InsertedDensity, 0.0f, 1.0f);
+
+                // dunno why sometimes it spits out NaNs. This condition is for cleaning it up.
+                if (velocityField[i].r != velocityField[i].r || velocityField[i].g != velocityField[i].g)
+                {
+                    velocityField[i] = Color.black;
+                }
             }
             //Debug.Log(forcePos);
         }
@@ -169,6 +216,29 @@ public class FluidController : Singleton<FluidController> {
     private void ApplyVectorField()
     {
 
+    }
+
+    private void Jacobi
+        (
+        uint coord,
+        out Color xNew,
+        float alpha,
+        float rBeta,
+        Color[] xField,
+        Color[] bField,
+        uint width
+        )
+    {
+        Vector2 coord2d = Square1DCoords(coord, width);
+
+        Color xL = xField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(width - 1)), coord2d.y), width)];
+        Color xR = xField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(width - 1)), coord2d.y), width)];
+        Color xB = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1))), width)];
+        Color xT = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1))), width)];
+
+        Color bC = bField[coord];
+
+        xNew = (xL + xR + xB + xT + alpha * bC) * rBeta;
     }
 
     private void ApplyTextureData(ref Texture2D tex, Color[] field)
@@ -239,6 +309,7 @@ public class FluidController : Singleton<FluidController> {
 				particles[j + particleWidth * i] = (FluidParticle)Instantiate (baseObject, new Vector2(x, y), Quaternion.identity);
 				particles[j + particleWidth * i].viscosity = baseObject.viscosity;
 				particles[j + particleWidth * i].position = particles[j + particleWidth * i].transform.position;
+                particles[j + particleWidth * i].radius = container.containerBase / (float)particleWidth / 2.0f;
 				CalculatePosition(ref x, ref y, particleCount, false);
 			}
 			CalculatePosition(ref x, ref y, particleCount, true);
