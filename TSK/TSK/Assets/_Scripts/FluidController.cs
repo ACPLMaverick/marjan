@@ -29,12 +29,13 @@ public class FluidController : Singleton<FluidController> {
 
     #region simRelated
 
-    const uint JACOBI_ITERATIONS = 30;
+    const uint JACOBI_ITERATIONS = 20;
 
     private bool vfInitialized = false;
     private Color[] velocityField;
     private Color[] velocityFieldNew;
     private Color[] pressureField;
+    private Color[] pressureFieldNew;
     private Texture2D vectorFieldTexture;
 
     #endregion
@@ -72,11 +73,14 @@ public class FluidController : Singleton<FluidController> {
         velocityField = new Color[particleCount];
         velocityFieldNew = new Color[particleCount];
         pressureField = new Color[particleCount];
+        pressureFieldNew = new Color[particleCount];
 
         for (uint i = 0; i < particleCount; ++i )
         {
             velocityField[i] = new Color(0.0f, 0.0f, 0.0f);
             velocityFieldNew[i] = new Color(0.0f, 0.0f, 0.0f);
+            pressureField[i] = new Color(0.0f, 0.0f, 0.0f);
+            pressureFieldNew[i] = new Color(0.0f, 0.0f, 0.0f);
         }
 
         ApplyTextureData(ref vectorFieldTexture, velocityField);
@@ -91,10 +95,10 @@ public class FluidController : Singleton<FluidController> {
     {
         Advect();
         Diffuse();
-        SolveBoundaries();
         ApplyForces();
-        ComputePressure();
-        SubtractPressureGradient();
+        //ComputePressure();
+        //SubtractPressureGradient();
+        SolveBoundaries();
 
         ApplyTextureData(ref vectorFieldTexture, velocityField);
 
@@ -108,8 +112,8 @@ public class FluidController : Singleton<FluidController> {
             Vector2 cPos = Square1DCoords(i, particleWidth);
             Vector2 backPos = cPos - Time.fixedDeltaTime * new Vector2(velocityField[i].r, velocityField[i].g);
 
-            backPos.x = Mathf.Clamp(backPos.x, 0.0f, (float)particleWidth);
-            backPos.y = Mathf.Clamp(backPos.y, 0.0f, (float)particleWidth);
+            backPos.x = Mathf.Clamp(backPos.x, 0.0f, (float)particleWidth - 1.0f);
+            backPos.y = Mathf.Clamp(backPos.y, 0.0f, (float)particleWidth - 1.0f);
 
             Vector2 tl, tr, br, bl;
             tl = new Vector2(Mathf.Floor(backPos.x), Mathf.Ceil(backPos.y));
@@ -140,7 +144,7 @@ public class FluidController : Singleton<FluidController> {
                 alpha = (particles[i].radius * particles[i].radius * 4.0f) / ((float)particles[i].viscosity * Time.fixedDeltaTime);
                 rBeta = 1.0f / (4.0f + alpha);
 
-                Jacobi(i, out velocityFieldNew[i], alpha, rBeta, velocityField, velocityField, particleWidth);
+                Jacobi(i, out velocityFieldNew[i], alpha, rBeta, velocityField, velocityField[i], particleWidth);
             }
             SwapColor(ref velocityField, ref velocityFieldNew);
         }
@@ -205,12 +209,40 @@ public class FluidController : Singleton<FluidController> {
 
     private void ComputePressure()
     {
-        
+        float alpha;
+        float rBeta = 0.25f;
+        float halfrdx;
+        Color div;
+        for (uint t = 0; t < JACOBI_ITERATIONS; ++t)
+        {
+            for (uint i = 0; i < particleCount; ++i)
+            {
+                alpha = (particles[i].radius * particles[i].radius * 4.0f);
+                halfrdx = 1.0f / (2.0f * particles[i].radius * 2.0f);
+
+                Divergence(i, out div, halfrdx, velocityField, particleWidth);
+                Jacobi(i, out pressureFieldNew[i], alpha, rBeta, pressureField, div, particleWidth);
+            }
+            SwapColor(ref pressureField, ref pressureFieldNew);
+        }
     }
 
     private void SubtractPressureGradient()
     {
-        
+        float halfrdx;
+        for (uint i = 0; i < particleCount; ++i)
+        {
+            Vector2 coord2d = Square1DCoords(i, particleWidth);
+
+            Color pL = pressureField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(particleWidth - 1)), coord2d.y), particleWidth)];
+            Color pR = pressureField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(particleWidth - 1)), coord2d.y), particleWidth)];
+            Color pB = pressureField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(particleWidth - 1))), particleWidth)];
+            Color pT = pressureField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(particleWidth - 1))), particleWidth)];
+
+            halfrdx = 1.0f / (2.0f * particles[i].radius * 2.0f);
+            velocityField[i].r -= halfrdx * (pR.r - pL.r);
+            velocityField[i].g -= halfrdx * (pT.g - pB.g);
+        }
     }
 
     private void ApplyVectorField()
@@ -225,7 +257,7 @@ public class FluidController : Singleton<FluidController> {
         float alpha,
         float rBeta,
         Color[] xField,
-        Color[] bField,
+        Color b,
         uint width
         )
     {
@@ -236,9 +268,26 @@ public class FluidController : Singleton<FluidController> {
         Color xB = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1))), width)];
         Color xT = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1))), width)];
 
-        Color bC = bField[coord];
+        xNew = (xL + xR + xB + xT + alpha * b) * rBeta;
+    }
 
-        xNew = (xL + xR + xB + xT + alpha * bC) * rBeta;
+    private void Divergence
+        (
+        uint coord,
+        out Color xNew,
+        float halfrdx,
+        Color[] xField,
+        uint width
+        )
+    {
+        Vector2 coord2d = Square1DCoords(coord, width);
+
+        Color xL = xField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(width - 1)), coord2d.y), width)];
+        Color xR = xField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(width - 1)), coord2d.y), width)];
+        Color xB = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1))), width)];
+        Color xT = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1))), width)];
+
+        xNew = new Color(0.0f, halfrdx * ((xR.r - xL.r) + (xT.g - xB.g)), 0.0f);
     }
 
     private void ApplyTextureData(ref Texture2D tex, Color[] field)
