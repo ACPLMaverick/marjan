@@ -31,7 +31,7 @@ public class FluidController : Singleton<FluidController> {
 
     private bool vfInitialized = false;
     private Color[] vectorField;
-    private Color[] vectorFieldCopy;
+    private Color[] vectorFieldNew;
     private Texture2D vectorFieldTexture;
 
     #endregion
@@ -49,7 +49,7 @@ public class FluidController : Singleton<FluidController> {
 		particleOffsetY = 0.25f;
 	}
 
-	public void Update()
+	public void FixedUpdate()
 	{
         if(vfInitialized)
         {
@@ -67,12 +67,12 @@ public class FluidController : Singleton<FluidController> {
         vectorFieldTexture = new Texture2D((int)particleWidth, (int)particleWidth);
         vectorFieldTexture.wrapMode = TextureWrapMode.Clamp;
         vectorField = new Color[particleCount];
-        vectorFieldCopy = new Color[particleCount];
+        vectorFieldNew = new Color[particleCount];
 
         for (uint i = 0; i < particleCount; ++i )
         {
             vectorField[i] = new Color(0.0f, 0.0f, 0.0f);
-            vectorFieldCopy[i] = new Color(0.0f, 0.0f, 0.0f);
+            vectorFieldNew[i] = new Color(0.0f, 0.0f, 0.0f);
         }
 
         ApplyTextureData(ref vectorFieldTexture, vectorField);
@@ -98,19 +98,43 @@ public class FluidController : Singleton<FluidController> {
 
     private void Advect()
     {
+        for (uint i = 0; i < particleCount; ++i)
+        {
+            Vector2 cPos = Square1DCoords(i, particleWidth);
+            Vector2 backPos = cPos - Time.fixedDeltaTime * new Vector2(vectorField[i].r, vectorField[i].g);
 
+            backPos.x = Mathf.Clamp(backPos.x, 0.0f, (float)particleWidth);
+            backPos.y = Mathf.Clamp(backPos.y, 0.0f, (float)particleWidth);
+
+            Vector2 tl, tr, br, bl;
+            tl = new Vector2(Mathf.Floor(backPos.x), Mathf.Ceil(backPos.y));
+            tr = new Vector2(Mathf.Ceil(backPos.x), Mathf.Ceil(backPos.y));
+            br = new Vector2(Mathf.Ceil(backPos.x), Mathf.Floor(backPos.y));
+            bl = new Vector2(Mathf.Floor(backPos.x), Mathf.Floor(backPos.y));
+
+            Color newVelocity =
+                vectorField[Flatten2DCoords(tl, particleWidth)] +
+                vectorField[Flatten2DCoords(tr, particleWidth)] +
+                vectorField[Flatten2DCoords(br, particleWidth)] +
+                vectorField[Flatten2DCoords(bl, particleWidth)];
+            newVelocity /= 4.0f;
+
+            vectorFieldNew[i] = newVelocity;
+        }
+
+        SwapColor(ref vectorField, ref vectorFieldNew);
     }
 
     private void Diffuse()
     {
-
+        
     }
 
     private void ApplyForces()
     {
         if(dropper.Active)
         {
-            Vector2 forceDir = dropper.CurrentForceDirection * dropper.ForceValue * Time.deltaTime;
+            Vector2 forceDir = dropper.CurrentForceDirection * dropper.ForceValue * Time.fixedDeltaTime;
             Vector2 forcePos = dropper.CurrentForcePosition;
             Vector2 vel = Vector2.zero;
             for(uint i = 0; i < particleCount; ++i)
@@ -127,19 +151,19 @@ public class FluidController : Singleton<FluidController> {
                 vectorField[i].r = Mathf.Clamp(vectorField[i].r + vel.x * dropper.InsertedDensity, 0.0f, 1.0f);
                 vectorField[i].g = Mathf.Clamp(vectorField[i].g + vel.y * dropper.InsertedDensity, 0.0f, 1.0f);
             }
-            Debug.Log(forcePos);
+            //Debug.Log(forcePos);
         }
         
     }
 
     private void ComputePressure()
     {
-
+        
     }
 
     private void SubtractPressureGradient()
     {
-
+        
     }
 
     private void ApplyVectorField()
@@ -169,9 +193,31 @@ public class FluidController : Singleton<FluidController> {
         }
     }
 
+    private void SwapColor(ref Color[] first, ref Color[] second)
+    {
+        Color[] temp = first;
+        first = second;
+        second = temp;
+    }
+
     private uint Flatten2DCoords(uint i, uint j, uint width)
     {
         return i * width + j;
+    }
+
+    private uint Flatten2DCoords(Vector2 coord, uint width)
+    {
+        return (uint)coord.x * width + (uint)coord.y;
+    }
+
+    private Vector2 Square1DCoords(uint coord, uint width)
+    {
+        Vector2 ret = Vector2.zero;
+
+        ret.x = coord / width;
+        ret.y = coord % width;
+
+        return ret;
     }
 
     #endregion
