@@ -3,6 +3,8 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
 public class FluidController : Singleton<FluidController> {
 
 	public uint particleCount;
@@ -93,12 +95,24 @@ public class FluidController : Singleton<FluidController> {
 
     private void CalculateVectorField()
     {
+        Profiler.BeginSample("Advect");
         Advect();
+        Profiler.EndSample();
+        Profiler.BeginSample("Diffuse");
         Diffuse();
+        Profiler.EndSample();
+        Profiler.BeginSample("ApplyForces");
         ApplyForces();
-        //ComputePressure();
-        //SubtractPressureGradient();
+        Profiler.EndSample();
+        Profiler.BeginSample("ComputePressure");
+        ComputePressure();
+        Profiler.EndSample();
+        Profiler.BeginSample("SubtractPressureGradient");
+        SubtractPressureGradient();
+        Profiler.EndSample();
+        Profiler.BeginSample("SolveBoundaries");
         SolveBoundaries();
+        Profiler.EndSample();
 
         ApplyTextureData(ref vectorFieldTexture, velocityField);
 
@@ -162,6 +176,8 @@ public class FluidController : Singleton<FluidController> {
                 )
             {
                 velocityField[i].r = 0.0f;
+                velocityField[i].g = 0.0f;
+                pressureField[i].r = 0.0f;
             }
             //top-down
             else if (
@@ -169,7 +185,9 @@ public class FluidController : Singleton<FluidController> {
                 (i % particleWidth == particleWidth - 1)
                 )
             {
+                velocityField[i].r = 0.0f;
                 velocityField[i].g = 0.0f;
+                pressureField[i].r = 0.0f;
             }
             
         }
@@ -217,7 +235,7 @@ public class FluidController : Singleton<FluidController> {
         {
             for (uint i = 0; i < particleCount; ++i)
             {
-                alpha = (particles[i].radius * particles[i].radius * 4.0f);
+                alpha = -(particles[i].radius * particles[i].radius * 4.0f);
                 halfrdx = 1.0f / (2.0f * particles[i].radius * 2.0f);
 
                 Divergence(i, out div, halfrdx, velocityField, particleWidth);
@@ -234,14 +252,14 @@ public class FluidController : Singleton<FluidController> {
         {
             Vector2 coord2d = Square1DCoords(i, particleWidth);
 
-            Color pL = pressureField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(particleWidth - 1)), coord2d.y), particleWidth)];
-            Color pR = pressureField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(particleWidth - 1)), coord2d.y), particleWidth)];
-            Color pB = pressureField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(particleWidth - 1))), particleWidth)];
-            Color pT = pressureField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(particleWidth - 1))), particleWidth)];
+            Color pL = pressureField[(int)(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(particleWidth - 1)) * particleWidth + coord2d.y)];
+            Color pR = pressureField[(int)(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(particleWidth - 1)) * particleWidth + coord2d.y)];
+            Color pB = pressureField[(int)(coord2d.x * particleWidth + Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(particleWidth - 1)))];
+            Color pT = pressureField[(int)(coord2d.x * particleWidth + Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(particleWidth - 1)))];
 
             halfrdx = 1.0f / (2.0f * particles[i].radius * 2.0f);
             velocityField[i].r -= halfrdx * (pR.r - pL.r);
-            velocityField[i].g -= halfrdx * (pT.g - pB.g);
+            velocityField[i].g -= halfrdx * (pT.r - pB.r);
         }
     }
 
@@ -249,6 +267,26 @@ public class FluidController : Singleton<FluidController> {
     {
 
     }
+    /*
+    private uint Flatten2DCoords(uint i, uint j, uint width)
+    {
+        return i * width + j;
+    }
+
+    private uint Flatten2DCoords(Vector2 coord, uint width)
+    {
+        return (uint)coord.x * width + (uint)coord.y;
+    }
+
+    private Vector2 Square1DCoords(uint coord, uint width)
+    {
+        Vector2 ret = Vector2.zero;
+
+        ret.x = coord / width;
+        ret.y = coord % width;
+
+        return ret;
+    }*/
 
     private void Jacobi
         (
@@ -261,14 +299,17 @@ public class FluidController : Singleton<FluidController> {
         uint width
         )
     {
-        Vector2 coord2d = Square1DCoords(coord, width);
+        Vector2 coord2d = new Vector2(coord / width, coord % width);
 
-        Color xL = xField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(width - 1)), coord2d.y), width)];
-        Color xR = xField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(width - 1)), coord2d.y), width)];
-        Color xB = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1))), width)];
-        Color xT = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1))), width)];
+        Color xL = xField[(int)(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(width - 1)) * width + coord2d.y)];
+        Color xR = xField[(int)(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(width - 1)) * width + coord2d.y)];
+        Color xB = xField[(int)(coord2d.x * width + Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1)))];
+        Color xT = xField[(int)(coord2d.x * width + Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1)))];
 
         xNew = (xL + xR + xB + xT + alpha * b) * rBeta;
+
+        // fixing alpha
+        xNew.a = 1.0f;
     }
 
     private void Divergence
@@ -282,12 +323,15 @@ public class FluidController : Singleton<FluidController> {
     {
         Vector2 coord2d = Square1DCoords(coord, width);
 
-        Color xL = xField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(width - 1)), coord2d.y), width)];
-        Color xR = xField[Flatten2DCoords(new Vector2(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(width - 1)), coord2d.y), width)];
-        Color xB = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1))), width)];
-        Color xT = xField[Flatten2DCoords(new Vector2(coord2d.x, Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1))), width)];
+        Color xL = xField[(int)(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(width - 1)) * width + coord2d.y)];
+        Color xR = xField[(int)(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(width - 1)) * width + coord2d.y)];
+        Color xB = xField[(int)(coord2d.x * width + Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1)))];
+        Color xT = xField[(int)(coord2d.x * width + Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1)))];
 
-        xNew = new Color(0.0f, halfrdx * ((xR.r - xL.r) + (xT.g - xB.g)), 0.0f);
+        xNew = new Color(halfrdx * ((xR.r - xL.r) + (xT.g - xB.g)), 0.0f, 0.0f);
+
+        // fixing alpha
+        xNew.a = 1.0f;
     }
 
     private void ApplyTextureData(ref Texture2D tex, Color[] field)
