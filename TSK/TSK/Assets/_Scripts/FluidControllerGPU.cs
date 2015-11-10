@@ -205,7 +205,7 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         }
 
         cShader.Dispatch(kernelIDs[(int)KernelIDs.ADVECT], (int)particleWidth, (int)particleWidth, 1);
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth, (int)particleWidth, 1);
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.DIFFUSE], (int)particleWidth, (int)particleWidth, 1);
 
         cShader.Dispatch(kernelIDs[(int)KernelIDs.APPLY_FORCE], (int)particleWidth, (int)particleWidth, 1);
         cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth, (int)particleWidth, 1);
