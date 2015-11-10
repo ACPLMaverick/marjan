@@ -13,7 +13,7 @@ public class Dropper : MonoBehaviour
 
     #region properties
 
-    public FluidController Controller;
+    public FluidControllerGPU Controller;
     public FluidContainer Container;
     public Texture2D CursorTexture;
 

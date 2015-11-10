@@ -73,10 +73,14 @@
     <Compile Include="Assets\_Scripts\Dropper.cs" />
     <Compile Include="Assets\_Scripts\FluidContainer.cs" />
     <Compile Include="Assets\_Scripts\FluidController.cs" />
+    <Compile Include="Assets\_Scripts\FluidControllerGPU.cs" />
     <Compile Include="Assets\_Scripts\FluidParticle.cs" />
     <Compile Include="Assets\_Scripts\InteractiveObject.cs" />
     <Compile Include="Assets\_Scripts\Singleton.cs" />
     <Compile Include="Assets\_Scripts\UIManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\_Shaders\SimulationComputeShader.compute" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>

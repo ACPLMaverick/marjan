@@ -73,8 +73,8 @@ public class UIManager : MonoBehaviour {
 		}
 
 		if (deletingObject) {
-			//FluidController.Instance.DestroyInteractiveObject();
-			if(!FluidController.Instance.canDelete)
+			//FluidControllerGPU.Instance.DestroyInteractiveObject();
+			if(!FluidControllerGPU.Instance.canDelete)
 				deletingObject = false;
 		}
 	}
@@ -107,20 +107,20 @@ public class UIManager : MonoBehaviour {
 
 	public void OnPCSliderValueChange()
 	{
-		FluidController.Instance.DestroyParticles ();
-		FluidController.Instance.particleCount = (uint)SetParticleCount ();
+		FluidControllerGPU.Instance.DestroyParticles ();
+		FluidControllerGPU.Instance.particleCount = (uint)SetParticleCount ();
 		switch (SetParticleCount ()) {
 		case 1024:
-			FluidController.Instance.baseObject.transform.localScale = new Vector3(1, 1, 1);
-			FluidController.Instance.initialPosition.transform.localPosition = new Vector2(-1.13f, -1.13f);
+			FluidControllerGPU.Instance.baseObject.transform.localScale = new Vector3(1, 1, 1);
+			FluidControllerGPU.Instance.initialPosition.transform.localPosition = new Vector2(-1.13f, -1.13f);
 			break;
 		case 4096:
-			FluidController.Instance.baseObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-			FluidController.Instance.initialPosition.transform.localPosition = new Vector2(-1.15f, -1.15f);
+			FluidControllerGPU.Instance.baseObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+			FluidControllerGPU.Instance.initialPosition.transform.localPosition = new Vector2(-1.15f, -1.15f);
 			break;
 		case 16384:
-			FluidController.Instance.baseObject.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-			FluidController.Instance.initialPosition.transform.localPosition = new Vector2(-1.17f, -1.17f);
+			FluidControllerGPU.Instance.baseObject.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+			FluidControllerGPU.Instance.initialPosition.transform.localPosition = new Vector2(-1.17f, -1.17f);
 			break;
 		}
 	}
@@ -144,28 +144,28 @@ public class UIManager : MonoBehaviour {
 
 	public void OnPVSliderValueChange()
 	{
-		FluidController.Instance.baseObject.viscosity = particleViscositySlider.value;
+		FluidControllerGPU.Instance.baseObject.viscosity = particleViscositySlider.value;
 	}
 
 //	public void OnCHSliderValueChange()
 //	{
-//		FluidController.Instance.container.containerHeight = containerHeightSlider.value;
+//		FluidControllerGPU.Instance.container.containerHeight = containerHeightSlider.value;
 //	}
 //
 //	public void OnCBSliderValueChange()
 //	{
-//		FluidController.Instance.container.containerBase = containerBaseSlider.value;
+//		FluidControllerGPU.Instance.container.containerBase = containerBaseSlider.value;
 //	}
 
 	public void OnCESliderValueChange()
 	{
-		FluidController.Instance.container.elasticity = (double)containerElasticitySlider.value;
+		FluidControllerGPU.Instance.container.elasticity = (double)containerElasticitySlider.value;
 	}
 
 	public void OnGenerateButtonClick()
 	{
-        FluidController.Instance.CreateParticles();
-        FluidController.Instance.InitializeVectorField();
+        FluidControllerGPU.Instance.CreateParticles();
+        FluidControllerGPU.Instance.InitializeVectorField();
 		startSimulationButton.interactable = true;
 		//if (inputField.placeholder != null)
 		//	inputField.text = "50";
@@ -193,17 +193,17 @@ public class UIManager : MonoBehaviour {
 
 	public void AddInteractiveObject()
 	{
-		FluidController.Instance.baseInteractiveObject.SetSprite ((int)interactiveObjectTypeSlider.value);
-		FluidController.Instance.baseInteractiveObject.velocity = (double)interactiveObjectVelocitySlider.value;
-		FluidController.Instance.baseInteractiveObject.mass = (double)interactiveObjectMassSlider.value;
-		FluidController.Instance.baseInteractiveObject.ID = FluidController.Instance.IDController;
+		FluidControllerGPU.Instance.baseInteractiveObject.SetSprite ((int)interactiveObjectTypeSlider.value);
+		FluidControllerGPU.Instance.baseInteractiveObject.velocity = (double)interactiveObjectVelocitySlider.value;
+		FluidControllerGPU.Instance.baseInteractiveObject.mass = (double)interactiveObjectMassSlider.value;
+		FluidControllerGPU.Instance.baseInteractiveObject.ID = FluidControllerGPU.Instance.IDController;
 
-		InteractiveObject obj = (InteractiveObject)Instantiate (FluidController.Instance.baseInteractiveObject,
+		InteractiveObject obj = (InteractiveObject)Instantiate (FluidControllerGPU.Instance.baseInteractiveObject,
 		                                                        new Vector2(positionX, positionY),
 		                                                        Quaternion.identity);
 
-		FluidController.Instance.objects.Add (obj);
-		FluidController.Instance.IDController++;
+		FluidControllerGPU.Instance.objects.Add (obj);
+		FluidControllerGPU.Instance.IDController++;
 
 		interactiveObjectPanel.SetActive (false);
 	}
@@ -212,22 +212,22 @@ public class UIManager : MonoBehaviour {
 	{
 		interactiveObjectPanel.SetActive (false);
 		deletingObject = true;
-		FluidController.Instance.canDelete = true;
+		FluidControllerGPU.Instance.canDelete = true;
 	}
 
 	public void SimulationButtonOnClick()
 	{
-		if (!FluidController.Instance.startSimulation) {
+		if (!FluidControllerGPU.Instance.startSimulation) {
 			ChangeInteractionUI(false);
 			interactiveObjectPanel.SetActive(false);
 			startSimulationButtonText.text = "Stop";
-			FluidController.Instance.startSimulation = true;
+			FluidControllerGPU.Instance.startSimulation = true;
 		}
 		else {
 			startSimulationButton.interactable = false;
 			startSimulationButtonText.text = "Simulate";
 			ChangeInteractionUI(true);
-			FluidController.Instance.startSimulation = false;
+			FluidControllerGPU.Instance.startSimulation = false;
 		}
 	}
 
