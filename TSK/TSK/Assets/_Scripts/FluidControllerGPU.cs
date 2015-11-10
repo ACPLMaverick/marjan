@@ -43,10 +43,12 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         DIFFUSE,
         APPLY_FORCE,
         PROJECT,
-        SWAP
+        SWAP_TO_NEW,
+        SWAP_TO_OLD,
+        INITIALIZE
     }
 
-    private int[] kernelIDs = new int[5];
+    private int[] kernelIDs = new int[7];
 
     private bool vfInitialized = false;
     private RenderTexture velocityField;
@@ -108,6 +110,7 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         for (int i = 0; i < RT_COUNT; ++i)
         {
             rtArray[i].filterMode = FilterMode.Bilinear;
+            rtArray[i].generateMips = false;
             rtArray[i].enableRandomWrite = true;
             rtArray[i].Create();
         }
@@ -123,13 +126,15 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         kernelIDs[1] = cShader.FindKernel("Diffuse");
         kernelIDs[2] = cShader.FindKernel("ApplyForces");
         kernelIDs[3] = cShader.FindKernel("Project");
-        kernelIDs[4] = cShader.FindKernel("Swap");
+        kernelIDs[4] = cShader.FindKernel("SwapOldToNew");
+        kernelIDs[5] = cShader.FindKernel("SwapNewToOld");
+        kernelIDs[6] = cShader.FindKernel("Initialize");
 
         cShader.SetTexture(kernelIDs[(int)KernelIDs.ADVECT], "VelocityField", velocityField);
         cShader.SetTexture(kernelIDs[(int)KernelIDs.ADVECT], "VelocityFieldNew", velocityFieldNew);
 
-        cShader.SetTexture(kernelIDs[(int)KernelIDs.DIFFUSE], "VelocityField", velocityField);
-        cShader.SetTexture(kernelIDs[(int)KernelIDs.DIFFUSE], "VelocityFieldNew", velocityFieldNew);
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.DIFFUSE], "VelocityField", velocityFieldNew);
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.DIFFUSE], "VelocityFieldNew", velocityField);
 
         cShader.SetTexture(kernelIDs[(int)KernelIDs.APPLY_FORCE], "VelocityField", velocityField);
         cShader.SetTexture(kernelIDs[(int)KernelIDs.APPLY_FORCE], "VelocityFieldNew", velocityFieldNew);
@@ -139,14 +144,25 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         cShader.SetTexture(kernelIDs[(int)KernelIDs.PROJECT], "PressureField", pressureField);
         cShader.SetTexture(kernelIDs[(int)KernelIDs.PROJECT], "PressureFieldNew", pressureFieldNew);
 
-        cShader.SetTexture(kernelIDs[(int)KernelIDs.SWAP], "VelocityField", velocityField);
-        cShader.SetTexture(kernelIDs[(int)KernelIDs.SWAP], "VelocityFieldNew", velocityFieldNew);
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.SWAP_TO_NEW], "VelocityField", velocityField);
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.SWAP_TO_NEW], "VelocityFieldNew", velocityFieldNew);
+
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], "VelocityField", velocityFieldNew);
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], "VelocityFieldNew", velocityField);
+
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.INITIALIZE], "VelocityField", velocityFieldNew);
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.INITIALIZE], "VelocityFieldNew", velocityField);
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.INITIALIZE], "PressureField", pressureField);
+        cShader.SetTexture(kernelIDs[(int)KernelIDs.INITIALIZE], "PressureFieldNew", pressureFieldNew);
 
         cShader.SetFloat("DeltaTime", Time.fixedDeltaTime);
         float dx = container.containerBase / (float)particleWidth;
         cShader.SetFloat("Dx", dx);
         cShader.SetInt("Width", (int)particleWidth);
         cShader.SetInt("JacobiIterations", (int)JACOBI_ITERATIONS);
+
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.INITIALIZE], (int)particleWidth, (int)particleWidth, 1);
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth, (int)particleWidth, 1);
 
         vfInitialized = true;
     }
@@ -189,11 +205,11 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         }
 
         cShader.Dispatch(kernelIDs[(int)KernelIDs.ADVECT], (int)particleWidth, (int)particleWidth, 1);
-
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.DIFFUSE], (int)particleWidth, (int)particleWidth, 1);
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth, (int)particleWidth, 1);
 
         cShader.Dispatch(kernelIDs[(int)KernelIDs.APPLY_FORCE], (int)particleWidth, (int)particleWidth, 1);
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.PROJECT], (int)particleWidth, (int)particleWidth, 1);
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth, (int)particleWidth, 1);
+        //cShader.Dispatch(kernelIDs[(int)KernelIDs.PROJECT], (int)particleWidth, (int)particleWidth, 1);
 
         /*
         Profiler.BeginSample("Advect");

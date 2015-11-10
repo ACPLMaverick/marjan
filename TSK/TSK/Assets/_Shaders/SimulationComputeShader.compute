@@ -3,7 +3,9 @@
 #pragma kernel Diffuse
 #pragma kernel ApplyForces
 #pragma kernel Project
-#pragma kernel Swap
+#pragma kernel SwapOldToNew
+#pragma kernel SwapNewToOld
+#pragma kernel Initalize
 
 ///////////////////////////////
 // Defines
@@ -21,25 +23,9 @@ RWTexture2D<float2> PressureFieldNew;
 RWTexture2D<float> JacobiHelperX;
 RWTexture2D<float> JacobiHelperY;
 
-sampler samplerVelocityField = sampler_state
-{
-	texture = <VelocityField>;
-	MipFilter = Linear;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	AddressU = clamp;
-	AddressV = clamp;
-};
+sampler samplerVelocityField;
 
-sampler samplerPressureField = sampler_state
-{
-	texture = <PressureField>;
-	MipFilter = Linear;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	AddressU = clamp;
-	AddressV = clamp;
-};
+sampler samplerPressureField;
 
 // r, g - position, b - viscosity, a - mass
 Texture2D<float4> ParticleData;
@@ -92,6 +78,21 @@ inline void Divergence
 	xNew.y = 0.0;
 }
 
+inline void TextureLERP
+	(
+		out float2 ret,
+		float2 coord,
+		Texture2D<float2> tex
+	)
+{
+	float2 tl = float2(floor(coord.x), ceil(coord.y));
+	float2 tr = float2(ceil(coord.x), ceil(coord.y));
+	float2 br = float2(ceil(coord.x), floor(coord.y));
+	float2 bl = float2(floor(coord.x), floor(coord.y));
+
+	ret = (tex[tl] + tex[tr] + tex[br] + tex[bl]) / 4.0;
+}
+
 //////////////////////////////
 // Kernels
 
@@ -102,10 +103,14 @@ void Advect (uint3 id : SV_DispatchThreadID)
 	float2 cVel = VelocityField[id.xy];
 	float2 backPos = cPos - DeltaTime * cVel;
 	
-	//backPos.x = clamp(backPos.x, 0.0f, (float)Width - 1.0); 
-	//backPos.y = clamp(backPos.y, 0.0f, (float)Width - 1.0); 
+	backPos.x = clamp(backPos.x, 0.0f, (float)Width - 1.0); 
+	backPos.y = clamp(backPos.y, 0.0f, (float)Width - 1.0); 
 
-	float2 nPos = VelocityField.SampleLevel(samplerVelocityField, backPos, 0.0);
+	float2 nPos = 0.0;
+	TextureLERP(nPos, backPos, VelocityField);
+
+	if(nPos.x != nPos.x || nPos.y != nPos.y)
+		nPos = 0.0;
 
     VelocityFieldNew[id.xy] = nPos;
 }
@@ -113,6 +118,7 @@ void Advect (uint3 id : SV_DispatchThreadID)
 [numthreads(32,32,1)]
 void Diffuse (uint3 id : SV_DispatchThreadID)
 {
+
 	float visc = ParticleData[id.xy].z;
     float alpha = (Dx * Dx) / (visc * DeltaTime);
 	float rBeta = 1.0f / (4.0f + alpha);
@@ -134,7 +140,7 @@ void Diffuse (uint3 id : SV_DispatchThreadID)
 	
     VelocityFieldNew[id.xy] = float2(JacobiHelperX[id.xy], JacobiHelperY[id.xy]);
 
-	//VelocityFieldNew[id.xy] = VelocityField[id.xy];
+	//VelocityFieldNew[id.xy] = float2(VelocityField[id.xy].x + 0.001, VelocityField[id.xy].y);
 }
 
 [numthreads(32,32,1)]
@@ -163,7 +169,20 @@ void Project (uint3 id : SV_DispatchThreadID)
 }
 
 [numthreads(32,32,1)]
-void Swap (uint3 id : SV_DispatchThreadID)
+void SwapOldToNew (uint3 id : SV_DispatchThreadID)
 {
     VelocityFieldNew[id.xy] = VelocityField[id.xy];
+}
+
+[numthreads(32,32,1)]
+void SwapNewToOld (uint3 id : SV_DispatchThreadID)
+{
+    VelocityFieldNew[id.xy] = VelocityField[id.xy];
+}
+
+[numthreads(32,32,1)]
+void Initialize (uint3 id : SV_DispatchThreadID)
+{
+    VelocityFieldNew[id.xy] = 0.0;
+	PressureFieldNew[id.xy] = 0.0;
 }
