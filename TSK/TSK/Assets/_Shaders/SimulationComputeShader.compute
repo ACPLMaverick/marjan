@@ -2,10 +2,10 @@
 #pragma kernel Advect
 #pragma kernel Diffuse
 #pragma kernel ApplyForces
-#pragma kernel Project
+#pragma kernel Pressure
+#pragma kernel SubtractPressure
 #pragma kernel SwapOldToNew
 #pragma kernel SwapNewToOld
-#pragma kernel Initalize
 
 ///////////////////////////////
 // Defines
@@ -13,6 +13,8 @@
 #define THREAD_COUNT 32
 #define FORCE_MAX 1.0
 #define JACOBI_ITERATIONS 20
+
+#define FCOORD(x, y, w)  x * w + y
 
 ///////////////////////////////
 // Variables
@@ -30,6 +32,7 @@ float DropperForceValue;
 float DropperForceMultiplier;
 float DeltaTime;
 float Dx;
+float ContainerElasticity;
 int Width;
 
 ////////////////////////////////
@@ -41,15 +44,19 @@ inline void Jacobi
 		uint2 coord,
 		float alpha,
 		float rBeta,
-		RWTexture2D<float> xField,
-		RWTexture2D<float> yField,
+		RWStructuredBuffer<float2> xField,
 		float2 b
 	)
 {
-	float2 xL = float2(xField[coord + uint2(-1, 0)], yField[coord + uint2(-1, 0)]);
-	float2 xR = float2(xField[coord + uint2(1, 0)], yField[coord + uint2(1, 0)]);
-	float2 xB = float2(xField[coord + uint2(0, -1)], yField[coord + uint2(0, -1)]);
-	float2 xT = float2(xField[coord + uint2(0, 1)], yField[coord + uint2(0, 1)]);
+	uint2 cXL = coord + uint2(-1, 0);
+	uint2 cXR = coord + uint2(1, 0);
+	uint2 cXB = coord + uint2(0, -1);
+	uint2 cXT = coord + uint2(0, 1);
+
+	float2 xL = xField[FCOORD(cXL.x, cXL.y, Width)];
+	float2 xR = xField[FCOORD(cXR.x, cXR.y, Width)];
+	float2 xB = xField[FCOORD(cXB.x, cXB.y, Width)];
+	float2 xT = xField[FCOORD(cXT.x, cXT.y, Width)];
 
 	xNew = (xL + xR + xB + xT + alpha * b) * rBeta;
 }
@@ -68,7 +75,7 @@ inline void Divergence
 	float2 xT = xField[coord + uint2(0, 1)];
 
 	xNew.x = halfrdx * ((xR.r - xL.r) + (xT.g - xB.g));
-	xNew.y = 0.0;
+	xNew.y = 0.0f;
 }
 
 //////////////////////////////
@@ -77,33 +84,27 @@ inline void Divergence
 [numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void Advect (uint3 id : SV_DispatchThreadID)
 {
-	uint c = id.x * Width + id.y;
+	uint c = FCOORD(id.x, id.y, Width);
 
 	float2 cPos = id.xy;
 	float2 cVel = float2(VelocityField[c].y, VelocityField[c].x);
 	float2 backPos = cPos - DeltaTime * cVel;
 	
-	backPos.x = clamp(backPos.x, 0.0f, (float)Width - 1.0); 
-	backPos.y = clamp(backPos.y, 0.0f, (float)Width - 1.0); 
+	backPos.x = clamp(backPos.x, 0.0f, (float)Width - 1.0f); 
+	backPos.y = clamp(backPos.y, 0.0f, (float)Width - 1.0f); 
 	
 	uint2 tl = uint2(floor(backPos.x), ceil(backPos.y));
 	uint2 tr = uint2(ceil(backPos.x), ceil(backPos.y));
 	uint2 br = uint2(ceil(backPos.x), floor(backPos.y));
 	uint2 bl = uint2(floor(backPos.x), floor(backPos.y));
 
-	uint ftl = tl.x * Width + tl.y;
-	uint ftr = tr.x * Width + tr.y;
-	uint fbl = bl.x * Width + bl.y;
-	uint fbr = br.x * Width + br.y;
-
-	float2 nPos = (VelocityField[ftl] + 
-	VelocityField[ftr] + 
-	VelocityField[fbr] + 
-	VelocityField[fbl]) / 4.0;
-
+	float2 nPos = (VelocityField[FCOORD(tl.x, tl.y, Width)] + 
+	VelocityField[FCOORD(tr.x, tr.y, Width)] + 
+	VelocityField[FCOORD(bl.x, bl.y, Width)] + 
+	VelocityField[FCOORD(br.x, br.y, Width)]) / 4.0f;
 
 	if(nPos.x != nPos.x || nPos.y != nPos.y)
-		nPos = 0.0;
+		nPos = 0.0f;
 
     VelocityFieldNew[c] = nPos;
 }
@@ -111,43 +112,36 @@ void Advect (uint3 id : SV_DispatchThreadID)
 [numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void Diffuse (uint3 id : SV_DispatchThreadID)
 {
-	uint c = id.x * Width + id.y;
-/*
-	float visc = ParticleData[id.xy].z;
+	uint c = FCOORD(id.x, id.y, Width);
+
+	float visc = ParticleData[c].z;
     float alpha = (Dx * Dx) / (visc * DeltaTime);
 	float rBeta = 1.0f / (4.0f + alpha);
 
-	float2 cVal = float2(VelocityField[id.xy].x, VelocityField[id.xy].y);
-	JacobiHelperX[id.xy] = cVal.x;
-	JacobiHelperY[id.xy] = cVal.y;
+	uint2 cXL = clamp(id.xy + uint2(-1, 0), 0, Width - 1);
+	uint2 cXR = clamp(id.xy + uint2(1, 0), 0, Width - 1);
+	uint2 cXB = clamp(id.xy + uint2(0, -1), 0, Width - 1);
+	uint2 cXT = clamp(id.xy + uint2(0, 1), 0, Width - 1);
 
-	//AllMemoryBarrierWithGroupSync();
+	float2 xL = VelocityField[FCOORD(cXL.x, cXL.y, Width)];
+	float2 xR = VelocityField[FCOORD(cXR.x, cXR.y, Width)];
+	float2 xB = VelocityField[FCOORD(cXB.x, cXB.y, Width)];
+	float2 xT = VelocityField[FCOORD(cXT.x, cXT.y, Width)];
+	float2 xC = VelocityField[c];
 
-	[unroll]
-	for(int i = 0; i < JACOBI_ITERATIONS; ++i)
-	{
-		Jacobi(id.xy, cVal, alpha, rBeta, JacobiHelperX, JacobiHelperY, float2(JacobiHelperX[id.xy], JacobiHelperY[id.xy]));
-		JacobiHelperX[id.xy] = cVal.x;
-		JacobiHelperY[id.xy] = cVal.y;
-
-		//AllMemoryBarrierWithGroupSync();
-	}
-	*/
-    //VelocityFieldNew[id.xy] = float2(JacobiHelperX[id.xy], JacobiHelperY[id.xy]);
-
-	VelocityFieldNew[c] = float2(VelocityField[c].x, VelocityField[c].y);
+	VelocityFieldNew[c] = (xL + xR + xB + xT + alpha * xC) * rBeta;
 }
 
 [numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void ApplyForces (uint3 id : SV_DispatchThreadID)
 {
-	uint c = id.x * Width + id.y;
+	uint c = FCOORD(id.x, id.y, Width);
 
     float2 forceVector = DropperDirection * DropperForceValue * DeltaTime;
 	float2 pPos = float2(ParticleData[c].xy);
 	float divisor = (pPos.x - DropperPosition.x) * (pPos.x - DropperPosition.x) +
 					(pPos.y - DropperPosition.y) * (pPos.y - DropperPosition.y);
-	divisor = max(divisor, 0.0000001);
+	divisor = max(divisor, 0.0000001f);
 
 	float2 nVel = forceVector * exp(DropperRadius / divisor);
 	nVel.x = clamp(nVel.x, -FORCE_MAX, FORCE_MAX);
@@ -159,17 +153,63 @@ void ApplyForces (uint3 id : SV_DispatchThreadID)
 }
 
 [numthreads(THREAD_COUNT,THREAD_COUNT,1)]
-void Project (uint3 id : SV_DispatchThreadID)
+void Pressure (uint3 id : SV_DispatchThreadID)
 {
-	uint c = id.x * Width + id.y;
+	uint c = FCOORD(id.x, id.y, Width);
 
-    VelocityFieldNew[c] = VelocityField[c];
+	// calculate params
+	float alpha = -(Dx * Dx * 2.0f);
+	float rBeta = 0.25f;
+	float halfrdx = 1.0f / (2.0f * Dx);
+
+	uint2 cXL = clamp(id.xy + uint2(-1, 0), 0, Width - 1);
+	uint2 cXR = clamp(id.xy + uint2(1, 0), 0, Width - 1);
+	uint2 cXB = clamp(id.xy + uint2(0, -1), 0, Width - 1);
+	uint2 cXT = clamp(id.xy + uint2(0, 1), 0, Width - 1);
+
+	// calculate divergence
+	float2 vL = VelocityField[FCOORD(cXL.x, cXL.y, Width)];
+	float2 vR = VelocityField[FCOORD(cXR.x, cXR.y, Width)];
+	float2 vB = VelocityField[FCOORD(cXB.x, cXB.y, Width)];
+	float2 vT = VelocityField[FCOORD(cXT.x, cXT.y, Width)];
+
+	float div = halfrdx * ((vR.x - vL.x) + (vT.y - vB.y));
+
+	// calculate pressure
+	float pL = PressureField[FCOORD(cXL.x, cXL.y, Width)];
+	float pR = PressureField[FCOORD(cXR.x, cXR.y, Width)];
+	float pB = PressureField[FCOORD(cXB.x, cXB.y, Width)];
+	float pT = PressureField[FCOORD(cXT.x, cXT.y, Width)];
+
+    PressureFieldNew[c] = (pL + pR + pB + pT + alpha * div) * rBeta;
+}
+
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
+void SubtractPressure (uint3 id : SV_DispatchThreadID)
+{
+	uint c = FCOORD(id.x, id.y, Width);
+	
+	float halfrdx = 1.0f / (2.0f * Dx);
+	uint2 cXL = clamp(id.xy + uint2(-1, 0), 0, Width - 1);
+	uint2 cXR = clamp(id.xy + uint2(1, 0), 0, Width - 1);
+	uint2 cXB = clamp(id.xy + uint2(0, -1), 0, Width - 1);
+	uint2 cXT = clamp(id.xy + uint2(0, 1), 0, Width - 1);
+
+	float pL = PressureField[FCOORD(cXL.x, cXL.y, Width)];
+	float pR = PressureField[FCOORD(cXR.x, cXR.y, Width)];
+	float pB = PressureField[FCOORD(cXB.x, cXB.y, Width)];
+	float pT = PressureField[FCOORD(cXT.x, cXT.y, Width)];
+
+	VelocityFieldNew[c] = float2(
+		VelocityField[c].x - halfrdx * (pR - pL), 
+		VelocityField[c].y - halfrdx * (pT - pB)
+		);
 }
 
 [numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void SwapOldToNew (uint3 id : SV_DispatchThreadID)
 {
-	uint c = id.x * Width + id.y;
+	uint c = FCOORD(id.x, id.y, Width);
 
     VelocityFieldNew[c] = VelocityField[c];
 }
@@ -177,16 +217,7 @@ void SwapOldToNew (uint3 id : SV_DispatchThreadID)
 [numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void SwapNewToOld (uint3 id : SV_DispatchThreadID)
 {
-	uint c = id.x * Width + id.y;
+	uint c = FCOORD(id.x, id.y, Width);
 
     VelocityFieldNew[c] = VelocityField[c];
-}
-
-[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
-void Initialize (uint3 id : SV_DispatchThreadID)
-{
-	uint c = id.x * Width + id.y;
-
-    VelocityFieldNew[c] = 0.0;
-	PressureFieldNew[c] = 0.0;
 }

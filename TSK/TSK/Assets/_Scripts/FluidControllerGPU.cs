@@ -43,10 +43,10 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         ADVECT,
         DIFFUSE,
         APPLY_FORCE,
-        PROJECT,
+        PRESSURE,
+        SUBTRACT_PRESSURE,
         SWAP_TO_NEW,
         SWAP_TO_OLD,
-        INITIALIZE
     }
 
     private int[] kernelIDs = new int[7];
@@ -62,8 +62,12 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
     private ComputeBuffer[] cbArray = new ComputeBuffer[RT_COUNT];
 
     private Texture2D finalTexture;
+    private Texture2D _DfinalTexture;
     private Vector2[] velocityFieldBuffer;
     private Vector4[] particleDataBuffer;
+    private float[] _DpressureFieldBuffer;
+
+    private GameObject debugTex;
 
     #endregion
 
@@ -132,21 +136,30 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
 
         velocityFieldBuffer = new Vector2[particleCount];
         particleDataBuffer = new Vector4[particleCount];
+        _DpressureFieldBuffer = new float[particleCount];
 
         finalTexture = new Texture2D((int)particleWidth, (int)particleWidth, TextureFormat.RGBAFloat, false);
         finalTexture.wrapMode = TextureWrapMode.Clamp;
+
+        _DfinalTexture = new Texture2D((int)particleWidth, (int)particleWidth, TextureFormat.RGBAFloat, false);
+        _DfinalTexture.wrapMode = TextureWrapMode.Clamp;
 
         MaterialPropertyBlock mp = new MaterialPropertyBlock();
         mp.AddTexture(0, finalTexture);
         container.MySprite.SetPropertyBlock(mp);
 
+        debugTex = GameObject.Find("debugTex");
+        MaterialPropertyBlock dmp = new MaterialPropertyBlock();
+        dmp.AddTexture(0, _DfinalTexture);
+        debugTex.GetComponent<SpriteRenderer>().SetPropertyBlock(dmp);
+
         kernelIDs[0] = cShader.FindKernel("Advect");
         kernelIDs[1] = cShader.FindKernel("Diffuse");
         kernelIDs[2] = cShader.FindKernel("ApplyForces");
-        kernelIDs[3] = cShader.FindKernel("Project");
-        kernelIDs[4] = cShader.FindKernel("SwapOldToNew");
-        kernelIDs[5] = cShader.FindKernel("SwapNewToOld");
-        kernelIDs[6] = cShader.FindKernel("Initialize");
+        kernelIDs[3] = cShader.FindKernel("Pressure");
+        kernelIDs[4] = cShader.FindKernel("SubtractPressure");
+        kernelIDs[5] = cShader.FindKernel("SwapOldToNew");
+        kernelIDs[6] = cShader.FindKernel("SwapNewToOld");
 
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.ADVECT], "VelocityField", velocityField);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.ADVECT], "VelocityFieldNew", velocityFieldNew);
@@ -157,10 +170,10 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.APPLY_FORCE], "VelocityField", velocityField);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.APPLY_FORCE], "VelocityFieldNew", velocityFieldNew);
 
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.PROJECT], "VelocityField", velocityFieldNew);
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.PROJECT], "VelocityFieldNew", velocityField);
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.PROJECT], "PressureField", pressureField);
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.PROJECT], "PressureFieldNew", pressureFieldNew);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "VelocityField", velocityFieldNew);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "VelocityFieldNew", velocityField);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "PressureField", pressureField);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "PressureFieldNew", pressureFieldNew);
 
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.SWAP_TO_NEW], "VelocityField", velocityField);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.SWAP_TO_NEW], "VelocityFieldNew", velocityFieldNew);
@@ -168,15 +181,15 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], "VelocityField", velocityFieldNew);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], "VelocityFieldNew", velocityField);
 
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.INITIALIZE], "VelocityField", velocityFieldNew);
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.INITIALIZE], "VelocityFieldNew", velocityField);
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.INITIALIZE], "PressureField", pressureField);
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.INITIALIZE], "PressureFieldNew", pressureFieldNew);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], "VelocityField", velocityField);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], "VelocityFieldNew", velocityField);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], "PressureField", pressureFieldNew);
 
         cShader.SetFloat("DeltaTime", Time.fixedDeltaTime);
         float dx = container.containerBase / (float)particleWidth;
         cShader.SetFloat("Dx", dx);
         cShader.SetInt("Width", (int)particleWidth);
+        cShader.SetFloat("ContainerElasticity", (float)container.elasticity);
 
         vfInitialized = true;
     }
@@ -217,257 +230,108 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
             cShader.SetFloat("DropperForceMultiplier", 0.0f);
         }
 
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.ADVECT], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+        ///////////////////////////////////////////////////
 
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.ADVECT], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+        velocityFieldNew.GetData(velocityFieldBuffer);
+        SolveBoundaries();
+        velocityFieldNew.SetData(velocityFieldBuffer);
+
+        ComputeBuffer first = velocityFieldNew;
+        ComputeBuffer second = velocityField;
+        ComputeBuffer b;
+        for (int i = 0; i < JACOBI_ITERATIONS; ++i )
+        {
+            cShader.Dispatch(kernelIDs[(int)KernelIDs.DIFFUSE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+            b = first;
+            first = second;
+            second = b;
+            cShader.SetBuffer(kernelIDs[(int)KernelIDs.DIFFUSE], "VelocityField", first);
+            cShader.SetBuffer(kernelIDs[(int)KernelIDs.DIFFUSE], "VelocityFieldNew", second);
+        }
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
         cShader.Dispatch(kernelIDs[(int)KernelIDs.APPLY_FORCE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
         cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
         //cShader.Dispatch(kernelIDs[(int)KernelIDs.PROJECT], (int)particleWidth, (int)particleWidth, 1);
 
-        ApplyTextureData(finalTexture, velocityField, velocityFieldBuffer);
+        first = pressureField;
+        second = pressureFieldNew;
+        for (int i = 0; i < JACOBI_ITERATIONS; ++i)
+        {
+            cShader.Dispatch(kernelIDs[(int)KernelIDs.PRESSURE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+            b = first;
+            first = second;
+            second = b;
+            cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "PressureField", first);
+            cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "PressureFieldNew", second);
+        }
 
-        /*
-        Profiler.BeginSample("Advect");
-        Advect();
-        Profiler.EndSample();
-        Profiler.BeginSample("Diffuse");
-        Diffuse();
-        Profiler.EndSample();
-        Profiler.BeginSample("ApplyForces");
-        ApplyForces();
-        Profiler.EndSample();
-        Profiler.BeginSample("ComputePressure");
-        ComputePressure();
-        Profiler.EndSample();
-        Profiler.BeginSample("SubtractPressureGradient");
-        SubtractPressureGradient();
-        Profiler.EndSample();
-        Profiler.BeginSample("SolveBoundaries");
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+
+        ////////////////////////////////////////////////////////////////
+
+        velocityFieldNew.GetData(velocityFieldBuffer);
+        pressureField.GetData(_DpressureFieldBuffer);
         SolveBoundaries();
-        Profiler.EndSample();
-
-        ApplyTextureData(ref vectorFieldTexture, velocityField);
-        */
-    }
-
-    /*
-    private void Advect()
-    {
-        for (uint i = 0; i < particleCount; ++i)
+        for (uint i = 0; i < particleWidth; ++i)
         {
-            Vector2 cPos = Square1DCoords(i, particleWidth);
-            Vector2 backPos = cPos - Time.fixedDeltaTime * new Vector2(velocityField[i].r, velocityField[i].g);
-
-            backPos.x = Mathf.Clamp(backPos.x, 0.0f, (float)particleWidth - 1.0f);
-            backPos.y = Mathf.Clamp(backPos.y, 0.0f, (float)particleWidth - 1.0f);
-
-            Vector2 tl, tr, br, bl;
-            tl = new Vector2(Mathf.Floor(backPos.x), Mathf.Ceil(backPos.y));
-            tr = new Vector2(Mathf.Ceil(backPos.x), Mathf.Ceil(backPos.y));
-            br = new Vector2(Mathf.Ceil(backPos.x), Mathf.Floor(backPos.y));
-            bl = new Vector2(Mathf.Floor(backPos.x), Mathf.Floor(backPos.y));
-
-            Color newVelocity =
-                velocityField[Flatten2DCoords(tl, particleWidth)] +
-                velocityField[Flatten2DCoords(tr, particleWidth)] +
-                velocityField[Flatten2DCoords(br, particleWidth)] +
-                velocityField[Flatten2DCoords(bl, particleWidth)];
-            newVelocity /= 4.0f;
-
-            velocityFieldNew[i] = newVelocity;
-        }
-
-        SwapColor(ref velocityField, ref velocityFieldNew);
-    }
-
-    private void Diffuse()
-    {
-        float alpha, rBeta;
-        for (uint t = 0; t < JACOBI_ITERATIONS; ++t)
-        {
-            for (uint i = 0; i < particleCount; ++i)
+            for (uint j = 0; j < particleWidth; ++j)
             {
-                alpha = (particles[i].radius * particles[i].radius * 4.0f) / ((float)particles[i].viscosity * Time.fixedDeltaTime);
-                rBeta = 1.0f / (4.0f + alpha);
-
-                Jacobi(i, out velocityFieldNew[i], alpha, rBeta, velocityField, velocityField[i], particleWidth);
-            }
-            SwapColor(ref velocityField, ref velocityFieldNew);
-        }
-    }
-
-    // container elasticity will have to be taken into account here, I guess
-    private void SolveBoundaries()
-    {
-        for (int i = 0; i < particleCount; ++i)
-        {
-            //left-right
-            if (
-                (i > 0 && i < particleWidth - 1) ||
-                (i > (particleCount - particleWidth) && i != particleCount - 1)
-                )
-            {
-                velocityField[i].r = 0.0f;
-                velocityField[i].g = 0.0f;
-                pressureField[i].r = 0.0f;
-            }
-            //top-down
-            else if (
-                (i % particleWidth == 0) ||
-                (i % particleWidth == particleWidth - 1)
-                )
-            {
-                velocityField[i].r = 0.0f;
-                velocityField[i].g = 0.0f;
-                pressureField[i].r = 0.0f;
-            }
-
-        }
-    }
-
-    private void ApplyForces()
-    {
-        if (dropper.Active)
-        {
-            Vector2 forceDir = dropper.CurrentForceDirection * dropper.ForceValue * Time.fixedDeltaTime;
-            Vector2 forcePos = dropper.CurrentForcePosition;
-            Vector2 vel = Vector2.zero;
-            for (uint i = 0; i < particleCount; ++i)
-            {
-                float divisor = (Mathf.Pow(particles[i].transform.position.x - forcePos.x, 2.0f) +
-                        Mathf.Pow(particles[i].transform.position.y - forcePos.y, 2.0f));
-                if (divisor == 0.0f)
-                    continue;
-                vel = forceDir * Mathf.Exp(
-                    dropper.Radius /
-                    divisor
-                    );
-
-                velocityField[i].r = Mathf.Clamp(velocityField[i].r + vel.x * dropper.InsertedDensity, 0.0f, 1.0f);
-                velocityField[i].g = Mathf.Clamp(velocityField[i].g + vel.y * dropper.InsertedDensity, 0.0f, 1.0f);
-
-                // dunno why sometimes it spits out NaNs. This condition is for cleaning it up.
-                if (velocityField[i].r != velocityField[i].r || velocityField[i].g != velocityField[i].g)
+                /*
+                // solving boundaries
+                Vector2 ids = new Vector2(i, j);
+                float length;
+                if(ids.x == 0.0f && ids.y == 0.0f)
                 {
-                    velocityField[i] = Color.black;
+                    // top left
+                    length = Mathf.Sqrt(velocityFieldBuffer[id].x * velocityFieldBuffer[id].x + 
+                        velocityFieldBuffer[id].y * velocityFieldBuffer[id].y);
+                    velocityFieldBuffer[id] = Vector2.right * length * ((float)container.elasticity / 100.0f);
                 }
+                else if (ids.x == (float)particleWidth - 1.0f && ids.y == 0.0f)
+                {
+                    // top right
+                    length = Mathf.Sqrt(velocityFieldBuffer[id].x * velocityFieldBuffer[id].x +
+                        velocityFieldBuffer[id].y * velocityFieldBuffer[id].y);
+                    velocityFieldBuffer[id] = Vector2.down * length * ((float)container.elasticity / 100.0f);
+                }
+                else if (ids.x == (float)particleWidth - 1.0f && ids.y == (float)particleWidth - 1.0f)
+                {
+                    // bottom right
+                    length = Mathf.Sqrt(velocityFieldBuffer[id].x * velocityFieldBuffer[id].x +
+                        velocityFieldBuffer[id].y * velocityFieldBuffer[id].y);
+                    velocityFieldBuffer[id] = Vector2.left * length * ((float)container.elasticity / 100.0f);
+                }
+                else if (ids.x == 0.0f && ids.y == (float)particleWidth - 1.0f)
+                {
+                    // bottom left
+                    length = Mathf.Sqrt(velocityFieldBuffer[id].x * velocityFieldBuffer[id].x +
+                        velocityFieldBuffer[id].y * velocityFieldBuffer[id].y);
+                    velocityFieldBuffer[id] = Vector2.up * length * ((float)container.elasticity / 100.0f);
+                }
+                else if(ids.x == 0.0f || ids.x == (float)particleWidth - 1.0f)
+                {
+                    // left & right walls
+                    velocityFieldBuffer[id].x = -velocityFieldBuffer[id].x;
+                    velocityFieldBuffer[id] *= ((float)container.elasticity / 100.0f);
+                }
+                else if (ids.y == 0.0f || ids.y == (float)particleWidth - 1.0f)
+                {
+                    // top & bottom walls
+                    velocityFieldBuffer[id].y = -velocityFieldBuffer[id].y;
+                    velocityFieldBuffer[id] *= ((float)container.elasticity / 100.0f);
+                }
+                 */
+                // applying texture data
+                uint id = i * particleWidth + j;
+                finalTexture.SetPixel((int)j, (int)i, new Color(velocityFieldBuffer[id].x, velocityFieldBuffer[id].y, 0.0f, 1.0f));
+                _DfinalTexture.SetPixel((int)j, (int)i, new Color(_DpressureFieldBuffer[id], _DpressureFieldBuffer[id], _DpressureFieldBuffer[id], 1.0f));
             }
-            //Debug.Log(forcePos);
         }
-
+        finalTexture.Apply();
+        _DfinalTexture.Apply();
     }
-
-    private void ComputePressure()
-    {
-        float alpha;
-        float rBeta = 0.25f;
-        float halfrdx;
-        Color div;
-        for (uint t = 0; t < JACOBI_ITERATIONS; ++t)
-        {
-            for (uint i = 0; i < particleCount; ++i)
-            {
-                alpha = -(particles[i].radius * particles[i].radius * 4.0f);
-                halfrdx = 1.0f / (2.0f * particles[i].radius * 2.0f);
-
-                Divergence(i, out div, halfrdx, velocityField, particleWidth);
-                Jacobi(i, out pressureFieldNew[i], alpha, rBeta, pressureField, div, particleWidth);
-            }
-            SwapColor(ref pressureField, ref pressureFieldNew);
-        }
-    }
-
-    private void SubtractPressureGradient()
-    {
-        float halfrdx;
-        for (uint i = 0; i < particleCount; ++i)
-        {
-            Vector2 coord2d = Square1DCoords(i, particleWidth);
-
-            Color pL = pressureField[(int)(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(particleWidth - 1)) * particleWidth + coord2d.y)];
-            Color pR = pressureField[(int)(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(particleWidth - 1)) * particleWidth + coord2d.y)];
-            Color pB = pressureField[(int)(coord2d.x * particleWidth + Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(particleWidth - 1)))];
-            Color pT = pressureField[(int)(coord2d.x * particleWidth + Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(particleWidth - 1)))];
-
-            halfrdx = 1.0f / (2.0f * particles[i].radius * 2.0f);
-            velocityField[i].r -= halfrdx * (pR.r - pL.r);
-            velocityField[i].g -= halfrdx * (pT.r - pB.r);
-        }
-    }
-     
-    private uint Flatten2DCoords(uint i, uint j, uint width)
-    {
-        return i * width + j;
-    }
-
-    private uint Flatten2DCoords(Vector2 coord, uint width)
-    {
-        return (uint)coord.x * width + (uint)coord.y;
-    }
-
-    private Vector2 Square1DCoords(uint coord, uint width)
-    {
-        Vector2 ret = Vector2.zero;
-
-        ret.x = coord / width;
-        ret.y = coord % width;
-
-        return ret;
-    }
-
-    private void Jacobi
-        (
-        uint coord,
-        out Color xNew,
-        float alpha,
-        float rBeta,
-        Color[] xField,
-        Color b,
-        uint width
-        )
-    {
-        Vector2 coord2d = new Vector2(coord / width, coord % width);
-
-        Color xL = xField[(int)(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(width - 1)) * width + coord2d.y)];
-        Color xR = xField[(int)(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(width - 1)) * width + coord2d.y)];
-        Color xB = xField[(int)(coord2d.x * width + Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1)))];
-        Color xT = xField[(int)(coord2d.x * width + Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1)))];
-
-        xNew = (xL + xR + xB + xT + alpha * b) * rBeta;
-
-        // fixing alpha
-        xNew.a = 1.0f;
-    }
-
-    private void Divergence
-        (
-        uint coord,
-        out Color xNew,
-        float halfrdx,
-        Color[] xField,
-        uint width
-        )
-    {
-        Vector2 coord2d = Square1DCoords(coord, width);
-
-        Color xL = xField[(int)(Mathf.Clamp(coord2d.x - 1.0f, 0.0f, (float)(width - 1)) * width + coord2d.y)];
-        Color xR = xField[(int)(Mathf.Clamp(coord2d.x + 1.0f, 0.0f, (float)(width - 1)) * width + coord2d.y)];
-        Color xB = xField[(int)(coord2d.x * width + Mathf.Clamp(coord2d.y - 1.0f, 0.0f, (float)(width - 1)))];
-        Color xT = xField[(int)(coord2d.x * width + Mathf.Clamp(coord2d.y + 1.0f, 0.0f, (float)(width - 1)))];
-
-        xNew = new Color(halfrdx * ((xR.r - xL.r) + (xT.g - xB.g)), 0.0f, 0.0f);
-
-        // fixing alpha
-        xNew.a = 1.0f;
-    }
-
-    private void ApplyTextureData(ref Texture2D tex, Color[] field)
-    {
-        tex.SetPixels(field);
-        tex.Apply();
-    }
-     */
-
+    /*
     private void ApplyTextureData(Texture2D tex, ComputeBuffer field, Vector2[] buffer)
     {
         field.GetData(buffer);
@@ -481,6 +345,21 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         }
             
         tex.Apply();
+    }
+    */
+
+    private void SolveBoundaries()
+    {
+        for(uint i = 0; i < particleWidth; ++i)
+        {
+            for(uint j = 0; j < particleWidth; ++j)
+            {
+                uint id = i * particleWidth + j;
+
+                if (i == 0 || j == 0 || i == particleWidth - 1 || j == particleWidth - 1)
+                    velocityFieldBuffer[id] = Vector2.zero;
+            }
+        }
     }
 
     private void ApplyVectorField()
