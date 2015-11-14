@@ -10,25 +10,19 @@
 ///////////////////////////////
 // Defines
 
+#define THREAD_COUNT 32
 #define FORCE_MAX 1.0
+#define JACOBI_ITERATIONS 20
 
 ///////////////////////////////
 // Variables
 
-Texture2D<float2> VelocityField;
-RWTexture2D<float2> VelocityFieldNew;
-Texture2D<float2> PressureField;
-RWTexture2D<float2> PressureFieldNew;
-
-RWTexture2D<float> JacobiHelperX;
-RWTexture2D<float> JacobiHelperY;
-
-sampler samplerVelocityField;
-
-sampler samplerPressureField;
-
-// r, g - position, b - viscosity, a - mass
-Texture2D<float4> ParticleData;
+RWStructuredBuffer<float2> VelocityField;
+RWStructuredBuffer<float2> VelocityFieldNew;
+RWStructuredBuffer<float> PressureField;
+RWStructuredBuffer<float> PressureFieldNew;
+RWStructuredBuffer<float2> JacobiHelper;
+RWStructuredBuffer<float4> ParticleData;	// r, g - position, b - viscosity, a - mass
 float2 DropperPosition;
 float2 DropperDirection;
 float DropperRadius;
@@ -37,7 +31,6 @@ float DropperForceMultiplier;
 float DeltaTime;
 float Dx;
 int Width;
-int JacobiIterations;
 
 ////////////////////////////////
 // Aux. functions
@@ -78,47 +71,48 @@ inline void Divergence
 	xNew.y = 0.0;
 }
 
-inline void TextureLERP
-	(
-		out float2 ret,
-		float2 coord,
-		Texture2D<float2> tex
-	)
-{
-	float2 tl = float2(floor(coord.x), ceil(coord.y));
-	float2 tr = float2(ceil(coord.x), ceil(coord.y));
-	float2 br = float2(ceil(coord.x), floor(coord.y));
-	float2 bl = float2(floor(coord.x), floor(coord.y));
-
-	ret = (tex[tl] + tex[tr] + tex[br] + tex[bl]) / 4.0;
-}
-
 //////////////////////////////
 // Kernels
 
-[numthreads(32,32,1)]
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void Advect (uint3 id : SV_DispatchThreadID)
 {
+	uint c = id.x * Width + id.y;
+
 	float2 cPos = id.xy;
-	float2 cVel = VelocityField[id.xy];
+	float2 cVel = float2(VelocityField[c].y, VelocityField[c].x);
 	float2 backPos = cPos - DeltaTime * cVel;
 	
 	backPos.x = clamp(backPos.x, 0.0f, (float)Width - 1.0); 
 	backPos.y = clamp(backPos.y, 0.0f, (float)Width - 1.0); 
+	
+	uint2 tl = uint2(floor(backPos.x), ceil(backPos.y));
+	uint2 tr = uint2(ceil(backPos.x), ceil(backPos.y));
+	uint2 br = uint2(ceil(backPos.x), floor(backPos.y));
+	uint2 bl = uint2(floor(backPos.x), floor(backPos.y));
 
-	float2 nPos = 0.0;
-	TextureLERP(nPos, backPos, VelocityField);
+	uint ftl = tl.x * Width + tl.y;
+	uint ftr = tr.x * Width + tr.y;
+	uint fbl = bl.x * Width + bl.y;
+	uint fbr = br.x * Width + br.y;
+
+	float2 nPos = (VelocityField[ftl] + 
+	VelocityField[ftr] + 
+	VelocityField[fbr] + 
+	VelocityField[fbl]) / 4.0;
+
 
 	if(nPos.x != nPos.x || nPos.y != nPos.y)
 		nPos = 0.0;
 
-    VelocityFieldNew[id.xy] = nPos;
+    VelocityFieldNew[c] = nPos;
 }
 
-[numthreads(32,32,1)]
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void Diffuse (uint3 id : SV_DispatchThreadID)
 {
-
+	uint c = id.x * Width + id.y;
+/*
 	float visc = ParticleData[id.xy].z;
     float alpha = (Dx * Dx) / (visc * DeltaTime);
 	float rBeta = 1.0f / (4.0f + alpha);
@@ -127,28 +121,32 @@ void Diffuse (uint3 id : SV_DispatchThreadID)
 	JacobiHelperX[id.xy] = cVal.x;
 	JacobiHelperY[id.xy] = cVal.y;
 
-	AllMemoryBarrierWithGroupSync();
+	//AllMemoryBarrierWithGroupSync();
 
-	for(int i = 0; i < JacobiIterations; ++i)
+	[unroll]
+	for(int i = 0; i < JACOBI_ITERATIONS; ++i)
 	{
 		Jacobi(id.xy, cVal, alpha, rBeta, JacobiHelperX, JacobiHelperY, float2(JacobiHelperX[id.xy], JacobiHelperY[id.xy]));
 		JacobiHelperX[id.xy] = cVal.x;
 		JacobiHelperY[id.xy] = cVal.y;
 
-		AllMemoryBarrierWithGroupSync();
+		//AllMemoryBarrierWithGroupSync();
 	}
-	
-    VelocityFieldNew[id.xy] = float2(JacobiHelperX[id.xy], JacobiHelperY[id.xy]);
+	*/
+    //VelocityFieldNew[id.xy] = float2(JacobiHelperX[id.xy], JacobiHelperY[id.xy]);
 
-	//VelocityFieldNew[id.xy] = float2(VelocityField[id.xy].x + 0.001, VelocityField[id.xy].y);
+	VelocityFieldNew[c] = float2(VelocityField[c].x, VelocityField[c].y);
 }
 
-[numthreads(32,32,1)]
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void ApplyForces (uint3 id : SV_DispatchThreadID)
 {
+	uint c = id.x * Width + id.y;
+
     float2 forceVector = DropperDirection * DropperForceValue * DeltaTime;
-	float divisor = (ParticleData[id.xy].x - DropperPosition.x) * (ParticleData[id.xy].x - DropperPosition.x) +
-					(ParticleData[id.xy].y - DropperPosition.y) * (ParticleData[id.xy].y - DropperPosition.y);
+	float2 pPos = float2(ParticleData[c].xy);
+	float divisor = (pPos.x - DropperPosition.x) * (pPos.x - DropperPosition.x) +
+					(pPos.y - DropperPosition.y) * (pPos.y - DropperPosition.y);
 	divisor = max(divisor, 0.0000001);
 
 	float2 nVel = forceVector * exp(DropperRadius / divisor);
@@ -157,32 +155,38 @@ void ApplyForces (uint3 id : SV_DispatchThreadID)
 
 	nVel = nVel * DropperForceMultiplier;
 
-    VelocityFieldNew[id.xy].xy = clamp(VelocityField[id.xy].xy + nVel.xy, -FORCE_MAX, FORCE_MAX);
+    VelocityFieldNew[c].xy = clamp(VelocityField[c].xy + nVel.xy, -FORCE_MAX, FORCE_MAX);
 }
 
-[numthreads(32,32,1)]
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void Project (uint3 id : SV_DispatchThreadID)
 {
-    // TODO: insert actual code here!
+	uint c = id.x * Width + id.y;
 
-    VelocityFieldNew[id.xy] = VelocityField[id.xy];
+    VelocityFieldNew[c] = VelocityField[c];
 }
 
-[numthreads(32,32,1)]
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void SwapOldToNew (uint3 id : SV_DispatchThreadID)
 {
-    VelocityFieldNew[id.xy] = VelocityField[id.xy];
+	uint c = id.x * Width + id.y;
+
+    VelocityFieldNew[c] = VelocityField[c];
 }
 
-[numthreads(32,32,1)]
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void SwapNewToOld (uint3 id : SV_DispatchThreadID)
 {
-    VelocityFieldNew[id.xy] = VelocityField[id.xy];
+	uint c = id.x * Width + id.y;
+
+    VelocityFieldNew[c] = VelocityField[c];
 }
 
-[numthreads(32,32,1)]
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
 void Initialize (uint3 id : SV_DispatchThreadID)
 {
-    VelocityFieldNew[id.xy] = 0.0;
-	PressureFieldNew[id.xy] = 0.0;
+	uint c = id.x * Width + id.y;
+
+    VelocityFieldNew[c] = 0.0;
+	PressureFieldNew[c] = 0.0;
 }
