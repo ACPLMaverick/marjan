@@ -52,6 +52,8 @@ public class Dropper : MonoBehaviour
 
         CurrentForceDirection = diff;
 
+        //Debug.Log(CurrentForceDirection.x.ToString("00.000000000") + " " + CurrentForceDirection.y.ToString("00.000000000"));
+
         float divisor = 20.0f;
         bool inBounds = CurrentForcePosition.x < Container.transform.position.x + Container.containerBase / divisor &&
             CurrentForcePosition.x > Container.transform.position.x - Container.containerBase / divisor &&

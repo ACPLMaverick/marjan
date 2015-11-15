@@ -141,13 +141,16 @@ void ApplyForces (uint3 id : SV_DispatchThreadID)
 	float2 pPos = float2(ParticleData[c].xy);
 	float divisor = (pPos.x - DropperPosition.x) * (pPos.x - DropperPosition.x) +
 					(pPos.y - DropperPosition.y) * (pPos.y - DropperPosition.y);
-	divisor = max(divisor, 0.0000001f);
+	//divisor = max(divisor, 0.0000001f);
 
 	float2 nVel = forceVector * exp(DropperRadius / divisor);
-	nVel.x = clamp(nVel.x, -FORCE_MAX, FORCE_MAX);
-	nVel.y = clamp(nVel.y, -FORCE_MAX, FORCE_MAX);
+	//nVel.x = clamp(nVel.x, -FORCE_MAX, FORCE_MAX);
+	//nVel.y = clamp(nVel.y, -FORCE_MAX, FORCE_MAX);
 
-	nVel = nVel * DropperForceMultiplier;
+	nVel = nVel * DropperForceMultiplier * length(DropperDirection) * 10.0f;
+
+	if(nVel.x != nVel.x || nVel.y != nVel.y)
+		nVel = 0.0;
 
     VelocityFieldNew[c].xy = clamp(VelocityField[c].xy + nVel.xy, -FORCE_MAX, FORCE_MAX);
 }
