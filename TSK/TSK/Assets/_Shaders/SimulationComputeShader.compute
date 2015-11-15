@@ -14,7 +14,8 @@
 #define FORCE_MAX 1.0
 #define JACOBI_ITERATIONS 20
 
-#define FCOORD(x, y, w)  x * w + y
+#define FCOORD(x, y, w)  (x) * (w) + (y)
+#define FCOORDC(x, y, w)  clamp((x), 0, (w) - 1) * (w) + clamp((y), 0, (w) - 1)
 
 ///////////////////////////////
 // Variables
@@ -93,6 +94,7 @@ void Advect (uint3 id : SV_DispatchThreadID)
 	backPos.x = clamp(backPos.x, 0.0f, (float)Width - 1.0f); 
 	backPos.y = clamp(backPos.y, 0.0f, (float)Width - 1.0f); 
 	
+	/*
 	uint2 tl = uint2(floor(backPos.x), ceil(backPos.y));
 	uint2 tr = uint2(ceil(backPos.x), ceil(backPos.y));
 	uint2 br = uint2(ceil(backPos.x), floor(backPos.y));
@@ -102,6 +104,18 @@ void Advect (uint3 id : SV_DispatchThreadID)
 	VelocityField[FCOORD(tr.x, tr.y, Width)] + 
 	VelocityField[FCOORD(bl.x, bl.y, Width)] + 
 	VelocityField[FCOORD(br.x, br.y, Width)]) / 4.0f;
+	*/
+
+	uint2 fl = uint2(floor(backPos.x), floor(backPos.y));
+	float2 ratio = float2(backPos.x - (float)fl.x, backPos.y - (float)fl.y);
+	float2 ratioOpp = float2(1 - ratio.x, 1 - ratio.y);
+
+	float2 nPos = (
+			(VelocityField[FCOORDC(fl.x, fl.y, Width)] * ratioOpp.x + 
+				VelocityField[FCOORDC(fl.x + 1, fl.y, Width)] * ratio.x) * ratioOpp.y + 
+			(VelocityField[FCOORDC(fl.x, fl.y + 1, Width)] * ratioOpp.x + 
+				VelocityField[FCOORDC(fl.x + 1, fl.y + 1, Width)] * ratio.x) * ratioOpp.x
+		);
 
 	if(nPos.x != nPos.x || nPos.y != nPos.y)
 		nPos = 0.0f;

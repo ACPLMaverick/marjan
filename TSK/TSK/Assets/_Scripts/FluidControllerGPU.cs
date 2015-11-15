@@ -155,11 +155,11 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
 
         _DfinalTexture = new Texture2D((int)particleWidth, (int)particleWidth, TextureFormat.RGBAFloat, false);
         _DfinalTexture.wrapMode = TextureWrapMode.Clamp;
-        /*
+
         MaterialPropertyBlock mp = new MaterialPropertyBlock();
         mp.AddTexture(0, finalTexture);
         container.MySprite.SetPropertyBlock(mp);
-        */
+
         debugTex = GameObject.Find("debugTex");
         MaterialPropertyBlock dmp = new MaterialPropertyBlock();
         dmp.AddTexture(0, _DfinalTexture);
@@ -202,16 +202,10 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         cShader.SetFloat("Dx", dx);
         cShader.SetInt("Width", (int)particleWidth);
         cShader.SetFloat("ContainerElasticity", (float)container.elasticity);
-
-        vfInitialized = true;
-    }
-
-    private void CalculateVectorField()
-    {
         // setup particle data to texture
-        for (uint i = 0; i < particleWidth; ++i )
+        for (uint i = 0; i < particleWidth; ++i)
         {
-            for(uint j = 0; j < particleWidth; ++j)
+            for (uint j = 0; j < particleWidth; ++j)
             {
                 uint flatCoord = i * particleWidth + j;
 
@@ -226,6 +220,12 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.ADVECT], "ParticleData", particleData);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.DIFFUSE], "ParticleData", particleData);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.APPLY_FORCE], "ParticleData", particleData);
+        vfInitialized = true;
+    }
+
+    private void CalculateVectorField()
+    {
+        
 
         // setup dropper
         cShader.SetFloats("DropperPosition", new float[] { dropper.CurrentForcePosition.x, dropper.CurrentForcePosition.y });
@@ -245,9 +245,9 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         ///////////////////////////////////////////////////
 
         cShader.Dispatch(kernelIDs[(int)KernelIDs.ADVECT], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
-        velocityFieldNew.GetData(velocityFieldBuffer);
-        SolveBoundaries();
-        velocityFieldNew.SetData(velocityFieldBuffer);
+        //velocityFieldNew.GetData(velocityFieldBuffer);
+        //SolveBoundaries();
+        //velocityFieldNew.SetData(velocityFieldBuffer);
 
         ComputeBuffer first = velocityFieldNew;
         ComputeBuffer second = velocityField;
@@ -286,12 +286,12 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         velocityFieldNew.GetData(velocityFieldBuffer);
         pressureField.GetData(_DpressureFieldBuffer);
         SolveBoundaries();
-        /*
+        
         for (uint i = 0; i < particleWidth; ++i)
         {
             for (uint j = 0; j < particleWidth; ++j)
             {
-
+                /*
                 // solving boundaries
                 Vector2 ids = new Vector2(i, j);
                 float length;
@@ -334,7 +334,7 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
                     // top & bottom walls
                     velocityFieldBuffer[id].y = -velocityFieldBuffer[id].y;
                     velocityFieldBuffer[id] *= ((float)container.elasticity / 100.0f);
-                }
+                } */
 
                 // applying texture data
                 uint id = i * particleWidth + j;
@@ -345,11 +345,11 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         }
         finalTexture.Apply();
         _DfinalTexture.Apply();
-        */
-        velocityFieldNew.SetData(velocityFieldBuffer);
-        pressureField.SetData(_DpressureFieldBuffer);
+       
+        //velocityFieldNew.SetData(velocityFieldBuffer);
+        //pressureField.SetData(_DpressureFieldBuffer);
 
-        ApplyVectorField();
+        //ApplyVectorField();
     }
     /*
     private void ApplyTextureData(Texture2D tex, ComputeBuffer field, Vector2[] buffer)
@@ -378,7 +378,7 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
 
                 if (i == 0 || j == 0 || i == particleWidth - 1 || j == particleWidth - 1)
                 {
-                    velocityFieldBuffer[id] = -velocityFieldBuffer[id];
+                    velocityFieldBuffer[id] = /*-velocityFieldBuffer[id]*/Vector2.zero;
                     _DpressureFieldBuffer[id] = 0.0f;
                 }
             }
