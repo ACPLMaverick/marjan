@@ -6,6 +6,7 @@
 #pragma kernel SubtractPressure
 #pragma kernel SwapOldToNew
 #pragma kernel SwapNewToOld
+#pragma kernel Clear
 
 ///////////////////////////////
 // Defines
@@ -90,37 +91,20 @@ void Advect (uint3 id : SV_DispatchThreadID)
 	float2 cPos = id.xy;
 	float2 cVel = float2(VelocityField[c].y, VelocityField[c].x);
 	float2 backPos = cPos - DeltaTime * cVel;
-	
-	backPos.x = clamp(backPos.x, 0.0f, (float)Width - 1.0f); 
-	backPos.y = clamp(backPos.y, 0.0f, (float)Width - 1.0f); 
-	
-	/*
-	uint2 tl = uint2(floor(backPos.x), ceil(backPos.y));
-	uint2 tr = uint2(ceil(backPos.x), ceil(backPos.y));
-	uint2 br = uint2(ceil(backPos.x), floor(backPos.y));
-	uint2 bl = uint2(floor(backPos.x), floor(backPos.y));
 
-	float2 nPos = (VelocityField[FCOORD(tl.x, tl.y, Width)] + 
-	VelocityField[FCOORD(tr.x, tr.y, Width)] + 
-	VelocityField[FCOORD(bl.x, bl.y, Width)] + 
-	VelocityField[FCOORD(br.x, br.y, Width)]) / 4.0f;
-	*/
+	float4 st;
+	st.xy = floor(backPos);
+	st.zw = st.xy + 1;
+  
+	float2 t = backPos - st.xy; //interpolating factors 
+    
+	float2 tex11 = VelocityField[FCOORDC(st.x, st.y, Width)];
+	float2 tex21 = VelocityField[FCOORDC(st.z, st.y, Width)];
+	float2 tex12 = VelocityField[FCOORDC(st.x, st.w, Width)];
+	float2 tex22 = VelocityField[FCOORDC(st.z, st.w, Width)];
 
-	uint2 fl = uint2(floor(backPos.x), floor(backPos.y));
-	float2 ratio = float2(backPos.x - (float)fl.x, backPos.y - (float)fl.y);
-	float2 ratioOpp = float2(1 - ratio.x, 1 - ratio.y);
-
-	float2 nPos = (
-			(VelocityField[FCOORDC(fl.x, fl.y, Width)] * ratioOpp.x + 
-				VelocityField[FCOORDC(fl.x + 1, fl.y, Width)] * ratio.x) * ratioOpp.y + 
-			(VelocityField[FCOORDC(fl.x, fl.y + 1, Width)] * ratioOpp.x + 
-				VelocityField[FCOORDC(fl.x + 1, fl.y + 1, Width)] * ratio.x) * ratioOpp.x
-		);
-
-	if(nPos.x != nPos.x || nPos.y != nPos.y)
-		nPos = 0.0f;
-
-    VelocityFieldNew[c] = nPos;
+	  // bilinear interpolation
+    VelocityFieldNew[c] = lerp(lerp(tex11, tex21, t.x), lerp(tex12, tex22, t.x), t.y);
 }
 
 [numthreads(THREAD_COUNT,THREAD_COUNT,1)]
@@ -162,7 +146,7 @@ void ApplyForces (uint3 id : SV_DispatchThreadID)
 	//nVel.y = clamp(nVel.y, -FORCE_MAX, FORCE_MAX);
 
 	nVel = nVel * DropperForceMultiplier * length(DropperDirection) * 10.0f;
-
+	
 	if(nVel.x != nVel.x || nVel.y != nVel.y)
 		nVel = 0.0;
 
@@ -175,28 +159,28 @@ void Pressure (uint3 id : SV_DispatchThreadID)
 	uint c = FCOORD(id.x, id.y, Width);
 
 	// calculate params
-	float alpha = -(Dx * Dx * 2.0f);
+	float alpha = -(Dx * Dx);
 	float rBeta = 0.25f;
 	float halfrdx = 1.0f / (2.0f * Dx);
 
-	uint2 cXL = clamp(id.xy + uint2(-1, 0), 0, Width - 1);
-	uint2 cXR = clamp(id.xy + uint2(1, 0), 0, Width - 1);
-	uint2 cXB = clamp(id.xy + uint2(0, -1), 0, Width - 1);
-	uint2 cXT = clamp(id.xy + uint2(0, 1), 0, Width - 1);
+	uint2 cXL = id.xy + uint2(-1, 0);
+	uint2 cXR = id.xy + uint2(1, 0);
+	uint2 cXB = id.xy + uint2(0, -1);
+	uint2 cXT = id.xy + uint2(0, 1);
 
 	// calculate divergence
-	float2 vL = VelocityField[FCOORD(cXL.x, cXL.y, Width)];
-	float2 vR = VelocityField[FCOORD(cXR.x, cXR.y, Width)];
-	float2 vB = VelocityField[FCOORD(cXB.x, cXB.y, Width)];
-	float2 vT = VelocityField[FCOORD(cXT.x, cXT.y, Width)];
+	float2 vL = VelocityField[FCOORDC(cXL.x, cXL.y, Width)];
+	float2 vR = VelocityField[FCOORDC(cXR.x, cXR.y, Width)];
+	float2 vB = VelocityField[FCOORDC(cXB.x, cXB.y, Width)];
+	float2 vT = VelocityField[FCOORDC(cXT.x, cXT.y, Width)];
 
 	float div = halfrdx * ((vR.x - vL.x) + (vT.y - vB.y));
 
 	// calculate pressure
-	float pL = PressureField[FCOORD(cXL.x, cXL.y, Width)];
-	float pR = PressureField[FCOORD(cXR.x, cXR.y, Width)];
-	float pB = PressureField[FCOORD(cXB.x, cXB.y, Width)];
-	float pT = PressureField[FCOORD(cXT.x, cXT.y, Width)];
+	float pL = PressureField[FCOORDC(cXL.x, cXL.y, Width)];
+	float pR = PressureField[FCOORDC(cXR.x, cXR.y, Width)];
+	float pB = PressureField[FCOORDC(cXB.x, cXB.y, Width)];
+	float pT = PressureField[FCOORDC(cXT.x, cXT.y, Width)];
 
     PressureFieldNew[c] = (pL + pR + pB + pT + alpha * div) * rBeta;
 }
@@ -207,15 +191,15 @@ void SubtractPressure (uint3 id : SV_DispatchThreadID)
 	uint c = FCOORD(id.x, id.y, Width);
 	
 	float halfrdx = 1.0f / (2.0f * Dx);
-	uint2 cXL = clamp(id.xy + uint2(-1, 0), 0, Width - 1);
-	uint2 cXR = clamp(id.xy + uint2(1, 0), 0, Width - 1);
-	uint2 cXB = clamp(id.xy + uint2(0, -1), 0, Width - 1);
-	uint2 cXT = clamp(id.xy + uint2(0, 1), 0, Width - 1);
+	uint2 cXL = id.xy + uint2(-1, 0);
+	uint2 cXR = id.xy + uint2(1, 0);
+	uint2 cXB = id.xy + uint2(0, -1);
+	uint2 cXT = id.xy + uint2(0, 1);
 
-	float pL = PressureField[FCOORD(cXL.x, cXL.y, Width)];
-	float pR = PressureField[FCOORD(cXR.x, cXR.y, Width)];
-	float pB = PressureField[FCOORD(cXB.x, cXB.y, Width)];
-	float pT = PressureField[FCOORD(cXT.x, cXT.y, Width)];
+	float pL = PressureField[FCOORDC(cXL.x, cXL.y, Width)];
+	float pR = PressureField[FCOORDC(cXR.x, cXR.y, Width)];
+	float pB = PressureField[FCOORDC(cXB.x, cXB.y, Width)];
+	float pT = PressureField[FCOORDC(cXT.x, cXT.y, Width)];
 
 	VelocityFieldNew[c] = float2(
 		VelocityField[c].x - halfrdx * (pR - pL), 
@@ -237,4 +221,13 @@ void SwapNewToOld (uint3 id : SV_DispatchThreadID)
 	uint c = FCOORD(id.x, id.y, Width);
 
     VelocityFieldNew[c] = VelocityField[c];
+}
+
+[numthreads(THREAD_COUNT,THREAD_COUNT,1)]
+void Clear (uint3 id : SV_DispatchThreadID)
+{
+	uint c = FCOORD(id.x, id.y, Width);
+
+    PressureField[c] = 0.0f;
+	PressureFieldNew[c] = 0.0f;
 }

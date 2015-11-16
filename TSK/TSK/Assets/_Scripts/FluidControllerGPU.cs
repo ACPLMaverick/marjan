@@ -59,9 +59,10 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         SUBTRACT_PRESSURE,
         SWAP_TO_NEW,
         SWAP_TO_OLD,
+        CLEAR
     }
 
-    private int[] kernelIDs = new int[7];
+    private int[] kernelIDs = new int[8];
 
     private bool vfInitialized = false;
     private ComputeBuffer velocityField;
@@ -172,6 +173,7 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         kernelIDs[4] = cShader.FindKernel("SubtractPressure");
         kernelIDs[5] = cShader.FindKernel("SwapOldToNew");
         kernelIDs[6] = cShader.FindKernel("SwapNewToOld");
+        kernelIDs[7] = cShader.FindKernel("Clear");
 
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.ADVECT], "VelocityField", velocityField);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.ADVECT], "VelocityFieldNew", velocityFieldNew);
@@ -195,7 +197,10 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
 
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], "VelocityField", velocityField);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], "VelocityFieldNew", velocityFieldNew);
-        cShader.SetBuffer(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], "PressureField", pressureFieldNew);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], "PressureField", pressureField);
+
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.CLEAR], "PressureField", pressureField);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.CLEAR], "PressureFieldNew", pressureFieldNew);
 
         cShader.SetFloat("DeltaTime", Time.fixedDeltaTime);
         float dx = container.containerBase / (float)particleWidth;
@@ -244,7 +249,11 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
 
         ///////////////////////////////////////////////////
 
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.APPLY_FORCE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+
         cShader.Dispatch(kernelIDs[(int)KernelIDs.ADVECT], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+        SolveBoundaries(velocityFieldNew, pressureField);
         //velocityFieldNew.GetData(velocityFieldBuffer);
         //SolveBoundaries();
         //velocityFieldNew.SetData(velocityFieldBuffer);
@@ -263,10 +272,7 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         }
 
         cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.APPLY_FORCE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
         
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
-
         first = pressureField;
         second = pressureFieldNew;
         for (int i = 0; i < JACOBI_ITERATIONS; ++i)
@@ -279,76 +285,35 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
             cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "PressureFieldNew", second);
         }
 
+        SolveBoundaries(velocityField, pressureField);
+
         cShader.Dispatch(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
 
-        ////////////////////////////////////////////////////////////////
+        SolveBoundaries(velocityFieldNew, pressureField);
 
-        velocityFieldNew.GetData(velocityFieldBuffer);
-        pressureField.GetData(_DpressureFieldBuffer);
-        SolveBoundaries();
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.CLEAR], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+
+        ////////////////////////////////////////////////////////////////
         
         for (uint i = 0; i < particleWidth; ++i)
         {
             for (uint j = 0; j < particleWidth; ++j)
             {
-                /*
-                // solving boundaries
-                Vector2 ids = new Vector2(i, j);
-                float length;
-                if(ids.x == 0.0f && ids.y == 0.0f)
-                {
-                    // top left
-                    length = Mathf.Sqrt(velocityFieldBuffer[id].x * velocityFieldBuffer[id].x + 
-                        velocityFieldBuffer[id].y * velocityFieldBuffer[id].y);
-                    velocityFieldBuffer[id] = Vector2.right * length * ((float)container.elasticity / 100.0f);
-                }
-                else if (ids.x == (float)particleWidth - 1.0f && ids.y == 0.0f)
-                {
-                    // top right
-                    length = Mathf.Sqrt(velocityFieldBuffer[id].x * velocityFieldBuffer[id].x +
-                        velocityFieldBuffer[id].y * velocityFieldBuffer[id].y);
-                    velocityFieldBuffer[id] = Vector2.down * length * ((float)container.elasticity / 100.0f);
-                }
-                else if (ids.x == (float)particleWidth - 1.0f && ids.y == (float)particleWidth - 1.0f)
-                {
-                    // bottom right
-                    length = Mathf.Sqrt(velocityFieldBuffer[id].x * velocityFieldBuffer[id].x +
-                        velocityFieldBuffer[id].y * velocityFieldBuffer[id].y);
-                    velocityFieldBuffer[id] = Vector2.left * length * ((float)container.elasticity / 100.0f);
-                }
-                else if (ids.x == 0.0f && ids.y == (float)particleWidth - 1.0f)
-                {
-                    // bottom left
-                    length = Mathf.Sqrt(velocityFieldBuffer[id].x * velocityFieldBuffer[id].x +
-                        velocityFieldBuffer[id].y * velocityFieldBuffer[id].y);
-                    velocityFieldBuffer[id] = Vector2.up * length * ((float)container.elasticity / 100.0f);
-                }
-                else if(ids.x == 0.0f || ids.x == (float)particleWidth - 1.0f)
-                {
-                    // left & right walls
-                    velocityFieldBuffer[id].x = -velocityFieldBuffer[id].x;
-                    velocityFieldBuffer[id] *= ((float)container.elasticity / 100.0f);
-                }
-                else if (ids.y == 0.0f || ids.y == (float)particleWidth - 1.0f)
-                {
-                    // top & bottom walls
-                    velocityFieldBuffer[id].y = -velocityFieldBuffer[id].y;
-                    velocityFieldBuffer[id] *= ((float)container.elasticity / 100.0f);
-                } */
-
                 // applying texture data
                 uint id = i * particleWidth + j;
                 float length = velocityFieldBuffer[id].x * velocityFieldBuffer[id].x + velocityFieldBuffer[id].y * velocityFieldBuffer[id].y;
                 finalTexture.SetPixel((int)j, (int)i, new Color(length, length, length, 1.0f));
                 _DfinalTexture.SetPixel((int)j, (int)i, new Color(_DpressureFieldBuffer[id], _DpressureFieldBuffer[id], _DpressureFieldBuffer[id], 1.0f));
+
+                // signing borders
+                if(i == 0 || j == 0 || i == particleWidth - 1 || j == particleWidth - 1)
+                    finalTexture.SetPixel((int)j, (int)i, new Color(0.0f, 0.0f, 1.0f, 1.0f));
             }
         }
         finalTexture.Apply();
         _DfinalTexture.Apply();
        
-        //velocityFieldNew.SetData(velocityFieldBuffer);
-        //pressureField.SetData(_DpressureFieldBuffer);
-
         //ApplyVectorField();
     }
     /*
@@ -368,21 +333,79 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
     }
     */
 
-    private void SolveBoundaries()
+    private void SolveBoundaries(ComputeBuffer vBuffer, ComputeBuffer pBuffer)
     {
+        vBuffer.GetData(velocityFieldBuffer);
+        pBuffer.GetData(_DpressureFieldBuffer);
+
         for(uint i = 0; i < particleWidth; ++i)
         {
             for(uint j = 0; j < particleWidth; ++j)
             {
                 uint id = i * particleWidth + j;
+                /*
+                if(i == 0 && j == 0)
+                {
+                    // bl corner
+                    velocityFieldBuffer[id] = -velocityFieldBuffer[(i + 1) * particleWidth + (j + 1)];
+                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i + 1) * particleWidth + (j + 1)];
+                }
+                else if(i == 0 && j == particleWidth - 1)
+                {
+                    // br corner
+                    velocityFieldBuffer[id] = -velocityFieldBuffer[(i + 1) * particleWidth + (j - 1)];
+                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i + 1) * particleWidth + (j - 1)];
+                }
+                else if(i == particleWidth - 1 && j == particleWidth - 1)
+                {
+                    // tr corner
+                    velocityFieldBuffer[id] = -velocityFieldBuffer[(i - 1) * particleWidth + (j - 1)];
+                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i - 1) * particleWidth + (j - 1)];
+                }
+                else if(i == particleWidth - 1 && j == 0)
+                {
+                    // tl corner
+                    velocityFieldBuffer[id] = -velocityFieldBuffer[(i - 1) * particleWidth + (j + 1)];
+                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i - 1) * particleWidth + (j + 1)];
+                }
 
+                else*/ if(i == 0)
+                {
+                    // bottom
+                    velocityFieldBuffer[id] = -velocityFieldBuffer[(i + 1) * particleWidth + (j + 1)];
+                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i + 1) * particleWidth + (j)];
+                }
+                else if(i == particleWidth - 1)
+                {
+                    // top
+                    velocityFieldBuffer[id] = -velocityFieldBuffer[(i - 1) * particleWidth + (j)];
+                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i - 1) * particleWidth + (j)];
+                }
+                else if(j == 0)
+                {
+                    // left
+                    velocityFieldBuffer[id] = -velocityFieldBuffer[(i) * particleWidth + (j + 1)];
+                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i) * particleWidth + (j + 1)];
+                }
+                else if(j == particleWidth - 1)
+                {
+                    // right
+                    velocityFieldBuffer[id] = -velocityFieldBuffer[(i) * particleWidth + (j - 1)];
+                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i) * particleWidth + (j - 1)];
+                }
+
+                /*
                 if (i == 0 || j == 0 || i == particleWidth - 1 || j == particleWidth - 1)
                 {
-                    velocityFieldBuffer[id] = /*-velocityFieldBuffer[id]*/Vector2.zero;
+                    velocityFieldBuffer[id] = Vector2.zero;
                     _DpressureFieldBuffer[id] = 0.0f;
                 }
+                */
             }
         }
+
+        vBuffer.SetData(velocityFieldBuffer);
+        pBuffer.SetData(_DpressureFieldBuffer);
     }
 
     private void ApplyVectorField()
