@@ -17,6 +17,7 @@ namespace Zad2
         private Queue<UserFixed> fixedQueue;
         private Queue<UserRandom> randomQueue;
         private Queue<User> enterQueue;
+        private Random rand;
 
         #endregion
 
@@ -35,6 +36,7 @@ namespace Zad2
             fixedQueue = new Queue<UserFixed>();
             randomQueue = new Queue<UserRandom>();
             enterQueue = new Queue<User>();
+            rand = new Random();
 
             MThread = new Thread(new ThreadStart(Run));
             MThread.Start();
@@ -56,27 +58,49 @@ namespace Zad2
                 {
                     User nUser = enterQueue.Dequeue();
 
-
+                    if(nUser.Type != MData.LastUserAccess)
+                    {
+                        if(nUser.Type == User.UserType.RANDOM)
+                        {
+                            ProcessData(nUser);
+                        }
+                        else if(nUser.Type == User.UserType.FIXED)
+                        {
+                            ProcessData(nUser);
+                        }
+                    }
+                    else
+                    {
+                        if (nUser.Type == User.UserType.RANDOM)
+                        {
+                            randomQueue.Enqueue((UserRandom)nUser);
+                        }
+                        else if (nUser.Type == User.UserType.FIXED)
+                        {
+                            fixedQueue.Enqueue((UserFixed)nUser);
+                        }
+                    }
                 }
-                else if(MData.LastUserAccess == User.UserType.FIXED && randomQueue.Count != 0)
+                if(MData.LastUserAccess == User.UserType.FIXED && randomQueue.Count != 0)
                 {
-
+                    User uR = randomQueue.Dequeue();
+                    ProcessData(uR);
                 }
-                else if(MData.LastUserAccess == User.UserType.RANDOM && fixedQueue.Count != 0)
+                if(MData.LastUserAccess == User.UserType.RANDOM && fixedQueue.Count != 0)
                 {
-
+                    User uF = fixedQueue.Dequeue();
+                    ProcessData(uF);
                 }
             }
         }
 
-        private void ProcessFixed(UserFixed uf)
+        private void ProcessData(User u)
         {
+            MData.Value += u.AddValue;
+            MData.LastUserAccess = u.Type;
 
-        }
-
-        private void ProcessRandom(UserRandom ur)
-        {
-
+            Thread.Sleep(rand.Next(Database.MODIFY_TIME_MIN, Database.MODIFY_TIME_MAX));
+            u.MyThread.Resume();
         }
 
         #endregion

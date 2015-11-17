@@ -23,7 +23,6 @@ namespace Zad2
 
         private Data[] items;
         private Guard[] guards;
-        private Random rand;
 
         private Semaphore semFCtr;
         private Semaphore semRCtr;
@@ -70,7 +69,6 @@ namespace Zad2
 
             items = new Data[ItemCount];
             guards = new Guard[ItemCount];
-            rand = new Random();
 
             semFCtr = new Semaphore(1, 1);
             semRCtr = new Semaphore(1, 1);
