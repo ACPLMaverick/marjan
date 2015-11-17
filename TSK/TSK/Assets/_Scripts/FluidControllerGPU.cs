@@ -43,10 +43,9 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
     #region simRelated
 
     const uint JACOBI_ITERATIONS = 40;
-    const uint RT_COUNT = 6;
+    const uint CB_COUNT = 7;
     const int THREAD_COUNT = 32;
-    const float PARTICLE_MIN = -4.4296f;
-    const float PARTICLE_MAX = 4.4054f;
+    const float DISSIPATION = 0.99f;
 
     public ComputeShader cShader;
 
@@ -71,16 +70,16 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
     private ComputeBuffer pressureFieldNew;
     private ComputeBuffer jacobiHelper;
     private ComputeBuffer particleData;
+    private ComputeBuffer dyeField;
 
-    private ComputeBuffer[] cbArray = new ComputeBuffer[RT_COUNT];
+    private ComputeBuffer[] cbArray = new ComputeBuffer[CB_COUNT];
 
     private Texture2D finalTexture;
     private Texture2D _DfinalTexture;
     private Vector2[] velocityFieldBuffer;
     private Vector4[] particleDataBuffer;
-    private float[] _DpressureFieldBuffer;
-
-    private GameObject debugTex;
+    private float[] pressureFieldBuffer;
+    private float[] dyeFieldBuffer;
 
     #endregion
 
@@ -128,14 +127,16 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         pressureFieldNew = new ComputeBuffer((int)particleCount, sizeof(float));
         jacobiHelper = new ComputeBuffer((int)particleCount, 2 * sizeof(float));
         particleData = new ComputeBuffer((int)particleCount, 4 * sizeof(float));
+        dyeField = new ComputeBuffer((int)particleCount, sizeof(float));
         cbArray[0] = velocityField;
         cbArray[1] = velocityFieldNew;
         cbArray[2] = pressureField;
         cbArray[3] = pressureFieldNew;
         cbArray[4] = jacobiHelper;
         cbArray[5] = particleData;
+        cbArray[6] = dyeField;
 
-        for (int i = 0; i < RT_COUNT; ++i)
+        for (int i = 0; i < CB_COUNT; ++i)
         {
             
         }
@@ -145,11 +146,13 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         pressureField.SetData(new float[particleCount]);
         pressureFieldNew.SetData(new float[particleCount]);
         jacobiHelper.SetData(new Vector2[particleCount]);
-        //particleData.SetData(new Vector2[particleCount]);
+        particleData.SetData(new Vector2[particleCount]);
+        dyeField.SetData(new Vector2[particleCount]);
 
         velocityFieldBuffer = new Vector2[particleCount];
         particleDataBuffer = new Vector4[particleCount];
-        _DpressureFieldBuffer = new float[particleCount];
+        pressureFieldBuffer = new float[particleCount];
+        dyeFieldBuffer = new float[particleCount];
 
         finalTexture = new Texture2D((int)particleWidth, (int)particleWidth, TextureFormat.RGBAFloat, false);
         finalTexture.wrapMode = TextureWrapMode.Clamp;
@@ -160,11 +163,6 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         MaterialPropertyBlock mp = new MaterialPropertyBlock();
         mp.AddTexture(0, finalTexture);
         container.MySprite.SetPropertyBlock(mp);
-
-        debugTex = GameObject.Find("debugTex");
-        MaterialPropertyBlock dmp = new MaterialPropertyBlock();
-        dmp.AddTexture(0, _DfinalTexture);
-        debugTex.GetComponent<SpriteRenderer>().SetPropertyBlock(dmp);
 
         kernelIDs[0] = cShader.FindKernel("Advect");
         kernelIDs[1] = cShader.FindKernel("Diffuse");
@@ -177,12 +175,14 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
 
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.ADVECT], "VelocityField", velocityField);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.ADVECT], "VelocityFieldNew", velocityFieldNew);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.ADVECT], "DyeField", dyeField);
 
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.DIFFUSE], "VelocityField", velocityFieldNew);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.DIFFUSE], "VelocityFieldNew", velocityField);
 
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.APPLY_FORCE], "VelocityField", velocityField);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.APPLY_FORCE], "VelocityFieldNew", velocityFieldNew);
+        cShader.SetBuffer(kernelIDs[(int)KernelIDs.APPLY_FORCE], "DyeField", dyeField);
 
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "VelocityField", velocityFieldNew);
         cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "VelocityFieldNew", velocityField);
@@ -207,6 +207,8 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         cShader.SetFloat("Dx", dx);
         cShader.SetInt("Width", (int)particleWidth);
         cShader.SetFloat("ContainerElasticity", (float)container.elasticity);
+        cShader.SetFloat("DropperInsertedDensity", dropper.InsertedDensity);
+        cShader.SetFloat("Dissipation", DISSIPATION);
         // setup particle data to texture
         for (uint i = 0; i < particleWidth; ++i)
         {
@@ -230,8 +232,6 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
 
     private void CalculateVectorField()
     {
-        
-
         // setup dropper
         cShader.SetFloats("DropperPosition", new float[] { dropper.CurrentForcePosition.x, dropper.CurrentForcePosition.y });
         cShader.SetFloats("DropperDirection", new float[] { dropper.CurrentForceDirection.x, dropper.CurrentForceDirection.y });
@@ -249,11 +249,11 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
 
         ///////////////////////////////////////////////////
 
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.APPLY_FORCE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.ADVECT], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
         cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
 
-        cShader.Dispatch(kernelIDs[(int)KernelIDs.ADVECT], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
-        SolveBoundaries(velocityFieldNew, pressureField);
+        cShader.Dispatch(kernelIDs[(int)KernelIDs.APPLY_FORCE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
+        SolveBoundaries(velocityFieldNew, pressureField, null);
         //velocityFieldNew.GetData(velocityFieldBuffer);
         //SolveBoundaries();
         //velocityFieldNew.SetData(velocityFieldBuffer);
@@ -285,27 +285,28 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
             cShader.SetBuffer(kernelIDs[(int)KernelIDs.PRESSURE], "PressureFieldNew", second);
         }
 
-        SolveBoundaries(velocityField, pressureField);
+        SolveBoundaries(velocityField, pressureField, null);
 
         cShader.Dispatch(kernelIDs[(int)KernelIDs.SUBTRACT_PRESSURE], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
-
-        SolveBoundaries(velocityFieldNew, pressureField);
+ 
+        SolveBoundaries(velocityFieldNew, pressureField, dyeField);
 
         cShader.Dispatch(kernelIDs[(int)KernelIDs.SWAP_TO_OLD], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
         cShader.Dispatch(kernelIDs[(int)KernelIDs.CLEAR], (int)particleWidth / THREAD_COUNT, (int)particleWidth / THREAD_COUNT, 1);
 
         ////////////////////////////////////////////////////////////////
-        
+
         for (uint i = 0; i < particleWidth; ++i)
         {
             for (uint j = 0; j < particleWidth; ++j)
             {
                 // applying texture data
                 uint id = i * particleWidth + j;
-                float length = velocityFieldBuffer[id].x * velocityFieldBuffer[id].x + velocityFieldBuffer[id].y * velocityFieldBuffer[id].y;
-                finalTexture.SetPixel((int)j, (int)i, new Color(length, length, length, 1.0f));
-                _DfinalTexture.SetPixel((int)j, (int)i, new Color(_DpressureFieldBuffer[id], _DpressureFieldBuffer[id], _DpressureFieldBuffer[id], 1.0f));
-
+                //float length = velocityFieldBuffer[id].x * velocityFieldBuffer[id].x + velocityFieldBuffer[id].y * velocityFieldBuffer[id].y;
+                finalTexture.SetPixel((int)j, (int)i, new Color(dyeFieldBuffer[id], dyeFieldBuffer[id], dyeFieldBuffer[id], 1.0f));
+                //finalTexture.SetPixel((int)j, (int)i, new Color(velocityFieldBuffer[id].x, velocityFieldBuffer[id].y, 0.0f, 1.0f));
+                //_DfinalTexture.SetPixel((int)j, (int)i, new Color(_DpressureFieldBuffer[id], _DpressureFieldBuffer[id], _DpressureFieldBuffer[id], 1.0f));
+                
                 // signing borders
                 if(i == 0 || j == 0 || i == particleWidth - 1 || j == particleWidth - 1)
                     finalTexture.SetPixel((int)j, (int)i, new Color(0.0f, 0.0f, 1.0f, 1.0f));
@@ -333,10 +334,11 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
     }
     */
 
-    private void SolveBoundaries(ComputeBuffer vBuffer, ComputeBuffer pBuffer)
+    private void SolveBoundaries(ComputeBuffer vBuffer, ComputeBuffer pBuffer, ComputeBuffer dBuffer)
     {
         vBuffer.GetData(velocityFieldBuffer);
-        pBuffer.GetData(_DpressureFieldBuffer);
+        pBuffer.GetData(pressureFieldBuffer);
+        if (dBuffer != null) dBuffer.GetData(dyeFieldBuffer);
 
         for(uint i = 0; i < particleWidth; ++i)
         {
@@ -373,25 +375,29 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
                 {
                     // bottom
                     velocityFieldBuffer[id] = -velocityFieldBuffer[(i + 1) * particleWidth + (j + 1)];
-                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i + 1) * particleWidth + (j)];
+                    pressureFieldBuffer[id] = pressureFieldBuffer[(i + 1) * particleWidth + (j)];
+                    if (dBuffer != null) dyeFieldBuffer[id] = 0.0f;
                 }
                 else if(i == particleWidth - 1)
                 {
                     // top
                     velocityFieldBuffer[id] = -velocityFieldBuffer[(i - 1) * particleWidth + (j)];
-                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i - 1) * particleWidth + (j)];
+                    pressureFieldBuffer[id] = pressureFieldBuffer[(i - 1) * particleWidth + (j)];
+                    if (dBuffer != null) dyeFieldBuffer[id] = 0.0f;
                 }
                 else if(j == 0)
                 {
                     // left
                     velocityFieldBuffer[id] = -velocityFieldBuffer[(i) * particleWidth + (j + 1)];
-                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i) * particleWidth + (j + 1)];
+                    pressureFieldBuffer[id] = pressureFieldBuffer[(i) * particleWidth + (j + 1)];
+                    if (dBuffer != null) dyeFieldBuffer[id] = 0.0f;
                 }
                 else if(j == particleWidth - 1)
                 {
                     // right
                     velocityFieldBuffer[id] = -velocityFieldBuffer[(i) * particleWidth + (j - 1)];
-                    _DpressureFieldBuffer[id] = _DpressureFieldBuffer[(i) * particleWidth + (j - 1)];
+                    pressureFieldBuffer[id] = pressureFieldBuffer[(i) * particleWidth + (j - 1)];
+                    if (dBuffer != null) dyeFieldBuffer[id] = 0.0f;
                 }
 
                 /*
@@ -405,7 +411,8 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
         }
 
         vBuffer.SetData(velocityFieldBuffer);
-        pBuffer.SetData(_DpressureFieldBuffer);
+        pBuffer.SetData(pressureFieldBuffer);
+        if (dBuffer != null) dBuffer.SetData(dyeFieldBuffer);
     }
 
     private void ApplyVectorField()
