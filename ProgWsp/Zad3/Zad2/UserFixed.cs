@@ -10,6 +10,8 @@ namespace Zad2
     {
         #region constants
 
+        private const int ADD_VALUE = 1;
+
         #endregion
 
         #region variables
@@ -24,7 +26,7 @@ namespace Zad2
 
         #region methods
 
-        public UserFixed(uint id, int addValue, Database db, int position) : base(id, addValue, db)
+        public UserFixed(uint id, Database db, int position) : base(id, ADD_VALUE, db)
         {
             pos = position;
             Type = UserType.FIXED;

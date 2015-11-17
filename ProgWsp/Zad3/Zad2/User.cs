@@ -28,7 +28,6 @@ namespace Zad2
         #region variables
 
         protected Database db;
-        protected Thread myThread;
         protected string typeStr;
 
         #endregion
@@ -38,6 +37,7 @@ namespace Zad2
         public uint ID { get; protected set; }
         public int AddValue { get; protected set; }
         public UserType Type { get; protected set; }
+        public Thread MyThread { get; protected set; }
 
         #endregion
 
@@ -52,10 +52,10 @@ namespace Zad2
 
         public void Run()
         {
-            myThread = new Thread(new ThreadStart(ModifyValue));
-            myThread.Start();
+            MyThread = new Thread(new ThreadStart(ModifyValue));
+            MyThread.Start();
 
-            while (!myThread.IsAlive) ;
+            while (!MyThread.IsAlive) ;
         }
 
         protected void ModifyValue()
@@ -66,7 +66,7 @@ namespace Zad2
                 int valIndex = SelectValue();
 
                 // modfyikacja elementu w bazie danych, całą synchronizację obsługuje klasa Database
-                db.ModifyItem(valIndex, AddValue, this);
+                db.ModifyItem(valIndex, this);
 
                 // inkrementacja liczników modyfikacji w bazie, tu synchronizacja także jest obsługiwana
                 // przez klasę Database, przy pomocy semafora

@@ -10,6 +10,8 @@ namespace Zad2
     {
         #region constants
 
+        private const int ADD_VALUE = -1;
+
         #endregion
 
         #region variables
@@ -24,7 +26,7 @@ namespace Zad2
 
         #region methods
 
-        public UserRandom(uint id, int addValue, Database db) : base(id, addValue, db)
+        public UserRandom(uint id, Database db) : base(id, ADD_VALUE, db)
         {
             random = new Random();
             Type = UserType.RANDOM;

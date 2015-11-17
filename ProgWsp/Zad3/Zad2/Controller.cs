@@ -42,12 +42,12 @@ namespace Zad2
 
             for (int i = 0; i < randomCount; ++i )
             {
-                MUsersRandom[i] = new UserRandom((uint)i, -1, MDatabase);
+                MUsersRandom[i] = new UserRandom((uint)i, MDatabase);
             }
 
             for (int i = 0; i < fixedCount; ++i)
             {
-                MUsersFixed[i] = new UserFixed((uint)i, 1, MDatabase, i);
+                MUsersFixed[i] = new UserFixed((uint)i, MDatabase, i);
             }
 
             Console.WriteLine("Controller initialized.");

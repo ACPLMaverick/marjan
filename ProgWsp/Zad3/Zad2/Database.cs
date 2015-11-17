@@ -22,6 +22,7 @@ namespace Zad2
         private int _rCtr;
 
         private Data[] items;
+        private Guard[] guards;
         private Random rand;
 
         private Semaphore semFCtr;
@@ -68,6 +69,7 @@ namespace Zad2
             ItemCount = itemCount;
 
             items = new Data[ItemCount];
+            guards = new Guard[ItemCount];
             rand = new Random();
 
             semFCtr = new Semaphore(1, 1);
@@ -77,17 +79,18 @@ namespace Zad2
             {
                 items[i] = new Data();
                 items[i].Value = 0;
+
+                guards[i] = new Guard(items[i]);
             }
 
             FCtr = 0;
             RCtr = 0;
         }
 
-        public void ModifyItem(int rid, int val, User u)
+        public void ModifyItem(int rid, User u)
         {
-            // usypianie by zasymulować przetwarzanie zasobu
-            Thread.Sleep(rand.Next(MODIFY_TIME_MIN, MODIFY_TIME_MAX));
-            items[rid].Value += val;
+            // dodawanie do listy dostępu dla danego zasobu
+            guards[rid].AddAccess(u);
         }
 
         public override string ToString()
