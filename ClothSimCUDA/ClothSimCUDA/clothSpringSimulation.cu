@@ -51,6 +51,11 @@ __device__ inline void CUDASolveSphereCollision(const glm::vec3* sphereCenter, c
 	}
 }
 
+__device__ inline float CUDASign(float s)
+{
+	return ((float)signbit(s)) * 2.0f - 1.0f;
+}
+
 
 __global__ void CalculateSpringsKernel(
 	Vertex* vertPtr, 
@@ -105,12 +110,17 @@ __global__ void CalculateForcesKernel(
 			glm::vec3 n = glm::normalize(f);
 			float fLength = glm::length(f);
 			float spring = fLength - vertPtr[v_cur].springLengths[i];
-
-			vertPtr[v_cur].force += -vertPtr[vertPtr[v_cur].neighbours[i]].elasticity * spring * n * vertPtr[v_cur].neighbourMultipliers[i];
+			glm::vec3 springiness = -vertPtr[vertPtr[v_cur].neighbours[i]].elasticity * spring * n * vertPtr[v_cur].neighbourMultipliers[i];
 
 			glm::vec3 dV = vertPtr[v_cur].velocity - vertPtr[vertPtr[v_cur].neighbours[i]].velocity;
-			float damp = vertPtr[v_cur].elasticityDamp * (glm::dot(dV, f) / fLength);
-			vertPtr[v_cur].force += damp * n * vertPtr[v_cur].neighbourMultipliers[i];
+			float damp = vertPtr[vertPtr[v_cur].neighbours[i]].elasticityDamp * (glm::dot(dV, f) / fLength);
+			glm::vec3 damping = damp * n * vertPtr[v_cur].neighbourMultipliers[i];
+
+			float sL = glm::length(springiness);
+			float dL = glm::length(damping);
+			damping = (damping / glm::max(dL, 0.00000000000000001f)) * glm::min(sL, dL);
+			
+			vertPtr[v_cur].force += (springiness + damping);
 		}
 
 
@@ -133,11 +143,12 @@ __global__ void CalculateForcesKernel(
 
 
 		newPos = 2.0f * posPtr[id] - vertPtr[v_cur].prevPosition + acc * delta * delta;
-		vertPtr[v_cur].prevPosition = posPtr[id];
-		posPtr[id] = newPos;
 
 		// update velocity
 		vertPtr[v_cur].velocity = (newPos - vertPtr[v_cur].prevPosition) / delta;
+
+		vertPtr[v_cur].prevPosition = posPtr[id];
+		posPtr[id] = newPos;
 }
 
 __global__ void CalculateExternalCollisionsKernel(
@@ -173,15 +184,15 @@ __global__ void CalculateExternalCollisionsKernel(
 	wPos.y = r.y;
 	wPos.z = r.z;
 	////////////////////
-
+	/*
 	float radius = 0.0f;
 	float divisor = 0.0f;
 	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
 	{
 		radius += vertPtr[v_cur].springLengths[i] * vertPtr[v_cur].neighbourMultipliers[i];
 		divisor += vertPtr[v_cur].neighbourMultipliers[i];
-	}
-	radius = radius / divisor * vertPtr[v_cur].colliderMultiplier;
+	}*/
+	float radius = vertPtr[v_cur].colliderMultiplier;
 
 	glm::vec3 colVec;
 	// solve for boxes
@@ -218,6 +229,7 @@ __global__ void CalculateInternalCollisionsSpatialSubdivisionKernel(
 	cBoxAAData mCol = globalCol;
 	glm::vec3 diff = mCol.max - mCol.min;
 	cBoxAAData children[8];
+	glm::vec3 mCenter = posPtr[v_cur];
 	while (
 		diff.x > cellSize &&
 		diff.y > cellSize &&
@@ -265,12 +277,23 @@ __global__ void CalculateInternalCollisionsSpatialSubdivisionKernel(
 		/////////////
 
 		//// pick one
-		mCol = children[0];
+		for (int i = 0; i < 8; ++i)
+		{
+			if (mCenter.x >= children[i].min.x &&
+				mCenter.y >= children[i].min.y &&
+				mCenter.z >= children[i].min.z &&
+				mCenter.x <= children[i].max.x &&
+				mCenter.y <= children[i].max.y &&
+				mCenter.z <= children[i].max.z
+				)
+			{
+				mCol = children[i];
+				break;
+			}
+		}
 
 		diff = mCol.max - mCol.min;
 	}
-
-	glm::vec3 mCenter = posPtr[v_cur];
 
 
 	float radius = 0.0f;
@@ -372,13 +395,14 @@ __global__ void CalculateInternalCollisionsNeighboursOnlyKernel(
 
 	glm::vec3 colVec = glm::vec3(0.0f, 0.0f, 0.0f);
 	float radius = 0.0f;
+	/*
 	float divisor = 0.0f;
 	for (int i = 0; i < VERTEX_NEIGHBOURING_VERTICES; ++i)
 	{
 		radius += vertPtr[v_cur].springLengths[i] * vertPtr[v_cur].neighbourMultipliers[i];
 		divisor += vertPtr[v_cur].neighbourMultipliers[i];
-	}
-	radius = radius / divisor * vertPtr[v_cur].colliderMultiplier * 0.1f;
+	}*/
+	radius = vertPtr[v_cur].colliderMultiplier * 0.1f;
 
 	for (int i = 0; i < nCount; ++i)
 	{
@@ -483,6 +507,9 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 		m_vertices[i].dampCoeff = VERTEX_AIR_DAMP;
 
 		m_vertices[i].elasticity = SPRING_ELASTICITY;
+		m_vertices[i].elasticityDamp = SPRING_ELASTICITY_DAMP;
+		m_vertices[i].colliderMultiplier = VERTEX_COLLIDER_MULTIPLIER;
+
 		if (i < m_allEdgesLength ||
 			i >= (m_vertexCount - m_allEdgesLength) ||
 			i % m_allEdgesLength == 0 ||
@@ -490,11 +517,8 @@ unsigned int clothSpringSimulation::ClothSpringSimulationInitialize(
 			)
 		{
 			m_vertices[i].elasticity *= SPRING_BORDER_MULTIPLIER;
+			//m_vertices[i].elasticityDamp *= SPRING_BORDER_MULTIPLIER;
 		}
-
-
-		m_vertices[i].elasticityDamp = SPRING_ELASTICITY_DAMP;
-		m_vertices[i].colliderMultiplier = VERTEX_COLLIDER_MULTIPLIER;
 
 		// calculating neighbouring vertices ids and spring lengths
 
@@ -726,7 +750,7 @@ unsigned int clothSpringSimulation::ClothSpringSimulationUpdate(float gravity, d
 	}
 	printf("\n");
 	*/
-	//printf("%f %f %f \n", m_nrmPtr[0].x, m_nrmPtr[0].y, m_nrmPtr[0].z);
+	//printf("%f %f %f \n", m_vertices[59].velocity.x, m_vertices[59].velocity.y, m_vertices[59].velocity.z);
 	
 
 	return CS_ERR_NONE;
@@ -811,7 +835,7 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 		return status;
 	}
 
-	status = cudaMemcpy(i_scldPtr, boxColliders, m_sphereColliderCount * sizeof(SphereCollider), cudaMemcpyHostToDevice);
+	status = cudaMemcpy(i_scldPtr, sphereColliders, m_sphereColliderCount * sizeof(SphereCollider), cudaMemcpyHostToDevice);
 	if (status != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
 		FreeMemory();
@@ -837,10 +861,11 @@ inline cudaError_t clothSpringSimulation::CalculateForces(float gravity, double 
 	dim3 blockVerts(p, p, 1);
 	//dim3 blockSprings(p, p, 1);
 
+	double nDelta = delta / 25000.0;
 	
 	for (int i = 1; i <= steps; ++i)
 	{
-		CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_nrmPtr, i_colPtr, gravity, FIXED_DELTA / steps, m_vertexCount);
+		CalculateForcesKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_nrmPtr, i_colPtr, gravity, nDelta / steps, m_vertexCount);
 		CalculateExternalCollisionsKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, i_bcldPtr, i_scldPtr, 
 			i_wmPtr, m_boxColliderCount, m_sphereColliderCount, m_vertexCount);
 		//CalculateInternalCollisionsSimpleKernel << < gridVerts, blockVerts >> > (i_vertexPtr, i_posPtr, m_vertexCount);

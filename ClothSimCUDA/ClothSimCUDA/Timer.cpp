@@ -3,8 +3,10 @@
 Timer::Timer()
 {
 	m_deltaTime = 0.0;
+	m_fixedDelta = 0.0;
 	m_fps = 0.0;
 	m_totalTime = 0.0;
+	m_ticks = 0;
 }
 
 Timer::Timer(const Timer*)
@@ -38,7 +40,17 @@ unsigned int Timer::Run()
 	m_deltaTime = newTime - m_totalTime;
 	m_totalTime = newTime;
 
+	if (m_ticks < TICKS_TO_UNLOCK_FIXED)
+	{
+		m_fixedDelta += m_deltaTime;
+	}
+	else if (m_ticks == TICKS_TO_UNLOCK_FIXED)
+	{
+		m_deltaTime /= (double)TICKS_TO_UNLOCK_FIXED;
+	}
+
 	m_fps = 1.0 / (m_deltaTime / 1000.0);
+	++m_ticks;
 
 	//printf("%f, %f, %f\n", m_totalTime, m_deltaTime, m_fps);
 
@@ -69,6 +81,14 @@ double Timer::GetTotalTime()
 double Timer::GetDeltaTime()
 {
 	return m_deltaTime;
+}
+
+double Timer::GetFixedDeltaTime()
+{
+	if (m_ticks <= TICKS_TO_UNLOCK_FIXED)
+		return FIXED_DELTA;
+	else
+		return m_fixedDelta;
 }
 
 double Timer::GetFps()

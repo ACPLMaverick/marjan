@@ -10,18 +10,21 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <map>
-//#include <chrono>
-//
-//using namespace std::chrono;
+
+#define TICKS_TO_UNLOCK_FIXED 10
 
 class Timer : public Singleton<Timer>
 {
 	friend class Singleton<Timer>;
 
 private:
+	const double FIXED_DELTA = 6.0;
+
 	double m_totalTime;
 	double m_deltaTime;
+	double m_fixedDelta;
 	double m_fps;
+	unsigned long m_ticks;
 
 	std::map<unsigned int, double> m_timeStamps;
 
@@ -39,6 +42,7 @@ public:
 
 	double GetTotalTime();
 	double GetDeltaTime();
+	double GetFixedDeltaTime();
 	double GetFps();
 	
 	double GetTimeStamp(unsigned int);

@@ -86,11 +86,11 @@ private:
 
 	cudaDeviceProp* m_deviceProperties;
 
-	const float VERTEX_MASS = 0.001f;
-	const float VERTEX_AIR_DAMP = 0.0001f;
-	const float SPRING_ELASTICITY = 0.5f;
+	const float VERTEX_MASS = 1.0f;
+	const float VERTEX_AIR_DAMP = 0.01f;
+	const float SPRING_ELASTICITY = 50.00f;
 	const float SPRING_BORDER_MULTIPLIER = 50.0f;
-	const float SPRING_ELASTICITY_DAMP = 0.000005f;
+	const float SPRING_ELASTICITY_DAMP = -100.25f;
 	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
 	const float CELL_OFFSET = 0.01f;
 	

@@ -81,7 +81,7 @@ unsigned int ClothSimulator::Update()
 
 	err = m_simulator->ClothSpringSimulationUpdate(
 		PhysicsManager::GetInstance()->GetGravity(),
-		Timer::GetInstance()->GetDeltaTime(),
+		Timer::GetInstance()->GetFixedDeltaTime(),
 		m_steps,
 		boxData,
 		sphereData,

@@ -13,15 +13,15 @@
 
 class GUIText;
 
-#define INFO_UPDATE_RATE 120.0
-#define BOX_SPEED 0.01f
-
 class GUIController :
 	public Component
 {
 private:
 	bool cursorHideHelper = false;
 	double infoTimeDisplayHelper = 0.0;
+
+	const float BOX_SPEED = 0.005f;
+	const float INFO_UPDATE_RATE = 120.0f;
 
 	GUIText* m_fpsText;
 	GUIText* m_dtText;

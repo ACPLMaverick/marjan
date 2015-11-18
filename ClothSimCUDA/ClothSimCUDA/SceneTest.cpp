@@ -2,6 +2,7 @@
 #include "MeshGLRect.h"
 #include "MeshGLBox.h"
 #include "MeshGLPlane.h"
+#include "MeshGLSphere.h"
 #include "GUIText.h"
 #include "BoxAACollider.h"
 #include "SphereCollider.h"
@@ -50,12 +51,26 @@ unsigned int SceneTest::Initialize()
 	testObjTransform->SetPosition(&(glm::vec3(0.0f, 2.5f, 0.0f)));
 	testObjTransform->SetScale(&(glm::vec3(1.0f, 1.0f, 1.0f)));
 	testObj->SetTransform(testObjTransform);
+	/*
 	MeshGLBox* box = new MeshGLBox(testObj, 4.0f, 3.0f, 3.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
 	box->Initialize();
 	box->SetGloss(100.0f);
 	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testObj->AddMesh(box);
+	*/
+	
+	MeshGLSphere* sph = new MeshGLSphere(testObj, 2.0f, 32, 32, &(glm::vec4(0.4f, 0.7f, 0.9f, 1.0f)));
+	sph->Initialize();
+	sph->SetGloss(20.0f);
+	sph->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
+	testObj->AddMesh(sph);
+
+	/*
 	BoxAACollider* tObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(testObj, &(glm::vec3(-2.0f, -1.5f, -1.5f)), &(glm::vec3(2.0f, 1.5f, 1.5f)));
+	testObj->AddCollider(tObjCollider);
+	*/
+
+	SphereCollider* tObjCollider = PhysicsManager::GetInstance()->CreateSphereCollider(testObj, &(glm::vec3(0.0f, 0.0f, 0.0f)), 2.0f);
 	testObj->AddCollider(tObjCollider);
 
 	/*RotateMe* rm = new RotateMe(testObj);
@@ -77,7 +92,7 @@ unsigned int SceneTest::Initialize()
 	colObj->SetTransform(colObjTransform);
 	MeshGLBox* colBox = new MeshGLBox(colObj, 1.0f, 1.0f, 1.0f, &(glm::vec4(0.8f, 0.2f, 0.2f, 1.0f)));
 	colBox->Initialize();
-	colBox->SetGloss(600.0f);
+	colBox->SetGloss(60.0f);
 	colBox->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	colObj->AddMesh(colBox);
 	BoxAACollider* cObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(colObj, &(glm::vec3(-0.5f, -0.5f, -0.5f)), &(glm::vec3(0.5f, 0.5f, 0.5f)));
@@ -95,7 +110,7 @@ unsigned int SceneTest::Initialize()
 	testClothTransform->Update();
 	testCloth->SetTransform(testClothTransform);
 
-	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 62, 62);
+	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 20, 20);
 	clothMesh->Initialize();
 	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testCloth->AddMesh(clothMesh);

@@ -175,6 +175,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="MeshGL.h" />
     <ClInclude Include="MeshGLPlane.h" />
     <ClInclude Include="MeshGLRect.h" />
+    <ClInclude Include="MeshGLSphere.h" />
     <ClInclude Include="MeshGLText.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="Renderer.h" />
@@ -212,6 +213,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="MeshGL.cpp" />
     <ClCompile Include="MeshGLPlane.cpp" />
     <ClCompile Include="MeshGLRect.cpp" />
+    <ClCompile Include="MeshGLSphere.cpp" />
     <ClCompile Include="MeshGLText.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="Renderer.cpp" />

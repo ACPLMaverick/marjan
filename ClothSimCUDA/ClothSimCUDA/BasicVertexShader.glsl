@@ -10,9 +10,9 @@ uniform mat4 World;
 uniform mat4 WorldInvTrans;
 
 out vec4 ProjPos;
-smooth out vec4 WorldPos;
+out vec4 WorldPos;
 out vec4 Vcol;
-smooth out vec3 Normal;
+out vec3 Normal;
 out vec2 UV;
 
 void main()
@@ -20,8 +20,8 @@ void main()
 	vec4 v = vec4(vertexPosition, 1.0f);
 	gl_Position = WorldViewProj * v;
 
-	ProjPos = v * WorldViewProj;
-	WorldPos = v * World;
+	ProjPos = WorldViewProj * v;
+	WorldPos = World * v;
 
 	Vcol = vertexColor;
 	UV = vertexUV;

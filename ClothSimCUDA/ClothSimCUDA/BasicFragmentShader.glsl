@@ -26,6 +26,7 @@ void main()
 	vec3 lDir = vec3(-LightDir.x, -LightDir.y, LightDir.z);
 	
 	vec3 surfaceToCamera = normalize(EyeVector.xyz - WorldPos.xyz);
+	surfaceToCamera.z = -surfaceToCamera.z;
 	vec3 H = normalize(surfaceToCamera + normalize(lDir));
 	float intensity = max(dot(lDir, normal), 0.0f);
 
