@@ -150,7 +150,9 @@
     <ClInclude Include="clothSpringSimulation.h">
       <Filter>CUDA</Filter>
     </ClInclude>
-    <ClInclude Include="MeshGLSphere.h" />
+    <ClInclude Include="MeshGLSphere.h">
+      <Filter>Graphics\Meshes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -255,7 +257,9 @@
     <ClCompile Include="ClothSimulator.cpp">
       <Filter>Core\Components</Filter>
     </ClCompile>
-    <ClCompile Include="MeshGLSphere.cpp" />
+    <ClCompile Include="MeshGLSphere.cpp">
+      <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="BasicFragmentShader.glsl">

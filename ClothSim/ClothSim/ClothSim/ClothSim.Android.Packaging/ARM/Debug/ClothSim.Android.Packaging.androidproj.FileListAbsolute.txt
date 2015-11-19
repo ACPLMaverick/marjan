@@ -1,0 +1,12 @@
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.apk.recipe
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.apk.recipe.merged
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\libs\armeabi-v7a\libClothSim.so
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\libs\armeabi-v7a\gdbserver
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\libs\armeabi-v7a\libgnustl_static.a
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\res\values\strings.xml
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\build.xml
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\project.properties
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\androidmanifest.xml
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.apk
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.lastsuccessfuldeploy
+D:\Repositories\marjan\ClothSim\ClothSim\ClothSim\ClothSim.Android.Packaging\ARM\Debug\GenerateAndroidAntScript.incremental
