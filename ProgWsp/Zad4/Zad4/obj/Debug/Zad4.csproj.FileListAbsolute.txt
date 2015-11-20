@@ -1,0 +1,6 @@
+D:\marjan\ProgWsp\Zad4\Zad4\bin\Debug\Zad4.exe.config
+D:\marjan\ProgWsp\Zad4\Zad4\obj\Debug\Zad4.csprojResolveAssemblyReference.cache
+D:\marjan\ProgWsp\Zad4\Zad4\bin\Debug\Zad4.exe
+D:\marjan\ProgWsp\Zad4\Zad4\bin\Debug\Zad4.pdb
+D:\marjan\ProgWsp\Zad4\Zad4\obj\Debug\Zad4.exe
+D:\marjan\ProgWsp\Zad4\Zad4\obj\Debug\Zad4.pdb
