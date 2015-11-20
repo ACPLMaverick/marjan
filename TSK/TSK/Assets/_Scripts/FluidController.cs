@@ -15,8 +15,6 @@ public class FluidController : Singleton<FluidController> {
 	public FluidContainer container;
 	public FluidParticle baseObject;
     public Dropper dropper;
-	public InteractiveObject baseInteractiveObject;
-	public List<InteractiveObject> objects = new List<InteractiveObject>();
 
 	public GameObject initialPosition;
 	public uint IDController;
@@ -443,16 +441,6 @@ public class FluidController : Singleton<FluidController> {
 			}
 		}
 	}
-
-	public void DestroyInteractiveObject(InteractiveObject io)
-	{
-		Debug.Log ("Destroy");
-
-		objects.Remove (io);
-		Destroy (io.gameObject);
-
-		canDelete = false;
-    }
 
     #endregion
 }

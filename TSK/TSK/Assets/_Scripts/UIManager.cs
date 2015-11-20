@@ -6,37 +6,33 @@ public class UIManager : MonoBehaviour {
 
 	public Slider particleCountSlider;
 	public Slider particleViscositySlider;
+	public Slider dissipationSlider;
+	public Slider jacobiIterationsSlider;
 
-	//public Slider containerHeightSlider;
-	//public Slider containerBaseSlider;
-	public Slider containerElasticitySlider;
-
-	public GameObject interactiveObjectPanel;
-	public Slider interactiveObjectTypeSlider;
-	public Slider interactiveObjectVelocitySlider;
-	public Slider interactiveObjectMassSlider;
-
-	public Button addObjectButton;
-	public Button deleteObjectButton;
+	public Button dropperSettingsButton;
 	public Button generateButton;
 	public Button startSimulationButton;
 
-	public Text currentPositionText;
 	public Animator myAnimator;
+
+	public GameObject dropperSettingsPanel;
+	public Slider dropperRadiusSlider;
+	public Slider dropperForceSlider;
+	public Slider dropperInsertedDensitySlider;
+
+	public Dropper dropper;
 
 	private Text particleCountSliderText;
 	private Text particleViscositySliderText;
-	//private Text containerHeightSliderText;
-	//private Text containerBaseSliderText;
-	private Text containerElasticitySliderText;
+	private Text dissipationSliderText;
+	private Text jacobiIterationsSliderText;
 
-	private Text interactiveObjectTypeSliderText;
-	private Text interactiveObjectVelocitySliderText;
-	private Text interactiveObjectMassSliderText;
+	private Text dropperRadiusSliderText;
+	private Text dropperForceSliderText;
+	private Text dropperInsertedDensitySliderText;
 
 	private Text startSimulationButtonText;
 
-	//private int particleCountMinBound, particleCountMaxBound;
 	private float positionX, positionY;
 	private bool settingPosition = false;
 	private bool deletingObject = false;
@@ -45,15 +41,15 @@ public class UIManager : MonoBehaviour {
 	void Start () {
 		particleCountSliderText = particleCountSlider.GetComponentInChildren<Text> ();
 		particleViscositySliderText = particleViscositySlider.GetComponentInChildren<Text> ();
-		//containerBaseSliderText = containerBaseSlider.GetComponentInChildren<Text> ();
-		//containerHeightSliderText = containerHeightSlider.GetComponentInChildren<Text> ();
-		containerElasticitySliderText = containerElasticitySlider.GetComponentInChildren<Text> ();
+		dissipationSliderText = dissipationSlider.GetComponentInChildren<Text> ();
+		jacobiIterationsSliderText = jacobiIterationsSlider.GetComponentInChildren<Text> ();
+
+		dropperRadiusSliderText = dropperRadiusSlider.GetComponentInChildren<Text> ();
+		dropperForceSliderText = dropperForceSlider.GetComponentInChildren<Text> ();
+		dropperInsertedDensitySliderText = dropperInsertedDensitySlider.GetComponentInChildren<Text> ();
 
 		startSimulationButton.interactable = false;
 		startSimulationButtonText = startSimulationButton.GetComponentInChildren<Text> ();
-
-		//particleCountMinBound = 10;
-		//particleCountMaxBound = 10;
 
 		positionX = 0;
 		positionY = 0;
@@ -62,47 +58,20 @@ public class UIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		UpdateStrings ();
-
-		if (settingPosition) {
-			if (Input.GetMouseButtonDown (0)) {
-				positionX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-				positionY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
-				interactiveObjectPanel.SetActive (true);
-				settingPosition = false;
-			}
-		}
-
-		if (deletingObject) {
-			//FluidControllerGPU.Instance.DestroyInteractiveObject();
-			if(!FluidControllerGPU.Instance.canDelete)
-				deletingObject = false;
-		}
 	}
 	
 	void UpdateStrings()
 	{
 		particleCountSliderText.text = "Particle count: " + SetParticleCount ().ToString();
 		particleViscositySliderText.text = "Particle viscosity: " + particleViscositySlider.value.ToString ("0.00") + " mPa * s";
-		//containerHeightSliderText.text = "Container Height: " + containerHeightSlider.value.ToString() + " cm";
-		//containerBaseSliderText.text = "Container Base: " + containerBaseSlider.value.ToString() + " cm";
-		containerElasticitySliderText.text = "Container Elasticity: " + containerElasticitySlider.value.ToString () + " GPa";
+		dissipationSliderText.text = "Dissipation: " + dissipationSlider.value.ToString ("0.000");
+		jacobiIterationsSliderText.text = "Jacobi Iterations: " + jacobiIterationsSlider.value.ToString ();
 
-		if(interactiveObjectVelocitySliderText != null)
-			interactiveObjectVelocitySliderText.text = "Object Velocity: " + interactiveObjectVelocitySlider.value.ToString ("0.00") + " m/s";
-		if(interactiveObjectMassSliderText != null)
-			interactiveObjectMassSliderText.text = "Object Mass: " + interactiveObjectMassSlider.value.ToString () + " g";
-		if (interactiveObjectTypeSliderText != null) {
-			switch ((int)interactiveObjectTypeSlider.value) {
-			case 0:
-				interactiveObjectTypeSliderText.text = "Object Type: Square";
-				break;
-			case 1:
-				interactiveObjectTypeSliderText.text = "Object Type: Circle";
-				break;
-			}
+		if (dropperSettingsPanel.activeInHierarchy) {
+			dropperRadiusSliderText.text = "Dropper radius: " + dropperRadiusSlider.value.ToString ("0.0");
+			dropperForceSliderText.text = "Dropper force: " + dropperForceSlider.value.ToString ("0.00");
+			dropperInsertedDensitySliderText.text = "Dropper density: " + dropperInsertedDensitySlider.value.ToString ("0.0000");
 		}
-		if (currentPositionText != null)
-			currentPositionText.text = positionX.ToString ("0.0") + ", " + positionY.ToString ("0.0");
 	}
 
 	public void OnPCSliderValueChange()
@@ -123,6 +92,16 @@ public class UIManager : MonoBehaviour {
 			FluidControllerGPU.Instance.initialPosition.transform.localPosition = new Vector2(-1.17f, -1.17f);
 			break;
 		}
+	}
+
+	public void OnDSliderValueChange()
+	{
+		FluidControllerGPU.Instance.DISSIPATION = (float)dissipationSlider.value;
+	}
+
+	public void OnJISliderValueChange()
+	{
+		FluidControllerGPU.Instance.JACOBI_ITERATIONS = (uint)jacobiIterationsSlider.value;
 	}
 
 	int SetParticleCount()
@@ -147,19 +126,17 @@ public class UIManager : MonoBehaviour {
 		FluidControllerGPU.Instance.baseObject.viscosity = particleViscositySlider.value;
 	}
 
-//	public void OnCHSliderValueChange()
-//	{
-//		FluidControllerGPU.Instance.container.containerHeight = containerHeightSlider.value;
-//	}
-//
-//	public void OnCBSliderValueChange()
-//	{
-//		FluidControllerGPU.Instance.container.containerBase = containerBaseSlider.value;
-//	}
-
-	public void OnCESliderValueChange()
+	public void OnDropperSettingsButtonClick()
 	{
-		FluidControllerGPU.Instance.container.elasticity = (double)containerElasticitySlider.value;
+		dropperSettingsPanel.SetActive (true);
+	}
+
+	public void SaveDropperSettings()
+	{
+		dropper.Radius = dropperRadiusSlider.value;
+		dropper.ForceValue = dropperForceSlider.value;
+		dropper.InsertedDensity = dropperInsertedDensitySlider.value;
+		dropperSettingsPanel.SetActive (false);
 	}
 
 	public void OnGenerateButtonClick()
@@ -167,59 +144,12 @@ public class UIManager : MonoBehaviour {
         FluidControllerGPU.Instance.CreateParticles();
         FluidControllerGPU.Instance.InitializeVectorField();
 		startSimulationButton.interactable = true;
-		//if (inputField.placeholder != null)
-		//	inputField.text = "50";
-	}
-
-	public void OpenInteractiveObjectSettings()
-	{
-		interactiveObjectPanel.SetActive (true);
-
-		interactiveObjectTypeSliderText = interactiveObjectTypeSlider.GetComponentInChildren<Text> ();
-		interactiveObjectVelocitySliderText = interactiveObjectVelocitySlider.GetComponentInChildren<Text> ();
-		interactiveObjectMassSliderText = interactiveObjectMassSlider.GetComponentInChildren<Text> ();
-	}
-
-	public void CloseInteractiveObjectSettings()
-	{
-		interactiveObjectPanel.SetActive (false);
-	}
-
-	public void SetPosition()
-	{
-		interactiveObjectPanel.SetActive (false);
-		settingPosition = true;
-	}
-
-	public void AddInteractiveObject()
-	{
-		FluidControllerGPU.Instance.baseInteractiveObject.SetSprite ((int)interactiveObjectTypeSlider.value);
-		FluidControllerGPU.Instance.baseInteractiveObject.velocity = (double)interactiveObjectVelocitySlider.value;
-		FluidControllerGPU.Instance.baseInteractiveObject.mass = (double)interactiveObjectMassSlider.value;
-		FluidControllerGPU.Instance.baseInteractiveObject.ID = FluidControllerGPU.Instance.IDController;
-
-		InteractiveObject obj = (InteractiveObject)Instantiate (FluidControllerGPU.Instance.baseInteractiveObject,
-		                                                        new Vector2(positionX, positionY),
-		                                                        Quaternion.identity);
-
-		FluidControllerGPU.Instance.objects.Add (obj);
-		FluidControllerGPU.Instance.IDController++;
-
-		interactiveObjectPanel.SetActive (false);
-	}
-
-	public void DeleteInteractiveObject()
-	{
-		interactiveObjectPanel.SetActive (false);
-		deletingObject = true;
-		FluidControllerGPU.Instance.canDelete = true;
 	}
 
 	public void SimulationButtonOnClick()
 	{
 		if (!FluidControllerGPU.Instance.startSimulation) {
 			ChangeInteractionUI(false);
-			interactiveObjectPanel.SetActive(false);
 			startSimulationButtonText.text = "Stop";
 			FluidControllerGPU.Instance.startSimulation = true;
 		}
@@ -233,14 +163,11 @@ public class UIManager : MonoBehaviour {
 
 	void ChangeInteractionUI(bool value)
 	{
-		//inputField.interactable = value;
 		particleCountSlider.interactable = value;
 		particleViscositySlider.interactable = value;
-		//containerHeightSlider.interactable = value;
-		//containerBaseSlider.interactable = value;
-		containerElasticitySlider.interactable = value;
-		addObjectButton.interactable = value;
-		deleteObjectButton.interactable = value;
+		dissipationSlider.interactable = value;
+		jacobiIterationsSlider.interactable = value;
+		dropperSettingsButton.interactable = value;
 		generateButton.interactable = value;
 	}
 

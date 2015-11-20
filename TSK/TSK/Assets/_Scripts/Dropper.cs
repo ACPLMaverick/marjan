@@ -61,7 +61,7 @@ public class Dropper : MonoBehaviour
             CurrentForcePosition.y > Container.transform.position.y - Container.containerHeight / divisor;
         if(
             Input.GetMouseButton(0) &&
-            inBounds
+            inBounds && FluidControllerGPU.Instance.startSimulation
             )
         {
             Active = true;
