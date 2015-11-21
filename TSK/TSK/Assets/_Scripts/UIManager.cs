@@ -19,6 +19,14 @@ public class UIManager : MonoBehaviour {
 	public Slider dropperRadiusSlider;
 	public Slider dropperForceSlider;
 	public Slider dropperInsertedDensitySlider;
+	public Text dropperRadiusSliderText;
+	public Text dropperForceSliderText;
+	public Text dropperInsertedDensitySliderText;
+
+	public InputField dropperRValueInputField;
+	public InputField dropperGValueInputField;
+	public InputField dropperBValueInputField;
+	public Image dropperCurrentColor;
 
 	public Dropper dropper;
 
@@ -27,13 +35,10 @@ public class UIManager : MonoBehaviour {
 	private Text dissipationSliderText;
 	private Text jacobiIterationsSliderText;
 
-	private Text dropperRadiusSliderText;
-	private Text dropperForceSliderText;
-	private Text dropperInsertedDensitySliderText;
-
 	private Text startSimulationButtonText;
 
 	private float positionX, positionY;
+	private float r, g, b;
 	private bool settingPosition = false;
 	private bool deletingObject = false;
 
@@ -44,20 +49,25 @@ public class UIManager : MonoBehaviour {
 		dissipationSliderText = dissipationSlider.GetComponentInChildren<Text> ();
 		jacobiIterationsSliderText = jacobiIterationsSlider.GetComponentInChildren<Text> ();
 
-		dropperRadiusSliderText = dropperRadiusSlider.GetComponentInChildren<Text> ();
-		dropperForceSliderText = dropperForceSlider.GetComponentInChildren<Text> ();
-		dropperInsertedDensitySliderText = dropperInsertedDensitySlider.GetComponentInChildren<Text> ();
+		//dropperRadiusSliderText = dropperRadiusSlider.GetComponentInChildren<Text> ();
+		//dropperForceSliderText = dropperForceSlider.GetComponentInChildren<Text> ();
+		//dropperInsertedDensitySliderText = dropperInsertedDensitySlider.GetComponentInChildren<Text> ();
 
 		startSimulationButton.interactable = false;
 		startSimulationButtonText = startSimulationButton.GetComponentInChildren<Text> ();
 
 		positionX = 0;
 		positionY = 0;
+
+		r = 1.0f;
+		g = 1.0f;
+		b = 1.0f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		UpdateStrings ();
+		UpdateDyeColor ();
 	}
 	
 	void UpdateStrings()
@@ -72,6 +82,12 @@ public class UIManager : MonoBehaviour {
 			dropperForceSliderText.text = "Dropper force: " + dropperForceSlider.value.ToString ("0.00");
 			dropperInsertedDensitySliderText.text = "Dropper density: " + dropperInsertedDensitySlider.value.ToString ("0.0000");
 		}
+	}
+
+	void UpdateDyeColor()
+	{
+		Debug.Log (r);
+		dropperCurrentColor.color = new Color (r, g, b);
 	}
 
 	public void OnPCSliderValueChange()
@@ -136,7 +152,40 @@ public class UIManager : MonoBehaviour {
 		dropper.Radius = dropperRadiusSlider.value;
 		dropper.ForceValue = dropperForceSlider.value;
 		dropper.InsertedDensity = dropperInsertedDensitySlider.value;
+		dropper.DyeRValue = r;
+		dropper.DyeGValue = g;
+		dropper.DyeBValue = b;
 		dropperSettingsPanel.SetActive (false);
+	}
+
+	public void OnRInputFieldValueChange()
+	{
+		if (float.Parse (dropperRValueInputField.text) > 255)
+			r = 1;
+		else if (float.Parse (dropperRValueInputField.text) < 0)
+			r = 0;
+		else
+			r = float.Parse (dropperRValueInputField.text) / 255.0f;
+	}
+
+	public void OnGInputFieldValueChange()
+	{
+		if (float.Parse (dropperGValueInputField.text) > 255)
+			g = 1;
+		else if (float.Parse (dropperGValueInputField.text) < 0)
+			g = 0;
+		else
+			g = float.Parse (dropperGValueInputField.text) / 255.0f;
+	}
+
+	public void OnBInputFieldValueChange()
+	{
+		if (float.Parse (dropperBValueInputField.text) > 255)
+			b = 1;
+		else if (float.Parse (dropperBValueInputField.text) < 0)
+			b = 0;
+		else
+			b = float.Parse (dropperBValueInputField.text) / 255.0f;
 	}
 
 	public void OnGenerateButtonClick()

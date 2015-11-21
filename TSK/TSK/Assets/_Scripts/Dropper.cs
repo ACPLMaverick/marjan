@@ -24,6 +24,7 @@ public class Dropper : MonoBehaviour
     public float Radius;
     public float ForceValue;
     public float InsertedDensity;
+	public float DyeRValue, DyeGValue, DyeBValue;
 
     #endregion
 
