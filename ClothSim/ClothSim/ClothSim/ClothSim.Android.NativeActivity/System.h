@@ -2,7 +2,7 @@
 
 //***
 // The purpose of this class is to govern all computations that take place within the program, 
-// which consist of graphic rendering, CUDA cloth computations and input handling
+// which consist of graphics rendering, cloth computations and input handling.
 // main loop is implemented here.
 //
 // This is a singleton class.
@@ -22,6 +22,39 @@
 
 class Renderer;
 
+///////////////////
+
+/**
+* Our saved state data.
+* Here will remain all data needed to save and restore our project.
+*/
+struct saved_state {
+	float angle;
+	int32_t x;
+	int32_t y;
+};
+
+/**
+* Shared state for our app.
+*/
+struct Engine {
+	struct android_app* app;
+
+	ASensorManager* sensorManager;
+	const ASensor* accelerometerSensor;
+	ASensorEventQueue* sensorEventQueue;
+
+	int animating;
+	EGLDisplay display;
+	EGLSurface surface;
+	EGLContext context;
+	int32_t width;
+	int32_t height;
+	struct saved_state state;
+};
+
+///////////////////
+
 class System : public Singleton<System>
 {
 	friend class Singleton<System>;
@@ -29,18 +62,26 @@ class System : public Singleton<System>
 private:
 	System();
 
+	Engine* m_engine;
 	bool m_running;
 
 	Scene* m_scene;
+
+
+	inline void InitAndroid(android_app* app);
+	inline void RunAndroid();
+	inline void ShutdownAndroid();
+	static void AHandleCmd(android_app* app, int32_t cmd);
 public:
 	System(const System*);
 	~System();
 
-	unsigned int Initialize();
+	unsigned int Initialize(android_app* app);
 	unsigned int Shutdown();
 	unsigned int Run();
 	void Stop();
 
 	Scene* GetCurrentScene();
+	Engine* GetEngineData();
 };
 

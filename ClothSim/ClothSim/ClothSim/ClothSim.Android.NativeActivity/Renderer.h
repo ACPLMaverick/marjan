@@ -6,9 +6,6 @@
 #include "System.h"
 #include "ResourceManager.h"
 
-#include <EGL/egl.h>
-#include <GLES/gl.h>
-#include <glm\glm\glm.hpp>
 #include <SOIL2\SOIL2.h>
 #include <fstream>
 #include <string>
@@ -48,7 +45,6 @@ public:
 	void SetCurrentShader(ShaderID* id);
 
 	ShaderID* GetCurrentShaderID();
-	//GLFWwindow* GetWindow();
 	DrawMode GetDrawMode();
 
 	static void LoadShaders(const string*, const string*, const string*, ShaderID*);

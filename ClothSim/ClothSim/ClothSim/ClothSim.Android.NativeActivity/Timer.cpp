@@ -21,7 +21,8 @@ Timer::~Timer()
 
 unsigned int Timer::Initialize()
 {
-	//glfwSetTime(0.0);
+	m_startTime = clock();
+
 	return CS_ERR_NONE;
 }
 
@@ -36,7 +37,7 @@ unsigned int Timer::Run()
 	//duration<long double> timeSpan = duration_cast<duration<long double>>(point - m_start);
 	
 	//double newTime = timeSpan.count() * 1000.0;
-	double newTime = 1.0f;	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	double newTime = (clock() - m_startTime) / CLOCKS_PER_SEC;	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	m_deltaTime = newTime - m_totalTime;
 	m_totalTime = newTime;
 

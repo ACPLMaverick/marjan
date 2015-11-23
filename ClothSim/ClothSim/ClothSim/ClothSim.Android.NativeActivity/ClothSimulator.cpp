@@ -74,7 +74,8 @@ unsigned int ClothSimulator::Update()
 	if (PhysicsManager::GetInstance()->GetSphereCollidersData()->size() != 0)
 		sphereData = &(PhysicsManager::GetInstance()->GetSphereCollidersData()->at(0));
 
-	glm::mat4* wm = &glm::mat4();
+	glm::mat4 zero = glm::mat4();
+	glm::mat4* wm = &zero;
 
 	if (m_obj->GetTransform() != nullptr)
 		wm = m_obj->GetTransform()->GetWorldMatrix();

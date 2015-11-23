@@ -18,7 +18,6 @@ class GUIController :
 	public Component
 {
 private:
-	bool cursorHideHelper = false;
 	double infoTimeDisplayHelper = 0.0;
 
 	const float BOX_SPEED = 0.005f;

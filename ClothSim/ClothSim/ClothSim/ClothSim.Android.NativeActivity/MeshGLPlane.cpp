@@ -6,6 +6,7 @@ MeshGLPlane::MeshGLPlane(SimObject* obj) : MeshGL(obj)
 	m_length = 10.0f;
 	m_edgesWidth = 9;
 	m_edgesLength = 9;
+	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length) : MeshGL(obj)
@@ -14,6 +15,7 @@ MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length) : MeshGL(obj
 	m_length = length;
 	m_edgesWidth = glm::max<int>((int)width - 1, 0);
 	m_edgesLength = glm::max<int>((int)length - 1, 0);
+	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length, unsigned int edWidth, unsigned int edLength) : MeshGL(obj)
@@ -22,6 +24,21 @@ MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length, unsigned int
 	m_length = length;
 	m_edgesWidth = edWidth;
 	m_edgesLength = edLength;
+	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length, unsigned int edWidth, unsigned int edLength, glm::vec4* col) : MeshGL(obj)
+{
+	m_width = width;
+	m_length = length;
+	m_edgesWidth = edWidth;
+	m_edgesLength = edLength;
+	m_color = *col;
+}
+
+
+MeshGLPlane::MeshGLPlane(const MeshGLPlane * c) : MeshGL(c)
+{
 }
 
 
@@ -49,7 +66,7 @@ void MeshGLPlane::GenerateVertexData()
 			m_vertexData->data->positionBuffer[iVert] = glm::vec3(w, 0.0f, l);
 			m_vertexData->data->uvBuffer[iVert] = glm::vec2((w + (m_width / 2.0f)) / m_width, (l + (m_length / 2.0f)) / m_length);
 			m_vertexData->data->normalBuffer[iVert] = glm::vec3(0.0f, 1.0f, 0.0f);
-			m_vertexData->data->colorBuffer[iVert] = glm::vec4(1.0f, 0.5f, 0.7f, 1.0f);
+			m_vertexData->data->colorBuffer[iVert] = m_color;
 		}
 	}
 

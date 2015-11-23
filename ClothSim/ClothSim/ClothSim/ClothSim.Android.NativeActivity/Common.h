@@ -29,6 +29,10 @@ Header file for common includes and switches
 #define CS_ERR_CLOTHSIMULATOR_CUDA_FAILED 9
 //////////////////
 
+// other helpful defines
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "AndroidProject1.NativeActivity", __VA_ARGS__))
+#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "AndroidProject1.NativeActivity", __VA_ARGS__))
+
 // structure definitions
 struct TextureID
 {

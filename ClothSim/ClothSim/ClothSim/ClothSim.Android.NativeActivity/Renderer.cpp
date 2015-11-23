@@ -17,24 +17,62 @@ unsigned int Renderer::Initialize()
 {
 	unsigned int err = CS_ERR_NONE;
 
-	if (!glfwInit()) return CS_ERR_GLFW_INITIALIZE_FAILED;
+	// initialize OpenGL ES and EGL
 
-	glfwWindowHint(GLFW_SAMPLES, CSSET_GLFW_SAMPLES_VALUE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	/*
+	* Here specify the attributes of the desired configuration.
+	* Below, we select an EGLConfig with at least 8 bits per color
+	* component compatible with on-screen windows
+	*/
+	const EGLint attribs[] = {
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+		EGL_BLUE_SIZE, 8,
+		EGL_GREEN_SIZE, 8,
+		EGL_RED_SIZE, 8,
+		EGL_NONE
+	};
+	// dont forget about vsync here
+	EGLint w, h, format;
+	EGLint numConfigs;
+	EGLConfig config;
+	EGLSurface surface;
+	EGLContext context;
 
-	m_window = glfwCreateWindow(CSSET_WINDOW_WIDTH, CSSET_WINDOW_HEIGHT, CSSET_WINDOW_NAME, nullptr, nullptr);
-	if (m_window == nullptr)
-	{
-		glfwTerminate();
-		return CS_ERR_WINDOW_FAILED;
+	Engine* engine = System::GetInstance()->GetEngineData();
+
+	EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+	eglInitialize(display, 0, 0);
+
+	/* Here, the application chooses the configuration it desires. In this
+	* sample, we have a very simplified selection process, where we pick
+	* the first EGLConfig that matches our criteria */
+	eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+
+	/* EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is
+	* guaranteed to be accepted by ANativeWindow_setBuffersGeometry().
+	* As soon as we picked a EGLConfig, we can safely reconfigure the
+	* ANativeWindow buffers to match, using EGL_NATIVE_VISUAL_ID. */
+	eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
+
+	ANativeWindow_setBuffersGeometry(engine->app->window, 0, 0, format);
+
+	surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
+	context = eglCreateContext(display, config, NULL, NULL);
+
+	if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
+		LOGW("Unable to eglMakeCurrent");
+		return -1;
 	}
 
-	glfwMakeContextCurrent(m_window);
-	glewExperimental = true;
-	if (glewInit() != GLEW_OK) return CS_ERR_GLEW_INITIALIZE_FAILED;
+	eglQuerySurface(display, surface, EGL_WIDTH, &w);
+	eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+
+	engine->display = display;
+	engine->context = context;
+	engine->surface = surface;
+	engine->width = w;
+	engine->height = h;
 
 	// Shaders Loading
 	
@@ -57,19 +95,17 @@ unsigned int Renderer::Initialize()
 		glFrontFace(GL_CCW);
 	}
 
+	glEnable(GL_DITHER);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+
 	glEnable(GL_STENCIL);
 	glStencilFunc(GL_LEQUAL, 0, 0xFF);
 	glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glLineWidth(8.0f);
-	glPointSize(5.0f);
 	
 	glDepthFunc(GL_LEQUAL);
-	
-	glfwSwapInterval(CSSET_VSYNC_ENALBED);
 
 	/////////////////////////
 
@@ -79,12 +115,22 @@ unsigned int Renderer::Initialize()
 unsigned int Renderer::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
+	Engine* engine = System::GetInstance()->GetEngineData();
 
-	if (m_window != nullptr)
-	{
-		glfwDestroyWindow(m_window);
-		m_window = nullptr;
+	if (engine->display != EGL_NO_DISPLAY) {
+		eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+		if (engine->context != EGL_NO_CONTEXT) {
+			eglDestroyContext(engine->display, engine->context);
+		}
+		if (engine->surface != EGL_NO_SURFACE) {
+			eglDestroySurface(engine->display, engine->surface);
+		}
+		eglTerminate(engine->display);
 	}
+	engine->animating = 0;
+	engine->display = EGL_NO_DISPLAY;
+	engine->context = EGL_NO_CONTEXT;
+	engine->surface = EGL_NO_SURFACE;
 
 	return err;
 }
@@ -92,20 +138,29 @@ unsigned int Renderer::Shutdown()
 unsigned int Renderer::Run()
 {
 	unsigned int err = CS_ERR_NONE;
+	Engine* engine = System::GetInstance()->GetEngineData();
+
+	if (engine->display == NULL) 
+	{
+		// No display.
+		return CS_ERR_UNKNOWN;
+	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Drawing models with basic shader
+	/*
 	if (m_mode == BASIC || m_mode == BASIC_WIREFRAME)
-	{
+	{*/
 		m_shaderID = ResourceManager::GetInstance()->GetShader(&SN_BASIC);
 		glUseProgram(m_shaderID->id);
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		System::GetInstance()->GetCurrentScene()->Draw();
+		/*
 	}
-
+	
 	// Drawing wireframe
 	if (m_mode == WIREFRAME || m_mode == BASIC_WIREFRAME)
 	{
@@ -120,9 +175,9 @@ unsigned int Renderer::Run()
 
 		System::GetInstance()->GetCurrentScene()->Draw();
 	}
+	*/
 
-	glfwSwapBuffers(m_window);
-	glfwPollEvents();
+	eglSwapBuffers(engine->display, engine->surface);
 
 	return err;
 }
@@ -147,11 +202,6 @@ ShaderID* Renderer::GetCurrentShaderID()
 	return m_shaderID;
 }
 
-
-GLFWwindow* Renderer::GetWindow()
-{
-	return m_window;
-}
 
 DrawMode Renderer::GetDrawMode()
 {
@@ -192,7 +242,7 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	int infoLogLength;
 
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertexFilePath->c_str());
+	LOGI("Compiling shader : %s\n", vertexFilePath->c_str());
 	char const * VertexSourcePointer = vertexShaderCode.c_str();
 	glShaderSource(vertexShaderID, 1, &VertexSourcePointer, NULL);
 	glCompileShader(vertexShaderID);
@@ -202,10 +252,10 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	glGetShaderiv(vertexShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
 	std::vector<char> VertexShaderErrorMessage(infoLogLength);
 	glGetShaderInfoLog(vertexShaderID, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
-	fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
+	LOGW("%s\n", &VertexShaderErrorMessage[0]);
 
 	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragmentFilePath->c_str());
+	LOGI("Compiling shader : %s\n", fragmentFilePath->c_str());
 	char const * FragmentSourcePointer = fragmentShaderCode.c_str();
 	glShaderSource(fragmentShaderID, 1, &FragmentSourcePointer, NULL);
 	glCompileShader(fragmentShaderID);
@@ -215,10 +265,10 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
 	std::vector<char> FragmentShaderErrorMessage(infoLogLength);
 	glGetShaderInfoLog(fragmentShaderID, infoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-	fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
+	LOGW("%s\n", &FragmentShaderErrorMessage[0]);
 
 	// Link the program
-	fprintf(stdout, "Linking program\n");
+	LOGI("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexShaderID);
 	glAttachShader(ProgramID, fragmentShaderID);
@@ -229,7 +279,7 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &infoLogLength);
 	std::vector<char> ProgramErrorMessage(glm::max(infoLogLength, int(1)));
 	glGetProgramInfoLog(ProgramID, infoLogLength, NULL, &ProgramErrorMessage[0]);
-	fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
+	LOGW("%s\n", &ProgramErrorMessage[0]);
 
 	glDeleteShader(vertexShaderID);
 	glDeleteShader(fragmentShaderID);

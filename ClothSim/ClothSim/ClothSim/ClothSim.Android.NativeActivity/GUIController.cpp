@@ -72,7 +72,8 @@ unsigned int GUIController::Update()
 
 		m_fpsText->SetText(&fpsTxt);
 		m_dtText->SetText(&dtTxt);
-		m_ttText->SetText(&(to_string(tt / 1000)));
+		string ttStr = to_string(tt / 1000);
+		m_ttText->SetText(&ttStr);
 	}
 
 	///////////////////////////
@@ -80,12 +81,14 @@ unsigned int GUIController::Update()
 	// MOVING BOX
 
 	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject();
-	glm::vec3 mVector = InputHandler::GetInstance()->GetArrowsMovementVector();
+	glm::vec3 mVector;
+	InputHandler::GetInstance()->GetArrowsMovementVector(&mVector);
 	glm::vec3 cPosVector = cObj->GetTransform()->GetPositionCopy();
 
 	mVector = mVector * BOX_SPEED * (float)Timer::GetInstance()->GetDeltaTime();
 
-	cObj->GetTransform()->SetPosition(&(cPosVector + mVector));
+	glm::vec3 addedVector = cPosVector + mVector;
+	cObj->GetTransform()->SetPosition(&addedVector);
 
 
 	///////////////////////////
@@ -101,7 +104,8 @@ unsigned int GUIController::Update()
 			cursorHideHelper = true;
 		}
 #endif
-		glm::vec2 camVec = InputHandler::GetInstance()->GetCursorVector();
+		glm::vec2 camVec;
+		InputHandler::GetInstance()->GetCursorVector(&camVec);
 		glm::vec4 camCurrentPos = glm::vec4(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition(), 1.0f);
 		glm::vec3 camRight = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetRight();
 
@@ -143,7 +147,8 @@ unsigned int GUIController::Update()
 		
 		if (scrollValue >= CSSET_CAMERA_ZOOM_BARRIER_MIN && scrollValue <= CSSET_CAMERA_ZOOM_BARRIER_MAX)
 		{
-			System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&(glm::normalize(cPos) * scrollValue));
+			glm::vec3 finalPos = glm::normalize(cPos) * scrollValue;
+			System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&finalPos);
 		}
 	}
 
@@ -153,7 +158,8 @@ unsigned int GUIController::Update()
 
 	if (InputHandler::GetInstance()->CameraMoveButtonPressed())
 	{
-		glm::vec2 mVec = InputHandler::GetInstance()->GetCursorVector();
+		glm::vec2 mVec;
+		InputHandler::GetInstance()->GetCursorVector(&mVec);
 		if (mVec.x != 0.0f || mVec.y != 0.0f)
 		{
 			glm::vec3 cTarget = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget();

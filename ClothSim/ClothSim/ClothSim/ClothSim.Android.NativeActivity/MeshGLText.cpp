@@ -61,18 +61,18 @@ unsigned int MeshGLText::Draw()
 	ShaderID* ids = Renderer::GetInstance()->GetCurrentShaderID();
 	Renderer::GetInstance()->SetCurrentShader(m_fontShaderID);
 
-	glm::mat4* wvp;
+	glm::mat4 wvp;
 	if (m_guiText == nullptr)
 	{
-		wvp = &((*System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewProjMatrix()) *
+		wvp = ((*System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewProjMatrix()) *
 			(*m_obj->GetTransform()->GetWorldMatrix()));
 	}
 	else
 	{
-		wvp = m_guiText->GetTransformMatrix();
+		wvp = *m_guiText->GetTransformMatrix();
 	}
 
-	glUniformMatrix4fv(m_fontShaderID->id_worldViewProj, 1, GL_FALSE, &(*wvp)[0][0]);
+	glUniformMatrix4fv(m_fontShaderID->id_worldViewProj, 1, GL_FALSE, &(wvp)[0][0]);
 
 	// here we will set up texture?
 	if (m_texID != nullptr)
