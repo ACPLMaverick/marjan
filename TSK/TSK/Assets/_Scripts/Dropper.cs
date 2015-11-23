@@ -24,6 +24,7 @@ public class Dropper : MonoBehaviour
     public float Radius;
     public float ForceValue;
     public float InsertedDensity;
+	public float DyeRValue, DyeGValue, DyeBValue;
 
     #endregion
 
@@ -61,7 +62,7 @@ public class Dropper : MonoBehaviour
             CurrentForcePosition.y > Container.transform.position.y - Container.containerHeight / divisor;
         if(
             Input.GetMouseButton(0) &&
-            inBounds
+            inBounds && FluidControllerGPU.Instance.startSimulation
             )
         {
             Active = true;

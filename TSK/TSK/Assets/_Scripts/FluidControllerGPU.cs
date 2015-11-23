@@ -26,8 +26,6 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
     public FluidContainer container;
     public FluidParticle baseObject;
     public Dropper dropper;
-    public InteractiveObject baseInteractiveObject;
-    public List<InteractiveObject> objects = new List<InteractiveObject>();
 
     public GameObject initialPosition;
     public uint IDController;
@@ -37,15 +35,14 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
     public float particleOffsetX;
     public float particleOffsetY;
 
-
     private uint particleWidth;
 
     #region simRelated
 
-    const uint JACOBI_ITERATIONS = 40;
+	public float DISSIPATION = 0.9f;
+    public uint JACOBI_ITERATIONS = 20;
     const uint CB_COUNT = 7;
     const int THREAD_COUNT = 32;
-    const float DISSIPATION = 0.99f;
 
     public ComputeShader cShader;
 
@@ -303,7 +300,9 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
                 // applying texture data
                 uint id = i * particleWidth + j;
                 //float length = velocityFieldBuffer[id].x * velocityFieldBuffer[id].x + velocityFieldBuffer[id].y * velocityFieldBuffer[id].y;
-                finalTexture.SetPixel((int)j, (int)i, new Color(dyeFieldBuffer[id], dyeFieldBuffer[id], dyeFieldBuffer[id], 1.0f));
+                finalTexture.SetPixel((int)j, (int)i, new Color(dropper.DyeRValue * dyeFieldBuffer[id],
+				                                                dropper.DyeGValue * dyeFieldBuffer[id],
+				                                                dropper.DyeBValue * dyeFieldBuffer[id], 1.0f));
                 //finalTexture.SetPixel((int)j, (int)i, new Color(velocityFieldBuffer[id].x, velocityFieldBuffer[id].y, 0.0f, 1.0f));
                 //_DfinalTexture.SetPixel((int)j, (int)i, new Color(_DpressureFieldBuffer[id], _DpressureFieldBuffer[id], _DpressureFieldBuffer[id], 1.0f));
                 
@@ -527,7 +526,7 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
             CalculatePosition(ref x, ref y, particleCount, true);
         }
 
-        startSimulation = true;
+        //startSimulation = true;
     }
 
     public void CalculatePosition(ref float inputX, ref float inputY, uint count, bool moveUp)
@@ -565,16 +564,6 @@ public class FluidControllerGPU : Singleton<FluidControllerGPU>
                 Destroy(particles[i].gameObject);
             }
         }
-    }
-
-    public void DestroyInteractiveObject(InteractiveObject io)
-    {
-        Debug.Log("Destroy");
-
-        objects.Remove(io);
-        Destroy(io.gameObject);
-
-        canDelete = false;
     }
 
     #endregion
