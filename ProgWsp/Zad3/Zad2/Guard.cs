@@ -19,6 +19,8 @@ namespace Zad2
         private Queue<User> enterQueue;
         private Random rand;
 
+        public AutoResetEvent mre;
+
         #endregion
 
         #region properties
@@ -37,6 +39,7 @@ namespace Zad2
             randomQueue = new Queue<UserRandom>();
             enterQueue = new Queue<User>();
             rand = new Random();
+            mre = new AutoResetEvent(false);
 
             MThread = new Thread(new ThreadStart(Run));
             MThread.Start();
@@ -46,8 +49,9 @@ namespace Zad2
 
         public void AddAccess(User u)
         {
+            mre.Set();
             enterQueue.Enqueue(u);
-            u.MyThread.Suspend();
+            u.mre.WaitOne();
         }
 
         private void Run()
@@ -91,6 +95,15 @@ namespace Zad2
                     User uF = fixedQueue.Dequeue();
                     ProcessData(uF);
                 }
+
+                if (
+                    enterQueue.Count == 0 &&
+                    randomQueue.Count == 0 && 
+                    fixedQueue.Count == 0
+                    )
+                {
+                    mre.WaitOne();
+                }
             }
         }
 
@@ -100,7 +113,7 @@ namespace Zad2
             MData.LastUserAccess = u.Type;
 
             Thread.Sleep(rand.Next(Database.MODIFY_TIME_MIN, Database.MODIFY_TIME_MAX));
-            u.MyThread.Resume();
+            u.mre.Set();
         }
 
         #endregion

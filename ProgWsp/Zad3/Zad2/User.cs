@@ -38,6 +38,7 @@ namespace Zad2
         public int AddValue { get; protected set; }
         public UserType Type { get; protected set; }
         public Thread MyThread { get; protected set; }
+        public AutoResetEvent mre = new AutoResetEvent(false);
 
         #endregion
 
