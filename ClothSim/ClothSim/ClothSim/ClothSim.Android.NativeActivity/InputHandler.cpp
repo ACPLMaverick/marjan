@@ -19,38 +19,26 @@ InputHandler::~InputHandler()
 
 bool InputHandler::ExitPressed()
 {
-	if (InputManager::GetInstance()->GetKey(GLFW_KEY_ESCAPE))
+	if (InputManager::GetInstance()->GetTouch())
 	{
 		return true;
 	}
 	else return false;
 }
 
-glm::vec2 InputHandler::GetCursorPosition()
+void InputHandler::GetCursorPosition(glm::vec2* vec)
 {
-	glm::vec2 pos;
-	MouseData* m = InputManager::GetInstance()->GetMouseData();
-
-	pos.x = m->mouseX;
-	pos.y = m->mouseY;
-
-	return pos;
+	InputManager::GetInstance()->GetTouchPosition(vec);
 }
 
-glm::vec2 InputHandler::GetCursorVector()
+void InputHandler::GetCursorVector(glm::vec2* vec)
 {
-	glm::vec2 pos;
-	MouseData* m = InputManager::GetInstance()->GetMouseData();
-
-	pos.x = m->mouseXRelative;
-	pos.y = m->mouseYRelative;
-
-	return pos;
+	InputManager::GetInstance()->GetTouchDirection(vec);
 }
 
-glm::vec3 InputHandler::GetArrowsMovementVector()
+void InputHandler::GetArrowsMovementVector(glm::vec3* vec)
 {
-	glm::vec3 vec = glm::vec3(0.0f, 0.0f, 0.0f);
+	/*glm::vec3 vec = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	if (InputManager::GetInstance()->GetKey(GLFW_KEY_W))
 		vec.z = -1.0f;
@@ -69,17 +57,33 @@ glm::vec3 InputHandler::GetArrowsMovementVector()
 	vec = glm::normalize(vec);
 
 	return vec;
+	*/
+	glm::vec2 r;
+	InputManager::GetInstance()->GetTouchPosition(&r);
+	vec->x = r.x;
+	vec->y = 0.0f;
+	vec->z = -r.y;
 }
 
 int InputHandler::GetZoomValue()
 {
-	MouseData* m = InputManager::GetInstance()->GetMouseData();
-	return m->scrollRelative;
+	glm::vec4 swipe;
+	glm::vec2 swipe1, swipe2;
+	InputManager::GetInstance()->GetSwipeDirections(&swipe);
+
+	swipe1.x = swipe.x;
+	swipe1.y = swipe.y;
+	swipe2.x = swipe.z;
+	swipe2.y = swipe.w;
+
+	float dot = glm::dot(swipe1, swipe2);
+
+	return (int)dot;
 }
 
 bool InputHandler::ActionButtonPressed()
 {
-	return InputManager::GetInstance()->GetKey(GLFW_MOUSE_BUTTON_LEFT);
+	return InputManager::GetInstance()->GetDoubleTouch();
 }
 
 bool InputHandler::ActionButtonClicked()
@@ -89,15 +93,15 @@ bool InputHandler::ActionButtonClicked()
 
 bool InputHandler::CameraRotateButtonPressed()
 {
-	return InputManager::GetInstance()->GetKey(GLFW_MOUSE_BUTTON_RIGHT);
+	return InputManager::GetInstance()->GetTouch();
 }
 
 bool InputHandler::CameraMoveButtonPressed()
 {
-	return InputManager::GetInstance()->GetKey(GLFW_MOUSE_BUTTON_MIDDLE);
+	return InputManager::GetInstance()->GetDoubleTouch();
 }
 
 bool InputHandler::WireframeButtonClicked()
 {
-	return InputManager::GetInstance()->GetKeyDown(GLFW_KEY_V);
+	return InputManager::GetInstance()->GetTouch();
 }

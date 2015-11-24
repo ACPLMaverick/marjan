@@ -20,6 +20,8 @@ class Timer : public Singleton<Timer>
 private:
 	const double FIXED_DELTA = 6.0;
 
+	clock_t m_startTime;
+
 	double m_totalTime;
 	double m_deltaTime;
 	double m_fixedDelta;

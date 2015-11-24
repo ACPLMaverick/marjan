@@ -78,7 +78,8 @@ CollisonTestResult SphereCollider::TestWithBoxAA(BoxAACollider* other)
 	Vec3Max(&m_effectiveCenter, &other->m_minEffective, &cls);
 	Vec3Min(&cls, &other->m_maxEffective, &closest);
 
-	float distance = Vec3LengthSquared(&(closest - m_effectiveCenter));
+	glm::vec3 diff = (closest - m_effectiveCenter);
+	float distance = Vec3LengthSquared(&diff);
 
 	if (distance < (m_effectiveRadius * m_effectiveRadius))
 	{

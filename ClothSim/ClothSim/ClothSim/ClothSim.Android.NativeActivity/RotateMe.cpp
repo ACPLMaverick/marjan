@@ -33,7 +33,8 @@ unsigned int RotateMe::Update()
 	{
 		if (m_obj->GetTransform() != nullptr)
 		{
-			m_obj->GetTransform()->SetRotation(&((*m_obj->GetTransform()->GetRotation()) + m_rotation));
+			glm::vec3 tempRot = ((*m_obj->GetTransform()->GetRotation()) + m_rotation);
+			m_obj->GetTransform()->SetRotation(&tempRot);
 		}
 	}
 

@@ -8,35 +8,20 @@
 #include "Singleton.h"
 #include "Renderer.h"
 
-#include <EGL/egl.h>
-#include <GLES/gl.h>
 #include <vector>
-
-struct MouseData
-{
-	double mouseX, mouseY, mouseXRelative, mouseYRelative;
-	int scroll, scrollRelative;
-
-	MouseData()
-	{
-		mouseX = mouseY = mouseXRelative = mouseYRelative = 0.0;
-		scroll = scrollRelative = 0;
-	}
-};
 
 class InputManager : public Singleton<InputManager>
 {
 	friend class Singleton<InputManager>;
+	friend class System;
 
 protected:
 	InputManager();
 
 	std::vector<int> m_pressed;	// this vector stores pressed buttons WHICH WE HAVE QUERIED
-	MouseData m_mouseData;
 	int m_scrollHelper = 0;
 
-	static void MouseScrollCallback(GLFWwindow*, double, double);
-	bool IsPressed(int);
+	static int32_t AHandleInput(struct android_app* app, AInputEvent* event);
 public:
 	InputManager(const InputManager*);
 	~InputManager();
@@ -45,10 +30,13 @@ public:
 	unsigned int Shutdown();
 	unsigned int Run();
 
-	bool GetKey(int);
-	bool GetKeyDown(int);
-	bool GetKeyUp(int);
-
-	MouseData* GetMouseData();
+	bool GetTouch();
+	bool GetDoubleTouch();
+	bool GetSwipe();
+	void GetTouchPosition(glm::vec2* vec);
+	void GetDoubleTouchPosition(glm::vec2* vec);
+	void GetTouchDirection(glm::vec2* vec);
+	void GetDoubleTouchDirection(glm::vec2* vec);
+	void GetSwipeDirections(glm::vec4* vec);
 };
 

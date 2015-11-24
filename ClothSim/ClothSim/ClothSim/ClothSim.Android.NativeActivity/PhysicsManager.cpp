@@ -72,12 +72,14 @@ unsigned int PhysicsManager::Run()
 				// only it object has moved
 				if ((*it)->GetMySimObject()->GetTransform()->HasMovedLastFrame() && !(*it2)->GetMySimObject()->GetTransform()->HasMovedLastFrameFast())
 				{
-					(*it)->GetMySimObject()->GetTransform()->SetPosition(&((*(*it)->GetMySimObject()->GetTransform()->GetPosition()) + res.colVector));
+					glm::vec3 nPos = ((*(*it)->GetMySimObject()->GetTransform()->GetPosition()) + res.colVector);
+					(*it)->GetMySimObject()->GetTransform()->SetPosition(&nPos);
 				}
 				// only it2 object has moved
 				else if (!(*it)->GetMySimObject()->GetTransform()->HasMovedLastFrame() && (*it2)->GetMySimObject()->GetTransform()->HasMovedLastFrameFast())
 				{
-					(*it2)->GetMySimObject()->GetTransform()->SetPosition(&((*(*it2)->GetMySimObject()->GetTransform()->GetPosition()) - res.colVector));
+					glm::vec3 nPos = ((*(*it2)->GetMySimObject()->GetTransform()->GetPosition()) - res.colVector);
+					(*it2)->GetMySimObject()->GetTransform()->SetPosition(&nPos);
 				}
 				// both objects have moved or none had
 				else
@@ -85,8 +87,11 @@ unsigned int PhysicsManager::Run()
 					res.colVector = res.colVector / 2.0f;
 					glm::vec3 second = -res.colVector;
 
-					(*it)->GetMySimObject()->GetTransform()->SetPosition(&((*(*it)->GetMySimObject()->GetTransform()->GetPosition()) + res.colVector));
-					(*it2)->GetMySimObject()->GetTransform()->SetPosition(&((*(*it2)->GetMySimObject()->GetTransform()->GetPosition()) + second));
+					glm::vec3 nPos = ((*(*it)->GetMySimObject()->GetTransform()->GetPosition()) + res.colVector);
+					glm::vec3 nPos2 = ((*(*it2)->GetMySimObject()->GetTransform()->GetPosition()) + second);
+
+					(*it)->GetMySimObject()->GetTransform()->SetPosition(&nPos);
+					(*it2)->GetMySimObject()->GetTransform()->SetPosition(&nPos2);
 				}
 			}
 

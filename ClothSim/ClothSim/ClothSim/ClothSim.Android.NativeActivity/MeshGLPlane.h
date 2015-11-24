@@ -14,12 +14,14 @@ protected:
 	float m_length;
 	unsigned int m_edgesWidth;
 	unsigned int m_edgesLength;
+	glm::vec4 m_color;
 
 	virtual void GenerateVertexData();
 public:
 	MeshGLPlane(SimObject*);
 	MeshGLPlane(SimObject*, float, float);
 	MeshGLPlane(SimObject*, float, float, unsigned int, unsigned int);
+	MeshGLPlane(SimObject*, float, float, unsigned int, unsigned int, glm::vec4* col);
 	MeshGLPlane(const MeshGLPlane*);
 	~MeshGLPlane();
 

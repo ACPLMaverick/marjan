@@ -5,7 +5,7 @@ protected:
 	static T* instance;
 
 public:
-	static T* Singleton<T>::GetInstance()
+	static T* GetInstance()
 	{
 		if (instance == nullptr)
 		{
@@ -14,7 +14,7 @@ public:
 		return instance;
 	}
 
-	static void Singleton<T>::DestroyInstance()
+	static void DestroyInstance()
 	{
 		if (instance != nullptr)
 		{

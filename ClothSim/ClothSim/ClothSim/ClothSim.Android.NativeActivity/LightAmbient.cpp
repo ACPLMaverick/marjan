@@ -5,8 +5,11 @@ LightAmbient::LightAmbient() : Light()
 {
 }
 
-LightAmbient::LightAmbient(glm::vec3* diff) : Light(diff, &glm::vec3(0.0f, 0.0f, 0.0f))
+LightAmbient::LightAmbient(glm::vec3* diff) : Light()
 {
+	SetDiffuseColor(diff);
+	glm::vec3 zero = glm::vec3();
+	SetSpecularColor(&zero);
 }
 
 LightAmbient::LightAmbient(const LightAmbient* c) : Light(c)
