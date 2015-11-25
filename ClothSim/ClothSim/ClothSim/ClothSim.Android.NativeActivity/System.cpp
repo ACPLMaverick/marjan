@@ -187,6 +187,9 @@ unsigned int System::InitAndroid(android_app* app)
 				return CS_ANDROID_ERROR;
 			}
 		}
+
+		if (m_engine->app->window != NULL)
+			break;
 	}
 
 	return CS_ERR_NONE;
@@ -214,7 +217,8 @@ void System::RunAndroid()
 	// If animating, we loop until all events are read, then continue
 	// to draw the next frame of animation.
 	while ((ident = ALooper_pollAll(m_engine->animating ? 0 : -1, NULL, &events,
-		(void**)&source)) >= 0) {
+		(void**)&source)) >= 0) 
+	{
 
 		// Process this event.
 		if (source != NULL) {
@@ -262,7 +266,7 @@ void System::AHandleCmd(struct android_app* app, int32_t cmd) {
 		// The window is being shown, get it ready.
 		if (engine->app->window != NULL) {
 			Renderer::GetInstance()->Initialize();
-			Renderer::GetInstance()->Run();
+			//Renderer::GetInstance()->Run();
 		}
 		break;
 	case APP_CMD_TERM_WINDOW:

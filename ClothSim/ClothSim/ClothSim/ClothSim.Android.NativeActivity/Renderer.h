@@ -33,6 +33,9 @@ protected:
 
 	//GLFWwindow* m_window;
 	ShaderID* m_shaderID;
+	bool m_initialized;
+
+	static inline char* LoadShaderFromAssets(const string* path);
 public:
 	Renderer(const Renderer*);
 	~Renderer();

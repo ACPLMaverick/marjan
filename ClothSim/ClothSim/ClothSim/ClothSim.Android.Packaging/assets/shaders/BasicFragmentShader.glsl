@@ -1,4 +1,4 @@
-#version 400 core
+#version 300 es
 
 #define POWER_CORRECTION 1.0f
 
