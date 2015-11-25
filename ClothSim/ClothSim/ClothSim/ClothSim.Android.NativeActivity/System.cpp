@@ -25,7 +25,8 @@ unsigned int System::Initialize(android_app* app)
 	m_running = true;
 
 	// initialize android stuff common to all users
-	InitAndroid(app);
+	err = InitAndroid(app);
+	if (err != CS_ERR_NONE) return err;
 
 	// initializing main singletons
 
@@ -136,7 +137,7 @@ void System::Stop()
 /**
 * Initialize android necessary stuff
 */
-void System::InitAndroid(android_app* app)
+unsigned int System::InitAndroid(android_app* app)
 {
 	m_engine = new Engine();
 	app->userData = m_engine;
@@ -157,6 +158,38 @@ void System::InitAndroid(android_app* app)
 	}
 
 	m_engine->animating = 1;
+
+	// loop waiting for recieving context from android
+
+	while (true)
+	{
+		int ident;
+		int events;
+		android_poll_source* source;
+
+		// loop until all events are read, then continue
+		// this is necessary to recieve ANativeActivity pointer
+		while (
+			ident = ALooper_pollAll(m_engine->animating ? 0 : -1, NULL, &events, (void**)&source) >= 0
+			)
+		{
+			// process this event
+			if (source != NULL)
+			{
+				source->process(m_engine->app, source);
+			}
+
+			// originally sensor data processing was here
+
+			// check if we are exiting
+			if (m_engine->app->destroyRequested != 0)
+			{
+				return CS_ANDROID_ERROR;
+			}
+		}
+	}
+
+	return CS_ERR_NONE;
 }
 
 /**

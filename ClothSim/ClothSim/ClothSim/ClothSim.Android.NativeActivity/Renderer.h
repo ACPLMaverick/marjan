@@ -5,8 +5,8 @@
 #include "Settings.h"
 #include "System.h"
 #include "ResourceManager.h"
+#include "SOIL2.h"
 
-#include <SOIL2\SOIL2.h>
 #include <fstream>
 #include <string>
 #include <vector>

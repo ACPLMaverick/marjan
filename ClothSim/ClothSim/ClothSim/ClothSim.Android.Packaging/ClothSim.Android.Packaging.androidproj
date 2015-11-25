@@ -27,9 +27,11 @@
   <Import Project="$(AndroidTargetsPath)\Android.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <AndroidAPILevel>android-21</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
+    <AndroidAPILevel>android-21</AndroidAPILevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -63,8 +65,11 @@
     </AntPackage>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Content Include="res\assets\Consolas.bff" />
-    <Content Include="res\assets\ExportedFont.bmp" />
+    <Content Include="assets\shaders\BasicFragmentShader.glsl" />
+    <Content Include="assets\shaders\BasicVertexShader.glsl" />
+    <Content Include="assets\shaders\FontFragmentShader.glsl" />
+    <Content Include="assets\shaders\FontVertexShader.glsl" />
+    <Content Include="assets\shaders\WireframeFragmentShader.glsl" />
     <Content Include="res\values\strings.xml" />
     <AntBuildXml Include="build.xml" />
     <AndroidManifest Include="AndroidManifest.xml" />
@@ -74,6 +79,9 @@
     <ProjectReference Include="..\ClothSim.Android.NativeActivity\ClothSim.Android.NativeActivity.vcxproj">
       <Project>{45352494-ca0f-4879-a59e-75e1606feb13}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\textures\" />
   </ItemGroup>
   <Import Project="$(AndroidTargetsPath)\Android.targets" />
   <ImportGroup Label="ExtensionTargets" />
