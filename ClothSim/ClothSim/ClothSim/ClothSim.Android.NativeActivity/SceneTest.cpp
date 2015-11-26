@@ -91,10 +91,7 @@ unsigned int SceneTest::Initialize()
 	SphereCollider* tObjCollider = PhysicsManager::GetInstance()->CreateSphereCollider(testObj, &tPosMin, 2.0f);
 	testObj->AddCollider(tObjCollider);
 
-	/*RotateMe* rm = new RotateMe(testObj);
-	rm->Initialize();
-	rm->SetRotation(&(glm::vec3(0.0f, 0.00003f, 0.0f)));
-	testObj->AddComponent(rm);*/
+	
 
 	AddObject(testObj);
 
@@ -122,6 +119,12 @@ unsigned int SceneTest::Initialize()
 	colObj->AddMesh(colBox);
 	BoxAACollider* cObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(colObj, &tPosMin, &tPosMax);
 	colObj->AddCollider(cObjCollider);
+
+	RotateMe* rm = new RotateMe(colObj);
+	rm->Initialize();
+	tRot = glm::vec3(0.0f, 0.03f, 0.0f);
+	rm->SetRotation(&tRot);
+	colObj->AddComponent(rm);
 
 	AddObject(colObj);
 
@@ -157,7 +160,7 @@ unsigned int SceneTest::Initialize()
 	Camera* testCam = new Camera(nullptr, 0.6f, 0.01f, 1000.0f);
 	testCam->Initialize();
 	
-	tPos = glm::vec3(-8.0f, 15.0f, 15.0f);
+	tPos = glm::vec3(-8.0f, 15.0f, 15.0f) * 2.0f;
 	testCam->SetPosition(&tPos);
 
 	AddCamera(testCam);

@@ -1,5 +1,5 @@
 #include "Camera.h"
-
+#include "System.h"
 
 Camera::Camera(SimObject* obj, float fov, float near, float far) : Component(obj)
 {
@@ -34,6 +34,14 @@ unsigned int Camera::Initialize()
 	
 	m_direction = new glm::vec3();
 	m_right = new glm::vec3();
+
+	m_windowWidth = CSSET_WINDOW_WIDTH_DEFAULT;
+	m_windowHeight = CSSET_WINDOW_HEIGHT_DEFAULT;
+
+	// now try to read real values
+	Engine* engine = System::GetInstance()->GetEngineData();
+	m_windowWidth = (float)engine->width;
+	m_windowHeight = (float)engine->height;
 
 	CalculateProjection();
 	CalculateViewProjection();
@@ -88,7 +96,7 @@ unsigned int Camera::Draw()
 
 void Camera::CalculateProjection()
 {
-	(*m_projMatrix) = glm::perspectiveFov(m_fov, (float)CSSET_WINDOW_WIDTH, (float)CSSET_WINDOW_HEIGHT, m_near, m_far);
+	(*m_projMatrix) = glm::perspectiveFov(m_fov, m_windowWidth, m_windowHeight, m_near, m_far);
 }
 
 void Camera::CalculateViewProjection()

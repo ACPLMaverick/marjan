@@ -35,6 +35,7 @@ unsigned int RotateMe::Update()
 		{
 			glm::vec3 tempRot = ((*m_obj->GetTransform()->GetRotation()) + m_rotation);
 			m_obj->GetTransform()->SetRotation(&tempRot);
+			//LOGI("RotateMe: %f, %f, %f", m_obj->GetTransform()->GetRotation()->x, m_obj->GetTransform()->GetRotation()->y, m_obj->GetTransform()->GetRotation()->z);
 		}
 	}
 

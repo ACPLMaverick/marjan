@@ -50,6 +50,8 @@ public:
 	ShaderID* GetCurrentShaderID();
 	DrawMode GetDrawMode();
 
+	bool GetInitialized();
+
 	static void LoadShaders(const string*, const string*, const string*, ShaderID*);
 	static void ShutdownShader(ShaderID*);
 	static void LoadTexture(const string*, TextureID*);

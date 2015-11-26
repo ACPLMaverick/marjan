@@ -97,6 +97,11 @@ double Timer::GetFps()
 	return m_fps;
 }
 
+unsigned long Timer::GetTicks()
+{
+	return m_ticks;
+}
+
 double Timer::GetTimeStamp(unsigned int id)
 {
 	return m_timeStamps.at(id);

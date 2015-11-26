@@ -30,8 +30,10 @@ unsigned int System::Initialize(android_app* app)
 
 	// initializing main singletons
 
+	/* SHOULD ALREADY BE INITIALIZED
 	err = Renderer::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
+	*/
 
 	err = ResourceManager::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
@@ -108,7 +110,7 @@ unsigned int System::Run()
 		Timer::GetInstance()->Run();
 
 		// update android-related stuff, mainly events
-		RunAndroid();
+		//RunAndroid();
 
 		// update input
 		InputManager::GetInstance()->Run();
@@ -122,7 +124,8 @@ unsigned int System::Run()
 		PhysicsManager::GetInstance()->Run();
 
 		// draw one frame
-		Renderer::GetInstance()->Run();
+		if(Renderer::GetInstance()->GetInitialized())
+			Renderer::GetInstance()->Run();
 	}
 
 	return err;
