@@ -1,5 +1,5 @@
 #include "GUIElement.h"
-
+#include "System.h"
 
 GUIElement::GUIElement(const std::string* id)
 {
@@ -23,7 +23,12 @@ GUIElement::~GUIElement()
 
 void GUIElement::GenerateTransformMatrix()
 {
-	m_transform = glm::translate(glm::vec3(m_position.x, m_position.y, 0.0f)) * glm::scale(glm::vec3(m_scale.x, m_scale.y, 0.0f));
+	Engine* engine = System::GetInstance()->GetEngineData();
+	float scrWidth = engine->width;
+	float scrHeight = engine->height;
+
+
+	m_transform = glm::translate(glm::vec3(m_position.x, m_position.y, 0.0f)) * glm::scale(glm::vec3(m_scale.x * (scrHeight / scrWidth), m_scale.y * (scrWidth / scrHeight), 0.0f));
 }
 
 

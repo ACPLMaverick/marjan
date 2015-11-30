@@ -21,7 +21,7 @@ Timer::~Timer()
 
 unsigned int Timer::Initialize()
 {
-	m_startTime = clock();
+	m_startTime = GetCurrentTimeMS();
 
 	return CS_ERR_NONE;
 }
@@ -37,7 +37,7 @@ unsigned int Timer::Run()
 	//duration<long double> timeSpan = duration_cast<duration<long double>>(point - m_start);
 	
 	//double newTime = timeSpan.count() * 1000.0;
-	double newTime = (clock() - m_startTime) / CLOCKS_PER_SEC;	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	double newTime = (GetCurrentTimeMS() - m_startTime);
 	m_deltaTime = newTime - m_totalTime;
 	m_totalTime = newTime;
 
@@ -50,14 +50,23 @@ unsigned int Timer::Run()
 		m_deltaTime /= (double)TICKS_TO_UNLOCK_FIXED;
 	}
 
-	m_fps = 1.0 / (m_deltaTime / 1000.0);
+	m_fps = 1000.0 / (m_deltaTime);
 	++m_ticks;
 
 	//printf("%f, %f, %f\n", m_totalTime, m_deltaTime, m_fps);
+	//LOGI("Timer: %f, %f, %f, %d", m_totalTime, m_deltaTime, m_fps, m_ticks);
 
 	return CS_ERR_NONE;
 }
 
+double Timer::GetCurrentTimeMS()
+{
+	double ret;
+	timespec ts;
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	ret = (double)ts.tv_nsec / 1000000.0 + (double)ts.tv_sec * 1000.0;
+	return ret;
+}
 
 void Timer::AddTimeStamp(unsigned int id)
 {

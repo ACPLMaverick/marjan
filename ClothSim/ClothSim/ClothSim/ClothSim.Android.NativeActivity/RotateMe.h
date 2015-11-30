@@ -7,6 +7,7 @@
 #include "Common.h"
 #include "Component.h"
 #include "SimObject.h"
+#include "Timer.h"
 
 #include <glm\glm\glm.hpp>
 

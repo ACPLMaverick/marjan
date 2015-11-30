@@ -122,7 +122,7 @@ unsigned int SceneTest::Initialize()
 
 	RotateMe* rm = new RotateMe(colObj);
 	rm->Initialize();
-	tRot = glm::vec3(0.0f, 0.03f, 0.0f);
+	tRot = glm::vec3(0.0f, 0.003f, 0.0f);
 	rm->SetRotation(&tRot);
 	colObj->AddComponent(rm);
 
@@ -193,37 +193,38 @@ unsigned int SceneTest::Initialize()
 	string tval02 = "DTvalue";
 	string tval03 = "TTvalue";
 	string dummy = "Dummy";
-	string tex = "..\\files\\ExportedFont.bmp";
+	string tex = "textures/ExportedFont.bmp";
+	glm::vec2 scl = glm::vec2(0.025f, 0.025f);
 
 	GUIText* gt = new GUIText(&t1n, &t1v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt->Initialize();
-	gt->SetPosition(glm::vec2(-0.9f, 0.8f));
-	gt->SetScale(glm::vec2(0.02f, 0.02f));
+	gt->SetPosition(glm::vec2(-0.95f, 0.85f));
+	gt->SetScale(scl);
 
 	GUIText* gt2 = new GUIText(&t2n, &t2v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt2->Initialize();
-	gt2->SetPosition(glm::vec2(-0.9f, 0.7f));
-	gt2->SetScale(glm::vec2(0.02f, 0.02f));
+	gt2->SetPosition(glm::vec2(-0.95f, 0.8f));
+	gt2->SetScale(scl);
 
 	GUIText* gt3 = new GUIText(&t3n, &t3v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt3->Initialize();
-	gt3->SetPosition(glm::vec2(-0.9f, 0.6f));
-	gt3->SetScale(glm::vec2(0.02f, 0.02f));
+	gt3->SetPosition(glm::vec2(-0.95f, 0.75f));
+	gt3->SetScale(scl);
 
 	GUIText* gt4 = new GUIText(&tval01, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt4->Initialize();
-	gt4->SetPosition(glm::vec2(-0.79f, 0.8f));
-	gt4->SetScale(glm::vec2(0.02f, 0.02f));
+	gt4->SetPosition(glm::vec2(-0.22f, 0.85f));
+	gt4->SetScale(scl);
 
 	GUIText* gt5 = new GUIText(&tval02, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt5->Initialize();
-	gt5->SetPosition(glm::vec2(-0.55f, 0.7f));
-	gt5->SetScale(glm::vec2(0.02f, 0.02f));
+	gt5->SetPosition(glm::vec2(-0.22f, 0.8f));
+	gt5->SetScale(scl);
 
 	GUIText* gt6 = new GUIText(&tval03, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt6->Initialize();
-	gt6->SetPosition(glm::vec2(-0.55f, 0.6f));
-	gt6->SetScale(glm::vec2(0.02f, 0.02f));
+	gt6->SetPosition(glm::vec2(-0.22f, 0.75f));
+	gt6->SetScale(scl);
 
 	AddGUIElement(gt);
 	AddGUIElement(gt2);

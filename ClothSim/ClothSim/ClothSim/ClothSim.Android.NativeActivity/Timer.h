@@ -20,7 +20,7 @@ class Timer : public Singleton<Timer>
 private:
 	const double FIXED_DELTA = 6.0;
 
-	clock_t m_startTime;
+	double m_startTime;
 
 	double m_totalTime;
 	double m_deltaTime;
@@ -31,6 +31,7 @@ private:
 	std::map<unsigned int, double> m_timeStamps;
 
 	Timer();
+	inline double GetCurrentTimeMS();
 public:
 	Timer(const Timer*);
 	~Timer();

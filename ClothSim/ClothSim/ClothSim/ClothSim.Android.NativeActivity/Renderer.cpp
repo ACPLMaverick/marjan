@@ -34,7 +34,7 @@ unsigned int Renderer::Initialize()
 		EGL_RED_SIZE, 8,
 		EGL_ALPHA_SIZE, 8,
 		EGL_DEPTH_SIZE, 24,
-		EGL_STENCIL_SIZE, 8,
+//		EGL_STENCIL_SIZE, 8,
 		EGL_NONE
 	};
 	const EGLint attribsContext[] = 
@@ -332,9 +332,20 @@ void Renderer::ShutdownShader(ShaderID* sid)
 
 void Renderer::LoadTexture(const string* filePath, TextureID* id)
 {
+	AAssetManager* mgr = System::GetInstance()->GetEngineData()->app->activity->assetManager;
+	AAsset* textureAsset = AAssetManager_open(mgr, filePath->c_str(), AASSET_MODE_UNKNOWN);
+	unsigned int length = AAsset_getLength(textureAsset);
+
+	unsigned char * bitmap = new unsigned char[length];
+	AAsset_read(textureAsset, (void*)bitmap, length);
+
 	id->name = *filePath;
-	id->id = SOIL_load_OGL_texture((*filePath).c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	id->id = SOIL_load_OGL_texture_from_memory(bitmap, length, SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB);
+
+	++length;
+	//id->id = SOIL_load_OGL_texture((*filePath).c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
+		//SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 }
 
 void Renderer::LoadTexture(const string* name, const unsigned char* data, int dataLength, int width, int height, int channels, TextureID* id)
