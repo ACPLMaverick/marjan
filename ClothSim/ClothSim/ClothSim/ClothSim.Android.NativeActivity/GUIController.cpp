@@ -36,23 +36,23 @@ unsigned int GUIController::Shutdown()
 unsigned int GUIController::Update()
 {
 	// EXITING
-
+	/*
 	if (InputHandler::GetInstance()->ExitPressed())
 	{
 		System::GetInstance()->Stop();
 	}
-
+	*/
 	///////////////////////////
 
 	// CHANIGNG DRAW MODE
-
+	/*
 	if (InputHandler::GetInstance()->WireframeButtonClicked())
 	{
 		DrawMode m = Renderer::GetInstance()->GetDrawMode();
 		int newMode = (((int)m + 1) % 3);
 		Renderer::GetInstance()->SetDrawMode((DrawMode)newMode);
 	}
-
+	*/
 	///////////////////////////
 	
 	// UPDATING UI INFORMATION
@@ -79,6 +79,7 @@ unsigned int GUIController::Update()
 	///////////////////////////
 
 	// MOVING BOX
+	/*
 
 	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject();
 	glm::vec3 mVector;
@@ -89,7 +90,7 @@ unsigned int GUIController::Update()
 
 	glm::vec3 addedVector = cPosVector + mVector;
 	cObj->GetTransform()->SetPosition(&addedVector);
-
+	*/
 
 	///////////////////////////
 
@@ -105,7 +106,7 @@ unsigned int GUIController::Update()
 		}
 #endif
 		glm::vec2 camVec;
-		InputHandler::GetInstance()->GetCursorVector(&camVec);
+		InputHandler::GetInstance()->GetCameraRotationVector(&camVec);
 		glm::vec4 camCurrentPos = glm::vec4(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition(), 1.0f);
 		glm::vec3 camRight = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetRight();
 
@@ -137,12 +138,12 @@ unsigned int GUIController::Update()
 
 	// ZOOMING CAMERA
 
-	int relScroll = InputHandler::GetInstance()->GetZoomValue();
-	if (relScroll != 0)
+	float relScroll = InputHandler::GetInstance()->GetZoomValue();
+	if (relScroll != 0.0f && InputHandler::GetInstance()->GetZoom())
 	{
 		glm::vec3 cPos = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition();
 		float length = glm::length<float>(cPos);
-		float scrollValue = (float)relScroll * CSSET_CAMERA_ZOOM_SPEED;
+		float scrollValue = relScroll * CSSET_CAMERA_ZOOM_SPEED;
 		scrollValue = length - scrollValue;
 		
 		if (scrollValue >= CSSET_CAMERA_ZOOM_BARRIER_MIN && scrollValue <= CSSET_CAMERA_ZOOM_BARRIER_MAX)
@@ -159,7 +160,8 @@ unsigned int GUIController::Update()
 	if (InputHandler::GetInstance()->CameraMoveButtonPressed())
 	{
 		glm::vec2 mVec;
-		InputHandler::GetInstance()->GetCursorVector(&mVec);
+		InputHandler::GetInstance()->GetCameraMovementVector(&mVec);
+		
 		if (mVec.x != 0.0f || mVec.y != 0.0f)
 		{
 			glm::vec3 cTarget = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget();

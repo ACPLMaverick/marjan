@@ -110,7 +110,7 @@ unsigned int System::Run()
 		Timer::GetInstance()->Run();
 
 		// update android-related stuff, mainly events
-		//RunAndroid();
+		RunAndroid();
 
 		// update input
 		InputManager::GetInstance()->Run();

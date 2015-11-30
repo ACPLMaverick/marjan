@@ -20,10 +20,10 @@ public:
 	~InputHandler();
 
 	bool ExitPressed();
-	void GetCursorPosition(glm::vec2* vec);
-	void GetCursorVector(glm::vec2* vec);
-	void GetArrowsMovementVector(glm::vec3* vec);
-	int GetZoomValue();
+	void GetCameraMovementVector(glm::vec2* vec);
+	void GetCameraRotationVector(glm::vec2* vec);
+	float GetZoomValue();
+	bool GetZoom();
 	bool ActionButtonPressed();
 	bool ActionButtonClicked();
 	bool CameraRotateButtonPressed();
