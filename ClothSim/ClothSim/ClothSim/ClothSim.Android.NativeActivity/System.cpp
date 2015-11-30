@@ -25,12 +25,15 @@ unsigned int System::Initialize(android_app* app)
 	m_running = true;
 
 	// initialize android stuff common to all users
-	InitAndroid(app);
+	err = InitAndroid(app);
+	if (err != CS_ERR_NONE) return err;
 
 	// initializing main singletons
 
+	/* SHOULD ALREADY BE INITIALIZED
 	err = Renderer::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
+	*/
 
 	err = ResourceManager::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
@@ -107,7 +110,7 @@ unsigned int System::Run()
 		Timer::GetInstance()->Run();
 
 		// update android-related stuff, mainly events
-		RunAndroid();
+		//RunAndroid();
 
 		// update input
 		InputManager::GetInstance()->Run();
@@ -121,7 +124,8 @@ unsigned int System::Run()
 		PhysicsManager::GetInstance()->Run();
 
 		// draw one frame
-		Renderer::GetInstance()->Run();
+		if(Renderer::GetInstance()->GetInitialized())
+			Renderer::GetInstance()->Run();
 	}
 
 	return err;
@@ -136,7 +140,7 @@ void System::Stop()
 /**
 * Initialize android necessary stuff
 */
-void System::InitAndroid(android_app* app)
+unsigned int System::InitAndroid(android_app* app)
 {
 	m_engine = new Engine();
 	app->userData = m_engine;
@@ -157,6 +161,41 @@ void System::InitAndroid(android_app* app)
 	}
 
 	m_engine->animating = 1;
+
+	// loop waiting for recieving context from android
+
+	while (true)
+	{
+		int ident;
+		int events;
+		android_poll_source* source;
+
+		// loop until all events are read, then continue
+		// this is necessary to recieve ANativeActivity pointer
+		while (
+			ident = ALooper_pollAll(m_engine->animating ? 0 : -1, NULL, &events, (void**)&source) >= 0
+			)
+		{
+			// process this event
+			if (source != NULL)
+			{
+				source->process(m_engine->app, source);
+			}
+
+			// originally sensor data processing was here
+
+			// check if we are exiting
+			if (m_engine->app->destroyRequested != 0)
+			{
+				return CS_ANDROID_ERROR;
+			}
+		}
+
+		if (m_engine->app->window != NULL)
+			break;
+	}
+
+	return CS_ERR_NONE;
 }
 
 /**
@@ -181,7 +220,8 @@ void System::RunAndroid()
 	// If animating, we loop until all events are read, then continue
 	// to draw the next frame of animation.
 	while ((ident = ALooper_pollAll(m_engine->animating ? 0 : -1, NULL, &events,
-		(void**)&source)) >= 0) {
+		(void**)&source)) >= 0) 
+	{
 
 		// Process this event.
 		if (source != NULL) {
@@ -229,7 +269,7 @@ void System::AHandleCmd(struct android_app* app, int32_t cmd) {
 		// The window is being shown, get it ready.
 		if (engine->app->window != NULL) {
 			Renderer::GetInstance()->Initialize();
-			Renderer::GetInstance()->Run();
+			//Renderer::GetInstance()->Run();
 		}
 		break;
 	case APP_CMD_TERM_WINDOW:

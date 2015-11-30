@@ -68,7 +68,7 @@ private:
 	Scene* m_scene;
 
 
-	inline void InitAndroid(android_app* app);
+	inline unsigned int InitAndroid(android_app* app);
 	inline void RunAndroid();
 	inline void ShutdownAndroid();
 	static void AHandleCmd(android_app* app, int32_t cmd);

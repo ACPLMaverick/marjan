@@ -46,6 +46,7 @@ public:
 	double GetDeltaTime();
 	double GetFixedDeltaTime();
 	double GetFps();
+	unsigned long GetTicks();
 	
 	double GetTimeStamp(unsigned int);
 	// This function automatically removes stamp from collection.

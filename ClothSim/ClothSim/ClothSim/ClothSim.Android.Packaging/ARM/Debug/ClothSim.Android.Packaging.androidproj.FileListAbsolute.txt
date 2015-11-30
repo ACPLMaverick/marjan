@@ -2,7 +2,14 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.apk.recipe
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.apk.recipe.merged
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\libs\armeabi-v7a\libClothSim.so
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\libs\armeabi-v7a\gdbserver
-D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\libs\armeabi-v7a\libgnustl_static.a
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\libs\armeabi-v7a\libc++_static.a
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\libs\armeabi-v7a\libSOIL2.a
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\BasicFragmentShader.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\BasicVertexShader.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\FontFragmentShader.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\FontVertexShader.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\WireframeFragmentShader.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\ExportedFont.bmp
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\res\values\strings.xml
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\build.xml
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\project.properties

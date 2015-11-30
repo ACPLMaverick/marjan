@@ -2,6 +2,7 @@
 
 Renderer::Renderer()
 {
+	m_initialized = false;
 }
 
 Renderer::Renderer(const Renderer*)
@@ -15,6 +16,8 @@ Renderer::~Renderer()
 
 unsigned int Renderer::Initialize()
 {
+	if (m_initialized)
+		return CS_ERR_NONE;
 	unsigned int err = CS_ERR_NONE;
 
 	// initialize OpenGL ES and EGL
@@ -29,6 +32,14 @@ unsigned int Renderer::Initialize()
 		EGL_BLUE_SIZE, 8,
 		EGL_GREEN_SIZE, 8,
 		EGL_RED_SIZE, 8,
+		EGL_ALPHA_SIZE, 8,
+		EGL_DEPTH_SIZE, 24,
+		EGL_STENCIL_SIZE, 8,
+		EGL_NONE
+	};
+	const EGLint attribsContext[] = 
+	{
+		EGL_CONTEXT_CLIENT_VERSION, 3,
 		EGL_NONE
 	};
 	// dont forget about vsync here
@@ -58,7 +69,7 @@ unsigned int Renderer::Initialize()
 	ANativeWindow_setBuffersGeometry(engine->app->window, 0, 0, format);
 
 	surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
-	context = eglCreateContext(display, config, NULL, NULL);
+	context = eglCreateContext(display, config, NULL, attribsContext);
 
 	if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
 		LOGW("Unable to eglMakeCurrent");
@@ -91,29 +102,34 @@ unsigned int Renderer::Initialize()
 	if (CSSET_BACKFACE_CULLING)
 	{
 		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CCW);
 	}
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 
 	glEnable(GL_DITHER);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-
+	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+	/*
 	glEnable(GL_STENCIL);
 	glStencilFunc(GL_LEQUAL, 0, 0xFF);
 	glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
-
+	*/
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
+
 	glDepthFunc(GL_LEQUAL);
 
 	/////////////////////////
 
+	m_initialized = true;
 	return err;
 }
 
 unsigned int Renderer::Shutdown()
 {
+	if (!m_initialized)
+		return CS_ERR_NONE;
+
 	unsigned int err = CS_ERR_NONE;
 	Engine* engine = System::GetInstance()->GetEngineData();
 
@@ -132,6 +148,7 @@ unsigned int Renderer::Shutdown()
 	engine->context = EGL_NO_CONTEXT;
 	engine->surface = EGL_NO_SURFACE;
 
+	m_initialized = false;
 	return err;
 }
 
@@ -140,7 +157,7 @@ unsigned int Renderer::Run()
 	unsigned int err = CS_ERR_NONE;
 	Engine* engine = System::GetInstance()->GetEngineData();
 
-	if (engine->display == NULL) 
+	if (engine->display == NULL || engine->context == NULL || engine->surface == NULL) 
 	{
 		// No display.
 		return CS_ERR_UNKNOWN;
@@ -177,7 +194,7 @@ unsigned int Renderer::Run()
 	}
 	*/
 
-	eglSwapBuffers(engine->display, engine->surface);
+	EGLBoolean res = eglSwapBuffers(engine->display, engine->surface);
 
 	return err;
 }
@@ -208,64 +225,52 @@ DrawMode Renderer::GetDrawMode()
 	return m_mode;
 }
 
+bool Renderer::GetInitialized()
+{
+	return m_initialized;
+}
+
 
 
 void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentFilePath, const string* newName, ShaderID* n)
 {
-	string extension = ".glsl";
-
 	GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
+
 	// Read vs code from file
-	string vertexShaderCode;
-	ifstream vertexShaderStream((*vertexFilePath + extension).c_str(), ios::in);
-	if (vertexShaderStream.is_open())
-	{
-		string Line = "";
-		while (getline(vertexShaderStream, Line))
-			vertexShaderCode += "\n" + Line;
-		vertexShaderStream.close();
-	}
+	char *vertexShaderCode, *fragmentShaderCode;
+	vertexShaderCode = LoadShaderFromAssets(vertexFilePath);
+	fragmentShaderCode = LoadShaderFromAssets(fragmentFilePath);
 
-	string fragmentShaderCode;
-	ifstream fragmentShaderStream((*fragmentFilePath + extension).c_str(), ios::in);
-	if (fragmentShaderStream.is_open())
-	{
-		string Line = "";
-		while (getline(fragmentShaderStream, Line))
-			fragmentShaderCode += "\n" + Line;
-		fragmentShaderStream.close();
-	}
-
-	GLint result = GL_FALSE;
-	int infoLogLength;
+	GLint result = 500;
+	int infoLogLength = 10;
 
 	// Compile Vertex Shader
 	LOGI("Compiling shader : %s\n", vertexFilePath->c_str());
-	char const * VertexSourcePointer = vertexShaderCode.c_str();
+	char const * VertexSourcePointer = vertexShaderCode;
 	glShaderSource(vertexShaderID, 1, &VertexSourcePointer, NULL);
 	glCompileShader(vertexShaderID);
 
 	// Check Vertex Shader
 	glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &result);
 	glGetShaderiv(vertexShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
-	std::vector<char> VertexShaderErrorMessage(infoLogLength);
+	vector<char> VertexShaderErrorMessage(infoLogLength);
 	glGetShaderInfoLog(vertexShaderID, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
-	LOGW("%s\n", &VertexShaderErrorMessage[0]);
+	LOGW("%s : %s\n", vertexFilePath->c_str(), &VertexShaderErrorMessage[0]);
 
 	// Compile Fragment Shader
 	LOGI("Compiling shader : %s\n", fragmentFilePath->c_str());
-	char const * FragmentSourcePointer = fragmentShaderCode.c_str();
+	char const * FragmentSourcePointer = fragmentShaderCode;
 	glShaderSource(fragmentShaderID, 1, &FragmentSourcePointer, NULL);
 	glCompileShader(fragmentShaderID);
 
 	// Check Fragment Shader
 	glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &result);
 	glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
-	std::vector<char> FragmentShaderErrorMessage(infoLogLength);
+	vector<char> FragmentShaderErrorMessage(infoLogLength);
 	glGetShaderInfoLog(fragmentShaderID, infoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-	LOGW("%s\n", &FragmentShaderErrorMessage[0]);
+	LOGW("%s : %s\n", fragmentFilePath->c_str(), &FragmentShaderErrorMessage[0]);
 
 	// Link the program
 	LOGI("Linking program\n");
@@ -277,12 +282,14 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	// Check the program
 	glGetProgramiv(ProgramID, GL_LINK_STATUS, &result);
 	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &infoLogLength);
-	std::vector<char> ProgramErrorMessage(glm::max(infoLogLength, int(1)));
+	vector<char> ProgramErrorMessage(glm::max(infoLogLength, int(1)));
 	glGetProgramInfoLog(ProgramID, infoLogLength, NULL, &ProgramErrorMessage[0]);
 	LOGW("%s\n", &ProgramErrorMessage[0]);
 
 	glDeleteShader(vertexShaderID);
 	glDeleteShader(fragmentShaderID);
+	delete vertexShaderCode;
+	delete fragmentShaderCode;
 
 	n->id = ProgramID;
 	n->name = (*newName);
@@ -297,6 +304,25 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	n->id_lightAmb = glGetUniformLocation(ProgramID, "LightAmb");
 	n->id_gloss = glGetUniformLocation(ProgramID, "Gloss");
 	n->id_highlight = glGetUniformLocation(ProgramID, "Highlight");
+}
+
+char* Renderer::LoadShaderFromAssets(const string * path)
+{
+	string prefix = "shaders/";
+	string suffix = ".glsl";
+	string fPath = prefix + *path + suffix;
+
+	// fuck you, assetmanager
+	AAssetManager* mgr = System::GetInstance()->GetEngineData()->app->activity->assetManager;
+
+	AAsset* shaderAsset = AAssetManager_open(mgr, fPath.c_str(), AASSET_MODE_UNKNOWN);
+	unsigned int length = AAsset_getLength(shaderAsset);
+
+	char * code = new char[length + 1];
+
+	AAsset_read(shaderAsset, (void*)code, length);
+	code[length] = '\0';
+	return code;
 }
 
 void Renderer::ShutdownShader(ShaderID* sid)

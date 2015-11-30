@@ -1,1 +1,1 @@
-$(ApplicationName)=ClothSim;$(AndroidAppLibName)=ClothSim;$(projectname)=ClothSim.Android.Packaging;$(androidapilevel)=android-19;
+$(ApplicationName)=ClothSim;$(AndroidAppLibName)=ClothSim;$(projectname)=ClothSim.Android.Packaging;$(androidapilevel)=android-21;

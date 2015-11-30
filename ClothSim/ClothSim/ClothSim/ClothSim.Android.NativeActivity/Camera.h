@@ -34,6 +34,8 @@ protected:
 
 	float m_distanceFromTarget;
 
+	float m_windowWidth, m_windowHeight;
+
 	bool m_viewDirty;
 	bool m_projDirty;
 
