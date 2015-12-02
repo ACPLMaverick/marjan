@@ -3,6 +3,7 @@
 System::System()
 {
 	m_running = false;
+	m_scene = nullptr;
 }
 
 System::System(const System*)
@@ -177,6 +178,7 @@ unsigned int System::InitAndroid(android_app* app)
 	app->userData = m_engine;
 	app->onAppCmd = System::AHandleCmd;
 	app->onInputEvent = InputManager::AHandleInput;
+	app->activity->callbacks->onNativeWindowRedrawNeeded = Renderer::AHandleResize;
 	m_engine->app = app;
 
 	// Prepare to monitor accelerometer
@@ -291,7 +293,8 @@ unsigned int System::RunAndroid()
 /**
 * Process the next main command.
 */
-void System::AHandleCmd(struct android_app* app, int32_t cmd) {
+void System::AHandleCmd(struct android_app* app, int32_t cmd) 
+{
 	struct Engine* engine = (struct Engine*)app->userData;
 	switch (cmd) {
 	case APP_CMD_SAVE_STATE:

@@ -303,3 +303,16 @@ GUIElement* Scene::GetGUIElement(std::string* id)
 {
 	return m_guiElements.at(*id);
 }
+
+void Scene::FlushDimensions()
+{
+	for (vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	{
+		(*it)->FlushDimensions();
+	}
+
+	for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
+	{
+		(*it).second->FlushDimensions();
+	}
+}

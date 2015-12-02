@@ -206,12 +206,12 @@ unsigned int SceneTest::Initialize()
 
 	GUIText* gt2 = new GUIText(&t2n, &t2v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt2->Initialize();
-	gt2->SetPosition(glm::vec2(-0.95f, 0.8f));
+	gt2->SetPosition(glm::vec2(-0.95f, 0.78f));
 	gt2->SetScale(scl);
 
 	GUIText* gt3 = new GUIText(&t3n, &t3v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt3->Initialize();
-	gt3->SetPosition(glm::vec2(-0.95f, 0.75f));
+	gt3->SetPosition(glm::vec2(-0.95f, 0.71f));
 	gt3->SetScale(scl);
 
 	GUIText* gt4 = new GUIText(&tval01, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
@@ -221,12 +221,12 @@ unsigned int SceneTest::Initialize()
 
 	GUIText* gt5 = new GUIText(&tval02, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt5->Initialize();
-	gt5->SetPosition(glm::vec2(-0.22f, 0.8f));
+	gt5->SetPosition(glm::vec2(-0.22f, 0.78f));
 	gt5->SetScale(scl);
 
 	GUIText* gt6 = new GUIText(&tval03, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt6->Initialize();
-	gt6->SetPosition(glm::vec2(-0.22f, 0.75f));
+	gt6->SetPosition(glm::vec2(-0.22f, 0.71f));
 	gt6->SetScale(scl);
 
 	AddGUIElement(gt);

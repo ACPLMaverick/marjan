@@ -70,5 +70,7 @@ public:
 	SimObject* GetObject(unsigned int);
 	Camera* GetCamera(unsigned int);
 	GUIElement* GetGUIElement(std::string*);
+
+	void FlushDimensions();
 };
 

@@ -208,3 +208,12 @@ void Camera::SetUp(glm::vec3* up)
 	(*m_up) = (*up);
 	m_viewDirty = true;
 }
+
+void Camera::FlushDimensions()
+{
+	Engine* engine = System::GetInstance()->GetEngineData();
+	m_windowWidth = (float)engine->width;
+	m_windowHeight = (float)engine->height;
+	CalculateProjection();
+	CalculateViewProjection();
+}

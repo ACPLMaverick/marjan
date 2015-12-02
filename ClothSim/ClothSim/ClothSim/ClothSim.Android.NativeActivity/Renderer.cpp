@@ -22,27 +22,6 @@ unsigned int Renderer::Initialize()
 
 	// initialize OpenGL ES and EGL
 
-	/*
-	* Here specify the attributes of the desired configuration.
-	* Below, we select an EGLConfig with at least 8 bits per color
-	* component compatible with on-screen windows
-	*/
-	const EGLint attribs[] = {
-		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-		EGL_BLUE_SIZE, 8,
-		EGL_GREEN_SIZE, 8,
-		EGL_RED_SIZE, 8,
-		EGL_ALPHA_SIZE, 8,
-		EGL_DEPTH_SIZE, 24,
-//		EGL_STENCIL_SIZE, 8,
-		EGL_NONE
-	};
-	const EGLint attribsContext[] = 
-	{
-		EGL_CONTEXT_CLIENT_VERSION, 3,
-		EGL_NONE
-	};
-	// dont forget about vsync here
 	EGLint w, h, format;
 	EGLint numConfigs;
 	EGLConfig config;
@@ -162,6 +141,12 @@ unsigned int Renderer::Run()
 		// No display.
 		return CS_ERR_UNKNOWN;
 	}
+
+	if (m_resizeNeeded)
+	{
+		ResizeViewport();
+		m_resizeNeeded = false;
+	}	
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -325,6 +310,13 @@ char* Renderer::LoadShaderFromAssets(const string * path)
 	return code;
 }
 
+inline void Renderer::ResizeViewport()
+{
+	Engine* engine = System::GetInstance()->GetEngineData();
+
+	glViewport(0, 0, engine->width, engine->height);
+}
+
 void Renderer::ShutdownShader(ShaderID* sid)
 {
 	glDeleteProgram(sid->id);
@@ -370,4 +362,22 @@ void Renderer::LoadTexture(const string* name, const unsigned char* data, int da
 void Renderer::ShutdownTexture(TextureID* id)
 {
 	glDeleteTextures(1, (GLuint*)&(id->id));
+}
+
+void Renderer::AHandleResize(ANativeActivity * activity, ANativeWindow * window)
+{
+	int32_t w, h;
+	w = ANativeWindow_getWidth(window);
+	h = ANativeWindow_getHeight(window);
+
+	Engine* engine = System::GetInstance()->GetEngineData();
+	engine->width = w;
+	engine->height = h;
+
+	Renderer::GetInstance()->m_resizeNeeded = true;
+
+	if(System::GetInstance()->GetCurrentScene() != nullptr)
+		System::GetInstance()->GetCurrentScene()->FlushDimensions();
+
+	LOGI("Renderer: Resize scheduled %dx%d", w, h);
 }

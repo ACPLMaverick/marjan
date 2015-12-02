@@ -77,5 +77,7 @@ public:
 	void SetPosition(glm::vec3*);
 	void SetTarget(glm::vec3*);
 	void SetUp(glm::vec3*);
+
+	void FlushDimensions();
 };
 

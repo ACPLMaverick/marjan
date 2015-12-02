@@ -12,6 +12,7 @@
 
 class GUIElement
 {
+	friend class Renderer;
 protected:
 	std::string m_id;
 	glm::mat4 m_transform;
@@ -38,5 +39,7 @@ public:
 	glm::mat4* GetTransformMatrix();
 	glm::vec2 GetPosition();
 	glm::vec2 GetScale();
+
+	void FlushDimensions();
 };
 
