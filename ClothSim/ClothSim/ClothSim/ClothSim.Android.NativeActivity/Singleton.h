@@ -19,6 +19,7 @@ public:
 		if (instance != nullptr)
 		{
 			delete instance;
+			instance = nullptr;
 		}
 	}
 

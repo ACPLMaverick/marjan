@@ -27,6 +27,7 @@ Header file for common includes and switches
 #define CS_ERR_CLOTHSIMULATOR_MESH_OBTAINING_ERROR 7
 #define CS_ERR_CLOTHSIMULATOR_COLLIDER_OBTAINING_ERROR 8
 #define CS_ERR_CLOTHSIMULATOR_CUDA_FAILED 9
+#define CS_ERR_SHUTDOWN_PENDING 10
 //////////////////
 
 // other helpful defines

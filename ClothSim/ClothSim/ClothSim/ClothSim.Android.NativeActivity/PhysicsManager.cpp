@@ -7,6 +7,10 @@ PhysicsManager::PhysicsManager()
 }
 
 
+PhysicsManager::PhysicsManager(const PhysicsManager * c)
+{
+}
+
 PhysicsManager::~PhysicsManager()
 {
 }
@@ -25,6 +29,10 @@ unsigned int PhysicsManager::Initialize()
 
 unsigned int PhysicsManager::Shutdown()
 {
+	for (std::vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+	{
+		(*it)->Shutdown();
+	}
 	m_colliders.clear();
 	m_boxCollidersData.clear();
 	m_sphereCollidersData.clear();

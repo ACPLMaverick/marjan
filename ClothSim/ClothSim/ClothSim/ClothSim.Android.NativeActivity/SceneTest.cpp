@@ -88,6 +88,8 @@ unsigned int SceneTest::Initialize()
 
 	tPosMin = (glm::vec3(0.0f, 0.0f, 0.0f));
 
+	PhysicsManager* ph = PhysicsManager::GetInstance();
+
 	SphereCollider* tObjCollider = PhysicsManager::GetInstance()->CreateSphereCollider(testObj, &tPosMin, 2.0f);
 	testObj->AddCollider(tObjCollider);
 
@@ -176,7 +178,8 @@ unsigned int SceneTest::Initialize()
 	glm::vec3 ldCol = (glm::vec3(1.0f, 0.9f, 0.6f));
 	glm::vec3 ldSpec = (glm::vec3(1.0f, 0.9f, 0.9f));
 	glm::vec3 ldDir = (glm::vec3(-0.8f, -0.8f, -1.0f));
-	SetAmbientLight(new LightAmbient(&aCol));
+	LightAmbient* la = new LightAmbient(&aCol);
+	SetAmbientLight(la);
 	LightDirectional* dir1 = new LightDirectional(&ldCol, &ldSpec, &ldDir);
 	AddDirectionalLight(dir1);
 

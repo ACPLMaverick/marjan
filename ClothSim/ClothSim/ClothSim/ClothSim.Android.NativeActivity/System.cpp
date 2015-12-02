@@ -2,7 +2,7 @@
 
 System::System()
 {
-
+	m_running = false;
 }
 
 System::System(const System*)
@@ -18,22 +18,14 @@ System::~System()
 
 
 
-unsigned int System::Initialize(android_app* app)
+unsigned int System::Initialize()
 {
 	unsigned int err = CS_ERR_NONE;
 
-	m_running = true;
-
-	// initialize android stuff common to all users
-	err = InitAndroid(app);
-	if (err != CS_ERR_NONE) return err;
-
 	// initializing main singletons
 
-	/* SHOULD ALREADY BE INITIALIZED
 	err = Renderer::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
-	*/
 
 	err = ResourceManager::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
@@ -55,7 +47,7 @@ unsigned int System::Initialize(android_app* app)
 
 	// initializing gui
 
-	// initializing CUDA
+	m_running = true;
 
 #ifdef _DEBUG
 	printf("\nSystem.Initialize has completed successfully.\n");
@@ -66,6 +58,9 @@ unsigned int System::Initialize(android_app* app)
 unsigned int System::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
+
+	if (!m_running)
+		return CS_ERR_SHUTDOWN_PENDING;
 
 	m_running = false;
 
@@ -84,14 +79,16 @@ unsigned int System::Shutdown()
 	err = PhysicsManager::GetInstance()->Shutdown();
 	if (err != CS_ERR_NONE) return err;
 
+	err = ResourceManager::GetInstance()->Shutdown();
+	if (err != CS_ERR_NONE) return err;
+	
 	Renderer::DestroyInstance();
 	InputManager::DestroyInstance();
 	InputHandler::DestroyInstance();
 	PhysicsManager::DestroyInstance();
+	ResourceManager::DestroyInstance();
 
 	// shutting down gui
-
-	// shutting down CUDA
 
 #ifdef _DEBUG
 	printf("\nSystem.Shutdown has completed successfully.\n");
@@ -104,29 +101,63 @@ unsigned int System::Run()
 {
 	unsigned int err = CS_ERR_NONE;
 
-	while (m_running)
+	while (1)
 	{
-		// update timer
-		Timer::GetInstance()->Run();
-
-		// update android-related stuff, mainly events
-		RunAndroid();
-
-		// update input
-		InputManager::GetInstance()->Run();
-
-		// update gui
-
-		// update scene
-		m_scene->Update();
-
-		// compute collisions
-		PhysicsManager::GetInstance()->Run();
-
-		// draw one frame
-		if(Renderer::GetInstance()->GetInitialized())
-			Renderer::GetInstance()->Run();
+		if (m_running)
+		{
+			err = Tick();
+		}
+		else
+		{
+			err = RunAndroid();
+			if (err != CS_ERR_NONE)
+				return err;
+		}
 	}
+
+	return err;
+}
+
+
+unsigned int System::Tick()
+{
+	unsigned int err = CS_ERR_NONE;
+
+	// update timer
+	err = Timer::GetInstance()->Run();
+	if (err != CS_ERR_NONE)
+		return err;
+
+	// update android-related stuff, mainly events
+	err = RunAndroid();
+	if (err != CS_ERR_NONE)
+	{
+		LOGW("DESTROY!");
+		return err;
+	}
+		
+
+	// update input
+	err = InputManager::GetInstance()->Run();
+	if (err != CS_ERR_NONE)
+		return err;
+
+	// update gui
+
+	// update scene
+	err = m_scene->Update();
+	if (err != CS_ERR_NONE)
+		return err;
+
+	// compute collisions
+	err = PhysicsManager::GetInstance()->Run();
+	if (err != CS_ERR_NONE)
+		return err;
+
+	// draw one frame
+	err = Renderer::GetInstance()->Run();
+	if (err != CS_ERR_NONE)
+		return err;
 
 	return err;
 }
@@ -201,15 +232,17 @@ unsigned int System::InitAndroid(android_app* app)
 /**
 * Destroy android stuff
 */
-void System::ShutdownAndroid()
+unsigned int System::ShutdownAndroid()
 {
 	delete m_engine;
+
+	return CS_ERR_NONE;
 }
 
 /**
 * Run android stuff, mainly events
 */
-void System::RunAndroid()
+unsigned int System::RunAndroid()
 {
 	// Read all pending events.
 	int ident;
@@ -247,10 +280,12 @@ void System::RunAndroid()
 
 		// Check if we are exiting.
 		if (m_engine->app->destroyRequested != 0) {
-			Renderer::GetInstance()->Shutdown();
-			return;
+			System::GetInstance()->Shutdown();
+			return CS_ERR_SHUTDOWN_PENDING;
 		}
 	}
+
+	return CS_ERR_NONE;
 }
 
 /**
@@ -260,24 +295,48 @@ void System::AHandleCmd(struct android_app* app, int32_t cmd) {
 	struct Engine* engine = (struct Engine*)app->userData;
 	switch (cmd) {
 	case APP_CMD_SAVE_STATE:
+
 		// The system has asked us to save our current state.  Do so.
 		engine->app->savedState = malloc(sizeof(struct saved_state));
 		*((struct saved_state*)engine->app->savedState) = engine->state;
 		engine->app->savedStateSize = sizeof(struct saved_state);
+
 		break;
+
 	case APP_CMD_INIT_WINDOW:
-		// The window is being shown, get it ready.
-		if (engine->app->window != NULL) {
-			Renderer::GetInstance()->Initialize();
-			//Renderer::GetInstance()->Run();
+		// Initalize everything.
+		if (engine->app->window != NULL) 
+		{
+			System::GetInstance()->Initialize();
+
+			Timer::GetInstance()->Run();
+
+			InputManager::GetInstance()->Run();
+
+			System::GetInstance()->m_scene->Update();
+
+			PhysicsManager::GetInstance()->Run();
+
+			Renderer::GetInstance()->Run();
 		}
+		else
+		{
+			LOGW("System: Window is NULL!");
+		}
+
 		break;
+
 	case APP_CMD_TERM_WINDOW:
-		// The window is being hidden or closed, clean it up.
-		Renderer::GetInstance()->Shutdown();
+
+		// Shutdown and clean up everything.
+		System::GetInstance()->Shutdown();
+
 		break;
+
 	case APP_CMD_GAINED_FOCUS:
+
 		// When our app gains focus, we start monitoring the accelerometer.
+		engine->animating = 1;
 		if (engine->accelerometerSensor != NULL) {
 			ASensorEventQueue_enableSensor(engine->sensorEventQueue,
 				engine->accelerometerSensor);
@@ -285,21 +344,39 @@ void System::AHandleCmd(struct android_app* app, int32_t cmd) {
 			ASensorEventQueue_setEventRate(engine->sensorEventQueue,
 				engine->accelerometerSensor, (1000L / 60) * 1000);
 		}
+
 		break;
+
 	case APP_CMD_LOST_FOCUS:
+
 		// When our app loses focus, we stop monitoring the accelerometer.
 		// This is to avoid consuming battery while not being used.
 		if (engine->accelerometerSensor != NULL) {
 			ASensorEventQueue_disableSensor(engine->sensorEventQueue,
 				engine->accelerometerSensor);
 		}
+
 		// Also stop animating.
 		engine->animating = 0;
+		Timer::GetInstance()->Run();
+
+		InputManager::GetInstance()->Run();
+
+		System::GetInstance()->m_scene->Update();
+
+		PhysicsManager::GetInstance()->Run();
+
 		Renderer::GetInstance()->Run();
+
 		break;
 	}
 }
 
+
+bool System::GetRunning()
+{
+	return m_running;
+}
 
 Scene* System::GetCurrentScene()
 {

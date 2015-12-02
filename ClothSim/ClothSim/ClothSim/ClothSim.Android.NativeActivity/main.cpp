@@ -11,29 +11,12 @@ void android_main(android_app* state)
 {
 	int error;
 
-	error = System::GetInstance()->Initialize(state);
+	error = System::GetInstance()->InitAndroid(state);
 
-	if (error != CS_ERR_NONE)
-	{
-		LOGW("\nSystem.Initialize exited with error code %d\n", error);
-		return;
-	}
+	// wait for app to init
+	while (!System::GetInstance()->GetRunning());
 
-	error = System::GetInstance()->Run();
-
-	if (error != CS_ERR_NONE)
-	{
-		LOGW("\nSystem.Run exited with error code %d\n", error);
-		return;
-	}
-
-	error = System::GetInstance()->Shutdown();
-
-	if (error != CS_ERR_NONE)
-	{
-		LOGW("\nSystem.Shutdown exited with error code %d\n", error);
-		return;
-	}
+	System::GetInstance()->Run();
 
 	System::DestroyInstance();
 
