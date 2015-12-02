@@ -95,7 +95,7 @@ unsigned int Scene::Update()
 	return CS_ERR_NONE;
 }
 
-unsigned int Scene::Draw()
+unsigned int Scene::DrawObjects()
 {
 	unsigned int err;
 
@@ -107,15 +107,19 @@ unsigned int Scene::Draw()
 			return err;
 	}
 
-	if (Renderer::GetInstance()->GetDrawMode() != WIREFRAME)
-	{
-		for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
-		{
-			err = it->second->Draw();
+	return CS_ERR_NONE;
+}
 
-			if (err != CS_ERR_NONE)
-				return err;
-		}
+unsigned int Scene::DrawGUI()
+{
+	unsigned int err;
+
+	for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
+	{
+		err = it->second->Draw();
+
+		if (err != CS_ERR_NONE)
+			return err;
 	}
 
 	return CS_ERR_NONE;

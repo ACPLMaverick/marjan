@@ -21,7 +21,9 @@ unsigned int InputManager::Initialize()
 	unsigned int err = CS_ERR_NONE;
 
 	m_tBools.push_back(&m_pressTBool);
+	m_tBools.push_back(&m_clickHelperTBool);
 	m_tBools.push_back(&m_touch01TBool);
+	m_tBools.push_back(&m_touch02TBool);
 	m_tBools.push_back(&m_doubleTouchTBool);
 	m_tBools.push_back(&m_pinchTBool);
 
@@ -44,12 +46,22 @@ unsigned int InputManager::Run()
 		(*it)->Update();
 	}
 
+	if (m_clickHelperTBool.GetVal() && !m_pressTBool.GetVal())
+	{
+		m_isClick = true;
+		//m_pressTBool.SetVal(false);
+	}
+	else
+		m_isClick = false;
+
+	m_clickHelperTBool.SetVal(m_pressTBool.GetVal());
+
 	return err;
 }
 
 bool InputManager::GetPress()
 {
-	return m_pressTBool.GetVal();
+	return m_isClick;
 }
 
 bool InputManager::GetTouch()
@@ -123,6 +135,7 @@ int32_t InputManager::AHandleInput(struct android_app* app, AInputEvent* event)
 			im->m_touch01Position = tVec;
 
 			im->m_touch01TBool.SetVal(true);
+			im->m_pressTBool.SetVal(true);
 		}
 		else if (pCount == 2)
 		{

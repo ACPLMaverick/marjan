@@ -118,6 +118,21 @@
     <ClInclude Include="Transform.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="GUIActionShowPreferences.h">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIActionExitProgram.h">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIActionSetDisplayMode.h">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIAction.h">
+      <Filter>Core\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGLRectButton.h">
+      <Filter>Graphics\Meshes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c">
@@ -231,6 +246,21 @@
     <ClCompile Include="Transform.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="GUIActionExitProgram.cpp">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIActionSetDisplayMode.cpp">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIActionShowPreferences.cpp">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIAction.cpp">
+      <Filter>Core\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGLRectButton.cpp">
+      <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Main">
@@ -268,6 +298,9 @@
     </Filter>
     <Filter Include="Graphics\Shaders">
       <UniqueIdentifier>{ec2f45da-2e77-4d3e-9f4c-6241205ef0a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\GUI\Actions">
+      <UniqueIdentifier>{7c3b1fb7-5e57-475e-87b0-56a139758804}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

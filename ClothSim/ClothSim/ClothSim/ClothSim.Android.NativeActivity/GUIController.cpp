@@ -96,7 +96,7 @@ unsigned int GUIController::Update()
 
 	// ROTATING CAMERA
 
-	if (InputHandler::GetInstance()->CameraRotateButtonPressed())
+	if (InputHandler::GetInstance()->GetHold())
 	{
 #ifdef BUILD_OPENGL
 		if (!cursorHideHelper)
@@ -157,7 +157,7 @@ unsigned int GUIController::Update()
 
 	// MOVING CAMERA ON XZ PLANE
 
-	if (InputHandler::GetInstance()->CameraMoveButtonPressed())
+	if (InputHandler::GetInstance()->GetHold())
 	{
 		glm::vec2 mVec;
 		InputHandler::GetInstance()->GetCameraMovementVector(&mVec);

@@ -66,10 +66,10 @@ unsigned int Renderer::Initialize()
 
 	// Shaders Loading
 	
-	ResourceManager::GetInstance()->LoadShader(&SN_BASIC);
-	ResourceManager::GetInstance()->LoadShader(&SN_BASIC, &SN_WIREFRAME);
-	ResourceManager::GetInstance()->LoadShader(&SN_FONT);
-	m_shaderID = ResourceManager::GetInstance()->GetShader((unsigned int)0);
+	m_basicShader = ResourceManager::GetInstance()->LoadShader(&SN_BASIC);
+	m_wireframeShader = ResourceManager::GetInstance()->LoadShader(&SN_BASIC, &SN_WIREFRAME);
+	m_fontShader = ResourceManager::GetInstance()->LoadShader(&SN_FONT);
+	m_shaderID = m_basicShader;
 
 	m_mode = BASIC;
 
@@ -154,12 +154,12 @@ unsigned int Renderer::Run()
 	/*
 	if (m_mode == BASIC || m_mode == BASIC_WIREFRAME)
 	{*/
-		m_shaderID = ResourceManager::GetInstance()->GetShader(&SN_BASIC);
+		m_shaderID = m_basicShader;
 		glUseProgram(m_shaderID->id);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		System::GetInstance()->GetCurrentScene()->Draw();
+		System::GetInstance()->GetCurrentScene()->DrawObjects();
 		/*
 	}
 	
@@ -178,6 +178,11 @@ unsigned int Renderer::Run()
 		System::GetInstance()->GetCurrentScene()->Draw();
 	}
 	*/
+
+	// Drawing GUI
+	m_shaderID = m_fontShader;
+	glUseProgram(m_shaderID->id);
+	System::GetInstance()->GetCurrentScene()->DrawGUI();
 
 	EGLBoolean res = eglSwapBuffers(engine->display, engine->surface);
 

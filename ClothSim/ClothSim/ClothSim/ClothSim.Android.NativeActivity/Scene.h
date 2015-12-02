@@ -41,7 +41,8 @@ public:
 	unsigned int Shutdown();
 
 	unsigned int Update();
-	unsigned int Draw();
+	unsigned int DrawObjects();
+	unsigned int DrawGUI();
 
 	unsigned int GetCurrentObjectID();
 	unsigned int GetCurrentCameraID();

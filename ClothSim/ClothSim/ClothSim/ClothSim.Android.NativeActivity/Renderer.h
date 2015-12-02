@@ -56,6 +56,11 @@ protected:
 
 	//GLFWwindow* m_window;
 	ShaderID* m_shaderID;
+
+	ShaderID* m_basicShader;
+	ShaderID* m_wireframeShader;
+	ShaderID* m_fontShader;
+
 	bool m_initialized;
 	bool m_resizeNeeded;
 

@@ -7,6 +7,7 @@
 #include "BoxAACollider.h"
 #include "SphereCollider.h"
 #include "ClothSimulator.h"
+#include "GUIButton.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
 {
@@ -192,6 +193,7 @@ unsigned int SceneTest::Initialize()
 	string t2v = "Delta time [ms]: ";
 	string t3n = "TotalTimetitle";
 	string t3v = "Total time [s]: ";
+	string tb1 = "BtnExit";
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
 	string tval03 = "TTvalue";
@@ -229,12 +231,19 @@ unsigned int SceneTest::Initialize()
 	gt6->SetPosition(glm::vec2(-0.22f, 0.71f));
 	gt6->SetScale(scl);
 
+	GUIButton* gb1 = new GUIButton(&tb1);
+	gb1->Initialize();
+	gb1->SetTextures(ResourceManager::GetInstance()->GetTexture(&tex), ResourceManager::GetInstance()->GetTexture(&tex));
+	gb1->SetPosition(glm::vec2(0.0f, 0.0f));
+	gb1->SetScale(glm::vec2(0.3f, 0.3f));
+
 	AddGUIElement(gt);
 	AddGUIElement(gt2);
 	AddGUIElement(gt3);
 	AddGUIElement(gt4);
 	AddGUIElement(gt5);
 	AddGUIElement(gt6);
+	AddGUIElement(gb1);
 
 	////////////////////////
 	/////////// Controllers

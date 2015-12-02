@@ -59,7 +59,9 @@ unsigned int MeshGLText::Draw()
 {
 	//if (Renderer::GetInstance()->GetDrawMode() == BASIC)
 	ShaderID* ids = Renderer::GetInstance()->GetCurrentShaderID();
-	Renderer::GetInstance()->SetCurrentShader(m_fontShaderID);
+
+	if (ids != m_fontShaderID)
+		Renderer::GetInstance()->SetCurrentShader(m_fontShaderID);
 
 	glm::mat4 wvp;
 	if (m_guiText == nullptr)
@@ -143,7 +145,8 @@ unsigned int MeshGLText::Draw()
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
 
-	Renderer::GetInstance()->SetCurrentShader(ids);
+	if (ids != m_fontShaderID)
+		Renderer::GetInstance()->SetCurrentShader(ids);
 
 	return CS_ERR_NONE;
 }

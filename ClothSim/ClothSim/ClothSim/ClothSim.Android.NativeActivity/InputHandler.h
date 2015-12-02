@@ -19,15 +19,12 @@ public:
 	InputHandler(const InputHandler*);
 	~InputHandler();
 
-	bool ExitPressed();
+	bool GetPressed();
+	bool GetHold();
+	bool GetZoom();
+	void GetClickPosition(glm::vec2* vec);
 	void GetCameraMovementVector(glm::vec2* vec);
 	void GetCameraRotationVector(glm::vec2* vec);
 	float GetZoomValue();
-	bool GetZoom();
-	bool ActionButtonPressed();
-	bool ActionButtonClicked();
-	bool CameraRotateButtonPressed();
-	bool CameraMoveButtonPressed();
-	bool WireframeButtonClicked();
 };
 

@@ -135,6 +135,10 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="GUIAction.h" />
+    <ClInclude Include="GUIActionExitProgram.h" />
+    <ClInclude Include="GUIActionSetDisplayMode.h" />
+    <ClInclude Include="GUIActionShowPreferences.h" />
     <ClInclude Include="GUIButton.h" />
     <ClInclude Include="GUIController.h" />
     <ClInclude Include="GUIElement.h" />
@@ -149,6 +153,7 @@
     <ClInclude Include="MeshGL.h" />
     <ClInclude Include="MeshGLBox.h" />
     <ClInclude Include="MeshGLPlane.h" />
+    <ClInclude Include="MeshGLRectButton.h" />
     <ClInclude Include="MeshGLRect.h" />
     <ClInclude Include="MeshGLSphere.h" />
     <ClInclude Include="MeshGLText.h" />
@@ -177,6 +182,10 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="GUIAction.cpp" />
+    <ClCompile Include="GUIActionExitProgram.cpp" />
+    <ClCompile Include="GUIActionSetDisplayMode.cpp" />
+    <ClCompile Include="GUIActionShowPreferences.cpp" />
     <ClCompile Include="GUIButton.cpp" />
     <ClCompile Include="GUIController.cpp" />
     <ClCompile Include="GUIElement.cpp" />
@@ -191,6 +200,7 @@
     <ClCompile Include="MeshGL.cpp" />
     <ClCompile Include="MeshGLBox.cpp" />
     <ClCompile Include="MeshGLPlane.cpp" />
+    <ClCompile Include="MeshGLRectButton.cpp" />
     <ClCompile Include="MeshGLRect.cpp" />
     <ClCompile Include="MeshGLSphere.cpp" />
     <ClCompile Include="MeshGLText.cpp" />

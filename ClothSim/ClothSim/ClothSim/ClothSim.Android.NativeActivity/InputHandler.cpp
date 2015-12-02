@@ -15,16 +15,21 @@ InputHandler::~InputHandler()
 
 }
 
-
-
-bool InputHandler::ExitPressed()
+bool InputHandler::GetPressed()
 {
-	if (InputManager::GetInstance()->GetTouch())
-	{
-		return true;
-	}
-	else return false;
+	return InputManager::GetInstance()->GetPress();
 }
+
+bool InputHandler::GetHold()
+{
+	bool ret = false;
+	if (!GetPressed())
+	{
+		ret = InputManager::GetInstance()->GetTouch();
+	}
+	return ret;
+}
+
 
 void InputHandler::GetCameraMovementVector(glm::vec2* vec)
 {
@@ -46,27 +51,7 @@ bool InputHandler::GetZoom()
 	return InputManager::GetInstance()->GetPinch();
 }
 
-bool InputHandler::ActionButtonPressed()
+void InputHandler::GetClickPosition(glm::vec2 * vec)
 {
-	return false;
-}
-
-bool InputHandler::ActionButtonClicked()
-{
-	return false;
-}
-
-bool InputHandler::CameraRotateButtonPressed()
-{
-	return InputManager::GetInstance()->GetTouch();
-}
-
-bool InputHandler::CameraMoveButtonPressed()
-{
-	return InputManager::GetInstance()->GetDoubleTouch();
-}
-
-bool InputHandler::WireframeButtonClicked()
-{
-	return InputManager::GetInstance()->GetTouch();
+	InputManager::GetInstance()->GetTouchPosition(vec);
 }

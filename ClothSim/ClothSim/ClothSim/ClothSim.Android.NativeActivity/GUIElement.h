@@ -20,7 +20,7 @@ protected:
 	glm::vec2 m_position;
 	glm::vec2 m_scale;
 
-	void GenerateTransformMatrix();
+	virtual void GenerateTransformMatrix();
 public:
 	GUIElement(const std::string*);
 	GUIElement(const GUIElement*);

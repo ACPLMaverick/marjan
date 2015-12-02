@@ -72,6 +72,7 @@ protected:
 	TwoBool m_touch01TBool;
 	TwoBool m_touch02TBool;
 	TwoBool m_pressTBool;
+	TwoBool m_clickHelperTBool;
 	TwoBool m_doubleTouchTBool;
 	TwoBool m_pinchTBool;
 	std::vector<TwoBool*> m_tBools;
@@ -84,6 +85,7 @@ protected:
 
 	float m_pinchVal = 0.0f;
 	bool m_isPinch;
+	bool m_isClick;
 
 	InputManager();
 public:
