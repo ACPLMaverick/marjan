@@ -67,20 +67,21 @@ private:
 
 	Scene* m_scene;
 
-
-	inline unsigned int InitAndroid(android_app* app);
-	inline void RunAndroid();
-	inline void ShutdownAndroid();
+	inline unsigned int RunAndroid();
+	inline unsigned int ShutdownAndroid();
 	static void AHandleCmd(android_app* app, int32_t cmd);
+	unsigned int Tick();
 public:
 	System(const System*);
 	~System();
 
-	unsigned int Initialize(android_app* app);
+	unsigned int InitAndroid(android_app* app);
+	unsigned int Initialize();
 	unsigned int Shutdown();
 	unsigned int Run();
 	void Stop();
 
+	bool GetRunning();
 	Scene* GetCurrentScene();
 	Engine* GetEngineData();
 };

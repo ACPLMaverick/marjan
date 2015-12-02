@@ -17,3 +17,4 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\androidmanifest.xml
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.apk
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.lastsuccessfuldeploy
 D:\Repositories\marjan\ClothSim\ClothSim\ClothSim\ClothSim.Android.Packaging\ARM\Debug\GenerateAndroidAntScript.incremental
+D:\Repositories\marjan\ClothSim\ClothSim\ClothSim\ClothSim.Android.Packaging\ARM\Debug\FileStringReplace.incremental
