@@ -414,3 +414,4 @@ ClothSim/ClothSim/ARM/Debug/Package/bin/
 ClothSim/ClothSim/ARM/Debug/
 ClothSim/ClothSim/ClothSim/ClothSim.Android.NativeActivity/ARM/
 ClothSim/ClothSim/ipch/
+ClothSimCUDA/ClothSimCUDA/Release/clothSpringSimulation.cu.deps
