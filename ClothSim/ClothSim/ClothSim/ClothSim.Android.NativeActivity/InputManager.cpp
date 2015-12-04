@@ -1,4 +1,5 @@
 #include "InputManager.h"
+#include "GUIButton.h"
 
 InputManager::InputManager()
 {
@@ -34,6 +35,8 @@ unsigned int InputManager::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
 
+	m_buttons.clear();
+
 	return err;
 }
 
@@ -55,6 +58,13 @@ unsigned int InputManager::Run()
 		m_isClick = false;
 
 	m_clickHelperTBool.SetVal(m_pressTBool.GetVal());
+
+	//////////////////////////////////////
+
+	if (m_isHold)
+		m_currentlyHeldButtons = ProcessButtonHolds(&m_touch01Position);
+	else
+		m_currentlyHeldButtons = 0;
 
 	return err;
 }
@@ -108,6 +118,117 @@ float InputManager::GetPinchValue()
 	return m_pinchVal;
 }
 
+unsigned int InputManager::GetCurrentlyHeldButtons()
+{
+	return m_currentlyHeldButtons;
+}
+
+void InputManager::AddButton(GUIButton * button)
+{
+	m_buttons.push_back(button);
+}
+
+void InputManager::RemoveButton(GUIButton * button)
+{
+	int ctr = 0;
+	for (std::vector<GUIButton*>::iterator it = m_buttons.begin(); it != m_buttons.end(); ++it, ++ctr)
+	{
+		if ((*it) == button)
+		{
+			m_buttons.erase(it);
+			return;
+		}
+	}
+}
+
+void InputManager::ComputeScaleFactors(glm::vec2 * factors)
+{
+	Engine* engine = System::GetInstance()->GetEngineData();
+	float scrWidth = engine->width;
+	float scrHeight = engine->height;
+	float bBias = 0.6f;
+	float factorX = (scrHeight / scrWidth);
+	float factorY = (scrWidth / scrHeight);
+	float hsFactor = 1.0f / Renderer::GetInstance()->GetScreenRatio();
+	if (scrWidth > scrHeight)
+	{
+		factorY = 1.0f / factorY * hsFactor;
+		factorX *= hsFactor;
+	}
+
+	factorX *= (1.0f / hsFactor);
+
+	factors->x = factorX;
+	factors->y = factorY;
+}
+
+bool InputManager::ButtonAreaInClick(GUIButton * button, const glm::vec2 * clickPos)
+{
+	// we have an event here, so we calculate current finger position
+	glm::vec2 cp;
+
+	Engine* e = System::GetInstance()->GetEngineData();
+	float w = e->width;
+	float h = e->height;
+
+	cp.x = clickPos->x / w * 2.0f - 1.0f;
+	cp.y = -(clickPos->y / h * 2.0f - 1.0f);
+
+	glm::vec2 nScl = button->GetScale();
+	glm::vec2 pos = button->GetPosition();
+	glm::vec2 scaleFactors;
+	ComputeScaleFactors(&scaleFactors);
+	nScl.x *= scaleFactors.x;
+	nScl.y *= scaleFactors.y;
+
+	// check if click is within boundaries of this button
+	if (
+		cp.x >= pos.x - nScl.x &&
+		cp.x <= pos.x + nScl.x &&
+		cp.y >= pos.y - nScl.y &&
+		cp.y <= pos.y + nScl.y
+		)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+unsigned int InputManager::ProcessButtonClicks(const glm::vec2 * clickPos)
+{
+	unsigned int ctr = 0;
+	for (std::vector<GUIButton*>::iterator it = m_buttons.begin(); it != m_buttons.end(); ++it)
+	{
+		if (ButtonAreaInClick(*it, clickPos))
+		{
+			++ctr;
+			(*it)->ExecuteActionsClick();
+			(*it)->CleanupAfterHold();
+		}
+	}
+
+	return ctr;
+}
+
+unsigned int InputManager::ProcessButtonHolds(const glm::vec2 * clickPos)
+{
+	unsigned int ctr = 0;
+	for (std::vector<GUIButton*>::iterator it = m_buttons.begin(); it != m_buttons.end(); ++it)
+	{
+		if (ButtonAreaInClick(*it, clickPos))
+		{
+			++ctr;
+			(*it)->ExecuteActionsHold();
+		}
+		else if ((*it)->GetHoldInProgress())
+		{
+			(*it)->CleanupAfterHold();
+		}
+	}
+	return ctr;
+}
+
 /**
 * Process the next input event.
 */
@@ -135,7 +256,17 @@ int32_t InputManager::AHandleInput(struct android_app* app, AInputEvent* event)
 			im->m_touch01Position = tVec;
 
 			im->m_touch01TBool.SetVal(true);
-			im->m_pressTBool.SetVal(true);
+
+			if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_UP)
+			{
+				im->m_pressTBool.SetVal(true);
+				im->ProcessButtonClicks(&tVec);
+				im->m_isHold = false;
+			}
+			else if(AMotionEvent_getAction(event) != AMOTION_EVENT_ACTION_DOWN)
+			{
+				im->m_isHold = true;
+			}
 		}
 		else if (pCount == 2)
 		{

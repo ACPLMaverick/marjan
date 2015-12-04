@@ -15,11 +15,14 @@ GUIActionSetDisplayMode::~GUIActionSetDisplayMode()
 {
 }
 
-unsigned int GUIActionSetDisplayMode::Action()
+unsigned int GUIActionSetDisplayMode::Action(void* params)
 {
 	unsigned int err = CS_ERR_NONE;
 
-
+	LOGI("Changing diplay mode!");
+	DrawMode m = Renderer::GetInstance()->GetDrawMode();
+	int newMode = (((int)m + 1) % 3);
+	Renderer::GetInstance()->SetDrawMode((DrawMode)newMode);
 
 	return err;
 }

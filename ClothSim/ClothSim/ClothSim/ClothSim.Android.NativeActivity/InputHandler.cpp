@@ -15,7 +15,7 @@ InputHandler::~InputHandler()
 
 }
 
-bool InputHandler::GetPressed()
+bool InputHandler::GetClick()
 {
 	return InputManager::GetInstance()->GetPress();
 }
@@ -23,27 +23,46 @@ bool InputHandler::GetPressed()
 bool InputHandler::GetHold()
 {
 	bool ret = false;
-	if (!GetPressed())
+	if (!GetClick())
 	{
 		ret = InputManager::GetInstance()->GetTouch();
 	}
 	return ret;
 }
 
+bool InputHandler::GetPress()
+{
+	return InputManager::GetInstance()->GetTouch();
+}
 
 void InputHandler::GetCameraMovementVector(glm::vec2* vec)
 {
-	InputManager::GetInstance()->GetDoubleTouchDirection(vec);
+	if(InputManager::GetInstance()->GetCurrentlyHeldButtons() == 0)
+		InputManager::GetInstance()->GetDoubleTouchDirection(vec);
+	else
+	{
+		vec->x = 0.0f;
+		vec->y = 0.0f;
+	}
 }
 
 void InputHandler::GetCameraRotationVector(glm::vec2* vec)
 {
-	InputManager::GetInstance()->GetTouchDirection(vec);
+	if (InputManager::GetInstance()->GetCurrentlyHeldButtons() == 0)
+		InputManager::GetInstance()->GetTouchDirection(vec);
+	else
+	{
+		vec->x = 0.0f;
+		vec->y = 0.0f;
+	}
 }
 
 float InputHandler::GetZoomValue()
 {
-	return InputManager::GetInstance()->GetPinchValue();
+	if (InputManager::GetInstance()->GetCurrentlyHeldButtons() == 0)
+		return InputManager::GetInstance()->GetPinchValue();
+	else
+		return 0.0f;
 }
 
 bool InputHandler::GetZoom()

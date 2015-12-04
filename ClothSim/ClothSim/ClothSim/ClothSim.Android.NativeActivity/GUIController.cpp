@@ -157,11 +157,11 @@ unsigned int GUIController::Update()
 
 	// MOVING CAMERA ON XZ PLANE
 
-	if (InputHandler::GetInstance()->GetHold())
+	if (InputManager::GetInstance()->GetDoubleTouch())
 	{
 		glm::vec2 mVec;
 		InputHandler::GetInstance()->GetCameraMovementVector(&mVec);
-		
+
 		if (mVec.x != 0.0f || mVec.y != 0.0f)
 		{
 			glm::vec3 cTarget = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget();

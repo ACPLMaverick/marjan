@@ -8,6 +8,6 @@ public:
 	GUIActionShowPreferences(const GUIActionShowPreferences* c);
 	~GUIActionShowPreferences();
 
-	virtual unsigned int Action();
+	virtual unsigned int Action(void* params);
 };
 

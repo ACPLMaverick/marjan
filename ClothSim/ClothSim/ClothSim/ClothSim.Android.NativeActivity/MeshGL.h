@@ -22,6 +22,7 @@ struct VertexDataRaw
 	glm::vec2* uvBuffer;
 	glm::vec3* normalBuffer;
 	glm::vec4* colorBuffer;
+	glm::vec3* barycentricBuffer;
 	GLuint* indexBuffer;
 	unsigned int vertexCount;
 	unsigned int indexCount;
@@ -33,6 +34,7 @@ struct VertexDataRaw
 		normalBuffer = nullptr;
 		colorBuffer = nullptr;
 		indexBuffer = nullptr;
+		barycentricBuffer = nullptr;
 		vertexCount = 0;
 		indexCount = 0;
 	}
@@ -59,6 +61,10 @@ struct VertexDataRaw
 		{
 			delete[] indexBuffer;
 		}
+		if (barycentricBuffer != nullptr)
+		{
+			delete[] barycentricBuffer;
+		}
 	}
 };
 
@@ -69,6 +75,7 @@ struct VertexDataID
 	GLuint uvBuffer;
 	GLuint normalBuffer;
 	GLuint colorBuffer;
+	GLuint barycentricBuffer;
 	GLuint indexBuffer;
 };
 
@@ -106,6 +113,7 @@ protected:
 
 	virtual void GenerateVertexData() = 0;
 	void CreateVertexDataBuffers(unsigned int, unsigned int, GLenum);
+	void GenerateBarycentricCoords();
 public:
 	MeshGL(SimObject*);
 	MeshGL(const MeshGL*);

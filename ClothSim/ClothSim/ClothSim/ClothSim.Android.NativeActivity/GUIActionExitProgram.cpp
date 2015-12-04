@@ -16,9 +16,11 @@ GUIActionExitProgram::~GUIActionExitProgram()
 {
 }
 
-unsigned int GUIActionExitProgram::Action()
+unsigned int GUIActionExitProgram::Action(void* params)
 {
 	unsigned int err = CS_ERR_NONE;
+
+	LOGI("Shitting down! (your neck)");
 
 	System::GetInstance()->Stop();
 

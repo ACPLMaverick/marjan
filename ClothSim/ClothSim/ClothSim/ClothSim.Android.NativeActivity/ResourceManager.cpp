@@ -30,7 +30,7 @@ unsigned int ResourceManager::Initialize()
 	Renderer::LoadTexture(&tW, h_whiteTexture, 4, 1, 1, 3, whiteID);
 	h_textures[0] = whiteID;
 
-	string t1 = "textures/ExportedFont.bmp";
+	string t1 = "textures/ExportedFont.tga";
 	LoadTexture(&t1);
 
 	return CS_ERR_NONE;

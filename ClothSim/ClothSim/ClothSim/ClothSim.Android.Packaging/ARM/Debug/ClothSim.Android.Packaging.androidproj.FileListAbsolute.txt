@@ -18,3 +18,13 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.apk
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\ClothSim.lastsuccessfuldeploy
 D:\Repositories\marjan\ClothSim\ClothSim\ClothSim\ClothSim.Android.Packaging\ARM\Debug\GenerateAndroidAntScript.incremental
 D:\Repositories\marjan\ClothSim\ClothSim\ClothSim\ClothSim.Android.Packaging\ARM\Debug\FileStringReplace.incremental
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\ExportedFont.tga
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_exit.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_arrow_up.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_arrow_up_a.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_exit_a.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_settings.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_settings_a.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_wireframe.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_wireframe_a.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\WireframeVertexShader.glsl

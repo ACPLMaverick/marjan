@@ -64,6 +64,8 @@ protected:
 	bool m_initialized;
 	bool m_resizeNeeded;
 
+	float m_screenRatio;
+
 	static inline char* LoadShaderFromAssets(const string* path);
 	inline void ResizeViewport();
 public:
@@ -79,6 +81,7 @@ public:
 
 	ShaderID* GetCurrentShaderID();
 	DrawMode GetDrawMode();
+	float GetScreenRatio();
 
 	bool GetInitialized();
 

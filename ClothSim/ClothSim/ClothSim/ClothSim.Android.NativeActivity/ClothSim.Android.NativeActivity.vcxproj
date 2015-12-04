@@ -137,6 +137,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="GUIAction.h" />
     <ClInclude Include="GUIActionExitProgram.h" />
+    <ClInclude Include="GUIActionMoveActiveObject.h" />
     <ClInclude Include="GUIActionSetDisplayMode.h" />
     <ClInclude Include="GUIActionShowPreferences.h" />
     <ClInclude Include="GUIButton.h" />
@@ -184,6 +185,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="GUIAction.cpp" />
     <ClCompile Include="GUIActionExitProgram.cpp" />
+    <ClCompile Include="GUIActionMoveActiveObject.cpp" />
     <ClCompile Include="GUIActionSetDisplayMode.cpp" />
     <ClCompile Include="GUIActionShowPreferences.cpp" />
     <ClCompile Include="GUIButton.cpp" />

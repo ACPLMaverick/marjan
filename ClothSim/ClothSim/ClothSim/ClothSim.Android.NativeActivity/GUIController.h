@@ -20,7 +20,6 @@ class GUIController :
 private:
 	double infoTimeDisplayHelper = 0.0;
 
-	const float BOX_SPEED = 0.005f;
 	const float INFO_UPDATE_RATE = 120.0f;
 
 	GUIText* m_fpsText;

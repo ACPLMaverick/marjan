@@ -8,6 +8,11 @@
 #include "SphereCollider.h"
 #include "ClothSimulator.h"
 #include "GUIButton.h"
+#include "GUIAction.h"
+#include "GUIActionExitProgram.h"
+#include "GUIActionSetDisplayMode.h"
+#include "GUIActionShowPreferences.h"
+#include "GUIActionMoveActiveObject.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
 {
@@ -194,11 +199,27 @@ unsigned int SceneTest::Initialize()
 	string t3n = "TotalTimetitle";
 	string t3v = "Total time [s]: ";
 	string tb1 = "BtnExit";
+	string tb2 = "BtnPreferences";
+	string tb3 = "BtnWireframe";
+	string tb4 = "BtnArrowFw";
+	string tb5 = "BtnArrowBw";
+	string tb6 = "BtnArrowLeft";
+	string tb7 = "BtnArrowRight";
+	string tb8 = "BtnArrowUp";
+	string tb9 = "BtnArrowDown";
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
 	string tval03 = "TTvalue";
 	string dummy = "Dummy";
-	string tex = "textures/ExportedFont.bmp";
+	string tex = "textures/ExportedFont.tga";
+	string tBtnEx = "textures/btn_exit.png";
+	string tBtnExA = "textures/btn_exit_a.png";
+	string tBtnWf = "textures/btn_wireframe.png";
+	string tBtnWfA = "textures/btn_wireframe_a.png";
+	string tBtnSt = "textures/btn_settings.png";
+	string tBtnStA = "textures/btn_settings_a.png";
+	string tBtnArr = "textures/btn_arrow_up.png";
+	string tBtnArrA = "textures/btn_arrow_up_a.png";
 	glm::vec2 scl = glm::vec2(0.025f, 0.025f);
 
 	GUIText* gt = new GUIText(&t1n, &t1v, ResourceManager::GetInstance()->GetTexture(&tex));
@@ -233,9 +254,87 @@ unsigned int SceneTest::Initialize()
 
 	GUIButton* gb1 = new GUIButton(&tb1);
 	gb1->Initialize();
-	gb1->SetTextures(ResourceManager::GetInstance()->GetTexture(&tex), ResourceManager::GetInstance()->GetTexture(&tex));
-	gb1->SetPosition(glm::vec2(0.0f, 0.0f));
-	gb1->SetScale(glm::vec2(0.3f, 0.3f));
+	gb1->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnEx), ResourceManager::GetInstance()->LoadTexture(&tBtnExA));
+	gb1->SetPosition(glm::vec2(0.7f, 0.8f));
+	gb1->SetScale(glm::vec2(0.15f, 0.15f));
+	GUIAction* gb1a = new GUIActionExitProgram(gb1);
+	gb1->AddActionClick(gb1a);
+
+	GUIButton* gb2 = new GUIButton(&tb2);
+	gb2->Initialize();
+	gb2->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnSt), ResourceManager::GetInstance()->LoadTexture(&tBtnStA));
+	gb2->SetPosition(glm::vec2(0.25f, -0.75f));
+	gb2->SetScale(glm::vec2(0.2f, 0.2f));
+	GUIAction* gb2a = new GUIActionShowPreferences(gb2);
+	gb2->AddActionClick(gb2a);
+
+	GUIButton* gb3 = new GUIButton(&tb3);
+	gb3->Initialize();
+	gb3->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnWf), ResourceManager::GetInstance()->LoadTexture(&tBtnWfA));
+	gb3->SetPosition(glm::vec2(0.7f, -0.75f));
+	gb3->SetScale(glm::vec2(0.2f, 0.2f));
+	GUIAction* gb3a = new GUIActionSetDisplayMode(gb3);
+	gb3->AddActionClick(gb3a);
+
+	GUIButton* gb4 = new GUIButton(&tb4);
+	gb4->Initialize();
+	gb4->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb4->SetPosition(glm::vec2(-0.4f, -0.3f));
+	gb4->SetRotation(0.0f);
+	gb4->SetScale(glm::vec2(0.15f, 0.15f));
+	gb4->SetParamsHold((void*)1);
+	GUIAction* gb4a = new GUIActionMoveActiveObject(gb4);
+	gb4->AddActionHold(gb4a);
+
+	GUIButton* gb5 = new GUIButton(&tb5);
+	gb5->Initialize();
+	gb5->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb5->SetPosition(glm::vec2(-0.4f, -0.8f));
+	gb5->SetRotation(M_PI * 0.5f);
+	gb5->SetScale(glm::vec2(0.15f, 0.15f));
+	gb5->SetParamsHold((void*)2);
+	GUIAction* gb5a = new GUIActionMoveActiveObject(gb5);
+	gb5->AddActionHold(gb5a);
+
+	GUIButton* gb6 = new GUIButton(&tb6);
+	gb6->Initialize();
+	gb6->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb6->SetPosition(glm::vec2(-0.6f, -0.55f));
+	gb6->SetRotation(M_PI * 0.75f);
+	gb6->SetScale(glm::vec2(0.15f, 0.15f));
+	gb6->SetParamsHold((void*)3);
+	GUIAction* gb6a = new GUIActionMoveActiveObject(gb6);
+	gb6->AddActionHold(gb6a);
+
+	GUIButton* gb7 = new GUIButton(&tb7);
+	gb7->Initialize();
+	gb7->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb7->SetPosition(glm::vec2(-0.2f, -0.55f));
+	gb7->SetRotation(M_PI * 0.25f);
+	gb7->SetScale(glm::vec2(0.15f, 0.15f));
+	gb7->SetParamsHold((void*)4);
+	GUIAction* gb7a = new GUIActionMoveActiveObject(gb7);
+	gb7->AddActionHold(gb7a);
+
+	GUIButton* gb8 = new GUIButton(&tb8);
+	gb8->Initialize();
+	gb8->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb8->SetPosition(glm::vec2(-0.8f, -0.3f));
+	gb8->SetRotation(0.0f);
+	gb8->SetScale(glm::vec2(0.15f, 0.15f));
+	gb8->SetParamsHold((void*)5);
+	GUIAction* gb8a = new GUIActionMoveActiveObject(gb8);
+	gb8->AddActionHold(gb8a);
+
+	GUIButton* gb9 = new GUIButton(&tb9);
+	gb9->Initialize();
+	gb9->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb9->SetPosition(glm::vec2(-0.8f, -0.8f));
+	gb9->SetRotation(M_PI * 0.5f);
+	gb9->SetScale(glm::vec2(0.15f, 0.15f));
+	gb9->SetParamsHold((void*)6);
+	GUIAction* gb9a = new GUIActionMoveActiveObject(gb9);
+	gb9->AddActionHold(gb9a);
 
 	AddGUIElement(gt);
 	AddGUIElement(gt2);
@@ -244,6 +343,14 @@ unsigned int SceneTest::Initialize()
 	AddGUIElement(gt5);
 	AddGUIElement(gt6);
 	AddGUIElement(gb1);
+	AddGUIElement(gb2);
+	AddGUIElement(gb3);
+	AddGUIElement(gb4);
+	AddGUIElement(gb5);
+	AddGUIElement(gb6);
+	AddGUIElement(gb7);
+	AddGUIElement(gb8);
+	AddGUIElement(gb9);
 
 	////////////////////////
 	/////////// Controllers

@@ -58,6 +58,8 @@ unsigned int Renderer::Initialize()
 	eglQuerySurface(display, surface, EGL_WIDTH, &w);
 	eglQuerySurface(display, surface, EGL_HEIGHT, &h);
 
+	m_screenRatio = (float)w / (float)h;
+
 	engine->display = display;
 	engine->context = context;
 	engine->surface = surface;
@@ -67,7 +69,7 @@ unsigned int Renderer::Initialize()
 	// Shaders Loading
 	
 	m_basicShader = ResourceManager::GetInstance()->LoadShader(&SN_BASIC);
-	m_wireframeShader = ResourceManager::GetInstance()->LoadShader(&SN_BASIC, &SN_WIREFRAME);
+	m_wireframeShader = ResourceManager::GetInstance()->LoadShader(&SN_WIREFRAME);
 	m_fontShader = ResourceManager::GetInstance()->LoadShader(&SN_FONT);
 	m_shaderID = m_basicShader;
 
@@ -151,33 +153,26 @@ unsigned int Renderer::Run()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Drawing models with basic shader
-	/*
-	if (m_mode == BASIC || m_mode == BASIC_WIREFRAME)
-	{*/
+
+	if (m_mode == BASIC)
+	{
 		m_shaderID = m_basicShader;
 		glUseProgram(m_shaderID->id);
-
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-		System::GetInstance()->GetCurrentScene()->DrawObjects();
-		/*
 	}
 	
-	// Drawing wireframe
-	if (m_mode == WIREFRAME || m_mode == BASIC_WIREFRAME)
+	else if (m_mode == WIREFRAME) // Drawing wireframe
 	{
-		m_shaderID = ResourceManager::GetInstance()->GetShader(&SN_WIREFRAME);
+		m_shaderID = m_wireframeShader;
 		glUseProgram(m_shaderID->id);
-
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-		System::GetInstance()->GetCurrentScene()->Draw();
-
-		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-
-		System::GetInstance()->GetCurrentScene()->Draw();
 	}
-	*/
+
+	else if (m_mode == BASIC_WIREFRAME) // Drawing wireframe with fill (no specular)
+	{
+		m_shaderID = m_basicShader;	////!!!!!!!
+		glUseProgram(m_shaderID->id);
+	}
+
+	System::GetInstance()->GetCurrentScene()->DrawObjects();
 
 	// Drawing GUI
 	m_shaderID = m_fontShader;
@@ -213,6 +208,11 @@ ShaderID* Renderer::GetCurrentShaderID()
 DrawMode Renderer::GetDrawMode()
 {
 	return m_mode;
+}
+
+float Renderer::GetScreenRatio()
+{
+	return m_screenRatio;
 }
 
 bool Renderer::GetInitialized()

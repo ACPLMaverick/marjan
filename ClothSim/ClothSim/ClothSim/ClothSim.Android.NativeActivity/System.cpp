@@ -166,6 +166,7 @@ unsigned int System::Tick()
 void System::Stop()
 {
 	m_running = false;
+	ANativeActivity_finish(m_engine->app->activity);
 }
 
 

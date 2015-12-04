@@ -10,5 +10,5 @@ uniform sampler2D sampler;
 void main()
 {
 	color = Vcol * texture(sampler, UV);
-	color.a = color.r * color.r;
+	//color.a = color.r * color.r;
 }

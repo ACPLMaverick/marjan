@@ -1,0 +1,60 @@
+#include "pch.h"
+#include "GUIActionMoveActiveObject.h"
+
+
+GUIActionMoveActiveObject::GUIActionMoveActiveObject(GUIButton* b) : GUIAction(b)
+{
+}
+
+GUIActionMoveActiveObject::GUIActionMoveActiveObject(const GUIActionMoveActiveObject * c) : GUIAction(c)
+{
+}
+
+
+GUIActionMoveActiveObject::~GUIActionMoveActiveObject()
+{
+}
+
+unsigned int GUIActionMoveActiveObject::Action(void* params)
+{
+	unsigned int err = CS_ERR_NONE;
+
+	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject();
+
+	glm::vec3 mVector;
+	MovementDirection dir = (MovementDirection)(int)params;
+	switch (dir)
+	{
+	case GUIActionMoveActiveObject::FORWARD:
+		mVector = glm::vec3(0.0f, 0.0f, -1.0f);
+		break;
+	case GUIActionMoveActiveObject::BACKWARD:
+		mVector = glm::vec3(0.0f, 0.0f, 1.0f);
+		break;
+	case GUIActionMoveActiveObject::LEFT:
+		mVector = glm::vec3(-1.0f, 0.0f, 0.0f);
+		break;
+	case GUIActionMoveActiveObject::RIGHT:
+		mVector = glm::vec3(1.0f, 0.0f, 0.0f);
+		break;
+	case GUIActionMoveActiveObject::UP:
+		mVector = glm::vec3(0.0f, 1.0f, 0.0f);
+		break;
+	case GUIActionMoveActiveObject::DOWN:
+		mVector = glm::vec3(0.0f, -1.0f, 0.0f);
+		break;
+	default:
+		mVector = glm::vec3();
+		break;
+	}
+
+	glm::vec3 cPosVector = cObj->GetTransform()->GetPositionCopy();
+
+	mVector = mVector * BOX_SPEED * (float)Timer::GetInstance()->GetDeltaTime();
+
+	glm::vec3 addedVector = cPosVector + mVector;
+	cObj->GetTransform()->SetPosition(&addedVector);
+
+	return err;
+}
+

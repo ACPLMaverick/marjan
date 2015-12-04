@@ -100,6 +100,7 @@ unsigned int MeshGLPlane::Initialize()
 	// generate vertex data and vertex array
 
 	GenerateVertexData();
+	GenerateBarycentricCoords();
 
 	// setting up buffers
 	glGenVertexArrays(1, &m_vertexData->ids->vertexArrayID);
@@ -124,6 +125,11 @@ unsigned int MeshGLPlane::Initialize()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->colorBuffer[0]) * m_vertexData->data->vertexCount,
 		m_vertexData->data->colorBuffer, GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &m_vertexData->ids->barycentricBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->barycentricBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->barycentricBuffer[0]) * m_vertexData->data->indexCount,
+		m_vertexData->data->barycentricBuffer, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &m_vertexData->ids->indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);

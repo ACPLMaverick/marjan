@@ -39,17 +39,16 @@ unsigned int MeshGLRectButton::Draw()
 		Renderer::GetInstance()->SetCurrentShader(m_fontShaderID);
 
 	glm::mat4 wvp;
-	if (m_btn == nullptr)
-	{
-		wvp = ((*System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewProjMatrix()) *
-			(*m_obj->GetTransform()->GetWorldMatrix()));
-	}
-	else
+	glm::mat4 rot;
+	
+	if(m_btn != nullptr)
 	{
 		wvp = *m_btn->GetTransformMatrix();
+		rot = m_btn->GetRotationMatrix();
 	}
 
 	glUniformMatrix4fv(m_fontShaderID->id_worldViewProj, 1, GL_FALSE, &(wvp)[0][0]);
+	glUniformMatrix4fv(m_fontShaderID->id_world, 1, GL_FALSE, &(rot)[0][0]);
 
 	// here we will set up texture?
 	if (m_texID != nullptr)

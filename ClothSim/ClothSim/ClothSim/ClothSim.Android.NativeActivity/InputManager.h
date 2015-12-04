@@ -14,59 +14,61 @@
 	This class behaves as a common bool object. Difference is that it's value changes after the second update call.
 */
 
+class GUIButton;
+
+
+////////////////////////////////////////////
+
+class TwoBool
+{
+private:
+	bool second;
+	bool val;
+public:
+	TwoBool()
+	{
+		val = false;
+	}
+
+	TwoBool(bool value)
+	{
+		SetVal(value);
+	}
+
+	bool GetVal() { return val; }
+
+	void SetVal(bool value)
+	{
+		val = value;
+		second = !value;
+	}
+
+	void Update()
+	{
+		if (val == false && second == false)
+			return;
+
+		if (val != second)
+		{
+			second = val;
+			return;
+		}
+		if (val == second)
+		{
+			val = false;
+			second = false;
+			return;
+		}
+	}
+};
+
+///////////////////////////
+
 class InputManager : public Singleton<InputManager>
 {
 	friend class Singleton<InputManager>;
 protected:
-
-	////////////////////////////////////////////
-
-	class TwoBool
-	{
-	private:
-		bool second;
-		bool val;
-	public:
-		TwoBool()
-		{
-			val = false;
-		}
-
-		TwoBool(bool value)
-		{
-			SetVal(value);
-		}
-
-		bool GetVal() { return val; }
-
-		void SetVal(bool value)
-		{
-			val = value;
-			second = !value;
-		}
-
-		void Update()
-		{
-			if (val == false && second == false)
-				return;
-
-			if (val != second)
-			{
-				second = val;
-				return;
-			}
-			if (val == second)
-			{
-				val = false;
-				second = false;
-				return;
-			}
-		}
-	};
-
-	///////////////////////////
-
-	std::vector<int> m_pressed;	// this vector stores pressed buttons WHICH WE HAVE QUERIED
+	std::vector<GUIButton*> m_buttons;	// this vector stores buttons that recieve DOWN, MOVE and UP events
 	int m_scrollHelper = 0;
 
 	TwoBool m_touch01TBool;
@@ -86,8 +88,14 @@ protected:
 	float m_pinchVal = 0.0f;
 	bool m_isPinch;
 	bool m_isClick;
+	bool m_isHold;
+	unsigned int m_currentlyHeldButtons;
 
 	InputManager();
+	inline bool ButtonAreaInClick(GUIButton* button, const glm::vec2* clickPos);
+	inline unsigned int ProcessButtonClicks(const glm::vec2 * clickPos);
+	inline unsigned int ProcessButtonHolds(const glm::vec2 * clickPos);
+	inline void ComputeScaleFactors(glm::vec2* factors);
 public:
 	InputManager(const InputManager*);
 	~InputManager();
@@ -105,6 +113,10 @@ public:
 	void GetTouchDirection(glm::vec2* vec);
 	void GetDoubleTouchDirection(glm::vec2* vec);
 	float GetPinchValue();
+	unsigned int GetCurrentlyHeldButtons();
+
+	void AddButton(GUIButton* button);
+	void RemoveButton(GUIButton* button);
 
 	static int32_t AHandleInput(struct android_app* app, AInputEvent* event);
 };

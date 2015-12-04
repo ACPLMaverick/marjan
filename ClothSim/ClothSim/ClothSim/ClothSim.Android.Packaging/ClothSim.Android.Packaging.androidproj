@@ -70,7 +70,17 @@
     <Content Include="assets\shaders\FontFragmentShader.glsl" />
     <Content Include="assets\shaders\FontVertexShader.glsl" />
     <Content Include="assets\shaders\WireframeFragmentShader.glsl" />
+    <Content Include="assets\shaders\WireframeVertexShader.glsl" />
+    <Content Include="assets\textures\btn_arrow_up.png" />
+    <Content Include="assets\textures\btn_arrow_up_a.png" />
+    <Content Include="assets\textures\btn_exit.png" />
+    <Content Include="assets\textures\btn_exit_a.png" />
+    <Content Include="assets\textures\btn_settings.png" />
+    <Content Include="assets\textures\btn_settings_a.png" />
+    <Content Include="assets\textures\btn_wireframe.png" />
+    <Content Include="assets\textures\btn_wireframe_a.png" />
     <Content Include="assets\textures\ExportedFont.bmp" />
+    <Content Include="assets\textures\ExportedFont.tga" />
     <Content Include="res\values\strings.xml" />
     <AntBuildXml Include="build.xml" />
     <AndroidManifest Include="AndroidManifest.xml" />

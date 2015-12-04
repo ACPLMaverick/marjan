@@ -19,8 +19,9 @@ public:
 	InputHandler(const InputHandler*);
 	~InputHandler();
 
-	bool GetPressed();
+	bool GetClick();
 	bool GetHold();
+	bool GetPress();
 	bool GetZoom();
 	void GetClickPosition(glm::vec2* vec);
 	void GetCameraMovementVector(glm::vec2* vec);

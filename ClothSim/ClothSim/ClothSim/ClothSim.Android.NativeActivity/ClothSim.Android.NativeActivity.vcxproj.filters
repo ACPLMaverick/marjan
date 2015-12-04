@@ -133,6 +133,9 @@
     <ClInclude Include="MeshGLRectButton.h">
       <Filter>Graphics\Meshes</Filter>
     </ClInclude>
+    <ClInclude Include="GUIActionMoveActiveObject.h">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c">
@@ -260,6 +263,9 @@
     </ClCompile>
     <ClCompile Include="MeshGLRectButton.cpp">
       <Filter>Graphics\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIActionMoveActiveObject.cpp">
+      <Filter>Core\GUI\Actions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,6 @@ public:
 	GUIActionExitProgram(const GUIActionExitProgram* c);
 	~GUIActionExitProgram();
 
-	virtual unsigned int Action();
+	virtual unsigned int Action(void* params);
 };
 

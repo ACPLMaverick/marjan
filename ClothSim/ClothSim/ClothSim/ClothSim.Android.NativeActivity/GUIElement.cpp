@@ -29,10 +29,11 @@ void GUIElement::GenerateTransformMatrix()
 	float factorX = (scrHeight / scrWidth);
 	float factorY = (scrWidth / scrHeight);
 	float off = 0.0f;
+	float hsFactor = 1.0f / Renderer::GetInstance()->GetScreenRatio();
 	if (scrWidth > scrHeight)
 	{
-		factorY = 1.0f / factorY * 2.0f;
-		factorX *= 2.0f;
+		factorY = 1.0f / factorY * hsFactor;
+		factorX *= hsFactor;
 		off = 0.1f;
 	}	
 

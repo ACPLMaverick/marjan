@@ -23,6 +23,7 @@ unsigned int MeshGL::Initialize()
 
 	// generate vertex data and vertex array
 	GenerateVertexData();
+	GenerateBarycentricCoords();
 
 	// setting up buffers
 
@@ -49,6 +50,11 @@ unsigned int MeshGL::Initialize()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->colorBuffer[0]) * m_vertexData->data->vertexCount,
 		m_vertexData->data->colorBuffer, GL_STATIC_DRAW);
 
+	glGenBuffers(1, &m_vertexData->ids->barycentricBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->barycentricBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->barycentricBuffer[0]) * m_vertexData->data->indexCount,
+		m_vertexData->data->barycentricBuffer, GL_STATIC_DRAW);
+
 	glGenBuffers(1, &m_vertexData->ids->indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->data->indexBuffer[0]) * m_vertexData->data->indexCount,
@@ -65,6 +71,7 @@ unsigned int MeshGL::Shutdown()
 	glDeleteBuffers(1, &m_vertexData->ids->uvBuffer);
 	glDeleteBuffers(1, &m_vertexData->ids->normalBuffer);
 	glDeleteBuffers(1, &m_vertexData->ids->colorBuffer);
+	glDeleteBuffers(1, &m_vertexData->ids->barycentricBuffer);
 	glDeleteBuffers(1, &m_vertexData->ids->indexBuffer);
 
 	if (m_vertexData != nullptr)
@@ -126,6 +133,7 @@ unsigned int MeshGL::Draw()
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
 	glVertexAttribPointer(
@@ -167,6 +175,16 @@ unsigned int MeshGL::Draw()
 		(void*)0
 		);
 
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->barycentricBuffer);
+	glVertexAttribPointer(
+		4,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+		);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);
 
 
@@ -182,6 +200,7 @@ unsigned int MeshGL::Draw()
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
 
 	return CS_ERR_NONE;
 }
@@ -196,8 +215,8 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 	m_vertexData->data->vertexCount = vCount;
 	m_vertexData->data->indexCount = iCount;
 
-	bool ifPos, ifInd, ifUv, ifNrm, ifCol;
-	ifPos = ifInd = ifUv = ifNrm = ifCol = false;
+	bool ifPos, ifInd, ifUv, ifNrm, ifCol, ifBar;
+	ifPos = ifInd = ifUv = ifNrm = ifCol = ifBar = false;
 
 	if (m_vertexData->data->positionBuffer != nullptr)
 	{
@@ -239,12 +258,21 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 		delete[] m_vertexData->data->colorBuffer;
 		m_vertexData->data->colorBuffer = nullptr;
 	}
+	if (m_vertexData->data->barycentricBuffer != nullptr)
+	{
+		ifBar = true;
+		glDeleteBuffers(1, &m_vertexData->ids->barycentricBuffer);
+
+		delete[] m_vertexData->data->barycentricBuffer;
+		m_vertexData->data->barycentricBuffer = nullptr;
+	}
 
 	m_vertexData->data->positionBuffer = new glm::vec3[m_vertexData->data->vertexCount];
 	m_vertexData->data->indexBuffer = new unsigned int[m_vertexData->data->indexCount];	
 	m_vertexData->data->uvBuffer = new glm::vec2[m_vertexData->data->vertexCount];
 	m_vertexData->data->normalBuffer = new glm::vec3[m_vertexData->data->vertexCount];
 	m_vertexData->data->colorBuffer = new glm::vec4[m_vertexData->data->vertexCount];
+	m_vertexData->data->barycentricBuffer = new glm::vec3[m_vertexData->data->indexCount];
 
 	if (ifPos)
 	{
@@ -282,5 +310,23 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexData->ids->indexBuffer);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_vertexData->data->indexBuffer[0]) * m_vertexData->data->indexCount,
 			m_vertexData->data->indexBuffer, target);
+	}
+	if (ifBar)
+	{
+
+		glGenBuffers(1, &m_vertexData->ids->barycentricBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->barycentricBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->barycentricBuffer[0]) * m_vertexData->data->indexCount,
+			m_vertexData->data->barycentricBuffer, target);
+	}
+}
+
+void MeshGL::GenerateBarycentricCoords()
+{
+	for (int i = 0; i < m_vertexData->data->indexCount; i += 3)
+	{
+		m_vertexData->data->barycentricBuffer[i] = glm::vec3(1.0f, 0.0f, 0.0f);
+		m_vertexData->data->barycentricBuffer[i + 1] = glm::vec3(0.0f, 1.0f, 0.0f);
+		m_vertexData->data->barycentricBuffer[i + 2] = glm::vec3(0.0f, 0.0f, 1.0f);
 	}
 }

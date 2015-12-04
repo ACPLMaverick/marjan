@@ -15,11 +15,11 @@ GUIActionShowPreferences::~GUIActionShowPreferences()
 {
 }
 
-unsigned int GUIActionShowPreferences::Action()
+unsigned int GUIActionShowPreferences::Action(void* params)
 {
 	unsigned int err = CS_ERR_NONE;
 
-
+	LOGI("Preferences!");
 
 	return err;
 }
