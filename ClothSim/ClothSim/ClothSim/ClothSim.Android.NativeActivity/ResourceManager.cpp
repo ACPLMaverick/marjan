@@ -67,6 +67,15 @@ TextureID* ResourceManager::LoadTexture(const std::string* path)
 	else return LoadTextureData(path);
 }
 
+KernelID * ResourceManager::LoadKernel(const std::string * name)
+{
+	if (m_kernelNames.find(*name) != m_kernelNames.end())
+	{
+		return m_kernelNames[*name];
+	}
+	else return LoadKernelData(name);
+}
+
 ShaderID* ResourceManager::LoadShader(const std::string* name)
 {
 	if (m_shadersNames.find(*name) != m_shadersNames.end())
@@ -128,6 +137,24 @@ ShaderID* ResourceManager::GetShader(unsigned int id)
 	else return nullptr;
 }
 
+KernelID * ResourceManager::GetKernel(const std::string * name)
+{
+	if (m_kernelNames.find(*name) != m_kernelNames.end())
+	{
+		return m_kernelNames[*name];
+	}
+	else return nullptr;
+}
+
+KernelID * ResourceManager::GetKernel(unsigned int id)
+{
+	if (m_kernelIds.find(id) != m_kernelIds.end())
+	{
+		return m_kernelIds[id];
+	}
+	else return nullptr;
+}
+
 
 
 TextureID* ResourceManager::LoadTextureData(const std::string* path)
@@ -176,4 +203,25 @@ ShaderID* ResourceManager::LoadShaderData(const std::string* nameVert, const std
 	m_shadersIds.emplace(newShader->id, newShader);
 
 	return newShader;
+}
+
+KernelID* ResourceManager::LoadKernelData(const std::string* name)
+{
+	std::string fullName = *name + "Kernel";
+
+	KernelID* newKid = new KernelID;
+	newKid->id = -1;
+
+	Renderer::LoadKernel(&fullName, name, newKid);
+
+	if (newKid->id == -1)
+	{
+		delete newKid;
+		return nullptr;
+	}
+
+	m_kernelIds.emplace(newKid->id, newKid);
+	m_kernelNames.emplace(newKid->name, newKid);
+
+	return newKid;
 }

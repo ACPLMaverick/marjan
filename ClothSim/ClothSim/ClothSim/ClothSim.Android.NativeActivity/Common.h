@@ -5,6 +5,7 @@ Header file for common includes and switches
 
 #include <stdio.h>
 #include <string>
+#include <vector>
 #include <glm\glm\glm.hpp>
 
 // MAKE SURE THERE'S ONLY AND EXACTLY ONE SWITCH TURNED ON AT A TIME
@@ -56,6 +57,27 @@ struct ShaderID
 	int id_lightAmb;
 	int id_gloss;
 	int id_highlight;
+};
+
+struct KernelID
+{
+	std::vector<int>* varyingIDs;
+	std::vector<int>* uniformIDs;
+	std::string name;
+	int id;
+
+	KernelID()
+	{
+		id = -1;
+		varyingIDs = new std::vector<int>();
+		uniformIDs = new std::vector<int>();
+	}
+
+	~KernelID()
+	{
+		delete varyingIDs;
+		delete uniformIDs;
+	}
 };
 /////////////////
 

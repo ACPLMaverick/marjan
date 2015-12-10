@@ -67,6 +67,7 @@ protected:
 	float m_screenRatio;
 
 	static inline char* LoadShaderFromAssets(const string* path);
+	static inline char * LoadKernelFromAssets(const string * path);
 	inline void ResizeViewport();
 public:
 	Renderer(const Renderer*);
@@ -85,6 +86,7 @@ public:
 
 	bool GetInitialized();
 
+	static void LoadKernel(const string* filePath, const string* newName, KernelID* data);
 	static void LoadShaders(const string*, const string*, const string*, ShaderID*);
 	static void ShutdownShader(ShaderID*);
 	static void LoadTexture(const string*, TextureID*);

@@ -28,3 +28,5 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_s
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_wireframe.png
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_wireframe_a.png
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\WireframeVertexShader.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothMSSimulationKernel.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\KernelDummyKernel.glsl

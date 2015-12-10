@@ -136,6 +136,9 @@
     <ClInclude Include="GUIActionMoveActiveObject.h">
       <Filter>Core\GUI\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="ClothSimulatorMSGPU.h">
+      <Filter>Core\Components\ClothSimulators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c">
@@ -267,6 +270,9 @@
     <ClCompile Include="GUIActionMoveActiveObject.cpp">
       <Filter>Core\GUI\Actions</Filter>
     </ClCompile>
+    <ClCompile Include="ClothSimulatorMSGPU.cpp">
+      <Filter>Core\Components\ClothSimulators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Main">
@@ -307,6 +313,9 @@
     </Filter>
     <Filter Include="Core\GUI\Actions">
       <UniqueIdentifier>{7c3b1fb7-5e57-475e-87b0-56a139758804}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Components\ClothSimulators">
+      <UniqueIdentifier>{e12bc412-a1c7-4d43-a4e4-75635ad425e5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -132,6 +132,7 @@
     <ClInclude Include="BoxAACollider.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ClothSimulator.h" />
+    <ClInclude Include="ClothSimulatorMSGPU.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Component.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="BoxAACollider.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ClothSimulator.cpp" />
+    <ClCompile Include="ClothSimulatorMSGPU.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="Component.cpp" />

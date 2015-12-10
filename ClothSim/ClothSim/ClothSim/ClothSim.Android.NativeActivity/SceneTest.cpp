@@ -6,7 +6,7 @@
 #include "GUIText.h"
 #include "BoxAACollider.h"
 #include "SphereCollider.h"
-#include "ClothSimulator.h"
+#include "ClothSimulatorMSGPU.h"
 #include "GUIButton.h"
 #include "GUIAction.h"
 #include "GUIActionExitProgram.h"
@@ -155,11 +155,11 @@ unsigned int SceneTest::Initialize()
 	clothMesh->Initialize();
 	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testCloth->AddMesh(clothMesh);
-	/*
-	ClothSimulator* cSim = new ClothSimulator(testCloth, 1);
+
+	ClothSimulator* cSim = new ClothSimulatorMSGPU(testCloth);
 	testCloth->AddComponent(cSim);
 	cSim->Initialize();
-	*/
+
 	AddObject(testCloth);
 
 	////////////////////////

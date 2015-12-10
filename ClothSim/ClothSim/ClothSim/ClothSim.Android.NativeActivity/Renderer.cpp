@@ -222,6 +222,50 @@ bool Renderer::GetInitialized()
 
 
 
+void Renderer::LoadKernel(const string * filePath, const string * newName, KernelID * data)
+{
+	GLuint vID = glCreateShader(GL_VERTEX_SHADER);
+
+	// Read vs code from file
+	char *vertexShaderCode;
+	vertexShaderCode = LoadKernelFromAssets(filePath);
+
+	GLint result = 0;
+	int infoLogLength = 0;
+
+	// Compile Vertex Shader
+	LOGI("Compiling kernel : %s\n", filePath->c_str());
+	char const * VertexSourcePointer = vertexShaderCode;
+	glShaderSource(vID, 1, &VertexSourcePointer, NULL);
+	glCompileShader(vID);
+
+	// Check Vertex Shader
+	glGetShaderiv(vID, GL_COMPILE_STATUS, &result);
+	glGetShaderiv(vID, GL_INFO_LOG_LENGTH, &infoLogLength);
+	vector<char> VertexShaderErrorMessage(infoLogLength);
+	glGetShaderInfoLog(vID, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
+	LOGW("%s : %s\n", filePath->c_str(), &VertexShaderErrorMessage[0]);
+
+	// Link the program
+	LOGI("Linking program\n");
+	GLuint ProgramID = glCreateProgram();
+	glAttachShader(ProgramID, vID);
+	glLinkProgram(ProgramID);
+
+	// Check the program
+	glGetProgramiv(ProgramID, GL_LINK_STATUS, &result);
+	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &infoLogLength);
+	vector<char> ProgramErrorMessage(glm::max(infoLogLength, int(1)));
+	glGetProgramInfoLog(ProgramID, infoLogLength, NULL, &ProgramErrorMessage[0]);
+	LOGW("%s\n", &ProgramErrorMessage[0]);
+
+	glDeleteShader(vID);
+	delete vertexShaderCode;
+
+	data->id = ProgramID;
+	data->name = *newName;
+}
+
 void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentFilePath, const string* newName, ShaderID* n)
 {
 	GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -299,6 +343,25 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 char* Renderer::LoadShaderFromAssets(const string * path)
 {
 	string prefix = "shaders/";
+	string suffix = ".glsl";
+	string fPath = prefix + *path + suffix;
+
+	// fuck you, assetmanager
+	AAssetManager* mgr = System::GetInstance()->GetEngineData()->app->activity->assetManager;
+
+	AAsset* shaderAsset = AAssetManager_open(mgr, fPath.c_str(), AASSET_MODE_UNKNOWN);
+	unsigned int length = AAsset_getLength(shaderAsset);
+
+	char * code = new char[length + 1];
+
+	AAsset_read(shaderAsset, (void*)code, length);
+	code[length] = '\0';
+	return code;
+}
+
+char* Renderer::LoadKernelFromAssets(const string * path)
+{
+	string prefix = "kernels/";
 	string suffix = ".glsl";
 	string fPath = prefix + *path + suffix;
 
