@@ -21,13 +21,15 @@ inline unsigned int ClothSimulatorMSGPU::InitializeSim()
 	unsigned int err = CS_ERR_NONE;
 
 	// initialize kernels 
+	/*
 	m_kernelID = ResourceManager::GetInstance()->LoadKernel(&KERNEL_SIM_NAME);
 	glGenTransformFeedbacks(1, &m_tfID);
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_tfID);
 	glTransformFeedbackVaryings(m_kernelID->id, KERNEL_SIM_OUTPUT_NAME_COUNT, KERNEL_SIM_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
 	glLinkProgram(m_kernelID->id);
-
+	*/
 	// initialize method-related data
+
 
 	return err;
 }

@@ -15,6 +15,8 @@ protected:
 	unsigned int m_edgesWidth;
 	unsigned int m_edgesLength;
 	glm::vec4 m_color;
+	unsigned int m_currentArray;
+	VertexData* m_vertexDataDual[2];
 
 	virtual void GenerateVertexData();
 public:
@@ -26,9 +28,12 @@ public:
 	~MeshGLPlane();
 
 	virtual unsigned int Initialize();
+	virtual unsigned int Shutdown();
 	virtual unsigned int Update();
 
+	unsigned int SwapDataPtrs();
 	VertexData* GetVertexDataPtr();
+	VertexData** GetVertexDataDualPtr();
 	unsigned int GetEdgesWidth();
 	unsigned int GetEdgesLength();
 };

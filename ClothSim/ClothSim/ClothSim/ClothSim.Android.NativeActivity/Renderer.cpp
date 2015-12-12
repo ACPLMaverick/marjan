@@ -224,32 +224,54 @@ bool Renderer::GetInitialized()
 
 void Renderer::LoadKernel(const string * filePath, const string * newName, KernelID * data)
 {
-	GLuint vID = glCreateShader(GL_VERTEX_SHADER);
+	GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+	GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+
 
 	// Read vs code from file
 	char *vertexShaderCode;
 	vertexShaderCode = LoadKernelFromAssets(filePath);
+	char * fragmentShaderCode =
+	{
+		"#version 300 es	\n"
+		"out vec4 color;	\n"
+		"void main() { color = vec4(1.0f, 1.0f, 1.0f, 1.0f);}"
+	};
 
-	GLint result = 0;
-	int infoLogLength = 0;
+	GLint result = 500;
+	int infoLogLength = 10;
 
 	// Compile Vertex Shader
-	LOGI("Compiling kernel : %s\n", filePath->c_str());
+	LOGI("Compiling shader : %s\n", filePath->c_str());
 	char const * VertexSourcePointer = vertexShaderCode;
-	glShaderSource(vID, 1, &VertexSourcePointer, NULL);
-	glCompileShader(vID);
+	glShaderSource(vertexShaderID, 1, &VertexSourcePointer, NULL);
+	glCompileShader(vertexShaderID);
 
 	// Check Vertex Shader
-	glGetShaderiv(vID, GL_COMPILE_STATUS, &result);
-	glGetShaderiv(vID, GL_INFO_LOG_LENGTH, &infoLogLength);
+	glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &result);
+	glGetShaderiv(vertexShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
 	vector<char> VertexShaderErrorMessage(infoLogLength);
-	glGetShaderInfoLog(vID, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
+	glGetShaderInfoLog(vertexShaderID, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
 	LOGW("%s : %s\n", filePath->c_str(), &VertexShaderErrorMessage[0]);
+
+	// Compile Fragment Shader
+	LOGI("Compiling dummy fragment shader.\n");
+	char const * FragmentSourcePointer = fragmentShaderCode;
+	glShaderSource(fragmentShaderID, 1, &FragmentSourcePointer, NULL);
+	glCompileShader(fragmentShaderID);
+
+	// Check Fragment Shader
+	glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &result);
+	glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+	vector<char> FragmentShaderErrorMessage(infoLogLength);
+	glGetShaderInfoLog(fragmentShaderID, infoLogLength, NULL, &FragmentShaderErrorMessage[0]);
+	LOGW("Dummy fragment shader: : %s\n", &FragmentShaderErrorMessage[0]);
 
 	// Link the program
 	LOGI("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
-	glAttachShader(ProgramID, vID);
+	glAttachShader(ProgramID, vertexShaderID);
+	glAttachShader(ProgramID, fragmentShaderID);
 	glLinkProgram(ProgramID);
 
 	// Check the program
@@ -259,8 +281,10 @@ void Renderer::LoadKernel(const string * filePath, const string * newName, Kerne
 	glGetProgramInfoLog(ProgramID, infoLogLength, NULL, &ProgramErrorMessage[0]);
 	LOGW("%s\n", &ProgramErrorMessage[0]);
 
-	glDeleteShader(vID);
+	glDeleteShader(vertexShaderID);
+	glDeleteShader(fragmentShaderID);
 	delete vertexShaderCode;
+	delete fragmentShaderCode;
 
 	data->id = ProgramID;
 	data->name = *newName;

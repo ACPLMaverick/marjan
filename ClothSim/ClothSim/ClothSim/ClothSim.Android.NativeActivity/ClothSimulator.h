@@ -11,6 +11,7 @@
 #include "Common.h"
 #include "MeshGLPlane.h"
 #include "Timer.h"
+//#include <CL\opencl.h>
 
 #define VERTEX_NEIGHBOURING_VERTICES 4
 #define COLLISION_CHECK_WINDOW_SIZE 4
@@ -112,17 +113,33 @@ protected:
 	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
 	const float CELL_OFFSET = 0.01f;
 
+	const unsigned int KERNEL_SIM_OUTPUT_NAME_COUNT = 2;
+	const char* KERNEL_SIM_INPUT_NAMES[2] =
+	{
+		"InPos",
+		"InPosLast"
+	};
+	const char* KERNEL_SIM_OUTPUT_NAMES[2] =
+	{
+		"OutPos",
+		"OutPosLast"
+	};
+	const std::string KERNEL_SIM_NAME = "ClothMSSimulation";
+
 
 	MeshGLPlane* m_meshPlane;
-	VertexData* m_vd;
+	VertexData** m_vd;
 	VertexData* m_vdCopy;
 	SimData* m_simData;
 	KernelID* m_kernelID;
 
 	GLuint m_tfID;
 	GLuint m_vaoUpdateID[2];
+	GLuint m_vaoRenderID[2];
 	GLuint m_vboPosID[2];
 	GLuint m_vboPosLastID[2];
+	GLuint m_texPosID[2];
+	GLuint m_texPosLastID[2];
 
 	unsigned int m_writeID;
 	unsigned int m_readID;
@@ -144,6 +161,7 @@ protected:
 		) = 0;
 
 	inline void CopyVertexData(VertexData* source, VertexData* dest);
+	inline void SwapRWIds();
 public:
 	ClothSimulator(SimObject* obj);
 	ClothSimulator(const ClothSimulator* c);

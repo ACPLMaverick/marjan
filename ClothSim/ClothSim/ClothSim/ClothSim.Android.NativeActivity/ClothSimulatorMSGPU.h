@@ -13,13 +13,13 @@ class ClothSimulatorMSGPU :
 	public ClothSimulator
 {
 protected:
-	const unsigned int KERNEL_SIM_OUTPUT_NAME_COUNT = 2;
+	/*const unsigned int KERNEL_SIM_OUTPUT_NAME_COUNT = 2;
 	const char* KERNEL_SIM_OUTPUT_NAMES[2] =
 	{
 		"OutPos",
 		"OutPosLast"
 	};
-	const std::string KERNEL_SIM_NAME = "ClothMSSimulation";
+	const std::string KERNEL_SIM_NAME = "ClothMSSimulation";*/
 
 	virtual inline unsigned int InitializeSim();
 	virtual inline unsigned int ShutdownSim();
