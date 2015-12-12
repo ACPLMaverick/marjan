@@ -21,12 +21,12 @@ unsigned int InputManager::Initialize()
 {
 	unsigned int err = CS_ERR_NONE;
 
-	m_tBools.push_back(&m_pressTBool);
 	m_tBools.push_back(&m_clickHelperTBool);
-	m_tBools.push_back(&m_touch01TBool);
-	m_tBools.push_back(&m_touch02TBool);
-	m_tBools.push_back(&m_doubleTouchTBool);
-	m_tBools.push_back(&m_pinchTBool);
+	m_isClick = false;
+	m_isMove = false;
+	m_isHold = false;
+	m_isHoldDouble = false;
+	m_isPinch = false;
 
 	return err;
 }
@@ -49,15 +49,13 @@ unsigned int InputManager::Run()
 		(*it)->Update();
 	}
 
-	if (m_clickHelperTBool.GetVal() && !m_pressTBool.GetVal())
+	if (m_clickHelperTBool.GetVal())
 	{
 		m_isClick = true;
 		//m_pressTBool.SetVal(false);
 	}
 	else
 		m_isClick = false;
-
-	m_clickHelperTBool.SetVal(m_pressTBool.GetVal());
 
 	//////////////////////////////////////
 
@@ -76,17 +74,22 @@ bool InputManager::GetPress()
 
 bool InputManager::GetTouch()
 {
-	return m_touch01TBool.GetVal();
+	return m_isHold;
 }
 
 bool InputManager::GetDoubleTouch()
 {
-	return m_doubleTouchTBool.GetVal();
+	return m_isHoldDouble;
 }
 
 bool InputManager::GetPinch()
 {
-	return m_pinchTBool.GetVal();
+	return m_isPinch;
+}
+
+bool InputManager::GetMove()
+{
+	return m_isMove;
 }
 
 void InputManager::GetTouchPosition(glm::vec2 * vec)
@@ -244,6 +247,11 @@ int32_t InputManager::AHandleInput(struct android_app* app, AInputEvent* event)
 		unsigned int pCount = AMotionEvent_getPointerCount(event);
 		InputManager* im = InputManager::GetInstance();
 
+		if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_MOVE)
+		{
+			im->m_isMove = true;
+		}
+
 		if (pCount == 1)
 		{
 			glm::vec2 tVec;
@@ -251,23 +259,21 @@ int32_t InputManager::AHandleInput(struct android_app* app, AInputEvent* event)
 			tVec.x = AMotionEvent_getX(event, 0);
 			tVec.y = AMotionEvent_getY(event, 0);
 
-			if (im->m_touch01TBool.GetVal())
-				im->m_touch01Direction = tVec - im->m_touch01Position;
+			im->m_touch01Direction = tVec - im->m_touch01Position;
 			im->m_touch01Position = tVec;
 
-			im->m_touch01TBool.SetVal(true);
 
 			if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_UP)
 			{
-				im->m_pressTBool.SetVal(true);
 				im->ProcessButtonClicks(&tVec);
 				im->m_isHold = false;
 			}
-			else if(AMotionEvent_getAction(event) != AMOTION_EVENT_ACTION_DOWN)
+			else if(AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN)
 			{
 				im->m_isHold = true;
 			}
 		}
+
 		else if (pCount == 2)
 		{
 			glm::vec2 tVec1, tVec2;
@@ -277,39 +283,45 @@ int32_t InputManager::AHandleInput(struct android_app* app, AInputEvent* event)
 			tVec2.x = AMotionEvent_getX(event, 1);
 			tVec2.y = AMotionEvent_getY(event, 1);
 
-			if (im->m_doubleTouchTBool.GetVal() || im->m_pinchTBool.GetVal())
-			{
-				im->m_touch01Direction = tVec1 - im->m_touch01Position;
-				im->m_touch02Direction = tVec2 - im->m_touch02Position;
-
-				float dot = glm::dot(im->m_touch01Direction, im->m_touch02Direction);
-
-				// check if we have a pinch action here
-				if (dot < 0.7f)
-				{
-					im->m_pinchTBool.SetVal(true);
-					im->m_isPinch = true;
-
-					float fl = glm::length(im->m_touch01Direction);
-					float sl = glm::length(im->m_touch02Direction);
-					float mp = 1.0f;
-					
-					float diff = glm::length(im->m_touch01Position - im->m_touch02Position);
-
-					if (diff - im->m_diffPinch < 0)
-						mp *= -1.0f;
-
-					im->m_diffPinch = diff;
-
-					im->m_pinchVal = (fl + sl) / 2.0f * mp;
-				}
-			}
+			im->m_touch01Direction = tVec1 - im->m_touch01Position;
+			im->m_touch02Direction = tVec2 - im->m_touch02Position;
 			im->m_touch01Position = tVec1;
 			im->m_touch02Position = tVec2;
 
-			im->m_doubleTouchTBool.SetVal(true);
+			if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_MOVE)
+			{
+				im->m_isHold = false;
+				float dot = glm::dot(im->m_touch01Direction, im->m_touch02Direction);
+				if (dot < 0.7f && im->m_isHoldDouble)
+				{
+					float fl = glm::length(im->m_touch01Direction);
+					float sl = glm::length(im->m_touch02Direction);
+					float mp = 1.0f;
+					float diff = glm::length(im->m_touch01Position - im->m_touch02Position);
+					if (diff - im->m_diffPinch < 0)
+						mp *= -1.0f;
+					im->m_diffPinch = diff;
+					im->m_pinchVal = (fl + sl) / 2.0f * mp;
+
+					im->m_isHoldDouble = false;
+					im->m_isPinch = true;
+				}
+				else
+				{
+					im->m_isHoldDouble = true;
+					im->m_isPinch = false;
+				}
+			}
 		}
 
+		// cleanup
+		if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_UP)
+		{
+			im->m_isHold = false;
+			im->m_isHoldDouble = false;
+			im->m_isPinch = false;
+			im->m_isMove = false;
+		}
 		return 1;
 	}
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY)

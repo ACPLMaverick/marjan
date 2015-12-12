@@ -22,17 +22,12 @@ bool InputHandler::GetClick()
 
 bool InputHandler::GetHold()
 {
-	bool ret = false;
-	if (!GetClick())
-	{
-		ret = InputManager::GetInstance()->GetTouch();
-	}
-	return ret;
+	return InputManager::GetInstance()->GetTouch();
 }
 
-bool InputHandler::GetPress()
+bool InputHandler::GetMove()
 {
-	return InputManager::GetInstance()->GetTouch();
+	return InputManager::GetInstance()->GetMove();
 }
 
 void InputHandler::GetCameraMovementVector(glm::vec2* vec)

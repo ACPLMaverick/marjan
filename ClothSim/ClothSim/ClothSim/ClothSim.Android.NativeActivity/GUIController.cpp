@@ -96,7 +96,7 @@ unsigned int GUIController::Update()
 
 	// ROTATING CAMERA
 
-	if (InputHandler::GetInstance()->GetHold())
+	if (InputHandler::GetInstance()->GetMove() && InputHandler::GetInstance()->GetHold())
 	{
 #ifdef BUILD_OPENGL
 		if (!cursorHideHelper)
@@ -139,7 +139,7 @@ unsigned int GUIController::Update()
 	// ZOOMING CAMERA
 
 	float relScroll = InputHandler::GetInstance()->GetZoomValue();
-	if (relScroll != 0.0f && InputHandler::GetInstance()->GetZoom())
+	if (relScroll != 0.0f && InputHandler::GetInstance()->GetZoom() && InputHandler::GetInstance()->GetMove())
 	{
 		glm::vec3 cPos = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition();
 		float length = glm::length<float>(cPos);
@@ -157,7 +157,7 @@ unsigned int GUIController::Update()
 
 	// MOVING CAMERA ON XZ PLANE
 
-	if (InputManager::GetInstance()->GetDoubleTouch())
+	if (InputManager::GetInstance()->GetDoubleTouch() && InputHandler::GetInstance()->GetMove())
 	{
 		glm::vec2 mVec;
 		InputHandler::GetInstance()->GetCameraMovementVector(&mVec);

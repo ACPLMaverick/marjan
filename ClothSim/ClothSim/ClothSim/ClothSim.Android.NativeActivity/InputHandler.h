@@ -21,7 +21,7 @@ public:
 
 	bool GetClick();
 	bool GetHold();
-	bool GetPress();
+	bool GetMove();
 	bool GetZoom();
 	void GetClickPosition(glm::vec2* vec);
 	void GetCameraMovementVector(glm::vec2* vec);

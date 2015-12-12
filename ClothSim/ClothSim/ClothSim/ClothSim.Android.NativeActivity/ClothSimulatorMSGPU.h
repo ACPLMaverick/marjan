@@ -26,25 +26,14 @@ protected:
 	};
 	const std::string KERNEL_SIM_NAME = "ClothMSPosition";
 
-	GLuint m_tfID;
-	GLuint m_vaoUpdateID[2];
-	GLuint m_vaoRenderID[2];
-	GLuint m_vboPosID[2];
-	GLuint m_vboPosLastID[2];
-	GLuint m_texPosID[2];
-	GLuint m_texPosLastID[2];
-
-	unsigned int m_writeID;
-	unsigned int m_readID;
+	KernelID* m_kernelID;
+	GLuint m_ktfID;
 
 	virtual inline unsigned int InitializeSim();
 	virtual inline unsigned int ShutdownSim();
 	virtual inline unsigned int UpdateSim(
 		float gravity,
-		float fixedDelta,
-		BoxAAData* bColliders,
-		SphereData* sColliders,
-		glm::mat4* wm
+		float fixedDelta
 		);
 
 	inline void SwapRWIds();

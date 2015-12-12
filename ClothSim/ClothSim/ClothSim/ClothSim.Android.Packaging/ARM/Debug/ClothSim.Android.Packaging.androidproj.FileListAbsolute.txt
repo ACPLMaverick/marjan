@@ -31,3 +31,4 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\Wirefr
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothMSSimulationKernel.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\KernelDummyKernel.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothMSPositionKernel.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothNormalsKernel.glsl

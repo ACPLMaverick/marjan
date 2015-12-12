@@ -65,6 +65,7 @@
     </AntPackage>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Content Include="assets\kernels\ClothNormalsKernel.glsl" />
     <Content Include="assets\kernels\ClothMSPositionKernel.glsl" />
     <Content Include="assets\kernels\KernelDummyKernel.glsl" />
     <Content Include="assets\shaders\BasicFragmentShader.glsl" />

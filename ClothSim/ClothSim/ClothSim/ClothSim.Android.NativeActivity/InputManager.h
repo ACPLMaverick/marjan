@@ -71,12 +71,7 @@ protected:
 	std::vector<GUIButton*> m_buttons;	// this vector stores buttons that recieve DOWN, MOVE and UP events
 	int m_scrollHelper = 0;
 
-	TwoBool m_touch01TBool;
-	TwoBool m_touch02TBool;
-	TwoBool m_pressTBool;
 	TwoBool m_clickHelperTBool;
-	TwoBool m_doubleTouchTBool;
-	TwoBool m_pinchTBool;
 	std::vector<TwoBool*> m_tBools;
 
 	glm::vec2 m_touch01Position;
@@ -87,8 +82,10 @@ protected:
 
 	float m_pinchVal = 0.0f;
 	bool m_isPinch;
+	bool m_isMove;
 	bool m_isClick;
 	bool m_isHold;
+	bool m_isHoldDouble;
 	unsigned int m_currentlyHeldButtons;
 
 	InputManager();
@@ -107,7 +104,8 @@ public:
 	bool GetPress();
 	bool GetTouch();
 	bool GetDoubleTouch();
-	bool GetPinch();
+	bool GetPinch(); 
+	bool GetMove();
 	void GetTouchPosition(glm::vec2* vec);
 	void GetDoubleTouchPosition(glm::vec2* vec);
 	void GetTouchDirection(glm::vec2* vec);
