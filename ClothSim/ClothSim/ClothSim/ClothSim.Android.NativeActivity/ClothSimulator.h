@@ -29,7 +29,7 @@ struct SimData
 	float *b_neighbourMultipliers;
 	float *b_springLengths;
 
-	glm::vec3* b_positionLast;
+	glm::vec4* b_positionLast;
 	float* b_elasticity;
 	float* b_mass;
 	float* b_dampCoeff;

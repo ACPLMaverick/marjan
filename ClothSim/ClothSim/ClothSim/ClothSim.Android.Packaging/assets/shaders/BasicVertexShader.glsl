@@ -1,8 +1,8 @@
 #version 300 es
 
-layout(location = 0) in vec3 vertexPosition;
+layout(location = 0) in vec4 vertexPosition;
 layout(location = 1) in vec2 vertexUV;
-layout(location = 2) in vec3 vertexNormal;
+layout(location = 2) in vec4 vertexNormal;
 layout(location = 3) in vec4 vertexColor;
 
 uniform mat4 WorldViewProj;
@@ -17,7 +17,7 @@ out vec2 UV;
 
 void main()
 {
-	vec4 v = vec4(vertexPosition, 1.0f);
+	vec4 v = vertexPosition;
 	gl_Position = WorldViewProj * v;
 
 	ProjPos = WorldViewProj * v;
@@ -25,5 +25,5 @@ void main()
 
 	Vcol = vertexColor;
 	UV = vertexUV;
-	Normal = normalize(vec3((vec4(vertexNormal, 0.0f) * WorldInvTrans)));
+	Normal = normalize(vec3((vec4(vertexNormal.x, vertexNormal.y, vertexNormal.z, 0.0f) * WorldInvTrans)));
 }

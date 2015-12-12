@@ -18,11 +18,11 @@ This is an abstract representation of a Mesh rendered by OpenGL 3.3.
 
 struct VertexDataRaw
 {
-	glm::vec3* positionBuffer;
+	glm::vec4* positionBuffer;
 	glm::vec2* uvBuffer;
-	glm::vec3* normalBuffer;
+	glm::vec4* normalBuffer;
 	glm::vec4* colorBuffer;
-	glm::vec3* barycentricBuffer;
+	glm::vec4* barycentricBuffer;
 	GLuint* indexBuffer;
 	unsigned int vertexCount;
 	unsigned int indexCount;

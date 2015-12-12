@@ -92,7 +92,7 @@ unsigned int MeshGLText::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
 	glVertexAttribPointer(
 		0,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
@@ -112,7 +112,7 @@ unsigned int MeshGLText::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->normalBuffer);
 	glVertexAttribPointer(
 		2,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
@@ -160,10 +160,10 @@ void MeshGLText::GenerateVertexData()
 	float j = 0.0f;
 	for (int i = 0; i < m_textLetterCount; ++i, j += ((float)FIELD_WIDTH * SIZE_MULTIPLIER))
 	{
-		m_vertexData->data->positionBuffer[4 * i] = glm::vec3(0.0f + j, 0.0f, 0.0f);
-		m_vertexData->data->positionBuffer[4 * i + 1] = glm::vec3((float)FIELD_WIDTH * SIZE_MULTIPLIER + j, 0.0f, 0.0f);
-		m_vertexData->data->positionBuffer[4 * i + 2] = glm::vec3(0.0f + j, (float)FIELD_HEIGHT * SIZE_MULTIPLIER * Y_COMPENSATION, 0.0f);
-		m_vertexData->data->positionBuffer[4 * i + 3] = glm::vec3((float)FIELD_WIDTH * SIZE_MULTIPLIER + j, (float)FIELD_HEIGHT * SIZE_MULTIPLIER * Y_COMPENSATION, 0.0f);
+		m_vertexData->data->positionBuffer[4 * i] = glm::vec4(0.0f + j, 0.0f, 0.0f, 1.0f);
+		m_vertexData->data->positionBuffer[4 * i + 1] = glm::vec4((float)FIELD_WIDTH * SIZE_MULTIPLIER + j, 0.0f, 0.0f, 1.0f);
+		m_vertexData->data->positionBuffer[4 * i + 2] = glm::vec4(0.0f + j, (float)FIELD_HEIGHT * SIZE_MULTIPLIER * Y_COMPENSATION, 0.0f, 1.0f);
+		m_vertexData->data->positionBuffer[4 * i + 3] = glm::vec4((float)FIELD_WIDTH * SIZE_MULTIPLIER + j, (float)FIELD_HEIGHT * SIZE_MULTIPLIER * Y_COMPENSATION, 0.0f, 1.0f);
 
 		m_vertexData->data->indexBuffer[6 * i] = 4 * i;
 		m_vertexData->data->indexBuffer[6 * i + 1] = 4 * i + 1;
@@ -177,10 +177,10 @@ void MeshGLText::GenerateVertexData()
 		m_vertexData->data->uvBuffer[4 * i + 2] = glm::vec2(0.0f, 1.0f);
 		m_vertexData->data->uvBuffer[4 * i + 3] = glm::vec2(1.0f, 1.0f);
 
-		m_vertexData->data->normalBuffer[4 * i] = glm::vec3(0.0f, 0.0f, -1.0f);
-		m_vertexData->data->normalBuffer[4 * i + 1] = glm::vec3(0.0f, 0.0f, -1.0f);
-		m_vertexData->data->normalBuffer[4 * i + 2] = glm::vec3(0.0f, 0.0f, -1.0f);
-		m_vertexData->data->normalBuffer[4 * i + 3] = glm::vec3(0.0f, 0.0f, -1.0f);
+		m_vertexData->data->normalBuffer[4 * i] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+		m_vertexData->data->normalBuffer[4 * i + 1] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+		m_vertexData->data->normalBuffer[4 * i + 2] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+		m_vertexData->data->normalBuffer[4 * i + 3] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 
 		m_vertexData->data->colorBuffer[4 * i] = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		m_vertexData->data->colorBuffer[4 * i + 1] = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);

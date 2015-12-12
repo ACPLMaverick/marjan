@@ -45,10 +45,10 @@ void MeshGLBox::GenerateVertexData()
 	int face = 0;
 	int index = 0;
 	// front face
-	m_vertexData->data->positionBuffer[face + 0] = glm::vec3(- m_width / 2.0f, - m_height / 2.0f, m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 1] = glm::vec3(m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 2] = glm::vec3(m_width / 2.0f, m_height / 2.0f, m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 3] = glm::vec3(-m_width / 2.0f, m_height / 2.0f, m_length / 2.0f);
+	m_vertexData->data->positionBuffer[face + 0] = glm::vec4(- m_width / 2.0f, - m_height / 2.0f, m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 1] = glm::vec4(m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 2] = glm::vec4(m_width / 2.0f, m_height / 2.0f, m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 3] = glm::vec4(-m_width / 2.0f, m_height / 2.0f, m_length / 2.0f, 1.0f);
 
 	m_vertexData->data->indexBuffer[index + 0] = face + 0;
 	m_vertexData->data->indexBuffer[index + 1] = face + 1;
@@ -62,10 +62,10 @@ void MeshGLBox::GenerateVertexData()
 	m_vertexData->data->uvBuffer[face + 2] = glm::vec2(0.0f, 1.0f);
 	m_vertexData->data->uvBuffer[face + 3] = glm::vec2(1.0f, 1.0f);
 
-	m_vertexData->data->normalBuffer[face + 0] = glm::vec3(0.0f, 0.0f, -1.0f);
-	m_vertexData->data->normalBuffer[face + 1] = glm::vec3(0.0f, 0.0f, -1.0f);
-	m_vertexData->data->normalBuffer[face + 2] = glm::vec3(0.0f, 0.0f, -1.0f);
-	m_vertexData->data->normalBuffer[face + 3] = glm::vec3(0.0f, 0.0f, -1.0f);
+	m_vertexData->data->normalBuffer[face + 0] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 1] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 2] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 3] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 
 	m_vertexData->data->colorBuffer[face + 0] = m_color;
 	m_vertexData->data->colorBuffer[face + 1] = m_color;
@@ -75,10 +75,10 @@ void MeshGLBox::GenerateVertexData()
 	// rear face
 	face += 4;
 	index += 6;
-	m_vertexData->data->positionBuffer[face + 0] = glm::vec3(-m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 1] = glm::vec3(m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 2] = glm::vec3(m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 3] = glm::vec3(-m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f);
+	m_vertexData->data->positionBuffer[face + 0] = glm::vec4(-m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 1] = glm::vec4(m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 2] = glm::vec4(m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 3] = glm::vec4(-m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f, 1.0f);
 
 	m_vertexData->data->indexBuffer[index + 0] = face + 2;
 	m_vertexData->data->indexBuffer[index + 1] = face + 1;
@@ -92,10 +92,10 @@ void MeshGLBox::GenerateVertexData()
 	m_vertexData->data->uvBuffer[face + 2] = glm::vec2(0.0f, 1.0f);
 	m_vertexData->data->uvBuffer[face + 3] = glm::vec2(1.0f, 1.0f);
 
-	m_vertexData->data->normalBuffer[face + 0] = glm::vec3(0.0f, 0.0f, 1.0f);
-	m_vertexData->data->normalBuffer[face + 1] = glm::vec3(0.0f, 0.0f, 1.0f);
-	m_vertexData->data->normalBuffer[face + 2] = glm::vec3(0.0f, 0.0f, 1.0f);
-	m_vertexData->data->normalBuffer[face + 3] = glm::vec3(0.0f, 0.0f, 1.0f);
+	m_vertexData->data->normalBuffer[face + 0] = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 1] = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 2] = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 3] = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
 	m_vertexData->data->colorBuffer[face + 0] = m_color;
 	m_vertexData->data->colorBuffer[face + 1] = m_color;
@@ -105,10 +105,10 @@ void MeshGLBox::GenerateVertexData()
 	// left face
 	face += 4;
 	index += 6;
-	m_vertexData->data->positionBuffer[face + 0] = glm::vec3(-m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 1] = glm::vec3(-m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 2] = glm::vec3(-m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 3] = glm::vec3(-m_width / 2.0f, m_height / 2.0f, m_length / 2.0f);
+	m_vertexData->data->positionBuffer[face + 0] = glm::vec4(-m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 1] = glm::vec4(-m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 2] = glm::vec4(-m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 3] = glm::vec4(-m_width / 2.0f, m_height / 2.0f, m_length / 2.0f, 1.0f);
 
 	m_vertexData->data->indexBuffer[index + 0] = face + 2;
 	m_vertexData->data->indexBuffer[index + 1] = face + 1;
@@ -122,10 +122,10 @@ void MeshGLBox::GenerateVertexData()
 	m_vertexData->data->uvBuffer[face + 2] = glm::vec2(0.0f, 1.0f);
 	m_vertexData->data->uvBuffer[face + 3] = glm::vec2(1.0f, 1.0f);
 
-	m_vertexData->data->normalBuffer[face + 0] = glm::vec3(-1.0f, 0.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 1] = glm::vec3(-1.0f, 0.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 2] = glm::vec3(-1.0f, 0.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 3] = glm::vec3(-1.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 0] = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 1] = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 2] = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 3] = glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f);
 
 	m_vertexData->data->colorBuffer[face + 0] = m_color;
 	m_vertexData->data->colorBuffer[face + 1] = m_color;
@@ -135,10 +135,10 @@ void MeshGLBox::GenerateVertexData()
 	// right face
 	face += 4;
 	index += 6;
-	m_vertexData->data->positionBuffer[face + 0] = glm::vec3(m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 1] = glm::vec3(m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 2] = glm::vec3(m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 3] = glm::vec3(m_width / 2.0f, m_height / 2.0f, m_length / 2.0f);
+	m_vertexData->data->positionBuffer[face + 0] = glm::vec4(m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 1] = glm::vec4(m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 2] = glm::vec4(m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 3] = glm::vec4(m_width / 2.0f, m_height / 2.0f, m_length / 2.0f, 1.0f);
 
 	m_vertexData->data->indexBuffer[index + 0] = face + 0;
 	m_vertexData->data->indexBuffer[index + 1] = face + 1;
@@ -152,10 +152,10 @@ void MeshGLBox::GenerateVertexData()
 	m_vertexData->data->uvBuffer[face + 2] = glm::vec2(0.0f, 1.0f);
 	m_vertexData->data->uvBuffer[face + 3] = glm::vec2(1.0f, 1.0f);
 
-	m_vertexData->data->normalBuffer[face + 0] = glm::vec3(1.0f, 0.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 1] = glm::vec3(1.0f, 0.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 2] = glm::vec3(1.0f, 0.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 3] = glm::vec3(1.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 0] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 1] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 2] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 3] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
 
 	m_vertexData->data->colorBuffer[face + 0] = m_color;
 	m_vertexData->data->colorBuffer[face + 1] = m_color;
@@ -165,10 +165,10 @@ void MeshGLBox::GenerateVertexData()
 	// down face
 	face += 4;
 	index += 6;
-	m_vertexData->data->positionBuffer[face + 0] = glm::vec3(-m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 1] = glm::vec3(m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 2] = glm::vec3(m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 3] = glm::vec3(-m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f);
+	m_vertexData->data->positionBuffer[face + 0] = glm::vec4(-m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 1] = glm::vec4(m_width / 2.0f, -m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 2] = glm::vec4(m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 3] = glm::vec4(-m_width / 2.0f, -m_height / 2.0f, m_length / 2.0f, 1.0f);
 
 	m_vertexData->data->indexBuffer[index + 0] = face + 0;
 	m_vertexData->data->indexBuffer[index + 1] = face + 1;
@@ -182,10 +182,10 @@ void MeshGLBox::GenerateVertexData()
 	m_vertexData->data->uvBuffer[face + 2] = glm::vec2(0.0f, 1.0f);
 	m_vertexData->data->uvBuffer[face + 3] = glm::vec2(1.0f, 1.0f);
 
-	m_vertexData->data->normalBuffer[face + 0] = glm::vec3(0.0f, -1.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 1] = glm::vec3(0.0f, -1.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 2] = glm::vec3(0.0f, -1.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 3] = glm::vec3(0.0f, -1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 0] = glm::vec4(0.0f, -1.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 1] = glm::vec4(0.0f, -1.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 2] = glm::vec4(0.0f, -1.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 3] = glm::vec4(0.0f, -1.0f, 0.0f, 0.0f);
 
 	m_vertexData->data->colorBuffer[face + 0] = m_color;
 	m_vertexData->data->colorBuffer[face + 1] = m_color;
@@ -195,10 +195,10 @@ void MeshGLBox::GenerateVertexData()
 	// up face
 	face += 4;
 	index += 6;
-	m_vertexData->data->positionBuffer[face + 0] = glm::vec3(-m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 1] = glm::vec3(m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 2] = glm::vec3(m_width / 2.0f, m_height / 2.0f, m_length / 2.0f);
-	m_vertexData->data->positionBuffer[face + 3] = glm::vec3(-m_width / 2.0f, m_height / 2.0f, m_length / 2.0f);
+	m_vertexData->data->positionBuffer[face + 0] = glm::vec4(-m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 1] = glm::vec4(m_width / 2.0f, m_height / 2.0f, -m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 2] = glm::vec4(m_width / 2.0f, m_height / 2.0f, m_length / 2.0f, 1.0f);
+	m_vertexData->data->positionBuffer[face + 3] = glm::vec4(-m_width / 2.0f, m_height / 2.0f, m_length / 2.0f, 1.0f);
 
 	m_vertexData->data->indexBuffer[index + 0] = face + 2;
 	m_vertexData->data->indexBuffer[index + 1] = face + 1;
@@ -212,10 +212,10 @@ void MeshGLBox::GenerateVertexData()
 	m_vertexData->data->uvBuffer[face + 2] = glm::vec2(0.0f, 1.0f);
 	m_vertexData->data->uvBuffer[face + 3] = glm::vec2(1.0f, 1.0f);
 
-	m_vertexData->data->normalBuffer[face + 0] = glm::vec3(0.0f, 1.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 1] = glm::vec3(0.0f, 1.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 2] = glm::vec3(0.0f, 1.0f, 0.0f);
-	m_vertexData->data->normalBuffer[face + 3] = glm::vec3(0.0f, 1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 0] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 1] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 2] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	m_vertexData->data->normalBuffer[face + 3] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
 	m_vertexData->data->colorBuffer[face + 0] = m_color;
 	m_vertexData->data->colorBuffer[face + 1] = m_color;

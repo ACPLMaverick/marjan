@@ -1,32 +1,26 @@
 #version 300 es
 
-layout(location = 0) in vec3 Pos;					//current position
-layout(location = 1) in vec3 PosLast;			//previous position
-
-struct InBuffer
-{
-	vec3 buf;
-	//half padding;
-};
+layout(location = 0) in vec4 Pos;					//current position
+layout(location = 1) in vec4 PosLast;			//previous position
 
 uniform InPos
 {
-	InBuffer[16384] InPosBuffer;
+	vec4[16384] InPosBuffer;
 };
 uniform InPosLast
 {
-	InBuffer[16384] InPosLastBuffer;
+	vec4[16384] InPosLastBuffer;
 };
 
-out vec3 OutPos;
-out vec3 OutPosLast;
+out vec4 OutPos;
+out vec4 OutPosLast;
 
 void main()
 {
 	int id = gl_VertexID;
-	vec3 dupa = InPosBuffer[1].buf;
-	vec3 pos = vec3(dupa.x, dupa.y, dupa.z);
+	vec4 dupa = InPosBuffer[id];
+	vec4 pos = vec4(dupa.x, dupa.y - 0.01f, dupa.z, dupa.w);
 	OutPos = pos;
 	OutPosLast = Pos;
-	gl_Position = vec4(pos, 1.0f);
+	gl_Position = pos;
 }

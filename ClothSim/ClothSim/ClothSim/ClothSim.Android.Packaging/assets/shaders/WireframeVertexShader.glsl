@@ -1,10 +1,10 @@
 #version 300 es
 
-layout(location = 0) in vec3 vertexPosition;
+layout(location = 0) in vec4 vertexPosition;
 layout(location = 1) in vec2 vertexUV;
-layout(location = 2) in vec3 vertexNormal;
+layout(location = 2) in vec4 vertexNormal;
 layout(location = 3) in vec4 vertexColor;
-layout(location = 4) in vec3 vertexBar;
+layout(location = 4) in vec4 vertexBar;
 
 uniform mat4 WorldViewProj;
 uniform mat4 World;
@@ -19,7 +19,7 @@ out vec3 Bar;
 
 void main()
 {
-	vec4 v = vec4(vertexPosition, 1.0f);
+	vec4 v = vertexPosition;
 	gl_Position = WorldViewProj * v;
 
 	ProjPos = WorldViewProj * v;
@@ -27,7 +27,7 @@ void main()
 
 	Vcol = vertexColor;
 	UV = vertexUV;
-	Normal = normalize(vec3((vec4(vertexNormal, 0.0f) * WorldInvTrans)));
+	Normal = normalize(vec3((vec4(vertexNormal.x, vertexNormal.y, vertexNormal.z, 0.0f) * WorldInvTrans)));
 
 	/*
 	vec3 b = vec3(0.0f);
@@ -38,5 +38,5 @@ void main()
 	if(gl_VertexID % 3 == 2)
 		b = vec3(0.0f, 0.0f, 1.0f);
 	Bar = b;*/
-	Bar = vertexBar;
+	Bar = vec3(vertexBar.x, vertexBar.y, vertexBar.z);
 }

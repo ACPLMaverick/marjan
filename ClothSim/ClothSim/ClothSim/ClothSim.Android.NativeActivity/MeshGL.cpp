@@ -138,7 +138,7 @@ unsigned int MeshGL::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
 	glVertexAttribPointer(
 		0,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
@@ -158,7 +158,7 @@ unsigned int MeshGL::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->normalBuffer);
 	glVertexAttribPointer(
 		2,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
@@ -178,7 +178,7 @@ unsigned int MeshGL::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->barycentricBuffer);
 	glVertexAttribPointer(
 		4,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
@@ -267,12 +267,12 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 		m_vertexData->data->barycentricBuffer = nullptr;
 	}
 
-	m_vertexData->data->positionBuffer = new glm::vec3[m_vertexData->data->vertexCount];
+	m_vertexData->data->positionBuffer = new glm::vec4[m_vertexData->data->vertexCount];
 	m_vertexData->data->indexBuffer = new unsigned int[m_vertexData->data->indexCount];	
 	m_vertexData->data->uvBuffer = new glm::vec2[m_vertexData->data->vertexCount];
-	m_vertexData->data->normalBuffer = new glm::vec3[m_vertexData->data->vertexCount];
+	m_vertexData->data->normalBuffer = new glm::vec4[m_vertexData->data->vertexCount];
 	m_vertexData->data->colorBuffer = new glm::vec4[m_vertexData->data->vertexCount];
-	m_vertexData->data->barycentricBuffer = new glm::vec3[m_vertexData->data->indexCount];
+	m_vertexData->data->barycentricBuffer = new glm::vec4[m_vertexData->data->indexCount];
 
 	if (ifPos)
 	{
@@ -325,8 +325,8 @@ void MeshGL::GenerateBarycentricCoords()
 {
 	for (int i = 0; i < m_vertexData->data->indexCount; i += 3)
 	{
-		m_vertexData->data->barycentricBuffer[i] = glm::vec3(1.0f, 0.0f, 0.0f);
-		m_vertexData->data->barycentricBuffer[i + 1] = glm::vec3(0.0f, 1.0f, 0.0f);
-		m_vertexData->data->barycentricBuffer[i + 2] = glm::vec3(0.0f, 0.0f, 1.0f);
+		m_vertexData->data->barycentricBuffer[i] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+		m_vertexData->data->barycentricBuffer[i + 1] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+		m_vertexData->data->barycentricBuffer[i + 2] = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 	}
 }

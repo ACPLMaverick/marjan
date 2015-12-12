@@ -45,8 +45,8 @@ void MeshGLSphere::GenerateVertexData()
 			float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
 			float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
 
-			m_vertexData->data->positionBuffer[i] = glm::vec3(x * m_radius, y * m_radius, z * m_radius);
-			m_vertexData->data->normalBuffer[i] = glm::vec3(x, y, -z);
+			m_vertexData->data->positionBuffer[i] = glm::vec4(x * m_radius, y * m_radius, z * m_radius, 1.0f);
+			m_vertexData->data->normalBuffer[i] = glm::vec4(x, y, -z, 0.0f);
 			m_vertexData->data->uvBuffer[i] = glm::vec2(s * S, r * R);
 			m_vertexData->data->colorBuffer[i] = m_color;
 		}

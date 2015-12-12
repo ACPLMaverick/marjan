@@ -44,7 +44,7 @@ unsigned int ClothSimulator::Initialize()
 	m_simData->m_edgesWidthAll = m_meshPlane->GetEdgesWidth();
 	m_simData->m_edgesLengthAll = m_meshPlane->GetEdgesLength();
 
-	m_simData->b_positionLast = new glm::vec3[m_simData->m_vertexCount];
+	m_simData->b_positionLast = new glm::vec4[m_simData->m_vertexCount];
 	m_simData->b_springLengths = new float[m_simData->m_vertexCount * VERTEX_NEIGHBOURING_VERTICES];
 	m_simData->b_neighbours = new unsigned int[m_simData->m_vertexCount * VERTEX_NEIGHBOURING_VERTICES];
 	m_simData->b_neighbourMultipliers = new float[m_simData->m_vertexCount * VERTEX_NEIGHBOURING_VERTICES];
@@ -167,7 +167,7 @@ unsigned int ClothSimulator::Initialize()
 			&m_vd[0]->data->positionBuffer[0].x,
 			GL_DYNAMIC_COPY);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 		glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosLastID[i]);
 		glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
@@ -175,7 +175,7 @@ unsigned int ClothSimulator::Initialize()
 			&m_simData->b_positionLast[0].x,
 			GL_DYNAMIC_COPY);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 	
 	m_kernelID = ResourceManager::GetInstance()->LoadKernel(&KERNEL_SIM_NAME);
@@ -188,8 +188,6 @@ unsigned int ClothSimulator::Initialize()
 	{
 		m_texPosID[i] = glGetUniformBlockIndex(m_kernelID->id, KERNEL_SIM_INPUT_NAMES[0]);
 		m_texPosLastID[i] = glGetUniformBlockIndex(m_kernelID->id, KERNEL_SIM_INPUT_NAMES[1]);
-
-
 	}
 	// Sim-specific initialization. GenTransformFeedbacks and shader loading goes here.
 	err = InitializeSim();
@@ -241,22 +239,22 @@ unsigned int ClothSimulator::Update()
 	glBindVertexArray(m_vaoUpdateID[m_readID]);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosLastID[m_readID]);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_vboPosID[m_writeID]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, m_vboPosLastID[m_writeID]);
 	
 
 	glEnable(GL_RASTERIZER_DISCARD);
-
-	glm::vec3* ptr = (glm::vec3*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_simData->m_vertexCount, GL_MAP_READ_BIT);
+	/*
+	glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_simData->m_vertexCount, GL_MAP_READ_BIT);
 	for (int i = 0; i < m_simData->m_vertexCount; ++i, ++ptr)
-		LOGI("%f %f %f", ptr->x, ptr->y, ptr->z);
+		LOGI("%f %f %f %f", ptr->x, ptr->y, ptr->z, ptr->w);
 	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
-
+	*/
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_tfID);
 	glBeginTransformFeedback(GL_POINTS);
 	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
@@ -302,15 +300,15 @@ inline void ClothSimulator::CopyVertexData(VertexData * source, VertexData * des
 	dest->data->indexCount = source->data->indexCount;
 
 	if (dest->data->barycentricBuffer == nullptr)
-		dest->data->barycentricBuffer = new glm::vec3[dest->data->indexCount];
+		dest->data->barycentricBuffer = new glm::vec4[dest->data->indexCount];
 	if (dest->data->colorBuffer == nullptr)
 		dest->data->colorBuffer = new glm::vec4[dest->data->vertexCount];
 	if (dest->data->indexBuffer == nullptr)
 		dest->data->indexBuffer = new unsigned int[dest->data->indexCount];
 	if (dest->data->normalBuffer == nullptr)
-		dest->data->normalBuffer = new glm::vec3[dest->data->vertexCount];
+		dest->data->normalBuffer = new glm::vec4[dest->data->vertexCount];
 	if (dest->data->positionBuffer == nullptr)
-		dest->data->positionBuffer = new glm::vec3[dest->data->vertexCount];
+		dest->data->positionBuffer = new glm::vec4[dest->data->vertexCount];
 	if (dest->data->uvBuffer == nullptr)
 		dest->data->uvBuffer = new glm::vec2[dest->data->vertexCount];
 

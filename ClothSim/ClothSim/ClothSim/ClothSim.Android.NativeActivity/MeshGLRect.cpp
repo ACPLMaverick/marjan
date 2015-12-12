@@ -27,10 +27,10 @@ void MeshGLRect::GenerateVertexData()
 
 	////////////////
 
-	m_vertexData->data->positionBuffer[0] = glm::vec3(-1.0f, -1.0f, 0.0f);
-	m_vertexData->data->positionBuffer[1] = glm::vec3(1.0f, -1.0f, 0.0f);
-	m_vertexData->data->positionBuffer[2] = glm::vec3(-1.0f, 1.0f, 0.0f);
-	m_vertexData->data->positionBuffer[3] = glm::vec3(1.0f, 1.0f, 0.0f);
+	m_vertexData->data->positionBuffer[0] = glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f);
+	m_vertexData->data->positionBuffer[1] = glm::vec4(1.0f, -1.0f, 0.0f, 1.0f);
+	m_vertexData->data->positionBuffer[2] = glm::vec4(-1.0f, 1.0f, 0.0f, 1.0f);
+	m_vertexData->data->positionBuffer[3] = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
 
 	m_vertexData->data->indexBuffer[0] = 0;
 	m_vertexData->data->indexBuffer[1] = 1;
@@ -44,10 +44,10 @@ void MeshGLRect::GenerateVertexData()
 	m_vertexData->data->uvBuffer[2] = glm::vec2(0.0f, 1.0f);
 	m_vertexData->data->uvBuffer[3] = glm::vec2(1.0f, 1.0f);
 
-	m_vertexData->data->normalBuffer[0] = glm::vec3(0.0f, 0.0f, -1.0f);
-	m_vertexData->data->normalBuffer[1] = glm::vec3(0.0f, 0.0f, -1.0f);
-	m_vertexData->data->normalBuffer[2] = glm::vec3(0.0f, 0.0f, -1.0f);
-	m_vertexData->data->normalBuffer[3] = glm::vec3(0.0f, 0.0f, -1.0f);
+	m_vertexData->data->normalBuffer[0] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[1] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[2] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_vertexData->data->normalBuffer[3] = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 
 	m_vertexData->data->colorBuffer[0] = m_color;
 	m_vertexData->data->colorBuffer[1] = m_color;

@@ -66,7 +66,7 @@ unsigned int MeshGLRectButton::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->vertexBuffer);
 	glVertexAttribPointer(
 		0,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		0,
@@ -86,7 +86,7 @@ unsigned int MeshGLRectButton::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->normalBuffer);
 	glVertexAttribPointer(
 		2,
-		3,
+		4,
 		GL_FLOAT,
 		GL_FALSE,
 		0,

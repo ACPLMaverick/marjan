@@ -63,9 +63,9 @@ void MeshGLPlane::GenerateVertexData()
 	{
 		for (float l = -m_length / 2.0f; l <= m_length / 2.0f + 0.001f; l += additionL, ++iVert)
 		{
-			m_vertexData->data->positionBuffer[iVert] = glm::vec3(w, 0.0f, l);
+			m_vertexData->data->positionBuffer[iVert] = glm::vec4(w, 0.0f, l, 1.0f);
 			m_vertexData->data->uvBuffer[iVert] = glm::vec2((w + (m_width / 2.0f)) / m_width, (l + (m_length / 2.0f)) / m_length);
-			m_vertexData->data->normalBuffer[iVert] = glm::vec3(0.0f, 1.0f, 0.0f);
+			m_vertexData->data->normalBuffer[iVert] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 			m_vertexData->data->colorBuffer[iVert] = m_color;
 		}
 	}
