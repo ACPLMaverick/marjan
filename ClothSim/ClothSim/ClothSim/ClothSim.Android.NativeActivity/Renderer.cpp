@@ -77,6 +77,8 @@ unsigned int Renderer::Initialize()
 
 	//////////// options go here
 
+	eglSwapInterval(engine->display, CSSET_VSYNC_ENALBED);
+
 	glClearColor(CSSET_CLEAR_COLORS[0], CSSET_CLEAR_COLORS[1], CSSET_CLEAR_COLORS[2], CSSET_CLEAR_COLORS[3]);
 	glEnable(GL_DEPTH_TEST);
 

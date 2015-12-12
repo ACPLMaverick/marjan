@@ -21,11 +21,11 @@
 
 struct SimData
 {
-	unsigned int m_vertexCount;
-	unsigned int m_edgesWidthAll;
-	unsigned int m_edgesLengthAll;
+	int m_vertexCount;
+	int m_edgesWidthAll;
+	int m_edgesLengthAll;
 
-	unsigned int *b_neighbours;
+	float *b_neighbours;
 	float *b_neighbourMultipliers;
 	float *b_springLengths;
 
@@ -44,9 +44,16 @@ struct SimData
 	GLuint i_springLengths;
 	GLuint i_elasticity;
 	GLuint i_mass;
+	GLuint i_airDampCoeff;
 	GLuint i_dampCoeff;
 	GLuint i_lockMultiplier;
 	GLuint i_colliderMultiplier;
+
+	GLuint iu_vertexCount;
+	GLuint iu_edgesWidthAll;
+	GLuint iu_edgesLengthAll;
+	GLuint iu_deltaTime;
+	GLuint iu_gravity;
 
 	SimData()
 	{
@@ -113,39 +120,14 @@ protected:
 	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
 	const float CELL_OFFSET = 0.01f;
 
-	const unsigned int KERNEL_SIM_OUTPUT_NAME_COUNT = 2;
-	const char* KERNEL_SIM_INPUT_NAMES[2] =
-	{
-		"InPos",
-		"InPosLast"
-	};
-	const char* KERNEL_SIM_OUTPUT_NAMES[2] =
-	{
-		"OutPos",
-		"OutPosLast"
-	};
-	const std::string KERNEL_SIM_NAME = "ClothMSSimulation";
-
-
 	MeshGLPlane* m_meshPlane;
 	VertexData** m_vd;
 	VertexData* m_vdCopy;
 	SimData* m_simData;
 	KernelID* m_kernelID;
 
-	GLuint m_tfID;
-	GLuint m_vaoUpdateID[2];
-	GLuint m_vaoRenderID[2];
-	GLuint m_vboPosID[2];
-	GLuint m_vboPosLastID[2];
-	GLuint m_texPosID[2];
-	GLuint m_texPosLastID[2];
-
-	unsigned int m_writeID;
-	unsigned int m_readID;
-
-	unsigned int m_boxColliderCount;
-	unsigned int m_sphereColliderCount;
+	int m_boxColliderCount;
+	int m_sphereColliderCount;
 	float m_cellSize;
 
 
@@ -161,7 +143,6 @@ protected:
 		) = 0;
 
 	inline void CopyVertexData(VertexData* source, VertexData* dest);
-	inline void SwapRWIds();
 public:
 	ClothSimulator(SimObject* obj);
 	ClothSimulator(const ClothSimulator* c);

@@ -30,3 +30,4 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_w
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\WireframeVertexShader.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothMSSimulationKernel.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\KernelDummyKernel.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothMSPositionKernel.glsl

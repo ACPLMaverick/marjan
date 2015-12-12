@@ -65,7 +65,7 @@
     </AntPackage>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Content Include="assets\kernels\ClothMSSimulationKernel.glsl" />
+    <Content Include="assets\kernels\ClothMSPositionKernel.glsl" />
     <Content Include="assets\kernels\KernelDummyKernel.glsl" />
     <Content Include="assets\shaders\BasicFragmentShader.glsl" />
     <Content Include="assets\shaders\BasicVertexShader.glsl" />

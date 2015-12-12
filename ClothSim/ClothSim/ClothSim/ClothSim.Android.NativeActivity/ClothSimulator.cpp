@@ -30,9 +30,6 @@ unsigned int ClothSimulator::Initialize()
 	}
 	else return CS_ERR_CLOTHSIMULATOR_MESH_OBTAINING_ERROR;
 
-	m_readID = 0;
-	m_writeID = 1;
-
 	// get a copy of start data
 	m_vd = m_meshPlane->GetVertexDataDualPtr();
 	m_vdCopy = new VertexData;
@@ -41,12 +38,12 @@ unsigned int ClothSimulator::Initialize()
 	// initialize simulation data
 	m_simData = new SimData;
 	m_simData->m_vertexCount = m_vd[0]->data->vertexCount;
-	m_simData->m_edgesWidthAll = m_meshPlane->GetEdgesWidth();
-	m_simData->m_edgesLengthAll = m_meshPlane->GetEdgesLength();
+	m_simData->m_edgesWidthAll = m_meshPlane->GetEdgesWidth() + 2;
+	m_simData->m_edgesLengthAll = m_meshPlane->GetEdgesLength() + 2;
 
 	m_simData->b_positionLast = new glm::vec4[m_simData->m_vertexCount];
 	m_simData->b_springLengths = new float[m_simData->m_vertexCount * VERTEX_NEIGHBOURING_VERTICES];
-	m_simData->b_neighbours = new unsigned int[m_simData->m_vertexCount * VERTEX_NEIGHBOURING_VERTICES];
+	m_simData->b_neighbours = new float[m_simData->m_vertexCount * VERTEX_NEIGHBOURING_VERTICES];
 	m_simData->b_neighbourMultipliers = new float[m_simData->m_vertexCount * VERTEX_NEIGHBOURING_VERTICES];
 	m_simData->b_elasticity = new float[m_simData->m_vertexCount];
 	m_simData->b_mass = new float[m_simData->m_vertexCount];
@@ -63,7 +60,7 @@ unsigned int ClothSimulator::Initialize()
 
 	m_cellSize = glm::max(baseLength.x, baseLength.z) * 1.5f;
 
-	for (unsigned int i = 0; i < m_simData->m_vertexCount; ++i)
+	for (int i = 0; i < m_simData->m_vertexCount; ++i)
 	{
 		m_simData->b_positionLast[i] = m_vd[0]->data->positionBuffer[i];
 		m_simData->b_mass[i] = VERTEX_MASS;
@@ -80,7 +77,7 @@ unsigned int ClothSimulator::Initialize()
 			)
 		{
 			m_simData->b_elasticity[i] *= SPRING_BORDER_MULTIPLIER;
-			//m_simData->b_elasticity[i]Damp *= SPRING_BORDER_MULTIPLIER;
+			m_simData->b_dampCoeff[i] *= SPRING_BORDER_MULTIPLIER;
 		}
 
 		// calculating neighbouring vertices ids and spring lengths
@@ -141,54 +138,17 @@ unsigned int ClothSimulator::Initialize()
 	// hard-coded locks
 	m_simData->b_lockMultiplier[0] = 0.0f;
 	m_simData->b_lockMultiplier[(m_simData->m_vertexCount - m_simData->m_edgesLengthAll)] = 0.0f;
-	
+	/*
+	for (int i = 0; i < 4 * m_simData->m_vertexCount; i++)
+	{
+		LOGI("%d", m_simData->b_neighbours[i]);
+	}*/
 	/*
 	int n;
 	cl_platform_id* id;
 	clGetPlatformIDs(2, id, 0);
 	*/
 
-
-	// OpenGL Data initialization and binding
-	m_vaoRenderID[0] = m_vd[0]->ids->vertexArrayID;
-	m_vaoRenderID[1] = m_vd[1]->ids->vertexArrayID;
-	glGenVertexArrays(2, m_vaoUpdateID);
-	m_vboPosID[0] = m_vd[0]->ids->vertexBuffer;
-	m_vboPosID[1] = m_vd[1]->ids->vertexBuffer;
-	glGenBuffers(2, m_vboPosLastID);
-
-	
-	for (uint i = 0; i < 2; ++i)
-	{
-		glBindVertexArray(m_vaoUpdateID[i]);
-		glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[i]);
-		glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
-			m_vd[0]->data->vertexCount * sizeof(m_vd[0]->data->positionBuffer[0]),
-			&m_vd[0]->data->positionBuffer[0].x,
-			GL_DYNAMIC_COPY);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-		glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosLastID[i]);
-		glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
-			m_simData->m_vertexCount * sizeof(m_simData->b_positionLast[0]),
-			&m_simData->b_positionLast[0].x,
-			GL_DYNAMIC_COPY);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	}
-	
-	m_kernelID = ResourceManager::GetInstance()->LoadKernel(&KERNEL_SIM_NAME);
-	glGenTransformFeedbacks(1, &m_tfID);
-	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_tfID);
-	glTransformFeedbackVaryings(m_kernelID->id, KERNEL_SIM_OUTPUT_NAME_COUNT, KERNEL_SIM_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
-	glLinkProgram(m_kernelID->id);
-
-	for (uint i = 0; i < 2; ++i)
-	{
-		m_texPosID[i] = glGetUniformBlockIndex(m_kernelID->id, KERNEL_SIM_INPUT_NAMES[0]);
-		m_texPosLastID[i] = glGetUniformBlockIndex(m_kernelID->id, KERNEL_SIM_INPUT_NAMES[1]);
-	}
 	// Sim-specific initialization. GenTransformFeedbacks and shader loading goes here.
 	err = InitializeSim();
 
@@ -228,52 +188,9 @@ unsigned int ClothSimulator::Update()
 	if (m_obj->GetTransform() != nullptr)
 		wm = m_obj->GetTransform()->GetWorldMatrix();
 
-
-	ShaderID* cShaderID = Renderer::GetInstance()->GetCurrentShaderID();
-	glUseProgram(m_kernelID->id);
-
-	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], m_vboPosID[m_readID]);
-	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], m_vboPosLastID[m_readID]);
-
-
-	glBindVertexArray(m_vaoUpdateID[m_readID]);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosLastID[m_readID]);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_vboPosID[m_writeID]);
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, m_vboPosLastID[m_writeID]);
-	
-
-	glEnable(GL_RASTERIZER_DISCARD);
-	/*
-	glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_simData->m_vertexCount, GL_MAP_READ_BIT);
-	for (int i = 0; i < m_simData->m_vertexCount; ++i, ++ptr)
-		LOGI("%f %f %f %f", ptr->x, ptr->y, ptr->z, ptr->w);
-	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
-	*/
-	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_tfID);
-	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
-	glEndTransformFeedback();
-
-	glFlush();
-	glDisable(GL_RASTERIZER_DISCARD);
-
-	//ptr = (glm::vec3*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_simData->m_vertexCount, GL_MAP_READ_BIT);
-	//glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
-
-	SwapRWIds();
-	m_meshPlane->SwapDataPtrs();
-	
-	glUseProgram(cShaderID->id);
-
 	err = UpdateSim(
 		PhysicsManager::GetInstance()->GetGravity(),
-		Timer::GetInstance()->GetFixedDeltaTime(),
+		(float)FIXED_DELTA,
 		boxData,
 		sphereData,
 		wm
@@ -333,11 +250,4 @@ inline void ClothSimulator::CopyVertexData(VertexData * source, VertexData * des
 		dest->data->indexBuffer[i] = source->data->indexBuffer[i];
 		dest->data->barycentricBuffer[i] = source->data->barycentricBuffer[i];
 	}
-}
-
-inline void ClothSimulator::SwapRWIds()
-{
-	unsigned int tmp = m_readID;
-	m_readID = m_writeID;
-	m_writeID = tmp;
 }

@@ -156,20 +156,19 @@ unsigned int MeshGLPlane::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
 
-	unsigned int id = 1;
-	if (m_currentArray == 1)
-		id = 0;
+	for (unsigned int id = 0; id < 2; ++id)
+	{
+		glDeleteVertexArrays(1, &m_vertexDataDual[id]->ids->vertexArrayID);
+		glDeleteBuffers(1, &m_vertexDataDual[id]->ids->vertexBuffer);
+		glDeleteBuffers(1, &m_vertexDataDual[id]->ids->uvBuffer);
+		glDeleteBuffers(1, &m_vertexDataDual[id]->ids->normalBuffer);
+		glDeleteBuffers(1, &m_vertexDataDual[id]->ids->colorBuffer);
+		glDeleteBuffers(1, &m_vertexDataDual[id]->ids->barycentricBuffer);
+		glDeleteBuffers(1, &m_vertexDataDual[id]->ids->indexBuffer);
 
-	glDeleteVertexArrays(1, &m_vertexDataDual[id]->ids->vertexArrayID);
-	glDeleteBuffers(1, &m_vertexDataDual[id]->ids->vertexBuffer);
-	glDeleteBuffers(1, &m_vertexDataDual[id]->ids->uvBuffer);
-	glDeleteBuffers(1, &m_vertexDataDual[id]->ids->normalBuffer);
-	glDeleteBuffers(1, &m_vertexDataDual[id]->ids->colorBuffer);
-	glDeleteBuffers(1, &m_vertexDataDual[id]->ids->barycentricBuffer);
-	glDeleteBuffers(1, &m_vertexDataDual[id]->ids->indexBuffer);
-
-	if (m_vertexDataDual[id] != nullptr)
-		delete m_vertexDataDual[id];
+		if (m_vertexDataDual[id] != nullptr)
+			delete m_vertexDataDual[id];
+	}
 
 	err = MeshGL::Shutdown();
 	return err;

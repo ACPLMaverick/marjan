@@ -61,7 +61,7 @@ struct ShaderID
 
 struct KernelID
 {
-	std::vector<int>* varyingIDs;
+	std::vector<int>* uniformBufferIDs;
 	std::vector<int>* uniformIDs;
 	std::string name;
 	int id;
@@ -69,13 +69,13 @@ struct KernelID
 	KernelID()
 	{
 		id = -1;
-		varyingIDs = new std::vector<int>();
+		uniformBufferIDs = new std::vector<int>();
 		uniformIDs = new std::vector<int>();
 	}
 
 	~KernelID()
 	{
-		delete varyingIDs;
+		delete uniformBufferIDs;
 		delete uniformIDs;
 	}
 };
