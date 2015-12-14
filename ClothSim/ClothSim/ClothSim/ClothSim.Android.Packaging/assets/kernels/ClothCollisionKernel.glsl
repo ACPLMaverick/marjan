@@ -122,8 +122,7 @@ void main()
 
 	//vec4 dupa = InPosBuffer[0];
 	// update positions
-	OutPos *= Multipliers.x;
-	OutPos = vec4(Pos.x + colOffset.x, Pos.y + colOffset.y, Pos.z + colOffset.z, Pos.w);
+	OutPos = vec4(Pos.x + colOffset.x * Multipliers.x, Pos.y + colOffset.y * Multipliers.x, Pos.z + colOffset.z * Multipliers.x, Pos.w);
 	//OutPos = vec4(sBuffer[0][0], sBuffer[0][1], sBuffer[0][2], sBuffer[0][3]);
 	gl_Position = Pos;
 }
