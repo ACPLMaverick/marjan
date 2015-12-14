@@ -1,5 +1,6 @@
 #include "GUIController.h"
 #include "GUIText.h"
+#include "ClothSimulator.h"
 
 GUIController::GUIController(SimObject* obj) : Component(obj)
 {
@@ -18,10 +19,13 @@ unsigned int GUIController::Initialize()
 {
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
-	string tval03 = "TTvalue";
+	string tval03 = "STvalue";
 	m_fpsText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval01);
 	m_dtText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval02);
 	m_ttText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval03);
+
+	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject(3);
+	m_cSimulator = (ClothSimulator*)cObj->GetComponent(0);
 
 	return CS_ERR_NONE;
 }
@@ -59,21 +63,20 @@ unsigned int GUIController::Update()
 
 	if (Timer::GetInstance()->GetTotalTime() - infoTimeDisplayHelper >= INFO_UPDATE_RATE)
 	{
-		double fps, dt;
-		long tt;
-		string fpsTxt, dtTxt;
+		double fps, dt, tt;
+		string fpsTxt, dtTxt, ttTxt;
 		fps = Timer::GetInstance()->GetFps();
 		dt = Timer::GetInstance()->GetDeltaTime();
-		tt = Timer::GetInstance()->GetTotalTime();
-		infoTimeDisplayHelper = tt;
+		tt = m_cSimulator->GetSimTimeMS();
+		infoTimeDisplayHelper = Timer::GetInstance()->GetTotalTime();
 
 		DoubleToStringPrecision(fps, 2, &fpsTxt);
 		DoubleToStringPrecision(dt, 4, &dtTxt);
+		DoubleToStringPrecision(tt, 4, &ttTxt);
 
 		m_fpsText->SetText(&fpsTxt);
 		m_dtText->SetText(&dtTxt);
-		string ttStr = to_string(tt / 1000);
-		m_ttText->SetText(&ttStr);
+		m_ttText->SetText(&ttTxt);
 	}
 
 	///////////////////////////

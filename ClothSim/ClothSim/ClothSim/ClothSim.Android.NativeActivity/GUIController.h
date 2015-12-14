@@ -13,6 +13,7 @@
 #include <iomanip>
 
 class GUIText;
+class ClothSimulator;
 
 class GUIController :
 	public Component
@@ -25,6 +26,8 @@ private:
 	GUIText* m_fpsText;
 	GUIText* m_dtText;
 	GUIText* m_ttText;
+
+	ClothSimulator* m_cSimulator;
 
 	void DoubleToStringPrecision(double, int, std::string*);
 public:

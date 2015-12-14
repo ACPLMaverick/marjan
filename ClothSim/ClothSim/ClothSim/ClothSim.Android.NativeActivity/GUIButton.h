@@ -32,8 +32,8 @@ protected:
 
 	MeshGLRectButton* m_mesh;
 
-	void* m_paramsClick;
-	void* m_paramsHold;
+	std::vector<void*> m_paramsClick;
+	std::vector<void*> m_paramsHold;
 
 	bool isClickInProgress;
 	
@@ -56,8 +56,8 @@ public:
 	void SetRotation(float r);
 	void SetParamsClick(void* params);
 	void SetParamsHold(void* params);
-	void* GetParamsClick();
-	void* GetParamsHold();
+	std::vector<void*>* GetParamsClick();
+	std::vector<void*>* GetParamsHold();
 	float GetRotation();
 	glm::mat4 GetRotationMatrix();
 

@@ -16,6 +16,11 @@ GUIAction::~GUIAction()
 {
 }
 
+unsigned int GUIAction::Initialize()
+{
+	return CS_ERR_NONE;
+}
+
 GUIButton * GUIAction::GetMyButton()
 {
 	return m_button;

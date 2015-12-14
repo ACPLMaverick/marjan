@@ -17,7 +17,8 @@ public:
 	GUIAction(const GUIAction* c);
 	~GUIAction();
 
-	virtual unsigned int Action(void* params) = 0;
+	virtual unsigned int Initialize();
+	virtual unsigned int Action(std::vector<void*>* params) = 0;
 
 	GUIButton* GetMyButton();
 };

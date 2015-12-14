@@ -21,6 +21,6 @@ public:
 	GUIActionMoveActiveObject(const GUIActionMoveActiveObject* c);
 	~GUIActionMoveActiveObject();
 
-	virtual unsigned int Action(void* params);
+	virtual unsigned int Action(std::vector<void*>* params);
 };
 

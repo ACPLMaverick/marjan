@@ -212,8 +212,10 @@ unsigned int SceneTest::Initialize()
 	string t1v = "FPS: ";
 	string t2n = "DeltaTimetitle";
 	string t2v = "Delta time [ms]: ";
-	string t3n = "TotalTimetitle";
-	string t3v = "Total time [s]: ";
+	string t3n = "SimTimetitle";
+	string t3v = "Simulation time [ms]: ";
+	string t4n = "SimModeTitle";
+	string t4v = "Simulation mode: ";
 	string tb1 = "BtnExit";
 	string tb2 = "BtnPreferences";
 	string tb3 = "BtnWireframe";
@@ -225,7 +227,8 @@ unsigned int SceneTest::Initialize()
 	string tb9 = "BtnArrowDown";
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
-	string tval03 = "TTvalue";
+	string tval03 = "STvalue";
+	string tval04 = "SKvalue";
 	string dummy = "Dummy";
 	string tex = "textures/ExportedFont.tga";
 	string tBtnEx = "textures/btn_exit.png";
@@ -240,33 +243,43 @@ unsigned int SceneTest::Initialize()
 
 	GUIText* gt = new GUIText(&t1n, &t1v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt->Initialize();
-	gt->SetPosition(glm::vec2(-0.95f, 0.85f));
+	gt->SetPosition(glm::vec2(0.2f, 0.85f));
 	gt->SetScale(scl);
-
+	//0.71
 	GUIText* gt2 = new GUIText(&t2n, &t2v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt2->Initialize();
-	gt2->SetPosition(glm::vec2(-0.95f, 0.78f));
+	gt2->SetPosition(glm::vec2(-0.95f, 0.85f));
 	gt2->SetScale(scl);
 
 	GUIText* gt3 = new GUIText(&t3n, &t3v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt3->Initialize();
-	gt3->SetPosition(glm::vec2(-0.95f, 0.71f));
+	gt3->SetPosition(glm::vec2(-0.95f, 0.78f));
 	gt3->SetScale(scl);
 
 	GUIText* gt4 = new GUIText(&tval01, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt4->Initialize();
-	gt4->SetPosition(glm::vec2(-0.22f, 0.85f));
+	gt4->SetPosition(glm::vec2(0.38f, 0.85f));
 	gt4->SetScale(scl);
 
 	GUIText* gt5 = new GUIText(&tval02, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt5->Initialize();
-	gt5->SetPosition(glm::vec2(-0.22f, 0.78f));
+	gt5->SetPosition(glm::vec2(-0.16f, 0.85f));
 	gt5->SetScale(scl);
 
 	GUIText* gt6 = new GUIText(&tval03, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt6->Initialize();
-	gt6->SetPosition(glm::vec2(-0.22f, 0.71f));
+	gt6->SetPosition(glm::vec2(-0.02f, 0.78f));
 	gt6->SetScale(scl);
+
+	GUIText* gt7 = new GUIText(&t4n, &t4v, ResourceManager::GetInstance()->GetTexture(&tex));
+	gt7->Initialize();
+	gt7->SetPosition(glm::vec2(-0.95f, 0.71f));
+	gt7->SetScale(scl);
+
+	GUIText* gt8 = new GUIText(&tval04, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
+	gt8->Initialize();
+	gt8->SetPosition(glm::vec2(-0.22f, 0.71f));
+	gt8->SetScale(scl);
 
 	GUIButton* gb1 = new GUIButton(&tb1);
 	gb1->Initialize();
@@ -282,7 +295,9 @@ unsigned int SceneTest::Initialize()
 	gb2->SetPosition(glm::vec2(0.25f, -0.75f));
 	gb2->SetScale(glm::vec2(0.2f, 0.2f));
 	gb2->SetParamsClick((void*)cSim);
+	gb2->SetParamsClick((void*)gt8);
 	GUIAction* gb2a = new GUIActionShowPreferences(gb2);
+	gb2a->Initialize();
 	gb2->AddActionClick(gb2a);
 
 	GUIButton* gb3 = new GUIButton(&tb3);
@@ -359,6 +374,8 @@ unsigned int SceneTest::Initialize()
 	AddGUIElement(gt4);
 	AddGUIElement(gt5);
 	AddGUIElement(gt6);
+	AddGUIElement(gt7);
+	AddGUIElement(gt8);
 	AddGUIElement(gb1);
 	AddGUIElement(gb2);
 	AddGUIElement(gb3);

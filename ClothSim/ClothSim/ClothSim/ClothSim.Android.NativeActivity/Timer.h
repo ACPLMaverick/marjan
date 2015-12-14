@@ -31,7 +31,6 @@ private:
 	std::map<unsigned int, double> m_timeStamps;
 
 	Timer();
-	inline double GetCurrentTimeMS();
 public:
 	Timer(const Timer*);
 	~Timer();
@@ -47,6 +46,7 @@ public:
 	double GetDeltaTime();
 	double GetFixedDeltaTime();
 	double GetFps();
+	double GetCurrentTimeMS();
 	unsigned long GetTicks();
 	
 	double GetTimeStamp(unsigned int);

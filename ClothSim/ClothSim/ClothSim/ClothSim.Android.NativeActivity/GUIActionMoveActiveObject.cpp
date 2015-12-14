@@ -15,14 +15,17 @@ GUIActionMoveActiveObject::~GUIActionMoveActiveObject()
 {
 }
 
-unsigned int GUIActionMoveActiveObject::Action(void* params)
+unsigned int GUIActionMoveActiveObject::Action(std::vector<void*>* params)
 {
 	unsigned int err = CS_ERR_NONE;
+
+	if (params->size() != 1)
+		return CS_ERR_ACTION_BAD_PARAM;
 
 	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject();
 
 	glm::vec3 mVector = glm::vec3();
-	MovementDirection dir = (MovementDirection)(int)params;
+	MovementDirection dir = (MovementDirection)(int)(params->at(0));
 	float scl = cObj->GetTransform()->GetScale()->y;
 	float pos = cObj->GetTransform()->GetPosition()->y;
 	switch (dir)

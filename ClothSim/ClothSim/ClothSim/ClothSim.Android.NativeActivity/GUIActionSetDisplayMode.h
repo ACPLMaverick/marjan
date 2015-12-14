@@ -8,6 +8,6 @@ public:
 	GUIActionSetDisplayMode(const GUIActionSetDisplayMode* c);
 	~GUIActionSetDisplayMode();
 
-	virtual unsigned int Action(void* params);
+	virtual unsigned int Action(std::vector<void*>* params);
 };
 

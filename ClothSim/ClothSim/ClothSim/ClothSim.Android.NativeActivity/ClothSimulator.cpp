@@ -455,6 +455,10 @@ unsigned int ClothSimulator::Update()
 		m_ifRestart = false;
 	}
 
+	/////////////////////////
+	m_timeStartMS = Timer::GetInstance()->GetCurrentTimeMS();
+	/////////////////////////
+
 	VertexData* clothData = m_meshPlane->GetVertexDataPtr();
 	BoxAAData* boxData = nullptr;
 	SphereData* sphereData = nullptr;
@@ -631,11 +635,15 @@ unsigned int ClothSimulator::Update()
 	glDisableVertexAttribArray(6);
 	glDisableVertexAttribArray(7);
 
-	glFlush();
 	//SwapRWIds();
 	m_meshPlane->SwapDataPtrs();
 
 	glUseProgram(cShaderID->id);
+
+	/////////////////////////
+	double cTime = Timer::GetInstance()->GetCurrentTimeMS();
+	m_timeSimMS = cTime - m_timeStartMS;
+	/////////////////////////
 
 	return err;
 }
@@ -664,6 +672,11 @@ void ClothSimulator::SwitchMode()
 ClothSimulationMode ClothSimulator::GetMode()
 {
 	return m_mode;
+}
+
+double ClothSimulator::GetSimTimeMS()
+{
+	return m_timeSimMS;
 }
 
 ////////////////////// MASS SPRING 
@@ -739,7 +752,6 @@ inline unsigned int ClothSimulator::UpdateSimMS(float gravity, float fixedDelta)
 	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
 	glEndTransformFeedback();
 
-	//glFlush();
 	glDisable(GL_RASTERIZER_DISCARD);
 	/*
 	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[m_writeID]);
@@ -830,7 +842,6 @@ inline unsigned int ClothSimulator::UpdateSimPB(float gravity, float fixedDelta)
 	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
 	glEndTransformFeedback();
 
-	//glFlush();
 	glDisable(GL_RASTERIZER_DISCARD);
 	/*
 	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[m_writeID]);

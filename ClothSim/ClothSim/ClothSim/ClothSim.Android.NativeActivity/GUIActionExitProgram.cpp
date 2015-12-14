@@ -16,7 +16,7 @@ GUIActionExitProgram::~GUIActionExitProgram()
 {
 }
 
-unsigned int GUIActionExitProgram::Action(void* params)
+unsigned int GUIActionExitProgram::Action(std::vector<void*>* params)
 {
 	unsigned int err = CS_ERR_NONE;
 

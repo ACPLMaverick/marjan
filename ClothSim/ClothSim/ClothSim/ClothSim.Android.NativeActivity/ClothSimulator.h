@@ -217,6 +217,9 @@ protected:
 
 	bool m_ifRestart;
 
+	double m_timeStartMS;
+	double m_timeSimMS;
+
 	virtual inline unsigned int InitializeSimMS();
 	virtual inline unsigned int ShutdownSimMS();
 	virtual inline unsigned int UpdateSimMS
@@ -252,5 +255,6 @@ public:
 	void SwitchMode();
 
 	ClothSimulationMode GetMode();
+	double GetSimTimeMS();
 };
 

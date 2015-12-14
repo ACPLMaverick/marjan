@@ -15,7 +15,7 @@ GUIActionSetDisplayMode::~GUIActionSetDisplayMode()
 {
 }
 
-unsigned int GUIActionSetDisplayMode::Action(void* params)
+unsigned int GUIActionSetDisplayMode::Action(std::vector<void*>* params)
 {
 	unsigned int err = CS_ERR_NONE;
 

@@ -19,9 +19,6 @@ GUIButton::~GUIButton()
 
 unsigned int GUIButton::Initialize()
 {
-	m_paramsClick = nullptr;
-	m_paramsHold = nullptr;
-
 	m_mesh = new MeshGLRectButton(nullptr, this, &m_color);
 	m_mesh->Initialize();
 
@@ -179,22 +176,22 @@ void GUIButton::SetRotation(float r)
 
 void GUIButton::SetParamsClick(void * params)
 {
-	m_paramsClick = params;
+	m_paramsClick.push_back(params);
 }
 
 void GUIButton::SetParamsHold(void * params)
 {
-	m_paramsHold = params;
+	m_paramsHold.push_back(params);
 }
 
-void * GUIButton::GetParamsClick()
+std::vector<void*>* GUIButton::GetParamsClick()
 {
-	return m_paramsClick;
+	return &m_paramsClick;
 }
 
-void * GUIButton::GetParamsHold()
+std::vector<void*>* GUIButton::GetParamsHold()
 {
-	return m_paramsHold;
+	return &m_paramsHold;
 }
 
 float GUIButton::GetRotation()
@@ -273,7 +270,7 @@ unsigned int GUIButton::ExecuteActionsClick()
 
 	for (std::vector<GUIAction*>::iterator it = m_actionsClick.begin(); it != m_actionsClick.end(); ++it)
 	{
-		(*it)->Action(m_paramsClick);
+		(*it)->Action(&m_paramsClick);
 	}
 
 	return err;
@@ -291,7 +288,7 @@ unsigned int GUIButton::ExecuteActionsHold()
 
 	for (std::vector<GUIAction*>::iterator it = m_actionsHold.begin(); it != m_actionsHold.end(); ++it)
 	{
-		(*it)->Action(m_paramsHold);
+		(*it)->Action(&m_paramsHold);
 	}
 
 	return err;
