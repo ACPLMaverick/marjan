@@ -32,6 +32,11 @@ SceneTest::~SceneTest()
 unsigned int SceneTest::Initialize()
 {
 	////////////////////////
+	//////////// Ground Level
+
+	m_groundLevel = 0.0f;
+
+	////////////////////////
 	/////////// Objects
 
 	glm::vec3 tPos, tRot, tScl, tPosMin, tPosMax;
@@ -41,10 +46,10 @@ unsigned int SceneTest::Initialize()
 	SimObject* ground = new SimObject();
 	ground->Initialize("Ground");
 
-	tPos = (glm::vec3(0.0f, -10.0f, 0.0f));
+	tPos = (glm::vec3(0.0f, m_groundLevel - 0.5f, 0.0f));
 	tRot = (glm::vec3(-3.14f / 2.0f, 0.0f, 0.0f));
 	tScl = (glm::vec3(100.0f, 100.0f, 100.0f));
-	tCol = (glm::vec4(0.6f, 0.6f, 0.6f, 1.0f));
+	tCol = (glm::vec4(0.8f, 0.8f, 0.9f, 1.0f));
 
 	Transform* groundTransform = new Transform(ground);
 	groundTransform->Initialize();
@@ -54,9 +59,15 @@ unsigned int SceneTest::Initialize()
 	ground->SetTransform(groundTransform);
 	MeshGLRect* triangle = new MeshGLRect(ground, &tCol);
 	triangle->Initialize();
-	//triangle->SetGloss(100.0f);
+	triangle->SetGloss(100.0f);
+	triangle->SetSpecular(0.8f);
 	triangle->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	ground->AddMesh(triangle);
+
+	//tPosMin = glm::vec3(-0.5f, -1.0f, -0.5f);
+	//tPosMax = glm::vec3(0.5f, 0.001f, 0.5f);
+	//BoxAACollider* gCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(ground, &tPosMin, &tPosMax);
+	//ground->AddCollider(gCollider);
 
 	AddObject(ground);
 
@@ -84,13 +95,15 @@ unsigned int SceneTest::Initialize()
 	MeshGLSphere* sph = new MeshGLSphere(testObj, 2.0f, 32, 32, &tCol);
 	sph->Initialize();
 	sph->SetGloss(20.0f);
+	sph->SetSpecular(0.6f);
 	sph->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testObj->AddMesh(sph);
 
-	/*
-	BoxAACollider* tObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(testObj, &(glm::vec3(-2.0f, -1.5f, -1.5f)), &(glm::vec3(2.0f, 1.5f, 1.5f)));
-	testObj->AddCollider(tObjCollider);
-	*/
+	//tPosMin = glm::vec3(-2.0f, -1.5f, -1.5f);
+	//tPosMax = glm::vec3(2.0f, 1.5f, 1.5f);
+	//BoxAACollider* tObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(testObj, &tPosMin, &tPosMax);
+	//testObj->AddCollider(tObjCollider);
+
 
 	tPosMin = (glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -123,6 +136,7 @@ unsigned int SceneTest::Initialize()
 	MeshGLBox* colBox = new MeshGLBox(colObj, 1.0f, 1.0f, 1.0f, &tCol);
 	colBox->Initialize();
 	colBox->SetGloss(60.0f);
+	colBox->SetSpecular(1.0f);
 	colBox->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	colObj->AddMesh(colBox);
 	BoxAACollider* cObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(colObj, &tPosMin, &tPosMax);
@@ -140,7 +154,7 @@ unsigned int SceneTest::Initialize()
 	SimObject* testCloth = new SimObject();
 	testCloth->Initialize("testCloth");
 
-	tPos = (glm::vec3(0.0f, 7.5f, 0.0f));
+	tPos = (glm::vec3(0.0f, 10.0f, 0.0f));
 	tScl = (glm::vec3(1.0f, 1.0f, 1.0f));
 	tCol = glm::vec4(1.0f, 0.5f, 0.7f, 1.0f);
 
@@ -151,12 +165,14 @@ unsigned int SceneTest::Initialize()
 	testClothTransform->Update();
 	testCloth->SetTransform(testClothTransform);
 
-	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 8, 8, &tCol);
+	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 23, 23, &tCol);
 	clothMesh->Initialize();
+	clothMesh->SetGloss(10.0f);
+	clothMesh->SetSpecular(0.2f);
 	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testCloth->AddMesh(clothMesh);
 
-	ClothSimulator* cSim = new ClothSimulatorMSGPU(testCloth);
+	ClothSimulator* cSim = new ClothSimulator(testCloth);
 	testCloth->AddComponent(cSim);
 	cSim->Initialize();
 
@@ -265,6 +281,7 @@ unsigned int SceneTest::Initialize()
 	gb2->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnSt), ResourceManager::GetInstance()->LoadTexture(&tBtnStA));
 	gb2->SetPosition(glm::vec2(0.25f, -0.75f));
 	gb2->SetScale(glm::vec2(0.2f, 0.2f));
+	gb2->SetParamsClick((void*)cSim);
 	GUIAction* gb2a = new GUIActionShowPreferences(gb2);
 	gb2->AddActionClick(gb2a);
 

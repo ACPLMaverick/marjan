@@ -16,7 +16,6 @@ protected:
 	float m_radius;
 	unsigned int m_rings;
 	unsigned int m_sectors;
-	glm::vec4 m_color;
 
 	virtual void GenerateVertexData();
 public:

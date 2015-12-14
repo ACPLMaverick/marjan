@@ -20,7 +20,7 @@ class GUIController :
 private:
 	double infoTimeDisplayHelper = 0.0;
 
-	const float INFO_UPDATE_RATE = 120.0f;
+	const float INFO_UPDATE_RATE = 1000.0f;
 
 	GUIText* m_fpsText;
 	GUIText* m_dtText;

@@ -1,5 +1,5 @@
 #include "Transform.h"
-
+#include "Collider.h"
 
 Transform::Transform(SimObject* obj) : Component(obj)
 {
@@ -105,6 +105,10 @@ bool Transform::HasMovedLastFrameFast()
 	return m_isWorldMatrixDirty;
 }
 
+void Transform::CheckCollisions()
+{
+}
+
 
 glm::mat4* Transform::GetWorldMatrix()
 {
@@ -157,6 +161,20 @@ void Transform::SetPosition(glm::vec3* newPos)
 	for (int i = 0; i < 3; ++i)
 	{
 		(*m_position)[i] = (*newPos)[i];
+	}
+
+	m_obj->UpdateColliders();
+	vector<Collider*>* cols = m_obj->GetColliders();
+	CollisonTestResult tR;
+	for (std::vector<Collider*>::iterator it = cols->begin(); it != cols->end(); ++it)
+	{
+		PhysicsManager::GetInstance()->CollisionCheck(*it, &tR);
+	}
+
+	if (tR.ifCollision)
+	{
+		*m_position = *m_position + tR.colVector;
+		m_obj->UpdateColliders();
 	}
 
 	m_isWorldMatrixDirty = true;

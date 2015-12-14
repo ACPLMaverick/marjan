@@ -56,6 +56,7 @@ struct ShaderID
 	int id_lightSpec;
 	int id_lightAmb;
 	int id_gloss;
+	int id_specular;
 	int id_highlight;
 };
 
@@ -79,6 +80,19 @@ struct KernelID
 		delete uniformIDs;
 	}
 };
+
+struct CollisonTestResult
+{
+	glm::vec3 colVector;
+	bool ifCollision;
+
+	CollisonTestResult()
+	{
+		colVector = glm::vec3(0.0f, 0.0f, 0.0f);
+		ifCollision = false;
+	}
+};
+
 /////////////////
 
 // functions

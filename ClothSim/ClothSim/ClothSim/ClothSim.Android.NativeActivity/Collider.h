@@ -17,18 +17,6 @@ class SimObject;
 class SphereCollider;
 class BoxAACollider;
 
-struct CollisonTestResult
-{
-	glm::vec3 colVector;
-	bool ifCollision;
-
-	CollisonTestResult()
-	{
-		colVector = glm::vec3(0.0f, 0.0f, 0.0f);
-		ifCollision = false;
-	}
-};
-
 enum ColliderType
 {
 	BOX_AA,

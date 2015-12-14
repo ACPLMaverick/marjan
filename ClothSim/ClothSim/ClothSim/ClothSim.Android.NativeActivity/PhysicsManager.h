@@ -17,7 +17,9 @@ class SphereCollider;
 struct BoxAAData
 {
 	glm::vec3 min;
+	float padding1;
 	glm::vec3 max;
+	float padding2;
 
 	BoxAAData()
 	{
@@ -70,6 +72,8 @@ public:
 	unsigned int Initialize();
 	unsigned int Shutdown();
 	unsigned int Run();
+
+	void CollisionCheck(Collider * col, CollisonTestResult* result);
 
 	BoxAACollider* CreateBoxAACollider(SimObject* obj, glm::vec3* min, glm::vec3* max);
 	SphereCollider* CreateSphereCollider(SimObject* obj, glm::vec3* offset, float radius);

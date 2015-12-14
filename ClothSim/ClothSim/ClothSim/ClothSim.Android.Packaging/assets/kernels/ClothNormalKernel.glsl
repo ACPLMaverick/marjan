@@ -3,7 +3,7 @@
 layout(location = 0) in vec4 Pos;					//current position
 layout(location = 2) in vec4 Normal;	
 layout(location = 3) in vec4 Neighbours;			//neighbours id
-layout(location = 4) in vec4 NeighbourMultipliers;	// neighbour multipliers (i.e. do I have to take it into consideration)
+layout(location = 6) in vec4 NeighbourMultipliers;	// neighbour multipliers (i.e. do I have to take it into consideration)
 
 uniform InPos
 {
@@ -28,7 +28,7 @@ void main()
 		vec3 diff1 = mPos - vec3(InPosBuffer[nID1]);
 		vec3 diff2 = mPos - vec3(InPosBuffer[nID2]);
 
-		normal = normal + (cross(diff1, diff2) * NeighbourMultipliers[nID1] * NeighbourMultipliers[nID2]);
+		normal = normal + (cross(diff1, diff2) * NeighbourMultipliers[i] * NeighbourMultipliers[(i + 1) % 4]);
 	}
 	normal = normalize(normal);
 	normal.z = -normal.z;

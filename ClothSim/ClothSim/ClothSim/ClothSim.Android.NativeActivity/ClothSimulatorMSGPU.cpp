@@ -30,6 +30,8 @@ inline unsigned int ClothSimulatorMSGPU::InitializeSim()
 	{
 		m_texPosID[i] = glGetUniformBlockIndex(m_kernelID->id, KERNEL_SIM_INPUT_NAMES[0]);
 		m_texPosLastID[i] = glGetUniformBlockIndex(m_kernelID->id, KERNEL_SIM_INPUT_NAMES[1]);
+		glUniformBlockBinding(m_kernelID->id, m_texPosID[i], 1);
+		glUniformBlockBinding(m_kernelID->id, m_texPosID[i], 0);
 	}
 
 	m_kernelID->uniformIDs->push_back(glGetUniformLocation(m_kernelID->id, "VertexCount"));
@@ -70,12 +72,19 @@ inline unsigned int ClothSimulatorMSGPU::UpdateSim(float gravity, float fixedDel
 	glEnable(GL_RASTERIZER_DISCARD);
 
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_ktfID);
+
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_vboPosID[m_writeID]);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, m_vboPosLastID[m_writeID]);
+
 	glBeginTransformFeedback(GL_POINTS);
 	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
 	glEndTransformFeedback();
 
-	glFlush();
+	//glFlush();
 	glDisable(GL_RASTERIZER_DISCARD);
+
+	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], 0);
+	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], 0);
 
 	return err;
 }

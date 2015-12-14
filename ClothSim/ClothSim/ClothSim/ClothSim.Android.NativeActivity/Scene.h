@@ -23,6 +23,8 @@ class Scene
 protected:
 	string m_name;
 
+	float m_groundLevel;
+
 	LightAmbient* m_lAmbient;
 	vector<LightDirectional*> m_lDirectionals;
 
@@ -71,6 +73,7 @@ public:
 	SimObject* GetObject(unsigned int);
 	Camera* GetCamera(unsigned int);
 	GUIElement* GetGUIElement(std::string*);
+	float GetGroundLevel();
 
 	void FlushDimensions();
 };

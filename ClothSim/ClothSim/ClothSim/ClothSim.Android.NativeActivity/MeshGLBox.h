@@ -5,7 +5,6 @@ class MeshGLBox :
 {
 protected:
 	float m_width, m_length, m_height;
-	glm::vec4 m_color;
 
 	virtual void GenerateVertexData();
 public:

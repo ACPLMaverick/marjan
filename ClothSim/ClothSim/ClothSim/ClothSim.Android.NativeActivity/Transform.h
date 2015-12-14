@@ -26,6 +26,7 @@ private:
 	bool m_isWorldMatrixDirty;
 
 	void CalculateWorldMatrix();
+	void CheckCollisions();
 public:
 	Transform(SimObject*);
 	Transform(const Transform*);

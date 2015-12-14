@@ -66,6 +66,7 @@ public:
 	Component* GetComponent(unsigned int);
 	Mesh* GetMesh(unsigned int);
 	Collider* GetCollider(unsigned int);
+	std::vector<Collider*>* GetColliders();
 	Transform* GetTransform();
 	bool GetVisible();
 	string* GetName();

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "GUIActionShowPreferences.h"
-
+#include "ClothSimulator.h"
 
 GUIActionShowPreferences::GUIActionShowPreferences(GUIButton* b) : GUIAction(b)
 {
@@ -19,7 +19,12 @@ unsigned int GUIActionShowPreferences::Action(void* params)
 {
 	unsigned int err = CS_ERR_NONE;
 
-	LOGI("Preferences!");
+	/////// temporary
+
+	ClothSimulator* cSim = (ClothSimulator*)params;
+	cSim->SwitchMode();
+
+	/////////////////
 
 	return err;
 }

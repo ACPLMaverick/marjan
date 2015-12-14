@@ -363,6 +363,7 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 	n->id_lightSpec = glGetUniformLocation(ProgramID, "LightSpec");
 	n->id_lightAmb = glGetUniformLocation(ProgramID, "LightAmb");
 	n->id_gloss = glGetUniformLocation(ProgramID, "Gloss");
+	n->id_specular = glGetUniformLocation(ProgramID, "Specular");
 	n->id_highlight = glGetUniformLocation(ProgramID, "Highlight");
 }
 

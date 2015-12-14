@@ -16,7 +16,9 @@ class Component;
 class Mesh : public Component
 {
 protected:
+	glm::vec4 m_color;
 	TextureID* m_texID;
+	float m_specular;
 	float m_gloss;
 	
 	virtual void GenerateVertexData() = 0;
@@ -32,8 +34,13 @@ public:
 	virtual unsigned int Draw() = 0;
 
 	virtual void SetTextureID(TextureID*) final;
-	virtual void SetGloss(float);
+	virtual void SetGloss(float) final;
+	virtual void SetSpecular(float specular) final;
+	virtual void SetColor(glm::vec4* col) final;
+
 	virtual TextureID* GetTextureID() final;
 	virtual float GetGloss() final;
+	virtual float GetSpecular() final;
+	virtual glm::vec4* GetColor() final;
 };
 

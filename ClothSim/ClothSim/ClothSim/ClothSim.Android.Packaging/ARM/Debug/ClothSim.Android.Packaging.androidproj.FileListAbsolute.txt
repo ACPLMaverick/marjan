@@ -32,3 +32,6 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothM
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\KernelDummyKernel.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothMSPositionKernel.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothNormalsKernel.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothCollisionKernel.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothNormalKernel.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothPBPositionKernel.glsl

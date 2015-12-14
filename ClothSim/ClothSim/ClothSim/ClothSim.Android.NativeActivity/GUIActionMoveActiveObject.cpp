@@ -21,8 +21,10 @@ unsigned int GUIActionMoveActiveObject::Action(void* params)
 
 	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject();
 
-	glm::vec3 mVector;
+	glm::vec3 mVector = glm::vec3();
 	MovementDirection dir = (MovementDirection)(int)params;
+	float scl = cObj->GetTransform()->GetScale()->y;
+	float pos = cObj->GetTransform()->GetPosition()->y;
 	switch (dir)
 	{
 	case GUIActionMoveActiveObject::FORWARD:
@@ -41,7 +43,8 @@ unsigned int GUIActionMoveActiveObject::Action(void* params)
 		mVector = glm::vec3(0.0f, 1.0f, 0.0f);
 		break;
 	case GUIActionMoveActiveObject::DOWN:
-		mVector = glm::vec3(0.0f, -1.0f, 0.0f);
+		if((pos - scl) > System::GetInstance()->GetCurrentScene()->GetGroundLevel())
+			mVector = glm::vec3(0.0f, -1.0f, 0.0f);
 		break;
 	default:
 		mVector = glm::vec3();

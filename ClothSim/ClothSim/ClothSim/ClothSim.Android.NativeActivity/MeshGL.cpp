@@ -120,6 +120,7 @@ unsigned int MeshGL::Draw()
 	// here we will set up highlight?
 	// here we will set up glossiness
 	glUniform1f(ids->id_gloss, m_gloss);
+	glUniform1f(ids->id_specular, m_specular);
 
 	// here we will set up texture?
 	if (m_texID != nullptr)

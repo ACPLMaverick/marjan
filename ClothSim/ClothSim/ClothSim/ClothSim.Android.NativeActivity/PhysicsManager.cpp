@@ -42,6 +42,7 @@ unsigned int PhysicsManager::Shutdown()
 
 unsigned int PhysicsManager::Run()
 {
+	/*
 	// clear checked collider data
 	for (std::vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
 	{
@@ -108,8 +109,37 @@ unsigned int PhysicsManager::Run()
 			(*it2)->m_collisionsSolvedWith.push_back(*it);
 		}
 	}
-
+	*/
 	return CS_ERR_NONE;
+}
+
+void PhysicsManager::CollisionCheck(Collider * col, CollisonTestResult* result)
+{
+	// solve collisions (this collider with every collider)
+	for (std::vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+	{
+		// check conditions under we do not have to check for collisions.
+		if (
+			*it == col
+			)
+		{
+			continue;
+		}
+
+		CollisonTestResult res;
+		// we can check for collision now.
+		if (col->m_type == BOX_AA)
+		{
+			res = (*it)->TestWithBoxAA((BoxAACollider*)col);
+		}
+		else if (col->m_type == SPHERE)
+		{
+			res = (*it)->TestWithSphere((SphereCollider*)col);
+		}
+
+		if(res.ifCollision) result->ifCollision = true;
+		result->colVector += res.colVector;
+	}
 }
 
 

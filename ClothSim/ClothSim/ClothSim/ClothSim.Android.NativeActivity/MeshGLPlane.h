@@ -14,7 +14,6 @@ protected:
 	float m_length;
 	unsigned int m_edgesWidth;
 	unsigned int m_edgesLength;
-	glm::vec4 m_color;
 	unsigned int m_currentArray;
 	VertexData* m_vertexDataDual[2];
 

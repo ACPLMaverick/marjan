@@ -6,8 +6,6 @@ class MeshGLRect :
 	public MeshGL
 {
 protected:
-	glm::vec4 m_color;
-
 	virtual void GenerateVertexData();
 public:
 	MeshGLRect(SimObject*);

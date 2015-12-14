@@ -247,6 +247,11 @@ Collider* SimObject::GetCollider(unsigned int w)
 	else return nullptr;
 }
 
+std::vector<Collider*>* SimObject::GetColliders()
+{
+	return &m_colliders;
+}
+
 
 
 Component* SimObject::GetComponent(unsigned int w)

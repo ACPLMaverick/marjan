@@ -18,6 +18,7 @@ uniform vec4 LightSpec;
 uniform vec4 LightAmb;
 // uniform vec4 highlight;
 uniform float Gloss;
+uniform float Specular;
 
 void main()
 {
@@ -33,7 +34,7 @@ void main()
 	finalColor.xyz *= intensity;
 	finalColor.xyz *= LightDiff.xyz;
 	
-	vec3 spec = pow(max(0.0000001f, dot(H, normal)), Gloss) * LightSpec.xyz * length(LightSpec.xyz) * intensity;
+	vec3 spec = pow(max(0.0000001f, dot(H, normal)), Gloss) * LightSpec.xyz * length(LightSpec.xyz) * intensity * max(Specular, 0.0f);
 
 	finalColor.xyz += spec + LightAmb.xyz;
 

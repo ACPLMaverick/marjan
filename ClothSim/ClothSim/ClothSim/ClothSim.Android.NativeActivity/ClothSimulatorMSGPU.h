@@ -35,8 +35,6 @@ protected:
 		float gravity,
 		float fixedDelta
 		);
-
-	inline void SwapRWIds();
 public:
 	ClothSimulatorMSGPU(SimObject* obj);
 	ClothSimulatorMSGPU(const ClothSimulatorMSGPU* c);

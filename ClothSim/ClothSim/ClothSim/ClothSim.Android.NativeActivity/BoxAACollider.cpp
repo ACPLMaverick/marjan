@@ -42,8 +42,11 @@ unsigned int BoxAACollider::Update()
 		glm::vec4 min = glm::vec4(m_min, 1.0f);
 		glm::vec4 max = glm::vec4(m_max, 1.0f);
 
-		min = (*m_obj->GetTransform()->GetWorldMatrix()) * min;
-		max = (*m_obj->GetTransform()->GetWorldMatrix()) * max;
+		glm::mat4 wm = glm::translate(*m_obj->GetTransform()->GetPosition()) *
+			glm::scale(*m_obj->GetTransform()->GetScale());
+
+		min = wm * min;
+		max = wm * max;
 
 		m_minEffective.x = min.x;
 		m_minEffective.y = min.y;

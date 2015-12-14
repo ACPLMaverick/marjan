@@ -10,6 +10,7 @@ Scene::Scene(string n)
 
 	m_currentObjectID = 0;
 	m_currentCameraID = 0;
+	m_groundLevel = 0.0f;
 }
 
 Scene::Scene(const Scene*)
@@ -306,6 +307,11 @@ Camera* Scene::GetCamera(unsigned int which)
 GUIElement* Scene::GetGUIElement(std::string* id)
 {
 	return m_guiElements.at(*id);
+}
+
+float Scene::GetGroundLevel()
+{
+	return m_groundLevel;
 }
 
 void Scene::FlushDimensions()
