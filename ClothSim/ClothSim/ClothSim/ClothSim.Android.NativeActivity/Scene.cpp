@@ -170,6 +170,7 @@ void Scene::AddCamera(Camera* cam)
 void Scene::AddGUIElement(GUIElement* gui)
 {
 	m_guiElements.emplace(*gui->GetID(), gui);
+	InputManager::GetInstance()->AddGUIElement(gui);
 }
 
 

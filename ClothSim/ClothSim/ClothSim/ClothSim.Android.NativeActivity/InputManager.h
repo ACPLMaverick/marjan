@@ -14,7 +14,7 @@
 	This class behaves as a common bool object. Difference is that it's value changes after the second update call.
 */
 
-class GUIButton;
+class GUIElement;
 
 
 ////////////////////////////////////////////
@@ -68,7 +68,7 @@ class InputManager : public Singleton<InputManager>
 {
 	friend class Singleton<InputManager>;
 protected:
-	std::vector<GUIButton*> m_buttons;	// this vector stores buttons that recieve DOWN, MOVE and UP events
+	std::vector<GUIElement*> m_guiElems;	// this vector stores GUI elements that recieve DOWN, MOVE and UP events
 	int m_scrollHelper = 0;
 
 	TwoBool m_clickHelperTBool;
@@ -89,7 +89,6 @@ protected:
 	unsigned int m_currentlyHeldButtons;
 
 	InputManager();
-	inline bool ButtonAreaInClick(GUIButton* button, const glm::vec2* clickPos);
 	inline unsigned int ProcessButtonClicks(const glm::vec2 * clickPos);
 	inline unsigned int ProcessButtonHolds(const glm::vec2 * clickPos);
 	inline void ComputeScaleFactors(glm::vec2* factors);
@@ -113,9 +112,10 @@ public:
 	float GetPinchValue();
 	unsigned int GetCurrentlyHeldButtons();
 
-	void AddButton(GUIButton* button);
-	void RemoveButton(GUIButton* button);
+	void AddGUIElement(GUIElement* button);
+	void RemoveGUIElement(GUIElement* button);
 
 	static int32_t AHandleInput(struct android_app* app, AInputEvent* event);
+	bool GUIElementAreaInClick(GUIElement* button, const glm::vec2* clickPos);
 };
 

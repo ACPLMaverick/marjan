@@ -3,6 +3,7 @@
 #include "MeshGLBox.h"
 #include "MeshGLPlane.h"
 #include "MeshGLSphere.h"
+#include "GUIElement.h"
 #include "GUIText.h"
 #include "BoxAACollider.h"
 #include "SphereCollider.h"
@@ -84,13 +85,14 @@ unsigned int SceneTest::Initialize()
 	testObjTransform->SetPosition(&tPos);
 	testObjTransform->SetScale(&tScl);
 	testObj->SetTransform(testObjTransform);
-	/*
-	MeshGLBox* box = new MeshGLBox(testObj, 4.0f, 3.0f, 3.0f, &(glm::vec4(0.2f, 0.2f, 0.8f, 1.0f)));
-	box->Initialize();
-	box->SetGloss(100.0f);
-	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
-	testObj->AddMesh(box);
-	*/
+
+	//tCol = glm::vec4(0.2f, 0.2f, 0.8f, 1.0f);
+	//MeshGLBox* box = new MeshGLBox(testObj, 4.0f, 3.0f, 3.0f, &tCol);
+	//box->Initialize();
+	//box->SetGloss(100.0f);
+	//box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
+	//testObj->AddMesh(box);
+
 	
 	MeshGLSphere* sph = new MeshGLSphere(testObj, 2.0f, 32, 32, &tCol);
 	sph->Initialize();
@@ -106,9 +108,6 @@ unsigned int SceneTest::Initialize()
 
 
 	tPosMin = (glm::vec3(0.0f, 0.0f, 0.0f));
-
-	PhysicsManager* ph = PhysicsManager::GetInstance();
-
 	SphereCollider* tObjCollider = PhysicsManager::GetInstance()->CreateSphereCollider(testObj, &tPosMin, 2.0f);
 	testObj->AddCollider(tObjCollider);
 
@@ -122,7 +121,7 @@ unsigned int SceneTest::Initialize()
 	SimObject* colObj = new SimObject();
 	colObj->Initialize("colObj");
 
-	tPos = (glm::vec3(5.0f, 2.5f, 0.0f));
+	tPos = (glm::vec3(15.0f, 2.5f, 0.0f));
 	tScl = (glm::vec3(1.0f, 1.0f, 1.0f));
 	tCol = (glm::vec4(0.8f, 0.2f, 0.2f, 1.0f));
 	tPosMin = (glm::vec3(-0.5f, -0.5f, -0.5f));
@@ -208,6 +207,11 @@ unsigned int SceneTest::Initialize()
 	////////////////////////
 	/////////// GUI
 
+	string gr1 = "GroupText";
+	string gr2 = "GroupBtns";
+	string gr3 = "GroupBtnsSteer";
+	string gr4 = "GroupSettings";
+
 	string t1n = "FPStitle";
 	string t1v = "FPS: ";
 	string t2n = "DeltaTimetitle";
@@ -240,6 +244,19 @@ unsigned int SceneTest::Initialize()
 	string tBtnArr = "textures/btn_arrow_up.png";
 	string tBtnArrA = "textures/btn_arrow_up_a.png";
 	glm::vec2 scl = glm::vec2(0.025f, 0.025f);
+
+	GUIElement* geGroupText = new GUIElement(&gr1);
+	geGroupText->Initialize();
+	geGroupText->SetScaled(false);
+	GUIElement* geGroupBtns = new GUIElement(&gr2);
+	geGroupBtns->Initialize();
+	geGroupBtns->SetScaled(false);
+	GUIElement* geGroupBtnsMove = new GUIElement(&gr3);
+	geGroupBtnsMove->Initialize();
+	geGroupBtnsMove->SetScaled(false);
+	GUIElement* geGroupSettings = new GUIElement(&gr4);
+	geGroupSettings->Initialize();
+	geGroupSettings->SetScaled(false);
 
 	GUIText* gt = new GUIText(&t1n, &t1v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt->Initialize();
@@ -280,6 +297,15 @@ unsigned int SceneTest::Initialize()
 	gt8->Initialize();
 	gt8->SetPosition(glm::vec2(-0.22f, 0.71f));
 	gt8->SetScale(scl);
+
+	geGroupText->AddChild(gt);
+	geGroupText->AddChild(gt2);
+	geGroupText->AddChild(gt3);
+	geGroupText->AddChild(gt4);
+	geGroupText->AddChild(gt5);
+	geGroupText->AddChild(gt6);
+	geGroupText->AddChild(gt7);
+	geGroupText->AddChild(gt8);
 
 	GUIButton* gb1 = new GUIButton(&tb1);
 	gb1->Initialize();
@@ -368,23 +394,21 @@ unsigned int SceneTest::Initialize()
 	GUIAction* gb9a = new GUIActionMoveActiveObject(gb9);
 	gb9->AddActionHold(gb9a);
 
-	AddGUIElement(gt);
-	AddGUIElement(gt2);
-	AddGUIElement(gt3);
-	AddGUIElement(gt4);
-	AddGUIElement(gt5);
-	AddGUIElement(gt6);
-	AddGUIElement(gt7);
-	AddGUIElement(gt8);
-	AddGUIElement(gb1);
-	AddGUIElement(gb2);
-	AddGUIElement(gb3);
-	AddGUIElement(gb4);
-	AddGUIElement(gb5);
-	AddGUIElement(gb6);
-	AddGUIElement(gb7);
-	AddGUIElement(gb8);
-	AddGUIElement(gb9);
+	geGroupBtnsMove->AddChild(gb4);
+	geGroupBtnsMove->AddChild(gb5);
+	geGroupBtnsMove->AddChild(gb6);
+	geGroupBtnsMove->AddChild(gb7);
+	geGroupBtnsMove->AddChild(gb8);
+	geGroupBtnsMove->AddChild(gb9);
+
+	geGroupBtns->AddChild(gb1);
+	geGroupBtns->AddChild(gb2);
+	geGroupBtns->AddChild(gb3);
+	geGroupBtns->AddChild(geGroupBtnsMove);
+
+	AddGUIElement(geGroupText);
+	AddGUIElement(geGroupBtns);
+	AddGUIElement(geGroupSettings);
 
 	////////////////////////
 	/////////// Controllers

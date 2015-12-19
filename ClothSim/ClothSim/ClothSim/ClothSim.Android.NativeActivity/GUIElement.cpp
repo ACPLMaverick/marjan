@@ -7,6 +7,11 @@ GUIElement::GUIElement(const std::string* id)
 
 	m_position = glm::vec2(0.0f, 0.0f);
 	m_scale = glm::vec2(1.0f, 1.0f);
+	m_isEnabled = true;
+	m_isVisible = true;
+	m_isBlockable = false;
+	m_isScaled = true;
+	m_mesh = nullptr;
 
 	GenerateTransformMatrix();
 }
@@ -17,6 +22,16 @@ GUIElement::GUIElement(const GUIElement*)
 
 GUIElement::~GUIElement()
 {
+}
+
+unsigned int GUIElement::Initialize()
+{
+	return CS_ERR_NONE;
+}
+
+unsigned int GUIElement::Shutdown()
+{
+	return CS_ERR_NONE;
 }
 
 
@@ -41,6 +56,98 @@ void GUIElement::GenerateTransformMatrix()
 }
 
 
+void GUIElement::CleanupAfterHold()
+{
+	for (std::map<std::string, GUIElement*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+	{
+		it->second->CleanupAfterHold();
+	}
+	if (isClickInProgress)
+	{
+		isClickInProgress = false;
+		if(m_mesh != nullptr && m_textureIdle != nullptr)
+			m_mesh->SetTextureID(m_textureIdle);
+	}
+}
+
+unsigned int GUIElement::ExecuteClick(const glm::vec2* clickPos)
+{
+	unsigned int ctr = 0;
+
+	if (m_isEnabled)
+	{
+		for (std::map<std::string, GUIElement*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			if (InputManager::GetInstance()->GUIElementAreaInClick(it->second, clickPos))
+			{
+				ctr += (*it).second->ExecuteClick(clickPos);
+			}
+		}
+	}
+
+	if (m_isBlockable)
+		++ctr;
+
+	return ctr;
+}
+
+unsigned int GUIElement::ExecuteHold(const glm::vec2* clickPos)
+{
+	unsigned int ctr = 0;
+
+	if (m_isEnabled)
+	{
+		for (std::map<std::string, GUIElement*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			if (InputManager::GetInstance()->GUIElementAreaInClick(it->second, clickPos))
+			{
+				ctr += (*it).second->ExecuteHold(clickPos);
+			}
+		}
+	}
+
+	if (m_isBlockable)
+		++ctr;
+
+	return ctr;
+}
+
+unsigned int GUIElement::Update()
+{
+	unsigned int err = CS_ERR_NONE;
+
+	if (m_isEnabled)
+	{
+		for (std::map<std::string, GUIElement*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			err = (*it).second->Update();
+			if (err != CS_ERR_NONE)
+				return err;
+		}
+	}
+
+	return err;
+}
+
+unsigned int GUIElement::Draw()
+{
+	unsigned int err = CS_ERR_NONE;
+
+	if (m_isVisible)
+	{
+		for (std::map<std::string, GUIElement*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			err = (*it).second->Draw();
+			if (err != CS_ERR_NONE)
+				return err;
+		}
+
+		if (m_mesh != nullptr)
+			m_mesh->Draw();
+	}
+
+	return err;
+}
 
 void GUIElement::SetPosition(glm::vec2 pos)
 {
@@ -52,6 +159,53 @@ void GUIElement::SetScale(glm::vec2 scl)
 {
 	m_scale = scl;
 	GenerateTransformMatrix();
+}
+
+void GUIElement::SetEnabled(bool val)
+{
+	m_isEnabled = val;
+}
+
+void GUIElement::SetVisible(bool val)
+{
+	m_isVisible = val;
+}
+
+void GUIElement::SetBlockable(bool val)
+{
+	m_isBlockable = val;
+}
+
+void GUIElement::SetScaled(bool val)
+{
+	m_isScaled = val;
+}
+
+void GUIElement::AddChild(GUIElement * ge)
+{
+	m_children.emplace(*ge->GetID(), ge);
+}
+
+GUIElement * GUIElement::GetChild(const std::string * id)
+{
+	GUIElement* ret = nullptr;
+	std::map<std::string, GUIElement*>::iterator it = m_children.find(*id);
+	if (it != m_children.end())
+		ret = it->second;
+	return ret;
+}
+
+GUIElement * GUIElement::RemoveChild(const std::string * id)
+{
+	GUIElement* ret = nullptr;
+	std::map<std::string, GUIElement*>::iterator it = m_children.find(*id);
+	if (it != m_children.end())
+	{
+		ret = it->second;
+		m_children.erase(*id);
+	}
+		
+	return ret;
 }
 
 
@@ -74,6 +228,31 @@ glm::vec2 GUIElement::GetPosition()
 glm::vec2 GUIElement::GetScale()
 {
 	return m_scale;
+}
+
+bool GUIElement::GetHoldInProgress()
+{
+	return isClickInProgress;
+}
+
+bool GUIElement::GetEnabled()
+{
+	return m_isEnabled;
+}
+
+bool GUIElement::GetVisible()
+{
+	return m_isVisible;
+}
+
+bool GUIElement::GetBlockable()
+{
+	return m_isBlockable;
+}
+
+bool GUIElement::GetScaled()
+{
+	return m_isScaled;
 }
 
 void GUIElement::FlushDimensions()

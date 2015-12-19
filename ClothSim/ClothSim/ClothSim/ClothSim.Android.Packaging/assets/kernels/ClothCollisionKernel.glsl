@@ -39,6 +39,7 @@ void CalculateCollisionSphere(vec3 mCenter, float mRadius, vec3 sphereCenter, fl
 	vec3 diff = mCenter - sphereCenter;
 	float diffLength;
 	Vec3LengthSquared(diff, diffLength);
+	ret = vec3(0.0f);
 
 	if
 	(
@@ -49,7 +50,7 @@ void CalculateCollisionSphere(vec3 mCenter, float mRadius, vec3 sphereCenter, fl
 		diff = normalize(diff);
 		diff = diff * ((mRadius + sphereRadius) - sqrt(diffLength)) * multiplier;
 
-		ret += diff;
+		ret = diff;
 	}
 }
 
@@ -58,11 +59,12 @@ void CalculateCollisionBoxAA(vec3 mCenter, float mRadius, vec3 bMin, vec3 bMax, 
 	vec3 closest = min(max(mCenter, bMin), bMax);
 	float dist;
 	Vec3LengthSquared(closest - mCenter, dist);
+	ret = vec3(0.0f);
 
-	if(dist < (mRadius * mRadius))
+	if(dist < (mRadius * mRadius) && dist != 0.0f)
 	{
 		closest = mCenter - closest;
-		ret += normalize(closest) * (mRadius - sqrt(dist)) * multiplier;
+		ret = normalize(closest) * (mRadius - sqrt(dist)) * multiplier + vec3(0.0f, 0.01f, 0.0f);
 	}
 }
 
@@ -70,17 +72,11 @@ void main()
 {
 	vec3 colOffset = vec3(0.0f, 0.0f, 0.0f);
 	vec3 mPos = vec3(WorldMatrix * Pos);
+	vec3 totalOffset = vec3(0.0f);
 	float mR = Multipliers.y;
 
 	// solve external collisions
-	for(int i = 0; i < BoxAAColliderCount; ++i)
-	{
-		mat2x4 box = baaBuffer[i];
-		vec3 bMin = vec3(box[0][0], box[0][1], box[0][2]);
-		vec3 bMax = vec3(box[1][0], box[1][1], box[1][2]);
 
-		CalculateCollisionBoxAA(mPos, mR, bMin, bMax, 1.0f, colOffset);
-	}
 
 	for(int i = 0; i < SphereColliderCount; ++i)
 	{
@@ -89,6 +85,8 @@ void main()
 		float sR = sphere.w;
 
 		CalculateCollisionSphere(mPos, mR, sPos, sR, 1.0f, colOffset);
+		mPos += colOffset;
+		totalOffset += colOffset;
 	}
 
 	// solve internal collisions
@@ -113,16 +111,32 @@ void main()
 	{
 		vec3 wnPos = vec3(WorldMatrix * InPosBuffer[int(Neighbours[i])]);
 		CalculateCollisionSphere(mPos, mR, wnPos, mR, 0.5f, colOffset);
+		mPos += colOffset;
+		totalOffset += colOffset;
+	}
+
+		for(int i = 0; i < BoxAAColliderCount; ++i)
+	{
+		mat2x4 box = baaBuffer[i];
+		vec3 bMin = vec3(box[0][0], box[0][1], box[0][2]);
+		vec3 bMax = vec3(box[1][0], box[1][1], box[1][2]);
+
+		CalculateCollisionBoxAA(mPos, mR, bMin, bMax, 1.0f, colOffset);
+		mPos += colOffset;
+		totalOffset += colOffset;
 	}
 	
 	if(mPos.y < GroundLevel)
 	{
-		colOffset.y += (-mPos.y + GroundLevel);
+		totalOffset.y += (-mPos.y + GroundLevel);
 	}
+
+	//float d = 100.0f;
+	//totalOffset = clamp(totalOffset, -d, d);
 
 	//vec4 dupa = InPosBuffer[0];
 	// update positions
-	OutPos = vec4(Pos.x + colOffset.x * Multipliers.x, Pos.y + colOffset.y * Multipliers.x, Pos.z + colOffset.z * Multipliers.x, Pos.w);
+	OutPos = vec4(Pos.x + totalOffset.x * Multipliers.x, Pos.y + totalOffset.y * Multipliers.x, Pos.z + totalOffset.z * Multipliers.x, Pos.w);
 	//OutPos = vec4(sBuffer[0][0], sBuffer[0][1], sBuffer[0][2], sBuffer[0][3]);
 	gl_Position = Pos;
 }

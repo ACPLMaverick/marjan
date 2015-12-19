@@ -35,7 +35,7 @@ unsigned int InputManager::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
 
-	m_buttons.clear();
+	m_guiElems.clear();
 
 	return err;
 }
@@ -126,19 +126,19 @@ unsigned int InputManager::GetCurrentlyHeldButtons()
 	return m_currentlyHeldButtons;
 }
 
-void InputManager::AddButton(GUIButton * button)
+void InputManager::AddGUIElement(GUIElement * button)
 {
-	m_buttons.push_back(button);
+	m_guiElems.push_back(button);
 }
 
-void InputManager::RemoveButton(GUIButton * button)
+void InputManager::RemoveGUIElement(GUIElement * button)
 {
 	int ctr = 0;
-	for (std::vector<GUIButton*>::iterator it = m_buttons.begin(); it != m_buttons.end(); ++it, ++ctr)
+	for (std::vector<GUIElement*>::iterator it = m_guiElems.begin(); it != m_guiElems.end(); ++it, ++ctr)
 	{
 		if ((*it) == button)
 		{
-			m_buttons.erase(it);
+			m_guiElems.erase(it);
 			return;
 		}
 	}
@@ -165,7 +165,7 @@ void InputManager::ComputeScaleFactors(glm::vec2 * factors)
 	factors->y = factorY;
 }
 
-bool InputManager::ButtonAreaInClick(GUIButton * button, const glm::vec2 * clickPos)
+bool InputManager::GUIElementAreaInClick(GUIElement * button, const glm::vec2 * clickPos)
 {
 	// we have an event here, so we calculate current finger position
 	glm::vec2 cp;
@@ -179,8 +179,9 @@ bool InputManager::ButtonAreaInClick(GUIButton * button, const glm::vec2 * click
 
 	glm::vec2 nScl = button->GetScale();
 	glm::vec2 pos = button->GetPosition();
-	glm::vec2 scaleFactors;
-	ComputeScaleFactors(&scaleFactors);
+	glm::vec2 scaleFactors = glm::vec2(1.0f, 1.0f);
+	if (button->GetScaled())
+		ComputeScaleFactors(&scaleFactors);
 	nScl.x *= scaleFactors.x;
 	nScl.y *= scaleFactors.y;
 
@@ -201,12 +202,11 @@ bool InputManager::ButtonAreaInClick(GUIButton * button, const glm::vec2 * click
 unsigned int InputManager::ProcessButtonClicks(const glm::vec2 * clickPos)
 {
 	unsigned int ctr = 0;
-	for (std::vector<GUIButton*>::iterator it = m_buttons.begin(); it != m_buttons.end(); ++it)
+	for (std::vector<GUIElement*>::iterator it = m_guiElems.begin(); it != m_guiElems.end(); ++it)
 	{
-		if (ButtonAreaInClick(*it, clickPos))
+		if (GUIElementAreaInClick(*it, clickPos))
 		{
-			++ctr;
-			(*it)->ExecuteActionsClick();
+			ctr += (*it)->ExecuteClick(clickPos);
 			(*it)->CleanupAfterHold();
 		}
 	}
@@ -217,12 +217,11 @@ unsigned int InputManager::ProcessButtonClicks(const glm::vec2 * clickPos)
 unsigned int InputManager::ProcessButtonHolds(const glm::vec2 * clickPos)
 {
 	unsigned int ctr = 0;
-	for (std::vector<GUIButton*>::iterator it = m_buttons.begin(); it != m_buttons.end(); ++it)
+	for (std::vector<GUIElement*>::iterator it = m_guiElems.begin(); it != m_guiElems.end(); ++it)
 	{
-		if (ButtonAreaInClick(*it, clickPos))
+		if (GUIElementAreaInClick(*it, clickPos))
 		{
-			++ctr;
-			(*it)->ExecuteActionsHold();
+			ctr += (*it)->ExecuteHold(clickPos);
 		}
 		else if ((*it)->GetHoldInProgress())
 		{

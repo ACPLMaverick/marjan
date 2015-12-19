@@ -27,18 +27,16 @@ protected:
 	glm::vec4 m_color;
 	float m_rotation;
 
-	TextureID* m_textureIdle;
 	TextureID* m_textureClicked;
-
-	MeshGLRectButton* m_mesh;
 
 	std::vector<void*> m_paramsClick;
 	std::vector<void*> m_paramsHold;
-
-	bool isClickInProgress;
 	
 	virtual void GenerateTransformMatrix();
 	void ComputeScaleFactors(glm::vec2* factors);
+
+	unsigned int ExecuteActionsClick();
+	unsigned int ExecuteActionsHold();
 public:
 	GUIButton(const std::string* id);
 	GUIButton(const GUIButton*);
@@ -46,9 +44,6 @@ public:
 
 	virtual unsigned int Initialize();
 	virtual unsigned int Shutdown();
-
-	virtual unsigned int Update();
-	virtual unsigned int Draw();
 
 	void SetTextures(TextureID* texIdle, TextureID* texClicked);
 	void RemoveTextures();
@@ -69,10 +64,7 @@ public:
 	void RemoveActionHold(GUIAction* action);
 	void RemoveActionHold(unsigned int id);
 
-	unsigned int ExecuteActionsClick();
-	unsigned int ExecuteActionsHold();
-	void CleanupAfterHold();
-
-	bool GetHoldInProgress();
+	virtual unsigned int ExecuteClick(const glm::vec2* clickPos);
+	virtual unsigned int ExecuteHold(const glm::vec2* clickPos);
 };
 

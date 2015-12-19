@@ -36,211 +36,211 @@ unsigned int ClothSimulator::Initialize()
 	CopyVertexData(m_vd[0], m_vdCopy);
 
 	// initialize simulation data
-	m_simData = new SimData;
-	m_simData->m_vertexCount = m_vd[0]->data->vertexCount;
-	m_simData->m_edgesWidthAll = m_meshPlane->GetEdgesWidth() + 2;
-	m_simData->m_edgesLengthAll = m_meshPlane->GetEdgesLength() + 2;
 
-	m_simData->b_positionLast = new glm::vec4[m_simData->m_vertexCount];
-	m_simData->b_neighbours = new glm::vec4[m_simData->m_vertexCount];
-	m_simData->b_neighboursDiag = new glm::vec4[m_simData->m_vertexCount];
-	m_simData->b_neighbours2 = new glm::vec4[m_simData->m_vertexCount];
-	m_simData->b_neighbourMultipliers = new glm::vec4[m_simData->m_vertexCount];
-	m_simData->b_neighbourDiagMultipliers = new glm::vec4[m_simData->m_vertexCount];
-	m_simData->b_neighbour2Multipliers = new glm::vec4[m_simData->m_vertexCount];
-	m_simData->b_elMassCoeffs = new glm::vec4[m_simData->m_vertexCount];
-	m_simData->b_multipliers = new glm::vec4[m_simData->m_vertexCount];
+	m_simData.m_vertexCount = m_vd[0]->data->vertexCount;
+	m_simData.m_edgesWidthAll = m_meshPlane->GetEdgesWidth() + 2;
+	m_simData.m_edgesLengthAll = m_meshPlane->GetEdgesLength() + 2;
+
+	m_simData.b_positionLast = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_neighbours = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_neighboursDiag = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_neighbours2 = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_neighbourMultipliers = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_neighbourDiagMultipliers = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_neighbour2Multipliers = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_elMassCoeffs = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_multipliers = new glm::vec4[m_simData.m_vertexCount];
 
 	glm::vec3 baseLength = glm::vec3(
-		abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData->m_vertexCount - 1].x) / (float)(m_simData->m_edgesWidthAll - 1),
+		abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData.m_vertexCount - 1].x) / (float)(m_simData.m_edgesWidthAll - 1),
 		0.0f,
-		abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[m_simData->m_vertexCount - 1].z) / (float)(m_simData->m_edgesLengthAll - 1)
+		abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[m_simData.m_vertexCount - 1].z) / (float)(m_simData.m_edgesLengthAll - 1)
 		);
-	m_simData->c_springLengths.x = baseLength.x;	// two different spring lengths, horizontal and vertical
-	m_simData->c_springLengths.y = baseLength.z;
-	m_simData->c_springLengths.z = glm::sqrt(baseLength.x * baseLength.x + baseLength.z * baseLength.z);	// diagonal length
-	m_simData->c_springLengths.w = 2.0f;	// multiplier for lenghts of neighbours2
+	m_simData.c_springLengths.x = baseLength.x;	// two different spring lengths, horizontal and vertical
+	m_simData.c_springLengths.y = baseLength.z;
+	m_simData.c_springLengths.z = glm::sqrt(baseLength.x * baseLength.x + baseLength.z * baseLength.z);	// diagonal length
+	m_simData.c_springLengths.w = 2.0f;	// multiplier for lenghts of neighbours2
 
 	m_cellSize = glm::max(baseLength.x, baseLength.z) * 1.5f;
 
-	for (int i = 0; i < m_simData->m_vertexCount; ++i)
+	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
 		///
-		m_simData->b_neighboursDiag[i] = glm::vec4(0.0f);
-		m_simData->b_neighbours2[i] = glm::vec4(0.0f);
-		m_simData->b_neighbourDiagMultipliers[i] = glm::vec4(0.0f);
-		m_simData->b_neighbour2Multipliers[i] = glm::vec4(0.0f);
+		m_simData.b_neighboursDiag[i] = glm::vec4(0.0f);
+		m_simData.b_neighbours2[i] = glm::vec4(0.0f);
+		m_simData.b_neighbourDiagMultipliers[i] = glm::vec4(0.0f);
+		m_simData.b_neighbour2Multipliers[i] = glm::vec4(0.0f);
 		///
-		m_simData->b_positionLast[i] = m_vd[0]->data->positionBuffer[i];
-		m_simData->b_elMassCoeffs[i].y = VERTEX_MASS;
-		m_simData->b_elMassCoeffs[i].w = VERTEX_AIR_DAMP;
-		m_simData->b_multipliers[i].x = 1.0f;
+		m_simData.b_positionLast[i] = m_vd[0]->data->positionBuffer[i];
+		m_simData.b_elMassCoeffs[i].y = VERTEX_MASS;
+		m_simData.b_elMassCoeffs[i].w = VERTEX_AIR_DAMP;
+		m_simData.b_multipliers[i].x = 1.0f;
 
-		m_simData->b_multipliers[i].y = glm::min(glm::min(baseLength.x, baseLength.z) / 2.0f, VERTEX_COLLIDER_MULTIPLIER);
+		m_simData.b_multipliers[i].y = glm::min(glm::min(baseLength.x, baseLength.z) / 2.0f, VERTEX_COLLIDER_MULTIPLIER);
 
-		m_simData->b_elMassCoeffs[i].x = SPRING_ELASTICITY;
-		m_simData->b_elMassCoeffs[i].z = SPRING_ELASTICITY_DAMP;
+		m_simData.b_elMassCoeffs[i].x = SPRING_ELASTICITY;
+		m_simData.b_elMassCoeffs[i].z = SPRING_ELASTICITY_DAMP;
 		/*
-		if (i < m_simData->m_edgesLengthAll ||
-			i >= (m_simData->m_vertexCount - m_simData->m_edgesLengthAll) ||
-			i % m_simData->m_edgesLengthAll == 0 ||
-			i % m_simData->m_edgesLengthAll == (m_simData->m_edgesLengthAll - 1)
+		if (i < m_simData.m_edgesLengthAll ||
+			i >= (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) ||
+			i % m_simData.m_edgesLengthAll == 0 ||
+			i % m_simData.m_edgesLengthAll == (m_simData.m_edgesLengthAll - 1)
 			)
 		{
-			m_simData->b_elMassCoeffs[i].x *= SPRING_BORDER_MULTIPLIER;
-			m_simData->b_elMassCoeffs[i].z *= SPRING_BORDER_MULTIPLIER;
+			m_simData.b_elMassCoeffs[i].x *= SPRING_BORDER_MULTIPLIER;
+			m_simData.b_elMassCoeffs[i].z *= SPRING_BORDER_MULTIPLIER;
 		}
 		*/
 		// calculating neighbouring vertices ids and spring lengths
 
 		// upper
-		m_simData->b_neighbours[i][0] = (i - 1) % m_simData->m_vertexCount;
-		if (i % m_simData->m_edgesLengthAll)
+		m_simData.b_neighbours[i][0] = (i - 1) % m_simData.m_vertexCount;
+		if (i % m_simData.m_edgesLengthAll)
 		{
-			m_simData->b_neighbourMultipliers[i][0] = 1.0f;
+			m_simData.b_neighbourMultipliers[i][0] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbourMultipliers[i][0] = 0.0f;
+			m_simData.b_neighbourMultipliers[i][0] = 0.0f;
 		}
 
 		// left
-		m_simData->b_neighbours[i][1] = (i - m_simData->m_edgesLengthAll) % m_simData->m_vertexCount;
-		if (i >= m_simData->m_edgesLengthAll)
+		m_simData.b_neighbours[i][1] = (i - m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		if (i >= m_simData.m_edgesLengthAll)
 		{
-			m_simData->b_neighbourMultipliers[i][1] = 1.0f;
+			m_simData.b_neighbourMultipliers[i][1] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbourMultipliers[i][1] = 0.0f;
+			m_simData.b_neighbourMultipliers[i][1] = 0.0f;
 		}
 
 		// lower
-		m_simData->b_neighbours[i][2] = (i + 1) % m_simData->m_vertexCount;
-		if (i % m_simData->m_edgesLengthAll != (m_simData->m_edgesLengthAll - 1))
+		m_simData.b_neighbours[i][2] = (i + 1) % m_simData.m_vertexCount;
+		if (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1))
 		{
-			m_simData->b_neighbourMultipliers[i][2] = 1.0f;
+			m_simData.b_neighbourMultipliers[i][2] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbourMultipliers[i][2] = 0.0f;
+			m_simData.b_neighbourMultipliers[i][2] = 0.0f;
 		}
 
 		// right
-		m_simData->b_neighbours[i][3] = (i + m_simData->m_edgesLengthAll) % m_simData->m_vertexCount;
-		if (i < (m_simData->m_vertexCount - m_simData->m_edgesLengthAll))
+		m_simData.b_neighbours[i][3] = (i + m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll))
 		{
-			m_simData->b_neighbourMultipliers[i][3] = 1.0f;
+			m_simData.b_neighbourMultipliers[i][3] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbourMultipliers[i][3] = 0.0f;
+			m_simData.b_neighbourMultipliers[i][3] = 0.0f;
 		}
 
 		// tl
-		m_simData->b_neighboursDiag[i][0] = (i - m_simData->m_edgesLengthAll - 1) % m_simData->m_vertexCount;
-		if (i >= m_simData->m_edgesLengthAll && i % m_simData->m_edgesLengthAll)
+		m_simData.b_neighboursDiag[i][0] = (i - m_simData.m_edgesLengthAll - 1) % m_simData.m_vertexCount;
+		if (i >= m_simData.m_edgesLengthAll && i % m_simData.m_edgesLengthAll)
 		{
-			m_simData->b_neighbourDiagMultipliers[i][0] = 1.0f;
+			m_simData.b_neighbourDiagMultipliers[i][0] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbourDiagMultipliers[i][0] = 0.0f;
+			m_simData.b_neighbourDiagMultipliers[i][0] = 0.0f;
 		}
 
 		// bl
-		m_simData->b_neighboursDiag[i][1] = (i - m_simData->m_edgesLengthAll + 1) % m_simData->m_vertexCount;
-		if (i >= m_simData->m_edgesLengthAll && (i % m_simData->m_edgesLengthAll != (m_simData->m_edgesLengthAll - 1)))
+		m_simData.b_neighboursDiag[i][1] = (i - m_simData.m_edgesLengthAll + 1) % m_simData.m_vertexCount;
+		if (i >= m_simData.m_edgesLengthAll && (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1)))
 		{
-			m_simData->b_neighbourDiagMultipliers[i][1] = 1.0f;
+			m_simData.b_neighbourDiagMultipliers[i][1] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbourDiagMultipliers[i][1] = 0.0f;
+			m_simData.b_neighbourDiagMultipliers[i][1] = 0.0f;
 		}
 
 		// br
-		m_simData->b_neighboursDiag[i][2] = (i + m_simData->m_edgesLengthAll + 1) % m_simData->m_vertexCount;
-		if (i < (m_simData->m_vertexCount - m_simData->m_edgesLengthAll) && (i % m_simData->m_edgesLengthAll != (m_simData->m_edgesLengthAll - 1)))
+		m_simData.b_neighboursDiag[i][2] = (i + m_simData.m_edgesLengthAll + 1) % m_simData.m_vertexCount;
+		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) && (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1)))
 		{
-			m_simData->b_neighbourDiagMultipliers[i][2] = 1.0f;
+			m_simData.b_neighbourDiagMultipliers[i][2] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbourDiagMultipliers[i][2] = 0.0f;
+			m_simData.b_neighbourDiagMultipliers[i][2] = 0.0f;
 		}
 
 		// tr
-		m_simData->b_neighboursDiag[i][3] = (i + m_simData->m_edgesLengthAll - 1) % m_simData->m_vertexCount;
-		if (i < (m_simData->m_vertexCount - m_simData->m_edgesLengthAll) && i % m_simData->m_edgesLengthAll)
+		m_simData.b_neighboursDiag[i][3] = (i + m_simData.m_edgesLengthAll - 1) % m_simData.m_vertexCount;
+		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) && i % m_simData.m_edgesLengthAll)
 		{
-			m_simData->b_neighbourDiagMultipliers[i][3] = 1.0f;
+			m_simData.b_neighbourDiagMultipliers[i][3] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbourDiagMultipliers[i][3] = 0.0f;
+			m_simData.b_neighbourDiagMultipliers[i][3] = 0.0f;
 		}
 
 		// upper2
-		m_simData->b_neighbours2[i][0] = (i - 2) % m_simData->m_vertexCount;
-		if (i % m_simData->m_edgesLengthAll > 1)
+		m_simData.b_neighbours2[i][0] = (i - 2) % m_simData.m_vertexCount;
+		if (i % m_simData.m_edgesLengthAll > 1)
 		{
-			m_simData->b_neighbour2Multipliers[i][0] = 1.0f;
+			m_simData.b_neighbour2Multipliers[i][0] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbour2Multipliers[i][0] = 0.0f;
+			m_simData.b_neighbour2Multipliers[i][0] = 0.0f;
 		}
 
 		// left2
-		m_simData->b_neighbours2[i][1] = (i - 2 * m_simData->m_edgesLengthAll) % m_simData->m_vertexCount;
-		if (i >= 2 * m_simData->m_edgesLengthAll)
+		m_simData.b_neighbours2[i][1] = (i - 2 * m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		if (i >= 2 * m_simData.m_edgesLengthAll)
 		{
-			m_simData->b_neighbour2Multipliers[i][1] = 1.0f;
+			m_simData.b_neighbour2Multipliers[i][1] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbour2Multipliers[i][1] = 0.0f;
+			m_simData.b_neighbour2Multipliers[i][1] = 0.0f;
 		}
 
 		// lower2
-		m_simData->b_neighbours2[i][2] = (i + 2) % m_simData->m_vertexCount;
-		if (i % m_simData->m_edgesLengthAll < (m_simData->m_edgesLengthAll - 2))
+		m_simData.b_neighbours2[i][2] = (i + 2) % m_simData.m_vertexCount;
+		if (i % m_simData.m_edgesLengthAll < (m_simData.m_edgesLengthAll - 2))
 		{
-			m_simData->b_neighbour2Multipliers[i][2] = 1.0f;
+			m_simData.b_neighbour2Multipliers[i][2] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbour2Multipliers[i][2] = 0.0f;
+			m_simData.b_neighbour2Multipliers[i][2] = 0.0f;
 		}
 
 		// right2
-		m_simData->b_neighbours2[i][3] = (i + 2 * m_simData->m_edgesLengthAll) % m_simData->m_vertexCount;
-		if (i < (m_simData->m_vertexCount -  2 * m_simData->m_edgesLengthAll))
+		m_simData.b_neighbours2[i][3] = (i + 2 * m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		if (i < (m_simData.m_vertexCount -  2 * m_simData.m_edgesLengthAll))
 		{
-			m_simData->b_neighbour2Multipliers[i][3] = 1.0f;
+			m_simData.b_neighbour2Multipliers[i][3] = 1.0f;
 		}
 		else
 		{
-			m_simData->b_neighbour2Multipliers[i][3] = 0.0f;
+			m_simData.b_neighbour2Multipliers[i][3] = 0.0f;
 		}
 
 		/*
 		if (i == 0)
 		{
-			LOGI("%f %f %f %f", m_simData->b_neighbours[i][0], m_simData->b_neighbours[i][1], m_simData->b_neighbours[i][2], m_simData->b_neighbours[i][3]);
-			LOGI("%f %f %f %f", m_simData->b_neighboursDiag[i][0], m_simData->b_neighboursDiag[i][1], m_simData->b_neighboursDiag[i][2], m_simData->b_neighboursDiag[i][3]);
-			LOGI("%f %f %f %f", m_simData->b_neighbours2[i][0], m_simData->b_neighbours2[i][1], m_simData->b_neighbours2[i][2], m_simData->b_neighbours2[i][3]);
-			LOGI("%f %f %f %f", m_simData->b_neighbourMultipliers[i][0], m_simData->b_neighbourMultipliers[i][1], m_simData->b_neighbourMultipliers[i][2], m_simData->b_neighbourMultipliers[i][3]);
-			LOGI("%f %f %f %f", m_simData->b_neighbourDiagMultipliers[i][0], m_simData->b_neighbourDiagMultipliers[i][1], m_simData->b_neighbourDiagMultipliers[i][2], m_simData->b_neighbourDiagMultipliers[i][3]);
-			LOGI("%f %f %f %f", m_simData->b_neighbour2Multipliers[i][0], m_simData->b_neighbour2Multipliers[i][1], m_simData->b_neighbour2Multipliers[i][2], m_simData->b_neighbour2Multipliers[i][3]);
+			LOGI("%f %f %f %f", m_simData.b_neighbours[i][0], m_simData.b_neighbours[i][1], m_simData.b_neighbours[i][2], m_simData.b_neighbours[i][3]);
+			LOGI("%f %f %f %f", m_simData.b_neighboursDiag[i][0], m_simData.b_neighboursDiag[i][1], m_simData.b_neighboursDiag[i][2], m_simData.b_neighboursDiag[i][3]);
+			LOGI("%f %f %f %f", m_simData.b_neighbours2[i][0], m_simData.b_neighbours2[i][1], m_simData.b_neighbours2[i][2], m_simData.b_neighbours2[i][3]);
+			LOGI("%f %f %f %f", m_simData.b_neighbourMultipliers[i][0], m_simData.b_neighbourMultipliers[i][1], m_simData.b_neighbourMultipliers[i][2], m_simData.b_neighbourMultipliers[i][3]);
+			LOGI("%f %f %f %f", m_simData.b_neighbourDiagMultipliers[i][0], m_simData.b_neighbourDiagMultipliers[i][1], m_simData.b_neighbourDiagMultipliers[i][2], m_simData.b_neighbourDiagMultipliers[i][3]);
+			LOGI("%f %f %f %f", m_simData.b_neighbour2Multipliers[i][0], m_simData.b_neighbour2Multipliers[i][1], m_simData.b_neighbour2Multipliers[i][2], m_simData.b_neighbour2Multipliers[i][3]);
 		}
 		*/
 	}
 
 	// hard-coded locks
-	m_simData->b_multipliers[0][0] = 0.0f;
-	m_simData->b_multipliers[(m_simData->m_vertexCount - m_simData->m_edgesLengthAll)][0] = 0.0f;
+	m_simData.b_multipliers[0][0] = 0.0f;
+	m_simData.b_multipliers[(m_simData.m_vertexCount - m_simData.m_edgesLengthAll)][0] = 0.0f;
 
 	m_readID = 0;
 	m_writeID = 1;
@@ -270,8 +270,8 @@ unsigned int ClothSimulator::Initialize()
 
 		glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosLastID[i]);
 		glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
-			m_simData->m_vertexCount * sizeof(m_simData->b_positionLast[0]),
-			&m_simData->b_positionLast[0].x,
+			m_simData.m_vertexCount * sizeof(m_simData.b_positionLast[0]),
+			&m_simData.b_positionLast[0].x,
 			GL_DYNAMIC_COPY);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -285,74 +285,74 @@ unsigned int ClothSimulator::Initialize()
 		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 
-	glGenBuffers(1, &m_simData->i_neighbours);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbours);
+	glGenBuffers(1, &m_simData.i_neighbours);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbours);
 	glBufferData(GL_ARRAY_BUFFER,
-		m_simData->m_vertexCount * sizeof(m_simData->b_neighbours[0]),
-		m_simData->b_neighbours,
+		m_simData.m_vertexCount * sizeof(m_simData.b_neighbours[0]),
+		m_simData.b_neighbours,
 		GL_STATIC_DRAW);
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glGenBuffers(1, &m_simData->i_neighboursDiag);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighboursDiag);
+	glGenBuffers(1, &m_simData.i_neighboursDiag);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighboursDiag);
 	glBufferData(GL_ARRAY_BUFFER,
-		m_simData->m_vertexCount * sizeof(m_simData->b_neighboursDiag[0]),
-		m_simData->b_neighboursDiag,
+		m_simData.m_vertexCount * sizeof(m_simData.b_neighboursDiag[0]),
+		m_simData.b_neighboursDiag,
 		GL_STATIC_DRAW);
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glGenBuffers(1, &m_simData->i_neighbours2);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbours2);
+	glGenBuffers(1, &m_simData.i_neighbours2);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbours2);
 	glBufferData(GL_ARRAY_BUFFER,
-		m_simData->m_vertexCount * sizeof(m_simData->b_neighbours2[0]),
-		m_simData->b_neighbours2,
+		m_simData.m_vertexCount * sizeof(m_simData.b_neighbours2[0]),
+		m_simData.b_neighbours2,
 		GL_STATIC_DRAW);
 	glEnableVertexAttribArray(5);
 	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glGenBuffers(1, &m_simData->i_neighbourMultipliers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbourMultipliers);
+	glGenBuffers(1, &m_simData.i_neighbourMultipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourMultipliers);
 	glBufferData(GL_ARRAY_BUFFER,
-		m_simData->m_vertexCount * sizeof(m_simData->b_neighbourMultipliers[0]),
-		m_simData->b_neighbourMultipliers,
+		m_simData.m_vertexCount * sizeof(m_simData.b_neighbourMultipliers[0]),
+		m_simData.b_neighbourMultipliers,
 		GL_STATIC_DRAW);
 	glEnableVertexAttribArray(6);
 	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glGenBuffers(1, &m_simData->i_neighbourDiagMultipliers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbourDiagMultipliers);
+	glGenBuffers(1, &m_simData.i_neighbourDiagMultipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourDiagMultipliers);
 	glBufferData(GL_ARRAY_BUFFER,
-		m_simData->m_vertexCount * sizeof(m_simData->b_neighbourDiagMultipliers[0]),
-		m_simData->b_neighbourDiagMultipliers,
+		m_simData.m_vertexCount * sizeof(m_simData.b_neighbourDiagMultipliers[0]),
+		m_simData.b_neighbourDiagMultipliers,
 		GL_STATIC_DRAW);
 	glEnableVertexAttribArray(7);
 	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glGenBuffers(1, &m_simData->i_neighbour2Multipliers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbour2Multipliers);
+	glGenBuffers(1, &m_simData.i_neighbour2Multipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbour2Multipliers);
 	glBufferData(GL_ARRAY_BUFFER,
-		m_simData->m_vertexCount * sizeof(m_simData->b_neighbour2Multipliers[0]),
-		m_simData->b_neighbour2Multipliers,
+		m_simData.m_vertexCount * sizeof(m_simData.b_neighbour2Multipliers[0]),
+		m_simData.b_neighbour2Multipliers,
 		GL_STATIC_DRAW);
 	glEnableVertexAttribArray(8);
 	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glGenBuffers(1, &m_simData->i_elMassCoeffs);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_elMassCoeffs);
+	glGenBuffers(1, &m_simData.i_elMassCoeffs);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_elMassCoeffs);
 	glBufferData(GL_ARRAY_BUFFER,
-		m_simData->m_vertexCount * sizeof(m_simData->b_elMassCoeffs[0]),
-		m_simData->b_elMassCoeffs,
+		m_simData.m_vertexCount * sizeof(m_simData.b_elMassCoeffs[0]),
+		m_simData.b_elMassCoeffs,
 		GL_STATIC_DRAW);
 	glEnableVertexAttribArray(9);
 	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glGenBuffers(1, &m_simData->i_multipliers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_multipliers);
+	glGenBuffers(1, &m_simData.i_multipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_multipliers);
 	glBufferData(GL_ARRAY_BUFFER,
-		m_simData->m_vertexCount * sizeof(m_simData->b_multipliers[0]),
-		m_simData->b_multipliers,
+		m_simData.m_vertexCount * sizeof(m_simData.b_multipliers[0]),
+		m_simData.b_multipliers,
 		GL_STATIC_DRAW);
 	glEnableVertexAttribArray(10);
 	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -425,20 +425,19 @@ unsigned int ClothSimulator::Shutdown()
 	glDeleteBuffers(1, &m_vboColBAAID);
 	glDeleteBuffers(1, &m_vboColSID);
 
-	glDeleteBuffers(1, &m_simData->i_neighbours);
-	glDeleteBuffers(1, &m_simData->i_neighboursDiag);
-	glDeleteBuffers(1, &m_simData->i_neighbours2);
-	glDeleteBuffers(1, &m_simData->i_neighbourMultipliers);
-	glDeleteBuffers(1, &m_simData->i_neighbourDiagMultipliers);
-	glDeleteBuffers(1, &m_simData->i_neighbour2Multipliers);
-	glDeleteBuffers(1, &m_simData->i_elMassCoeffs);
-	glDeleteBuffers(1, &m_simData->i_multipliers);
+	glDeleteBuffers(1, &m_simData.i_neighbours);
+	glDeleteBuffers(1, &m_simData.i_neighboursDiag);
+	glDeleteBuffers(1, &m_simData.i_neighbours2);
+	glDeleteBuffers(1, &m_simData.i_neighbourMultipliers);
+	glDeleteBuffers(1, &m_simData.i_neighbourDiagMultipliers);
+	glDeleteBuffers(1, &m_simData.i_neighbour2Multipliers);
+	glDeleteBuffers(1, &m_simData.i_elMassCoeffs);
+	glDeleteBuffers(1, &m_simData.i_multipliers);
 
 	glDeleteTransformFeedbacks(1, &m_ntfID);
 	glDeleteTransformFeedbacks(1, &m_ctfID);
 
 	delete m_vdCopy;
-	delete m_simData;
 
 	return err;
 }
@@ -488,28 +487,28 @@ unsigned int ClothSimulator::Update()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vd[m_readID]->ids->normalBuffer);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbours);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbours);
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighboursDiag);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighboursDiag);
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbours2);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbours2);
 	glEnableVertexAttribArray(5);
 	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbourMultipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourMultipliers);
 	glEnableVertexAttribArray(6);
 	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbourDiagMultipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourDiagMultipliers);
 	glEnableVertexAttribArray(7);
 	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_neighbour2Multipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbour2Multipliers);
 	glEnableVertexAttribArray(8);
 	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_elMassCoeffs);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_elMassCoeffs);
 	glEnableVertexAttribArray(9);
 	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData->i_multipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_multipliers);
 	glEnableVertexAttribArray(10);
 	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
@@ -530,7 +529,7 @@ unsigned int ClothSimulator::Update()
 	}
 
 	SwapRWIds();
-	
+
 	// execute collision computation kernel
 	
 	glUseProgram(m_collisionsKernel->id);
@@ -545,9 +544,9 @@ unsigned int ClothSimulator::Update()
 	glUniform1f(m_collisionsKernel->uniformIDs->at(1), System::GetInstance()->GetCurrentScene()->GetGroundLevel());
 	glUniform1i(m_collisionsKernel->uniformIDs->at(2), bcCount);
 	glUniform1i(m_collisionsKernel->uniformIDs->at(3), scCount);
-	glUniform1i(m_collisionsKernel->uniformIDs->at(4), m_simData->m_edgesWidthAll);
-	glUniform1i(m_collisionsKernel->uniformIDs->at(5), m_simData->m_edgesLengthAll);
-	glUniform1i(m_collisionsKernel->uniformIDs->at(6), m_simData->m_vertexCount);
+	glUniform1i(m_collisionsKernel->uniformIDs->at(4), m_simData.m_edgesWidthAll);
+	glUniform1i(m_collisionsKernel->uniformIDs->at(5), m_simData.m_edgesLengthAll);
+	glUniform1i(m_collisionsKernel->uniformIDs->at(6), m_simData.m_vertexCount);
 	glUniform1i(m_collisionsKernel->uniformIDs->at(7), COLLISION_CHECK_WINDOW_SIZE);
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColPosID[m_readID], m_vboPosID[m_readID]);
@@ -572,18 +571,11 @@ unsigned int ClothSimulator::Update()
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_vboPosID[m_readID]);
 
 	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
+	glDrawArrays(GL_POINTS, 0, m_simData.m_vertexCount);
 	glEndTransformFeedback();
 
 	glDisable(GL_RASTERIZER_DISCARD);
 
-	/*
-	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[m_readID]);
-	glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 1, GL_MAP_READ_BIT);
-	for (int i = 0; i < 1; ++i, ++ptr)
-	LOGW("%f %f %f %f", ptr->x, ptr->y, ptr->z, ptr->w);
-	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
-	*/
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColPosID[m_readID], 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
@@ -613,7 +605,7 @@ unsigned int ClothSimulator::Update()
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_vboNrmID[m_writeID]);
 
 	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
+	glDrawArrays(GL_POINTS, 0, m_simData.m_vertexCount);
 	glEndTransformFeedback();
 
 	glDisable(GL_RASTERIZER_DISCARD);
@@ -636,6 +628,7 @@ unsigned int ClothSimulator::Update()
 	glDisableVertexAttribArray(7);
 
 	//SwapRWIds();
+
 	m_meshPlane->SwapDataPtrs();
 
 	glUseProgram(cShaderID->id);
@@ -666,6 +659,11 @@ void ClothSimulator::SetMode(ClothSimulationMode mode)
 void ClothSimulator::SwitchMode()
 {
 	m_mode = (ClothSimulationMode)(((int)m_mode + 1) % 2);
+	AppendRestart();
+}
+
+void ClothSimulator::Restart()
+{
 	AppendRestart();
 }
 
@@ -727,16 +725,16 @@ inline unsigned int ClothSimulator::UpdateSimMS(float gravity, float fixedDelta)
 
 	glUseProgram(m_msPosKernelID->id);
 
-	glUniform1i(m_msPosKernelID->uniformIDs->at(0), m_simData->m_vertexCount);
-	glUniform1i(m_msPosKernelID->uniformIDs->at(1), m_simData->m_edgesWidthAll);
-	glUniform1i(m_msPosKernelID->uniformIDs->at(2), m_simData->m_edgesLengthAll);
+	glUniform1i(m_msPosKernelID->uniformIDs->at(0), m_simData.m_vertexCount);
+	glUniform1i(m_msPosKernelID->uniformIDs->at(1), m_simData.m_edgesWidthAll);
+	glUniform1i(m_msPosKernelID->uniformIDs->at(2), m_simData.m_edgesLengthAll);
 	glUniform1f(m_msPosKernelID->uniformIDs->at(3), fixedDelta);
 	glUniform1f(m_msPosKernelID->uniformIDs->at(4), gravity);
 	glUniform4f(m_msPosKernelID->uniformIDs->at(5), 
-		m_simData->c_springLengths.x, 
-		m_simData->c_springLengths.y, 
-		m_simData->c_springLengths.z,
-		m_simData->c_springLengths.w);
+		m_simData.c_springLengths.x, 
+		m_simData.c_springLengths.y, 
+		m_simData.c_springLengths.z,
+		m_simData.c_springLengths.w);
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], m_vboPosID[m_readID]);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], m_vboPosLastID[m_readID]);
@@ -749,7 +747,7 @@ inline unsigned int ClothSimulator::UpdateSimMS(float gravity, float fixedDelta)
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, m_vboPosLastID[m_writeID]);
 
 	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
+	glDrawArrays(GL_POINTS, 0, m_simData.m_vertexCount);
 	glEndTransformFeedback();
 
 	glDisable(GL_RASTERIZER_DISCARD);
@@ -817,16 +815,16 @@ inline unsigned int ClothSimulator::UpdateSimPB(float gravity, float fixedDelta)
 
 	glUseProgram(m_pbPosKernelID->id);
 
-	glUniform1i(m_pbPosKernelID->uniformIDs->at(0), m_simData->m_vertexCount);
-	glUniform1i(m_pbPosKernelID->uniformIDs->at(1), m_simData->m_edgesWidthAll);
-	glUniform1i(m_pbPosKernelID->uniformIDs->at(2), m_simData->m_edgesLengthAll);
+	glUniform1i(m_pbPosKernelID->uniformIDs->at(0), m_simData.m_vertexCount);
+	glUniform1i(m_pbPosKernelID->uniformIDs->at(1), m_simData.m_edgesWidthAll);
+	glUniform1i(m_pbPosKernelID->uniformIDs->at(2), m_simData.m_edgesLengthAll);
 	glUniform1f(m_pbPosKernelID->uniformIDs->at(3), fixedDelta);
 	glUniform1f(m_pbPosKernelID->uniformIDs->at(4), gravity);
 	glUniform4f(m_pbPosKernelID->uniformIDs->at(5),
-		m_simData->c_springLengths.x,
-		m_simData->c_springLengths.y,
-		m_simData->c_springLengths.z,
-		m_simData->c_springLengths.w);
+		m_simData.c_springLengths.x,
+		m_simData.c_springLengths.y,
+		m_simData.c_springLengths.z,
+		m_simData.c_springLengths.w);
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], m_vboPosID[m_readID]);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], m_vboPosLastID[m_readID]);
@@ -839,7 +837,7 @@ inline unsigned int ClothSimulator::UpdateSimPB(float gravity, float fixedDelta)
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, m_vboPosLastID[m_writeID]);
 
 	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, m_simData->m_vertexCount);
+	glDrawArrays(GL_POINTS, 0, m_simData.m_vertexCount);
 	glEndTransformFeedback();
 
 	glDisable(GL_RASTERIZER_DISCARD);
@@ -923,30 +921,32 @@ inline void ClothSimulator::RestartSimulation()
 
 	// update data buffers on GPU with initial values
 
-	if (m_writeID == 0)
+	if(m_readID == 1)
 		m_meshPlane->SwapDataPtrs();
-	/*
+
 	m_readID = 0;
 	m_writeID = 1;
-	for (uint i = 0; i < 2; ++i)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[i]);
-		glBufferSubData(GL_ARRAY_BUFFER, 0,
-			m_vdCopy->data->vertexCount * sizeof(m_vdCopy->data->positionBuffer[0]),
-			&m_vdCopy->data->positionBuffer[0].x);
+	//for (uint i = 0; i < 2; ++i)
+	//{
+	//	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[i]);
+	//	glBufferSubData(GL_ARRAY_BUFFER, 0,
+	//		m_vdCopy->data->vertexCount * sizeof(m_vdCopy->data->positionBuffer[0]),
+	//		&m_vdCopy->data->positionBuffer[0].x);
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_vboPosLastID[i]);
-		glBufferSubData(GL_ARRAY_BUFFER, 0,
-			m_simData->m_vertexCount * sizeof(m_vdCopy->data->positionBuffer[0]),
-			&m_vdCopy->data->positionBuffer[0].x);
+	//	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosLastID[i]);
+	//	glBufferSubData(GL_ARRAY_BUFFER, 0,
+	//		m_simData.m_vertexCount * sizeof(m_vdCopy->data->positionBuffer[0]),
+	//		&m_vdCopy->data->positionBuffer[0].x);
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_vboNrmID[i]);
-		glBufferSubData(GL_ARRAY_BUFFER, 0,
-			m_vdCopy->data->vertexCount * sizeof(m_vdCopy->data->normalBuffer[0]),
-			m_vdCopy->data->normalBuffer);
-	}
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	*/
+	//	glBindBuffer(GL_ARRAY_BUFFER, m_vboNrmID[i]);
+	//	glBufferSubData(GL_ARRAY_BUFFER, 0,
+	//		m_vdCopy->data->vertexCount * sizeof(m_vdCopy->data->normalBuffer[0]),
+	//		m_vdCopy->data->normalBuffer);
+	//}
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+
 	Shutdown();
 	Initialize();
 }

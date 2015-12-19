@@ -19,10 +19,10 @@ GUIButton::~GUIButton()
 
 unsigned int GUIButton::Initialize()
 {
+	GUIElement::Initialize();
+
 	m_mesh = new MeshGLRectButton(nullptr, this, &m_color);
 	m_mesh->Initialize();
-
-	InputManager::GetInstance()->AddButton(this);
 
 	return CS_ERR_NONE;
 }
@@ -48,78 +48,6 @@ unsigned int GUIButton::Shutdown()
 }
 
 
-
-unsigned int GUIButton::Update()
-{
-	unsigned int err = CS_ERR_NONE;
-
-	/*
-	bool isClick = InputHandler::GetInstance()->GetClick();
-	bool isHold = InputHandler::GetInstance()->GetHold();
-
-	if (isClick || isHold)
-	{
-		// we have an event here, so we calculate current finger position
-		glm::vec2 clickPos;
-		InputHandler::GetInstance()->GetClickPosition(&clickPos);
-
-		Engine* e = System::GetInstance()->GetEngineData();
-		float w = e->width;
-		float h = e->height;
-
-		clickPos.x = clickPos.x / w * 2.0f - 1.0f;
-		clickPos.y = clickPos.y / h * 2.0f - 1.0f;
-
-		glm::vec2 nScl = m_scale;
-		glm::vec2 scaleFactors;
-		ComputeScaleFactors(&scaleFactors);
-		nScl.x *= scaleFactors.x;
-		nScl.y *= scaleFactors.y;
-
-		// check if click is within boundaries of this button
-		if (
-			clickPos.x >= m_position.x - nScl.x &&
-			clickPos.x <= m_position.x + nScl.x &&
-			clickPos.y >= m_position.y - nScl.y &&
-			clickPos.y <= m_position.y + nScl.y
-			)
-		{
-			if (!isClickInProgress)
-			{
-				isClickInProgress = true;
-				m_mesh->SetTextureID(m_textureClicked);
-			}
-
-			// YES! so, proceed accordingly
-			if (isClick)
-				ExecuteActionsClick(m_paramsClick);
-			else if (isHold)
-				ExecuteActionsHold(m_paramsHold);
-		}
-		else if (isClickInProgress)
-		{
-			isClickInProgress = false;
-			m_mesh->SetTextureID(m_textureIdle);
-		}
-	}
-	else if (isClickInProgress)
-	{
-		isClickInProgress = false;
-		m_mesh->SetTextureID(m_textureIdle);
-	}
-	*/
-
-	return err;
-}
-
-unsigned int GUIButton::Draw()
-{
-	unsigned int err = CS_ERR_NONE;
-
-	err = m_mesh->Draw();
-
-	return CS_ERR_NONE;
-}
 
 void GUIButton::GenerateTransformMatrix()
 {
@@ -264,7 +192,37 @@ void GUIButton::RemoveActionHold(unsigned int id)
 	}
 }
 
-unsigned int GUIButton::ExecuteActionsClick()
+unsigned int GUIButton::ExecuteClick(const glm::vec2* clickPos)
+{
+	unsigned int ctr = 0;
+
+	ctr += GUIElement::ExecuteClick(clickPos);
+
+	if(m_isEnabled)
+		ExecuteActionsClick();
+
+	if (m_isBlockable)
+		++ctr;
+
+	return ctr;
+}
+
+unsigned int GUIButton::ExecuteHold(const glm::vec2* clickPos)
+{
+	unsigned int ctr = 0;
+
+	ctr += GUIElement::ExecuteHold(clickPos);
+
+	if(m_isEnabled)
+		ExecuteActionsHold();
+
+	if (m_isBlockable)
+		++ctr;
+
+	return ctr;
+}
+
+inline unsigned int GUIButton::ExecuteActionsClick()
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -276,7 +234,7 @@ unsigned int GUIButton::ExecuteActionsClick()
 	return err;
 }
 
-unsigned int GUIButton::ExecuteActionsHold()
+inline unsigned int GUIButton::ExecuteActionsHold()
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -292,18 +250,4 @@ unsigned int GUIButton::ExecuteActionsHold()
 	}
 
 	return err;
-}
-
-void GUIButton::CleanupAfterHold()
-{
-	if (isClickInProgress)
-	{
-		isClickInProgress = false;
-		m_mesh->SetTextureID(m_textureIdle);
-	}
-}
-
-bool GUIButton::GetHoldInProgress()
-{
-	return isClickInProgress;
 }

@@ -187,7 +187,7 @@ protected:
 	MeshGLPlane* m_meshPlane;
 	VertexData** m_vd;
 	VertexData* m_vdCopy;
-	SimData* m_simData;
+	SimData m_simData;
 
 	KernelID* m_normalsKernel;
 	KernelID* m_collisionsKernel;
@@ -253,6 +253,7 @@ public:
 
 	void SetMode(ClothSimulationMode mode);
 	void SwitchMode();
+	void Restart();
 
 	ClothSimulationMode GetMode();
 	double GetSimTimeMS();

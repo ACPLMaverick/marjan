@@ -15,8 +15,6 @@ class GUIText :
 {
 protected:
 	std::string m_text;
-	MeshGLText* m_mesh;
-	TextureID* m_fontTexture;
 public:
 	GUIText(const std::string*, const std::string*, TextureID*);
 	GUIText(const GUIText*);
@@ -24,9 +22,6 @@ public:
 
 	virtual unsigned int Initialize();
 	virtual unsigned int Shutdown();
-
-	virtual unsigned int Update();
-	virtual unsigned int Draw();
 
 	void SetText(const std::string*);
 	void SetFontTextureID(TextureID*);

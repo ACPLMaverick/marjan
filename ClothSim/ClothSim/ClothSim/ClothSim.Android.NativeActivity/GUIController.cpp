@@ -17,12 +17,14 @@ GUIController::~GUIController()
 
 unsigned int GUIController::Initialize()
 {
+	string gVal = "GroupText";
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
 	string tval03 = "STvalue";
-	m_fpsText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval01);
-	m_dtText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval02);
-	m_ttText = (GUIText*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&tval03);
+	GUIElement* groupText = (GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gVal);
+	m_fpsText = (GUIText*)groupText->GetChild(&tval01);
+	m_dtText = (GUIText*)groupText->GetChild(&tval02);
+	m_ttText = (GUIText*)groupText->GetChild(&tval03);
 
 	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject(3);
 	m_cSimulator = (ClothSimulator*)cObj->GetComponent(0);
