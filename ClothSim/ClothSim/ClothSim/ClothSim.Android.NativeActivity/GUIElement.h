@@ -20,18 +20,21 @@ protected:
 
 	std::string m_id;
 	glm::mat4 m_transform;
+	glm::mat4 m_rot;
 
 	glm::vec2 m_position;
 	glm::vec2 m_scale;
+
+	Mesh* m_mesh;
+	TextureID* m_textureIdle;
+
+	float m_rotation;
 
 	bool m_isEnabled;
 	bool m_isVisible;
 	bool m_isBlockable;
 	bool m_isScaled;
 	bool isClickInProgress;
-
-	Mesh* m_mesh;
-	TextureID* m_textureIdle;
 
 	virtual void GenerateTransformMatrix();
 public:
@@ -47,6 +50,7 @@ public:
 
 	void SetPosition(glm::vec2);
 	void SetScale(glm::vec2);
+	void SetRotation(float r);
 	void SetEnabled(bool val);
 	void SetVisible(bool val);
 	void SetBlockable(bool val);
@@ -58,8 +62,10 @@ public:
 
 	std::string* GetID();
 	glm::mat4* GetTransformMatrix();
+	glm::mat4* GetRotationMatrix();
 	glm::vec2 GetPosition();
 	glm::vec2 GetScale();
+	float GetRotation();
 	bool GetHoldInProgress();
 	bool GetEnabled();
 	bool GetVisible();

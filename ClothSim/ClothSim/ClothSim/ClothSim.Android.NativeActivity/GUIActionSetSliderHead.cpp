@@ -2,10 +2,11 @@
 #include "GUIActionSetSliderHead.h"
 
 
-GUIActionSetSliderHead::GUIActionSetSliderHead(GUIButton* b, float length, unsigned int options) : GUIAction(b)
+GUIActionSetSliderHead::GUIActionSetSliderHead(GUIButton* b, float length, unsigned int options, unsigned int defOption) : GUIAction(b)
 {
 	m_length = length;
 	m_options = options;
+	m_currentOption = defOption;
 }
 
 GUIActionSetSliderHead::GUIActionSetSliderHead(const GUIActionSetSliderHead * c) : GUIAction(c)

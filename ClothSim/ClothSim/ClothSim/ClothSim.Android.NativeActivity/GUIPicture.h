@@ -9,5 +9,6 @@ public:
 	~GUIPicture();
 
 	virtual unsigned int Initialize();
+	virtual unsigned int Shutdown();
 };
 

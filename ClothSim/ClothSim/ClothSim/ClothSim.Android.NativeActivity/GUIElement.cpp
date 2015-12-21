@@ -53,6 +53,7 @@ void GUIElement::GenerateTransformMatrix()
 	}	
 
 	m_transform = glm::translate(glm::vec3(m_position.x, m_position.y - off, 0.0f)) * glm::scale(glm::vec3(m_scale.x * factorX, m_scale.y * factorY, 0.0f));
+	m_rot = glm::rotate(2.0f * m_rotation, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 
@@ -161,6 +162,11 @@ void GUIElement::SetScale(glm::vec2 scl)
 	GenerateTransformMatrix();
 }
 
+void GUIElement::SetRotation(float r)
+{
+	m_rotation = r;
+}
+
 void GUIElement::SetEnabled(bool val)
 {
 	m_isEnabled = val;
@@ -220,6 +226,11 @@ glm::mat4* GUIElement::GetTransformMatrix()
 	return &m_transform;
 }
 
+glm::mat4 * GUIElement::GetRotationMatrix()
+{
+	return &m_rot;
+}
+
 glm::vec2 GUIElement::GetPosition()
 {
 	return m_position;
@@ -228,6 +239,11 @@ glm::vec2 GUIElement::GetPosition()
 glm::vec2 GUIElement::GetScale()
 {
 	return m_scale;
+}
+
+float GUIElement::GetRotation()
+{
+	return m_rotation;
 }
 
 bool GUIElement::GetHoldInProgress()

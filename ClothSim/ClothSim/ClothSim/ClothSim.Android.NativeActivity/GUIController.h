@@ -9,9 +9,6 @@
 #include "InputHandler.h"
 #include "Settings.h"
 
-#include <sstream>
-#include <iomanip>
-
 class GUIText;
 class ClothSimulator;
 
@@ -29,7 +26,6 @@ private:
 
 	ClothSimulator* m_cSimulator;
 
-	void DoubleToStringPrecision(double, int, std::string*);
 public:
 	GUIController(SimObject* obj);
 	GUIController(const GUIController*);

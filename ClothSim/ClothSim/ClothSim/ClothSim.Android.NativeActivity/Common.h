@@ -101,5 +101,6 @@ struct CollisonTestResult
 void Vec3Min(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret);
 void Vec3Max(const glm::vec3* vec1, const glm::vec3* vec2, glm::vec3* ret);
 float Vec3LengthSquared(const glm::vec3*);
+void DoubleToStringPrecision(double, int, std::string*);
 
 /////////////////

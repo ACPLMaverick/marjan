@@ -1,18 +1,18 @@
 #pragma once
 #include "MeshGLRect.h"
-#include "GUIButton.h"
+#include "GUIElement.h"
 
-class GUIButton;
+class GUIElement;
 
 class MeshGLRectButton :
 	public MeshGLRect
 {
 protected:
-	GUIButton* m_btn;
+	GUIElement* m_guiEl;
 	ShaderID* m_fontShaderID;
 
 public:
-	MeshGLRectButton(SimObject* obj, GUIButton* btn, glm::vec4* col);
+	MeshGLRectButton(SimObject* obj, GUIElement* guiEl, glm::vec4* col);
 	MeshGLRectButton(const MeshGLRectButton* c);
 	~MeshGLRectButton();
 

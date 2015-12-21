@@ -10,7 +10,7 @@ protected:
 	unsigned int m_currentOption;
 	glm::vec2 m_startPoint;
 public:
-	GUIActionSetSliderHead(GUIButton* b, float length, unsigned int options);
+	GUIActionSetSliderHead(GUIButton* b, float length, unsigned int options, unsigned int defOption);
 	GUIActionSetSliderHead(const GUIActionSetSliderHead* c);
 	~GUIActionSetSliderHead();
 

@@ -22,10 +22,8 @@ protected:
 	std::vector<GUIAction*> m_actionsClick;
 	std::vector<GUIAction*> m_actionsHold;
 
-	glm::mat4 m_rot;
-
 	glm::vec4 m_color;
-	float m_rotation;
+
 
 	TextureID* m_textureClicked;
 
@@ -48,13 +46,10 @@ public:
 	void SetTextures(TextureID* texIdle, TextureID* texClicked);
 	void RemoveTextures();
 
-	void SetRotation(float r);
 	void SetParamsClick(void* params);
 	void SetParamsHold(void* params);
 	std::vector<void*>* GetParamsClick();
 	std::vector<void*>* GetParamsHold();
-	float GetRotation();
-	glm::mat4 GetRotationMatrix();
 
 	void AddActionClick(GUIAction* action);
 	void AddActionHold(GUIAction* action);

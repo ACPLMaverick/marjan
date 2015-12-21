@@ -2,14 +2,14 @@
 #include "MeshGLRectButton.h"
 
 
-MeshGLRectButton::MeshGLRectButton(SimObject* obj, GUIButton* btn, glm::vec4* col) : MeshGLRect(obj, col)
+MeshGLRectButton::MeshGLRectButton(SimObject* obj, GUIElement* guiEl, glm::vec4* col) : MeshGLRect(obj, col)
 {
-	m_btn = btn;
+	m_guiEl = guiEl;
 }
 
 MeshGLRectButton::MeshGLRectButton(const MeshGLRectButton * c) : MeshGLRect(c)
 {
-	m_btn = c->m_btn;
+	m_guiEl = c->m_guiEl;
 }
 
 
@@ -41,10 +41,10 @@ unsigned int MeshGLRectButton::Draw()
 	glm::mat4 wvp;
 	glm::mat4 rot;
 	
-	if(m_btn != nullptr)
+	if(m_guiEl != nullptr)
 	{
-		wvp = *m_btn->GetTransformMatrix();
-		rot = m_btn->GetRotationMatrix();
+		wvp = *m_guiEl->GetTransformMatrix();
+		rot = *m_guiEl->GetRotationMatrix();
 	}
 
 	glUniformMatrix4fv(m_fontShaderID->id_worldViewProj, 1, GL_FALSE, &(wvp)[0][0]);

@@ -197,15 +197,3 @@ unsigned int GUIController::Draw()
 {
 	return CS_ERR_NONE;
 }
-
-
-
-void GUIController::DoubleToStringPrecision(double value, int decimals, std::string* str)
-{
-	std::ostringstream ss;
-	ss << std::fixed << std::setprecision(decimals) << value;
-	*str = ss.str();
-	if (decimals > 0 && (*str)[str->find_last_not_of('0')] == '.') {
-		str->erase(str->size() - decimals + 1);
-	}
-}

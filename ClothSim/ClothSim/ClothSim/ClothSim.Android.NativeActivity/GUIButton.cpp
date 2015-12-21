@@ -98,11 +98,6 @@ void GUIButton::RemoveTextures()
 	m_mesh->SetTextureID(m_textureIdle);
 }
 
-void GUIButton::SetRotation(float r)
-{
-	m_rotation = r;
-}
-
 void GUIButton::SetParamsClick(void * params)
 {
 	m_paramsClick.push_back(params);
@@ -121,16 +116,6 @@ std::vector<void*>* GUIButton::GetParamsClick()
 std::vector<void*>* GUIButton::GetParamsHold()
 {
 	return &m_paramsHold;
-}
-
-float GUIButton::GetRotation()
-{
-	return m_rotation;
-}
-
-glm::mat4 GUIButton::GetRotationMatrix()
-{
-	return m_rot;
 }
 
 void GUIButton::AddActionClick(GUIAction * action)

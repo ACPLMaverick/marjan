@@ -14,6 +14,7 @@
 #include "GUIActionSetDisplayMode.h"
 #include "GUIActionShowPreferences.h"
 #include "GUIActionMoveActiveObject.h"
+#include "GUISlider.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
 {
@@ -233,6 +234,8 @@ unsigned int SceneTest::Initialize()
 	string tval02 = "DTvalue";
 	string tval03 = "STvalue";
 	string tval04 = "SKvalue";
+	string slid0 = "Sld";
+	string sllab0 = "Test";
 	string dummy = "Dummy";
 	string tex = "textures/ExportedFont.tga";
 	string tBtnEx = "textures/btn_exit.png";
@@ -245,6 +248,9 @@ unsigned int SceneTest::Initialize()
 	string tBtnArrA = "textures/btn_arrow_up_a.png";
 	string tBtnFArr = "textures/btn_arrow_forward.png";
 	string tBtnFArrA = "textures/btn_arrow_forward_a.png";
+	string tSlHead = "textures/slider_head.png";
+	string tSlBar = "textures/slider_bar.png";
+	string tBgSettings = "textures/bg_settings.png";
 	glm::vec2 scl = glm::vec2(0.025f, 0.025f);
 
 	GUIElement* geGroupText = new GUIElement(&gr1);
@@ -396,6 +402,20 @@ unsigned int SceneTest::Initialize()
 	GUIAction* gb9a = new GUIActionMoveActiveObject(gb9);
 	gb9->AddActionHold(gb9a);
 
+	GUISlider* sl0 = new GUISlider(&slid0, &sllab0, 
+		ResourceManager::GetInstance()->LoadTexture(&tSlHead),
+		ResourceManager::GetInstance()->LoadTexture(&tSlBar),
+		ResourceManager::GetInstance()->LoadTexture(&tex),
+		3,
+		0,
+		1.0f,
+		0.0f
+		);
+	scl = glm::vec2(0.1f, 0.05f);
+	sl0->SetScale(scl);
+	sl0->SetPosition(glm::vec2(0.0f, 0.0f));
+	sl0->Initialize();
+
 	geGroupBtnsMove->AddChild(gb4);
 	geGroupBtnsMove->AddChild(gb5);
 	geGroupBtnsMove->AddChild(gb6);
@@ -407,6 +427,8 @@ unsigned int SceneTest::Initialize()
 	geGroupBtns->AddChild(gb2);
 	geGroupBtns->AddChild(gb3);
 	geGroupBtns->AddChild(geGroupBtnsMove);
+
+	geGroupSettings->AddChild(sl0);
 
 	AddGUIElement(geGroupText);
 	AddGUIElement(geGroupBtns);
