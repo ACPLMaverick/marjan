@@ -15,7 +15,7 @@ GUIActionMoveActiveObject::~GUIActionMoveActiveObject()
 {
 }
 
-unsigned int GUIActionMoveActiveObject::Action(std::vector<void*>* params)
+unsigned int GUIActionMoveActiveObject::Action(std::vector<void*>* params, const glm::vec2* clickPos)
 {
 	unsigned int err = CS_ERR_NONE;
 

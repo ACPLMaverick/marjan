@@ -43,7 +43,7 @@ unsigned int GUIActionShowPreferences::Initialize()
 	return err;
 }
 
-unsigned int GUIActionShowPreferences::Action(std::vector<void*>* params)
+unsigned int GUIActionShowPreferences::Action(std::vector<void*>* params, const glm::vec2* clickPos)
 {
 	unsigned int err = CS_ERR_NONE;
 

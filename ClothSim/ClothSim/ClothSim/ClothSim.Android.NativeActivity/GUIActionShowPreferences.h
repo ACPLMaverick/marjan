@@ -13,6 +13,6 @@ public:
 	~GUIActionShowPreferences();
 
 	virtual unsigned int Initialize();
-	virtual unsigned int Action(std::vector<void*>* params);
+	virtual unsigned int Action(std::vector<void*>* params, const glm::vec2* clickPos);
 };
 

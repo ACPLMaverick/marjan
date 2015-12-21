@@ -5,6 +5,7 @@ GUIButton::GUIButton(const std::string* id) : GUIElement(id)
 {
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_rotation = 0.0f;
+	m_isBlockable = true;
 }
 
 GUIButton::GUIButton(const GUIButton* c) : GUIElement(c)
@@ -199,7 +200,7 @@ unsigned int GUIButton::ExecuteClick(const glm::vec2* clickPos)
 	ctr += GUIElement::ExecuteClick(clickPos);
 
 	if(m_isEnabled)
-		ExecuteActionsClick();
+		ExecuteActionsClick(clickPos);
 
 	if (m_isBlockable)
 		++ctr;
@@ -214,7 +215,7 @@ unsigned int GUIButton::ExecuteHold(const glm::vec2* clickPos)
 	ctr += GUIElement::ExecuteHold(clickPos);
 
 	if(m_isEnabled)
-		ExecuteActionsHold();
+		ExecuteActionsHold(clickPos);
 
 	if (m_isBlockable)
 		++ctr;
@@ -222,19 +223,19 @@ unsigned int GUIButton::ExecuteHold(const glm::vec2* clickPos)
 	return ctr;
 }
 
-inline unsigned int GUIButton::ExecuteActionsClick()
+inline unsigned int GUIButton::ExecuteActionsClick(const glm::vec2* clickPos)
 {
 	unsigned int err = CS_ERR_NONE;
 
 	for (std::vector<GUIAction*>::iterator it = m_actionsClick.begin(); it != m_actionsClick.end(); ++it)
 	{
-		(*it)->Action(&m_paramsClick);
+		(*it)->Action(&m_paramsClick, clickPos);
 	}
 
 	return err;
 }
 
-inline unsigned int GUIButton::ExecuteActionsHold()
+inline unsigned int GUIButton::ExecuteActionsHold(const glm::vec2* clickPos)
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -246,7 +247,7 @@ inline unsigned int GUIButton::ExecuteActionsHold()
 
 	for (std::vector<GUIAction*>::iterator it = m_actionsHold.begin(); it != m_actionsHold.end(); ++it)
 	{
-		(*it)->Action(&m_paramsHold);
+		(*it)->Action(&m_paramsHold, clickPos);
 	}
 
 	return err;

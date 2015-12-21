@@ -35,3 +35,10 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothN
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothCollisionKernel.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothNormalKernel.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\kernels\ClothPBPositionKernel.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\bg_settings.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_arrow_forward.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_arrow_forward_a.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_ok.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_ok_a.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\slider_bar.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\slider_head.png

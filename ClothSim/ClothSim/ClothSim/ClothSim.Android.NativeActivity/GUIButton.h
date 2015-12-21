@@ -35,8 +35,8 @@ protected:
 	virtual void GenerateTransformMatrix();
 	void ComputeScaleFactors(glm::vec2* factors);
 
-	unsigned int ExecuteActionsClick();
-	unsigned int ExecuteActionsHold();
+	unsigned int ExecuteActionsClick(const glm::vec2* clickPos);
+	unsigned int ExecuteActionsHold(const glm::vec2* clickPos);
 public:
 	GUIButton(const std::string* id);
 	GUIButton(const GUIButton*);

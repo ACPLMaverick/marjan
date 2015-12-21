@@ -16,11 +16,11 @@ GUIActionExitProgram::~GUIActionExitProgram()
 {
 }
 
-unsigned int GUIActionExitProgram::Action(std::vector<void*>* params)
+unsigned int GUIActionExitProgram::Action(std::vector<void*>* params, const glm::vec2* clickPos)
 {
 	unsigned int err = CS_ERR_NONE;
 
-	LOGI("Shitting down! (your neck)");
+	LOGI("Shutting down!");
 
 	System::GetInstance()->Stop();
 

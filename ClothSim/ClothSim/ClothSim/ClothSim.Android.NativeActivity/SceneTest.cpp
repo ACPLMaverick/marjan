@@ -243,6 +243,8 @@ unsigned int SceneTest::Initialize()
 	string tBtnStA = "textures/btn_settings_a.png";
 	string tBtnArr = "textures/btn_arrow_up.png";
 	string tBtnArrA = "textures/btn_arrow_up_a.png";
+	string tBtnFArr = "textures/btn_arrow_forward.png";
+	string tBtnFArrA = "textures/btn_arrow_forward_a.png";
 	glm::vec2 scl = glm::vec2(0.025f, 0.025f);
 
 	GUIElement* geGroupText = new GUIElement(&gr1);
@@ -336,7 +338,7 @@ unsigned int SceneTest::Initialize()
 
 	GUIButton* gb4 = new GUIButton(&tb4);
 	gb4->Initialize();
-	gb4->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb4->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnFArr), ResourceManager::GetInstance()->LoadTexture(&tBtnFArrA));
 	gb4->SetPosition(glm::vec2(-0.4f, -0.3f));
 	gb4->SetRotation(0.0f);
 	gb4->SetScale(glm::vec2(0.15f, 0.15f));
@@ -346,7 +348,7 @@ unsigned int SceneTest::Initialize()
 
 	GUIButton* gb5 = new GUIButton(&tb5);
 	gb5->Initialize();
-	gb5->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb5->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnFArr), ResourceManager::GetInstance()->LoadTexture(&tBtnFArrA));
 	gb5->SetPosition(glm::vec2(-0.4f, -0.8f));
 	gb5->SetRotation(M_PI * 0.5f);
 	gb5->SetScale(glm::vec2(0.15f, 0.15f));
@@ -356,7 +358,7 @@ unsigned int SceneTest::Initialize()
 
 	GUIButton* gb6 = new GUIButton(&tb6);
 	gb6->Initialize();
-	gb6->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb6->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnFArr), ResourceManager::GetInstance()->LoadTexture(&tBtnFArrA));
 	gb6->SetPosition(glm::vec2(-0.6f, -0.55f));
 	gb6->SetRotation(M_PI * 0.75f);
 	gb6->SetScale(glm::vec2(0.15f, 0.15f));
@@ -366,7 +368,7 @@ unsigned int SceneTest::Initialize()
 
 	GUIButton* gb7 = new GUIButton(&tb7);
 	gb7->Initialize();
-	gb7->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnArr), ResourceManager::GetInstance()->LoadTexture(&tBtnArrA));
+	gb7->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnFArr), ResourceManager::GetInstance()->LoadTexture(&tBtnFArrA));
 	gb7->SetPosition(glm::vec2(-0.2f, -0.55f));
 	gb7->SetRotation(M_PI * 0.25f);
 	gb7->SetScale(glm::vec2(0.15f, 0.15f));

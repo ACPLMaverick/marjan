@@ -70,6 +70,6 @@ public:
 	virtual unsigned int ExecuteHold(const glm::vec2* clickPos);
 	void CleanupAfterHold();
 
-	void FlushDimensions();
+	virtual void FlushDimensions();
 };
 

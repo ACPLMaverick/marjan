@@ -136,6 +136,14 @@
     <ClInclude Include="GUIActionMoveActiveObject.h">
       <Filter>Core\GUI\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="GUIPicture.h" />
+    <ClInclude Include="GUISlider.h" />
+    <ClInclude Include="GUIActionMoveSliderHead.h">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIActionSetSliderHead.h">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c">
@@ -267,6 +275,14 @@
     <ClCompile Include="GUIActionMoveActiveObject.cpp">
       <Filter>Core\GUI\Actions</Filter>
     </ClCompile>
+    <ClCompile Include="GUIPicture.cpp" />
+    <ClCompile Include="GUISlider.cpp" />
+    <ClCompile Include="GUIActionMoveSliderHead.cpp">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIActionSetSliderHead.cpp">
+      <Filter>Core\GUI\Actions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Main">
@@ -274,9 +290,6 @@
     </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{ab7c2242-1029-4133-bea0-95004c987280}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ClothSimulation">
-      <UniqueIdentifier>{6aae46e9-1b0d-49c3-bf30-3c205ddc657f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{ec4d35ca-fe91-44d0-bf3e-61c753b53df9}</UniqueIdentifier>

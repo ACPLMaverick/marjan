@@ -258,4 +258,8 @@ bool GUIElement::GetScaled()
 void GUIElement::FlushDimensions()
 {
 	GenerateTransformMatrix();
+	for (std::map<std::string, GUIElement*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+	{
+		(*it).second->FlushDimensions();
+	}
 }
