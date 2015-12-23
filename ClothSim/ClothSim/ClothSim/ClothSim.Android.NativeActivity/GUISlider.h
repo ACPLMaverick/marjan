@@ -2,8 +2,6 @@
 #include "GUIElement.h"
 #include <vector>
 
-class GUIActionMoveSliderHead;
-class GUIActionSetSliderHead;
 class GUIPicture;
 class GUIButton;
 class GUIText;
@@ -20,13 +18,12 @@ protected:
 	GUIButton* m_sliderHead;
 	GUIPicture* m_sliderBar;
 
-	GUIActionMoveSliderHead* m_actionMove;
-	GUIActionSetSliderHead* m_actionSet;
-
 	TextureID* m_headTex;
 	TextureID* m_barTex;
 	TextureID* m_fontTex;
 	
+	float m_startPoint;
+	float m_step;
 	float m_length;
 	float m_labelMultiplier;
 	float m_labelOffset;
@@ -36,6 +33,9 @@ protected:
 
 	bool labelInitialized = false;
 
+
+	inline void MoveSliderHead(const glm::vec2* clickPos);
+	inline void SetSliderHead(const glm::vec2* clickPos);
 public:
 	std::vector<std::function<void(unsigned int)>> EventStateChanged;
 
@@ -48,5 +48,8 @@ public:
 	virtual unsigned int Shutdown();
 
 	virtual unsigned int Update();
+
+	virtual unsigned int ExecuteClick(const glm::vec2* clickPos);
+	virtual unsigned int ExecuteHold(const glm::vec2* clickPos);
 };
 

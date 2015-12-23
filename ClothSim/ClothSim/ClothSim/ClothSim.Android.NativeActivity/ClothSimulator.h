@@ -15,7 +15,30 @@
 //#define VERTEX_NEIGHBOURING_VERTICES 12
 #define ALMOST_ZERO 0.000000001f
 
+////////////////////////////////////
+
+enum ClothSimulationMode
+{
+	MASS_SPRING_GPU,
+	MASS_SPRING_CPU,
+	POSITION_BASED_GPU,
+	POSITION_BASED_CPU
+};
+
 /////////////////////////////////////////
+
+struct SimParams
+{
+	ClothSimulationMode mode = ClothSimulationMode::MASS_SPRING_GPU;
+	float vertexMass = 1.0f;
+	float vertexAirDamp = 0.01f;
+	float elasticity = 50.00f;
+	float elasticityDamp = -100.25f;
+	float width = 10.0f;
+	float height = 10.0f;
+	unsigned int edgesWidth = 23;
+	unsigned int edgesHeight = 23;
+};
 
 struct SimData
 {
@@ -96,24 +119,12 @@ struct SimData
 
 ////////////////////////////////////
 
-enum ClothSimulationMode
-{
-	MASS_SPRING,
-	POSITION_BASED
-};
-
-////////////////////////////////////
-
 class ClothSimulator :
 	public Component
 {
 protected:
 	const double FIXED_DELTA = 0.015f;
-	const float VERTEX_MASS = 1.0f;
-	const float VERTEX_AIR_DAMP = 0.01f;
-	const float SPRING_ELASTICITY = 50.00f;
 	const float SPRING_BORDER_MULTIPLIER = 20.0f;
-	const float SPRING_ELASTICITY_DAMP = -100.25f;
 	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
 	const float CELL_OFFSET = 0.01f;
 	const float COLLISION_CHECK_WINDOW_SIZE = 2;
@@ -182,7 +193,7 @@ protected:
 
 	/////////
 
-	ClothSimulationMode m_mode;
+	SimParams m_simParams;
 
 	MeshGLPlane* m_meshPlane;
 	VertexData** m_vd;
@@ -257,5 +268,8 @@ public:
 
 	ClothSimulationMode GetMode();
 	double GetSimTimeMS();
+
+	void UpdateSimParams(SimParams* params);
+	SimParams* GetSimParams();
 };
 

@@ -2,7 +2,6 @@
 
 ClothSimulator::ClothSimulator(SimObject* obj) : Component(obj)
 {
-	m_mode = ClothSimulationMode::MASS_SPRING;
 }
 
 ClothSimulator::ClothSimulator(const ClothSimulator* c) : Component(c)
@@ -72,14 +71,14 @@ unsigned int ClothSimulator::Initialize()
 		m_simData.b_neighbour2Multipliers[i] = glm::vec4(0.0f);
 		///
 		m_simData.b_positionLast[i] = m_vd[0]->data->positionBuffer[i];
-		m_simData.b_elMassCoeffs[i].y = VERTEX_MASS;
-		m_simData.b_elMassCoeffs[i].w = VERTEX_AIR_DAMP;
+		m_simData.b_elMassCoeffs[i].y = m_simParams.vertexMass;
+		m_simData.b_elMassCoeffs[i].w = m_simParams.vertexAirDamp;
 		m_simData.b_multipliers[i].x = 1.0f;
 
 		m_simData.b_multipliers[i].y = glm::min(glm::min(baseLength.x, baseLength.z) / 2.0f, VERTEX_COLLIDER_MULTIPLIER);
 
-		m_simData.b_elMassCoeffs[i].x = SPRING_ELASTICITY;
-		m_simData.b_elMassCoeffs[i].z = SPRING_ELASTICITY_DAMP;
+		m_simData.b_elMassCoeffs[i].x = m_simParams.elasticity;
+		m_simData.b_elMassCoeffs[i].z = m_simParams.elasticityDamp;
 		/*
 		if (i < m_simData.m_edgesLengthAll ||
 			i >= (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) ||
@@ -513,14 +512,14 @@ unsigned int ClothSimulator::Update()
 	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	// execute simulation kernel
-	if (m_mode == ClothSimulationMode::MASS_SPRING)
+	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU)
 	{
 		err = UpdateSimMS(
 			PhysicsManager::GetInstance()->GetGravity(),
 			(float)FIXED_DELTA
 			);
 	}
-	else if (m_mode == ClothSimulationMode::POSITION_BASED)
+	else if (m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
 		err = UpdateSimPB(
 			PhysicsManager::GetInstance()->GetGravity(),
@@ -649,16 +648,16 @@ unsigned int ClothSimulator::Draw()
 
 void ClothSimulator::SetMode(ClothSimulationMode mode)
 {
-	if (mode != m_mode)
+	if (mode != m_simParams.mode)
 	{
-		m_mode = mode;
+		m_simParams.mode = mode;
 		AppendRestart();
 	}
 }
 
 void ClothSimulator::SwitchMode()
 {
-	m_mode = (ClothSimulationMode)(((int)m_mode + 1) % 2);
+	m_simParams.mode = (ClothSimulationMode)(((int)m_simParams.mode + 1) % 2);
 	AppendRestart();
 }
 
@@ -669,12 +668,22 @@ void ClothSimulator::Restart()
 
 ClothSimulationMode ClothSimulator::GetMode()
 {
-	return m_mode;
+	return m_simParams.mode;
 }
 
 double ClothSimulator::GetSimTimeMS()
 {
 	return m_timeSimMS;
+}
+
+void ClothSimulator::UpdateSimParams(SimParams * params)
+{
+	m_simParams = *params;
+}
+
+SimParams * ClothSimulator::GetSimParams()
+{
+	return &m_simParams;
 }
 
 ////////////////////// MASS SPRING 

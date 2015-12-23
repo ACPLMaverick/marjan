@@ -1,6 +1,10 @@
 #include "GUIController.h"
 #include "GUIText.h"
+#include "GUIButton.h"
 #include "ClothSimulator.h"
+
+constexpr float GUIController::INFO_UPDATE_RATE;
+constexpr float GUIController::BOX_SPEED;
 
 GUIController::GUIController(SimObject* obj) : Component(obj)
 {
@@ -10,24 +14,77 @@ GUIController::GUIController(const GUIController* c) : Component(c)
 {
 }
 
-
 GUIController::~GUIController()
 {
 }
 
 unsigned int GUIController::Initialize()
 {
-	string gVal = "GroupText";
+	string gr1 = "GroupText";
+	string gr2 = "GroupBtns";
+	string gr3 = "GroupBtnsSteer";
+	string gr4 = "GroupSettings";
+
+	string t1n = "FPStitle";
+	string t1v = "FPS: ";
+	string t2n = "DeltaTimetitle";
+	string t2v = "Delta time [ms]: ";
+	string t3n = "SimTimetitle";
+	string t3v = "Simulation time [ms]: ";
+	string t4n = "SimModeTitle";
+	string t4v = "Simulation mode: ";
+	string tb1 = "BtnExit";
+	string tb2 = "BtnPreferences";
+	string tb3 = "BtnWireframe";
+	string tb4 = "BtnArrowFw";
+	string tb5 = "BtnArrowBw";
+	string tb6 = "BtnArrowLeft";
+	string tb7 = "BtnArrowRight";
+	string tb8 = "BtnArrowUp";
+	string tb9 = "BtnArrowDown";
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
 	string tval03 = "STvalue";
+	string tval04 = "SKvalue";
+	string slid0 = "Sld";
+	string sllab0 = "Test";
+	string dummy = "Dummy";
+	string gVal = "GroupText";
 	GUIElement* groupText = (GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gVal);
 	m_fpsText = (GUIText*)groupText->GetChild(&tval01);
 	m_dtText = (GUIText*)groupText->GetChild(&tval02);
 	m_ttText = (GUIText*)groupText->GetChild(&tval03);
+	GUIText* st = (GUIText*)groupText->GetChild(&tval04);
 
-	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject(3);
-	m_cSimulator = (ClothSimulator*)cObj->GetComponent(0);
+	//SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject(3);
+	//m_cSimulator = (ClothSimulator*)cObj->GetComponent(0);
+
+	GUIButton* btn = (GUIButton*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&tb1);
+	btn->EventClick.push_back(ActionExitProgram);
+	btn = (GUIButton*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&tb2);
+	//btn->EventClick.push_back(ActionShowPreferences);
+	//btn->SetParamsClick(m_cSimulator);
+	//btn->SetParamsClick(st);
+	btn = (GUIButton*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&tb3);
+	btn->EventClick.push_back(ActionSetDisplayMode);
+	btn = (GUIButton*)((GUIElement*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&gr3))->GetChild(&tb4);
+	btn->EventHold.push_back(ActionMoveActiveObject);
+	btn->SetParamsHold((void*)1);
+	btn = (GUIButton*)((GUIElement*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&gr3))->GetChild(&tb5);
+	btn->EventHold.push_back(ActionMoveActiveObject);
+	btn->SetParamsHold((void*)2);
+	btn = (GUIButton*)((GUIElement*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&gr3))->GetChild(&tb6);
+	btn->EventHold.push_back(ActionMoveActiveObject);
+	btn->SetParamsHold((void*)3);
+	btn = (GUIButton*)((GUIElement*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&gr3))->GetChild(&tb7);
+	btn->EventHold.push_back(ActionMoveActiveObject);
+	btn->SetParamsHold((void*)4);
+	btn = (GUIButton*)((GUIElement*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&gr3))->GetChild(&tb8);
+	btn->EventHold.push_back(ActionMoveActiveObject);
+	btn->SetParamsHold((void*)5);
+	btn = (GUIButton*)((GUIElement*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&gr3))->GetChild(&tb9);
+	btn->EventHold.push_back(ActionMoveActiveObject);
+	btn->SetParamsHold((void*)6);
 
 	return CS_ERR_NONE;
 }
@@ -69,16 +126,16 @@ unsigned int GUIController::Update()
 		string fpsTxt, dtTxt, ttTxt;
 		fps = Timer::GetInstance()->GetFps();
 		dt = Timer::GetInstance()->GetDeltaTime();
-		tt = m_cSimulator->GetSimTimeMS();
+		//tt = m_cSimulator->GetSimTimeMS();
 		infoTimeDisplayHelper = Timer::GetInstance()->GetTotalTime();
 
 		DoubleToStringPrecision(fps, 2, &fpsTxt);
 		DoubleToStringPrecision(dt, 4, &dtTxt);
-		DoubleToStringPrecision(tt, 4, &ttTxt);
+		//DoubleToStringPrecision(tt, 4, &ttTxt);
 
 		m_fpsText->SetText(&fpsTxt);
 		m_dtText->SetText(&dtTxt);
-		m_ttText->SetText(&ttTxt);
+		//m_ttText->SetText(&ttTxt);
 	}
 
 	///////////////////////////
@@ -196,4 +253,100 @@ unsigned int GUIController::Update()
 unsigned int GUIController::Draw()
 {
 	return CS_ERR_NONE;
+}
+
+void GUIController::ActionExitProgram(std::vector<void*>* params, const glm::vec2* clickPos)
+{
+	LOGI("Shutting down!");
+
+	System::GetInstance()->Stop();
+}
+
+void GUIController::ActionMoveActiveObject(std::vector<void*>* params, const glm::vec2* clickPos)
+{
+	if (params->size() != 1)
+		return;
+
+	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject();
+
+	glm::vec3 mVector = glm::vec3();
+	MovementDirection dir = (MovementDirection)(int)(params->at(0));
+	float scl = cObj->GetTransform()->GetScale()->y;
+	float pos = cObj->GetTransform()->GetPosition()->y;
+	switch (dir)
+	{
+	case MovementDirection::FORWARD:
+		mVector = glm::vec3(0.0f, 0.0f, -1.0f);
+		break;
+	case MovementDirection::BACKWARD:
+		mVector = glm::vec3(0.0f, 0.0f, 1.0f);
+		break;
+	case MovementDirection::LEFT:
+		mVector = glm::vec3(-1.0f, 0.0f, 0.0f);
+		break;
+	case MovementDirection::RIGHT:
+		mVector = glm::vec3(1.0f, 0.0f, 0.0f);
+		break;
+	case MovementDirection::UP:
+		mVector = glm::vec3(0.0f, 1.0f, 0.0f);
+		break;
+	case MovementDirection::DOWN:
+		if ((pos - scl) > System::GetInstance()->GetCurrentScene()->GetGroundLevel())
+			mVector = glm::vec3(0.0f, -1.0f, 0.0f);
+		break;
+	default:
+		mVector = glm::vec3();
+		break;
+	}
+
+	glm::vec3 cPosVector = cObj->GetTransform()->GetPositionCopy();
+
+	mVector = mVector * BOX_SPEED * (float)Timer::GetInstance()->GetDeltaTime();
+
+	glm::vec3 addedVector = cPosVector + mVector;
+	cObj->GetTransform()->SetPosition(&addedVector);
+}
+
+void GUIController::ActionSetDisplayMode(std::vector<void*>* params, const glm::vec2* clickPos)
+{
+	LOGI("Changing diplay mode!");
+	DrawMode m = Renderer::GetInstance()->GetDrawMode();
+	int newMode = (((int)m + 1) % 3);
+	Renderer::GetInstance()->SetDrawMode((DrawMode)newMode);
+}
+
+void GUIController::ActionShowPreferences(std::vector<void*>* params, const glm::vec2* clickPos)
+{
+	/*
+	ClothSimulator* cSim = (ClothSimulator*)(params->at(0));
+	cSim->SwitchMode();
+	const string MS_VALUE = "Mass-spring";
+	const string PB_VALUE = "Position based";
+	const string UN_VALUE = "Unknown";
+
+	ClothSimulationMode cMode = cSim->GetMode();
+	GUIText* txt = (GUIText*)(params->at(1));
+	switch (cMode)
+	{
+	case ClothSimulationMode::MASS_SPRING:
+		txt->SetText(&MS_VALUE);
+		break;
+
+	case ClothSimulationMode::POSITION_BASED:
+		txt->SetText(&PB_VALUE);
+		break;
+
+	default:
+		txt->SetText(&UN_VALUE);
+		break;
+	}
+	*/
+}
+
+void GUIController::ActionApplyPreferences(std::vector<void*>* params, const glm::vec2* clickPos)
+{
+}
+
+void GUIController::ActionCancelPreferences(std::vector<void*>* params, const glm::vec2* clickPos)
+{
 }

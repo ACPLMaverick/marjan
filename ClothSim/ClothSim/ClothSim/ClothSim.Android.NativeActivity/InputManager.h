@@ -117,5 +117,6 @@ public:
 
 	static int32_t AHandleInput(struct android_app* app, AInputEvent* event);
 	bool GUIElementAreaInClick(GUIElement* button, const glm::vec2* clickPos);
+	void GetClickPosInScreenCoords(const glm::vec2* clPos, glm::vec2* retPos);
 };
 

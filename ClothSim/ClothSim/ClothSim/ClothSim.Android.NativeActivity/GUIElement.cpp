@@ -38,19 +38,26 @@ unsigned int GUIElement::Shutdown()
 
 void GUIElement::GenerateTransformMatrix()
 {
-	Engine* engine = System::GetInstance()->GetEngineData();
-	float scrWidth = engine->width;
-	float scrHeight = engine->height;
-	float factorX = (scrHeight / scrWidth);
-	float factorY = (scrWidth / scrHeight);
+	float factorX = 1.0f;
+	float factorY = 1.0f;
 	float off = 0.0f;
-	float hsFactor = 1.0f / Renderer::GetInstance()->GetScreenRatio();
-	if (scrWidth > scrHeight)
+	if (m_isScaled)
 	{
-		factorY = 1.0f / factorY * hsFactor;
-		factorX *= hsFactor;
-		off = 0.1f;
-	}	
+		Engine* engine = System::GetInstance()->GetEngineData();
+		float scrWidth = engine->width;
+		float scrHeight = engine->height;
+		factorX = (scrHeight / scrWidth);
+		factorY = (scrWidth / scrHeight);
+
+		float hsFactor = 1.0f / Renderer::GetInstance()->GetScreenRatio();
+		if (scrWidth > scrHeight)
+		{
+			factorY = 1.0f / factorY * hsFactor;
+			factorX *= hsFactor;
+			off = 0.1f;
+		}
+	}
+
 
 	m_transform = glm::translate(glm::vec3(m_position.x, m_position.y - off, 0.0f)) * glm::scale(glm::vec3(m_scale.x * factorX, m_scale.y * factorY, 0.0f));
 	m_rot = glm::rotate(2.0f * m_rotation, glm::vec3(0.0f, 0.0f, 1.0f));

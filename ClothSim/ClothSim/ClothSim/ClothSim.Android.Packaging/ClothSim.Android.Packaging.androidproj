@@ -89,7 +89,6 @@
     <Content Include="assets\textures\btn_settings_a.png" />
     <Content Include="assets\textures\btn_wireframe.png" />
     <Content Include="assets\textures\btn_wireframe_a.png" />
-    <Content Include="assets\textures\ExportedFont.bmp" />
     <Content Include="assets\textures\ExportedFont.tga" />
     <Content Include="assets\textures\slider_bar.png" />
     <Content Include="assets\textures\slider_head.png" />

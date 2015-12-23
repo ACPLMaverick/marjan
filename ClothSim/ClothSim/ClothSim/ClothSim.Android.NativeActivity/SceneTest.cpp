@@ -10,11 +10,7 @@
 #include "ClothSimulatorMSGPU.h"
 #include "GUIButton.h"
 #include "GUIAction.h"
-#include "GUIActionExitProgram.h"
-#include "GUIActionSetDisplayMode.h"
-#include "GUIActionShowPreferences.h"
-#include "GUIActionMoveActiveObject.h"
-#include "GUISlider.h"
+#include "GUISettingsScreen.h"
 
 SceneTest::SceneTest(string n) : Scene(n)
 {
@@ -173,10 +169,10 @@ unsigned int SceneTest::Initialize()
 	testCloth->AddMesh(clothMesh);
 
 	ClothSimulator* cSim = new ClothSimulator(testCloth);
-	testCloth->AddComponent(cSim);
-	cSim->Initialize();
+	//testCloth->AddComponent(cSim);
+	//cSim->Initialize();
 
-	AddObject(testCloth);
+	//AddObject(testCloth);
 
 	////////////////////////
 	/////////// Camera
@@ -262,8 +258,10 @@ unsigned int SceneTest::Initialize()
 	GUIElement* geGroupBtnsMove = new GUIElement(&gr3);
 	geGroupBtnsMove->Initialize();
 	geGroupBtnsMove->SetScaled(false);
-	GUIElement* geGroupSettings = new GUIElement(&gr4);
+	GUISettingsScreen* geGroupSettings = new GUISettingsScreen(&gr4);
 	geGroupSettings->Initialize();
+	geGroupSettings->SetPosition(glm::vec2(0.0f, 0.0f));
+	geGroupSettings->SetScale(glm::vec2(1.0f, 1.0f));
 	geGroupSettings->SetScaled(false);
 
 	GUIText* gt = new GUIText(&t1n, &t1v, ResourceManager::GetInstance()->GetTexture(&tex));
@@ -320,27 +318,18 @@ unsigned int SceneTest::Initialize()
 	gb1->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnEx), ResourceManager::GetInstance()->LoadTexture(&tBtnExA));
 	gb1->SetPosition(glm::vec2(0.7f, 0.8f));
 	gb1->SetScale(glm::vec2(0.15f, 0.15f));
-	GUIAction* gb1a = new GUIActionExitProgram(gb1);
-	gb1->AddActionClick(gb1a);
 
 	GUIButton* gb2 = new GUIButton(&tb2);
 	gb2->Initialize();
 	gb2->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnSt), ResourceManager::GetInstance()->LoadTexture(&tBtnStA));
 	gb2->SetPosition(glm::vec2(0.25f, -0.75f));
 	gb2->SetScale(glm::vec2(0.2f, 0.2f));
-	gb2->SetParamsClick((void*)cSim);
-	gb2->SetParamsClick((void*)gt8);
-	GUIAction* gb2a = new GUIActionShowPreferences(gb2);
-	gb2a->Initialize();
-	gb2->AddActionClick(gb2a);
 
 	GUIButton* gb3 = new GUIButton(&tb3);
 	gb3->Initialize();
 	gb3->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnWf), ResourceManager::GetInstance()->LoadTexture(&tBtnWfA));
 	gb3->SetPosition(glm::vec2(0.7f, -0.75f));
 	gb3->SetScale(glm::vec2(0.2f, 0.2f));
-	GUIAction* gb3a = new GUIActionSetDisplayMode(gb3);
-	gb3->AddActionClick(gb3a);
 
 	GUIButton* gb4 = new GUIButton(&tb4);
 	gb4->Initialize();
@@ -348,9 +337,6 @@ unsigned int SceneTest::Initialize()
 	gb4->SetPosition(glm::vec2(-0.4f, -0.3f));
 	gb4->SetRotation(0.0f);
 	gb4->SetScale(glm::vec2(0.15f, 0.15f));
-	gb4->SetParamsHold((void*)1);
-	GUIAction* gb4a = new GUIActionMoveActiveObject(gb4);
-	gb4->AddActionHold(gb4a);
 
 	GUIButton* gb5 = new GUIButton(&tb5);
 	gb5->Initialize();
@@ -358,9 +344,6 @@ unsigned int SceneTest::Initialize()
 	gb5->SetPosition(glm::vec2(-0.4f, -0.8f));
 	gb5->SetRotation(M_PI * 0.5f);
 	gb5->SetScale(glm::vec2(0.15f, 0.15f));
-	gb5->SetParamsHold((void*)2);
-	GUIAction* gb5a = new GUIActionMoveActiveObject(gb5);
-	gb5->AddActionHold(gb5a);
 
 	GUIButton* gb6 = new GUIButton(&tb6);
 	gb6->Initialize();
@@ -368,9 +351,6 @@ unsigned int SceneTest::Initialize()
 	gb6->SetPosition(glm::vec2(-0.6f, -0.55f));
 	gb6->SetRotation(M_PI * 0.75f);
 	gb6->SetScale(glm::vec2(0.15f, 0.15f));
-	gb6->SetParamsHold((void*)3);
-	GUIAction* gb6a = new GUIActionMoveActiveObject(gb6);
-	gb6->AddActionHold(gb6a);
 
 	GUIButton* gb7 = new GUIButton(&tb7);
 	gb7->Initialize();
@@ -378,9 +358,6 @@ unsigned int SceneTest::Initialize()
 	gb7->SetPosition(glm::vec2(-0.2f, -0.55f));
 	gb7->SetRotation(M_PI * 0.25f);
 	gb7->SetScale(glm::vec2(0.15f, 0.15f));
-	gb7->SetParamsHold((void*)4);
-	GUIAction* gb7a = new GUIActionMoveActiveObject(gb7);
-	gb7->AddActionHold(gb7a);
 
 	GUIButton* gb8 = new GUIButton(&tb8);
 	gb8->Initialize();
@@ -388,9 +365,6 @@ unsigned int SceneTest::Initialize()
 	gb8->SetPosition(glm::vec2(-0.8f, -0.3f));
 	gb8->SetRotation(0.0f);
 	gb8->SetScale(glm::vec2(0.15f, 0.15f));
-	gb8->SetParamsHold((void*)5);
-	GUIAction* gb8a = new GUIActionMoveActiveObject(gb8);
-	gb8->AddActionHold(gb8a);
 
 	GUIButton* gb9 = new GUIButton(&tb9);
 	gb9->Initialize();
@@ -398,23 +372,6 @@ unsigned int SceneTest::Initialize()
 	gb9->SetPosition(glm::vec2(-0.8f, -0.8f));
 	gb9->SetRotation(M_PI * 0.5f);
 	gb9->SetScale(glm::vec2(0.15f, 0.15f));
-	gb9->SetParamsHold((void*)6);
-	GUIAction* gb9a = new GUIActionMoveActiveObject(gb9);
-	gb9->AddActionHold(gb9a);
-
-	GUISlider* sl0 = new GUISlider(&slid0, &sllab0, 
-		ResourceManager::GetInstance()->LoadTexture(&tSlHead),
-		ResourceManager::GetInstance()->LoadTexture(&tSlBar),
-		ResourceManager::GetInstance()->LoadTexture(&tex),
-		3,
-		0,
-		1.0f,
-		0.0f
-		);
-	scl = glm::vec2(0.1f, 0.05f);
-	sl0->SetScale(scl);
-	sl0->SetPosition(glm::vec2(0.0f, 0.0f));
-	sl0->Initialize();
 
 	geGroupBtnsMove->AddChild(gb4);
 	geGroupBtnsMove->AddChild(gb5);
@@ -428,11 +385,10 @@ unsigned int SceneTest::Initialize()
 	geGroupBtns->AddChild(gb3);
 	geGroupBtns->AddChild(geGroupBtnsMove);
 
-	geGroupSettings->AddChild(sl0);
-
+	AddGUIElement(geGroupSettings);
 	AddGUIElement(geGroupText);
 	AddGUIElement(geGroupBtns);
-	AddGUIElement(geGroupSettings);
+
 
 	////////////////////////
 	/////////// Controllers

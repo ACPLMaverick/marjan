@@ -16,9 +16,20 @@ class GUIController :
 	public Component
 {
 private:
+	enum MovementDirection
+	{
+		FORWARD = 1,
+		BACKWARD,
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN
+	};
+
 	double infoTimeDisplayHelper = 0.0;
 
-	const float INFO_UPDATE_RATE = 1000.0f;
+	static constexpr float INFO_UPDATE_RATE = 1000.0f;
+	static constexpr float BOX_SPEED = 0.005f;
 
 	GUIText* m_fpsText;
 	GUIText* m_dtText;
@@ -26,6 +37,12 @@ private:
 
 	ClothSimulator* m_cSimulator;
 
+	static void ActionExitProgram(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionMoveActiveObject(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionSetDisplayMode(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionShowPreferences(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionApplyPreferences(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionCancelPreferences(std::vector<void*>* params, const glm::vec2* clickPos);
 public:
 	GUIController(SimObject* obj);
 	GUIController(const GUIController*);

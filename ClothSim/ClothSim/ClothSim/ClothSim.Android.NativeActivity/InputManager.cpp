@@ -199,6 +199,15 @@ bool InputManager::GUIElementAreaInClick(GUIElement * button, const glm::vec2 * 
 	return false;
 }
 
+void InputManager::GetClickPosInScreenCoords(const glm::vec2 * clPos, glm::vec2 * retPos)
+{
+	Engine* engine = System::GetInstance()->GetEngineData();
+	float width = (float)engine->width;
+	float height = (float)engine->height;
+	retPos->x = (clPos->x / width) * 2.0f - 1.0f;
+	retPos->y = (clPos->y / height) * 2.0f - 1.0f;
+}
+
 unsigned int InputManager::ProcessButtonClicks(const glm::vec2 * clickPos)
 {
 	unsigned int ctr = 0;
