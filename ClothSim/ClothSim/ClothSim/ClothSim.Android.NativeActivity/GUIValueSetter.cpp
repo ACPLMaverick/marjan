@@ -235,6 +235,28 @@ unsigned int GUIValueSetter::GetCurrentState()
 	return m_currentState;
 }
 
+void GUIValueSetter::SetCurrentState(unsigned int state)
+{
+	if(state < m_states)
+		m_currentState = state;
+	m_textValue->SetText(&m_valStrings.at(m_currentState));
+}
+
+float GUIValueSetter::GetLabelMultiplier()
+{
+	return m_labelMultiplier;
+}
+
+float GUIValueSetter::GetLabelOffset()
+{
+	return m_labelOffset;
+}
+
+unsigned int GUIValueSetter::GetStates()
+{
+	return m_states;
+}
+
 void GUIValueSetter::ModifyStateOnHold(unsigned int mVal)
 {
 	float timeMS = Timer::GetInstance()->GetCurrentTimeMS();

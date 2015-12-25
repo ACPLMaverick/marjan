@@ -161,18 +161,11 @@ unsigned int SceneTest::Initialize()
 	testClothTransform->Update();
 	testCloth->SetTransform(testClothTransform);
 
-	MeshGLPlane* clothMesh = new MeshGLPlane(testCloth, 10.0f, 10.0f, 23, 23, &tCol);
-	clothMesh->Initialize();
-	clothMesh->SetGloss(10.0f);
-	clothMesh->SetSpecular(0.2f);
-	clothMesh->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
-	testCloth->AddMesh(clothMesh);
-
 	ClothSimulator* cSim = new ClothSimulator(testCloth);
-	//testCloth->AddComponent(cSim);
-	//cSim->Initialize();
+	testCloth->AddComponent(cSim);
+	cSim->Initialize(); // !!!!!!!!!!!!!!
 
-	//AddObject(testCloth);
+	AddObject(testCloth);
 
 	////////////////////////
 	/////////// Camera
@@ -263,6 +256,15 @@ unsigned int SceneTest::Initialize()
 	geGroupSettings->SetPosition(glm::vec2(0.0f, 0.0f));
 	geGroupSettings->SetScale(glm::vec2(1.0f, 1.0f));
 	geGroupSettings->SetScaled(false);
+	geGroupSettings->SetBlockable(true);
+	geGroupSettings->SetVisible(true);
+	geGroupSettings->SetEnabled(true);
+
+	geGroupBtns->SetVisible(false);
+	geGroupBtns->SetEnabled(false);
+
+	geGroupText->SetVisible(false);
+	geGroupText->SetEnabled(false);
 
 	GUIText* gt = new GUIText(&t1n, &t1v, ResourceManager::GetInstance()->GetTexture(&tex));
 	gt->Initialize();
@@ -322,7 +324,7 @@ unsigned int SceneTest::Initialize()
 	GUIButton* gb2 = new GUIButton(&tb2);
 	gb2->Initialize();
 	gb2->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnSt), ResourceManager::GetInstance()->LoadTexture(&tBtnStA));
-	gb2->SetPosition(glm::vec2(0.25f, -0.75f));
+	gb2->SetPosition(glm::vec2(0.7f, -0.3f));
 	gb2->SetScale(glm::vec2(0.2f, 0.2f));
 
 	GUIButton* gb3 = new GUIButton(&tb3);
@@ -385,10 +387,9 @@ unsigned int SceneTest::Initialize()
 	geGroupBtns->AddChild(gb3);
 	geGroupBtns->AddChild(geGroupBtnsMove);
 
-	AddGUIElement(geGroupSettings);
 	AddGUIElement(geGroupText);
 	AddGUIElement(geGroupBtns);
-
+	AddGUIElement(geGroupSettings);
 
 	////////////////////////
 	/////////// Controllers

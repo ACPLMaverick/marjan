@@ -61,5 +61,10 @@ public:
 	virtual void CleanupAfterHold();
 
 	unsigned int GetCurrentState();
+	void SetCurrentState(unsigned int state);
+
+	float GetLabelMultiplier();
+	float GetLabelOffset();
+	unsigned int GetStates();
 };
 

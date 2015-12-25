@@ -112,6 +112,8 @@ unsigned int GUIButton::ExecuteClick(const glm::vec2* clickPos)
 
 	ctr += GUIElement::ExecuteClick(clickPos);
 
+	LOGI("CLICK");
+
 	if (m_isEnabled)
 	{
 		for (std::vector<std::function<void(std::vector<void*>* params, const glm::vec2* clickPos)>>::iterator it = EventClick.begin(); it != EventClick.end(); ++it)

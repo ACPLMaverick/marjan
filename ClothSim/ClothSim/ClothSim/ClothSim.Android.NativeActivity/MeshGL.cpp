@@ -66,16 +66,19 @@ unsigned int MeshGL::Initialize()
 unsigned int MeshGL::Shutdown()
 {
 	// cleaning up for openGL
-	glDeleteVertexArrays(1, &m_vertexData->ids->vertexArrayID);
-	glDeleteBuffers(1, &m_vertexData->ids->vertexBuffer);
-	glDeleteBuffers(1, &m_vertexData->ids->uvBuffer);
-	glDeleteBuffers(1, &m_vertexData->ids->normalBuffer);
-	glDeleteBuffers(1, &m_vertexData->ids->colorBuffer);
-	glDeleteBuffers(1, &m_vertexData->ids->barycentricBuffer);
-	glDeleteBuffers(1, &m_vertexData->ids->indexBuffer);
 
 	if (m_vertexData != nullptr)
+	{
+		glDeleteVertexArrays(1, &m_vertexData->ids->vertexArrayID);
+		glDeleteBuffers(1, &m_vertexData->ids->vertexBuffer);
+		glDeleteBuffers(1, &m_vertexData->ids->uvBuffer);
+		glDeleteBuffers(1, &m_vertexData->ids->normalBuffer);
+		glDeleteBuffers(1, &m_vertexData->ids->colorBuffer);
+		glDeleteBuffers(1, &m_vertexData->ids->barycentricBuffer);
+		glDeleteBuffers(1, &m_vertexData->ids->indexBuffer);
 		delete m_vertexData;
+	}
+		
 
 	return CS_ERR_NONE;
 }

@@ -11,6 +11,7 @@
 
 class GUIText;
 class ClothSimulator;
+class GUISettingsScreen;
 
 class GUIController :
 	public Component
@@ -34,8 +35,13 @@ private:
 	GUIText* m_fpsText;
 	GUIText* m_dtText;
 	GUIText* m_ttText;
+	GUIText* m_stText;
+
+	std::vector<GUIElement*> m_otherGroups;
+	GUISettingsScreen* m_sScreen;
 
 	ClothSimulator* m_cSimulator;
+	bool m_firstRun = true;
 
 	static void ActionExitProgram(std::vector<void*>* params, const glm::vec2* clickPos);
 	static void ActionMoveActiveObject(std::vector<void*>* params, const glm::vec2* clickPos);

@@ -2,8 +2,6 @@
 
 /*
 	This component encapsulates whole Cloth Simulation funcionality.
-	IMPORTANT: This component requires SimObject to have following properties:
-		- First mesh of mesh collection exists and is MeshGLPlane
 */
 
 #include "Component.h"
@@ -30,14 +28,15 @@ enum ClothSimulationMode
 struct SimParams
 {
 	ClothSimulationMode mode = ClothSimulationMode::MASS_SPRING_GPU;
+	glm::vec3 padding;
 	float vertexMass = 1.0f;
 	float vertexAirDamp = 0.01f;
 	float elasticity = 50.00f;
 	float elasticityDamp = -100.25f;
 	float width = 10.0f;
-	float height = 10.0f;
+	float length = 10.0f;
 	unsigned int edgesWidth = 23;
-	unsigned int edgesHeight = 23;
+	unsigned int edgesLength = 23;
 };
 
 struct SimData
@@ -123,7 +122,10 @@ class ClothSimulator :
 	public Component
 {
 protected:
-	const double FIXED_DELTA = 0.015f;
+	SimParams m_simParams;
+	SimData m_simData;
+
+	const double FIXED_DELTA = 0.033f;
 	const float SPRING_BORDER_MULTIPLIER = 20.0f;
 	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
 	const float CELL_OFFSET = 0.01f;
@@ -193,12 +195,9 @@ protected:
 
 	/////////
 
-	SimParams m_simParams;
-
 	MeshGLPlane* m_meshPlane;
 	VertexData** m_vd;
 	VertexData* m_vdCopy;
-	SimData m_simData;
 
 	KernelID* m_normalsKernel;
 	KernelID* m_collisionsKernel;
@@ -226,7 +225,7 @@ protected:
 	unsigned int m_writeID;
 	unsigned int m_readID;
 
-	bool m_ifRestart;
+	bool m_ifRestart = false;
 
 	double m_timeStartMS;
 	double m_timeSimMS;

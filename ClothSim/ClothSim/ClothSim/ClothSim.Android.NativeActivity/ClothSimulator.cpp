@@ -21,13 +21,13 @@ unsigned int ClothSimulator::Initialize()
 
 	// acquiring mesh
 
-	if (
-		m_obj->GetMesh(0) != nullptr
-		)
-	{
-		m_meshPlane = (MeshGLPlane*)m_obj->GetMesh(0);
-	}
-	else return CS_ERR_CLOTHSIMULATOR_MESH_OBTAINING_ERROR;
+	glm::vec4 tCol = glm::vec4(1.0f, 0.5f, 0.7f, 1.0f);
+	m_meshPlane = new MeshGLPlane(m_obj, m_simParams.width, m_simParams.length, m_simParams.edgesWidth, m_simParams.edgesLength, &tCol);
+	m_meshPlane->Initialize();
+	m_meshPlane->SetGloss(10.0f);
+	m_meshPlane->SetSpecular(0.2f);
+	m_meshPlane->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
+	m_obj->AddMesh(m_meshPlane);
 
 	// get a copy of start data
 	m_vd = m_meshPlane->GetVertexDataDualPtr();
@@ -415,6 +415,10 @@ unsigned int ClothSimulator::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
 
+	m_meshPlane->Shutdown();
+	m_obj->RemoveMesh(m_meshPlane);
+	delete m_meshPlane;
+
 	// Sim-specific shutdown
 	err = ShutdownSimMS();
 	err = ShutdownSimPB();
@@ -437,6 +441,8 @@ unsigned int ClothSimulator::Shutdown()
 	glDeleteTransformFeedbacks(1, &m_ctfID);
 
 	delete m_vdCopy;
+
+
 
 	return err;
 }

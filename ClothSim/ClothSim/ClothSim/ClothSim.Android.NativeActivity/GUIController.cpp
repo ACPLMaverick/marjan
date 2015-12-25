@@ -2,6 +2,7 @@
 #include "GUIText.h"
 #include "GUIButton.h"
 #include "ClothSimulator.h"
+#include "GUISettingsScreen.h"
 
 constexpr float GUIController::INFO_UPDATE_RATE;
 constexpr float GUIController::BOX_SPEED;
@@ -48,23 +49,23 @@ unsigned int GUIController::Initialize()
 	string tval04 = "SKvalue";
 	string slid0 = "Sld";
 	string sllab0 = "Test";
-	string dummy = "Dummy";
-	string gVal = "GroupText";
-	GUIElement* groupText = (GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gVal);
-	m_fpsText = (GUIText*)groupText->GetChild(&tval01);
-	m_dtText = (GUIText*)groupText->GetChild(&tval02);
-	m_ttText = (GUIText*)groupText->GetChild(&tval03);
-	GUIText* st = (GUIText*)groupText->GetChild(&tval04);
+	GUIElement* group = (GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr1);
+	m_fpsText = (GUIText*)group->GetChild(&tval01);
+	m_dtText = (GUIText*)group->GetChild(&tval02);
+	m_ttText = (GUIText*)group->GetChild(&tval03);
+	m_stText = (GUIText*)group->GetChild(&tval04);
 
-	//SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject(3);
-	//m_cSimulator = (ClothSimulator*)cObj->GetComponent(0);
+	m_otherGroups.push_back(group);
+	m_otherGroups.push_back((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2));
+
+	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject(3);
+	m_cSimulator = (ClothSimulator*)cObj->GetComponent(0);
 
 	GUIButton* btn = (GUIButton*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&tb1);
 	btn->EventClick.push_back(ActionExitProgram);
 	btn = (GUIButton*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&tb2);
-	//btn->EventClick.push_back(ActionShowPreferences);
-	//btn->SetParamsClick(m_cSimulator);
-	//btn->SetParamsClick(st);
+	btn->EventClick.push_back(ActionShowPreferences);
+	btn->SetParamsClick(this);
 	btn = (GUIButton*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&tb3);
 	btn->EventClick.push_back(ActionSetDisplayMode);
 	btn = (GUIButton*)((GUIElement*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&gr3))->GetChild(&tb4);
@@ -85,6 +86,12 @@ unsigned int GUIController::Initialize()
 	btn = (GUIButton*)((GUIElement*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&gr3))->GetChild(&tb9);
 	btn->EventHold.push_back(ActionMoveActiveObject);
 	btn->SetParamsHold((void*)6);
+
+	m_sScreen = (GUISettingsScreen*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr4);
+	m_sScreen->EventApply.push_back(ActionApplyPreferences);
+	m_sScreen->EventCancel.push_back(ActionCancelPreferences);
+	m_sScreen->SetParamsApply(this);
+	m_sScreen->SetParamsCancel(this);
 
 	return CS_ERR_NONE;
 }
@@ -126,16 +133,16 @@ unsigned int GUIController::Update()
 		string fpsTxt, dtTxt, ttTxt;
 		fps = Timer::GetInstance()->GetFps();
 		dt = Timer::GetInstance()->GetDeltaTime();
-		//tt = m_cSimulator->GetSimTimeMS();
+		tt = m_cSimulator->GetSimTimeMS();
 		infoTimeDisplayHelper = Timer::GetInstance()->GetTotalTime();
 
 		DoubleToStringPrecision(fps, 2, &fpsTxt);
 		DoubleToStringPrecision(dt, 4, &dtTxt);
-		//DoubleToStringPrecision(tt, 4, &ttTxt);
+		DoubleToStringPrecision(tt, 4, &ttTxt);
 
 		m_fpsText->SetText(&fpsTxt);
 		m_dtText->SetText(&dtTxt);
-		//m_ttText->SetText(&ttTxt);
+		m_ttText->SetText(&ttTxt);
 	}
 
 	///////////////////////////
@@ -317,6 +324,20 @@ void GUIController::ActionSetDisplayMode(std::vector<void*>* params, const glm::
 
 void GUIController::ActionShowPreferences(std::vector<void*>* params, const glm::vec2* clickPos)
 {
+	if (params->size() < 1)
+		return;
+
+	GUIController* inst = (GUIController*)params->at(0);
+	inst->m_sScreen->SetBlockable(true);
+	inst->m_sScreen->SetVisible(true);
+	inst->m_sScreen->SetEnabled(true);
+
+	for (std::vector<GUIElement*>::iterator it = inst->m_otherGroups.begin(); it != inst->m_otherGroups.end(); ++it)
+	{
+		(*it)->SetVisible(false);
+		(*it)->SetEnabled(false);
+	}
+
 	/*
 	ClothSimulator* cSim = (ClothSimulator*)(params->at(0));
 	cSim->SwitchMode();
@@ -345,8 +366,74 @@ void GUIController::ActionShowPreferences(std::vector<void*>* params, const glm:
 
 void GUIController::ActionApplyPreferences(std::vector<void*>* params, const glm::vec2* clickPos)
 {
+	if (params->size() < 1)
+		return;
+
+	GUIController* inst = (GUIController*)params->at(0);
+	inst->m_sScreen->SetBlockable(false);
+	inst->m_sScreen->SetVisible(false);
+	inst->m_sScreen->SetEnabled(false);
+
+	inst->m_cSimulator->UpdateSimParams(inst->m_sScreen->GetSimParams());
+	inst->m_cSimulator->Restart();
+
+	GUIText* st = inst->m_stText;
+	ClothSimulationMode cMode = inst->m_cSimulator->GetMode();
+	const string MSG_VALUE = "GPU - Mass-spring";
+	const string PBG_VALUE = "GPU - Position based";
+	const string MSC_VALUE = "CPU - Mass-spring";
+	const string PBC_VALUE = "CPU - Position based";
+	const string UN_VALUE = "Unknown";
+
+	switch (cMode)
+	{
+	case ClothSimulationMode::MASS_SPRING_GPU:
+		st->SetText(&MSG_VALUE);
+		break;
+
+	case ClothSimulationMode::POSITION_BASED_GPU:
+		st->SetText(&PBG_VALUE);
+		break;
+
+	case ClothSimulationMode::MASS_SPRING_CPU:
+		st->SetText(&MSC_VALUE);
+		break;
+
+	case ClothSimulationMode::POSITION_BASED_CPU:
+		st->SetText(&PBC_VALUE);
+		break;
+
+	default:
+		st->SetText(&UN_VALUE);
+		break;
+	}
+
+	if (inst->m_firstRun)
+	{
+		inst->m_firstRun = false;
+		inst->m_sScreen->SetCancelEnabled(true);
+	}
+
+	for (std::vector<GUIElement*>::iterator it = inst->m_otherGroups.begin(); it != inst->m_otherGroups.end(); ++it)
+	{
+		(*it)->SetVisible(true);
+		(*it)->SetEnabled(true);
+	}
 }
 
 void GUIController::ActionCancelPreferences(std::vector<void*>* params, const glm::vec2* clickPos)
 {
+	if (params->size() < 1)
+		return;
+
+	GUIController* inst = (GUIController*)params->at(0);
+	inst->m_sScreen->SetBlockable(false);
+	inst->m_sScreen->SetVisible(false);
+	inst->m_sScreen->SetEnabled(false);
+
+	for (std::vector<GUIElement*>::iterator it = inst->m_otherGroups.begin(); it != inst->m_otherGroups.end(); ++it)
+	{
+		(*it)->SetVisible(true);
+		(*it)->SetEnabled(true);
+	}
 }
