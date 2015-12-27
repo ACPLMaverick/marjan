@@ -110,12 +110,18 @@ unsigned int MeshGLPlane::Initialize()
 	m_vertexDataDual[0] = m_vertexData;
 	m_vertexDataDual[1] = new VertexData;
 	m_vertexDataDual[1]->ids = new VertexDataID;
-	m_vertexDataDual[1]->data = m_vertexDataDual[0]->data;
+	m_vertexDataDual[1]->data = new VertexDataRaw;
 
 	// generate vertex data and vertex array
 
 	GenerateVertexData();
 	GenerateBarycentricCoords();
+
+	// make a copy
+	m_vertexData = m_vertexDataDual[1];
+	GenerateVertexData();
+	GenerateBarycentricCoords();
+	m_vertexData = m_vertexDataDual[0];
 
 	// setting up buffers
 	glGenVertexArrays(1, &m_vertexDataDual[0]->ids->vertexArrayID);

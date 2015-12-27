@@ -31,8 +31,11 @@ unsigned int ClothSimulator::Initialize()
 
 	// get a copy of start data
 	m_vd = m_meshPlane->GetVertexDataDualPtr();
-	m_vdCopy = new VertexData;
-	CopyVertexData(m_vd[0], m_vdCopy);
+	m_vdCopy = new VertexData*[2];
+	m_vdCopy[0] = new VertexData;
+	m_vdCopy[1] = new VertexData;
+	CopyVertexData(m_vd[0], m_vdCopy[0]);
+	CopyVertexData(m_vd[1], m_vdCopy[1]);
 
 	// initialize simulation data
 
@@ -51,9 +54,9 @@ unsigned int ClothSimulator::Initialize()
 	m_simData.b_multipliers = new glm::vec4[m_simData.m_vertexCount];
 
 	glm::vec3 baseLength = glm::vec3(
-		abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData.m_vertexCount - 1].x) / (float)(m_simData.m_edgesWidthAll - 1),
+		abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData.m_edgesWidthAll].x),
 		0.0f,
-		abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[m_simData.m_vertexCount - 1].z) / (float)(m_simData.m_edgesLengthAll - 1)
+		abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[1].z)
 		);
 	m_simData.c_springLengths.x = baseLength.x;	// two different spring lengths, horizontal and vertical
 	m_simData.c_springLengths.y = baseLength.z;
@@ -404,9 +407,18 @@ unsigned int ClothSimulator::Initialize()
 	}
 
 	// Sim-specific initialization. Sim-related transform feedback initialization and kernel loading goes here.
-	err = InitializeSimMS();
-	err = InitializeSimPB();
+	err = InitializeSimMSGPU();
+	err = InitializeSimPBGPU();
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
+	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+
+	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
+	{
+		m_meshPlane->SwapDataPtrs();
+	}
 
 	return err;
 }
@@ -420,8 +432,8 @@ unsigned int ClothSimulator::Shutdown()
 	delete m_meshPlane;
 
 	// Sim-specific shutdown
-	err = ShutdownSimMS();
-	err = ShutdownSimPB();
+	err = ShutdownSimMSGPU();
+	err = ShutdownSimPBGPU();
 
 	glDeleteVertexArrays(2, m_vaoUpdateID);
 	glDeleteBuffers(2, m_vboPosLastID);
@@ -440,8 +452,9 @@ unsigned int ClothSimulator::Shutdown()
 	glDeleteTransformFeedbacks(1, &m_ntfID);
 	glDeleteTransformFeedbacks(1, &m_ctfID);
 
-	delete m_vdCopy;
-
+	delete m_vdCopy[0];
+	delete m_vdCopy[1];
+	delete[] m_vdCopy;
 
 
 	return err;
@@ -479,6 +492,238 @@ unsigned int ClothSimulator::Update()
 	if (m_obj->GetTransform() != nullptr)
 		wm = m_obj->GetTransform()->GetWorldMatrix();
 
+	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
+	{
+		err = UpdateSimCPU(clothData, boxData, sphereData, bcCount, scCount, wm, PhysicsManager::GetInstance()->GetGravity(), (float)FIXED_DELTA);
+	}
+	else if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
+	{
+		err = UpdateSimGPU(clothData, boxData, sphereData, bcCount, scCount, wm, PhysicsManager::GetInstance()->GetGravity(), (float)FIXED_DELTA);
+	}
+
+	/////////////////////////
+	double cTime = Timer::GetInstance()->GetCurrentTimeMS();
+	m_timeSimMS = cTime - m_timeStartMS;
+	/////////////////////////
+
+	return err;
+}
+unsigned int ClothSimulator::Draw()
+{
+	unsigned int err = CS_ERR_NONE;
+
+	return err;
+}
+
+void ClothSimulator::SetMode(ClothSimulationMode mode)
+{
+	if (mode != m_simParams.mode)
+	{
+		m_simParams.mode = mode;
+		AppendRestart();
+	}
+}
+
+void ClothSimulator::SwitchMode()
+{
+	m_simParams.mode = (ClothSimulationMode)(((int)m_simParams.mode + 1) % 2);
+	AppendRestart();
+}
+
+void ClothSimulator::Restart()
+{
+	AppendRestart();
+}
+
+ClothSimulationMode ClothSimulator::GetMode()
+{
+	return m_simParams.mode;
+}
+
+double ClothSimulator::GetSimTimeMS()
+{
+	return m_timeSimMS;
+}
+
+void ClothSimulator::UpdateSimParams(SimParams * params)
+{
+	m_simParams = *params;
+}
+
+SimParams * ClothSimulator::GetSimParams()
+{
+	return &m_simParams;
+}
+
+inline unsigned int ClothSimulator::UpdateSimCPU
+	(
+		VertexData* vertexData,
+		BoxAAData* boxAAData,
+		SphereData* sphereData,
+		int bcCount,
+		int scCount,
+		glm::mat4* worldMatrix,
+		float gravity,
+		float fixedDelta
+	)
+{
+	unsigned int err = CS_ERR_NONE;
+
+	// execute simulation procedure
+	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU)
+	{
+		err = UpdateSimMSCPU(
+			PhysicsManager::GetInstance()->GetGravity(),
+			(float)FIXED_DELTA
+			);
+	}
+	else if (m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
+	{
+		err = UpdateSimPBCPU(
+			PhysicsManager::GetInstance()->GetGravity(),
+			(float)FIXED_DELTA
+			);
+	}
+
+	SwapRWIds();
+
+	// compute collisions and finger movement
+	for (int i = 0; i < m_simData.m_vertexCount; ++i)
+	{
+		glm::vec3 colOffset = glm::vec3(0.0f);
+		glm::vec4 modelPos = m_vd[m_readID]->data->positionBuffer[i];
+		glm::vec3 worldPos = glm::vec3(*worldMatrix * modelPos);
+		glm::vec3 screenPos = glm::vec3(0.0f);	// !
+		glm::vec3 mPos = glm::vec3(modelPos);
+		glm::vec4 lPos = m_vdCopy[m_readID]->data->positionBuffer[i];
+		glm::vec3 totalOffset = glm::vec3(0.0f);
+		float mR = m_simData.b_multipliers[i].y;
+
+		// external collisons
+		for (int j = 0; j < bcCount; ++j)
+		{
+			colOffset = glm::vec3(0.0f);
+			BoxAAData col = boxAAData[j];
+			glm::vec3 closest = glm::min(glm::max(worldPos, col.min), col.max);
+			glm::vec3 diff = closest - worldPos;
+			float dist = Vec3LengthSquared(&diff);
+
+			if (dist < (mR * mR) && dist != 0.0f)
+			{
+				closest = worldPos - closest;
+				colOffset = normalize(closest) * (mR - sqrt(dist));
+				worldPos += colOffset;
+				totalOffset += colOffset;
+			}
+		}
+
+		for (int j = 0; j < scCount; ++j)
+		{
+			colOffset = glm::vec3(0.0f);
+			SphereData col = sphereData[j];
+			glm::vec3 diff = worldPos - col.center;
+			float diffLength = Vec3LengthSquared(&diff);
+			if
+				(
+					diffLength < (mR + col.radius) * (mR + col.radius) &&
+					diffLength != 0.0f
+					)
+			{
+				diff = normalize(diff);
+				diff = diff * ((mR + col.radius) - sqrt(diffLength));
+
+				colOffset = diff;
+				worldPos += colOffset;
+				totalOffset += colOffset;
+			}
+		}
+
+		// internal collisions
+		for (int j = 0; j < 4; ++j)
+		{
+			colOffset = glm::vec3(0.0f);
+			glm::vec3 nPos = glm::vec3(*worldMatrix * m_vd[m_readID]->data->positionBuffer[(int)(glm::roundEven(m_simData.b_neighbours[i][j]))]);
+			glm::vec3 diff = worldPos - nPos;
+			float diffLength = Vec3LengthSquared(&diff);
+			if
+				(
+					diffLength < (mR + mR) * (mR + mR) &&
+					diffLength != 0.0f
+					)
+			{
+				diff = normalize(diff);
+				diff = diff * ((mR + mR) - sqrt(diffLength)) * 0.5f;
+
+				colOffset = diff;
+				worldPos += colOffset;
+				totalOffset += colOffset;
+			}
+		}
+
+		totalOffset *= m_simData.b_multipliers[i].x;
+		// finger movement
+		// TBA
+
+		m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(mPos + totalOffset, 1.0f);
+		m_vdCopy[m_writeID]->data->positionBuffer[i] = lPos;
+	}
+	SwapRWIds();
+
+	// compute normals
+	for (int i = 0; i < m_simData.m_vertexCount; ++i)
+	{
+		glm::vec3 normal = glm::vec3(0.0f);
+		glm::vec3 mPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
+
+		for (int j = 0; j < 4; ++j)
+		{
+			int nID1 = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
+			int nID2 = (int)(glm::roundEven(m_simData.b_neighbours[i][(j + 1) % 4]));
+			glm::vec3 diff1 = mPos - glm::vec3(m_vd[m_readID]->data->positionBuffer[nID1]);
+			glm::vec3 diff2 = mPos - glm::vec3(m_vd[m_readID]->data->positionBuffer[nID2]);
+
+			glm::vec3 pNormal = (glm::cross(diff1, diff2) * m_simData.b_neighbourMultipliers[i][j] *
+				m_simData.b_neighbourMultipliers[i][(j + 1) % 4]);
+			if (pNormal.x != pNormal.x || pNormal.y != pNormal.y || pNormal.z != pNormal.z)
+				pNormal = glm::vec3(0.0f, 1.0f, 0.0f);
+			normal += pNormal;
+		}
+		normal = glm::normalize(normal);
+		normal.z = -normal.z;
+		m_vd[m_writeID]->data->normalBuffer[i] = glm::vec4(normal, 1.0f);
+	}
+
+	// update GPU buffers
+	glBindVertexArray(m_vd[m_writeID]->ids->vertexArrayID);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vd[m_writeID]->ids->vertexBuffer);
+	glBufferSubData(GL_ARRAY_BUFFER, 0,
+		m_simData.m_vertexCount * sizeof(m_vd[m_writeID]->data->positionBuffer[0]),
+		m_vd[m_writeID]->data->positionBuffer);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vd[m_writeID]->ids->normalBuffer);
+	glBufferSubData(GL_ARRAY_BUFFER, 0,
+		m_simData.m_vertexCount * sizeof(m_vd[m_writeID]->data->normalBuffer[0]),
+		m_vd[m_writeID]->data->normalBuffer);
+
+	//SwapRWIds();
+	//m_meshPlane->SwapDataPtrs();
+
+	return err;
+}
+
+inline unsigned int ClothSimulator::UpdateSimGPU
+	(
+		VertexData* vertexData,
+		BoxAAData* boxAAData,
+		SphereData* sphereData,
+		int bcCount,
+		int scCount,
+		glm::mat4* worldMatrix,
+		float gravity,
+		float fixedDelta
+	)
+{
+	unsigned int err = CS_ERR_NONE;
 	ShaderID* cShaderID = Renderer::GetInstance()->GetCurrentShaderID();
 
 
@@ -520,14 +765,14 @@ unsigned int ClothSimulator::Update()
 	// execute simulation kernel
 	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU)
 	{
-		err = UpdateSimMS(
+		err = UpdateSimMSGPU(
 			PhysicsManager::GetInstance()->GetGravity(),
 			(float)FIXED_DELTA
 			);
 	}
 	else if (m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
-		err = UpdateSimPB(
+		err = UpdateSimPBGPU(
 			PhysicsManager::GetInstance()->GetGravity(),
 			(float)FIXED_DELTA
 			);
@@ -536,7 +781,7 @@ unsigned int ClothSimulator::Update()
 	SwapRWIds();
 
 	// execute collision computation kernel
-	
+
 	glUseProgram(m_collisionsKernel->id);
 
 	glDisableVertexAttribArray(0);
@@ -545,7 +790,7 @@ unsigned int ClothSimulator::Update()
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, 0);
 
-	glUniformMatrix4fv(m_collisionsKernel->uniformIDs->at(0), 1, GL_FALSE, (float*)wm);
+	glUniformMatrix4fv(m_collisionsKernel->uniformIDs->at(0), 1, GL_FALSE, (float*)worldMatrix);
 	glUniform1f(m_collisionsKernel->uniformIDs->at(1), System::GetInstance()->GetCurrentScene()->GetGroundLevel());
 	glUniform1i(m_collisionsKernel->uniformIDs->at(2), bcCount);
 	glUniform1i(m_collisionsKernel->uniformIDs->at(3), scCount);
@@ -557,13 +802,13 @@ unsigned int ClothSimulator::Update()
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColPosID[m_readID], m_vboPosID[m_readID]);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, m_vboColBAAID);
-	glBufferData(GL_UNIFORM_BUFFER, bcCount * sizeof(BoxAAData), boxData, GL_DYNAMIC_COPY);
+	glBufferData(GL_UNIFORM_BUFFER, bcCount * sizeof(BoxAAData), boxAAData, GL_DYNAMIC_COPY);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColBAAID, m_vboColBAAID);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, m_vboColSID);
 	glBufferData(GL_UNIFORM_BUFFER, scCount * sizeof(SphereData), sphereData, GL_DYNAMIC_COPY);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColSID, m_vboColSID);
-	
+
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glEnableVertexAttribArray(0);
@@ -620,6 +865,7 @@ unsigned int ClothSimulator::Update()
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texNrmPosID[m_readID], 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
+	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 
 	/////////////////////
 
@@ -638,63 +884,12 @@ unsigned int ClothSimulator::Update()
 
 	glUseProgram(cShaderID->id);
 
-	/////////////////////////
-	double cTime = Timer::GetInstance()->GetCurrentTimeMS();
-	m_timeSimMS = cTime - m_timeStartMS;
-	/////////////////////////
-
 	return err;
-}
-unsigned int ClothSimulator::Draw()
-{
-	unsigned int err = CS_ERR_NONE;
-
-	return err;
-}
-
-void ClothSimulator::SetMode(ClothSimulationMode mode)
-{
-	if (mode != m_simParams.mode)
-	{
-		m_simParams.mode = mode;
-		AppendRestart();
-	}
-}
-
-void ClothSimulator::SwitchMode()
-{
-	m_simParams.mode = (ClothSimulationMode)(((int)m_simParams.mode + 1) % 2);
-	AppendRestart();
-}
-
-void ClothSimulator::Restart()
-{
-	AppendRestart();
-}
-
-ClothSimulationMode ClothSimulator::GetMode()
-{
-	return m_simParams.mode;
-}
-
-double ClothSimulator::GetSimTimeMS()
-{
-	return m_timeSimMS;
-}
-
-void ClothSimulator::UpdateSimParams(SimParams * params)
-{
-	m_simParams = *params;
-}
-
-SimParams * ClothSimulator::GetSimParams()
-{
-	return &m_simParams;
 }
 
 ////////////////////// MASS SPRING 
 
-inline unsigned int ClothSimulator::InitializeSimMS()
+inline unsigned int ClothSimulator::InitializeSimMSGPU()
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -722,7 +917,7 @@ inline unsigned int ClothSimulator::InitializeSimMS()
 	return err;
 }
 
-inline unsigned int ClothSimulator::ShutdownSimMS()
+inline unsigned int ClothSimulator::ShutdownSimMSGPU()
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -734,7 +929,7 @@ inline unsigned int ClothSimulator::ShutdownSimMS()
 	return err;
 }
 
-inline unsigned int ClothSimulator::UpdateSimMS(float gravity, float fixedDelta)
+inline unsigned int ClothSimulator::UpdateSimMSGPU(float gravity, float fixedDelta)
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -784,7 +979,7 @@ inline unsigned int ClothSimulator::UpdateSimMS(float gravity, float fixedDelta)
 
 //////////////////// POSITION BASED
 
-inline unsigned int ClothSimulator::InitializeSimPB()
+inline unsigned int ClothSimulator::InitializeSimPBGPU()
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -812,7 +1007,7 @@ inline unsigned int ClothSimulator::InitializeSimPB()
 	return err;
 }
 
-inline unsigned int ClothSimulator::ShutdownSimPB()
+inline unsigned int ClothSimulator::ShutdownSimPBGPU()
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -824,7 +1019,7 @@ inline unsigned int ClothSimulator::ShutdownSimPB()
 	return err;
 }
 
-inline unsigned int ClothSimulator::UpdateSimPB(float gravity, float fixedDelta)
+inline unsigned int ClothSimulator::UpdateSimPBGPU(float gravity, float fixedDelta)
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -870,7 +1065,253 @@ inline unsigned int ClothSimulator::UpdateSimPB(float gravity, float fixedDelta)
 	return err;
 }
 
+inline unsigned int ClothSimulator::UpdateSimMSCPU(float gravity, float fixedDelta)
+{
+	unsigned int err = CS_ERR_NONE;
+
+	glm::vec3 posCurrent, posLast, force, tempForce, velocity, posNew, nPos, nPosLast, nVelocity;
+	float elasticity, elDamp, airDamp, mass, lockMultiplier;
+	glm::vec4 sls1 = 
+	{
+		m_simData.c_springLengths.y, 
+		m_simData.c_springLengths.x, 
+		m_simData.c_springLengths.y, 
+		m_simData.c_springLengths.x
+	};
+	glm::vec4 sls2 =
+	{
+		m_simData.c_springLengths.z,
+		m_simData.c_springLengths.z,
+		m_simData.c_springLengths.z,
+		m_simData.c_springLengths.z
+	};
+	glm::vec4 sls3 =
+	{
+		m_simData.c_springLengths.y * m_simData.c_springLengths.w,
+		m_simData.c_springLengths.x * m_simData.c_springLengths.w,
+		m_simData.c_springLengths.y * m_simData.c_springLengths.w,
+		m_simData.c_springLengths.x * m_simData.c_springLengths.w
+	};
+
+	for (int i = 0; i < m_simData.m_vertexCount; ++i)
+	{
+		posCurrent = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
+		posLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[i]);
+		velocity = (posCurrent - posLast) / fixedDelta;
+		force = glm::vec3(0.0f);
+		elasticity = m_simData.b_elMassCoeffs[i][0];
+		mass = m_simData.b_elMassCoeffs[i][1];
+		elDamp = m_simData.b_elMassCoeffs[i][2];
+		airDamp = m_simData.b_elMassCoeffs[i][3];
+		lockMultiplier = m_simData.b_multipliers[i][0];
+
+		for (int j = 0; j < 4; ++j)
+		{
+			int nID = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
+			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+			{
+				//LOGI("%d", nID);
+				continue;
+			}
+				
+			nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+			nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
+			
+			CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, sls1[j],
+				elasticity, elDamp, fixedDelta, &tempForce);
+
+			force += tempForce * m_simData.b_neighbourMultipliers[i][j];
+		}
+		for (int j = 0; j < 4; ++j)
+		{
+			int nID = (int)(m_simData.b_neighboursDiag[i][j]);
+			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+				continue;
+			nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+			nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
+
+			CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, sls2[j],
+				elasticity, elDamp, fixedDelta, &tempForce);
+
+			force += tempForce * m_simData.b_neighbourDiagMultipliers[i][j];
+		}
+		for (int j = 0; j < 4; ++j)
+		{
+			int nID = (int)(m_simData.b_neighbours2[i][j]);
+			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+				continue;
+			nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+			nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
+
+			CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, sls3[j],
+				elasticity, elDamp, fixedDelta, &tempForce);
+
+			force += tempForce * m_simData.b_neighbour2Multipliers[i][j];
+		}
+
+		force += mass * glm::vec3(0.0f, -gravity * 0.1f, 0.0f);
+		force += (-airDamp * velocity);
+		force *= lockMultiplier;
+		force = force / mass;
+
+		posNew = 2.0f * posCurrent - posLast + force * fixedDelta * fixedDelta;
+
+		m_vdCopy[m_writeID]->data->positionBuffer[i] = glm::vec4(posCurrent, 1.0f);
+		m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(posNew, 1.0f);
+	}
+
+	return err;
+}
+
+inline unsigned int ClothSimulator::UpdateSimPBCPU(float gravity, float fixedDelta)
+{
+	unsigned int err = CS_ERR_NONE;
+	glm::vec3 posCurrent, posLast, velocity, force, posPredicted, cPos, posNew;
+	float elasticity, airDamp, mass, lockMultiplier;
+	float elBias = 0.0005f;
+	glm::vec4 sls1 =
+	{
+		m_simData.c_springLengths.y,
+		m_simData.c_springLengths.x,
+		m_simData.c_springLengths.y,
+		m_simData.c_springLengths.x
+	};
+	glm::vec4 sls2 =
+	{
+		m_simData.c_springLengths.z,
+		m_simData.c_springLengths.z,
+		m_simData.c_springLengths.z,
+		m_simData.c_springLengths.z
+	};
+	glm::vec4 sls3 =
+	{
+		m_simData.c_springLengths.y * m_simData.c_springLengths.w,
+		m_simData.c_springLengths.x * m_simData.c_springLengths.w,
+		m_simData.c_springLengths.y * m_simData.c_springLengths.w,
+		m_simData.c_springLengths.x * m_simData.c_springLengths.w
+	};
+
+	for (int i = 0; i < m_simData.m_vertexCount; ++i)
+	{
+		posCurrent = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
+		posLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[i]);
+		velocity = (posCurrent - posLast) / fixedDelta;
+		force = glm::vec3(0.0f, 0.0f, 0.0f);
+		elasticity = m_simData.b_elMassCoeffs[i].x * elBias;
+		mass = m_simData.b_elMassCoeffs[i].y;
+		airDamp = m_simData.b_elMassCoeffs[i].w;
+		lockMultiplier = m_simData.b_multipliers[i].x;
+
+		force += mass * glm::vec3(0.0f, -gravity * 0.1f, 0.0f);
+		force += -airDamp * velocity;
+		force *= lockMultiplier;
+		force = force / mass;
+		posPredicted = 2.0f * posCurrent - posLast + force * fixedDelta * fixedDelta;
+
+		cPos = glm::vec3(0.0f, 0.0f, 0.0f);
+		for (int j = 0; j < 4; ++j)
+		{
+			int nID = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
+			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+			{
+				continue;
+			}
+
+			glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+			glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
+			float w = 1.0f;
+			CalcDistConstraint(&posCurrent, &nPos, mass, sls1[j], elasticity, &cstr, &w);
+			cPos -= cstr * w * m_simData.b_neighbourMultipliers[i][j];
+		}
+		for (int j = 0; j < 4; ++j)
+		{
+			int nID = (int)(glm::roundEven(m_simData.b_neighboursDiag[i][j]));
+			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+			{
+				continue;
+			}
+
+			glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+			glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
+			float w = 1.0f;
+			CalcDistConstraint(&posCurrent, &nPos, mass, sls2[j], elasticity, &cstr, &w);
+			cPos -= cstr * w * m_simData.b_neighbourDiagMultipliers[i][j];
+		}
+		for (int j = 0; j < 4; ++j)
+		{
+			int nID = (int)(glm::roundEven(m_simData.b_neighbours2[i][j]));
+			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+			{
+				continue;
+			}
+
+			glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+			glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
+			float w = 1.0f;
+			CalcDistConstraint(&posCurrent, &nPos, mass, sls3[j], elasticity, &cstr, &w);
+			cPos -= cstr * w * m_simData.b_neighbour2Multipliers[i][j];
+		}
+
+		posNew = posPredicted + cPos * lockMultiplier;
+		m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(posNew, 1.0f);
+		m_vdCopy[m_writeID]->data->positionBuffer[i] = glm::vec4(posCurrent, 1.0f);
+	}
+	
+	return err;
+}
+
 /////////////////////////////////
+
+inline void ClothSimulator::CalculateSpringForce
+(
+	const glm::vec3 * mPos, 
+	const glm::vec3 * mPosLast, 
+	const glm::vec3 * nPos, 
+	const glm::vec3 * nPosLast, 
+	float sLength, 
+	float elCoeff, 
+	float dampCoeff,
+	float fixedDelta,
+	glm::vec3* ret
+)
+{
+	glm::vec3 mVelocity = (*mPos - *mPosLast) / fixedDelta;
+	glm::vec3 nVelocity = (*nPos - *nPosLast) / fixedDelta;
+
+	glm::vec3 f = *mPos - *nPos;
+	glm::vec3 n = glm::normalize(f);
+	float fLength = glm::length(f);
+	float spring = fLength - sLength;
+	glm::vec3 spr = -elCoeff * spring * n;
+
+	glm::vec3 dV = mVelocity - nVelocity;
+	float damp = dampCoeff * (glm::dot(dV, f) / fLength);
+
+	float sL = length(spr);
+	glm::vec3 dmp = n * glm::min(sL, damp);
+
+	glm::vec3 fin = (spr + dmp);
+	ret->x = fin.x;
+	ret->y = fin.y;
+	ret->z = fin.z;
+}
+
+inline void ClothSimulator::CalcDistConstraint(
+	glm::vec3* mPos,
+	glm::vec3* nPos,
+	float mass,
+	float sLength,
+	float elCoeff,
+	glm::vec3* outConstraint,
+	float* outW
+	) 
+{
+	glm::vec3 diff = *mPos - *nPos;
+	float cLength = length(diff);
+	glm::vec3 dP = (2.0f * mass) * (cLength - sLength) * (diff / cLength) * elCoeff;
+	*outConstraint = dP;
+	*outW = 1.0f / mass;
+}
 
 inline void ClothSimulator::CopyVertexData(VertexData * source, VertexData * dest)
 {

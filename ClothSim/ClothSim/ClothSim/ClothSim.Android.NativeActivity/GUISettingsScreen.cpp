@@ -198,10 +198,10 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinus),
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
-			100,
-			0,
-			1.0f,
-			1.0f,
+			1000,
+			9,
+			0.1f,
+			0.1f,
 			2,
 			0.0f
 			);
@@ -232,12 +232,12 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinus),
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
-			101,
-			100,
-			-1.0f,
+			201,
+			50,
+			-0.1f,
 			0.0f,
 			2,
-			0.0f
+			-0.05f
 			);
 
 	AddChild(m_vsSimType);

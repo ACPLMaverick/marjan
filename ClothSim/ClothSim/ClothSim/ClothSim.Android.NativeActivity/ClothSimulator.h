@@ -20,19 +20,20 @@ enum ClothSimulationMode
 	MASS_SPRING_GPU,
 	MASS_SPRING_CPU,
 	POSITION_BASED_GPU,
-	POSITION_BASED_CPU
+	POSITION_BASED_CPU,
+	NONE,
 };
 
 /////////////////////////////////////////
 
 struct SimParams
 {
-	ClothSimulationMode mode = ClothSimulationMode::MASS_SPRING_GPU;
+	ClothSimulationMode mode = ClothSimulationMode::NONE;
 	glm::vec3 padding;
 	float vertexMass = 1.0f;
 	float vertexAirDamp = 0.01f;
 	float elasticity = 50.00f;
-	float elasticityDamp = -100.25f;
+	float elasticityDamp = -10.0f;
 	float width = 10.0f;
 	float length = 10.0f;
 	unsigned int edgesWidth = 23;
@@ -197,7 +198,7 @@ protected:
 
 	MeshGLPlane* m_meshPlane;
 	VertexData** m_vd;
-	VertexData* m_vdCopy;
+	VertexData** m_vdCopy;
 
 	KernelID* m_normalsKernel;
 	KernelID* m_collisionsKernel;
@@ -230,21 +231,78 @@ protected:
 	double m_timeStartMS;
 	double m_timeSimMS;
 
-	virtual inline unsigned int InitializeSimMS();
-	virtual inline unsigned int ShutdownSimMS();
-	virtual inline unsigned int UpdateSimMS
+	virtual inline unsigned int UpdateSimCPU
+		(
+			VertexData* vertexData,
+			BoxAAData* boxAAData,
+			SphereData* sphereData,
+			int bcCount,
+			int scCount,
+			glm::mat4* worldMatrix,
+			float gravity,
+			float fixedDelta
+			);
+	virtual inline unsigned int UpdateSimGPU
+		(
+			VertexData* vertexData,
+			BoxAAData* boxAAData,
+			SphereData* sphereData,
+			int bcCount,
+			int scCount,
+			glm::mat4* worldMatrix,
+			float gravity,
+			float fixedDelta
+			);
+
+	virtual inline unsigned int InitializeSimMSGPU();
+	virtual inline unsigned int ShutdownSimMSGPU();
+	virtual inline unsigned int UpdateSimMSGPU
 		(
 			float gravity, 
 			float fixedDelta
 		);
 
-	virtual inline unsigned int InitializeSimPB();
-	virtual inline unsigned int ShutdownSimPB();
-	virtual inline unsigned int UpdateSimPB
+	virtual inline unsigned int InitializeSimPBGPU();
+	virtual inline unsigned int ShutdownSimPBGPU();
+	virtual inline unsigned int UpdateSimPBGPU
 		(
 			float gravity,
 			float fixedDelta
 		);
+
+	virtual inline unsigned int UpdateSimMSCPU
+		(
+			float gravity,
+			float fixedDelta
+			);
+	virtual inline unsigned int UpdateSimPBCPU
+		(
+			float gravity,
+			float fixedDelta
+			);
+
+	inline void CalculateSpringForce
+		(
+			const glm::vec3 * mPos,
+			const glm::vec3 * mPosLast,
+			const glm::vec3 * nPos,
+			const glm::vec3 * nPosLast,
+			float sLength,
+			float elCoeff,
+			float dampCoeff,
+			float fixedDelta,
+			glm::vec3* ret
+			);
+	inline void CalcDistConstraint
+		(
+			glm::vec3* mPos,
+			glm::vec3* nPos,
+			float mass,
+			float sLength,
+			float elCoeff,
+			glm::vec3* outConstraint,
+			float* outW
+			);
 
 	inline void CopyVertexData(VertexData* source, VertexData* dest);
 	inline void SwapRWIds();

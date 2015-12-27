@@ -64,7 +64,7 @@ void CalculateCollisionBoxAA(vec3 mCenter, float mRadius, vec3 bMin, vec3 bMax, 
 	if(dist < (mRadius * mRadius) && dist != 0.0f)
 	{
 		closest = mCenter - closest;
-		ret = normalize(closest) * (mRadius - sqrt(dist)) * multiplier + vec3(0.0f, 0.01f, 0.0f);
+		ret = normalize(closest) * (mRadius - sqrt(dist)) * multiplier;
 	}
 }
 
@@ -76,7 +76,16 @@ void main()
 	float mR = Multipliers.y;
 
 	// solve external collisions
+	for(int i = 0; i < BoxAAColliderCount; ++i)
+	{
+		mat2x4 box = baaBuffer[i];
+		vec3 bMin = vec3(box[0][0], box[0][1], box[0][2]);
+		vec3 bMax = vec3(box[1][0], box[1][1], box[1][2]);
 
+		CalculateCollisionBoxAA(mPos, mR, bMin, bMax, 1.0f, colOffset);
+		mPos += colOffset;
+		totalOffset += colOffset;
+	}
 
 	for(int i = 0; i < SphereColliderCount; ++i)
 	{
@@ -115,21 +124,11 @@ void main()
 		totalOffset += colOffset;
 	}
 
-		for(int i = 0; i < BoxAAColliderCount; ++i)
-	{
-		mat2x4 box = baaBuffer[i];
-		vec3 bMin = vec3(box[0][0], box[0][1], box[0][2]);
-		vec3 bMax = vec3(box[1][0], box[1][1], box[1][2]);
-
-		CalculateCollisionBoxAA(mPos, mR, bMin, bMax, 1.0f, colOffset);
-		mPos += colOffset;
-		totalOffset += colOffset;
-	}
 	
-	if(mPos.y < GroundLevel)
-	{
-		totalOffset.y += (-mPos.y + GroundLevel);
-	}
+	//if(mPos.y < GroundLevel)
+	//{
+	//	totalOffset.y += (-mPos.y + GroundLevel);
+	//}
 
 	//float d = 100.0f;
 	//totalOffset = clamp(totalOffset, -d, d);
