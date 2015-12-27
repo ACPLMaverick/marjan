@@ -53,10 +53,15 @@ unsigned int ClothSimulator::Initialize()
 	m_simData.b_elMassCoeffs = new glm::vec4[m_simData.m_vertexCount];
 	m_simData.b_multipliers = new glm::vec4[m_simData.m_vertexCount];
 
+	//glm::vec3 baseLength = glm::vec3(
+	//	abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData.m_edgesWidthAll].x),
+	//	0.0f,
+	//	abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[1].z)
+	//	);
 	glm::vec3 baseLength = glm::vec3(
-		abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData.m_edgesWidthAll].x),
+		abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData.m_vertexCount - 1].x) / (float)(m_simData.m_edgesWidthAll - 1),
 		0.0f,
-		abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[1].z)
+		abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[m_simData.m_vertexCount - 1].z) / (float)(m_simData.m_edgesLengthAll - 1)
 		);
 	m_simData.c_springLengths.x = baseLength.x;	// two different spring lengths, horizontal and vertical
 	m_simData.c_springLengths.y = baseLength.z;
@@ -74,7 +79,7 @@ unsigned int ClothSimulator::Initialize()
 		m_simData.b_neighbour2Multipliers[i] = glm::vec4(0.0f);
 		///
 		m_simData.b_positionLast[i] = m_vd[0]->data->positionBuffer[i];
-		m_simData.b_elMassCoeffs[i].y = m_simParams.vertexMass;
+		m_simData.b_elMassCoeffs[i].y = glm::max(m_simParams.vertexMass / glm::sqrt((float)m_simData.m_vertexCount), MIN_MASS);
 		m_simData.b_elMassCoeffs[i].w = m_simParams.vertexAirDamp;
 		m_simData.b_multipliers[i].x = 1.0f;
 
@@ -413,7 +418,9 @@ unsigned int ClothSimulator::Initialize()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
+	glBindVertexArray(0);
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+	glEndTransformFeedback();
 
 	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
 	{
@@ -494,11 +501,11 @@ unsigned int ClothSimulator::Update()
 
 	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
 	{
-		err = UpdateSimCPU(clothData, boxData, sphereData, bcCount, scCount, wm, PhysicsManager::GetInstance()->GetGravity(), (float)FIXED_DELTA);
+		err = UpdateSimCPU(clothData, boxData, sphereData, bcCount, scCount, wm, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
 	}
 	else if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
-		err = UpdateSimGPU(clothData, boxData, sphereData, bcCount, scCount, wm, PhysicsManager::GetInstance()->GetGravity(), (float)FIXED_DELTA);
+		err = UpdateSimGPU(clothData, boxData, sphereData, bcCount, scCount, wm, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
 	}
 
 	/////////////////////////
@@ -865,6 +872,7 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texNrmPosID[m_readID], 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
+	glBindVertexArray(0);
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 
 	/////////////////////

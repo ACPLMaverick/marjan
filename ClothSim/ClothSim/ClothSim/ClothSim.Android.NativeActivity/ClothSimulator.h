@@ -127,6 +127,7 @@ protected:
 	SimData m_simData;
 
 	const double FIXED_DELTA = 0.033f;
+	const float MIN_MASS = 0.02f;
 	const float SPRING_BORDER_MULTIPLIER = 20.0f;
 	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
 	const float CELL_OFFSET = 0.01f;

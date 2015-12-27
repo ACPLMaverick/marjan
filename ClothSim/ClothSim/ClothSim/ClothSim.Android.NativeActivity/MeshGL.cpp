@@ -133,6 +133,8 @@ unsigned int MeshGL::Draw()
 
 	//////////////////////////////////////////
 
+	glBindVertexArray(m_vertexData->ids->vertexArrayID);
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
@@ -205,6 +207,10 @@ unsigned int MeshGL::Draw()
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(4);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	return CS_ERR_NONE;
 }
