@@ -80,6 +80,9 @@ protected:
 	glm::vec2 m_touch02Direction;
 	float m_diffPinch;
 
+	double m_touchEventTime = 0.0f;
+	double m_touchEventInterval = 1000.0f;
+
 	float m_pinchVal = 0.0f;
 	bool m_isPinch;
 	bool m_isMove;

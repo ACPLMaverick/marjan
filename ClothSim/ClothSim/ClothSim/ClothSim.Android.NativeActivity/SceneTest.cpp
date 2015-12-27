@@ -219,6 +219,8 @@ unsigned int SceneTest::Initialize()
 	string tb7 = "BtnArrowRight";
 	string tb8 = "BtnArrowUp";
 	string tb9 = "BtnArrowDown";
+	string tb10 = "BtnMovementModeArrows";
+	string tb11 = "BtnMovementModeFinger";
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
 	string tval03 = "STvalue";
@@ -233,6 +235,10 @@ unsigned int SceneTest::Initialize()
 	string tBtnWfA = "textures/btn_wireframe_a.png";
 	string tBtnSt = "textures/btn_settings.png";
 	string tBtnStA = "textures/btn_settings_a.png";
+	string tBtnMva = "textures/btn_exit.png";
+	string tBtnMvaA = "textures/btn_exit_a.png";
+	string tBtnMvf = "textures/btn_ok.png";
+	string tBtnMvfA = "textures/btn_ok_a.png";
 	string tBtnArr = "textures/btn_arrow_up.png";
 	string tBtnArrA = "textures/btn_arrow_up_a.png";
 	string tBtnFArr = "textures/btn_arrow_forward.png";
@@ -375,6 +381,18 @@ unsigned int SceneTest::Initialize()
 	gb9->SetRotation(M_PI * 0.5f);
 	gb9->SetScale(glm::vec2(0.15f, 0.15f));
 
+	GUIButton* gb10 = new GUIButton(&tb10);
+	gb10->Initialize();
+	gb10->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnMva), ResourceManager::GetInstance()->LoadTexture(&tBtnMvaA));
+	gb10->SetPosition(glm::vec2(0.7f, 0.15f));
+	gb10->SetScale(glm::vec2(0.2f, 0.2f));
+
+	GUIButton* gb11 = new GUIButton(&tb11);
+	gb11->Initialize();
+	gb11->SetTextures(ResourceManager::GetInstance()->LoadTexture(&tBtnMvf), ResourceManager::GetInstance()->LoadTexture(&tBtnMvfA));
+	gb11->SetPosition(glm::vec2(0.7f, 0.15f));
+	gb11->SetScale(glm::vec2(0.2f, 0.2f));
+
 	geGroupBtnsMove->AddChild(gb4);
 	geGroupBtnsMove->AddChild(gb5);
 	geGroupBtnsMove->AddChild(gb6);
@@ -386,6 +404,8 @@ unsigned int SceneTest::Initialize()
 	geGroupBtns->AddChild(gb2);
 	geGroupBtns->AddChild(gb3);
 	geGroupBtns->AddChild(geGroupBtnsMove);
+	geGroupBtns->AddChild(gb10);
+	geGroupBtns->AddChild(gb11);
 
 	AddGUIElement(geGroupText);
 	AddGUIElement(geGroupBtns);

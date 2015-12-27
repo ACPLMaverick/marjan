@@ -43,6 +43,8 @@ unsigned int GUIController::Initialize()
 	string tb7 = "BtnArrowRight";
 	string tb8 = "BtnArrowUp";
 	string tb9 = "BtnArrowDown";
+	string tb10 = "BtnMovementModeArrows";
+	string tb11 = "BtnMovementModeFinger";
 	string tval01 = "FPSvalue";
 	string tval02 = "DTvalue";
 	string tval03 = "STvalue";
@@ -93,6 +95,19 @@ unsigned int GUIController::Initialize()
 	m_sScreen->SetParamsApply(this);
 	m_sScreen->SetParamsCancel(this);
 
+	m_btnArrowsGroup = System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2)->GetChild(&gr3);
+	m_btnMvArrows = (GUIButton*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&tb10);
+	m_btnMvTouch = (GUIButton*)((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2))->GetChild(&tb11);
+	m_btnMvArrows->SetParamsClick(this);
+	m_btnMvTouch->SetParamsClick(this);
+	m_btnMvArrows->SetParamsClick((void*)0);
+	m_btnMvTouch->SetParamsClick((void*)1);
+	m_btnMvArrows->EventClick.push_back(ActionSwitchInputMode);
+	m_btnMvTouch->EventClick.push_back(ActionSwitchInputMode);
+	m_btnMvArrows->SetBlockable(false);
+	m_btnMvArrows->SetVisible(false);
+	m_btnMvArrows->SetEnabled(false);
+
 	return CS_ERR_NONE;
 }
 
@@ -105,26 +120,6 @@ unsigned int GUIController::Shutdown()
 
 unsigned int GUIController::Update()
 {
-	// EXITING
-	/*
-	if (InputHandler::GetInstance()->ExitPressed())
-	{
-		System::GetInstance()->Stop();
-	}
-	*/
-	///////////////////////////
-
-	// CHANIGNG DRAW MODE
-	/*
-	if (InputHandler::GetInstance()->WireframeButtonClicked())
-	{
-		DrawMode m = Renderer::GetInstance()->GetDrawMode();
-		int newMode = (((int)m + 1) % 3);
-		Renderer::GetInstance()->SetDrawMode((DrawMode)newMode);
-	}
-	*/
-	///////////////////////////
-	
 	// UPDATING UI INFORMATION
 
 	if (Timer::GetInstance()->GetTotalTime() - infoTimeDisplayHelper >= INFO_UPDATE_RATE)
@@ -146,112 +141,126 @@ unsigned int GUIController::Update()
 	}
 
 	///////////////////////////
-
-	// MOVING BOX
-	/*
-
-	SimObject* cObj = System::GetInstance()->GetCurrentScene()->GetObject();
-	glm::vec3 mVector;
-	InputHandler::GetInstance()->GetArrowsMovementVector(&mVector);
-	glm::vec3 cPosVector = cObj->GetTransform()->GetPositionCopy();
-
-	mVector = mVector * BOX_SPEED * (float)Timer::GetInstance()->GetDeltaTime();
-
-	glm::vec3 addedVector = cPosVector + mVector;
-	cObj->GetTransform()->SetPosition(&addedVector);
-	*/
-
-	///////////////////////////
-
-	// ROTATING CAMERA
-
-	if (InputHandler::GetInstance()->GetMove() && InputHandler::GetInstance()->GetHold())
+	// MODE: ARROWS MOVEMENT
+	
+	if (m_inputMode == InputMode::ARROWS)
 	{
+		// ROTATING CAMERA
+
+		if (InputHandler::GetInstance()->GetMove() && InputHandler::GetInstance()->GetHold())
+		{
 #ifdef BUILD_OPENGL
-		if (!cursorHideHelper)
-		{
-			glfwSetInputMode(Renderer::GetInstance()->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-			cursorHideHelper = true;
-		}
-#endif
-		glm::vec2 camVec;
-		InputHandler::GetInstance()->GetCameraRotationVector(&camVec);
-		glm::vec4 camCurrentPos = glm::vec4(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition(), 1.0f);
-		glm::vec3 camRight = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetRight();
-
-		glm::mat4 horRotation = glm::rotate(camVec.x * CSSET_CAMERA_ROTATE_SPEED, glm::vec3(0.0f, 1.0f, 0.0f));
-		glm::mat4 vertRotation = glm::rotate(camVec.y * CSSET_CAMERA_ROTATE_SPEED, camRight);
-
-		camCurrentPos = camCurrentPos * horRotation * vertRotation;
-		glm::vec3 newPos = glm::vec3(camCurrentPos.x, camCurrentPos.y, camCurrentPos.z);
-		
-		glm::vec3 dir = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget() - newPos;
-		glm::vec3 dirYZero = glm::vec3(dir.x, 0.0f, dir.z);
-		float dot = glm::dot(dir, dirYZero);
-
-		if (dot > CSSET_CAMERA_ROTATE_BARRIER)
-		{
-			System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&newPos);
-		}
-	}
-#ifdef BUILD_OPENGL
-	else if (cursorHideHelper)
-	{
-		glfwSetInputMode(Renderer::GetInstance()->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		glfwSetCursorPos(Renderer::GetInstance()->GetWindow(), CSSET_WINDOW_WIDTH / 2.0, CSSET_WINDOW_HEIGHT / 2.0);
-		cursorHideHelper = false;
-	}
-#endif
-
-	//////////////////////////
-
-	// ZOOMING CAMERA
-
-	float relScroll = InputHandler::GetInstance()->GetZoomValue();
-	if (relScroll != 0.0f && InputHandler::GetInstance()->GetZoom() && InputHandler::GetInstance()->GetMove())
-	{
-		glm::vec3 cPos = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition();
-		float length = glm::length<float>(cPos);
-		float scrollValue = relScroll * CSSET_CAMERA_ZOOM_SPEED;
-		scrollValue = length - scrollValue;
-		
-		if (scrollValue >= CSSET_CAMERA_ZOOM_BARRIER_MIN && scrollValue <= CSSET_CAMERA_ZOOM_BARRIER_MAX)
-		{
-			glm::vec3 finalPos = glm::normalize(cPos) * scrollValue;
-			System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&finalPos);
-		}
-	}
-
-	//////////////////////////
-
-	// MOVING CAMERA ON XZ PLANE
-
-	if (InputManager::GetInstance()->GetDoubleTouch() && InputHandler::GetInstance()->GetMove())
-	{
-		glm::vec2 mVec;
-		InputHandler::GetInstance()->GetCameraMovementVector(&mVec);
-
-		if (mVec.x != 0.0f || mVec.y != 0.0f)
-		{
-			glm::vec3 cTarget = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget();
-			glm::vec3 cPos = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition();
-			glm::vec3 cDir = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection();
-			glm::vec3 cRght = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetRight();
-			cDir.y = 0.0f;
-			cRght.y = 0.0f;
-			
-			cTarget = cTarget + cRght * -mVec.x * CSSET_CAMERA_MOVE_SPEED;
-			cTarget = cTarget + cDir * mVec.y * CSSET_CAMERA_MOVE_SPEED;
-
-			if (glm::abs(cTarget.x) <= CSSET_CAMERA_POSITION_MAX && glm::abs(cTarget.z) <= CSSET_CAMERA_POSITION_MAX)
+			if (!cursorHideHelper)
 			{
-				cPos = cPos + cRght * -mVec.x * CSSET_CAMERA_MOVE_SPEED;
-				cPos = cPos + cDir * mVec.y * CSSET_CAMERA_MOVE_SPEED;
-				System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&cPos);
-				System::GetInstance()->GetCurrentScene()->GetCamera()->SetTarget(&cTarget);
+				glfwSetInputMode(Renderer::GetInstance()->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+				cursorHideHelper = true;
+			}
+#endif
+			glm::vec2 camVec;
+			InputHandler::GetInstance()->GetCameraRotationVector(&camVec);
+			glm::vec4 camCurrentPos = glm::vec4(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition(), 1.0f);
+			glm::vec3 camRight = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetRight();
+
+			glm::mat4 horRotation = glm::rotate(camVec.x * CSSET_CAMERA_ROTATE_SPEED, glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 vertRotation = glm::rotate(camVec.y * CSSET_CAMERA_ROTATE_SPEED, camRight);
+
+			camCurrentPos = camCurrentPos * horRotation * vertRotation;
+			glm::vec3 newPos = glm::vec3(camCurrentPos.x, camCurrentPos.y, camCurrentPos.z);
+
+			glm::vec3 dir = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget() - newPos;
+			glm::vec3 dirYZero = glm::vec3(dir.x, 0.0f, dir.z);
+			float dot = glm::dot(dir, dirYZero);
+
+			if (dot > CSSET_CAMERA_ROTATE_BARRIER)
+			{
+				System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&newPos);
+			}
+		}
+#ifdef BUILD_OPENGL
+		else if (cursorHideHelper)
+		{
+			glfwSetInputMode(Renderer::GetInstance()->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetCursorPos(Renderer::GetInstance()->GetWindow(), CSSET_WINDOW_WIDTH / 2.0, CSSET_WINDOW_HEIGHT / 2.0);
+			cursorHideHelper = false;
+		}
+#endif
+
+		//////////////////////////
+
+		// ZOOMING CAMERA
+
+		float relScroll = InputHandler::GetInstance()->GetZoomValue();
+		if (relScroll != 0.0f && InputHandler::GetInstance()->GetZoom() && InputHandler::GetInstance()->GetMove())
+		{
+			glm::vec3 cPos = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition();
+			float length = glm::length<float>(cPos);
+			float scrollValue = relScroll * CSSET_CAMERA_ZOOM_SPEED;
+			scrollValue = length - scrollValue;
+
+			if (scrollValue >= CSSET_CAMERA_ZOOM_BARRIER_MIN && scrollValue <= CSSET_CAMERA_ZOOM_BARRIER_MAX)
+			{
+				glm::vec3 finalPos = glm::normalize(cPos) * scrollValue;
+				System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&finalPos);
+			}
+		}
+
+		//////////////////////////
+
+		// MOVING CAMERA ON XZ PLANE
+
+		if (InputManager::GetInstance()->GetDoubleTouch() && InputHandler::GetInstance()->GetMove())
+		{
+			glm::vec2 mVec;
+			InputHandler::GetInstance()->GetCameraMovementVector(&mVec);
+
+			if (mVec.x != 0.0f || mVec.y != 0.0f)
+			{
+				glm::vec3 cTarget = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget();
+				glm::vec3 cPos = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition();
+				glm::vec3 cDir = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection();
+				glm::vec3 cRght = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetRight();
+				cDir.y = 0.0f;
+				cRght.y = 0.0f;
+
+				cTarget = cTarget + cRght * -mVec.x * CSSET_CAMERA_MOVE_SPEED;
+				cTarget = cTarget + cDir * mVec.y * CSSET_CAMERA_MOVE_SPEED;
+
+				if (glm::abs(cTarget.x) <= CSSET_CAMERA_POSITION_MAX && glm::abs(cTarget.z) <= CSSET_CAMERA_POSITION_MAX)
+				{
+					cPos = cPos + cRght * -mVec.x * CSSET_CAMERA_MOVE_SPEED;
+					cPos = cPos + cDir * mVec.y * CSSET_CAMERA_MOVE_SPEED;
+					System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&cPos);
+					System::GetInstance()->GetCurrentScene()->GetCamera()->SetTarget(&cTarget);
+				}
 			}
 		}
 	}
+	else if (m_inputMode == InputMode::TOUCH)
+	{
+		// update touch position and direction in cloth simulator
+		glm::vec2 tPos = glm::vec2(0.0f);
+		glm::vec2 tDir = glm::vec2(0.0f);
+		if (InputManager::GetInstance()->GetMove() && InputManager::GetInstance()->GetTouch())
+		{
+			InputManager::GetInstance()->GetTouchPosition(&tPos);
+			InputManager::GetInstance()->GetTouchDirection(&tDir);
+			Engine* engine = System::GetInstance()->GetEngineData();
+			tPos.x = tPos.x / (float)engine->width * 2.0f - 1.0f;
+			tPos.y = tPos.y / (float)engine->height * 2.0f - 1.0f;
+			tPos.y = -tPos.y;
+			tDir.y = -tDir.y;
+			tDir *= 0.001f;
+		}
+		m_cSimulator->UpdateTouchVector(&tPos, &tDir);
+		//LOGI("%f %f %f %f", tPos.x, tPos.y, tDir.x, tDir.y);
+		
+
+		// update camera rotation and gravity according to accelerometer input
+	}
+
+	// update mode change helper
+	if (m_modeChangeHelper != -1)
+		m_modeChangeHelper = -1;
 
 	//////////////////////////
 	return CS_ERR_NONE;
@@ -435,5 +444,41 @@ void GUIController::ActionCancelPreferences(std::vector<void*>* params, const gl
 	{
 		(*it)->SetVisible(true);
 		(*it)->SetEnabled(true);
+	}
+}
+
+void GUIController::ActionSwitchInputMode(std::vector<void*>* params, const glm::vec2 * clickPos)
+{
+	if (params->size() < 2)
+		return;
+
+	GUIController* inst = (GUIController*)params->at(0);
+	int mode = (int)params->at(1);
+	if (inst->m_modeChangeHelper == -1)
+	{
+		inst->m_modeChangeHelper = mode;
+		bool bl = true;
+		if (mode == 0)
+		{
+			inst->m_inputMode = InputMode::ARROWS;
+		}
+		else if (mode == 1)
+		{
+			bl = false;
+			inst->m_inputMode = InputMode::TOUCH;
+		}
+
+		inst->m_btnMvTouch->SetEnabled(bl);
+		inst->m_btnMvTouch->SetVisible(bl);
+		inst->m_btnMvTouch->SetBlockable(bl);
+		inst->m_btnMvArrows->SetEnabled(!bl);
+		inst->m_btnMvArrows->SetVisible(!bl);
+		inst->m_btnMvArrows->SetBlockable(!bl);
+		inst->m_btnArrowsGroup->SetVisible(bl);
+		inst->m_btnArrowsGroup->SetEnabled(bl);
+
+		glm::vec2 tPos = glm::vec2(0.0f);
+		glm::vec2 tDir = glm::vec2(0.0f);
+		inst->m_cSimulator->UpdateTouchVector(&tPos, &tDir);
 	}
 }

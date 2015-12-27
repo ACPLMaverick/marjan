@@ -64,6 +64,16 @@ unsigned int InputManager::Run()
 	else
 		m_currentlyHeldButtons = 0;
 
+	//////////////////////////////////////
+
+	if (m_isHold && m_isMove)
+	{
+		if (Timer::GetInstance()->GetCurrentTimeMS() - m_touchEventTime > m_touchEventInterval * 2.0f)
+		{
+			m_isMove = false;
+		}
+	}
+
 	return err;
 }
 
@@ -258,6 +268,9 @@ int32_t InputManager::AHandleInput(struct android_app* app, AInputEvent* event)
 		if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_MOVE)
 		{
 			im->m_isMove = true;
+			double cTime = Timer::GetInstance()->GetCurrentTimeMS();
+			im->m_touchEventInterval = glm::min(cTime - im->m_touchEventTime, 1000.0);
+			im->m_touchEventTime = cTime;
 		}
 
 		if (pCount == 1)
@@ -329,6 +342,10 @@ int32_t InputManager::AHandleInput(struct android_app* app, AInputEvent* event)
 			im->m_isHoldDouble = false;
 			im->m_isPinch = false;
 			im->m_isMove = false;
+			im->m_touch01Position = glm::vec2(0.0f);
+			im->m_touch01Direction = glm::vec2(0.0f);
+			im->m_touch02Position = glm::vec2(0.0f);
+			im->m_touch02Direction = glm::vec2(0.0f);
 		}
 		return 1;
 	}

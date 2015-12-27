@@ -112,7 +112,7 @@ unsigned int GUIButton::ExecuteClick(const glm::vec2* clickPos)
 
 	ctr += GUIElement::ExecuteClick(clickPos);
 
-	LOGI("CLICK");
+	//LOGI("CLICK");
 
 	if (m_isEnabled)
 	{

@@ -46,7 +46,7 @@ unsigned int System::Initialize()
 	err = m_scene->Initialize();
 	if (err != CS_ERR_NONE) return err;
 
-	// initializing gui
+	Renderer::GetInstance()->Flush();
 
 	m_running = true;
 

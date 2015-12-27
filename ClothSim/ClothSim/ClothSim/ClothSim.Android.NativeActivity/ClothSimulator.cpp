@@ -388,6 +388,9 @@ unsigned int ClothSimulator::Initialize()
 	glBindBuffer(GL_UNIFORM_BUFFER, m_vboColSID);
 
 	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "WorldMatrix"));
+	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "ViewMatrix"));
+	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "ProjMatrix"));
+	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "TouchVector"));
 	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "GroundLevel"));
 	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "BoxAAColliderCount"));
 	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "SphereColliderCount"));
@@ -420,7 +423,6 @@ unsigned int ClothSimulator::Initialize()
 	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-	glEndTransformFeedback();
 
 	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
 	{
@@ -499,13 +501,16 @@ unsigned int ClothSimulator::Update()
 	if (m_obj->GetTransform() != nullptr)
 		wm = m_obj->GetTransform()->GetWorldMatrix();
 
+	glm::mat4* vw = System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewMatrix();
+	glm::mat4* pr = System::GetInstance()->GetCurrentScene()->GetCamera()->GetProjMatrix();
+
 	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
 	{
-		err = UpdateSimCPU(clothData, boxData, sphereData, bcCount, scCount, wm, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
+		err = UpdateSimCPU(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
 	}
 	else if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
-		err = UpdateSimGPU(clothData, boxData, sphereData, bcCount, scCount, wm, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
+		err = UpdateSimGPU(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
 	}
 
 	/////////////////////////
@@ -557,6 +562,14 @@ void ClothSimulator::UpdateSimParams(SimParams * params)
 	m_simParams = *params;
 }
 
+void ClothSimulator::UpdateTouchVector(const glm::vec2 * pos, const glm::vec2 * dir)
+{
+	m_simData.c_touchVector.x = pos->x;
+	m_simData.c_touchVector.y = pos->y;
+	m_simData.c_touchVector.z = dir->x;
+	m_simData.c_touchVector.w = dir->y;
+}
+
 SimParams * ClothSimulator::GetSimParams()
 {
 	return &m_simParams;
@@ -570,6 +583,8 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 		int bcCount,
 		int scCount,
 		glm::mat4* worldMatrix,
+		glm::mat4* viewMatrix,
+		glm::mat4* projMatrix,
 		float gravity,
 		float fixedDelta
 	)
@@ -668,10 +683,25 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 		}
 
 		totalOffset *= m_simData.b_multipliers[i].x;
-		// finger movement
-		// TBA
+		glm::vec4 finalPos = glm::vec4(mPos + totalOffset, 1.0f);
 
-		m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(mPos + totalOffset, 1.0f);
+		// finger movement
+		glm::vec4 mPosScreen = *projMatrix * (*viewMatrix * (*worldMatrix * finalPos));
+		glm::vec4 mPosScreenNorm = mPosScreen / mPosScreen.w;
+		glm::vec4 fPosScreen = glm::vec4(m_simData.c_touchVector.x, m_simData.c_touchVector.y, 0.0f, mPosScreenNorm.w);
+		glm::vec4 fDirScreen = glm::vec4(m_simData.c_touchVector.z, m_simData.c_touchVector.w, 0.0f, 0.0f);
+		float A = 200.0f;
+		float s = 300.0f;
+		float coeff = A * glm::exp(-((fPosScreen.x - mPosScreenNorm.x) * (fPosScreen.x - mPosScreenNorm.x) +
+						(fPosScreen.y - mPosScreenNorm.y) * (fPosScreen.y - mPosScreenNorm.y)) / 2.0f * s);
+		fDirScreen *= mPosScreen.w;
+		fDirScreen = glm::inverse(*worldMatrix) * (glm::inverse(*viewMatrix) * (glm::inverse(*projMatrix) * fDirScreen));
+		fDirScreen *= coeff * glm::length(glm::vec2(m_simData.c_touchVector.z, m_simData.c_touchVector.w)) * m_simData.b_multipliers[i].x;
+		finalPos.x += fDirScreen.x;
+		finalPos.y += fDirScreen.y;
+		finalPos.z += fDirScreen.z;
+
+		m_vd[m_writeID]->data->positionBuffer[i] = finalPos;
 		m_vdCopy[m_writeID]->data->positionBuffer[i] = lPos;
 	}
 	SwapRWIds();
@@ -726,6 +756,8 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 		int bcCount,
 		int scCount,
 		glm::mat4* worldMatrix,
+		glm::mat4* viewMatrix,
+		glm::mat4* projMatrix,
 		float gravity,
 		float fixedDelta
 	)
@@ -798,13 +830,16 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, 0);
 
 	glUniformMatrix4fv(m_collisionsKernel->uniformIDs->at(0), 1, GL_FALSE, (float*)worldMatrix);
-	glUniform1f(m_collisionsKernel->uniformIDs->at(1), System::GetInstance()->GetCurrentScene()->GetGroundLevel());
-	glUniform1i(m_collisionsKernel->uniformIDs->at(2), bcCount);
-	glUniform1i(m_collisionsKernel->uniformIDs->at(3), scCount);
-	glUniform1i(m_collisionsKernel->uniformIDs->at(4), m_simData.m_edgesWidthAll);
-	glUniform1i(m_collisionsKernel->uniformIDs->at(5), m_simData.m_edgesLengthAll);
-	glUniform1i(m_collisionsKernel->uniformIDs->at(6), m_simData.m_vertexCount);
-	glUniform1i(m_collisionsKernel->uniformIDs->at(7), COLLISION_CHECK_WINDOW_SIZE);
+	glUniformMatrix4fv(m_collisionsKernel->uniformIDs->at(1), 1, GL_FALSE, (float*)viewMatrix);
+	glUniformMatrix4fv(m_collisionsKernel->uniformIDs->at(2), 1, GL_FALSE, (float*)projMatrix);
+	glUniform4fv(m_collisionsKernel->uniformIDs->at(3), 1, (float*)&m_simData.c_touchVector);
+	glUniform1f(m_collisionsKernel->uniformIDs->at(4), System::GetInstance()->GetCurrentScene()->GetGroundLevel());
+	glUniform1i(m_collisionsKernel->uniformIDs->at(5), bcCount);
+	glUniform1i(m_collisionsKernel->uniformIDs->at(6), scCount);
+	glUniform1i(m_collisionsKernel->uniformIDs->at(7), m_simData.m_edgesWidthAll);
+	glUniform1i(m_collisionsKernel->uniformIDs->at(8), m_simData.m_edgesLengthAll);
+	glUniform1i(m_collisionsKernel->uniformIDs->at(9), m_simData.m_vertexCount);
+	glUniform1i(m_collisionsKernel->uniformIDs->at(10), COLLISION_CHECK_WINDOW_SIZE);
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColPosID[m_readID], m_vboPosID[m_readID]);
 

@@ -147,10 +147,10 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinus),
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
-			126,
-			23,
+			124,
+			21,
 			1.0f,
-			0.0f,
+			2.0f,
 			0,
 			0.0f
 			);
@@ -164,10 +164,10 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinus),
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
-			126,
-			23,
+			123,
+			21,
 			1.0f,
-			0.0f,
+			2.0f,
 			0,
 			0.0f
 			);

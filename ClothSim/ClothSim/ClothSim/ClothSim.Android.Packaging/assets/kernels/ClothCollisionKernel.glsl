@@ -19,6 +19,9 @@ uniform InSCols
 };
 
 uniform mat4 WorldMatrix;
+uniform mat4 ViewMatrix;
+uniform mat4 ProjMatrix;
+uniform vec4 TouchVector;	// x,y - position; z,w - direction
 uniform float GroundLevel;
 uniform int BoxAAColliderCount;
 uniform int SphereColliderCount;
@@ -124,18 +127,26 @@ void main()
 		totalOffset += colOffset;
 	}
 
+	vec4 finalPos = vec4(Pos.x + totalOffset.x * Multipliers.x, Pos.y + totalOffset.y * Multipliers.x, Pos.z + totalOffset.z * Multipliers.x, Pos.w);
 	
-	//if(mPos.y < GroundLevel)
-	//{
-	//	totalOffset.y += (-mPos.y + GroundLevel);
-	//}
+	// apply touch vector
+	vec4 mPosScreen = ProjMatrix * (ViewMatrix * (WorldMatrix * finalPos));
+	vec4 mPosScreenNorm = mPosScreen / mPosScreen.w;
+	vec4 fPosScreen = vec4(TouchVector.x, TouchVector.y, 0.0f, mPosScreenNorm.w);
+	vec4 fDirScreen = vec4(TouchVector.z, TouchVector.w, 0.0f, 0.0f);
+	float A = 200.0f;
+	float s = 300.0f;
+	float coeff = A * exp(-((fPosScreen.x - mPosScreenNorm.x) * (fPosScreen.x - mPosScreenNorm.x) +
+						(fPosScreen.y - mPosScreenNorm.y) * (fPosScreen.y - mPosScreenNorm.y)) / 2.0f * s);
+	fDirScreen *= mPosScreen.w;
+	fDirScreen = inverse(WorldMatrix) * (inverse(ViewMatrix) * (inverse(ProjMatrix) * fDirScreen));
+	fDirScreen *= coeff * length(vec2(TouchVector.z, TouchVector.w)) * Multipliers.x;
+	finalPos.x += fDirScreen.x;
+	finalPos.y += fDirScreen.y;
+	finalPos.z += fDirScreen.z;
 
-	//float d = 100.0f;
-	//totalOffset = clamp(totalOffset, -d, d);
-
-	//vec4 dupa = InPosBuffer[0];
 	// update positions
-	OutPos = vec4(Pos.x + totalOffset.x * Multipliers.x, Pos.y + totalOffset.y * Multipliers.x, Pos.z + totalOffset.z * Multipliers.x, Pos.w);
+	OutPos = finalPos;
 	//OutPos = vec4(sBuffer[0][0], sBuffer[0][1], sBuffer[0][2], sBuffer[0][3]);
 	gl_Position = Pos;
 }

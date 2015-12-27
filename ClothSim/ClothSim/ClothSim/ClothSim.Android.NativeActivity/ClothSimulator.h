@@ -57,6 +57,7 @@ struct SimData
 	glm::vec4* b_multipliers;
 
 	glm::vec4 c_springLengths;
+	glm::vec4 c_touchVector;
 
 	GLuint i_neighbours;
 	GLuint i_neighboursDiag;
@@ -92,6 +93,7 @@ struct SimData
 		i_positionLast = 0;
 		i_elMassCoeffs = 0;
 		i_multipliers = 0;
+		c_touchVector = glm::vec4(0.0f);
 	}
 
 	~SimData()
@@ -240,6 +242,8 @@ protected:
 			int bcCount,
 			int scCount,
 			glm::mat4* worldMatrix,
+			glm::mat4* viewMatrix,
+			glm::mat4* projMatrix,
 			float gravity,
 			float fixedDelta
 			);
@@ -251,6 +255,8 @@ protected:
 			int bcCount,
 			int scCount,
 			glm::mat4* worldMatrix,
+			glm::mat4* viewMatrix,
+			glm::mat4* projMatrix,
 			float gravity,
 			float fixedDelta
 			);
@@ -328,6 +334,7 @@ public:
 	double GetSimTimeMS();
 
 	void UpdateSimParams(SimParams* params);
+	void UpdateTouchVector(const glm::vec2* pos, const glm::vec2* dir);
 	SimParams* GetSimParams();
 };
 
