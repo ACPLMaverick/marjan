@@ -126,6 +126,16 @@ void InputManager::GetDoubleTouchDirection(glm::vec2 * vec)
 	vec->y = (m_touch01Direction.y + m_touch02Direction.y) / 2.0f;
 }
 
+void InputManager::GetAcceleration(glm::vec3 * vec)
+{
+	*vec = m_acceleration;
+}
+
+void InputManager::GetAccelerationDelta(glm::vec3 * vec)
+{
+	*vec = m_accelerationDelta;
+}
+
 float InputManager::GetPinchValue()
 {
 	return m_pinchVal;
@@ -173,6 +183,13 @@ void InputManager::ComputeScaleFactors(glm::vec2 * factors)
 
 	factors->x = factorX;
 	factors->y = factorY;
+}
+
+void InputManager::UpdateAcceleration(const ASensorVector* sVec)
+{
+	glm::vec3 newAcc = glm::vec3(sVec->x, sVec->y, sVec->z);
+	m_accelerationDelta = newAcc - m_acceleration;
+	m_acceleration = newAcc;
 }
 
 bool InputManager::GUIElementAreaInClick(GUIElement * button, const glm::vec2 * clickPos)

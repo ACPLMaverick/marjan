@@ -67,12 +67,16 @@ public:
 class InputManager : public Singleton<InputManager>
 {
 	friend class Singleton<InputManager>;
+	friend class System;
 protected:
 	std::vector<GUIElement*> m_guiElems;	// this vector stores GUI elements that recieve DOWN, MOVE and UP events
 	int m_scrollHelper = 0;
 
 	TwoBool m_clickHelperTBool;
 	std::vector<TwoBool*> m_tBools;
+
+	glm::vec3 m_acceleration = glm::vec3(0.0f);
+	glm::vec3 m_accelerationDelta = glm::vec3(0.0f);
 
 	glm::vec2 m_touch01Position;
 	glm::vec2 m_touch01Direction;
@@ -95,6 +99,8 @@ protected:
 	inline unsigned int ProcessButtonClicks(const glm::vec2 * clickPos);
 	inline unsigned int ProcessButtonHolds(const glm::vec2 * clickPos);
 	inline void ComputeScaleFactors(glm::vec2* factors);
+
+	void UpdateAcceleration(const ASensorVector* sVec);
 public:
 	InputManager(const InputManager*);
 	~InputManager();
@@ -112,6 +118,8 @@ public:
 	void GetDoubleTouchPosition(glm::vec2* vec);
 	void GetTouchDirection(glm::vec2* vec);
 	void GetDoubleTouchDirection(glm::vec2* vec);
+	void GetAcceleration(glm::vec3* vec);
+	void GetAccelerationDelta(glm::vec3* vec);
 	float GetPinchValue();
 	unsigned int GetCurrentlyHeldButtons();
 

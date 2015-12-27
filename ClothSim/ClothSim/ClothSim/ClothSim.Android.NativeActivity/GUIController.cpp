@@ -149,13 +149,6 @@ unsigned int GUIController::Update()
 
 		if (InputHandler::GetInstance()->GetMove() && InputHandler::GetInstance()->GetHold())
 		{
-#ifdef BUILD_OPENGL
-			if (!cursorHideHelper)
-			{
-				glfwSetInputMode(Renderer::GetInstance()->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-				cursorHideHelper = true;
-			}
-#endif
 			glm::vec2 camVec;
 			InputHandler::GetInstance()->GetCameraRotationVector(&camVec);
 			glm::vec4 camCurrentPos = glm::vec4(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition(), 1.0f);
@@ -256,6 +249,26 @@ unsigned int GUIController::Update()
 		
 
 		// update camera rotation and gravity according to accelerometer input
+		glm::vec3 camVec;
+		InputManager::GetInstance()->GetAccelerationDelta(&camVec);
+		camVec *= 0.0f;	// !!!
+		glm::vec4 camCurrentPos = glm::vec4(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition(), 1.0f);
+		glm::vec3 camRight = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetRight();
+
+		glm::mat4 horRotation = glm::rotate(camVec.x * CSSET_CAMERA_ROTATE_SPEED, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 vertRotation = glm::rotate(camVec.y * CSSET_CAMERA_ROTATE_SPEED, camRight);
+
+		camCurrentPos = camCurrentPos * horRotation * vertRotation;
+		glm::vec3 newPos = glm::vec3(camCurrentPos.x, camCurrentPos.y, camCurrentPos.z);
+
+		glm::vec3 dir = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget() - newPos;
+		glm::vec3 dirYZero = glm::vec3(dir.x, 0.0f, dir.z);
+		float dot = glm::dot(dir, dirYZero);
+
+		if (dot > CSSET_CAMERA_ROTATE_BARRIER)
+		{
+			System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&newPos);
+		}
 	}
 
 	// update mode change helper
