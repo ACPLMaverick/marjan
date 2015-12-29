@@ -186,6 +186,11 @@ unsigned int Renderer::Run()
 	return err;
 }
 
+void Renderer::Flush()
+{
+	glFlush();
+}
+
 void Renderer::SetDrawMode(DrawMode mode)
 {
 	m_mode = mode;

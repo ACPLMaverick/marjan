@@ -2,8 +2,6 @@
 
 /*
 	This component encapsulates whole Cloth Simulation funcionality.
-	IMPORTANT: This component requires SimObject to have following properties:
-		- First mesh of mesh collection exists and is MeshGLPlane
 */
 
 #include "Component.h"
@@ -15,7 +13,32 @@
 //#define VERTEX_NEIGHBOURING_VERTICES 12
 #define ALMOST_ZERO 0.000000001f
 
+////////////////////////////////////
+
+enum ClothSimulationMode
+{
+	MASS_SPRING_GPU,
+	MASS_SPRING_CPU,
+	POSITION_BASED_GPU,
+	POSITION_BASED_CPU,
+	NONE,
+};
+
 /////////////////////////////////////////
+
+struct SimParams
+{
+	ClothSimulationMode mode = ClothSimulationMode::NONE;
+	glm::vec3 padding;
+	float vertexMass = 1.0f;
+	float vertexAirDamp = 0.01f;
+	float elasticity = 50.00f;
+	float elasticityDamp = -10.0f;
+	float width = 10.0f;
+	float length = 10.0f;
+	unsigned int edgesWidth = 23;
+	unsigned int edgesLength = 23;
+};
 
 struct SimData
 {
@@ -34,6 +57,7 @@ struct SimData
 	glm::vec4* b_multipliers;
 
 	glm::vec4 c_springLengths;
+	glm::vec4 c_touchVector;
 
 	GLuint i_neighbours;
 	GLuint i_neighboursDiag;
@@ -69,6 +93,7 @@ struct SimData
 		i_positionLast = 0;
 		i_elMassCoeffs = 0;
 		i_multipliers = 0;
+		c_touchVector = glm::vec4(0.0f);
 	}
 
 	~SimData()
@@ -96,24 +121,16 @@ struct SimData
 
 ////////////////////////////////////
 
-enum ClothSimulationMode
-{
-	MASS_SPRING,
-	POSITION_BASED
-};
-
-////////////////////////////////////
-
 class ClothSimulator :
 	public Component
 {
 protected:
-	const double FIXED_DELTA = 0.015f;
-	const float VERTEX_MASS = 1.0f;
-	const float VERTEX_AIR_DAMP = 0.01f;
-	const float SPRING_ELASTICITY = 50.00f;
+	SimParams m_simParams;
+	SimData m_simData;
+
+	const double FIXED_DELTA = 0.033f;
+	const float MIN_MASS = 0.02f;
 	const float SPRING_BORDER_MULTIPLIER = 20.0f;
-	const float SPRING_ELASTICITY_DAMP = -100.25f;
 	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
 	const float CELL_OFFSET = 0.01f;
 	const float COLLISION_CHECK_WINDOW_SIZE = 2;
@@ -182,12 +199,9 @@ protected:
 
 	/////////
 
-	ClothSimulationMode m_mode;
-
 	MeshGLPlane* m_meshPlane;
 	VertexData** m_vd;
-	VertexData* m_vdCopy;
-	SimData m_simData;
+	VertexData** m_vdCopy;
 
 	KernelID* m_normalsKernel;
 	KernelID* m_collisionsKernel;
@@ -215,26 +229,87 @@ protected:
 	unsigned int m_writeID;
 	unsigned int m_readID;
 
-	bool m_ifRestart;
+	bool m_ifRestart = false;
 
 	double m_timeStartMS;
 	double m_timeSimMS;
 
-	virtual inline unsigned int InitializeSimMS();
-	virtual inline unsigned int ShutdownSimMS();
-	virtual inline unsigned int UpdateSimMS
+	virtual inline unsigned int UpdateSimCPU
+		(
+			VertexData* vertexData,
+			BoxAAData* boxAAData,
+			SphereData* sphereData,
+			int bcCount,
+			int scCount,
+			glm::mat4* worldMatrix,
+			glm::mat4* viewMatrix,
+			glm::mat4* projMatrix,
+			float gravity,
+			float fixedDelta
+			);
+	virtual inline unsigned int UpdateSimGPU
+		(
+			VertexData* vertexData,
+			BoxAAData* boxAAData,
+			SphereData* sphereData,
+			int bcCount,
+			int scCount,
+			glm::mat4* worldMatrix,
+			glm::mat4* viewMatrix,
+			glm::mat4* projMatrix,
+			float gravity,
+			float fixedDelta
+			);
+
+	virtual inline unsigned int InitializeSimMSGPU();
+	virtual inline unsigned int ShutdownSimMSGPU();
+	virtual inline unsigned int UpdateSimMSGPU
 		(
 			float gravity, 
 			float fixedDelta
 		);
 
-	virtual inline unsigned int InitializeSimPB();
-	virtual inline unsigned int ShutdownSimPB();
-	virtual inline unsigned int UpdateSimPB
+	virtual inline unsigned int InitializeSimPBGPU();
+	virtual inline unsigned int ShutdownSimPBGPU();
+	virtual inline unsigned int UpdateSimPBGPU
 		(
 			float gravity,
 			float fixedDelta
 		);
+
+	virtual inline unsigned int UpdateSimMSCPU
+		(
+			float gravity,
+			float fixedDelta
+			);
+	virtual inline unsigned int UpdateSimPBCPU
+		(
+			float gravity,
+			float fixedDelta
+			);
+
+	inline void CalculateSpringForce
+		(
+			const glm::vec3 * mPos,
+			const glm::vec3 * mPosLast,
+			const glm::vec3 * nPos,
+			const glm::vec3 * nPosLast,
+			float sLength,
+			float elCoeff,
+			float dampCoeff,
+			float fixedDelta,
+			glm::vec3* ret
+			);
+	inline void CalcDistConstraint
+		(
+			glm::vec3* mPos,
+			glm::vec3* nPos,
+			float mass,
+			float sLength,
+			float elCoeff,
+			glm::vec3* outConstraint,
+			float* outW
+			);
 
 	inline void CopyVertexData(VertexData* source, VertexData* dest);
 	inline void SwapRWIds();
@@ -257,5 +332,9 @@ public:
 
 	ClothSimulationMode GetMode();
 	double GetSimTimeMS();
+
+	void UpdateSimParams(SimParams* params);
+	void UpdateTouchVector(const glm::vec2* pos, const glm::vec2* dir);
+	SimParams* GetSimParams();
 };
 

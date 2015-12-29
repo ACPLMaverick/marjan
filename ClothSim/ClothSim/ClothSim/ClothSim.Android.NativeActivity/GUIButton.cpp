@@ -30,18 +30,6 @@ unsigned int GUIButton::Initialize()
 
 unsigned int GUIButton::Shutdown()
 {
-	for (std::vector<GUIAction*>::iterator it = m_actionsClick.begin(); it != m_actionsClick.end(); ++it)
-	{
-		delete (*it);
-	}
-	m_actionsClick.clear();
-
-	for (std::vector<GUIAction*>::iterator it = m_actionsHold.begin(); it != m_actionsHold.end(); ++it)
-	{
-		delete (*it);
-	}
-	m_actionsHold.clear();
-
 	m_mesh->Shutdown();
 	delete m_mesh;
 
@@ -52,8 +40,8 @@ unsigned int GUIButton::Shutdown()
 
 void GUIButton::GenerateTransformMatrix()
 {
-	glm::vec2 factors;
-	ComputeScaleFactors(&factors);
+	glm::vec2 factors = glm::vec2(1.0f, 1.0f);
+	if(m_isScaled) ComputeScaleFactors(&factors);
 
 	m_transform = glm::translate(glm::vec3(m_position.x, m_position.y, 0.0f))
 		* glm::scale(glm::vec3(m_scale.x * factors.x, m_scale.y * factors.y, 0.0f));
@@ -118,74 +106,21 @@ std::vector<void*>* GUIButton::GetParamsHold()
 	return &m_paramsHold;
 }
 
-void GUIButton::AddActionClick(GUIAction * action)
-{
-	m_actionsClick.push_back(action);
-}
-
-void GUIButton::AddActionHold(GUIAction * action)
-{
-	m_actionsHold.push_back(action);
-}
-
-void GUIButton::RemoveActionClick(GUIAction * action)
-{
-	for (std::vector<GUIAction*>::iterator it = m_actionsClick.begin(); it != m_actionsClick.end(); ++it)
-	{
-		if (action == (*it))
-		{
-			m_actionsClick.erase(it);
-			break;
-		}
-	}
-}
-
-void GUIButton::RemoveActionClick(unsigned int id)
-{
-	unsigned int ctr = 0;
-	for (std::vector<GUIAction*>::iterator it = m_actionsClick.begin(); it != m_actionsClick.end(); ++it, ++ctr)
-	{
-		if (id == ctr)
-		{
-			m_actionsClick.erase(it);
-			break;
-		}
-	}
-}
-
-void GUIButton::RemoveActionHold(GUIAction * action)
-{
-	for (std::vector<GUIAction*>::iterator it = m_actionsHold.begin(); it != m_actionsHold.end(); ++it)
-	{
-		if (action == (*it))
-		{
-			m_actionsHold.erase(it);
-			break;
-		}
-	}
-}
-
-void GUIButton::RemoveActionHold(unsigned int id)
-{
-	unsigned int ctr = 0;
-	for (std::vector<GUIAction*>::iterator it = m_actionsHold.begin(); it != m_actionsHold.end(); ++it, ++ctr)
-	{
-		if (id == ctr)
-		{
-			m_actionsHold.erase(it);
-			break;
-		}
-	}
-}
-
 unsigned int GUIButton::ExecuteClick(const glm::vec2* clickPos)
 {
 	unsigned int ctr = 0;
 
 	ctr += GUIElement::ExecuteClick(clickPos);
 
-	if(m_isEnabled)
-		ExecuteActionsClick(clickPos);
+	//LOGI("CLICK");
+
+	if (m_isEnabled)
+	{
+		for (std::vector<std::function<void(std::vector<void*>* params, const glm::vec2* clickPos)>>::iterator it = EventClick.begin(); it != EventClick.end(); ++it)
+		{
+			(*it)(&m_paramsClick, clickPos);
+		}
+	}
 
 	if (m_isBlockable)
 		++ctr;
@@ -199,41 +134,22 @@ unsigned int GUIButton::ExecuteHold(const glm::vec2* clickPos)
 
 	ctr += GUIElement::ExecuteHold(clickPos);
 
-	if(m_isEnabled)
-		ExecuteActionsHold(clickPos);
+	if (m_isEnabled)
+	{
+		if (!isClickInProgress)
+		{
+			isClickInProgress = true;
+			m_mesh->SetTextureID(m_textureClicked);
+		}
+
+		for (std::vector<std::function<void(std::vector<void*>* params, const glm::vec2* clickPos)>>::iterator it = EventHold.begin(); it != EventHold.end(); ++it)
+		{
+			(*it)(&m_paramsHold, clickPos);
+		}
+	}
 
 	if (m_isBlockable)
 		++ctr;
 
 	return ctr;
-}
-
-inline unsigned int GUIButton::ExecuteActionsClick(const glm::vec2* clickPos)
-{
-	unsigned int err = CS_ERR_NONE;
-
-	for (std::vector<GUIAction*>::iterator it = m_actionsClick.begin(); it != m_actionsClick.end(); ++it)
-	{
-		(*it)->Action(&m_paramsClick, clickPos);
-	}
-
-	return err;
-}
-
-inline unsigned int GUIButton::ExecuteActionsHold(const glm::vec2* clickPos)
-{
-	unsigned int err = CS_ERR_NONE;
-
-	if (!isClickInProgress)
-	{
-		isClickInProgress = true;
-		m_mesh->SetTextureID(m_textureClicked);
-	}
-
-	for (std::vector<GUIAction*>::iterator it = m_actionsHold.begin(); it != m_actionsHold.end(); ++it)
-	{
-		(*it)->Action(&m_paramsHold, clickPos);
-	}
-
-	return err;
 }

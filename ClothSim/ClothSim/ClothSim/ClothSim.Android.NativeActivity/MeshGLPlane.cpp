@@ -7,6 +7,8 @@ MeshGLPlane::MeshGLPlane(SimObject* obj) : MeshGL(obj)
 	m_edgesWidth = 9;
 	m_edgesLength = 9;
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_vertexDataDual[0] = nullptr;
+	m_vertexDataDual[1] = nullptr;
 }
 
 MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length) : MeshGL(obj)
@@ -16,6 +18,8 @@ MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length) : MeshGL(obj
 	m_edgesWidth = glm::max<int>((int)width - 1, 0);
 	m_edgesLength = glm::max<int>((int)length - 1, 0);
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_vertexDataDual[0] = nullptr;
+	m_vertexDataDual[1] = nullptr;
 }
 
 MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length, unsigned int edWidth, unsigned int edLength) : MeshGL(obj)
@@ -25,6 +29,8 @@ MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length, unsigned int
 	m_edgesWidth = edWidth;
 	m_edgesLength = edLength;
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_vertexDataDual[0] = nullptr;
+	m_vertexDataDual[1] = nullptr;
 }
 
 MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length, unsigned int edWidth, unsigned int edLength, glm::vec4* col) : MeshGL(obj)
@@ -34,6 +40,8 @@ MeshGLPlane::MeshGLPlane(SimObject* obj, float width, float length, unsigned int
 	m_edgesWidth = edWidth;
 	m_edgesLength = edLength;
 	m_color = *col;
+	m_vertexDataDual[0] = nullptr;
+	m_vertexDataDual[1] = nullptr;
 }
 
 
@@ -102,12 +110,18 @@ unsigned int MeshGLPlane::Initialize()
 	m_vertexDataDual[0] = m_vertexData;
 	m_vertexDataDual[1] = new VertexData;
 	m_vertexDataDual[1]->ids = new VertexDataID;
-	m_vertexDataDual[1]->data = m_vertexDataDual[0]->data;
+	m_vertexDataDual[1]->data = new VertexDataRaw;
 
 	// generate vertex data and vertex array
 
 	GenerateVertexData();
 	GenerateBarycentricCoords();
+
+	// make a copy
+	m_vertexData = m_vertexDataDual[1];
+	GenerateVertexData();
+	GenerateBarycentricCoords();
+	m_vertexData = m_vertexDataDual[0];
 
 	// setting up buffers
 	glGenVertexArrays(1, &m_vertexDataDual[0]->ids->vertexArrayID);
@@ -156,6 +170,8 @@ unsigned int MeshGLPlane::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
 
+	m_vertexDataDual[1]->data = nullptr;
+
 	for (unsigned int id = 0; id < 2; ++id)
 	{
 		glDeleteVertexArrays(1, &m_vertexDataDual[id]->ids->vertexArrayID);
@@ -169,7 +185,7 @@ unsigned int MeshGLPlane::Shutdown()
 		if (m_vertexDataDual[id] != nullptr)
 			delete m_vertexDataDual[id];
 	}
-
+	m_vertexData = nullptr;
 	err = MeshGL::Shutdown();
 	return err;
 }

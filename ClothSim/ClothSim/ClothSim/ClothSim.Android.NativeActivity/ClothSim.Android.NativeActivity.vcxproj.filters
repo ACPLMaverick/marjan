@@ -118,31 +118,23 @@
     <ClInclude Include="Transform.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="GUIActionShowPreferences.h">
-      <Filter>Core\GUI\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="GUIActionExitProgram.h">
-      <Filter>Core\GUI\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="GUIActionSetDisplayMode.h">
-      <Filter>Core\GUI\Actions</Filter>
-    </ClInclude>
     <ClInclude Include="GUIAction.h">
       <Filter>Core\GUI</Filter>
     </ClInclude>
     <ClInclude Include="MeshGLRectButton.h">
       <Filter>Graphics\Meshes</Filter>
     </ClInclude>
-    <ClInclude Include="GUIActionMoveActiveObject.h">
-      <Filter>Core\GUI\Actions</Filter>
+    <ClInclude Include="GUIPicture.h">
+      <Filter>Core\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="GUIPicture.h" />
-    <ClInclude Include="GUISlider.h" />
-    <ClInclude Include="GUIActionMoveSliderHead.h">
-      <Filter>Core\GUI\Actions</Filter>
+    <ClInclude Include="GUISlider.h">
+      <Filter>Core\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="GUIActionSetSliderHead.h">
-      <Filter>Core\GUI\Actions</Filter>
+    <ClInclude Include="GUIValueSetter.h">
+      <Filter>Core\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUISettingsScreen.h">
+      <Filter>Core\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -257,31 +249,23 @@
     <ClCompile Include="Transform.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="GUIActionExitProgram.cpp">
-      <Filter>Core\GUI\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="GUIActionSetDisplayMode.cpp">
-      <Filter>Core\GUI\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="GUIActionShowPreferences.cpp">
-      <Filter>Core\GUI\Actions</Filter>
-    </ClCompile>
     <ClCompile Include="GUIAction.cpp">
       <Filter>Core\GUI</Filter>
     </ClCompile>
     <ClCompile Include="MeshGLRectButton.cpp">
       <Filter>Graphics\Meshes</Filter>
     </ClCompile>
-    <ClCompile Include="GUIActionMoveActiveObject.cpp">
-      <Filter>Core\GUI\Actions</Filter>
+    <ClCompile Include="GUIPicture.cpp">
+      <Filter>Core\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="GUIPicture.cpp" />
-    <ClCompile Include="GUISlider.cpp" />
-    <ClCompile Include="GUIActionMoveSliderHead.cpp">
-      <Filter>Core\GUI\Actions</Filter>
+    <ClCompile Include="GUISlider.cpp">
+      <Filter>Core\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="GUIActionSetSliderHead.cpp">
-      <Filter>Core\GUI\Actions</Filter>
+    <ClCompile Include="GUIValueSetter.cpp">
+      <Filter>Core\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUISettingsScreen.cpp">
+      <Filter>Core\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,9 +301,6 @@
     </Filter>
     <Filter Include="Graphics\Shaders">
       <UniqueIdentifier>{ec2f45da-2e77-4d3e-9f4c-6241205ef0a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\GUI\Actions">
-      <UniqueIdentifier>{7c3b1fb7-5e57-475e-87b0-56a139758804}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

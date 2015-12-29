@@ -77,6 +77,8 @@ public:
 	unsigned int Shutdown();
 	unsigned int Run();
 
+	void Flush();
+
 	void SetDrawMode(DrawMode mode);
 	void SetCurrentShader(ShaderID* id);
 

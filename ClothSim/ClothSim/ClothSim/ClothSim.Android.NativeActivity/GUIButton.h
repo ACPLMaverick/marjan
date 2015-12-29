@@ -19,9 +19,6 @@ class GUIButton :
 	public GUIElement
 {
 protected:
-	std::vector<GUIAction*> m_actionsClick;
-	std::vector<GUIAction*> m_actionsHold;
-
 	glm::vec4 m_color;
 
 
@@ -33,9 +30,10 @@ protected:
 	virtual void GenerateTransformMatrix();
 	void ComputeScaleFactors(glm::vec2* factors);
 
-	unsigned int ExecuteActionsClick(const glm::vec2* clickPos);
-	unsigned int ExecuteActionsHold(const glm::vec2* clickPos);
 public:
+	std::vector<std::function<void(std::vector<void*>* params, const glm::vec2* clickPos)>> EventClick;
+	std::vector<std::function<void(std::vector<void*>* params, const glm::vec2* clickPos)>> EventHold;
+
 	GUIButton(const std::string* id);
 	GUIButton(const GUIButton*);
 	~GUIButton();
@@ -50,14 +48,6 @@ public:
 	void SetParamsHold(void* params);
 	std::vector<void*>* GetParamsClick();
 	std::vector<void*>* GetParamsHold();
-
-	void AddActionClick(GUIAction* action);
-	void AddActionHold(GUIAction* action);
-
-	void RemoveActionClick(GUIAction* action);
-	void RemoveActionClick(unsigned int id);
-	void RemoveActionHold(GUIAction* action);
-	void RemoveActionHold(unsigned int id);
 
 	virtual unsigned int ExecuteClick(const glm::vec2* clickPos);
 	virtual unsigned int ExecuteHold(const glm::vec2* clickPos);

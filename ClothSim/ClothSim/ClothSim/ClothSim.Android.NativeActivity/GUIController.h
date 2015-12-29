@@ -10,22 +10,61 @@
 #include "Settings.h"
 
 class GUIText;
+class GUIButton;
 class ClothSimulator;
+class GUISettingsScreen;
 
 class GUIController :
 	public Component
 {
 private:
+	enum MovementDirection
+	{
+		FORWARD = 1,
+		BACKWARD,
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN
+	};
+
+	enum InputMode
+	{
+		ARROWS = 1,
+		TOUCH
+	};
+
 	double infoTimeDisplayHelper = 0.0;
 
-	const float INFO_UPDATE_RATE = 1000.0f;
+	static constexpr float INFO_UPDATE_RATE = 1000.0f;
+	static constexpr float BOX_SPEED = 0.005f;
+
+	InputMode m_inputMode = InputMode::ARROWS;
 
 	GUIText* m_fpsText;
 	GUIText* m_dtText;
 	GUIText* m_ttText;
+	GUIText* m_stText;
+
+	std::vector<GUIElement*> m_otherGroups;
+	GUISettingsScreen* m_sScreen;
+
+	GUIButton* m_btnMvArrows;
+	GUIButton* m_btnMvTouch;
+	int m_modeChangeHelper = -1;
+
+	GUIElement* m_btnArrowsGroup;
 
 	ClothSimulator* m_cSimulator;
+	bool m_firstRun = true;
 
+	static void ActionExitProgram(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionMoveActiveObject(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionSetDisplayMode(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionShowPreferences(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionApplyPreferences(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionCancelPreferences(std::vector<void*>* params, const glm::vec2* clickPos);
+	static void ActionSwitchInputMode(std::vector<void*>* params, const glm::vec2* clickPos);
 public:
 	GUIController(SimObject* obj);
 	GUIController(const GUIController*);

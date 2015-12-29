@@ -2,12 +2,10 @@
 #include "GUISlider.h"
 #include "GUIText.h"
 #include "GUIPicture.h"
-#include "GUIActionSetSliderHead.h"
-#include "GUIActionMoveSliderHead.h"
 #include "GUIButton.h"
 
 
-GUISlider::GUISlider(const std::string * name, const std::string* label, TextureID * headTex, TextureID * barTex, TextureID * fontTex, 
+GUISlider::GUISlider(const std::string * name, const std::string* label, TextureID * headTex, TextureID * barTex, TextureID * fontTex,
 	unsigned int states, unsigned int defState, float labelMultiplier, float labelOffset) : GUIElement(name)
 {
 	m_label = *label;
@@ -20,6 +18,9 @@ GUISlider::GUISlider(const std::string * name, const std::string* label, Texture
 	
 	m_labelMultiplier = labelMultiplier;
 	m_labelOffset = labelOffset;
+
+	m_isBlockable = true;
+	//m_isScaled = false;
 }
 
 GUISlider::GUISlider(const std::string * name, const std::string* label, TextureID * headTex, TextureID * barTex, TextureID * fontTex, 
@@ -77,8 +78,8 @@ unsigned int GUISlider::Initialize()
 	float sclFactor = glm::min(m_scale.x, m_scale.y);
 	float sclMplier = 2.0f;
 	glm::vec2 itemScale = glm::vec2(sclFactor, sclFactor);
-	glm::vec2 offsetTl = glm::vec2(-0.6f, 0.2f) * sclFactor;
-	glm::vec2 offsetTv = glm::vec2(0.6f, 0.2f) * sclFactor;
+	glm::vec2 offsetTl = glm::vec2(-5.0f, 0.5f) * sclFactor;
+	glm::vec2 offsetTv = glm::vec2(5.0f, 0.5f) * sclFactor;
 
 	string idTl = m_id + "_TextLabel";
 	string idTv = m_id + "_TextVal";
@@ -99,19 +100,14 @@ unsigned int GUISlider::Initialize()
 
 	m_sliderHead = new GUIButton(&idBt);
 	m_sliderHead->Initialize();
-	float sp = m_position.x - m_length / 2.0f;
-	float step = m_length / (float)(m_states - 1);
-	sp += step * ((float)m_defState);
+	float sp;
+	m_length = m_scale.x;
+	m_startPoint = m_position.x - m_length / 2.0f;
+	m_step = m_length / (float)(m_states - 1);
+	sp = m_startPoint + m_step * ((float)m_defState);
 	m_sliderHead->SetPosition(glm::vec2(sp, m_position.y));
 	m_sliderHead->SetScale(itemScale * sclMplier);
 	m_sliderHead->SetTextures(m_headTex, m_headTex);
-	m_actionMove = new GUIActionMoveSliderHead(m_sliderHead, m_length);
-	m_sliderHead->AddActionHold(m_actionMove);
-	
-	m_actionMove->Initialize();
-	m_actionSet = new GUIActionSetSliderHead(m_sliderHead, m_length, m_states, m_defState);
-	m_sliderHead->AddActionClick(m_actionSet);
-	m_actionSet->Initialize();
 	AddChild(m_sliderHead);
 
 	m_sliderBar = new GUIPicture(&idPc, m_barTex);
@@ -157,17 +153,85 @@ unsigned int GUISlider::Update()
 		err = GUIElement::Update();
 		if (err != CS_ERR_NONE)
 			return err;
-
-		unsigned int temp = m_actionSet->GetCurrentOption();
-		if (temp != m_currentState)
-		{
-			m_currentState = temp;
-			for (std::vector<std::function<void(unsigned int)>>::iterator it = EventStateChanged.begin(); it != EventStateChanged.end(); ++it)
-			{
-				(*it)(m_currentState);
-			}
-		}
 	}
 
 	return err;
+}
+
+unsigned int GUISlider::ExecuteClick(const glm::vec2 * clickPos)
+{
+	unsigned int ctr = CS_ERR_NONE;
+
+	ctr = GUIElement::ExecuteClick(clickPos);
+
+	SetSliderHead(clickPos);
+
+	return ctr;
+}
+
+unsigned int GUISlider::ExecuteHold(const glm::vec2 * clickPos)
+{
+	unsigned int ctr = CS_ERR_NONE;
+	ctr = GUIElement::ExecuteHold(clickPos);
+		
+
+	MoveSliderHead(clickPos);
+
+	return ctr;
+}
+
+void GUISlider::MoveSliderHead(const glm::vec2 * clickPos)
+{
+	glm::vec2 clPos;
+	InputManager::GetInstance()->GetClickPosInScreenCoords(clickPos, &clPos);
+	LOGW("%f %f", clPos.x, m_startPoint);
+	if (clPos.x >= m_startPoint && clPos.x <= m_startPoint + m_length)
+	{
+		glm::vec2 cPos = m_sliderHead->GetPosition();
+		glm::vec2 nPos = glm::vec2(clPos.x, cPos.y);
+		m_sliderHead->SetPosition(nPos);
+	}
+}
+
+void GUISlider::SetSliderHead(const glm::vec2 * clickPos)
+{
+	LOGW("Set!");
+	glm::vec2 cPos = m_sliderHead->GetPosition();
+	glm::vec2 nPos = cPos;
+	float currX = cPos.x - m_startPoint;
+	float sub = m_length + m_step;
+	unsigned int nState = m_states - 1;
+	while ((sub -= m_step) / currX > 1.0f && sub > 0.0f)
+	{
+		--nState;
+	}
+
+	if (sub > 0.0f)
+	{
+		float diff1 = (sub + m_step) - currX;
+		float diff2 = currX - sub;
+		if (diff1 < diff2)	// go left
+		{
+			cPos.x = m_startPoint + sub;
+		}
+		else // go right
+		{
+			cPos.x = m_startPoint + sub + m_step;
+		}
+	}
+	else
+	{
+		cPos.x = m_startPoint;
+	}
+
+	m_sliderHead->SetPosition(cPos);
+
+	if (nState != m_currentState)
+	{
+		m_currentState = nState;
+		for (std::vector<std::function<void(unsigned int)>>::iterator it = EventStateChanged.begin(); it != EventStateChanged.end(); ++it)
+		{
+			(*it)(m_currentState);
+		}
+	}
 }

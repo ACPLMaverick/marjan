@@ -44,26 +44,32 @@ struct VertexDataRaw
 		if (positionBuffer != nullptr)
 		{
 			delete[] positionBuffer;
+			positionBuffer = nullptr;
 		}
 		if (uvBuffer != nullptr)
 		{
 			delete[] uvBuffer;
+			uvBuffer = nullptr;
 		}
 		if (normalBuffer != nullptr)
 		{
 			delete[] normalBuffer;
+			normalBuffer = nullptr;
 		}
 		if (colorBuffer != nullptr)
 		{
 			delete[] colorBuffer;
+			colorBuffer = nullptr;
 		}
 		if (indexBuffer != nullptr)
 		{
 			delete[] indexBuffer;
+			indexBuffer = nullptr;
 		}
 		if (barycentricBuffer != nullptr)
 		{
 			delete[] barycentricBuffer;
+			barycentricBuffer = nullptr;
 		}
 	}
 };
@@ -95,10 +101,12 @@ struct VertexData
 		if (data != nullptr)
 		{
 			delete data;
+			data = nullptr;
 		}
 		if (ids != nullptr)
 		{
 			delete ids;
+			ids = nullptr;
 		}
 	}
 };

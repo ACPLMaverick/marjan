@@ -19,6 +19,9 @@ uniform InSCols
 };
 
 uniform mat4 WorldMatrix;
+uniform mat4 ViewMatrix;
+uniform mat4 ProjMatrix;
+uniform vec4 TouchVector;	// x,y - position; z,w - direction
 uniform float GroundLevel;
 uniform int BoxAAColliderCount;
 uniform int SphereColliderCount;
@@ -64,7 +67,7 @@ void CalculateCollisionBoxAA(vec3 mCenter, float mRadius, vec3 bMin, vec3 bMax, 
 	if(dist < (mRadius * mRadius) && dist != 0.0f)
 	{
 		closest = mCenter - closest;
-		ret = normalize(closest) * (mRadius - sqrt(dist)) * multiplier + vec3(0.0f, 0.01f, 0.0f);
+		ret = normalize(closest) * (mRadius - sqrt(dist)) * multiplier;
 	}
 }
 
@@ -76,7 +79,16 @@ void main()
 	float mR = Multipliers.y;
 
 	// solve external collisions
+	for(int i = 0; i < BoxAAColliderCount; ++i)
+	{
+		mat2x4 box = baaBuffer[i];
+		vec3 bMin = vec3(box[0][0], box[0][1], box[0][2]);
+		vec3 bMax = vec3(box[1][0], box[1][1], box[1][2]);
 
+		CalculateCollisionBoxAA(mPos, mR, bMin, bMax, 1.0f, colOffset);
+		mPos += colOffset;
+		totalOffset += colOffset;
+	}
 
 	for(int i = 0; i < SphereColliderCount; ++i)
 	{
@@ -115,28 +127,26 @@ void main()
 		totalOffset += colOffset;
 	}
 
-		for(int i = 0; i < BoxAAColliderCount; ++i)
-	{
-		mat2x4 box = baaBuffer[i];
-		vec3 bMin = vec3(box[0][0], box[0][1], box[0][2]);
-		vec3 bMax = vec3(box[1][0], box[1][1], box[1][2]);
-
-		CalculateCollisionBoxAA(mPos, mR, bMin, bMax, 1.0f, colOffset);
-		mPos += colOffset;
-		totalOffset += colOffset;
-	}
+	vec4 finalPos = vec4(Pos.x + totalOffset.x * Multipliers.x, Pos.y + totalOffset.y * Multipliers.x, Pos.z + totalOffset.z * Multipliers.x, Pos.w);
 	
-	if(mPos.y < GroundLevel)
-	{
-		totalOffset.y += (-mPos.y + GroundLevel);
-	}
+	// apply touch vector
+	vec4 mPosScreen = ProjMatrix * (ViewMatrix * (WorldMatrix * finalPos));
+	vec4 mPosScreenNorm = mPosScreen / mPosScreen.w;
+	vec4 fPosScreen = vec4(TouchVector.x, TouchVector.y, 0.0f, mPosScreenNorm.w);
+	vec4 fDirScreen = vec4(TouchVector.z, TouchVector.w, 0.0f, 0.0f);
+	float A = 200.0f;
+	float s = 300.0f;
+	float coeff = A * exp(-((fPosScreen.x - mPosScreenNorm.x) * (fPosScreen.x - mPosScreenNorm.x) +
+						(fPosScreen.y - mPosScreenNorm.y) * (fPosScreen.y - mPosScreenNorm.y)) / 2.0f * s);
+	fDirScreen *= mPosScreen.w;
+	fDirScreen = inverse(WorldMatrix) * (inverse(ViewMatrix) * (inverse(ProjMatrix) * fDirScreen));
+	fDirScreen *= coeff * length(vec2(TouchVector.z, TouchVector.w)) * Multipliers.x;
+	finalPos.x += fDirScreen.x;
+	finalPos.y += fDirScreen.y;
+	finalPos.z += fDirScreen.z;
 
-	//float d = 100.0f;
-	//totalOffset = clamp(totalOffset, -d, d);
-
-	//vec4 dupa = InPosBuffer[0];
 	// update positions
-	OutPos = vec4(Pos.x + totalOffset.x * Multipliers.x, Pos.y + totalOffset.y * Multipliers.x, Pos.z + totalOffset.z * Multipliers.x, Pos.w);
+	OutPos = finalPos;
 	//OutPos = vec4(sBuffer[0][0], sBuffer[0][1], sBuffer[0][2], sBuffer[0][3]);
 	gl_Position = Pos;
 }

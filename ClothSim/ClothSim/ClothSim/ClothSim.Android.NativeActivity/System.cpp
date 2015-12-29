@@ -46,7 +46,7 @@ unsigned int System::Initialize()
 	err = m_scene->Initialize();
 	if (err != CS_ERR_NONE) return err;
 
-	// initializing gui
+	Renderer::GetInstance()->Flush();
 
 	m_running = true;
 
@@ -196,7 +196,20 @@ unsigned int System::InitAndroid(android_app* app)
 	}
 
 	m_engine->animating = 1;
-
+	/*
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (hasFocus) {
+			decorView.setSystemUiVisibility(
+				View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+				| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+				| View.SYSTEM_UI_FLAG_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+		}
+	}
+	*/
 	// loop waiting for recieving context from android
 
 	while (true)
@@ -273,10 +286,11 @@ unsigned int System::RunAndroid()
 				ASensorEvent event;
 				while (ASensorEventQueue_getEvents(m_engine->sensorEventQueue,
 					&event, 1) > 0) {
-					/*
-					LOGI("accelerometer: x=%f y=%f z=%f",
-					event.acceleration.x, event.acceleration.y,
-					event.acceleration.z);*/
+					
+					//LOGI("accelerometer: x=%f y=%f z=%f",
+					//event.acceleration.x, event.acceleration.y,
+					//event.acceleration.z);
+					InputManager::GetInstance()->UpdateAcceleration(&event.acceleration);
 				}
 			}
 
