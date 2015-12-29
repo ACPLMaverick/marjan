@@ -1,6 +1,6 @@
 \documentclass[12pt, oneside, a4paper]{mwbk}
-\usepackage[cp1250]{inputenc}
 \usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
 \usepackage[OT4]{fontenc}
 
 \usepackage{graphicx}
@@ -24,9 +24,11 @@
 \hyphenpenalty=1000
 \tolerance=500
 
+\setcounter{secnumdepth}{4}
+
 \begin{document}
-\author{ImiÍ Nazwisko}
-\title{Tytu≥}
+\author{Marcin Wawrzonowski}
+\title{Wykorzystanie GPU urzƒÖdze≈Ñ mobilnych w symulacji dynamiki tkanin}
 \begin{titlepage}
 \thispagestyle{empty}
 \begin{textblock}{1}(-2.65,-1.65)
@@ -37,12 +39,12 @@
 \fontfamily{ptm}
 \selectfont
 \Huge
-Tytu≥
+Wykorzystanie GPU urzƒÖdze≈Ñ mobilnych w symulacji dynamiki tkanin
 \end{center}
 \begin{center}
 \fontfamily{ptm}
 \selectfont
-Praca dyplomowa magisterska/inøynierska
+Praca dyplomowa in≈ºynierska
 \end{center}
 \vspace{7.9cm}
 \begin{center}
@@ -50,10 +52,10 @@ Praca dyplomowa magisterska/inøynierska
 \selectfont
 \hspace{-1cm}
 \begin{tabular}{l}
-Wydzia≥ Fizyki Technicznej, Informatyki i Matematyki Stosowanej \\
-Promotor: dr inø. Dominik Szajerman \\
-Dyplomant: ImiÍ Nazwisko \\
-Nr albumu: 123456
+Wydzia≈Ç Fizyki Technicznej, Informatyki i Matematyki Stosowanej \\
+Promotor: dr in≈º. Dominik Szajerman \\
+Dyplomant: Marcin Wawrzonowski \\
+Nr albumu: 180729
 \end{tabular}
 \end{center}
 \vspace{-.5cm}
@@ -61,7 +63,7 @@ Nr albumu: 123456
 \fontfamily{ptm}
 \selectfont
 \begin{textblock}{13}(0,0.4)
-£Ûdü, 2012
+≈Å√≥d≈∫, 2016
 \end{textblock}
 \end{center}
 \end{titlepage}
@@ -69,10 +71,15 @@ Nr albumu: 123456
 \tableofcontents
 
 \include{chap01}
-%\include{chap02}
-%...
+\include{chap02}
+\include{chap03}
+\include{chap04}
+\include{chap05}
+\include{chap06}
 
 \include{bib}
+
+\include{ang}
 
 \listoffigures
 
