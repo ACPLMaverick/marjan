@@ -416,3 +416,9 @@ ClothSim/ClothSim/ClothSim/ClothSim.Android.NativeActivity/ARM/
 ClothSim/ClothSim/ipch/
 ClothSim/ClothSim/ClothSim/ClothSim.Android.Packaging/ARM/
 ClothSim/ClothSim/ClothSim.VC.opendb
+*.aux
+*.lof
+*.lot
+ClothSimPraca/praca_tex/main.pdf
+ClothSimPraca/praca_tex/main.synctex.gz
+*.toc

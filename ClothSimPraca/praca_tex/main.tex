@@ -1,0 +1,87 @@
+\documentclass[12pt, oneside, a4paper]{mwbk}
+\usepackage[cp1250]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[OT4]{fontenc}
+
+\usepackage{graphicx}
+\usepackage{verbatim}
+
+\usepackage{enumitem}
+\usepackage[noend]{algorithmic}
+\usepackage[ruled]{algorithm}
+
+\usepackage{color}
+\usepackage[normalem]{ulem}
+
+\usepackage{rotating}
+\usepackage{float}
+\usepackage{textpos}
+
+\linespread{1,3}
+\oddsidemargin = 10pt
+\textwidth = 470pt
+
+\hyphenpenalty=1000
+\tolerance=500
+
+\begin{document}
+\author{Imiê Nazwisko}
+\title{Tytu³}
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{textblock}{1}(-2.65,-1.65)
+\includegraphics{figures/tytulowa_pusta_mgrinz.pdf}
+\end{textblock}
+\vspace{7.3cm}
+\begin{center}
+\fontfamily{ptm}
+\selectfont
+\Huge
+Tytu³
+\end{center}
+\begin{center}
+\fontfamily{ptm}
+\selectfont
+Praca dyplomowa magisterska/in¿ynierska
+\end{center}
+\vspace{7.9cm}
+\begin{center}
+\fontfamily{ptm}
+\selectfont
+\hspace{-1cm}
+\begin{tabular}{l}
+Wydzia³ Fizyki Technicznej, Informatyki i Matematyki Stosowanej \\
+Promotor: dr in¿. Dominik Szajerman \\
+Dyplomant: Imiê Nazwisko \\
+Nr albumu: 123456
+\end{tabular}
+\end{center}
+\vspace{-.5cm}
+\begin{center}
+\fontfamily{ptm}
+\selectfont
+\begin{textblock}{13}(0,0.4)
+£ódŸ, 2012
+\end{textblock}
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\include{chap01}
+%\include{chap02}
+%...
+
+\include{bib}
+
+\listoffigures
+
+\listoftables
+
+\newpage
+\thispagestyle{empty}
+\begin{textblock}{1}(-2.65,-1.65)
+\includegraphics{figures/oswiadczenie_o_samodzielnosci.pdf}
+\end{textblock}
+
+\end{document}
