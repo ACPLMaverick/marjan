@@ -748,6 +748,11 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 	return err;
 }
 
+inline unsigned int ClothSimulator::UpdateSimCPUx4(VertexData * vertexData, BoxAAData * boxAAData, SphereData * sphereData, int bcCount, int scCount, glm::mat4 * worldMatrix, glm::mat4 * viewMatrix, glm::mat4 * projMatrix, float gravity, float fixedDelta)
+{
+	return 0;
+}
+
 inline unsigned int ClothSimulator::UpdateSimGPU
 	(
 		VertexData* vertexData,
@@ -1448,4 +1453,8 @@ inline void ClothSimulator::RestartSimulation()
 
 	Shutdown();
 	Initialize();
+}
+
+void ClothSimulator::UpdatePartial(void * args)
+{
 }

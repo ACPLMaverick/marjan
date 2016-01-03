@@ -19,8 +19,10 @@ enum ClothSimulationMode
 {
 	MASS_SPRING_GPU,
 	MASS_SPRING_CPU,
+	MASS_SPRING_CPUx4,
 	POSITION_BASED_GPU,
 	POSITION_BASED_CPU,
+	POSITION_BASED_CPUx4,
 	NONE,
 };
 
@@ -117,6 +119,13 @@ struct SimData
 		if (b_multipliers != nullptr)
 			delete b_multipliers;
 	}
+};
+
+struct ThreadData
+{
+	ClothSimulator* inst;
+	int diBegin;
+	int diEnd;
 };
 
 ////////////////////////////////////
@@ -247,6 +256,19 @@ protected:
 			float gravity,
 			float fixedDelta
 			);
+	virtual inline unsigned int UpdateSimCPUx4
+		(
+			VertexData* vertexData,
+			BoxAAData* boxAAData,
+			SphereData* sphereData,
+			int bcCount,
+			int scCount,
+			glm::mat4* worldMatrix,
+			glm::mat4* viewMatrix,
+			glm::mat4* projMatrix,
+			float gravity,
+			float fixedDelta
+			);
 	virtual inline unsigned int UpdateSimGPU
 		(
 			VertexData* vertexData,
@@ -315,6 +337,8 @@ protected:
 	inline void SwapRWIds();
 	inline void AppendRestart();
 	inline void RestartSimulation();
+
+	static void UpdatePartial(void* args);
 public:
 	ClothSimulator(SimObject* obj);
 	ClothSimulator(const ClothSimulator* c);
