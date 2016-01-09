@@ -27,7 +27,7 @@
 		
 		Urządzenie oparte jest o mikrokontroler o nazwie \emph{APQ8064 Snapdragon S4 Pro}. Sercem układu jest czterordzeniowy procesor Krait o taktowaniu 1.5 GHz i architekturze ARMv7-A. Szybkość zegara jest przeszło dwa razy mniejsza niż w przeciętnym odpowiedniku PC. Można stąd wnioskować, że wydajność jest dwukrotnie mniejsza, jednak diabeł tkwi w szczegółach. Dzisiejsze procesory architektury x86 dysponują szerokim wachlarzem specjalnych instrukcji, takich jak SSE czy AVX, bardzo przyspieszających działania na operacjach wektorowych, typu SIMD. Jedynym ich odpowiednikiem w omawianym układzie są instrukcje NEON, dużo mniej wydajne. A zatem, zgodnie z \cite{versus}, procesor Krait cechuje ponad dziesięciokrotnie mniejsza wydajność niż jego przykładowego odpowiednika z komputera klasy PC - Intel Core i7-4770.
 		
-		Układ Snapdragon jest także wyposażony w dedykowane GPU, specjalnie na potrzeby renderingu grafiki 2D i 3D. Jest to Adreno 320, cechujące się taktowaniem zegara 400 MHz i w sumie 64 procesorami strumieniowymi. Karta graficzna osiąga wydajność ok. 60 GFLOPS. Dla porównania weźmy średniej klasy GPU komputerów stacjonarnych sprzed paru lat, GeForce GTX 750. Jego zegar to 1020 MHz, ma ono 512 SP, a wydajnościowo plasuje się trochę ponad 1 TFLOPS. Jedno z najpotężniejszych GPU obecnie, GeForce GTX Titan, cechuje z kolei 3072 procesorów strumieniowych i ok. 6 TFLOPS. Pod uwagę bierzemy oczywiście obliczenia na liczbach zmiennoprzecinkowych pojedynczej precyzji. Widzimy więc, że mobilne GPU wydajnościowo stanowią zaledwie ułamek ich ``pełnowymiarowych'' odpowiedników.
+		Układ Snapdragon jest także wyposażony w dedykowane GPU, specjalnie na potrzeby renderingu grafiki 2D i 3D. Jest to Adreno 320, cechujące się taktowaniem zegara 400 MHz i w sumie 64 procesorami strumieniowymi. Karta graficzna osiąga wydajność ok. 60 GFLOPS\footnote{\emph{Floating-point Operations Per Second} -- ilość operacji na liczbach zmiennoprzecinkowych w czasie 1 sekundy.}. Dla porównania weźmy średniej klasy GPU komputerów stacjonarnych sprzed paru lat, GeForce GTX 750. Jego zegar to 1020 MHz, ma ono 512 SP, a wydajnościowo plasuje się trochę ponad 1 TFLOPS. Jedno z najpotężniejszych GPU obecnie, GeForce GTX Titan, cechuje z kolei 3072 procesorów strumieniowych i ok. 6 TFLOPS. Pod uwagę bierzemy oczywiście obliczenia na liczbach zmiennoprzecinkowych pojedynczej precyzji. Widzimy więc, że mobilne GPU wydajnościowo stanowią zaledwie ułamek ich ``pełnowymiarowych'' odpowiedników.
 		
 		Ważną kwestią jest też dostępność i obsługa odpowiednich technologii, a w szczególności API graficznych i GPGPU. Tutaj na szczęście sytuacja ma się dużo lepiej. Adreno 320 wspiera zaawansowane już całkiem OpenGL ES 3.0 oraz Direct3D 11.1. Patrząc na sprawę pod kątem symulacji tkanin, brakuje tylko obsługi OpenGL ES 3.2, który wprowadził bardzo przydatne w omawianym problemie bufory teksturowe. Mimo to jednak API graficzne spełniają wymagania niniejszej pracy. Oczywiście z ogólnego punktu widzenia, brakuje wielu nowych rozwiązań, wprowadzonych w najnowszych ``dużych'' wersjach OpenGL. Do obliczeń GPGPU wspierane są technologie OpenCL 1.1, będący open-source'owym odpowiednikiem CUDA, oraz RenderScript. W tej pracy jednak okazało się niemożliwe użycie żadnego z nich. Obsługa OpenCL została wycofana na urządzeniach Google, w tym na Nexusie 4, z powodów marketingowych, a konkretnie, z powodu promowania drugiej technologii -- RenderScript. Tej z kolei nie można było użyć z racji tego, iż API nie pozwala jawnie wybrać i ustalić, czy obliczenia będą dokonywane na GPU, czy na CPU.
 		
@@ -69,18 +69,4 @@
 		
 		
 % do bibliografii
-
-%\bibitem{tryon} Bart Kevelham, Nadia Magnenat-Thalmann, \emph{Virtual Try On: An application in need of GPU optimization}, ATIP/A\*CRC HPC Workshop, 2012
-
-%\bibitem{geekbench} \emph{Geekbench 3 Results - Geekbench Browser}, \href{http://browser.primatelabs.com/geekbench3/}{http://browser.primatelabs.com/geekbench3/}, stan na dzień 08.01.2016
-
-%\bibitem{versus} \emph{Qualcomm Adreno 320 vs Nvidia GeForce GTX 750}, \href{http://versus.com/en/qualcomm-adreno-320-vs-nvidia-geforce-gtx-750}{http://versus.com/en/qualcomm-adreno-320-vs-nvidia-geforce-gtx-750}, stan na dzień 08.01.2016
-
-%\bibitem{specs} \emph{LG Nexus 4 Technical Specifications}, \href{http://www.lg.com/uk/mobile-phones/lg-E960-nexus-4-by-lg}{http://www.lg.com/uk/mobile-phones/lg-E960-nexus-4-by-lg}, stan na dzień 08.01.2016
-
-%\bibitem{specs_adreno} \emph{Adreno}, \href{https://en.wikipedia.org/wiki/Adreno}{https://en.wikipedia.org/wiki/Adreno}, stan na dzień 08.01.2016
-
-%\bibitem{specs_gtx750} \emph{GeForce 700 Series}, \href{https://en.wikipedia.org/wiki/GeForce_700_series}{https://en.wikipedia.org/wiki/GeForce_700_series}, stan na dzień 08.01.2016
-
-%\bibitem{specs_gtxtitan} \emph{GeForce 900 Series}, \href{https://en.wikipedia.org/wiki/GeForce_900_series}{https://en.wikipedia.org/wiki/GeForce_900_series}, stan na dzień 08.01.2016
 %===============
