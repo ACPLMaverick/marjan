@@ -7,15 +7,38 @@
 	
 		\subsection{Sensowność wykorzystania urządzeń mobilnych w symulacji tkanin}
 		\label{t:technologie:mobilne:dlaczego}
+		
+		% niższa wydajność ALE unikalne możliwości interakcji i wszechobecna dostępność, wykorzystanie w grach 3D (rozwój tychże) i aplikacjach branży tekstylnej (włókienniczej) oraz odzieżowej, niższa wydajność wiążąca się z niższą jakością, wykorzystanie GPU by ją podnieść
+		
+		W związku z faktem, iż niniejsza praca zajmuje się symulacją tkaniny na urządzeniach mobilnych, naturalnie nasuwa się pytanie o sens realizacji tego typu obliczeń z użyciem smartfonu bądź tabletu. Prawdą jest, że mamy do czynienia ze sporym zapotrzebowaniem na moc obliczeniową, zwiększającym się proporcjonalnie do oczekiwanej dokładności rozwiązania, a konkretnie - do gęstości siatki tkaniny. Z drugiej strony, urządzenia mobilne, w przeciwieństwie do platformy PC, szczytowymi osiągnięciami technologii pod względem wydajności nigdy nie były -- raczej starano się tu osiągnąć kompromis między sensowną mocą obliczeniową a niskim zużyciem energii. Jednakże smartfony i inne tego typu urządzenia cechują się dostępnością dla użytkownika praktycznie zawsze, co nie do końca może być powiedziane o PC, oraz unikalnymi metodami interakcji, takimi jak ekran dotykowy, bądź akcelerometr.
+		
+		Mimo oczywistych wad, także i na platformach mobilnych symulacja tkanin znajduje zastosowanie. Jako pierwszy i najważniejszy przykład należy wskazać rynek gier i wizualizacji 3D. Dawno minęły już czasy, gdy najpopularniejszą grą na telefonach komórkowych był kultowy, dwuwymiarowy ``\emph{Snake}''. Obecnie spora część rynku koncentruje się na złożonych grach trójwymiarowych, z coraz ładniejszą grafiką, na potrzeby których tworzy się coraz bardziej zaawansowane silniki graficzne i korzysta z najnowszych technologii. Podobnie, jak i na platformie PC, także i tutaj możliwe, a nawet pożądane jest użycie symulacji tkanin do m.in. realistycznej animacji elementów stroju bohaterów, flag powiewających na wietrze oraz innych przedmiotów tekstylnych.
+		
+		Obecnie wielu producentów i sprzedawców z różnych branż decyduje się na stworzenie i wypuszczenie na rynek własnej, wyspecjalizowanej aplikacji dla urządzeń mobilnych, pozwalającej w prosty i przyjazny sposób przeglądać oferty, oglądać towary i dokonywać zakupów. Zdecydowanie zwiększa to przychody danej firmy. Branżą, która mogłaby skorzystać na zastosowaniu symulacji tkanin w swoich aplikacjach jest oczywiście branża włókiennicza i odzieżowa. Przykładem może być chociażby stworzenie ``wirtualnej przymierzalni'' \cite{tryon}, przy pomocy której klient byłby w stanie ``ubrać się'' w każdy wybrany element odzieży. Aplikacja pozwoliłaby mu chociażby na obejrzenie go ze wszystkich stron, sprawdzenie elastyczności i zachowania się go w różnych pozach. A to wszystko na ekranie tabletu, dostępne w każdym możliwym miejscu. 
+		
+		Oczywistym jest, że niższa wydajność urządzeń mobilnych wiąże się z niższą jakością symulacji. Warto jednak pamiętać, iż wyświetlacze urządzeń mobilnych z reguły są mniejsze od ``pecetowych'' monitorów. Co za tym idzie -- możemy zastosować siatkę tkaniny o mniejszej gęstości i dokonywać mniej dokładnych obliczeń np. detekcji kolizji bez dużego spadku jakości wizualnej. Ten fakt, oraz omówiona wcześniej mnogość zastosowań sprawiają, że symulacja tkanin na urządzeniach mobilnych zdaje się jak najbardziej mieć sens. W rozdziałach \ref{t:wyniki} i \ref{t:wnioski} przekonamy się, w jakim stopniu.
 	
-		\subsection{Konfiguracja sprzętowa urządzeń mobilnych}
+		\subsection{Konfiguracja sprzętowa urządzeń mobilnych i porównanie z konfiguracją PC}
 		\label{t:technologie:mobilne:konfiguracja}
 		
-		\subsection{Porównanie wydajności i możliwości przykładowego komputera PC i smartfona}
-		\label{t:technologie:mobilne:porownanie}
+		% architektura CPU, szybkości CPU, ilość core'ów, architektura GPU, ilosć SM, API GPU i GPGPU, ilość pamięci op., 
+		
+		Jak już wyżej wspomniano, wydajność konfiguracji sprzętowa urządzeń mobilnych jest drobnym ułamkiem wydajności komputerów klasy PC. Warto dokładniej zwrócić uwagę na to, jaka jest między tymi platformami różnica i z jakimi ograniczeniami się spotkamy, tworząc symulację tkanin na tej pierwszej. Porównania dokonamy na przykładzie urządzenia testowego -- smartfona LG Nexus 4 E960. Dane techniczne zaczerpniemy z \cite{specs}, \cite{specs_adreno}, \cite{specs_gtx750} i \cite{specs_gtxtitan}. 
+		
+		Urządzenie oparte jest o mikrokontroler o nazwie \emph{APQ8064 Snapdragon S4 Pro}. Sercem układu jest czterordzeniowy procesor Krait o taktowaniu 1.5 GHz i architekturze ARMv7-A. Szybkość zegara jest przeszło dwa razy mniejsza niż w przeciętnym odpowiedniku PC. Można stąd wnioskować, że wydajność jest dwukrotnie mniejsza, jednak diabeł tkwi w szczegółach. Dzisiejsze procesory architektury x86 dysponują szerokim wachlarzem specjalnych instrukcji, takich jak SSE czy AVX, bardzo przyspieszających działania na operacjach wektorowych, typu SIMD. Jedynym ich odpowiednikiem w omawianym układzie są instrukcje NEON, dużo mniej wydajne. A zatem, zgodnie z \cite{versus}, procesor Krait cechuje ponad dziesięciokrotnie mniejsza wydajność niż jego przykładowego odpowiednika z komputera klasy PC - Intel Core i7-4770.
+		
+		Układ Snapdragon jest także wyposażony w dedykowane GPU, specjalnie na potrzeby renderingu grafiki 2D i 3D. Jest to Adreno 320, cechujące się taktowaniem zegara 400 MHz i w sumie 64 procesorami strumieniowymi. Karta graficzna osiąga wydajność ok. 60 GFLOPS. Dla porównania weźmy średniej klasy GPU komputerów stacjonarnych sprzed paru lat, GeForce GTX 750. Jego zegar to 1020 MHz, ma ono 512 SP, a wydajnościowo plasuje się trochę ponad 1 TFLOPS. Jedno z najpotężniejszych GPU obecnie, GeForce GTX Titan, cechuje z kolei 3072 procesorów strumieniowych i ok. 6 TFLOPS. Pod uwagę bierzemy oczywiście obliczenia na liczbach zmiennoprzecinkowych pojedynczej precyzji. Widzimy więc, że mobilne GPU wydajnościowo stanowią zaledwie ułamek ich ``pełnowymiarowych'' odpowiedników.
+		
+		Ważną kwestią jest też dostępność i obsługa odpowiednich technologii, a w szczególności API graficznych i GPGPU. Tutaj na szczęście sytuacja ma się dużo lepiej. Adreno 320 wspiera zaawansowane już całkiem OpenGL ES 3.0 oraz Direct3D 11.1. Patrząc na sprawę pod kątem symulacji tkanin, brakuje tylko obsługi OpenGL ES 3.2, który wprowadził bardzo przydatne w omawianym problemie bufory teksturowe. Mimo to jednak API graficzne spełniają wymagania niniejszej pracy. Oczywiście z ogólnego punktu widzenia, brakuje wielu nowych rozwiązań, wprowadzonych w najnowszych ``dużych'' wersjach OpenGL. Do obliczeń GPGPU wspierane są technologie OpenCL 1.1, będący open-source'owym odpowiednikiem CUDA, oraz RenderScript. W tej pracy jednak okazało się niemożliwe użycie żadnego z nich. Obsługa OpenCL została wycofana na urządzeniach Google, w tym na Nexusie 4, z powodów marketingowych, a konkretnie, z powodu promowania drugiej technologii -- RenderScript. Tej z kolei nie można było użyć z racji tego, iż API nie pozwala jawnie wybrać i ustalić, czy obliczenia będą dokonywane na GPU, czy na CPU.
 		
 		\subsection{Unikalne możliwości platform mobilnych w interakcji użytkownika z tkaniną}
 		\label{t:technologie:mobilne:interakcja}
+		
+		% ekran dotykowy, akcelerometr
+		
+		Urządzenia mobilne cechuje jedna ważna przewaga nad komputerami PC -- charakterystyczne tylko dla nich interfejs. Sztandarowym przykładem jest oczywiście ekran dotykowy. W rozważanej kwestii, z jego pomocą użytkownik może ruchami palca po ekranie przemieszczać i rozciągać tkaninę. Pozwala to na nadanie jej ruchu w odpowiednią stronę, sprawdzanie elastyczności oraz dokładne, precyzyjne ustawienie w wirtualnym świecie poprzez sprowokowanie kolizji z obiektami otoczenia. Przydatne może być to szczególnie w omawianym wcześniej przypadku wykorzystania symulacji do aplikacji typu ``przymierzalnia''. Klient jest w stanie realistycznie założyć oglądany element ubioru na swojego awatara i dokładnie go dopasować. 
+		
+		Kolejnym charakterystycznym dla platformy mobilnej urządzeniem wejścia jest akcelerometr. Najważniejszym przykładem jego wykorzystania jest możliwość zmiany kierunku siły grawitacji działającej na symulowany układ, poprzez obracanie telefonu w odpowiednim kierunku. Użytkownik będzie miał wrażenie obracania układem, a siła grawitacji pozostanie stała i skierowana w dół względem niego. Stwarza to kolejne możliwości zmiany położenia tkaniny, dokładnego jej układania i odwzorowania realizmu świata wirtualnego.
 
 	
 	\section{Przedstawienie wybranych technologii i narzędzi}
@@ -24,14 +47,40 @@
 		\subsection{OpenGL 4.0 i OpenGL ES 3.0}
 		\label{t:technologie:narzedzia:ogl}
 		
+		% różnice między nimi i brak paru ważnych rzeczy!
+		
 		\subsection{GLSL}
 		\label{t:technologie:narzedzia:glsl}
 		
-		\subsection{CUDA}
-		\label{t:technologie:narzedzia:cuda}
+		% zalety - zintegrowany z API graficznym, ogólnodostępny, szybki; wady - konieczność dostosowania GPGPU do API graficznego, mało funkcjonalności wspierających GPGPU na OpenGL ES
+		
+		%\subsection{CUDA}		% nie, bo projekt PC-towy trzeba przerobić idealnie tak jak jest androidowy zrobiony
+		%\label{t:technologie:narzedzia:cuda}
 		
 		\subsection{Android NDK}
 		\label{t:technologie:narzedzia:ndk}
 		
+		% jedyne sensowne rozwiązanie jesli sie chce wycisnąć 100% wydajności z aplikacji, odradzany przez dokumentację
+		
 		\subsection{Visual Studio 2015 Community + Cross-platform Development Kit}
 		\label{t:technologie:narzedzia:vs}
+		
+		% nowość, pełna intergracja z VS, zero Javy (też i wada), alternatywa - płatny Xamarin
+		
+		
+% do bibliografii
+
+%\bibitem{tryon} Bart Kevelham, Nadia Magnenat-Thalmann, \emph{Virtual Try On: An application in need of GPU optimization}, ATIP/A\*CRC HPC Workshop, 2012
+
+%\bibitem{geekbench} \emph{Geekbench 3 Results - Geekbench Browser}, \href{http://browser.primatelabs.com/geekbench3/}{http://browser.primatelabs.com/geekbench3/}, stan na dzień 08.01.2016
+
+%\bibitem{versus} \emph{Qualcomm Adreno 320 vs Nvidia GeForce GTX 750}, \href{http://versus.com/en/qualcomm-adreno-320-vs-nvidia-geforce-gtx-750}{http://versus.com/en/qualcomm-adreno-320-vs-nvidia-geforce-gtx-750}, stan na dzień 08.01.2016
+
+%\bibitem{specs} \emph{LG Nexus 4 Technical Specifications}, \href{http://www.lg.com/uk/mobile-phones/lg-E960-nexus-4-by-lg}{http://www.lg.com/uk/mobile-phones/lg-E960-nexus-4-by-lg}, stan na dzień 08.01.2016
+
+%\bibitem{specs_adreno} \emph{Adreno}, \href{https://en.wikipedia.org/wiki/Adreno}{https://en.wikipedia.org/wiki/Adreno}, stan na dzień 08.01.2016
+
+%\bibitem{specs_gtx750} \emph{GeForce 700 Series}, \href{https://en.wikipedia.org/wiki/GeForce_700_series}{https://en.wikipedia.org/wiki/GeForce_700_series}, stan na dzień 08.01.2016
+
+%\bibitem{specs_gtxtitan} \emph{GeForce 900 Series}, \href{https://en.wikipedia.org/wiki/GeForce_900_series}{https://en.wikipedia.org/wiki/GeForce_900_series}, stan na dzień 08.01.2016
+%===============
