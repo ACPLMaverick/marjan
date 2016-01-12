@@ -38,7 +38,137 @@
 	
 	Do obowiązków klasy \texttt{PhysicsManager} należy tak naprawdę tylko rozwiązywanie kolizji, przechowywanie wszelkich danych z tym związanych, tj. klas kolizyjnych, tzw. \emph{colliderów}, pochodnych klasy \texttt{Collider}. Omawiany singleton zawiera także aktualny wektor grawitacji. W celach optymalizacyjnych, kolizje nie są sprawdzane na zasadzie ``każdy obiekt z każdym'', ale tylko dla tych encji, które w danej klatce zmieniły swoje położenie. Wyjątkiem jest sama tkanina -- dla niej kolizje rozwiązywane są w każdym kroku symulacji i poza klasą \texttt{PhysicsManager}, z racji konieczności wykonywania tych obliczeń na GPU było to najwygodniejszym podejściem.
 	
-	Ostatnimi omawianymi singletonami są \texttt{InputManager} oraz \texttt{InputHandler}, który go opakowuje. Owe dwie klasy są ze sobą nierozerwalnie związane. Pierwsza zapewnia niskopoziomową obsługę wszelkich zdarzeń pochodzących z urządzeń wskazujących oraz wyciągnięcie z nich informacji o np. wciśniętych klawiszach, o ile to możliwe. Dane, które zawarte są w owych zdarzeniach zostają sformułowane i udostępnione w postaci wygodnych elementów, tj. zmiennych logicznych, umożliwiających przykładowo sprawdzenie, czy aktualnie ekran dotykowy jest wciśnięty, oraz wektorów dwuwymiarowych odzwierciedlających pozycję wciśnięcia oraz kierunek przesunięcia palca, bądź palców po ekranie. Przeciągnięcie dwoma palcami \texttt{InputManager} także obsługuje, tak samo jak gest ``uszczypnięcia'', czyli tzw. \emph{pinch}. Z kolei \texttt{InputHandler} przekuwa informacje o stanie urządzeń wejściowych na dane o możliwości wykonania konkretnych akcji systemu. Przykładowo, jego funkcja \texttt{GetCameraMovementVector} odnosi się do metody \texttt{GetDoubleTouchDirection} \texttt{InputManagera}. Takie podejście pozwala nam na szybką zmianę sterowania systemem bez potrzeby przerabiania wszystkich zaangażowanych w to komponentów, a jedynie zmieniając implementację funkcji klasy \texttt{InputHandler}. 
+	Ostatnimi omawianymi singletonami są \texttt{InputManager} oraz \texttt{InputHandler}, który go opakowuje. W ich gestii leży obsługa zdarzeń pochodzących z urządzeń wejściowych, takich jak ekran dotykowy na platformie mobilnej. W przypadku ``pecetowej'' wersji programu, nie ma tu mowy o jakichkolwiek zdarzeniach, a zapewniony jest po prostu interfejs do odpytywania systemu o wciśnięcie konkretnych klawiszy na konkretnych urządzeniach. W kodzie samej logiki wirtualnego świata korzystamy jednak z funkcji klasy \texttt{InputHandler}, zamieniającej ``surowe'' dane o stanie przycisków bądź ekranu na informacje o możliwości wykonania akcji przez program.
+	
+	Dla jasności poniżej umieszczone zostały Algorytmy \ref{alg_4_1}, \ref{alg_4_2} i \ref{alg_4_3} dotyczące uproszczonego działania całego programu:
+	
+	\begin{algorithm}
+		\label{alg_4_1}
+		\caption{Inicjalizacja silnika symulacji.}
+			
+				Inicjalizacja połączenia z systemem Android
+				
+				\Indp
+				
+					Pobranie struktury danych z Androida
+					
+					Ustawienie funkcji obsługujących zdarzenia systemu
+					
+					Uruchomienie kolejki zdarzeń
+					
+					Oczekiwanie na sygnał od systemu, mówiący, że możemy inicjalizować resztę programu
+				
+				\Indm
+									
+				Inicjalizacja Renderera
+				
+				\Indp
+				
+					Inicjalizacja EGL i OpenGL
+					
+					Wczytanie shaderów
+					
+					Ustawienie zmiennych OpenGL
+					
+				\Indm	
+				
+				Inicjalizacja Menedżera zasobów
+				
+				\Indp
+					
+					Wczytanie początkowo wymaganych zasobów
+				
+				\Indm	
+				
+				Inicjalizacja Menedżerów interfejsu
+				
+				Inicjalizacja Menedżera fizyki
+				
+				Inicjalizacja Timera
+				
+				\Indp
+				
+					Pobranie od systemu operacyjnego czasu startu aplikacji
+				
+				\Indm
+				
+				Inicjalizacja sceny
+				
+				\Indp
+				
+					Utworzenie obiektów sceny i ich komponentów
+					
+					Utworzenie obiektu tkaniny i komponentu symulatora tkaniny
+					
+					Utworzenie kamery
+					
+					Utworzenie świateł
+					
+					Utworzenie interfejsu użytkownika
+					
+					Utworzenie obiektu z komponentem zarządzającym interfejsem
+				
+				\Indm			
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\label{alg_4_2}
+		\caption{Praca silnika symulacji.}	
+		
+		\While{true}
+		{
+			Wyciągnięcie i obsługa zdarzeń z kolejki
+			
+			\If{m\_running}
+			{
+				Aktualizacja timera
+				
+				Aktualizacja danych z urządzeń wejściowych
+				
+				Aktualizacja encji sceny
+				
+				\Indp
+				
+				Obliczenie jednego kroku symulacji tkaniny
+				
+				\Indm
+				
+				Rozwiązanie ewentualnych kolizji między obiektami
+				
+				Narysowanie jednej klatki wizualizacji symulacji
+			}
+		}	
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\label{alg_4_3}
+		\caption{Uśpienie i wyłączenie silnika symulacji.}	
+		
+		Uśpienie:
+		
+		\Indp
+		
+			Zamknięcie encji sceny i jej samej
+			
+			Zamknięcie wszystkich menedżerów
+			
+			Ustawienie zmiennej logicznej Systemu \emph{m\_running} na \emph{false}
+		
+		\Indm
+		
+		Zamknięcie:
+		
+		\Indp
+		
+			Zamknięcie encji sceny i jej samej
+			
+			Zamknięcie wszystkich menedżerów
+			
+			Wysłanie do systemu informacji o tym, że ostatecznie zamykamy program
+		
+		\Indm
+		
+	\end{algorithm}
 	
 	\section{Budowa i działanie silnika dla wizualizacji i zarządzania symulacją}
 	\label{t:praktyka:silnik}
@@ -52,14 +182,31 @@
 		% Scene, SimObject, Component, Transform, Collider
 		% symulator tkaniny jako komponent
 		
-		Dupa dupa.
+		Diagram \ref{pic_4_1} przedstawia także ogólną architekturę bardzo ważnego elementu silnika, jakim jest wirtualna scena, realizowanego przez klasę \texttt{Scene}. Zgodnie z przyjętym założeniem projektowym, zajmuje się ona przechowywaniem i obsługą wszystkich obiektów, z których składa się świat symulacji. 
+		
+		Abyśmy mogli cokolwiek zobaczyć, niezbędna jest wirtualna kamera, której funkcjonalność enkapsuluje klasa \texttt{Camera}. Określające ją dane to macierze widoku i projekcji oraz wszelkie dane potrzebne do ich wygenerowania. Zaliczamy do nich wektory pozycji kamery, miejsca, w które patrzy się kamera, oraz kierunku obrazującego, gdzie względem kamery jest góra. Ostatni wektor ma kluczowe znaczenie, jeślibyśmy chcieli obracać ją w osi patrzenia. Oprócz tego mamy tu dostępne informacje dotyczące własności macierzy projekcji, czyli kąt soczewki (tzw. FOV -- \emph{Field of View}) oraz płaszczyzny odcinania. Iloczyn macierzy widoku i projekcji jest niezbędny w procesie rysowania obiektów.
+		
+		Scena przechowuje referencje do znajdujących się w niej kamer, obiektów, elementów interfejsu oraz świateł kierunkowych w kolekcjach, dzięki czemu możliwe jest stworzenie ich w dowolnych ilościach (rzecz jasna, w granicach rozsądku). Istnieje łatwa możliwość ustawienia, która kamera jest tą ``główną'', z której aktualnie renderujemy obraz. Światła są po prostu prostymi kontenerami danych, przechowującymi kolor, kolor odbłysku czy kierunek padania. Dane te są przekazywane do shadera podczas rysowania sceny. Elementy interfejsu zostaną dogłębniej omówione w podrozdziale \ref{t:praktyka:silnik:gui}.
+		
+		Diagram \ref{pic_4_2} opisuje budowę klasy \texttt{SimObject}, której obiekty to główne elementy wirtualnego świata symulacji. Została ona zaprojektowana zgodnie z architekturą komponentową -- każdy \texttt{SimObject} zawiera w sobie kolekcję obiektów dziedziczących po klasie abstrakcyjnej \texttt{Component}. Wszystkie znajdujące się w tej kolekcji komponenty są aktualizowane podczas aktualizacji \texttt{SimObjectu}. Wpływają one na zachowanie encji w scenie i określają jej rolę w systemie. Symulator tkaniny także jest komponentem (nosi nazwę \texttt{ClothSimulator}) i może zostać przypisany do dowolnego \texttt{SimObjectu} dodając mu wiadomą funkcjonalność. Prostszym przykład to napisany do celów testowych komponent \texttt{RotateMe}, który sprawia, iż obiekt, który go posiada, obraca się w osi Y ze stałą prędkością. Klasa \texttt{Component} posiada wśród swoich składników referencję do ``nadrzędnego'' obiektu klasy \texttt{SimObject}. Umożliwia to modyfikację jego parametrów w prosty sposób.
+		
+		Inne elementy, \texttt{Transform}, \texttt{Mesh} i \texttt{Collider} dziedziczą po \texttt{Component}, dzięki czemu udostępniona jest im wymieniona wyżej funkcjonalność, lecz dla przejrzystości traktowane są przez \texttt{SimObject} jako osobne byty. Pierwszy z komponentów jest kluczowy do określenia pozycji obiektu w scenie. Odpowiada on za przechowywanie i generowanie tzw. macierzy świata, będącej złożeniem informacji o przemieszczeniu, obrocie i skali. Komponent udostępnia także te parametry w formie trójelementowych wektorów, automatycznie aktualizując macierz świata w momencie ich zmiany z zewnątrz. Przy próbie modyfikacji pozycji automatycznie weryfikowane jest, przy pomocy \texttt{PhysicsManagera}, czy po takim przesunięciu obiekt nie będzie przenikał przez inne obiekty. Sprawdzane są kolizje ze wszystkimi pozostałymi encjami, w oparciu o \texttt{Collidery} znajdujące się w osobnej kolekcji. \texttt{Collider} to klasa abstrakcyjna, a każda z jej implementacji stanowi inną strukturę okalającą, która musi umieć obsłużyć przecięcia z pozostałymi dostępnymi. Na potrzeby naszej symulacji zostały stworzone, omawiane w Rozdziale \ref{t:teoria:analiza:kolizje:zewn} sfery okalające i prostopadłościany AABB. Klasa \texttt{Mesh} i jej podklasa \texttt{MeshGL} enkapsulują wszystkie właściwości dotyczące siatki geometrycznej obiektu, rysowanej na ekranie. Ta ostatnia także jest abstrakcyjna, a jej oferowane implementacje pozwalają na wyrenderowanie: prostopadłościanu, sfery, płaszczyzny prostej, płaszczyzny o dowolnej gęstości (używanej jako model tkaniny) oraz prostokąta w przestrzeni ekranu, na którym zostanie przedstawiony element interfejsu. Działanie będzie omówione szerzej w podrozdziale \ref{t:praktyka:silnik:render}.
 		
 		\subsection{Komunikacja z Androidem}
 		\label{t:praktyka:silnik:andro}
 		
 		% incjalizacja
 		% zdarzenia systemu (klasa System)
+		% obrót ekranu
 		% zdarzenia interfejsu (InputManager)
+		
+		Konieczność komunikacji z systemem operacyjnym Android występuje zarówno podczas inicjalizacji programu, jak i w trakcie jego działania. Spora część operacji jest zautomatyzowana przez kod z pakietu Cross-platform Development, jednak o kluczowe czynności musi zadbać programista. Algorytm \ref{alg_4_1} przedstawia ogólnie ich ciąg. Na samym początku funkcja \texttt{main} otrzymuje jako argument wskaźnik do pewnego zestawu danych, opisanych strukturą \texttt{android\_app}. Jej zawartość składa się z referencji do obiektów udostępnianych przez zautomatyzowany kod Javy oraz trzech ważnych wskaźników na funkcję. Do pierwszego z nich przypisujemy adres metody \texttt{AHandleCmd} klasy \texttt{System}, pozwalając na wywoływanie jej przez system w momencie, gdy zajdzie potrzeba obsługi zdarzenia związanego z cyklem życia aplikacji. Do drugiego wskaźnika należy podpiąć metodę odpowiedzialną za obsługę zdarzeń dla urządzeń wejściowych i w naszym przypadku jest to funkcja \texttt{AHandleInput} klasy \texttt{InputManager}. Ostatni wskaźnik ustawiamy na adres funkcji \texttt{AHandleResize} klasy \texttt{Renderer}, wykonującej zmianę rozmiaru obszaru rysowania zależnie od wymiarów wyświetlacza. Następnie uruchomiona zostaje kolejka zdarzeń, którą później w każdym kroku pętli głównej sprawdzamy. Na koniec należy poczekać, aż Android przekaże nam wymagane zasoby, m.in. kontekst renderingu, niezbędny do poprawnej inicjalizacji OpenGL. Jest to kolejna niewygodna właściwość tej platformy.
+		
+		Charakterystyczna dla systemu Android jest konieczność szczegółowego dbania o cykl życia aplikacji, czyli określanie co aplikacja ma zrobić, gdy zostanie przełączony kontekst, nastąpi uśpienie, wznowienie czy całkowite wyłączenie programu. O tych wszystkich akcjach system powiadamia nas, korzystając ze zdarzeń, które w każdym kroku działania są wyciągane z kolejki i obsługiwane przez wspomnianą wyżej funkcję \texttt{AHandleCmd}. Po uśpieniu program utrzymuje działającą tylko pętlę sprawdzającą kolejkę, żaden z komponentów nie jest aktualizowany. Podczas wznawiania wszystkie inicjalizujemy od nowa. Uniemożliwia to zapis stanu aplikacji przy jakiejkolwiek wymuszonej przez użytkownika przerwie w jej działaniu, ale zabezpiecza przed powstaniem w ten sposób jakichkolwiek błędów symulacji.
+		
+		Jedną z największych różnic pomiędzy Androidem a platformą PC, np. Windows, jest sposób obsługi urządzeń wejścia. W drugim przypadku API graficzne udostępnia zazwyczaj także funkcje, pozwalające w każdym momencie ``zapytać'' konkretne urządzenie o stan jednego bądź wszystkich przycisków. W przypadku smartfona, nie mamy klawiatury ani myszy, a ekran dotykowy. Sposób uzyskiwania informacji o tym, co się z nim aktualnie dzieje, także jest inny. Funkcja \texttt{AHandleInput} zostanie wywołana za każdym razem, gdy będzie mieć miejsce określone przez system operacyjny zdarzenie dotyczące tzw. sensorów, czyli właśnie ekranu dotykowego, akcelerometru, a nawet podpiętej do urządzenia klawiatury. Na poziomie tej metody dokonujemy filtrowania informacji tak, by zapisywać tylko to, co nas interesuje. Wykrywane i udostępniane są przesunięcia palca, wciśnięcia i puszczenia ekranu. Jako osobny gest obsługiwane jest także przesunięcie dwoma palcami naraz i tzw. \emph{uszczypnięcie}.
+		
+		Ostatnią omawianą ważną na platformie mobilnej kwestią, jest obsługa obrotu ekranu, jako że użytkownik może chcieć oglądać aplikację, trzymając telefon pionowo (tryb \emph{portrait}) lub poziomo (tryb \emph{landscape}). Za każdym razem, gdy orientacja wyświetlacza zostanie zmieniona, system operacyjny wysyła odpowiednie zdarzenie. Obsługuje je metoda \texttt{AHandleResize}. Jej działanie jest bardzo proste -- odczytane zostają nowe wymiary ekranu, a następnie wywołana zostaje funkcja \texttt{glViewport}, zmieniająca rozmiary wewnętrznego okna, do którego OpenGL rysuje. Następnie zostaje przeliczona na nowo, z aktualnymi parametrami, macierz projekcji kamery, aby uniknąć rozciągnięcia obrazu. Odpowiednio przeskalowane są także elementy interfejsu.
 		
 		\subsection{Rendering}
 		\label{t:praktyka:silnik:render}
@@ -69,18 +216,67 @@
 		% klasa MeshGL i podklasy - inicjalizacja i metoda rysowania
 		% obsługiwane shadery, tryby rysowania
 		
+		Aby przedstawić daną encję w świecie symulacji, trzeba ją narysować na ekranie. Niezbędny w tym celu jest model 3D i wszystkie związane z nim dane, potrzebne do wyrenderowania go. Klasa \texttt{SimObject} posiada kolekcję obiektów typu \texttt{Mesh}, będącego typem abstrakcyjnym. Jedyne informacje, jakie posiada, to bardzo podstawowe parametry wyglądu, takie jak kolor, współczynnik rozbłysku, czy identyfikator tekstury. Dopiero dziedzicząca po nim klasa \texttt{MeshGL} zapewnia niemalże całą OpenGL'ową implementację. Zastosowano takie rozwiązanie, aby umożliwić łatwą podmianę kodu korzystającego z aktualnie używanej biblioteki graficznej, a co za tym idzie -- łatwe przełączanie między tymi bibliotekami. Poniżej podajemy dokładny przebieg inicjalizacji (Algorytm \ref{alg_4_4}) i rysowania (Algorytm \ref{alg_4_5}).
+		
+		\begin{algorithm}
+			\label{alg_4_4}
+			\caption{Inicjalizacja modelu}	
+			
+			Utworzenie struktur przechowujących dane siatki
+			
+			\emph{Wypełnienie tych struktur danymi}
+			
+			Wygenerowanie VAO (\emph{Vertex Array Object}) i wszystkich niezbędnych buforów na GPU oraz wypełnienie ich danymi
+		\end{algorithm}
+		
+		\begin{algorithm}
+			\label{alg_4_5}
+			\caption{Rysowanie modelu}	
+			
+			Pobranie i włączenie aktualnie używanego przez \texttt{Renderer} shadera
+			
+			Ustawienie wszystkich parametrów jednorodnych (\emph{uniforms}) shadera, w tym macierzy, pozycji oka, kierunków i kolorów świateł oraz parametrów materiału obiektu
+			
+			Przypisanie tekstury do shadera
+			
+			Włączenie tablic atrybutów wierzchołków (pozycja, koordynat UV, wektor normalny, kolor, koordynat barycentryczny i indeks)
+			
+			Narysowanie siatki przy pomocy funkcji \texttt{glDrawElements}
+			
+			Wyłączenie tablic atrybutów wierzchołków
+		\end{algorithm}
+		
+		Etap \emph{Wypełnienie tych struktur danymi} nie bez powodu został napisany kursywą. Klasa \texttt{MeshGL} jest bowiem w dalszym ciągu klasą abstrakcyjną, a funkcja odpowiedzialna właśnie za tę czynność jest jej jedyną abstrakcyjną funkcją. Każda klasa dziedzicząca po \texttt{MeshGL} może we własny sposób wypełnić tablice wierzchołków i ich parametrów, za każdym razem w efekcie tworząc inną siatkę geometryczną. Takie podejście pozwala na proste i wygodne oddzielenie kodu samego rysowania od kodu generującego konkretny model 3D.
+		
+		Sam rendering przebiega w najprostszym trybie \emph{forward}, oznacza to, że wszystkie obiekty program rysuje prosto do bufora ramki, bądź tylnego bufora, w kolejności zgodnej z ich kolejnością występowania w kolekcji sceny i kolekcjach poszczególnych \texttt{SimObjectów}, używając testu bufora głębi do poprawnego umiejscowienia względem odległości od kamery. Rozwiązanie to ogranicza możliwość wprowadzenia dodatkowych efektów graficznych i większej ilości świateł, jednak na potrzeby niniejszej symulacji nie są one potrzebne.
+		
+		Wśród zasobów programu znajdują się w sumie trzy główne shadery, przy pomocy których rysowana jest scena. Pierwszy, podstawowy, renderuje obiekty korzystając z modelu oświetlenia Phonga--Blinna, z obsługą rozbłysku specular. Obliczany jest on w shaderze fragmentów, zapewniając dużo lepszą jakość obrazu, niż w przypadku użycia do tego shadera wierzchołków, kosztem wydajności. Możemy sobie na to pozwolić, z racji małej ilości elementów sceny. Celem działania drugiego shadera jest pokazanie struktury siatki geometrycznej obiektów -- rysuje on tylko krawędzie pomiędzy wierzchołkami. W szczególnych przypadkach zwiększa to znacznie czytelność obrazu i możemy wykorzystać tę funkcję, kiedy np. tkanina w niepoprawny sposób się zawinie, a my będziemy chcieli obejrzeć dokładnie, gdzie znajdują się wierzchołki w tym miejscu i jak przebiegają połączenia między nimi. Nie używamy tu żadnego modelu oświetlenia, a po prostu rysujemy jednolity kolor, przeciwny do koloru wierzchołka. Trzeci shader łączy w sobie funkcjonalności dwóch poprzednich.
+		
 		\subsection{Interfejs użytkownika}
 		\label{t:praktyka:silnik:gui}
 		
 		% niezbędność GUI -- podejmowanie akcji, informowanie użytkownika
 		% InputManager i InputHandler -- co udostępniają, jak są powiązane
-		% komponent GUIController -- kontrola ekranu dotykiem
 		% elementy GUI i ich role w systemie, hierarchiczność, dopasowanie do ekranu
-	
+		% komponent GUIController -- kontrola ekranu dotykiem
+		
+		Niezbędnym do satysfakcjonującej wizualizacji symulacji tkanin i możliwości interakcji z nią przez użytkownika jest stworzenie odpowiedniego interfejsu graficznego, zwanego w skrócie GUI (\emph{Graphical User Interface}). Dzięki niemu zaistnieje możliwość zarówno podejmowania pewnych akcji w symulowanym świecie, bądź poza nim, jaki i przedstawienie użytkownikowi pewnych informacji zwrotnych dotyczących głównie statystyk działania programu. GUI umożliwiło zarówno łatwe i szybkie zebranie wyników testów w Rozdziale \ref{t:wyniki}, jak i miłe dla oka zaprezentowanie symulacji.
+		
+		Urządzenia wejściowe obsługują klasy są \texttt{InputManager} oraz \texttt{InputHandler}. Są one ze sobą nierozerwalnie związane. Pierwsza zapewnia niskopoziomową obsługę wszelkich zdarzeń pochodzących z urządzeń wskazujących oraz wyciągnięcie z nich informacji o np. wciśniętych klawiszach, o ile to możliwe. Dane, które zawarte są w owych zdarzeniach zostają sformułowane i udostępnione w postaci wygodnych elementów, tj. zmiennych logicznych, umożliwiających przykładowo sprawdzenie, czy aktualnie ekran dotykowy jest wciśnięty, oraz wektorów dwuwymiarowych odzwierciedlających pozycję wciśnięcia oraz kierunek przesunięcia palca, bądź palców po ekranie. Przeciągnięcie dwoma palcami \texttt{InputManager} także obsługuje, tak samo jak gest ``uszczypnięcia'', czyli tzw. \emph{pinch}. Z kolei \texttt{InputHandler} przekuwa informacje o stanie urządzeń wejściowych na dane o możliwości wykonania konkretnych akcji systemu. Przykładowo, jego funkcja \texttt{GetCameraMovementVector} odnosi się do metody \texttt{GetDoubleTouchDirection} \texttt{InputManagera}. Takie podejście pozwala nam na szybką zmianę sterowania systemem bez potrzeby przerabiania wszystkich zaangażowanych w to komponentów, a jedynie zmieniając implementację funkcji klasy \texttt{InputHandler}. 
+		
+		Projekt aplikacji zakłada, że użytkownik musi mieć możliwość zmiany położenia, obrotu i przybliżenia kamery, resetowania symulacji i modyfikacji jej parametrów, zmiany trybu wyświetlania obiektów oraz interakcji z tkaniną na dwa sposoby -- przemieszczając obiekt wchodzący z nią w kolizje lub przesuwając ją samą przy pomocy ruchów palca. Wymagane jest także informowanie użytkownika o szybkości działania symulacji oraz o tym, jakie ma ona aktualnie parametry i jakiego jest typu. 
+		
+		Program potrafi rysować dwuwymiarowe elementy GUI w przestrzeni ekranu, takie jak: tekst, obrazki oraz dwustanowe przyciski.
+		Tekst może być dynamicznie zmieniany w każdym kroku pętli głównej. Klasą bazową przedstawiającą abstrakcyjny element interfejsu jest klasa \texttt{GUIElement}, skupiająca w sobie funkcjonalności wspólne dla każdego z wymienionych wyżej rodzajów. Dziedziczą po niej m.in. \texttt{GUIText}, \texttt{Picture} czy \texttt{GUIButton}. Składniki GUI mogą być łączone w hierarchię, co pozwala na łatwe wyłączenie lub włączenie pewnej części interfejsu, np. tekstu oraz na optymalizację wykrywania kliknięcia -- pozycja palca przy kliknięciu nie musi być sprawdzana dla wszystkich elementów. Za większość głównych akcji, jakie użytkownik może wykonać odpowiadają przyciski, dla których możemy zdefiniować osobne operacje zarówno przy zwykłym krótkim wciśnięciu, jak i przytrzymaniu.
+		
+		Komponent \texttt{GUIController} jest ostatnim, acz bardzo ważnym ogniwem systemu interfejsu. Zamienia on sygnały wejściowe, udostępniane przez klasę \texttt{InputHandler} na konkretne działanie w systemie. Zawiera kod obsługujący ruchy kamerą, logikę przycisków i pozostałych elementów GUI. Aktualizuje także informacje tekstowe na ekranie.
 	
 	\section{Budowa i działanie symulatora tkaniny}
 	\label{t:praktyka:symulacja}
 	
+		\subsection{Parametry symulacji}
+		\label{t:praktyka:symulacja:parametry}
+		
 		\subsection{Obliczenia ruchu tkaniny}
 		\label{t:praktyka:symulacja:ruch}
 		
