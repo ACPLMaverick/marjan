@@ -1,88 +1,73 @@
-\chapter{Wyniki testów symulatora}
-\label{t:wyniki}
+\chapter{Budowa i działanie symulatora tkaniny}
+\label{t:symulacja}
 
-
-	\section{Model masy na sprężynie - GPU - Android}
-	\label{t:wyniki:masa_gpu_andro}
+	\section{Założenia projektowe}
+	\label{t:symulacja:zalozenia}
 	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:masa_gpu_andro:czas}
-		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:masa_gpu_andro:pamiec}
-		
-		\subsection{Stabilność}
-		\label{t:wyniki:masa_gpu_andro:stabilnosc}
-		
-		\subsection{Efekt wizualny}
-		\label{t:wyniki:masa_gpu_andro:wizual}
-		
+	%cel działania, możliwości, użycie pamięci, szybciej a więcej pamięci, przystosowanie do GPU, tryby, uproszczony algorytm -- podział na etapy, różnice między implementacjami
 	
-	\section{Model oparty na pozycji - GPU - Android}
-	\label{t:wyniki:poz_gpu_andro}
+	Całość funkcjonalności dotyczących symulacji tkaniny skupiono w klasie \texttt{ClothSimulator}. Dziedziczy ona po typie abstrakcyjnym \texttt{Component}. Za sprawą tego bardzo dobrze komponuje się z architekturą silnika, bez problemu możemy ją dodać do dowolnego \texttt{SimObjectu} oraz wielokrotnie powielić, a także zarządzać jej działaniem poprzez zmienną włączającą bądź wyłączającą.
 	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:poz_gpu_andro:czas}
-		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:poz_gpu_andro:pamiec}
-		
-		\subsection{Stabilność}
-		\label{t:wyniki:poz_gpu_andro:stabilnosc}
-		
-		\subsection{Efekt wizualny}
-		\label{t:wyniki:poz_gpu_andro:wizual}
+	W prezentowanej aplikacji został umieszczony jednak tylko jeden \texttt{ClothSimulator}, aby uprościć działanie i ułatwić pomiary testowe. Za cel części praktycznej pracy postawiono sobie możliwość zasymulowania zachowania pojedynczej tkaniny o prostokątnym kształcie, zawieszonej sztywno w powietrzu za dwa sąsiednie narożniki, poddającej się działaniom sił grawitacji oporu powietrza i wchodzącej w interakcje z obiektami sceny oraz sygnałami od użytkownika, za pośrednictwem ekranu dotykowego smartfona. Symulacja miała udostępniać opcję bycia obliczaną dwoma metodami -- masy na sprężynie i bazującą na pozycji oraz trzema sposobami -- przy użyciu GPU, sekwencyjnie na CPU oraz współbieżnie na CPU, z wykorzystaniem czterech wątków roboczych. Użytkownikowi pozwolono na zmianę istotnych parametrów symulacji poprzez ich wybór z ustalonego zakresu. Wszystkie wymienione wyżej cele zostały zrealizowane. Przeznaczeniem symulatora jest jednak nie tylko wizualizacja, ale też i udostępnienie możliwości oceny modeli tkanin oraz ich implementacji pod kątem wydajności, dlatego program wyświetla informacje o czasie trwania pojedynczego kroku symulacji, a także o całościowym okresie jednego przebiegu pętli głównej programu. 
 	
+	\section{Wydajność a użycie pamięci}
+	\label{t:symulacja:wydajnoscpamiec}
 	
-	\section{Model masy na sprężynie - CPU - Android}
-	\label{t:wyniki:masa_cpu_andro}
+	Jako, że flagowym celem niniejszej pracy było zaimplementowanie symulacji z użyciem GPU, nadrzędne założenie przy projektowaniu to jak największe przyspieszenie przetwarzania kosztem większego użycia pamięci. Wszystkie możliwe dane i czynniki zostają obliczone podczas inicjalizacji symulatora, a wyniki są po prostu przesyłane do odpowiednich funkcji w trakcie działania programu. Wpasowuje się to doskonale w metodykę programowania GPU, do której się dostosowujemy, za sprawą chociażby minimalizacji ilości instrukcji warunkowych oraz uniknięcia obliczeń, które niepotrzebnie byłyby wykonywane dla każdego wierzchołka tkaniny, a mogą przecież zostać przetworzone tylko raz. 
 	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:masa_cpu_andro:czas}
+	Przykładowo, sprawdzając sąsiadów wierzchołka, musimy obliczyć ich identyfikatory (tzn. poznać, które to konkretnie są wierzchołki) oraz zawsze mieć pewność, iż takowy istnieje -- nie wszystkie mają czterech sąsiadów, a dokładnie -- nie posiadają tylu te znajdujące się na zewnętrznych krawędziach siatki. Problem zostaje rozwiązany, gdy każdemu wierzchołkowi przypiszemy ustalone przy starcie komponentu zarówno listę identyfikatorów oraz mnożników, które wynoszą 1 gdy sąsiad istnieje, bądź 0 gdy go nie ma, i w tym przypadku obliczona siła bądź przesunięcie nie biorą udziału w dalszym przetwarzaniu. Eliminujemy także konieczność użycia instrukcji warunkowej, co dodatkowo poprawia nam wydajność. 
+	
+	Niestety, takie podejście zwiększa zużycie pamięci. Jak można się domyślić, jest ono proporcjonalne do ustalonej przez użytkownika gęstości siatki tkaniny. Ponadto, wszystkie wierzchołki wraz z ich parametrami są przechowywane dwukrotnie, z racji konieczności posiadania informacji o pozycjach poprzednich, dla całkowania Verleta (wzór (2.9), Rozdział \ref{t:teoria:analiza:masa}). W przypadku, gdy wybranym trybem symulacji jest tryb GPU, wszystkie te dane zostają dodatkowo skopiowane do pamięci karty graficznej. Dochodzą jeszcze do tego parametry pomocnicze, takie jak wymienione wyżej listy identyfikatorów sąsiadów. Rozważmy przykład, gdzie ustaliliśmy siatkę o \(m \times n\) dodatkowych krawędzi bocznych. Ilość wierzchołków będzie wynosić \( (m + 2)(n + 2) \). Z każdym z nich wiążą się następujące atrybuty:
+	
+	\begin{itemize}
+		\item Pozycja (16 B),
+		\item Koordynat teksturowania (8 B),
+		\item Wektor normalny (16 B),
+		\item Kolor (16 B),
+		\item Koordynat barycentryczny (16 B),
+		\item Indeks (4 B).
+	\end{itemize}
+	
+	Wielkość niektórych elementów została sztucznie zwiększona tak, aby była wielokrotnością 4 B. Dzięki temu dane zostały poprawnie ułożone w buforach jednorodnych, omawianych w Rozdziale \ref{t:technologie:narzedzia:bufory}. W sumie jeden wierzchołek zajmuje 152 B pamięci -- bierzemy pod uwagę podwójne występowanie. Należy jednak pamiętać jeszcze o właściwych dla symulacji parametrach, opisanych w podrozdziale \ref{t:symulacja:dzialanie:parametry}, z których część jest przypisywana każdemu wierzchołkowi oddzielnie. Dodają one do naszych obliczeń kolejne 128 B. W sumie cała tkanina wraz z parametrami waży:
+	
+	\begin{equation}
+	s = 280(m + 2)(n + 2) + 32 \ .
+	\end{equation} 
+	
+	Ostatnia wartość wynika z konieczności przechowywania pojedynczego wektora początkowych odległości między danym a sąsiednimi wierzchołkami, takich samych dla każdego, gdyż rozważamy jednorodną prostokątną siatkę, oraz wektora przesunięcia palca użytkownika po ekranie dotykowym, kluczowego dla realizacji opisanej w podrozdziale \ref{t:symulacja:dzialanie:interakcja} interakcji. Przykładowo, dla gęstej, jak na warunki urządzenia mobilnego, siatki \( 98 \times 98 \) krawędzi, zajętość pamięci wynosi 2800032 B, czyli ok. 2,7 MiB. Jest to spora jak na jeden obiekt logiczny, lecz w żadnym wypadku nie krytyczna ilość dla testowego smartfona, wyposażonego w 2 GB RAM. Oczywiście w naszych obliczeniach nie bierzemy pod uwagę rozmaitych zmiennych pomocniczych dla symulatora tkanin, identyfikatorów buforów i struktur GPU oraz zapisanych wartości parametrów, jednak ich rozmiar jest tu pomijalnie mały.
+	
+	\section{Zasada działania}
+	\label{t:symulacja:dzialanie}
+	
+		\subsection{Ogólny algorytm}
+		\label{t:symulacja:dzialanie:algorytm}
 		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:masa_cpu_andro:pamiec}
-		
-		\subsection{Stabilność}
-		\label{t:wyniki:masa_cpu_andro:stabilnosc}
-		
-		\subsection{Efekt wizualny}
-		\label{t:wyniki:masa_cpu_andro:wizual}
 		
 	
-	\section{Model oparty na pozycji - CPU - Android}
-	\label{t:wyniki:poz_cpu_andro}
+		\subsection{Parametry symulacji}
+		\label{t:symulacja:dzialanie:parametry}
+			
+		% lista parametrów z objaśnieniami
+			
+		\subsection{Obliczenia ruchu tkaniny}
+		\label{t:symulacja:dzialanie:ruch}
+			
+		% różnice między MS i PB z punktu widzenia implementacji, algorytm dla MS, algorytm dla PB, ograniczenie buforów jednorodnych
+			
+		\subsection{Rozwiązywanie kolizji}
+		\label{t:symulacja:dzialanie:kolizje}
+			
+		% algorytm, komunikacja z PhysicsManagerem -- struktury i pakowanie tego na GPU
+			
+		\subsection{Interakcja z użytkownikiem}
+		\label{t:symulacja:dzialanie:interakcja}
+			
+		% po co, co możemy robić, jak to działa, wzory, algorytm
+			
+		\subsection{Przeliczenie wektorów normalnych}
+		\label{t:symulacja:dzialanie:normalne}
+			
+		% po co, wzór, algorytm
 	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:poz_cpu_andro:czas}
-		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:poz_cpu_andro:pamiec}
-		
-		\subsection{Stabilność}
-		\label{t:wyniki:poz_cpu_andro:stabilnosc}
-		
-		\subsection{Efekt wizualny}
-		\label{t:wyniki:poz_cpu_andro:wizual}
-		
-		
-	\section{Model masy na sprężynie - GPU - PC}
-	\label{t:wyniki:masa_gpu_pc}
+	%\section{Budowa i działanie symulatora tkaniny na platformie Windows}	% - ni ma CUDY, będzie to samo	%\label{t:praktyka:symulacjapc}
 	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:masa_gpu_pc:czas}
-		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:masa_gpu_pc:pamiec}
-		
-		
-		
-	\section{Model oparty na pozycji - GPU - PC}
-	\label{t:wyniki:poz_gpu_pc}
-	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:poz_gpu_pc:czas}
-		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:poz_gpu_pc:pamiec}
-

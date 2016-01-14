@@ -1,7 +1,7 @@
-\chapter{Opis aplikacji}
+\chapter{Budowa i działanie aplikacji}
 \label{t:praktyka}
 	
-	\section{Cele i możliwości aplikacji}
+	\section{Cele oraz możliwości aplikacji}
 	\label{t:praktyka:cel}
 	
 	% co program ma robić
@@ -270,26 +270,3 @@
 		Tekst może być dynamicznie zmieniany w każdym kroku pętli głównej. Klasą bazową przedstawiającą abstrakcyjny element interfejsu jest klasa \texttt{GUIElement}, skupiająca w sobie funkcjonalności wspólne dla każdego z wymienionych wyżej rodzajów. Dziedziczą po niej m.in. \texttt{GUIText}, \texttt{Picture} czy \texttt{GUIButton}. Składniki GUI mogą być łączone w hierarchię, co pozwala na łatwe wyłączenie lub włączenie pewnej części interfejsu, np. tekstu oraz na optymalizację wykrywania kliknięcia -- pozycja palca przy kliknięciu nie musi być sprawdzana dla wszystkich elementów. Za większość głównych akcji, jakie użytkownik może wykonać odpowiadają przyciski, dla których możemy zdefiniować osobne operacje zarówno przy zwykłym krótkim wciśnięciu, jak i przytrzymaniu.
 		
 		Komponent \texttt{GUIController} jest ostatnim, acz bardzo ważnym ogniwem systemu interfejsu. Zamienia on sygnały wejściowe, udostępniane przez klasę \texttt{InputHandler} na konkretne działanie w systemie. Zawiera kod obsługujący ruchy kamerą, logikę przycisków i pozostałych elementów GUI. Aktualizuje także informacje tekstowe na ekranie.
-	
-	\section{Budowa i działanie symulatora tkaniny}
-	\label{t:praktyka:symulacja}
-	
-		\subsection{Parametry symulacji}
-		\label{t:praktyka:symulacja:parametry}
-		
-		\subsection{Obliczenia ruchu tkaniny}
-		\label{t:praktyka:symulacja:ruch}
-		
-		\subsection{Rozwiązywanie kolizji}
-		\label{t:praktyka:symulacja:kolizje}
-		
-		\subsection{Interakcja z użytkownikiem}
-		\label{t:praktyka:symulacja:interakcja}
-		
-		\subsection{Przeliczenie wektorów normalnych}
-		\label{t:praktyka:symulacja:normalne}
-	
-	
-	%\section{Budowa i działanie symulatora tkaniny na platformie Windows}	% - ni ma CUDY, będzie to samo
-	%\label{t:praktyka:symulacjapc}
-	
