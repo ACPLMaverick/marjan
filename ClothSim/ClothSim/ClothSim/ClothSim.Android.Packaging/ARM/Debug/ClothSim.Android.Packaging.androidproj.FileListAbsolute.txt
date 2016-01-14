@@ -42,3 +42,7 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_o
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_ok_a.png
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\slider_bar.png
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\slider_head.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_minus.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_minus_a.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_plus.png
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_plus_a.png

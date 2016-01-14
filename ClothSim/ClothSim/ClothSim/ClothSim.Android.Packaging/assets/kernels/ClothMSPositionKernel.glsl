@@ -103,7 +103,7 @@ void main()
 	}
 	
 	// calculate gravity force
-	float grav = Gravity * 0.1f;
+	float grav = Gravity;
 	mForce = mForce + (ElMassCoeffs.y * vec3(0.0f, -grav, 0.0f));
 
 	// calculate air damp force

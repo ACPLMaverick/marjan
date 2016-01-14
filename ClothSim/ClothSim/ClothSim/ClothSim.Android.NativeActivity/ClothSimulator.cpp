@@ -255,178 +255,247 @@ unsigned int ClothSimulator::Initialize()
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// OpenGL Data initialization and binding
-	m_vaoRenderID[0] = m_vd[0]->ids->vertexArrayID;
-	m_vaoRenderID[1] = m_vd[1]->ids->vertexArrayID;
-	glGenVertexArrays(2, m_vaoUpdateID);
-	m_vboPosID[0] = m_vd[0]->ids->vertexBuffer;
-	m_vboPosID[1] = m_vd[1]->ids->vertexBuffer;
-	glGenBuffers(2, m_vboPosLastID);
-	m_vboNrmID[0] = m_vd[0]->ids->normalBuffer;
-	m_vboNrmID[1] = m_vd[1]->ids->normalBuffer;
 
-	for (uint i = 0; i < 2; ++i)
+	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
-		glBindVertexArray(m_vaoUpdateID[i]);
-		glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[i]);
-		glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
-			m_vd[0]->data->vertexCount * sizeof(m_vd[0]->data->positionBuffer[0]),
-			&m_vd[0]->data->positionBuffer[0].x,
-			GL_DYNAMIC_COPY);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		m_vaoRenderID[0] = m_vd[0]->ids->vertexArrayID;
+		m_vaoRenderID[1] = m_vd[1]->ids->vertexArrayID;
+		glGenVertexArrays(2, m_vaoUpdateID);
+		m_vboPosID[0] = m_vd[0]->ids->vertexBuffer;
+		m_vboPosID[1] = m_vd[1]->ids->vertexBuffer;
+		glGenBuffers(2, m_vboPosLastID);
+		m_vboNrmID[0] = m_vd[0]->ids->normalBuffer;
+		m_vboNrmID[1] = m_vd[1]->ids->normalBuffer;
 
-		glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosLastID[i]);
-		glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
-			m_simData.m_vertexCount * sizeof(m_simData.b_positionLast[0]),
-			&m_simData.b_positionLast[0].x,
-			GL_DYNAMIC_COPY);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		for (uint i = 0; i < 2; ++i)
+		{
+			glBindVertexArray(m_vaoUpdateID[i]);
+			glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[i]);
+			glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
+				m_vd[0]->data->vertexCount * sizeof(m_vd[0]->data->positionBuffer[0]),
+				&m_vd[0]->data->positionBuffer[0].x,
+				GL_DYNAMIC_COPY);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-		glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboNrmID[i]);
-		glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
-			m_vd[0]->data->vertexCount * sizeof(m_vd[0]->data->normalBuffer[0]),
-			m_vd[0]->data->normalBuffer,
-			GL_DYNAMIC_COPY);
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, 0);
+			glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosLastID[i]);
+			glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
+				m_simData.m_vertexCount * sizeof(m_simData.b_positionLast[0]),
+				&m_simData.b_positionLast[0].x,
+				GL_DYNAMIC_COPY);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboNrmID[i]);
+			glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER,
+				m_vd[0]->data->vertexCount * sizeof(m_vd[0]->data->normalBuffer[0]),
+				m_vd[0]->data->normalBuffer,
+				GL_DYNAMIC_COPY);
+			glEnableVertexAttribArray(2);
+			glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+
+		glGenBuffers(1, &m_simData.i_neighbours);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbours);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_neighbours[0]),
+			m_simData.b_neighbours,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_neighboursDiag);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighboursDiag);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_neighboursDiag[0]),
+			m_simData.b_neighboursDiag,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_neighbours2);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbours2);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_neighbours2[0]),
+			m_simData.b_neighbours2,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_neighbourMultipliers);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourMultipliers);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_neighbourMultipliers[0]),
+			m_simData.b_neighbourMultipliers,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_neighbourDiagMultipliers);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourDiagMultipliers);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_neighbourDiagMultipliers[0]),
+			m_simData.b_neighbourDiagMultipliers,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(7);
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_neighbour2Multipliers);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbour2Multipliers);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_neighbour2Multipliers[0]),
+			m_simData.b_neighbour2Multipliers,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(8);
+		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_elMassCoeffs);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_elMassCoeffs);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_elMassCoeffs[0]),
+			m_simData.b_elMassCoeffs,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(9);
+		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_multipliers);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_multipliers);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_multipliers[0]),
+			m_simData.b_multipliers,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(10);
+		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		// Other kernel loading and feedbacks initialization goes here
+		m_collisionsKernel = ResourceManager::GetInstance()->LoadKernel(&KERNEL_COL_NAME);
+
+		glGenTransformFeedbacks(1, &m_ctfID);
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_ctfID);
+		glTransformFeedbackVaryings(m_collisionsKernel->id, KERNEL_COL_OUTPUT_NAME_COUNT, KERNEL_COL_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
+		glLinkProgram(m_collisionsKernel->id);
+
+		for (uint i = 0; i < 2; ++i)
+		{
+			m_texColPosID[i] = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[0]);
+			glUniformBlockBinding(m_collisionsKernel->id, m_texColPosID[i], 1);
+		}
+		m_texColBAAID = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[1]);
+		m_texColSID = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[2]);
+		glUniformBlockBinding(m_collisionsKernel->id, m_texColBAAID, 0);
+		glUniformBlockBinding(m_collisionsKernel->id, m_texColSID, 2);
+
+		glGenBuffers(1, &m_vboColBAAID);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_vboColBAAID);
+		glGenBuffers(1, &m_vboColSID);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_vboColSID);
+
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "WorldMatrix"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "ViewMatrix"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "ProjMatrix"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "TouchVector"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "GroundLevel"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "BoxAAColliderCount"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "SphereColliderCount"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "EdgesWidthAll"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "EdgesLengthAll"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "VertexCount"));
+		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "InternalCollisionCheckWindowSize"));
+
+		////////////
+
+		m_normalsKernel = ResourceManager::GetInstance()->LoadKernel(&KERNEL_NRM_NAME);
+
+		glGenTransformFeedbacks(1, &m_ntfID);
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_ntfID);
+		glTransformFeedbackVaryings(m_normalsKernel->id, KERNEL_NRM_OUTPUT_NAME_COUNT, KERNEL_NRM_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
+		glLinkProgram(m_normalsKernel->id);
+
+		for (uint i = 0; i < 2; ++i)
+		{
+			m_texNrmPosID[i] = glGetUniformBlockIndex(m_normalsKernel->id, KERNEL_NRM_INPUT_NAMES[0]);
+			glUniformBlockBinding(m_normalsKernel->id, m_texNrmPosID[i], 0);
+		}
+
+		// Sim-specific initialization. Sim-related transform feedback initialization and kernel loading goes here.
+		err = InitializeSimMSGPU();
+		err = InitializeSimPBGPU();
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
+		glBindVertexArray(0);
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 	}
+	
 
-	glGenBuffers(1, &m_simData.i_neighbours);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbours);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_simData.m_vertexCount * sizeof(m_simData.b_neighbours[0]),
-		m_simData.b_neighbours,
-		GL_STATIC_DRAW);
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &m_simData.i_neighboursDiag);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighboursDiag);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_simData.m_vertexCount * sizeof(m_simData.b_neighboursDiag[0]),
-		m_simData.b_neighboursDiag,
-		GL_STATIC_DRAW);
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &m_simData.i_neighbours2);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbours2);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_simData.m_vertexCount * sizeof(m_simData.b_neighbours2[0]),
-		m_simData.b_neighbours2,
-		GL_STATIC_DRAW);
-	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &m_simData.i_neighbourMultipliers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourMultipliers);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_simData.m_vertexCount * sizeof(m_simData.b_neighbourMultipliers[0]),
-		m_simData.b_neighbourMultipliers,
-		GL_STATIC_DRAW);
-	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &m_simData.i_neighbourDiagMultipliers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourDiagMultipliers);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_simData.m_vertexCount * sizeof(m_simData.b_neighbourDiagMultipliers[0]),
-		m_simData.b_neighbourDiagMultipliers,
-		GL_STATIC_DRAW);
-	glEnableVertexAttribArray(7);
-	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &m_simData.i_neighbour2Multipliers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbour2Multipliers);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_simData.m_vertexCount * sizeof(m_simData.b_neighbour2Multipliers[0]),
-		m_simData.b_neighbour2Multipliers,
-		GL_STATIC_DRAW);
-	glEnableVertexAttribArray(8);
-	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &m_simData.i_elMassCoeffs);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_elMassCoeffs);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_simData.m_vertexCount * sizeof(m_simData.b_elMassCoeffs[0]),
-		m_simData.b_elMassCoeffs,
-		GL_STATIC_DRAW);
-	glEnableVertexAttribArray(9);
-	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glGenBuffers(1, &m_simData.i_multipliers);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_multipliers);
-	glBufferData(GL_ARRAY_BUFFER,
-		m_simData.m_vertexCount * sizeof(m_simData.b_multipliers[0]),
-		m_simData.b_multipliers,
-		GL_STATIC_DRAW);
-	glEnableVertexAttribArray(10);
-	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	// Other kernel loading and feedbacks initialization goes here
-	m_collisionsKernel = ResourceManager::GetInstance()->LoadKernel(&KERNEL_COL_NAME);
-
-	glGenTransformFeedbacks(1, &m_ctfID);
-	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_ctfID);
-	glTransformFeedbackVaryings(m_collisionsKernel->id, KERNEL_COL_OUTPUT_NAME_COUNT, KERNEL_COL_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
-	glLinkProgram(m_collisionsKernel->id);
-
-	for (uint i = 0; i < 2; ++i)
-	{
-		m_texColPosID[i] = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[0]);
-		glUniformBlockBinding(m_collisionsKernel->id, m_texColPosID[i], 1);
-	}
-	m_texColBAAID = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[1]);
-	m_texColSID = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[2]);
-	glUniformBlockBinding(m_collisionsKernel->id, m_texColBAAID, 0);
-	glUniformBlockBinding(m_collisionsKernel->id, m_texColSID, 2);
-
-	glGenBuffers(1, &m_vboColBAAID);
-	glBindBuffer(GL_UNIFORM_BUFFER, m_vboColBAAID);
-	glGenBuffers(1, &m_vboColSID);
-	glBindBuffer(GL_UNIFORM_BUFFER, m_vboColSID);
-
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "WorldMatrix"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "ViewMatrix"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "ProjMatrix"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "TouchVector"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "GroundLevel"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "BoxAAColliderCount"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "SphereColliderCount"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "EdgesWidthAll"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "EdgesLengthAll"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "VertexCount"));
-	m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "InternalCollisionCheckWindowSize"));
-
-	////////////
-
-	m_normalsKernel = ResourceManager::GetInstance()->LoadKernel(&KERNEL_NRM_NAME);
-
-	glGenTransformFeedbacks(1, &m_ntfID);
-	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_ntfID);
-	glTransformFeedbackVaryings(m_normalsKernel->id, KERNEL_NRM_OUTPUT_NAME_COUNT, KERNEL_NRM_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
-	glLinkProgram(m_normalsKernel->id);
-
-	for (uint i = 0; i < 2; ++i)
-	{
-		m_texNrmPosID[i] = glGetUniformBlockIndex(m_normalsKernel->id, KERNEL_NRM_INPUT_NAMES[0]);
-		glUniformBlockBinding(m_normalsKernel->id, m_texNrmPosID[i], 0);
-	}
-
-	// Sim-specific initialization. Sim-related transform feedback initialization and kernel loading goes here.
-	err = InitializeSimMSGPU();
-	err = InitializeSimPBGPU();
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
-	glBindVertexArray(0);
-	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-
-	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
+	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU ||
+		m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPUx4 || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPUx4)
 	{
 		m_meshPlane->SwapDataPtrs();
+	}
+
+	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPUx4 || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPUx4)
+	{
+		// sync structures
+		m_threadsRunning = true;
+		m_barrierCounter = 0;
+		m_mainThreadID = pthread_self();
+
+		m_mutexBarrierCounter = new pthread_mutex_t;
+		m_mutexHold = new pthread_mutex_t;
+		m_mutexHoldStage2 = new pthread_mutex_t;
+		m_mutexHoldStage3 = new pthread_mutex_t;
+		m_mutexThreadsRunning = new pthread_mutex_t;
+
+		pthread_mutexattr_t mutexAttrs;
+		pthread_mutexattr_init(&mutexAttrs);
+		pthread_mutexattr_settype(&mutexAttrs, PTHREAD_MUTEX_RECURSIVE);
+
+		pthread_mutex_init(m_mutexThreadsRunning, &mutexAttrs);
+		pthread_mutex_init(m_mutexHold, &mutexAttrs);
+		pthread_mutex_init(m_mutexHoldStage2, &mutexAttrs);
+		pthread_mutex_init(m_mutexHoldStage3, &mutexAttrs);
+		pthread_mutex_init(m_mutexBarrierCounter, &mutexAttrs);
+
+		pthread_mutexattr_destroy(&mutexAttrs);
+
+		pthread_mutex_lock(m_mutexHold);
+		pthread_mutex_lock(m_mutexHoldStage2);
+		pthread_mutex_lock(m_mutexHoldStage3);
+
+		// thread initialization and suspend until recieving signal from main thread
+		int vertexCountTo4 = m_simData.m_vertexCount;
+		while (vertexCountTo4 < INT32_MAX)
+		{
+			if (vertexCountTo4 % THREAD_COUNT == 0)
+				break;
+
+			++vertexCountTo4;
+		}
+
+		pthread_attr_t threadsAttr;
+		pthread_attr_init(&threadsAttr);
+		pthread_attr_setdetachstate(&threadsAttr, PTHREAD_CREATE_JOINABLE);
+
+		for (int i = 0; i < THREAD_COUNT; ++i)
+		{
+			m_threadData[i].inst = this;
+			m_threadData[i].id = i;
+			m_threadData[i].diBegin = (vertexCountTo4 / THREAD_COUNT) *  i;			// 0, 2, 4, 6
+			if (m_threadData[i].diBegin > m_simData.m_vertexCount)
+				m_threadData[i].diBegin = m_simData.m_vertexCount;
+			m_threadData[i].diEnd = (vertexCountTo4 / THREAD_COUNT) * (i + 1);		// 2, 4, 6, 8
+			if (m_threadData[i].diEnd > m_simData.m_vertexCount)
+				m_threadData[i].diEnd = m_simData.m_vertexCount;
+
+			LOGI("%d: %d - %d", i, m_threadData[i].diBegin, m_threadData[i].diEnd);
+
+			pthread_create(&m_threadIDs[i], &threadsAttr, ClothSimulator::UpdatePartial, (void*)&m_threadData[i]);
+		}
+
+		pthread_attr_destroy(&threadsAttr);
+		
 	}
 
 	return err;
@@ -436,31 +505,56 @@ unsigned int ClothSimulator::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
 
+	// Sim-specific shutdown
+	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
+	{
+		err = ShutdownSimMSGPU();
+		err = ShutdownSimPBGPU();
+
+		glDeleteVertexArrays(2, m_vaoUpdateID);
+		glDeleteBuffers(2, m_vboPosLastID);
+		glDeleteBuffers(1, &m_vboColBAAID);
+		glDeleteBuffers(1, &m_vboColSID);
+
+		glDeleteBuffers(1, &m_simData.i_neighbours);
+		glDeleteBuffers(1, &m_simData.i_neighboursDiag);
+		glDeleteBuffers(1, &m_simData.i_neighbours2);
+		glDeleteBuffers(1, &m_simData.i_neighbourMultipliers);
+		glDeleteBuffers(1, &m_simData.i_neighbourDiagMultipliers);
+		glDeleteBuffers(1, &m_simData.i_neighbour2Multipliers);
+		glDeleteBuffers(1, &m_simData.i_elMassCoeffs);
+		glDeleteBuffers(1, &m_simData.i_multipliers);
+
+		glDeleteTransformFeedbacks(1, &m_ntfID);
+		glDeleteTransformFeedbacks(1, &m_ctfID);
+	}
+	else if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPUx4 || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPUx4)
+	{
+		// here we will have thread shutdown
+		m_threadsRunning = false;
+		pthread_mutex_unlock(m_mutexHold);
+		pthread_mutex_unlock(m_mutexHoldStage2);
+		pthread_mutex_unlock(m_mutexHoldStage3);
+		for (int i = 0; i < THREAD_COUNT; ++i)
+		{
+			pthread_join(m_threadIDs[i], NULL);
+		}
+		pthread_mutex_destroy(m_mutexBarrierCounter);
+		pthread_mutex_destroy(m_mutexHold);
+		pthread_mutex_destroy(m_mutexHoldStage2);
+		pthread_mutex_destroy(m_mutexHoldStage3);
+		pthread_mutex_destroy(m_mutexThreadsRunning);
+		delete m_mutexBarrierCounter;
+		delete m_mutexHold;
+		delete m_mutexHoldStage2;
+		delete m_mutexHoldStage3;
+		delete m_mutexThreadsRunning;
+	}
+
 	m_meshPlane->Shutdown();
 	m_obj->RemoveMesh(m_meshPlane);
 	delete m_meshPlane;
-
-	// Sim-specific shutdown
-	err = ShutdownSimMSGPU();
-	err = ShutdownSimPBGPU();
-
-	glDeleteVertexArrays(2, m_vaoUpdateID);
-	glDeleteBuffers(2, m_vboPosLastID);
-	glDeleteBuffers(1, &m_vboColBAAID);
-	glDeleteBuffers(1, &m_vboColSID);
-
-	glDeleteBuffers(1, &m_simData.i_neighbours);
-	glDeleteBuffers(1, &m_simData.i_neighboursDiag);
-	glDeleteBuffers(1, &m_simData.i_neighbours2);
-	glDeleteBuffers(1, &m_simData.i_neighbourMultipliers);
-	glDeleteBuffers(1, &m_simData.i_neighbourDiagMultipliers);
-	glDeleteBuffers(1, &m_simData.i_neighbour2Multipliers);
-	glDeleteBuffers(1, &m_simData.i_elMassCoeffs);
-	glDeleteBuffers(1, &m_simData.i_multipliers);
-
-	glDeleteTransformFeedbacks(1, &m_ntfID);
-	glDeleteTransformFeedbacks(1, &m_ctfID);
-
+	
 	delete m_vdCopy[0];
 	delete m_vdCopy[1];
 	delete[] m_vdCopy;
@@ -508,6 +602,10 @@ unsigned int ClothSimulator::Update()
 	{
 		err = UpdateSimCPU(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
 	}
+	else if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPUx4 || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPUx4)
+	{
+		err = UpdateSimCPUx4(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
+	}
 	else if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
 		err = UpdateSimGPU(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
@@ -545,6 +643,12 @@ void ClothSimulator::SwitchMode()
 void ClothSimulator::Restart()
 {
 	AppendRestart();
+}
+
+void ClothSimulator::Restart(SimParams * params)
+{
+	m_tempSimParamsPtr = params;
+	Restart();
 }
 
 ClothSimulationMode ClothSimulator::GetMode()
@@ -585,7 +689,7 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 		glm::mat4* worldMatrix,
 		glm::mat4* viewMatrix,
 		glm::mat4* projMatrix,
-		float gravity,
+		glm::vec3* gravity,
 		float fixedDelta
 	)
 {
@@ -612,122 +716,14 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 	// compute collisions and finger movement
 	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
-		glm::vec3 colOffset = glm::vec3(0.0f);
-		glm::vec4 modelPos = m_vd[m_readID]->data->positionBuffer[i];
-		glm::vec3 worldPos = glm::vec3(*worldMatrix * modelPos);
-		glm::vec3 screenPos = glm::vec3(0.0f);	// !
-		glm::vec3 mPos = glm::vec3(modelPos);
-		glm::vec4 lPos = m_vdCopy[m_readID]->data->positionBuffer[i];
-		glm::vec3 totalOffset = glm::vec3(0.0f);
-		float mR = m_simData.b_multipliers[i].y;
-
-		// external collisons
-		for (int j = 0; j < bcCount; ++j)
-		{
-			colOffset = glm::vec3(0.0f);
-			BoxAAData col = boxAAData[j];
-			glm::vec3 closest = glm::min(glm::max(worldPos, col.min), col.max);
-			glm::vec3 diff = closest - worldPos;
-			float dist = Vec3LengthSquared(&diff);
-
-			if (dist < (mR * mR) && dist != 0.0f)
-			{
-				closest = worldPos - closest;
-				colOffset = normalize(closest) * (mR - sqrt(dist));
-				worldPos += colOffset;
-				totalOffset += colOffset;
-			}
-		}
-
-		for (int j = 0; j < scCount; ++j)
-		{
-			colOffset = glm::vec3(0.0f);
-			SphereData col = sphereData[j];
-			glm::vec3 diff = worldPos - col.center;
-			float diffLength = Vec3LengthSquared(&diff);
-			if
-				(
-					diffLength < (mR + col.radius) * (mR + col.radius) &&
-					diffLength != 0.0f
-					)
-			{
-				diff = normalize(diff);
-				diff = diff * ((mR + col.radius) - sqrt(diffLength));
-
-				colOffset = diff;
-				worldPos += colOffset;
-				totalOffset += colOffset;
-			}
-		}
-
-		// internal collisions
-		for (int j = 0; j < 4; ++j)
-		{
-			colOffset = glm::vec3(0.0f);
-			glm::vec3 nPos = glm::vec3(*worldMatrix * m_vd[m_readID]->data->positionBuffer[(int)(glm::roundEven(m_simData.b_neighbours[i][j]))]);
-			glm::vec3 diff = worldPos - nPos;
-			float diffLength = Vec3LengthSquared(&diff);
-			if
-				(
-					diffLength < (mR + mR) * (mR + mR) &&
-					diffLength != 0.0f
-					)
-			{
-				diff = normalize(diff);
-				diff = diff * ((mR + mR) - sqrt(diffLength)) * 0.5f;
-
-				colOffset = diff;
-				worldPos += colOffset;
-				totalOffset += colOffset;
-			}
-		}
-
-		totalOffset *= m_simData.b_multipliers[i].x;
-		glm::vec4 finalPos = glm::vec4(mPos + totalOffset, 1.0f);
-
-		// finger movement
-		glm::vec4 mPosScreen = *projMatrix * (*viewMatrix * (*worldMatrix * finalPos));
-		glm::vec4 mPosScreenNorm = mPosScreen / mPosScreen.w;
-		glm::vec4 fPosScreen = glm::vec4(m_simData.c_touchVector.x, m_simData.c_touchVector.y, 0.0f, mPosScreenNorm.w);
-		glm::vec4 fDirScreen = glm::vec4(m_simData.c_touchVector.z, m_simData.c_touchVector.w, 0.0f, 0.0f);
-		float A = 200.0f;
-		float s = 300.0f;
-		float coeff = A * glm::exp(-((fPosScreen.x - mPosScreenNorm.x) * (fPosScreen.x - mPosScreenNorm.x) +
-						(fPosScreen.y - mPosScreenNorm.y) * (fPosScreen.y - mPosScreenNorm.y)) / 2.0f * s);
-		fDirScreen *= mPosScreen.w;
-		fDirScreen = glm::inverse(*worldMatrix) * (glm::inverse(*viewMatrix) * (glm::inverse(*projMatrix) * fDirScreen));
-		fDirScreen *= coeff * glm::length(glm::vec2(m_simData.c_touchVector.z, m_simData.c_touchVector.w)) * m_simData.b_multipliers[i].x;
-		finalPos.x += fDirScreen.x;
-		finalPos.y += fDirScreen.y;
-		finalPos.z += fDirScreen.z;
-
-		m_vd[m_writeID]->data->positionBuffer[i] = finalPos;
-		m_vdCopy[m_writeID]->data->positionBuffer[i] = lPos;
+		CPUComputeCollision(i, worldMatrix, viewMatrix, projMatrix, boxAAData, sphereData, bcCount, scCount);
 	}
 	SwapRWIds();
 
 	// compute normals
 	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
-		glm::vec3 normal = glm::vec3(0.0f);
-		glm::vec3 mPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
-
-		for (int j = 0; j < 4; ++j)
-		{
-			int nID1 = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
-			int nID2 = (int)(glm::roundEven(m_simData.b_neighbours[i][(j + 1) % 4]));
-			glm::vec3 diff1 = mPos - glm::vec3(m_vd[m_readID]->data->positionBuffer[nID1]);
-			glm::vec3 diff2 = mPos - glm::vec3(m_vd[m_readID]->data->positionBuffer[nID2]);
-
-			glm::vec3 pNormal = (glm::cross(diff1, diff2) * m_simData.b_neighbourMultipliers[i][j] *
-				m_simData.b_neighbourMultipliers[i][(j + 1) % 4]);
-			if (pNormal.x != pNormal.x || pNormal.y != pNormal.y || pNormal.z != pNormal.z)
-				pNormal = glm::vec3(0.0f, 1.0f, 0.0f);
-			normal += pNormal;
-		}
-		normal = glm::normalize(normal);
-		normal.z = -normal.z;
-		m_vd[m_writeID]->data->normalBuffer[i] = glm::vec4(normal, 1.0f);
+		CPUComputeNormal(i);
 	}
 
 	// update GPU buffers
@@ -748,9 +744,145 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 	return err;
 }
 
-inline unsigned int ClothSimulator::UpdateSimCPUx4(VertexData * vertexData, BoxAAData * boxAAData, SphereData * sphereData, int bcCount, int scCount, glm::mat4 * worldMatrix, glm::mat4 * viewMatrix, glm::mat4 * projMatrix, float gravity, float fixedDelta)
+inline unsigned int ClothSimulator::UpdateSimCPUx4(VertexData * vertexData, BoxAAData * boxAAData, SphereData * sphereData, int bcCount, int scCount, glm::mat4 * worldMatrix, glm::mat4 * viewMatrix, glm::mat4 * projMatrix, glm::vec3* gravity, float fixedDelta)
 {
+	// one step of cloth simulation
+	pthread_mutex_unlock(m_mutexHold);
+	while (m_barrierCounter < THREAD_COUNT) /**/;
+	pthread_mutex_lock(m_mutexHold);
+	m_barrierCounter = 0;
+	SwapRWIds();
+
+	pthread_mutex_unlock(m_mutexHoldStage2);
+	while (m_barrierCounter < THREAD_COUNT) /**/;
+	pthread_mutex_lock(m_mutexHoldStage2);
+	m_barrierCounter = 0;
+	SwapRWIds();
+
+	pthread_mutex_unlock(m_mutexHoldStage3);
+	while (m_barrierCounter < THREAD_COUNT) /**/;
+	pthread_mutex_lock(m_mutexHoldStage3);
+	m_barrierCounter = 0;
+
+	// update GPU buffers
+	glBindVertexArray(m_vd[m_writeID]->ids->vertexArrayID);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vd[m_writeID]->ids->vertexBuffer);
+	glBufferSubData(GL_ARRAY_BUFFER, 0,
+		m_simData.m_vertexCount * sizeof(m_vd[m_writeID]->data->positionBuffer[0]),
+		m_vd[m_writeID]->data->positionBuffer);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vd[m_writeID]->ids->normalBuffer);
+	glBufferSubData(GL_ARRAY_BUFFER, 0,
+		m_simData.m_vertexCount * sizeof(m_vd[m_writeID]->data->normalBuffer[0]),
+		m_vd[m_writeID]->data->normalBuffer);
+
 	return 0;
+}
+
+
+void* ClothSimulator::UpdatePartial(void * args)
+{
+	ThreadData* tData = (ThreadData*)args;
+
+	while (tData->inst->m_threadsRunning)
+	{
+		// wait unitl hold lock is released
+		pthread_mutex_lock(tData->inst->m_mutexHold);
+		pthread_mutex_unlock(tData->inst->m_mutexHold);
+		if (tData->inst->m_barrierCounter >= THREAD_COUNT)
+			continue;
+
+		// get data
+		VertexData* clothData = tData->inst->m_meshPlane->GetVertexDataPtr();
+		BoxAAData* boxData = nullptr;
+		SphereData* sphereData = nullptr;
+		if (PhysicsManager::GetInstance()->GetBoxCollidersData()->size() != 0)
+			boxData = &(PhysicsManager::GetInstance()->GetBoxCollidersData()->at(0));
+		if (PhysicsManager::GetInstance()->GetSphereCollidersData()->size() != 0)
+			sphereData = &(PhysicsManager::GetInstance()->GetSphereCollidersData()->at(0));
+		int bcCount = PhysicsManager::GetInstance()->GetBoxCollidersData()->size();
+		int scCount = PhysicsManager::GetInstance()->GetSphereCollidersData()->size();
+
+		glm::mat4 zero = glm::mat4();
+		glm::mat4* wm = &zero;
+
+		if (tData->inst->m_obj->GetTransform() != nullptr)
+			wm = tData->inst->m_obj->GetTransform()->GetWorldMatrix();
+
+		glm::mat4* vw = System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewMatrix();
+		glm::mat4* pr = System::GetInstance()->GetCurrentScene()->GetCamera()->GetProjMatrix();
+
+		glm::vec4 sls1 =
+		{
+			tData->inst->m_simData.c_springLengths.y,
+			tData->inst->m_simData.c_springLengths.x,
+			tData->inst->m_simData.c_springLengths.y,
+			tData->inst->m_simData.c_springLengths.x
+		};
+		glm::vec4 sls2 =
+		{
+			tData->inst->m_simData.c_springLengths.z,
+			tData->inst->m_simData.c_springLengths.z,
+			tData->inst->m_simData.c_springLengths.z,
+			tData->inst->m_simData.c_springLengths.z
+		};
+		glm::vec4 sls3 =
+		{
+			tData->inst->m_simData.c_springLengths.y * tData->inst->m_simData.c_springLengths.w,
+			tData->inst->m_simData.c_springLengths.x * tData->inst->m_simData.c_springLengths.w,
+			tData->inst->m_simData.c_springLengths.y * tData->inst->m_simData.c_springLengths.w,
+			tData->inst->m_simData.c_springLengths.x * tData->inst->m_simData.c_springLengths.w
+		};
+
+		// first stage
+		if (tData->inst->m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPUx4)
+		{
+			for (int i = tData->diBegin; i < tData->diEnd; ++i)
+			{
+				tData->inst->CPUComputePositionMS(i, &sls1, &sls2, &sls3, (float)Timer::GetInstance()->GetFixedDeltaTime(), PhysicsManager::GetInstance()->GetGravity());
+			}
+		}
+		else if (tData->inst->m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPUx4)
+		{
+			for (int i = tData->diBegin; i < tData->diEnd; ++i)
+			{
+				tData->inst->CPUComputePositionPB(i, &sls1, &sls2, &sls3, (float)Timer::GetInstance()->GetFixedDeltaTime(), PhysicsManager::GetInstance()->GetGravity());
+			}
+		}
+
+		pthread_mutex_lock(tData->inst->m_mutexBarrierCounter);
+		++tData->inst->m_barrierCounter;
+		pthread_mutex_unlock(tData->inst->m_mutexBarrierCounter);
+
+		pthread_mutex_lock(tData->inst->m_mutexHoldStage2);
+		pthread_mutex_unlock(tData->inst->m_mutexHoldStage2);
+
+		//second stage
+		for (int i = tData->diBegin; i < tData->diEnd; ++i)
+		{
+			tData->inst->CPUComputeCollision(i, wm, vw, pr, boxData, sphereData, bcCount, scCount);
+		}
+
+		pthread_mutex_lock(tData->inst->m_mutexBarrierCounter);
+		++tData->inst->m_barrierCounter;
+		pthread_mutex_unlock(tData->inst->m_mutexBarrierCounter);
+
+		pthread_mutex_lock(tData->inst->m_mutexHoldStage3);
+		pthread_mutex_unlock(tData->inst->m_mutexHoldStage3);
+
+		// third stage
+
+		for (int i = tData->diBegin; i < tData->diEnd; ++i)
+		{
+			tData->inst->CPUComputeNormal(i);
+		}
+
+		pthread_mutex_lock(tData->inst->m_mutexBarrierCounter);
+		++tData->inst->m_barrierCounter;
+		pthread_mutex_unlock(tData->inst->m_mutexBarrierCounter);
+	}
+
+	return NULL;
 }
 
 inline unsigned int ClothSimulator::UpdateSimGPU
@@ -763,7 +895,7 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 		glm::mat4* worldMatrix,
 		glm::mat4* viewMatrix,
 		glm::mat4* projMatrix,
-		float gravity,
+		glm::vec3* gravity,
 		float fixedDelta
 	)
 {
@@ -894,7 +1026,15 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	/*
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighboursDiag);
 
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourDiagMultipliers);
+	*/
 	glEnable(GL_RASTERIZER_DISCARD);
 
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_ntfID);
@@ -977,7 +1117,7 @@ inline unsigned int ClothSimulator::ShutdownSimMSGPU()
 	return err;
 }
 
-inline unsigned int ClothSimulator::UpdateSimMSGPU(float gravity, float fixedDelta)
+inline unsigned int ClothSimulator::UpdateSimMSGPU(glm::vec3* gravity, float fixedDelta)
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -987,7 +1127,7 @@ inline unsigned int ClothSimulator::UpdateSimMSGPU(float gravity, float fixedDel
 	glUniform1i(m_msPosKernelID->uniformIDs->at(1), m_simData.m_edgesWidthAll);
 	glUniform1i(m_msPosKernelID->uniformIDs->at(2), m_simData.m_edgesLengthAll);
 	glUniform1f(m_msPosKernelID->uniformIDs->at(3), fixedDelta);
-	glUniform1f(m_msPosKernelID->uniformIDs->at(4), gravity);
+	glUniform1f(m_msPosKernelID->uniformIDs->at(4), -gravity->y);
 	glUniform4f(m_msPosKernelID->uniformIDs->at(5), 
 		m_simData.c_springLengths.x, 
 		m_simData.c_springLengths.y, 
@@ -1067,7 +1207,7 @@ inline unsigned int ClothSimulator::ShutdownSimPBGPU()
 	return err;
 }
 
-inline unsigned int ClothSimulator::UpdateSimPBGPU(float gravity, float fixedDelta)
+inline unsigned int ClothSimulator::UpdateSimPBGPU(glm::vec3* gravity, float fixedDelta)
 {
 	unsigned int err = CS_ERR_NONE;
 
@@ -1077,7 +1217,7 @@ inline unsigned int ClothSimulator::UpdateSimPBGPU(float gravity, float fixedDel
 	glUniform1i(m_pbPosKernelID->uniformIDs->at(1), m_simData.m_edgesWidthAll);
 	glUniform1i(m_pbPosKernelID->uniformIDs->at(2), m_simData.m_edgesLengthAll);
 	glUniform1f(m_pbPosKernelID->uniformIDs->at(3), fixedDelta);
-	glUniform1f(m_pbPosKernelID->uniformIDs->at(4), gravity);
+	glUniform1f(m_pbPosKernelID->uniformIDs->at(4), -gravity->y);
 	glUniform4f(m_pbPosKernelID->uniformIDs->at(5),
 		m_simData.c_springLengths.x,
 		m_simData.c_springLengths.y,
@@ -1113,12 +1253,10 @@ inline unsigned int ClothSimulator::UpdateSimPBGPU(float gravity, float fixedDel
 	return err;
 }
 
-inline unsigned int ClothSimulator::UpdateSimMSCPU(float gravity, float fixedDelta)
+inline unsigned int ClothSimulator::UpdateSimMSCPU(glm::vec3* gravity, float fixedDelta)
 {
 	unsigned int err = CS_ERR_NONE;
 
-	glm::vec3 posCurrent, posLast, force, tempForce, velocity, posNew, nPos, nPosLast, nVelocity;
-	float elasticity, elDamp, airDamp, mass, lockMultiplier;
 	glm::vec4 sls1 = 
 	{
 		m_simData.c_springLengths.y, 
@@ -1143,80 +1281,15 @@ inline unsigned int ClothSimulator::UpdateSimMSCPU(float gravity, float fixedDel
 
 	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
-		posCurrent = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
-		posLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[i]);
-		velocity = (posCurrent - posLast) / fixedDelta;
-		force = glm::vec3(0.0f);
-		elasticity = m_simData.b_elMassCoeffs[i][0];
-		mass = m_simData.b_elMassCoeffs[i][1];
-		elDamp = m_simData.b_elMassCoeffs[i][2];
-		airDamp = m_simData.b_elMassCoeffs[i][3];
-		lockMultiplier = m_simData.b_multipliers[i][0];
-
-		for (int j = 0; j < 4; ++j)
-		{
-			int nID = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
-			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
-			{
-				//LOGI("%d", nID);
-				continue;
-			}
-				
-			nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
-			nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
-			
-			CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, sls1[j],
-				elasticity, elDamp, fixedDelta, &tempForce);
-
-			force += tempForce * m_simData.b_neighbourMultipliers[i][j];
-		}
-		for (int j = 0; j < 4; ++j)
-		{
-			int nID = (int)(m_simData.b_neighboursDiag[i][j]);
-			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
-				continue;
-			nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
-			nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
-
-			CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, sls2[j],
-				elasticity, elDamp, fixedDelta, &tempForce);
-
-			force += tempForce * m_simData.b_neighbourDiagMultipliers[i][j];
-		}
-		for (int j = 0; j < 4; ++j)
-		{
-			int nID = (int)(m_simData.b_neighbours2[i][j]);
-			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
-				continue;
-			nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
-			nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
-
-			CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, sls3[j],
-				elasticity, elDamp, fixedDelta, &tempForce);
-
-			force += tempForce * m_simData.b_neighbour2Multipliers[i][j];
-		}
-
-		force += mass * glm::vec3(0.0f, -gravity * 0.1f, 0.0f);
-		force += (-airDamp * velocity);
-		force *= lockMultiplier;
-		force = force / mass;
-
-		posNew = 2.0f * posCurrent - posLast + force * fixedDelta * fixedDelta;
-
-		m_vdCopy[m_writeID]->data->positionBuffer[i] = glm::vec4(posCurrent, 1.0f);
-		m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(posNew, 1.0f);
+		CPUComputePositionMS(i, &sls1, &sls2, &sls3, fixedDelta, gravity);
 	}
 
 	return err;
 }
 
-inline unsigned int ClothSimulator::UpdateSimPBCPU(float gravity, float fixedDelta)
+inline unsigned int ClothSimulator::UpdateSimPBCPU(glm::vec3* gravity, float fixedDelta)
 {
 	unsigned int err = CS_ERR_NONE;
-	glm::vec3 posCurrent, posLast, velocity, force, posPredicted, cPos, posNew;
-	float elasticity, airDamp, mass, lockMultiplier;
-	float elBias = 0.0005f;
 	glm::vec4 sls1 =
 	{
 		m_simData.c_springLengths.y,
@@ -1241,71 +1314,288 @@ inline unsigned int ClothSimulator::UpdateSimPBCPU(float gravity, float fixedDel
 
 	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
-		posCurrent = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
-		posLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[i]);
-		velocity = (posCurrent - posLast) / fixedDelta;
-		force = glm::vec3(0.0f, 0.0f, 0.0f);
-		elasticity = m_simData.b_elMassCoeffs[i].x * elBias;
-		mass = m_simData.b_elMassCoeffs[i].y;
-		airDamp = m_simData.b_elMassCoeffs[i].w;
-		lockMultiplier = m_simData.b_multipliers[i].x;
-
-		force += mass * glm::vec3(0.0f, -gravity * 0.1f, 0.0f);
-		force += -airDamp * velocity;
-		force *= lockMultiplier;
-		force = force / mass;
-		posPredicted = 2.0f * posCurrent - posLast + force * fixedDelta * fixedDelta;
-
-		cPos = glm::vec3(0.0f, 0.0f, 0.0f);
-		for (int j = 0; j < 4; ++j)
-		{
-			int nID = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
-			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
-			{
-				continue;
-			}
-
-			glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
-			glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
-			float w = 1.0f;
-			CalcDistConstraint(&posCurrent, &nPos, mass, sls1[j], elasticity, &cstr, &w);
-			cPos -= cstr * w * m_simData.b_neighbourMultipliers[i][j];
-		}
-		for (int j = 0; j < 4; ++j)
-		{
-			int nID = (int)(glm::roundEven(m_simData.b_neighboursDiag[i][j]));
-			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
-			{
-				continue;
-			}
-
-			glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
-			glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
-			float w = 1.0f;
-			CalcDistConstraint(&posCurrent, &nPos, mass, sls2[j], elasticity, &cstr, &w);
-			cPos -= cstr * w * m_simData.b_neighbourDiagMultipliers[i][j];
-		}
-		for (int j = 0; j < 4; ++j)
-		{
-			int nID = (int)(glm::roundEven(m_simData.b_neighbours2[i][j]));
-			if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
-			{
-				continue;
-			}
-
-			glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
-			glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
-			float w = 1.0f;
-			CalcDistConstraint(&posCurrent, &nPos, mass, sls3[j], elasticity, &cstr, &w);
-			cPos -= cstr * w * m_simData.b_neighbour2Multipliers[i][j];
-		}
-
-		posNew = posPredicted + cPos * lockMultiplier;
-		m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(posNew, 1.0f);
-		m_vdCopy[m_writeID]->data->positionBuffer[i] = glm::vec4(posCurrent, 1.0f);
+		CPUComputePositionPB(i, &sls1, &sls2, &sls3, fixedDelta, gravity);
 	}
 	
 	return err;
+}
+
+inline void ClothSimulator::CPUComputePositionMS(int i, glm::vec4* sls1, glm::vec4* sls2, glm::vec4* sls3, float fixedDelta, glm::vec3* gravity)
+{
+	glm::vec3 posCurrent, posLast, force, tempForce, velocity, posNew, nPos, nPosLast, nVelocity;
+	float elasticity, elDamp, airDamp, mass, lockMultiplier;
+
+	posCurrent = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
+	posLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[i]);
+	velocity = (posCurrent - posLast) / fixedDelta;
+	force = glm::vec3(0.0f);
+	elasticity = m_simData.b_elMassCoeffs[i][0];
+	mass = m_simData.b_elMassCoeffs[i][1];
+	elDamp = m_simData.b_elMassCoeffs[i][2];
+	airDamp = m_simData.b_elMassCoeffs[i][3];
+	lockMultiplier = m_simData.b_multipliers[i][0];
+
+	for (int j = 0; j < 4; ++j)
+	{
+		int nID = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
+		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+		{
+			//LOGI("%d", nID);
+			continue;
+		}
+
+		nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+		nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
+
+		CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, (*sls1)[j],
+			elasticity, elDamp, fixedDelta, &tempForce);
+
+		force += tempForce * m_simData.b_neighbourMultipliers[i][j];
+	}
+	for (int j = 0; j < 4; ++j)
+	{
+		int nID = (int)(m_simData.b_neighboursDiag[i][j]);
+		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+			continue;
+		nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+		nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
+
+		CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, (*sls2)[j],
+			elasticity, elDamp, fixedDelta, &tempForce);
+
+		force += tempForce * m_simData.b_neighbourDiagMultipliers[i][j];
+	}
+	for (int j = 0; j < 4; ++j)
+	{
+		int nID = (int)(m_simData.b_neighbours2[i][j]);
+		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+			continue;
+		nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+		nPosLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[nID]);
+
+		CalculateSpringForce(&posCurrent, &posLast, &nPos, &nPosLast, (*sls3)[j],
+			elasticity, elDamp, fixedDelta, &tempForce);
+
+		force += tempForce * m_simData.b_neighbour2Multipliers[i][j];
+	}
+
+	force += mass * (*gravity);
+	force += (-airDamp * velocity);
+	force *= lockMultiplier;
+	force = force / mass;
+
+	posNew = 2.0f * posCurrent - posLast + force * fixedDelta * fixedDelta;
+
+	m_vdCopy[m_writeID]->data->positionBuffer[i] = glm::vec4(posCurrent, 1.0f);
+	m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(posNew, 1.0f);
+}
+
+inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::vec4* sls2, glm::vec4* sls3, float fixedDelta, glm::vec3* gravity)
+{
+	glm::vec3 posCurrent, posLast, velocity, force, posPredicted, cPos, posNew;
+	float elasticity, airDamp, mass, lockMultiplier;
+	float elBias = 0.0005f;
+
+	posCurrent = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
+	posLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[i]);
+	velocity = (posCurrent - posLast) / fixedDelta;
+	force = glm::vec3(0.0f, 0.0f, 0.0f);
+	elasticity = m_simData.b_elMassCoeffs[i].x * elBias;
+	mass = m_simData.b_elMassCoeffs[i].y;
+	airDamp = m_simData.b_elMassCoeffs[i].w;
+	lockMultiplier = m_simData.b_multipliers[i].x;
+
+	force += mass * (*gravity);
+	force += -airDamp * velocity;
+	force *= lockMultiplier;
+	force = force / mass;
+	posPredicted = 2.0f * posCurrent - posLast + force * fixedDelta * fixedDelta;
+
+	cPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	for (int j = 0; j < 4; ++j)
+	{
+		int nID = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
+		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+		{
+			continue;
+		}
+
+		glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
+		float w = 1.0f;
+		CalcDistConstraint(&posCurrent, &nPos, mass, (*sls1)[j], elasticity, &cstr, &w);
+		cPos -= cstr * w * m_simData.b_neighbourMultipliers[i][j];
+	}
+	for (int j = 0; j < 4; ++j)
+	{
+		int nID = (int)(glm::roundEven(m_simData.b_neighboursDiag[i][j]));
+		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+		{
+			continue;
+		}
+
+		glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
+		float w = 1.0f;
+		CalcDistConstraint(&posCurrent, &nPos, mass, (*sls2)[j], elasticity, &cstr, &w);
+		cPos -= cstr * w * m_simData.b_neighbourDiagMultipliers[i][j];
+	}
+	for (int j = 0; j < 4; ++j)
+	{
+		int nID = (int)(glm::roundEven(m_simData.b_neighbours2[i][j]));
+		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
+		{
+			continue;
+		}
+
+		glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
+		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
+		float w = 1.0f;
+		CalcDistConstraint(&posCurrent, &nPos, mass, (*sls3)[j], elasticity, &cstr, &w);
+		cPos -= cstr * w * m_simData.b_neighbour2Multipliers[i][j];
+	}
+
+	posNew = posPredicted + cPos * lockMultiplier;
+	m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(posNew, 1.0f);
+	m_vdCopy[m_writeID]->data->positionBuffer[i] = glm::vec4(posCurrent, 1.0f);
+}
+
+inline void ClothSimulator::CPUComputeCollision(int i, glm::mat4* worldMatrix, glm::mat4* viewMatrix, glm::mat4* projMatrix, BoxAAData boxAAData[], SphereData sphereData[],
+	int bcCount, int scCount)
+{
+	glm::vec3 colOffset = glm::vec3(0.0f);
+	glm::vec4 modelPos = m_vd[m_readID]->data->positionBuffer[i];
+	glm::vec3 worldPos = glm::vec3(*worldMatrix * modelPos);
+	glm::vec3 screenPos = glm::vec3(0.0f);	// !
+	glm::vec3 mPos = glm::vec3(modelPos);
+	glm::vec4 lPos = m_vdCopy[m_readID]->data->positionBuffer[i];
+	glm::vec3 totalOffset = glm::vec3(0.0f);
+	float mR = m_simData.b_multipliers[i].y;
+
+	// external collisons
+	for (int j = 0; j < bcCount; ++j)
+	{
+		colOffset = glm::vec3(0.0f);
+		BoxAAData col = boxAAData[j];
+		glm::vec3 closest = glm::min(glm::max(worldPos, col.min), col.max);
+		glm::vec3 diff = closest - worldPos;
+		float dist = Vec3LengthSquared(&diff);
+
+		if (dist < (mR * mR) && dist != 0.0f)
+		{
+			closest = worldPos - closest;
+			colOffset = normalize(closest) * (mR - sqrt(dist));
+			worldPos += colOffset;
+			totalOffset += colOffset;
+		}
+	}
+
+	for (int j = 0; j < scCount; ++j)
+	{
+		colOffset = glm::vec3(0.0f);
+		SphereData col = sphereData[j];
+		glm::vec3 diff = worldPos - col.center;
+		float diffLength = Vec3LengthSquared(&diff);
+		if
+			(
+				diffLength < (mR + col.radius) * (mR + col.radius) &&
+				diffLength != 0.0f
+				)
+		{
+			diff = normalize(diff);
+			diff = diff * ((mR + col.radius) - sqrt(diffLength));
+
+			colOffset = diff;
+			worldPos += colOffset;
+			totalOffset += colOffset;
+		}
+	}
+
+	// internal collisions
+	for (int j = 0; j < 4; ++j)
+	{
+		colOffset = glm::vec3(0.0f);
+		glm::vec3 nPos = glm::vec3(*worldMatrix * m_vd[m_readID]->data->positionBuffer[(int)(glm::roundEven(m_simData.b_neighbours[i][j]))]);
+		glm::vec3 diff = worldPos - nPos;
+		float diffLength = Vec3LengthSquared(&diff);
+		if
+			(
+				diffLength < (mR + mR) * (mR + mR) &&
+				diffLength != 0.0f
+				)
+		{
+			diff = normalize(diff);
+			diff = diff * ((mR + mR) - sqrt(diffLength)) * 0.5f;
+
+			colOffset = diff;
+			worldPos += colOffset;
+			totalOffset += colOffset;
+		}
+	}
+
+	totalOffset *= m_simData.b_multipliers[i].x;
+	glm::vec4 finalPos = glm::vec4(mPos + totalOffset, 1.0f);
+
+	// finger movement
+	glm::vec4 mPosScreen = *projMatrix * (*viewMatrix * (*worldMatrix * finalPos));
+	glm::vec4 mPosScreenNorm = mPosScreen / mPosScreen.w;
+	glm::vec4 fPosScreen = glm::vec4(m_simData.c_touchVector.x, m_simData.c_touchVector.y, 0.0f, mPosScreenNorm.w);
+	glm::vec4 fDirScreen = glm::vec4(m_simData.c_touchVector.z, m_simData.c_touchVector.w, 0.0f, 0.0f);
+	float A = 200.0f;
+	float s = 300.0f;
+	float coeff = A * glm::exp(-((fPosScreen.x - mPosScreenNorm.x) * (fPosScreen.x - mPosScreenNorm.x) +
+		(fPosScreen.y - mPosScreenNorm.y) * (fPosScreen.y - mPosScreenNorm.y)) / 2.0f * s);
+	fDirScreen *= mPosScreen.w;
+	fDirScreen = glm::inverse(*worldMatrix) * (glm::inverse(*viewMatrix) * (glm::inverse(*projMatrix) * fDirScreen));
+	fDirScreen *= coeff * glm::length(glm::vec2(m_simData.c_touchVector.z, m_simData.c_touchVector.w)) * m_simData.b_multipliers[i].x;
+	finalPos.x += fDirScreen.x;
+	finalPos.y += fDirScreen.y;
+	finalPos.z += fDirScreen.z;
+
+	m_vd[m_writeID]->data->positionBuffer[i] = finalPos;
+	m_vdCopy[m_writeID]->data->positionBuffer[i] = lPos;
+}
+
+inline void ClothSimulator::CPUComputeNormal(int i)
+{
+	glm::vec3 normal = glm::vec3(0.0f);
+	glm::vec3 mPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
+
+	float ids[8];
+	float mpliers[8];
+	ids[0] = m_simData.b_neighbours[i][0];
+	ids[1] = m_simData.b_neighboursDiag[i][0];
+	ids[2] = m_simData.b_neighbours[i][1];
+	ids[3] = m_simData.b_neighboursDiag[i][1];
+	ids[4] = m_simData.b_neighbours[i][2];
+	ids[5] = m_simData.b_neighboursDiag[i][2];
+	ids[6] = m_simData.b_neighbours[i][3];
+	ids[7] = m_simData.b_neighboursDiag[i][3];
+	mpliers[0] = m_simData.b_neighbourMultipliers[i][0];
+	mpliers[1] = m_simData.b_neighbourDiagMultipliers[i][0];
+	mpliers[2] = m_simData.b_neighbourMultipliers[i][1];
+	mpliers[3] = m_simData.b_neighbourDiagMultipliers[i][1];
+	mpliers[4] = m_simData.b_neighbourMultipliers[i][2];
+	mpliers[5] = m_simData.b_neighbourDiagMultipliers[i][2];
+	mpliers[6] = m_simData.b_neighbourMultipliers[i][3];
+	mpliers[7] = m_simData.b_neighbourDiagMultipliers[i][3];
+
+	for (int j = 0; j < 8; ++j)
+	{
+		int nID1 = (int)(glm::roundEven(ids[j]));
+		int nID2 = (int)(glm::roundEven(ids[(j + 1) % 8]));
+		glm::vec3 diff1 = mPos - glm::vec3(m_vd[m_readID]->data->positionBuffer[nID1]);
+		glm::vec3 diff2 = mPos - glm::vec3(m_vd[m_readID]->data->positionBuffer[nID2]);
+
+		glm::vec3 pNormal = (glm::cross(diff1, diff2) * mpliers[j] *
+			mpliers[(j + 1) % 8]);
+		if (pNormal.x != pNormal.x || pNormal.y != pNormal.y || pNormal.z != pNormal.z)
+			pNormal = glm::vec3(0.0f, 1.0f, 0.0f);
+		normal += pNormal;
+	}
+	normal = glm::normalize(normal);
+	normal.z = -normal.z;
+	m_vd[m_writeID]->data->normalBuffer[i] = glm::vec4(normal, 1.0f);
 }
 
 /////////////////////////////////
@@ -1452,9 +1742,12 @@ inline void ClothSimulator::RestartSimulation()
 
 
 	Shutdown();
-	Initialize();
-}
 
-void ClothSimulator::UpdatePartial(void * args)
-{
+	if (m_tempSimParamsPtr != nullptr)
+	{
+		UpdateSimParams(m_tempSimParamsPtr);
+		m_tempSimParamsPtr = nullptr;
+	}	
+
+	Initialize();
 }

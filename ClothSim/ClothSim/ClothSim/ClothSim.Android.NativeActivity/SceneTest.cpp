@@ -82,14 +82,6 @@ unsigned int SceneTest::Initialize()
 	testObjTransform->SetPosition(&tPos);
 	testObjTransform->SetScale(&tScl);
 	testObj->SetTransform(testObjTransform);
-
-	//tCol = glm::vec4(0.2f, 0.2f, 0.8f, 1.0f);
-	//MeshGLBox* box = new MeshGLBox(testObj, 4.0f, 3.0f, 3.0f, &tCol);
-	//box->Initialize();
-	//box->SetGloss(100.0f);
-	//box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
-	//testObj->AddMesh(box);
-
 	
 	MeshGLSphere* sph = new MeshGLSphere(testObj, 2.0f, 32, 32, &tCol);
 	sph->Initialize();
@@ -97,11 +89,6 @@ unsigned int SceneTest::Initialize()
 	sph->SetSpecular(0.6f);
 	sph->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	testObj->AddMesh(sph);
-
-	//tPosMin = glm::vec3(-2.0f, -1.5f, -1.5f);
-	//tPosMax = glm::vec3(2.0f, 1.5f, 1.5f);
-	//BoxAACollider* tObjCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(testObj, &tPosMin, &tPosMax);
-	//testObj->AddCollider(tObjCollider);
 
 
 	tPosMin = (glm::vec3(0.0f, 0.0f, 0.0f));
@@ -112,13 +99,45 @@ unsigned int SceneTest::Initialize()
 
 	AddObject(testObj);
 
+	// and here goes box
+	SimObject* testObjBox = new SimObject();
+	testObjBox->Initialize("testObjBox");
+
+	tPos = (glm::vec3(0.0f, 999.0f, 0.0f));
+	tScl = (glm::vec3(1.0f, 1.0f, 1.0f));
+	tCol = (glm::vec4(0.4f, 0.7f, 0.9f, 1.0f));
+
+	Transform* testObjBoxTransform = new Transform(testObjBox);
+	testObjBoxTransform->Initialize();
+	testObjBoxTransform->SetPosition(&tPos);
+	testObjBoxTransform->SetScale(&tScl);
+	testObjBox->SetTransform(testObjBoxTransform);
+
+	tCol = glm::vec4(0.2f, 0.2f, 0.8f, 1.0f);
+	MeshGLBox* box = new MeshGLBox(testObjBox, 4.0f, 3.0f, 3.0f, &tCol);
+	box->Initialize();
+	box->SetGloss(100.0f);
+	box->SetSpecular(0.5f);
+	box->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
+	testObjBox->AddMesh(box);
+
+	tPosMin = glm::vec3(-2.0f, -1.5f, -1.5f);
+	tPosMax = glm::vec3(2.0f, 1.5f, 1.5f);
+	BoxAACollider* tObjBoxCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(testObjBox, &tPosMin, &tPosMax);
+	testObjBox->AddCollider(tObjBoxCollider);
+
+	AddObject(testObjBox);
+	testObjBoxTransform->SetPosition(&tPos);
+	testObjBox->SetVisible(false);
+	testObjBox->SetEnabled(false);
+
 	m_currentObjectID = 1;
 
-
+	/*
 	SimObject* colObj = new SimObject();
 	colObj->Initialize("colObj");
 
-	tPos = (glm::vec3(15.0f, 2.5f, 0.0f));
+	tPos = (glm::vec3(3.0f, 2.5f, -8.0f));
 	tScl = (glm::vec3(1.0f, 1.0f, 1.0f));
 	tCol = (glm::vec4(0.8f, 0.2f, 0.2f, 1.0f));
 	tPosMin = (glm::vec3(-0.5f, -0.5f, -0.5f));
@@ -145,7 +164,7 @@ unsigned int SceneTest::Initialize()
 	colObj->AddComponent(rm);
 
 	AddObject(colObj);
-
+	*/
 
 	SimObject* testCloth = new SimObject();
 	testCloth->Initialize("testCloth");

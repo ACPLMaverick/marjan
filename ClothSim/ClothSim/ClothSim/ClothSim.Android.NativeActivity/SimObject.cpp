@@ -6,6 +6,7 @@ SimObject::SimObject()
 	m_name = "";
 	m_id = -1;
 	m_visible = true;
+	m_enabled = true;
 	m_transform = nullptr;
 }
 
@@ -66,31 +67,34 @@ unsigned int SimObject::Shutdown()
 
 unsigned int SimObject::Update()
 {
-	unsigned int err; 
+	unsigned int err = CS_ERR_NONE; 
 
-	for (vector<Component*>::iterator it = m_components.begin(); it != m_components.end(); ++it)
+	if (m_enabled)
 	{
-		err = (*it)->Update();
-		if (err != CS_ERR_NONE) return err;
-	}
-
-	for (vector<Mesh*>::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
-	{
-		err = (*it)->Update();
-		if (err != CS_ERR_NONE) return err;
-	}
-
-	if (m_transform != nullptr)
-		err = m_transform->Update();
-
-	if (m_collidersDirty)
-	{
-		for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+		for (vector<Component*>::iterator it = m_components.begin(); it != m_components.end(); ++it)
 		{
 			err = (*it)->Update();
 			if (err != CS_ERR_NONE) return err;
 		}
-		m_collidersDirty = false;
+
+		for (vector<Mesh*>::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
+		{
+			err = (*it)->Update();
+			if (err != CS_ERR_NONE) return err;
+		}
+
+		if (m_transform != nullptr)
+			err = m_transform->Update();
+
+		if (m_collidersDirty)
+		{
+			for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+			{
+				err = (*it)->Update();
+				if (err != CS_ERR_NONE) return err;
+			}
+			m_collidersDirty = false;
+		}
 	}
 
 	if (err != CS_ERR_NONE) return err;
@@ -100,26 +104,29 @@ unsigned int SimObject::Update()
 
 unsigned int SimObject::Draw()
 {
-	unsigned int err;
+	unsigned int err = CS_ERR_NONE;
 
-	for (vector<Component*>::iterator it = m_components.begin(); it != m_components.end(); ++it)
+	if (m_visible)
 	{
-		err = (*it)->Draw();
-		if (err != CS_ERR_NONE) return err;
-	}
-
-	for (vector<Mesh*>::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
-	{
-		err = (*it)->Draw();
-		if (err != CS_ERR_NONE) return err;
-	}
-
-	if (PhysicsManager::GetInstance()->GetIfDrawColliders())
-	{
-		for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+		for (vector<Component*>::iterator it = m_components.begin(); it != m_components.end(); ++it)
 		{
 			err = (*it)->Draw();
 			if (err != CS_ERR_NONE) return err;
+		}
+
+		for (vector<Mesh*>::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
+		{
+			err = (*it)->Draw();
+			if (err != CS_ERR_NONE) return err;
+		}
+
+		if (PhysicsManager::GetInstance()->GetIfDrawColliders())
+		{
+			for (vector<Collider*>::iterator it = m_colliders.begin(); it != m_colliders.end(); ++it)
+			{
+				err = (*it)->Draw();
+				if (err != CS_ERR_NONE) return err;
+			}
 		}
 	}
 
@@ -166,6 +173,11 @@ void SimObject::SetTransform(Transform* ptr)
 void SimObject::SetVisible(bool vis)
 {
 	m_visible = vis;
+}
+
+void SimObject::SetEnabled(bool t)
+{
+	m_enabled = t;
 }
 
 
@@ -276,6 +288,11 @@ Transform* SimObject::GetTransform()
 bool SimObject::GetVisible()
 {
 	return m_visible;
+}
+
+bool SimObject::GetEnabled()
+{
+	return m_enabled;
 }
 
 string* SimObject::GetName()

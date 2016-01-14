@@ -8,7 +8,9 @@
 #include "Common.h"
 #include "MeshGLPlane.h"
 #include "Timer.h"
+
 //#include <CL\opencl.h>
+#include <pthread.h>
 
 //#define VERTEX_NEIGHBOURING_VERTICES 12
 #define ALMOST_ZERO 0.000000001f
@@ -26,12 +28,20 @@ enum ClothSimulationMode
 	NONE,
 };
 
+enum ClothSimulationVersusObject
+{
+	OBJ_SPHERE,
+	OBJ_BOX
+};
+
 /////////////////////////////////////////
 
 struct SimParams
 {
 	ClothSimulationMode mode = ClothSimulationMode::NONE;
-	glm::vec3 padding;
+	ClothSimulationVersusObject vsObj = ClothSimulationVersusObject::OBJ_SPHERE;
+	float padding;
+	float gravity = 10.0f;
 	float vertexMass = 1.0f;
 	float vertexAirDamp = 0.01f;
 	float elasticity = 50.00f;
@@ -126,6 +136,23 @@ struct ThreadData
 	ClothSimulator* inst;
 	int diBegin;
 	int diEnd;
+	int id;
+
+	ThreadData()
+	{
+		this->inst = nullptr;
+		this->diBegin = 0;
+		this->diEnd = INT32_MAX;
+		this->id = -1;
+	}
+
+	ThreadData(ClothSimulator* inst, int begin, int end, int id)
+	{
+		this->inst = inst;
+		this->diBegin = begin;
+		this->diEnd = end;
+		this->id = id;
+	}
 };
 
 ////////////////////////////////////
@@ -140,7 +167,7 @@ protected:
 	const double FIXED_DELTA = 0.033f;
 	const float MIN_MASS = 0.02f;
 	const float SPRING_BORDER_MULTIPLIER = 20.0f;
-	const float VERTEX_COLLIDER_MULTIPLIER = 0.5f;
+	const float VERTEX_COLLIDER_MULTIPLIER = 0.35f;
 	const float CELL_OFFSET = 0.01f;
 	const float COLLISION_CHECK_WINDOW_SIZE = 2;
 
@@ -203,6 +230,7 @@ protected:
 	};
 	const std::string KERNEL_PBPOS_NAME = "ClothPBPosition";
 
+	SimParams* m_tempSimParamsPtr = nullptr;
 	KernelID* m_pbPosKernelID;
 	GLuint m_pbPtfID;
 
@@ -243,6 +271,25 @@ protected:
 	double m_timeStartMS;
 	double m_timeSimMS;
 
+	//////////////////////////
+	// threading sync structures
+
+	static const int THREAD_COUNT = 4;
+
+	int m_barrierCounter = 0;
+	pthread_mutex_t* m_mutexBarrierCounter;
+	pthread_mutex_t* m_mutexHold;
+	pthread_mutex_t* m_mutexHoldStage2;
+	pthread_mutex_t* m_mutexHoldStage3;
+	pthread_t m_mainThreadID;
+	pthread_t m_threadIDs[THREAD_COUNT];
+	pthread_mutex_t* m_mutexThreadsRunning;
+	ThreadData m_threadData[THREAD_COUNT];
+
+	bool m_threadsRunning;
+
+	//////////////////////////
+
 	virtual inline unsigned int UpdateSimCPU
 		(
 			VertexData* vertexData,
@@ -253,7 +300,7 @@ protected:
 			glm::mat4* worldMatrix,
 			glm::mat4* viewMatrix,
 			glm::mat4* projMatrix,
-			float gravity,
+			glm::vec3* gravity,
 			float fixedDelta
 			);
 	virtual inline unsigned int UpdateSimCPUx4
@@ -266,7 +313,7 @@ protected:
 			glm::mat4* worldMatrix,
 			glm::mat4* viewMatrix,
 			glm::mat4* projMatrix,
-			float gravity,
+			glm::vec3* gravity,
 			float fixedDelta
 			);
 	virtual inline unsigned int UpdateSimGPU
@@ -279,7 +326,7 @@ protected:
 			glm::mat4* worldMatrix,
 			glm::mat4* viewMatrix,
 			glm::mat4* projMatrix,
-			float gravity,
+			glm::vec3* gravity,
 			float fixedDelta
 			);
 
@@ -287,7 +334,7 @@ protected:
 	virtual inline unsigned int ShutdownSimMSGPU();
 	virtual inline unsigned int UpdateSimMSGPU
 		(
-			float gravity, 
+			glm::vec3* gravity,
 			float fixedDelta
 		);
 
@@ -295,20 +342,25 @@ protected:
 	virtual inline unsigned int ShutdownSimPBGPU();
 	virtual inline unsigned int UpdateSimPBGPU
 		(
-			float gravity,
+			glm::vec3* gravity,
 			float fixedDelta
 		);
 
 	virtual inline unsigned int UpdateSimMSCPU
 		(
-			float gravity,
+			glm::vec3* gravity,
 			float fixedDelta
 			);
 	virtual inline unsigned int UpdateSimPBCPU
 		(
-			float gravity,
+			glm::vec3* gravity,
 			float fixedDelta
 			);
+	virtual inline void CPUComputePositionMS(int i, glm::vec4* sls1, glm::vec4* sls2, glm::vec4* sls3, float fixedDelta, glm::vec3* gravity);
+	virtual inline void CPUComputePositionPB(int i, glm::vec4* sls1, glm::vec4* sls2, glm::vec4* sls3, float fixedDelta, glm::vec3* gravity);
+	virtual inline void CPUComputeCollision(int i, glm::mat4* worldMatrix, glm::mat4* viewMatrix, glm::mat4* projMatrix, BoxAAData boxAAData[], SphereData sphereData[],
+		int bcCount, int scCount);
+	virtual inline void CPUComputeNormal(int i);
 
 	inline void CalculateSpringForce
 		(
@@ -338,7 +390,7 @@ protected:
 	inline void AppendRestart();
 	inline void RestartSimulation();
 
-	static void UpdatePartial(void* args);
+	static void* UpdatePartial(void* args);
 public:
 	ClothSimulator(SimObject* obj);
 	ClothSimulator(const ClothSimulator* c);
@@ -353,6 +405,7 @@ public:
 	void SetMode(ClothSimulationMode mode);
 	void SwitchMode();
 	void Restart();
+	void Restart(SimParams* params);
 
 	ClothSimulationMode GetMode();
 	double GetSimTimeMS();

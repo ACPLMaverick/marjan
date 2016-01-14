@@ -27,6 +27,8 @@ unsigned int GUISettingsScreen::Initialize()
 		return err;
 
 	string vsSimTypeID = m_id + "_vsSimType";
+	string vsObjTypeID = m_id + "_vsObjType";
+	string vsGravityID = m_id + "_vsGravity";
 	string vsWidthID = m_id + "_vsWidth";
 	string vsLengthID = m_id + "_vsLength";
 	string vsEdgesWidthID = m_id + "_vsEdgesWidth";
@@ -41,10 +43,10 @@ unsigned int GUISettingsScreen::Initialize()
 	string lblSettings = m_id + "_lblSettings";
 	string bgID = m_id + "_bgID";
 
-	string tPlus = "textures/btn_arrow_up.png";
-	string tPlusA = "textures/btn_arrow_up_a.png";
-	string tMinus = "textures/btn_arrow_forward.png";
-	string tMinusA = "textures/btn_arrow_forward_a.png";
+	string tPlus = "textures/btn_minus.png";
+	string tPlusA = "textures/btn_minus_a.png";
+	string tMinus = "textures/btn_plus.png";
+	string tMinusA = "textures/btn_plus_a.png";
 	string tText = "textures/ExportedFont.tga";
 	string tBg = "textures/bg_settings.png";
 	string tApply = "textures/btn_ok.png";
@@ -53,6 +55,8 @@ unsigned int GUISettingsScreen::Initialize()
 	string tCancelA = "textures/btn_exit_a.png";
 
 	string vsSimTypeLBL = "Simulation mode";
+	string vsObjTypeLBL = "Object";
+	string vsGravityLBL = "Gravity";
 	string vsWidthLBL = "Width";
 	string vsLengthLBL = "Length";
 	string vsEdgesWidthLBL = "Edges width";
@@ -65,10 +69,10 @@ unsigned int GUISettingsScreen::Initialize()
 	string mainLBL = "Cloth parameters";
 
 	glm::vec2 txtScale = glm::vec2(0.05, 0.05f);
-	glm::vec2 txtPos = glm::vec2(-0.7f, 0.65f);
+	glm::vec2 txtPos = glm::vec2(-0.7f, 0.73f);
 	glm::vec2 btnScale = glm::vec2(0.2f, 0.2f);
-	glm::vec2 btnApplyPos = glm::vec2(-0.0f, -0.72f);
-	glm::vec2 btnCancelPos = glm::vec2(0.0f, -0.72f);
+	glm::vec2 btnApplyPos = glm::vec2(-0.0f, -0.8f);
+	glm::vec2 btnCancelPos = glm::vec2(0.0f, -0.8f);
 	glm::vec2 vsScale = glm::vec2(0.3f, 0.038f);
 	glm::vec2 vsSScale = glm::vec2(0.75f, 0.038f);
 
@@ -76,15 +80,17 @@ unsigned int GUISettingsScreen::Initialize()
 	int inOneCollumn = (int)glm::ceil((float)vsCount / 2.0f);
 	float vsXOffset = -0.45f;
 	float vsYOffset = 2.0f / (float)vsCount;
-	float vsYStart = 0.45f;
+	float vsYStart = 0.6f;
 
 	////////////////////////////////
 
 	std::vector<string> vsSimTypeStateLabels;
-	vsSimTypeStateLabels.push_back("GPU - MassSpring");
-	vsSimTypeStateLabels.push_back("CPU - MassSpring");
-	vsSimTypeStateLabels.push_back(" GPU - PosBased");
-	vsSimTypeStateLabels.push_back(" CPU - PosBased");
+	vsSimTypeStateLabels.push_back("MassSpring - GPU");
+	vsSimTypeStateLabels.push_back("MassSpring - CPU");
+	vsSimTypeStateLabels.push_back("MassSpring - CPUx4");
+	vsSimTypeStateLabels.push_back("PosBased - GPU");
+	vsSimTypeStateLabels.push_back("PosBased - CPU");
+	vsSimTypeStateLabels.push_back("PosBased - CPUx4");
 
 	m_vsSimType = new GUIValueSetter
 		(
@@ -95,7 +101,7 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinus),
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
-			4,
+			6,
 			0,
 			&vsSimTypeStateLabels,
 			-0.3f
@@ -103,6 +109,41 @@ unsigned int GUISettingsScreen::Initialize()
 	m_vsSimType->SetPosition(m_position + glm::vec2(0.0f, vsYStart));
 	m_vsSimType->SetScale(vsSScale);
 	m_vsSimType->Initialize();
+
+	std::vector<string> vsObjTypeStateLabels;
+	vsObjTypeStateLabels.push_back("Sphere");
+	vsObjTypeStateLabels.push_back("Box");
+	m_vsObjType = new GUIValueSetter
+		(
+			&vsObjTypeID,
+			&vsObjTypeLBL,
+			ResourceManager::GetInstance()->LoadTexture(&tPlus),
+			ResourceManager::GetInstance()->LoadTexture(&tPlusA),
+			ResourceManager::GetInstance()->LoadTexture(&tMinus),
+			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
+			ResourceManager::GetInstance()->LoadTexture(&tText),
+			2,
+			0,
+			&vsObjTypeStateLabels,
+			-0.05f
+			);
+
+	m_vsGravity = new GUIValueSetter
+		(
+			&vsGravityID,
+			&vsGravityLBL,
+			ResourceManager::GetInstance()->LoadTexture(&tPlus),
+			ResourceManager::GetInstance()->LoadTexture(&tPlusA),
+			ResourceManager::GetInstance()->LoadTexture(&tMinus),
+			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
+			ResourceManager::GetInstance()->LoadTexture(&tText),
+			101,
+			19,
+			0.1f,
+			0.1f,
+			2,
+			0.0f
+			);
 
 	m_vsWidth = new GUIValueSetter
 		(
@@ -181,12 +222,12 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinus),
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
-			101,
-			51,
+			1001,
+			100,
 			1.0f,
 			0.0f,
-			2,
-			0.0f
+			1,
+			-0.01f
 			);
 
 	m_vsMass = new GUIValueSetter
@@ -198,9 +239,9 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinus),
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
-			200,
-			39,
-			1.0f,
+			500,
+			70,
+			0.1f,
 			1.0f,
 			2,
 			0.0f
@@ -233,7 +274,7 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
 			201,
-			50,
+			5,
 			-0.1f,
 			0.0f,
 			2,
@@ -241,6 +282,8 @@ unsigned int GUISettingsScreen::Initialize()
 			);
 
 	AddChild(m_vsSimType);
+	AddChild(m_vsObjType);
+	AddChild(m_vsGravity);
 	AddChild(m_vsWidth);
 	AddChild(m_vsLength);
 	AddChild(m_vsEdgesLength);
@@ -250,6 +293,8 @@ unsigned int GUISettingsScreen::Initialize()
 	AddChild(m_vsAirDamp);
 	AddChild(m_vsElDamp);
 
+	m_vsVector.push_back(m_vsObjType);
+	m_vsVector.push_back(m_vsGravity);
 	m_vsVector.push_back(m_vsWidth);
 	m_vsVector.push_back(m_vsLength);
 	m_vsVector.push_back(m_vsEdgesLength);
@@ -276,6 +321,8 @@ unsigned int GUISettingsScreen::Initialize()
 	m_vsVector.clear();
 	m_vsStatesVector.clear();
 	m_vsVector.push_back(m_vsSimType);
+	m_vsVector.push_back(m_vsObjType);
+	m_vsVector.push_back(m_vsGravity);
 	m_vsVector.push_back(m_vsWidth);
 	m_vsVector.push_back(m_vsLength);
 	m_vsVector.push_back(m_vsEdgesLength);
@@ -428,6 +475,17 @@ void GUISettingsScreen::UpdateParams()
 	stateMultiplier = m_vsSimType->GetLabelMultiplier();
 	stateOffset = m_vsSimType->GetLabelOffset();
 	m_params.mode = (ClothSimulationMode)state;
+
+	state = m_vsObjType->GetCurrentState();
+	stateMultiplier = m_vsObjType->GetLabelMultiplier();
+	stateOffset = m_vsObjType->GetLabelOffset();
+	m_params.vsObj = (ClothSimulationVersusObject)state;
+
+	state = m_vsGravity->GetCurrentState();
+	stateMultiplier = m_vsGravity->GetLabelMultiplier();
+	stateOffset = m_vsGravity->GetLabelOffset();
+	stateVal = (float)state * stateMultiplier + stateOffset;
+	m_params.gravity = stateVal;
 	
 	state = m_vsMass->GetCurrentState();
 	stateMultiplier = m_vsMass->GetLabelMultiplier();

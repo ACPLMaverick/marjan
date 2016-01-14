@@ -81,7 +81,7 @@ unsigned int GUIValueSetter::Initialize()
 	}
 	m_currentState = m_defState;
 	float sclFactor = glm::min(m_scale.x, m_scale.y);
-	float sclMplier = 2.0f;
+	float sclMplier = 2.2f;
 	float txtMplier = 0.75f;
 	glm::vec2 itemScale = glm::vec2(sclFactor, sclFactor);
 	glm::vec2 offsetLbl = glm::vec2(-m_scale.x * 0.75f, m_scale.y);

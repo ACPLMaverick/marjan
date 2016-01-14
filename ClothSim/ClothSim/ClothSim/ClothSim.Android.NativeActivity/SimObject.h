@@ -25,6 +25,7 @@ protected:
 	unsigned int m_id;
 	string m_name;
 	bool m_visible;
+	bool m_enabled;
 	bool m_collidersDirty;
 
 	vector<Component*> m_components;
@@ -55,6 +56,7 @@ public:
 	void AddCollider(Collider*);
 	void SetTransform(Transform*);
 	void SetVisible(bool);
+	void SetEnabled(bool);
 
 	void RemoveComponent(Component*);
 	void RemoveMesh(Mesh*);
@@ -69,6 +71,7 @@ public:
 	std::vector<Collider*>* GetColliders();
 	Transform* GetTransform();
 	bool GetVisible();
+	bool GetEnabled();
 	string* GetName();
 	unsigned int GetId();
 };

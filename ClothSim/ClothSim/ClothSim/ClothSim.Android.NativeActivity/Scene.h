@@ -65,6 +65,8 @@ public:
 	void RemoveCamera(unsigned int);
 	void RemoveGUIElement(GUIElement*);
 
+	void SetCurrentObject(unsigned int id);
+
 	LightAmbient* GetAmbientLight();
 	LightDirectional* GetLightDirectional(unsigned int);
 	unsigned int GetLightDirectionalCount();

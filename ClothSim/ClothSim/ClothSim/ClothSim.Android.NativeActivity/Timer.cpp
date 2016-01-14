@@ -95,10 +95,10 @@ double Timer::GetDeltaTime()
 
 double Timer::GetFixedDeltaTime()
 {
-	if (m_ticks <= TICKS_TO_UNLOCK_FIXED)
+	//if (m_ticks <= TICKS_TO_UNLOCK_FIXED)
 		return FIXED_DELTA;
-	else
-		return m_fixedDelta;
+	//else
+	//	return m_fixedDelta;
 }
 
 double Timer::GetFps()

@@ -61,7 +61,7 @@ private:
 	std::vector<BoxAAData> m_boxCollidersData;
 	std::vector<SphereData> m_sphereCollidersData;
 
-	float m_gravity;
+	glm::vec3 m_gravity;
 	bool m_ifDrawColliders;
 
 	PhysicsManager();
@@ -79,7 +79,8 @@ public:
 	SphereCollider* CreateSphereCollider(SimObject* obj, glm::vec3* offset, float radius);
 	bool RemoveCollider(Collider*);
 
-	float GetGravity();
+	void SetGravity(float newGravValue);
+	glm::vec3* GetGravity();
 	bool GetIfDrawColliders();
 	std::vector<Collider*>* GetColliders();
 	std::vector<BoxAAData>* GetBoxCollidersData();

@@ -260,6 +260,11 @@ void Scene::RemoveGUIElement(GUIElement* gui)
 	m_guiElements.erase(*gui->GetID());
 }
 
+void Scene::SetCurrentObject(unsigned int id)
+{
+	m_currentObjectID = id;
+}
+
 
 LightAmbient* Scene::GetAmbientLight()
 {

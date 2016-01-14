@@ -33,6 +33,7 @@ out vec4 OutPosLast;
 
 void CalcDistConstraint(vec3 mPos, vec3 nPos, float mass, float sLength, float elCoeff, float dampCoeff, out vec4 constraint)
 {
+	elCoeff = clamp(elCoeff, 0.0f, 1.0f);
 	vec3 diff = mPos - nPos;
 	float cLength = length(diff);
 	vec3 dP = (2.0f * mass) * (cLength - sLength) * (diff / cLength) * elCoeff;
@@ -67,7 +68,7 @@ void main()
 	vec3 mForce = vec3(0.0f);
 	vec3 posPredicted = vec3(0.0f);
 		// calculate gravity force
-	float grav = Gravity * 0.1f;
+	float grav = Gravity;
 	mForce = mForce + (ElMassCoeffs.y * vec3(0.0f, -grav, 0.0f));
 
 		// calculate air damp force

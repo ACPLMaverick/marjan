@@ -396,15 +396,39 @@ void GUIController::ActionApplyPreferences(std::vector<void*>* params, const glm
 	inst->m_sScreen->SetVisible(false);
 	inst->m_sScreen->SetEnabled(false);
 
-	inst->m_cSimulator->UpdateSimParams(inst->m_sScreen->GetSimParams());
-	inst->m_cSimulator->Restart();
+	PhysicsManager::GetInstance()->SetGravity(inst->m_sScreen->GetSimParams()->gravity);
+
+	ClothSimulationVersusObject v = inst->m_sScreen->GetSimParams()->vsObj;
+	glm::vec3 tPos = (glm::vec3(0.0f, 2.5f, 0.0f));
+	glm::vec3 outPos = (glm::vec3(0.0f, 999.0f, 0.0f));
+	System::GetInstance()->GetCurrentScene()->GetObject()->GetTransform()->SetPosition(&outPos);
+	System::GetInstance()->GetCurrentScene()->GetObject()->SetVisible(false);
+	System::GetInstance()->GetCurrentScene()->GetObject()->SetEnabled(false);
+	switch (v)
+	{
+	case ClothSimulationVersusObject::OBJ_SPHERE:
+
+		System::GetInstance()->GetCurrentScene()->SetCurrentObject(1);
+
+		break;
+	case ClothSimulationVersusObject::OBJ_BOX:
+		System::GetInstance()->GetCurrentScene()->SetCurrentObject(2);
+		break;
+	}
+	System::GetInstance()->GetCurrentScene()->GetObject()->GetTransform()->SetPosition(&tPos);
+	System::GetInstance()->GetCurrentScene()->GetObject()->SetVisible(true);
+	System::GetInstance()->GetCurrentScene()->GetObject()->SetEnabled(true);
+
+	inst->m_cSimulator->Restart(inst->m_sScreen->GetSimParams());
 
 	GUIText* st = inst->m_stText;
-	ClothSimulationMode cMode = inst->m_cSimulator->GetMode();
-	const string MSG_VALUE = "GPU - Mass-spring";
-	const string PBG_VALUE = "GPU - Position based";
-	const string MSC_VALUE = "CPU - Mass-spring";
-	const string PBC_VALUE = "CPU - Position based";
+	ClothSimulationMode cMode = inst->m_sScreen->GetSimParams()->mode;
+	const string MSG_VALUE = "Mass-spring - GPU";
+	const string PBG_VALUE = "Position based - GPU";
+	const string MSC_VALUE = "Mass-spring - CPU";
+	const string PBC_VALUE = "Position based - CPU";
+	const string MSC4_VALUE = "Mass-spring - CPUx4";
+	const string PBC4_VALUE = "Position based - CPUx4";
 	const string UN_VALUE = "Unknown";
 
 	switch (cMode)
@@ -423,6 +447,14 @@ void GUIController::ActionApplyPreferences(std::vector<void*>* params, const glm
 
 	case ClothSimulationMode::POSITION_BASED_CPU:
 		st->SetText(&PBC_VALUE);
+		break;
+
+	case ClothSimulationMode::MASS_SPRING_CPUx4:
+		st->SetText(&MSC4_VALUE);
+		break;
+
+	case ClothSimulationMode::POSITION_BASED_CPUx4:
+		st->SetText(&PBC4_VALUE);
 		break;
 
 	default:

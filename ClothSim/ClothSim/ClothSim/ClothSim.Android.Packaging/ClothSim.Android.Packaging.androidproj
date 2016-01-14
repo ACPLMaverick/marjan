@@ -83,8 +83,12 @@
     <Content Include="assets\textures\btn_arrow_up_a.png" />
     <Content Include="assets\textures\btn_exit.png" />
     <Content Include="assets\textures\btn_exit_a.png" />
+    <Content Include="assets\textures\btn_minus.png" />
+    <Content Include="assets\textures\btn_minus_a.png" />
     <Content Include="assets\textures\btn_ok.png" />
     <Content Include="assets\textures\btn_ok_a.png" />
+    <Content Include="assets\textures\btn_plus.png" />
+    <Content Include="assets\textures\btn_plus_a.png" />
     <Content Include="assets\textures\btn_settings.png" />
     <Content Include="assets\textures\btn_settings_a.png" />
     <Content Include="assets\textures\btn_wireframe.png" />

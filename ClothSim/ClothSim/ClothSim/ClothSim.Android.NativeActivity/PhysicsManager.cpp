@@ -20,7 +20,7 @@ PhysicsManager::~PhysicsManager()
 unsigned int PhysicsManager::Initialize()
 {
 	// HARD CODED VALUES
-	m_gravity = 10.0f;
+	m_gravity = glm::vec3(0.0f, -10.0f, 0.0f);
 	m_ifDrawColliders = true;
 	///////////////////////////
 
@@ -120,7 +120,8 @@ void PhysicsManager::CollisionCheck(Collider * col, CollisonTestResult* result)
 	{
 		// check conditions under we do not have to check for collisions.
 		if (
-			*it == col
+			*it == col ||
+			!(*it)->m_obj->GetEnabled()
 			)
 		{
 			continue;
@@ -188,9 +189,14 @@ bool PhysicsManager::RemoveCollider(Collider* col)
 
 
 
-float PhysicsManager::GetGravity()
+void PhysicsManager::SetGravity(float newGravValue)
 {
-	return m_gravity;
+	m_gravity = glm::vec3(0.0f, -newGravValue, 0.0f);
+}
+
+glm::vec3* PhysicsManager::GetGravity()
+{
+	return &m_gravity;
 }
 
 bool PhysicsManager::GetIfDrawColliders()

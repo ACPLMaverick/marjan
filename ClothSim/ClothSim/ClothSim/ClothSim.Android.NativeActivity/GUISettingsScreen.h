@@ -18,7 +18,9 @@ protected:
 	GUIButton* m_btnApply;
 	GUIButton* m_btnCancel;
 	GUIText* m_lblSettings;
-	GUIValueSetter* m_vsSimType;		// 0 - MS_GPU, 1 - MS_CPU, 2 - PB_GPU, 3 - PB_CPU
+	GUIValueSetter* m_vsSimType;		// 0 - MS_GPU, 1 - MS_CPU, 2 - MS_CPUx4, 3 - PB_GPU, 4 - PB_CPU, 5 - PB_CPUx4
+	GUIValueSetter* m_vsObjType;		// sphere, box
+	GUIValueSetter* m_vsGravity;		// 0.1f - 10.0f
 	GUIValueSetter* m_vsWidth;			// 1.0f - 50.0f
 	GUIValueSetter* m_vsLength;			// 1.0f - 50.0f
 	GUIValueSetter* m_vsEdgesWidth;		// 0 - 126
