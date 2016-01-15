@@ -42,32 +42,209 @@
 		\subsection{Ogólny algorytm}
 		\label{t:symulacja:dzialanie:algorytm}
 		
+		Algorytm działania symulacji jest taki sam dla wszystkich trzech obsługiwanych implementacji -- GPU, CPU i CPU na 4 wątkach. Różnice oczywiście pojawiają się tylko w wywołaniach funkcji. 
 		
+		Dla pierwszego przypadku w każdym kroku należy przeprowadzić przypisanie GPU odpowiednich tablic atrybutów wierzchołków, które zawierają niezbędne symulacji dane. Następnie nakazujemy OpenGL używać programu dokonującego obliczeń, ustawiamy wszystkie zmienne jednorodne, wiążemy bufory jednorodne i uruchamiamy transformacyjne sprzężenie zwrotne. Wywołanie \texttt{glDrawArrays} rozpoczyna obliczenia. 
+		
+		W przypadku CPU sprawa jest dużo prostsza, jako, że wszystkie dane i tablice, na których pracujemy są już zainicjalizowane. Możemy od razu przystąpić do działania. Sytuacja komplikuje się, gdy chcemy skorzystać z wielowątkowości. W tej metodzie rozłożono pracę na cztery wątki robocze, z racji tego, iż urządzenie dysponuje czterema fizycznymi jednostkami przetwarzającymi. Algorytm podziału jest prosty -- liczbę wierzchołków dopełniamy do liczby podzielnej bez reszty przez 4 i dzielimy ją na cztery równe zakresy, przy czym koniec ostatniego z zakresów jest oczywiście tą ``prawdziwą'' liczbą wierzchołków. Do synchronizacji użyto muteksów i licznika wątków, które zakończyły pracę. Działaniem wątków roboczych zarządza, rzecz jasna, wątek główny. Każdy z tych pierwszych jest uśpiony na muteksie, dopóki nie nadejdzie wywołanie funkcji \texttt{Update} symulatora. Wtedy zostają one obudzone i rozpoczynają obliczenia. Po ich zakończeniu podnoszą licznik i czekają na następnym muteksie. Główny wątek z kolei czeka, aż licznik osiągnie wymaganą wartość i odblokowuje następny etap obliczeń.
+		
+		Cały proces podzielono na trzy oddzielne etapy, omówione dalej. Pierwszy to obliczenia ruchu tkaniny, zgodnie z przyjętym modelem symulacji, drugi -- rozwiązywanie kolizji oraz zaaplikowanie ruchu tkaniny wynikłego z interakcji użytkownika. Te dwie kwestie opisano w oddzielnych podrozdziałach, jednak z punktu widzenia implementacji wchodzą one w skład jednego etapu. Ostatnim jest przeliczenie wektorów normalnych. Po dwóch pierwszych etapach następuje zamiana identyfikatorów struktury danych wejściowych z strukturą danych wyjściowych, zastosowano tu tzw. metodę ping--pongową. Gdybyśmy tego nie robili, spowodowałoby to szybki ``wybuch'' symulacji, jako że obliczenia na danym wierzchołku mogłyby pobierać część danych już w danym kroku zaktualizowanych, a część nie. W przypadku obu implementacji na CPU po zakończeniu kroku przetwarzania należy jeszcze przesłać nowe dane o pozycjach i wektorach normalnych wierzchołków do GPU, w celu umożliwienia ich narysowania. Dzieje się to przy pomocy funkcji \texttt{glBufferSubData}.
+		
+		Poniżej podano Algorytmy \ref{alg_5_1}, \ref{alg_5_2} i \ref{alg_5_3}, osobno dla każdej z implementacji. Dzięki temu możemy zaobserwować kluczowe różnice w tych podejściach, a także ocenić skomplikowanie kodu.
+		
+		\begin{algorithm}
+			\label{alg_5_1}
+			\caption{Symulacja na GPU.}	
+			
+			Inicjalizuj parametry tkaniny.
+			
+			Utwórz identyfikatory buforów GPU.
+			
+			Przypisz istniejące już identyfikatory buforów siatki modelu tkaniny do odpowiednich identyfikatorów w klasie symulacji.
+			
+			Utwórz VAO i bufory dla wszystkich wymaganych parametrów tkaniny.
+			
+			Załaduj kernel rozwiązywania kolizji, kalkulacji wektorów normalnych i symulacji tkaniny przy użyciu wybranego modelu.
+			
+			Utwórz obiekt transformacyjnego sprzężenia zwrotnego dla wszystkich etapów, i odpowiednio dla każdego z nich bufory zwrotne oraz bufory jednorodne.
+
+			\While{m\_running}
+			{
+				Pobierz wymagane dane z systemu. 
+				
+				Przypisz wszystkie tablice atrybutów wierzchołków z parametrami tkaniny właściwymi każdemu wierzchołkowi. (\texttt{glBindBuffer(GL\_ARRAY\_BUFFER, ...)}, \texttt{glEnableVertexAttribArray}, \texttt{glVertexAttribPointer})
+				
+				Użyj kernela obliczeń ruchu tkaniny. (\texttt{glUseKernel})
+				
+				Ustaw zmienne jednorodne i bufory jednorodne. (\texttt{glBindBufferBase(GL\_UNIFORM\_BUFFER, ...)}, \texttt{glUniform...})
+				
+				Wyłącz rasteryzer. (\texttt{glEnable(GL\_RASTERIZER\_DISCARD)})
+				
+				Zwiąż obiekt transformacyjnego sprzężenia zwrotnego. (\texttt{glBindTransformFeedback})
+				
+				Zwiąż odpowiednie bufory zwrotne. (\texttt{glBindBufferBase(GL\_TRANSFORM\_FEEDBACK\_BUFFER, ...)})
+				
+				Uruchom transformacyjne sprzężenie zwrotne. (\texttt{glBeginTransformFeedback(GL\_POINTS)})
+				
+				Rozpocznij obliczenia. (\texttt{glDrawArrays})
+				
+				Włącz rasteryzer. (\texttt{glDisable(GL\_RASTERIZER\_DISCARD)})
+				
+				Przełącz identyfikatory buforów odczytu i zapisu.
+				
+				Użyj kernela rozwiązywania kolizji.
+				
+				Dokonaj operacji przygotowawczych i uruchamiających obliczenia w podobny sposób.
+				
+				Przełącz identyfikatory buforów odczytu i zapisu.
+				
+				Użyj kernela kalkulacji wektorów normalnych.
+				
+				Dokonaj operacji przygotowawczych i uruchamiających obliczenia w podobny sposób.
+				
+				Przełącz identyfikatory buforów odczytu i zapisu.
+			}
+		\end{algorithm}
+		
+		\begin{algorithm}
+			\label{alg_5_2}
+			\caption{Symulacja na CPU.}	
+			
+			Inicjalizuj parametry tkaniny.
+			
+			\While{m\_running}
+			{
+				Pobierz wymagane dane z systemu.
+				
+				Dla każdego wierzchołka oblicz nowe położenie zgodnie z przyjętym modelem symulacji.
+				
+				Przełącz identyfikatory buforów odczytu i zapisu.
+				
+				Dla każdego wierzchołka rozwiąż kolizje i przesuń zgodnie z sygnałem z urządzenia wejściowego.
+				
+				Przełącz identyfikatory buforów odczytu i zapisu.
+				
+				Dla każdego wierzchołka oblicz nowy wektor normalny.
+				
+				Zaktualizuj bufor pozycji wierzchołków na GPU. (\texttt{glBufferSubData})
+				
+				Zaktualizuj bufor wektorów normalnych wierzchołków na GPU.
+			}
+			
+		\end{algorithm}
+		
+		\begin{algorithm}
+			\label{alg_5_3}
+			\caption{Symulacja na CPU z użyciem 4 wątków roboczych.}	
+			Wątek główny:
+			
+			\Indp
+			
+			Inicjalizuj parametry tkaniny.
+			
+			Utwórz muteksy: trzy dla każdego etapu obliczeń, dla licznika wątków i zmiennej logicznej kończącej obliczenia -- \texttt{m\_threadsRunning} (\texttt{pthread\_mutex\_init})
+			
+			Zablokuj muteksy odpowiadające etapom obliczeń. (\texttt{pthread\_mutex\_lock})
+			
+			Utwórz struktury danych dla wątków -- podziel dane tkaniny na 4 części.
+			
+			Uruchom wątki. (\texttt{pthread\_create})
+			
+			\While{m\_running}
+			{
+				Dla dwóch pierwszych etapów obliczeń:
+				
+				\Indp
+					Odblokuj muteks danego etapu.
+					
+					Czekaj, aż licznik wątków, które ukończyły obliczenia osiągnie wartość liczby wszystkich wątków roboczych.
+					
+					Zablokuj muteks danego etapu.
+					
+					Ustaw licznik wątków na zero.
+					
+					Przełącz identyfikatory buforów odczytu i zapisu.
+				\Indm
+				
+				Odblokuj muteks etapu trzeciego.
+				
+				Czekaj, aż licznik wątków, które ukończyły obliczenia osiągnie wartość liczby wszystkich wątków roboczych.
+				
+				Zablokuj muteks etapu trzeciego.
+				
+				Ustaw licznik wątków na zero.
+				
+				Zaktualizuj bufor pozycji wierzchołków na GPU. (\texttt{glBufferSubData})
+				
+				Zaktualizuj bufor wektorów normalnych wierzchołków na GPU.
+			}
+			
+			\Indm
+			
+			Wątek roboczy:
+			
+			\While{m\_threadsRunning}
+			{
+				Czekaj na odblokowanie muteksu etapu 1.
+				
+				Pobierz wymagane dane z systemu.
+				
+				Dla każdego przydzielonego wierzchołka, oblicz nowe położenie, zgodnie z ustalonym modelem symulacji.
+				
+				Inkrementuj licznik wątków, które ukończyły pracę.
+				
+				Czekaj na odblokowanie muteksu etapu 2.
+				
+				Dla każdego przydzielonego wierzchołka, rozwiąż kolizje i przesunięcie, zgodnie z sygnałem z urządzenia wejściowego.
+				
+				Inkrementuj licznik wątków, które ukończyły pracę.
+				
+				Czekaj na odblokowanie muteksu etapu 3.
+				
+				Dla każdego przydzielonego wierzchołka, oblicz nowy wektor normalny.
+				
+				Inkrementuj licznik wątków, które ukończyły pracę.
+			}
+			
+			\Indp
+			
+			\Indm
+		\end{algorithm}
 	
 		\subsection{Parametry symulacji}
 		\label{t:symulacja:dzialanie:parametry}
 			
-		% lista parametrów z objaśnieniami
+		% lista parametrów z objaśnieniami, proces inicjalizacji paramterów
+		
+		tba
 			
 		\subsection{Obliczenia ruchu tkaniny}
 		\label{t:symulacja:dzialanie:ruch}
 			
-		% różnice między MS i PB z punktu widzenia implementacji, algorytm dla MS, algorytm dla PB, ograniczenie buforów jednorodnych
-			
+		% różnice między MS i PB z punktu widzenia implementacji, listing dla MS, listing dla PB, ograniczenie buforów jednorodnych
+		
+		tba
+		
 		\subsection{Rozwiązywanie kolizji}
 		\label{t:symulacja:dzialanie:kolizje}
 			
 		% algorytm, komunikacja z PhysicsManagerem -- struktury i pakowanie tego na GPU
+		
+		tba
 			
 		\subsection{Interakcja z użytkownikiem}
 		\label{t:symulacja:dzialanie:interakcja}
 			
 		% po co, co możemy robić, jak to działa, wzory, algorytm
+		
+		tba
 			
 		\subsection{Przeliczenie wektorów normalnych}
 		\label{t:symulacja:dzialanie:normalne}
 			
 		% po co, wzór, algorytm
 	
+		tba
+		
 	%\section{Budowa i działanie symulatora tkaniny na platformie Windows}	% - ni ma CUDY, będzie to samo	%\label{t:praktyka:symulacjapc}
 	

@@ -46,67 +46,67 @@
 		\label{alg_4_1}
 		\caption{Inicjalizacja silnika symulacji.}
 			
-				Inicjalizacja połączenia z systemem Android
+				Inicjalizuj połączenie z systemem Android.
 				
 				\Indp
 				
-					Pobranie struktury danych z Androida
+					Pobierz struktury danych z Androida.
 					
-					Ustawienie funkcji obsługujących zdarzenia systemu
+					Ustaw funkcje obsługujących zdarzenia systemu.
 					
-					Uruchomienie kolejki zdarzeń
+					Uruchom kolejkę zdarzeń.
 					
-					Oczekiwanie na sygnał od systemu, mówiący, że możemy inicjalizować resztę programu
+					Czekaj na sygnał od systemu, mówiący, że możemy inicjalizować resztę programu.
 				
 				\Indm
 									
-				Inicjalizacja Renderera
+				Inicjalizuj Renderer.
 				
 				\Indp
 				
-					Inicjalizacja EGL i OpenGL
+					Inicjalizuj EGL i OpenGL.
 					
-					Wczytanie shaderów
+					Wczytaj shadery.
 					
-					Ustawienie zmiennych OpenGL
+					Ustaw zmiennych OpenGL.
 					
 				\Indm	
 				
-				Inicjalizacja Menedżera zasobów
+				Inicjalizuj Menedżer zasobów.
 				
 				\Indp
 					
-					Wczytanie początkowo wymaganych zasobów
+					Wczytaj początkowo wymagane zasoby.
 				
 				\Indm	
 				
-				Inicjalizacja Menedżerów interfejsu
+				Inicjalizuj Menedżer interfejsu.
 				
-				Inicjalizacja Menedżera fizyki
+				Inicjalizuj Menedżer fizyki.
 				
-				Inicjalizacja Timera
+				Inicjalizuj Timer.
 				
 				\Indp
 				
-					Pobranie od systemu operacyjnego czasu startu aplikacji
+					Pobierz od systemu operacyjnego czas startu aplikacji.
 				
 				\Indm
 				
-				Inicjalizacja sceny
+				Inicjalizuj scenę.
 				
 				\Indp
 				
-					Utworzenie obiektów sceny i ich komponentów
+					Utwórz obiekty sceny i ich komponenty.
 					
-					Utworzenie obiektu tkaniny i komponentu symulatora tkaniny
+					Utwórz obiekt tkaniny i komponent symulatora tkaniny.
 					
-					Utworzenie kamery
+					Utwórz kamerę.
 					
-					Utworzenie świateł
+					Utwórz światła.
 					
-					Utworzenie interfejsu użytkownika
+					Utwórz interfejs użytkownika.
 					
-					Utworzenie obiektu z komponentem zarządzającym interfejsem
+					Utwórz obiekt z komponentem zarządzającym interfejsem.
 				
 				\Indm			
 	\end{algorithm}
@@ -117,25 +117,25 @@
 		
 		\While{true}
 		{
-			Wyciągnięcie i obsługa zdarzeń z kolejki
+			Wyciągnij i obsłuż wszystkie zdarzenia z kolejki.
 			
 			\If{m\_running}
 			{
-				Aktualizacja timera
+				Aktualizuj timer.
 				
-				Aktualizacja danych z urządzeń wejściowych
+				Aktualizuj dane z urządzeń wejściowych.
 				
-				Aktualizacja encji sceny
+				Aktualizuj encje sceny.
 				
 				\Indp
 				
-				Obliczenie jednego kroku symulacji tkaniny
+				Rozwiąż ewentualne kolizje między obiektami.
+				
+				Oblicz jeden krok symulacji tkaniny.
 				
 				\Indm
 				
-				Rozwiązanie ewentualnych kolizji między obiektami
-				
-				Narysowanie jednej klatki wizualizacji symulacji
+				Narysuj jedną klatkę wizualizacji symulacji.
 			}
 		}	
 	\end{algorithm}
@@ -148,11 +148,11 @@
 		
 		\Indp
 		
-			Zamknięcie encji sceny i jej samej
+			Zamknij encję sceny i ją samą.
 			
-			Zamknięcie wszystkich menedżerów
+			Zamknij wszystkich menedżerów.
 			
-			Ustawienie zmiennej logicznej Systemu \emph{m\_running} na \emph{false}
+			Ustaw zmienną logiczną Systemu \emph{m\_running} na \emph{false}.
 		
 		\Indm
 		
@@ -160,11 +160,11 @@
 		
 		\Indp
 		
-			Zamknięcie encji sceny i jej samej
+			Zamknij encję sceny i ją samą.
 			
-			Zamknięcie wszystkich menedżerów
+			Zamknij wszystkich menedżerów.
 			
-			Wysłanie do systemu informacji o tym, że ostatecznie zamykamy program
+			Wyślij do systemu informację o tym, że ostatecznie zamykamy program.
 		
 		\Indm
 		
@@ -222,31 +222,31 @@
 			\label{alg_4_4}
 			\caption{Inicjalizacja modelu}	
 			
-			Utworzenie struktur przechowujących dane siatki
+			Utwórz struktury przechowujące dane siatki.
 			
-			\emph{Wypełnienie tych struktur danymi}
+			\emph{Wypełnij te struktury danymi.}
 			
-			Wygenerowanie VAO (\emph{Vertex Array Object}) i wszystkich niezbędnych buforów na GPU oraz wypełnienie ich danymi
+			Wygeneruj VAO (\emph{Vertex Array Object}) i wszystkie niezbędne bufory na GPU oraz wypełnij je danymi.
 		\end{algorithm}
 		
 		\begin{algorithm}
 			\label{alg_4_5}
 			\caption{Rysowanie modelu}	
 			
-			Pobranie i włączenie aktualnie używanego przez \texttt{Renderer} shadera
+			Pobierz i włącz aktualnie używany przez \texttt{Renderer} shader.
 			
-			Ustawienie wszystkich parametrów jednorodnych (\emph{uniforms}) shadera, w tym macierzy, pozycji oka, kierunków i kolorów świateł oraz parametrów materiału obiektu
+			Ustaw wszystkie parametry jednorodne (\emph{uniforms}) shadera, w tym macierze, pozycję oka, kierunki i kolory świateł oraz parametry materiału obiektu.
 			
-			Przypisanie tekstury do shadera
+			Przypisz teksturę do shadera.
 			
-			Włączenie tablic atrybutów wierzchołków (pozycja, koordynat UV, wektor normalny, kolor, koordynat barycentryczny i indeks)
+			Włącz tablice atrybutów wierzchołków (pozycja, koordynat UV, wektor normalny, kolor, koordynat barycentryczny i indeks).
 			
-			Narysowanie siatki przy pomocy funkcji \texttt{glDrawElements}
+			Narysuj siatkę przy pomocy funkcji \texttt{glDrawElements}.
 			
-			Wyłączenie tablic atrybutów wierzchołków
+			Wyłącz tablice atrybutów wierzchołków.
 		\end{algorithm}
 		
-		Etap \emph{Wypełnienie tych struktur danymi} nie bez powodu został napisany kursywą. Klasa \texttt{MeshGL} jest bowiem w dalszym ciągu klasą abstrakcyjną, a funkcja odpowiedzialna właśnie za tę czynność jest jej jedyną abstrakcyjną funkcją. Każda klasa dziedzicząca po \texttt{MeshGL} może we własny sposób wypełnić tablice wierzchołków i ich parametrów, za każdym razem w efekcie tworząc inną siatkę geometryczną. Takie podejście pozwala na proste i wygodne oddzielenie kodu samego rysowania od kodu generującego konkretny model 3D.
+		Etap \emph{Wypełnij te struktury danymi.} nie bez powodu został napisany kursywą. Klasa \texttt{MeshGL} jest bowiem w dalszym ciągu klasą abstrakcyjną, a funkcja odpowiedzialna właśnie za tę czynność jest jej jedyną abstrakcyjną funkcją. Każda klasa dziedzicząca po \texttt{MeshGL} może we własny sposób wypełnić tablice wierzchołków i ich parametrów, za każdym razem w efekcie tworząc inną siatkę geometryczną. Takie podejście pozwala na proste i wygodne oddzielenie kodu samego rysowania od kodu generującego konkretny model 3D.
 		
 		Sam rendering przebiega w najprostszym trybie \emph{forward}, oznacza to, że wszystkie obiekty program rysuje prosto do bufora ramki, bądź tylnego bufora, w kolejności zgodnej z ich kolejnością występowania w kolekcji sceny i kolekcjach poszczególnych \texttt{SimObjectów}, używając testu bufora głębi do poprawnego umiejscowienia względem odległości od kamery. Rozwiązanie to ogranicza możliwość wprowadzenia dodatkowych efektów graficznych i większej ilości świateł, jednak na potrzeby niniejszej symulacji nie są one potrzebne.
 		
