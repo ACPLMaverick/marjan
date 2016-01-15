@@ -254,10 +254,10 @@ unsigned int SceneTest::Initialize()
 	string tBtnWfA = "textures/btn_wireframe_a.png";
 	string tBtnSt = "textures/btn_settings.png";
 	string tBtnStA = "textures/btn_settings_a.png";
-	string tBtnMva = "textures/btn_exit.png";
-	string tBtnMvaA = "textures/btn_exit_a.png";
-	string tBtnMvf = "textures/btn_ok.png";
-	string tBtnMvfA = "textures/btn_ok_a.png";
+	string tBtnMva = "textures/btn_movButtons.png";
+	string tBtnMvaA = "textures/btn_movButtons_a.png";
+	string tBtnMvf = "textures/btn_movTouch.png";
+	string tBtnMvfA = "textures/btn_movTouch_a.png";
 	string tBtnArr = "textures/btn_arrow_up.png";
 	string tBtnArrA = "textures/btn_arrow_up_a.png";
 	string tBtnFArr = "textures/btn_arrow_forward.png";

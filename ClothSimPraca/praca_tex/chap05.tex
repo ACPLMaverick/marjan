@@ -8,7 +8,7 @@
 	
 	Całość funkcjonalności dotyczących symulacji tkaniny skupiono w klasie \texttt{ClothSimulator}. Dziedziczy ona po typie abstrakcyjnym \texttt{Component}. Za sprawą tego bardzo dobrze komponuje się z architekturą silnika, bez problemu możemy ją dodać do dowolnego \texttt{SimObjectu} oraz wielokrotnie powielić, a także zarządzać jej działaniem poprzez zmienną włączającą bądź wyłączającą.
 	
-	W prezentowanej aplikacji został umieszczony jednak tylko jeden \texttt{ClothSimulator}, aby uprościć działanie i ułatwić pomiary testowe. Za cel części praktycznej pracy postawiono sobie możliwość zasymulowania zachowania pojedynczej tkaniny o prostokątnym kształcie, zawieszonej sztywno w powietrzu za dwa sąsiednie narożniki, poddającej się działaniom sił grawitacji oporu powietrza i wchodzącej w interakcje z obiektami sceny oraz sygnałami od użytkownika, za pośrednictwem ekranu dotykowego smartfona. Symulacja miała udostępniać opcję bycia obliczaną dwoma metodami -- masy na sprężynie i bazującą na pozycji oraz trzema sposobami -- przy użyciu GPU, sekwencyjnie na CPU oraz współbieżnie na CPU, z wykorzystaniem czterech wątków roboczych. Użytkownikowi pozwolono na zmianę istotnych parametrów symulacji poprzez ich wybór z ustalonego zakresu. Wszystkie wymienione wyżej cele zostały zrealizowane. Przeznaczeniem symulatora jest jednak nie tylko wizualizacja, ale też i udostępnienie możliwości oceny modeli tkanin oraz ich implementacji pod kątem wydajności, dlatego program wyświetla informacje o czasie trwania pojedynczego kroku symulacji, a także o całościowym okresie jednego przebiegu pętli głównej programu. 
+	W prezentowanej aplikacji został umieszczony jednak tylko jeden \texttt{ClothSimulator}, aby uprościć działanie i ułatwić pomiary testowe. Za cel części praktycznej pracy postawiono sobie możliwość zasymulowania zachowania pojedynczej tkaniny o prostokątnym kształcie (rysowane czworokąty mają kształt prostokątów), zawieszonej sztywno w powietrzu za dwa sąsiednie narożniki, poddającej się działaniom sił grawitacji oporu powietrza i wchodzącej w interakcje z obiektami sceny oraz sygnałami od użytkownika, za pośrednictwem ekranu dotykowego smartfona. Symulacja miała udostępniać opcję bycia obliczaną dwoma metodami -- masy na sprężynie i bazującą na pozycji oraz trzema sposobami -- przy użyciu GPU, sekwencyjnie na CPU oraz współbieżnie na CPU, z wykorzystaniem czterech wątków roboczych. Użytkownikowi pozwolono na zmianę istotnych parametrów symulacji poprzez ich wybór z ustalonego zakresu. Wszystkie wymienione wyżej cele zostały zrealizowane. Przeznaczeniem symulatora jest jednak nie tylko wizualizacja, ale też i udostępnienie możliwości oceny modeli tkanin oraz ich implementacji pod kątem wydajności, dlatego program wyświetla informacje o czasie trwania pojedynczego kroku symulacji, a także o całościowym okresie jednego przebiegu pętli głównej programu. 
 	
 	\section{Wydajność a użycie pamięci}
 	\label{t:symulacja:wydajnoscpamiec}
@@ -183,6 +183,8 @@
 			
 			Wątek roboczy:
 			
+			\Indp
+			
 			\While{m\_threadsRunning}
 			{
 				Czekaj na odblokowanie muteksu etapu 1.
@@ -206,8 +208,6 @@
 				Inkrementuj licznik wątków, które ukończyły pracę.
 			}
 			
-			\Indp
-			
 			\Indm
 		\end{algorithm}
 	
@@ -216,28 +216,364 @@
 			
 		% lista parametrów z objaśnieniami, proces inicjalizacji paramterów
 		
-		tba
+		Symulacja tkanin do działania wymaga zdefiniowania pokaźnej ilości parametrów. Niektóre z nich mogą być charakterystyczne dla każdego wierzchołka, dlatego przekazywane są do GPU w postaci tablic atrybutów. Inne będą zawsze takie same, niezależnie od tego, z którym wierzchołkiem mamy do czynienia i efektywniej jest przesłać je jako parametry jednorodne. Większość parametrów użytkownik może zmienić, wybierając wartość ze z góry ustalonego zakresu bądź zbioru. Poniżej wymienimy i opiszemy wszystkie kluczowe parametry dostępne do modyfikacji przez użytkownika, wraz z ich znaczeniem dla symulacji. W programie, dla wygody, zostały one upakowane w strukturach \texttt{SimParams} i \texttt{SimData}. Pierwsza z nich znajduje zastosowanie podczas pobierania parametrów z interfejsu użytkownika i przekazywania ich do klasy \texttt{ClothSimulator}. Zawartość drugiej powstaje w procesie inicjalizacji tablic danych, gotowych do wykorzystania podczas obliczeń.
+		
+		\begin{description}
+			
+			\item[Tryb symulacji] Zakres: Masa na sprężynie -- GPU, Masa na sprężynie -- CPU, Masa na sprężynie -- CPUx4, Oparty na pozycji -- GPU, Oparty na pozycji -- CPU, Oparty na pozycji -- CPUx4.
+			
+			\item[Obiekt wchodzący w kolizje] Zakres: prostopadłościan, sfera. Jest to obiekt umiejscowiony na tyle blisko tkaniny tak, aby mogła ona wchodzić z nim w kolizje. Użytkownik ma możliwość przesuwania go we wszystkich osiach układu współrzędnych.
+			
+			\item[Przyspieszenie grawitacyjne] Zakres: \(0.1\ -\ 10\ \frac{m}{s^{2}} \). Używane do obliczenia siły grawitacji działającej na każdy wierzchołek na etapie kalkulacji ruchu tkaniny.
+			
+			\item[Masa] Zakres: \(1\ -\ 50\ kg\). Używana do obliczenia przyspieszenia wierzchołka, wymaganego jako dana dla całkowania Verleta.
+			
+			\item[Współczynnik oporu powietrza] Zakres: \(0\ -\ 0.99\). Używany do obliczenia siły oporu powietrza, działającej na każdy wierzchołek mający różną od zera prędkość.
+			
+			\item[Współczynnik elastyczności] Zakres: \(0\ -\ 1000\). Używany zarówno jako współczynnik elastyczności sprężyn tkaniny w modelu masy na sprężynie, jak i jako parametr sztywności ograniczników pozycji w modelu opartym na pozycji, po odpowiednim przeskalowaniu.
+			
+			\item[Współczynnik tłumienia drgań] Zakres: \(0\ -\ -20\). Używany w obliczeniach sił sprężystości dla modelu masy na sprężynie. Dzięki niemu minimalizujemy ryzyko wpadnięcia tkaniny w niekontrolowane drgania.
+			
+			\item[Szerokość] Zakres: \(1\ -\ 50\ m\). Rozmiar tkaniny w osi X układu współrzędnych, zakładając, że siatka tkaniny jest równoległa do płaszczyzny XZ.
+			
+			\item[Długość]Zakres: \(1\ -\ 50\ m\). Rozmiar tkaniny w osi Z układu współrzędnych, zakładając, że siatka tkaniny jest równoległa do płaszczyzny XZ.
+			
+			\item[Ilość krawędzi poziomych] Zakres: \(0\ -\ 126\). Ten i następny są kluczowymi parametrami dla testów wydajności i efektu wizualnego. Ilość krawędzi ma wpływ na gęstość siatki tkaniny, a co za tym idzie na dokładność oraz ciężar obliczeniowy symulacji. Wartości tych parametrów są ograniczone do 126, czyli maksymalnie możemy wygenerować siatkę o gęstości \( 128 \times 128 \) krawędzi. Nie jest to dużo, jednak limit ten wynika z opisanej w Rozdziale \ref{t:technologie:narzedzia:bufory} konieczności zastosowania buforów jednorodnych, które mają niewielką pojemność.
+			
+			\item[Ilość krawędzi pionowych] Zakres: \(0\ -\ 126\).
+			
+		\end{description}
+		
+		Natomiast na potrzeby samej symulacji używane są także poniższe parametry opisujące tkaninę, ustalone na stałe, bądź modyfikowane w każdym kroku symulacji. Użytkownik zmienić niektóre z nich jedynie niebezpośrednio, poprzez opisaną dalej interakcję z tkaniną.
+		
+		\begin{description}
+			
+			\item[Początkowa pozycja tkaniny] Ustalona na sztywno, w ogóle poza klasą \texttt{ClothSimulator} -- w komponencie \texttt{Transform} tego samego obiektu. Wynosi \(10\ m\) ponad początkiem układu współrzędnych. Reprezentowana w postaci macierzy świata o wymiarach \(4\times4 \).
+			
+			\item[Wektor położenia wierzchołka] Składa się z czterech komponentów. Ostatni nie bierze udziału w obliczeniach, a ma znaczenie dla kwestii poprawnego ułożenia danych w pamięci. Aktualizowany w każdym kroku symulacji.
+			
+			\item[Wektor normalny wierzchołka] Jak wyżej. Służy do wyliczenia równania oświetlenia podczas rysowania tkaniny. Także aktualizowany w każdym kroku.
+			
+			\item[Indeksy sąsiadów wierzchołka] Używane do wyboru wierzchołków, z którymi przetwarzany aktualnie wierzchołek połączony jest sprężynami bądź ogranicznikami. Jest ich 12 -- 8 dla najbliższych sąsiadów i 4 dla sąsiadów oddalonych o 2 pozycje, tylko po krawędziach prostopadłych do osi układu współrzędnych. 
+			
+			\item[Mnożniki sąsiadów wierzchołka] Jest ich także 12. Algorytm wybierający sąsiadów, przydziela ich zawsze taką samą liczbę, nie biorąc pod uwagę, czy sąsiad faktycznie istnieje. Może tak być dla wierzchołków znajdujących się na zewnętrznych krawędziach siatki. Mnożniki przyjmujące wartości 0 lub 1 rozwiązują ten problem -- dla nieistniejącego sąsiada obliczone przesunięcie nie bierze udziału w dalszym przetwarzaniu.
+			
+			\item[Mnożnik blokady wierzchołka] Może wynosić \(0\), wtedy wierzchołek nigdy się nie poruszy i nie podlega symulacji, bądź \(1\). Używany, by ``zawiesić'' tkaninę za narożniki.
+			
+			\item[Promień sfery okalającej wierzchołka] Kluczowy przy detekcji kolizji. Każdy wierzchołek posiada własną sferę okalającą, a jej promień jest obliczany wzorem podanym w Algorytmie \ref{alg_5_4}.
+			
+			\item[Odległości początkowe od sąsiadów wierzchołka] Niezbędne w obliczaniu sił sprężystości bądź ograniczników. Każdy ze wzorów tam użytych wymaga dostarczenia tych danych. Obliczane we wzorze podanym w Algorytmie \ref{alg_5_4}. Przechowywane w pamięci tylko raz, jako, że w przypadku prostokątnej siatki są takie same dla każdego wierzchołka.
+			
+		\end{description}
+		
+		Proces wspomnianej wyżej inicjalizacji struktur parametrów, z których korzystać będzie później symulacja, można opisać podanym poniżej Algorytmem \ref{alg_5_4}. Ma on miejsce zawsze, kiedy użytkownik wybierze opcję zatwierdzenia ustawień na ekranie ich wyboru. W algorytmie zastosowano następujące oznaczenia: \(C\) -- ilość wierzchołków, \(E_{w}\) -- całkowita ilość krawędzi prostopadłych do osi X układu współrzędnych, \(E_{l}\) -- całkowita ilość krawędzi prostopadłych do osi Z układu współrzędnych (przy założeniu, że siatka tkaniny jest równoległa do płaszczyzny XZ), \(p_{i}\) -- położenie wierzchołka, \(M\) -- masa całkowita, będąca parametrem wprowadzonym przez użytkownika.
+		
+		\begin{algorithm}
+			\label{alg_5_4}
+			\caption{Inicjalizacja parametrów tkaniny.}	
+			
+			Alokuj pamięć na potrzebne struktury danych i bufory.
+			
+			Oblicz odległości początkowe pomiędzy wierzchołkami.
+			
+			\Indp
+			
+				Odległość względem długości: \( b_{l} = (p_{0_{z}} - p_{(C-1)_{z}}) / (E_{w} - 1) \ . \)
+				
+				Odległość względem szerokości: \( b_{w} = (p_{0_{x}} - p_{(C-1)_{x}}) / (E_{l} - 1) \ . \)
+				
+				Odległość diagonalna: \( b_{d} = \sqrt{ (b_{l})^{2} + (b_{w})^2 } \ . \)
+				
+				Zapisz mnożnik dla odległości od wierzchołków następnych po sąsiadach: \(2 \ .\)
+			
+			\Indm
+			
+			Dla każdego wierzchołka:
+			
+			\Indp
+			
+				Oblicz i przypisz masę pojedynczego wierzchołka: \( m_{i} = \frac{M}{\sqrt{(min(C, 0.02)}} \  kg. \)
+				
+				Oblicz i przypisz promień sfery okalającej: \( r_{i} = min( \frac{min(b_{l}, b_{w})}{2}, 0.35 ) \ m. \)
+				
+				Przypisz współczynniki: elastyczności, tłumienia drgań, oporu powietrza.
+				
+				Oblicz i przypisz indeksy wierzchołków sąsiednich oraz ich mnożników.
+			
+			\Indm
+			
+			Przypisz mnożnik blokady (wartość \(0\)) do górnych wierzchołków \(i = 0\) i \(i = C - E_{l} \ .\)
+			
+		\end{algorithm}
 			
 		\subsection{Obliczenia ruchu tkaniny}
 		\label{t:symulacja:dzialanie:ruch}
 			
-		% różnice między MS i PB z punktu widzenia implementacji, listing dla MS, listing dla PB, ograniczenie buforów jednorodnych
+		% różnice między MS i PB z punktu widzenia implementacji, listing dla MS, listing dla PB
 		
-		tba
+		Jest to pierwszy etap symulacji i zarazem najważniejsza jego część. To tutaj obliczane są przemieszczenia wierzchołków w taki sposób, aby odwzorować zachowanie tkaniny. Poniżej podamy fragmenty kodu w języku GLSL najpierw dla modelu masy na sprężynie, a następnie -- modelu opartego na pozycji. Pamiętajmy, że wykonuje się on dla pojedynczego wierzchołka. Kod implementacji na CPU jest analogiczny.
+		\newpage	
+		
+		\begin{lstlisting}[language=GLSL]
+		vec3 CalcSpringForce(vec3 mPos, vec3 mPosLast, vec3 nPos, vec3 nPosLast, 
+			float sLength, float elCoeff, float dampCoeff)
+		{
+			vec3 ret = vec3(0.0f, 0.0f, 0.0f);
+			vec3 mVel = (mPos - mPosLast) / DeltaTime;
+			vec3 nVel = (nPos - nPosLast) / DeltaTime;
+			vec3 f = mPos - nPos;
+			vec3 n = normalize(f);
+			float fLength = length(f);
+			float spring = fLength - sLength;
+			vec3 springiness = - elCoeff * spring * n;
+			vec3 dV = mVel - nVel;
+			float damp = dampCoeff * (dot(dV, f) / fLength);
+			vec3 damping = damp * n;
+			float sL = length(springiness);
+			damping = n * min(sL, damp);
+			ret = (springiness + damping);
+			return ret;
+		}
+		
+		void main()
+		{
+			int mID = gl_VertexID;
+			vec3 mPos = vec3(Pos);
+			vec3 mPosLast = vec3(PosLast);
+			vec3 mVel = (mPos - mPosLast) / DeltaTime;
+			vec3 mForce = vec3(0.0f, 0.0f, 0.0f);
+			// wyznaczanie tablic z dlugosciami sprzezyn, dla ulatwienia dostepu z petli
+			float sls1[4] = float[4](
+				SpringLengths.y, SpringLengths.x, SpringLengths.y, SpringLengths.x
+			);
+			...
+			// obliczanie sil sprzezystosci dla wszystkich sasiadow
+			for(int i = 0; i < 4; ++i)
+			{
+				int nID = int(roundEven(Neighbours[i]));
+				vec3 nPos = vec3(InPosBuffer[nID]);
+				vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+				
+				vec3 force = CalcSpringForce(..);
+				mForce += force * NeighbourMultipliers[i];
+			}
+			for(int i = 0; i < 4; ++i)
+			{
+				int nID = int(roundEven(NeighboursDiag[i]));
+				vec3 nPos = vec3(InPosBuffer[nID]);
+				vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+				
+				vec3 force = CalcSpringForce(...);
+				mForce += force * NeighbourDiagMultipliers[i];
+			}
+			for(int i = 0; i < 4; ++i)
+			{
+				int nID = int(roundEven(Neighbours2[i]));
+				vec3 nPos = vec3(InPosBuffer[nID]);
+				vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+				
+				vec3 force = CalcSpringForce(...);
+				mForce += force * Neighbour2Multipliers[i];
+			}
+			...
+			// obliczanie przemieszczenia
+				vec3 newPos;
+				vec3 acc = mForce / ElMassCoeffs.y;
+				newPos = 2.0f * vec3(Pos) - vec3(PosLast) + acc * DeltaTime * DeltaTime;
+			// aktualizacja pozycji
+				OutPos = vec4(newPos, 1.0f);
+				OutPosLast = Pos;
+				gl_Position = Pos;
+		}
+		\end{lstlisting}
+		
+		
+		\begin{lstlisting}[language=GLSL]
+		void CalcDistConstraint(vec3 mPos, vec3 nPos, float mass, 
+			float sLength, float elCoeff, float dampCoeff,
+			out vec4 constraint)
+		{
+			elCoeff = clamp(elCoeff, 0.0f, 1.0f);
+			vec3 diff = mPos - nPos;
+			float cLength = length(diff);
+			vec3 dP = (2.0f * mass) * (cLength - sLength) * (diff / cLength) * elCoeff;
+			constraint.xyz = dP;
+			constraint.w = 1.0f / mass;
+		}
+
+		void main()
+		{
+			...
+			//////////////////////////////////////////////////////
+			// kalkulacja sil
+			vec3 mForce = vec3(0.0f);
+			vec3 posPredicted = vec3(0.0f);
+			...
+			vec3 acc = mForce / ElMassCoeffs.y;	// masa
+			posPredicted = 2.0f * vec3(Pos) - vec3(PosLast) + acc * DeltaTime * DeltaTime;
+			// ograniczniki
+			float elBias = 0.0005;
+			vec3 cPos = vec3(0.0f);
+			for(int i = 0; i < 4; ++i)
+			{
+				int nID = int(roundEven(Neighbours[i]));
+				vec3 nPos = vec3(InPosBuffer[nID]);
+				vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+				
+				// ogranicznik pozycji. XYZ to pozycja, W to odwrotnosc masy
+				vec4 constraint;
+				CalcDistConstraint(...);
+				cPos -= constraint.xyz * constraint.w * NeighbourMultipliers[i];
+			}
+			for(int i = 0; i < 4; ++i)
+			{
+				int nID = int(roundEven(NeighboursDiag[i]));
+				vec3 nPos = vec3(InPosBuffer[nID]);
+				vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+				
+				vec4 constraint;
+				CalcDistConstraint(...);
+				cPos -= constraint.xyz * constraint.w * NeighbourDiagMultipliers[i];
+			}
+			for(int i = 0; i < 4; ++i)
+			{
+				int nID = int(roundEven(Neighbours2[i]));
+				vec3 nPos = vec3(InPosBuffer[nID]);
+				vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+				
+				vec4 constraint;
+				CalcDistConstraint(...);
+				cPos -= constraint.xyz * constraint.w * Neighbour2Multipliers[i];
+			}
+			// aplikowanie ogranicznikow
+			vec3 finalPos = posPredicted + cPos * Multipliers.x;
+			// aktualizacja pozycji
+			OutPos = vec4(finalPos, 1.0f);
+			OutPosLast = Pos;
+			gl_Position = Pos;
+		}	
+		\end{lstlisting}
+		
+		Jak widzimy, implementacje obu modeli symulacji mają ze sobą sporo wspólnego i tak naprawdę ich główna różnica polega na podejściu do kalkulacji sprężyn bądź ograniczników. Zauważamy zastosowanie wzorów z rozdziałów \ref{t:teoria:analiza:masa} i \ref{t:teoria:analiza:poz}. Cały proces dotyczący kalkulacji sił zewnętrznych wygląda w obu przypadkach tak samo i został tu pominięty. Metody różnią się także kolejnością wykonywania działań. W modelu masy na sprężynie siły sprężystości są obliczane na początku, chociaż kolejność nie ma tu tak naprawdę znaczenia. Z kolei ma ona znaczenie w modelu opartym na pozycji -- tutaj ograniczniki nakładamy już na obliczoną pozycję, zmienioną pod wpływem sił zewnętrznych.
 		
 		\subsection{Rozwiązywanie kolizji}
 		\label{t:symulacja:dzialanie:kolizje}
 			
-		% algorytm, komunikacja z PhysicsManagerem -- struktury i pakowanie tego na GPU
+		% listing, komunikacja z PhysicsManagerem -- struktury i pakowanie tego na GPU
 		
-		tba
+		Etapem drugim jest rozwiązanie kolizji zewnętrznych, wewnętrznych, a także uwzględnienie działania użytkownika na tkaninę. Aby dokonać pierwszej z tych czynności, należy mieć dane wszystkich struktur okalających dla każdego obiektu w scenie. Zapewnia je nam klasa--singleton \texttt{PhysicsManager}, który posiada funkcjonalność przechowywania ich w formie upakowanych struktur, o rozmiarze wyrównanym do wielokrotności 4 B. Dzięki temu możemy, korzystając z buforów jednorodnych, bezpośrednio wysłać je do GPU jako parametry. Pamiętamy także o tym, że każdy wierzchołek tkaniny ma własną sferę okalającą. Na tej podstawie możemy ustalić i rozwiązać kolizje z innymi obiektami. Poniżej prezentujemy fragment kodu GLSL, zawartego w kernelu \emph{ClothCollisionKernel.glsl}, odpowiedzialnego za tę czynność.
+		
+		\begin{lstlisting}[language=GLSL]
+		
+		void Vec3LengthSquared(in vec3 vec, out float ret)
+		{
+			ret = vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;
+		}
+		void CalculateCollisionSphere(vec3 mCenter, float mRadius, vec3 sphereCenter, 
+			float sphereRadius, float multiplier, inout vec3 ret)
+		{
+			vec3 diff = mCenter - sphereCenter;
+			float diffLength;
+			Vec3LengthSquared(diff, diffLength);
+			ret = vec3(0.0f);
+			if
+			(
+				diffLength < (mRadius + sphereRadius) * (mRadius + sphereRadius) &&
+				diffLength != 0.0f
+			)
+			{
+				diff = normalize(diff);
+				diff = diff * ((mRadius + sphereRadius) - sqrt(diffLength)) * multiplier;
+				
+				ret = diff;
+			}
+		}
+		void CalculateCollisionBoxAA(vec3 mCenter, float mRadius, vec3 bMin, 
+				vec3 bMax, float multiplier, inout vec3 ret)
+		{
+			vec3 closest = min(max(mCenter, bMin), bMax);
+			float dist;
+			Vec3LengthSquared(closest - mCenter, dist);
+			ret = vec3(0.0f);
+			if(dist < (mRadius * mRadius) && dist != 0.0f)
+			{
+				closest = mCenter - closest;
+				ret = normalize(closest) * (mRadius - sqrt(dist)) * multiplier;
+			}
+		}
+		void main()
+		{
+			vec3 colOffset = vec3(0.0f, 0.0f, 0.0f);
+			vec3 mPos = vec3(WorldMatrix * Pos);
+			vec3 totalOffset = vec3(0.0f);
+			float mR = Multipliers.y;
+			// rozwiazanie kolizji z prostopadloscianami
+			for(int i = 0; i < BoxAAColliderCount; ++i)
+			{
+				mat2x4 box = baaBuffer[i];
+				vec3 bMin = vec3(box[0][0], box[0][1], box[0][2]);
+				vec3 bMax = vec3(box[1][0], box[1][1], box[1][2]);
+				
+				CalculateCollisionBoxAA(mPos, mR, bMin, bMax, 1.0f, colOffset);
+				mPos += colOffset;
+				totalOffset += colOffset;
+			}
+			// rozwiazanie kolizji ze sferami
+			for(int i = 0; i < SphereColliderCount; ++i)
+			{
+				vec4 sphere = sBuffer[i];
+				vec3 sPos = vec3(sphere);
+				float sR = sphere.w;
+				
+				CalculateCollisionSphere(mPos, mR, sPos, sR, 1.0f, colOffset);
+				mPos += colOffset;
+				totalOffset += colOffset;
+			}
+			// rozwiazanie kolizji wewnetrznych - z sasiadami
+			for (int i = 0; i < 4; ++i)
+			{
+				vec3 wnPos = vec3(WorldMatrix * InPosBuffer[int(Neighbours[i])]);
+				CalculateCollisionSphere(mPos, mR, wnPos, mR, 0.5f, colOffset);
+				mPos += colOffset;
+				totalOffset += colOffset;
+			}
+			...
+			vec4 finalPos = vec4(vec3(Pos) + totalOffset, Pos.w);
+		}
+		
+		\end{lstlisting}
 			
 		\subsection{Interakcja z użytkownikiem}
 		\label{t:symulacja:dzialanie:interakcja}
 			
-		% po co, co możemy robić, jak to działa, wzory, algorytm
+		% po co, co możemy robić -- i obiekt i palec, jak to działa, wzory, listing
 		
-		tba
+		\begin{lstlisting}[language=GLSL]
+		
+		// aplikujemy wektor dotyku
+		vec4 mPosScreen = ProjMatrix * (ViewMatrix * (WorldMatrix * finalPos));
+		vec4 mPosScreenNorm = mPosScreen / mPosScreen.w;
+		vec4 fPosScreen = vec4(TouchVector.x, TouchVector.y, 0.0f, mPosScreenNorm.w);
+		vec4 fDirScreen = vec4(TouchVector.z, TouchVector.w, 0.0f, 0.0f);
+		float A = 200.0f;
+		float s = 300.0f;
+		float coeff = A * exp(-(
+			(fPosScreen.x - mPosScreenNorm.x) * 
+				(fPosScreen.x - mPosScreenNorm.x) +
+			(fPosScreen.y - mPosScreenNorm.y) * 
+				(fPosScreen.y - mPosScreenNorm.y)) 
+			/ 2.0f * s);
+		fDirScreen *= mPosScreen.w;
+		fDirScreen = inverse(WorldMatrix) * 
+			(inverse(ViewMatrix) * 
+				(inverse(ProjMatrix) * fDirScreen));
+		fDirScreen *= 
+			coeff * length(vec2(TouchVector.z, TouchVector.w)) * Multipliers.x;
+		finalPos.x += fDirScreen.x;
+		finalPos.y += fDirScreen.y;
+		finalPos.z += fDirScreen.z;
+		
+		\end{lstlisting}
 			
 		\subsection{Przeliczenie wektorów normalnych}
 		\label{t:symulacja:dzialanie:normalne}

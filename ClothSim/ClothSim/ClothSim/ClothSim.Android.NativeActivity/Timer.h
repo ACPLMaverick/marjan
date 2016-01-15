@@ -18,7 +18,7 @@ class Timer : public Singleton<Timer>
 	friend class Singleton<Timer>;
 
 private:
-	const double FIXED_DELTA = 0.033;
+	const double FIXED_DELTA = 0.016;
 
 	double m_startTime;
 

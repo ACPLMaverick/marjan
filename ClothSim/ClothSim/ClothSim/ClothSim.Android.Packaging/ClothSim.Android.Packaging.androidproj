@@ -85,6 +85,10 @@
     <Content Include="assets\textures\btn_exit_a.png" />
     <Content Include="assets\textures\btn_minus.png" />
     <Content Include="assets\textures\btn_minus_a.png" />
+    <Content Include="assets\textures\btn_movButtons.png" />
+    <Content Include="assets\textures\btn_movButtons_a.png" />
+    <Content Include="assets\textures\btn_movTouch.png" />
+    <Content Include="assets\textures\btn_movTouch_a.png" />
     <Content Include="assets\textures\btn_ok.png" />
     <Content Include="assets\textures\btn_ok_a.png" />
     <Content Include="assets\textures\btn_plus.png" />
