@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "GUIValueSetter.h"
 #include "GUIText.h"
 #include "GUIPicture.h"

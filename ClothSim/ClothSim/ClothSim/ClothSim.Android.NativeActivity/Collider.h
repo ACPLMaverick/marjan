@@ -9,9 +9,6 @@ This is an abstract representation of a Collider.
 #include "PhysicsManager.h"
 
 #include <vector>
-#include <EGL/egl.h>
-#include <GLES/gl.h>
-#include <glm\glm\glm.hpp>
 
 class SimObject;
 class SphereCollider;

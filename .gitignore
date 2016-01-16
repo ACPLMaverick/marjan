@@ -424,3 +424,5 @@ ClothSimPraca/praca_tex/main.synctex.gz
 *.toc
 *.out
 *.dia~
+*.ipdb
+*.iobj

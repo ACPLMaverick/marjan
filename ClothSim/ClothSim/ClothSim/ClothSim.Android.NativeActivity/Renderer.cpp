@@ -20,6 +20,12 @@ unsigned int Renderer::Initialize()
 		return CS_ERR_NONE;
 	unsigned int err = CS_ERR_NONE;
 
+#ifdef PLATFORM_WINDOWS
+
+
+
+#else
+
 	// initialize OpenGL ES and EGL
 
 	EGLint w, h, format;
@@ -66,8 +72,11 @@ unsigned int Renderer::Initialize()
 	engine->width = w;
 	engine->height = h;
 
+	eglSwapInterval(engine->display, CSSET_VSYNC_ENALBED);
+
+#endif
 	// Shaders Loading
-	
+
 	m_basicShader = ResourceManager::GetInstance()->LoadShader(&SN_BASIC);
 	m_wireframeShader = ResourceManager::GetInstance()->LoadShader(&SN_WIREFRAME);
 	m_fontShader = ResourceManager::GetInstance()->LoadShader(&SN_FONT);
@@ -76,8 +85,6 @@ unsigned int Renderer::Initialize()
 	m_mode = BASIC;
 
 	//////////// options go here
-
-	eglSwapInterval(engine->display, CSSET_VSYNC_ENALBED);
 
 	glClearColor(CSSET_CLEAR_COLORS[0], CSSET_CLEAR_COLORS[1], CSSET_CLEAR_COLORS[2], CSSET_CLEAR_COLORS[3]);
 	glEnable(GL_DEPTH_TEST);
@@ -114,6 +121,9 @@ unsigned int Renderer::Shutdown()
 		return CS_ERR_NONE;
 
 	unsigned int err = CS_ERR_NONE;
+#ifdef PLATFORM_WINDOWS
+
+#else
 	Engine* engine = System::GetInstance()->GetEngineData();
 
 	if (engine->display != EGL_NO_DISPLAY) {
@@ -131,6 +141,8 @@ unsigned int Renderer::Shutdown()
 	engine->context = EGL_NO_CONTEXT;
 	engine->surface = EGL_NO_SURFACE;
 
+#endif
+
 	m_initialized = false;
 	return err;
 }
@@ -138,6 +150,7 @@ unsigned int Renderer::Shutdown()
 unsigned int Renderer::Run()
 {
 	unsigned int err = CS_ERR_NONE;
+#ifndef PLATFORM_WINDOWS
 	Engine* engine = System::GetInstance()->GetEngineData();
 
 	if (engine->display == NULL || engine->context == NULL || engine->surface == NULL) 
@@ -145,6 +158,7 @@ unsigned int Renderer::Run()
 		// No display.
 		return CS_ERR_UNKNOWN;
 	}
+#endif
 
 	if (m_resizeNeeded)
 	{
@@ -181,7 +195,13 @@ unsigned int Renderer::Run()
 	glUseProgram(m_shaderID->id);
 	System::GetInstance()->GetCurrentScene()->DrawGUI();
 
+#ifdef PLATFORM_WINDOWS
+
+#else
+
 	EGLBoolean res = eglSwapBuffers(engine->display, engine->surface);
+
+#endif // PLATFORM_WINDOWS
 
 	return err;
 }
@@ -379,6 +399,12 @@ char* Renderer::LoadShaderFromAssets(const string * path)
 	string fPath = prefix + *path + suffix;
 
 	// fuck you, assetmanager
+#ifdef PLATFORM_WINDOWS
+
+	return nullptr;
+
+#else
+
 	AAssetManager* mgr = System::GetInstance()->GetEngineData()->app->activity->assetManager;
 
 	AAsset* shaderAsset = AAssetManager_open(mgr, fPath.c_str(), AASSET_MODE_UNKNOWN);
@@ -389,6 +415,8 @@ char* Renderer::LoadShaderFromAssets(const string * path)
 	AAsset_read(shaderAsset, (void*)code, length);
 	code[length] = '\0';
 	return code;
+
+#endif
 }
 
 char* Renderer::LoadKernelFromAssets(const string * path)
@@ -396,8 +424,12 @@ char* Renderer::LoadKernelFromAssets(const string * path)
 	string prefix = "kernels/";
 	string suffix = ".glsl";
 	string fPath = prefix + *path + suffix;
+#ifdef PLATFORM_WINDOWS
 
-	// fuck you, assetmanager
+	return nullptr;
+
+#else
+
 	AAssetManager* mgr = System::GetInstance()->GetEngineData()->app->activity->assetManager;
 
 	AAsset* shaderAsset = AAssetManager_open(mgr, fPath.c_str(), AASSET_MODE_UNKNOWN);
@@ -408,12 +440,13 @@ char* Renderer::LoadKernelFromAssets(const string * path)
 	AAsset_read(shaderAsset, (void*)code, length);
 	code[length] = '\0';
 	return code;
+
+#endif
 }
 
 inline void Renderer::ResizeViewport()
 {
 	Engine* engine = System::GetInstance()->GetEngineData();
-
 	glViewport(0, 0, engine->width, engine->height);
 }
 
@@ -424,6 +457,13 @@ void Renderer::ShutdownShader(ShaderID* sid)
 
 void Renderer::LoadTexture(const string* filePath, TextureID* id)
 {
+#ifdef PLATFORM_WINDOWS
+
+	//id->id = SOIL_load_OGL_texture((*filePath).c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
+			//SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+
+#else
+
 	AAssetManager* mgr = System::GetInstance()->GetEngineData()->app->activity->assetManager;
 	AAsset* textureAsset = AAssetManager_open(mgr, filePath->c_str(), AASSET_MODE_UNKNOWN);
 	unsigned int length = AAsset_getLength(textureAsset);
@@ -436,8 +476,9 @@ void Renderer::LoadTexture(const string* filePath, TextureID* id)
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB);
 
 	++length;
-	//id->id = SOIL_load_OGL_texture((*filePath).c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
-		//SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+
+#endif
+
 }
 
 void Renderer::LoadTexture(const string* name, const unsigned char* data, int dataLength, int width, int height, int channels, TextureID* id)
@@ -464,6 +505,8 @@ void Renderer::ShutdownTexture(TextureID* id)
 	glDeleteTextures(1, (GLuint*)&(id->id));
 }
 
+#ifndef PLATFORM_WINDOWS
+
 void Renderer::AHandleResize(ANativeActivity * activity, ANativeWindow * window)
 {
 	int32_t w, h;
@@ -476,8 +519,11 @@ void Renderer::AHandleResize(ANativeActivity * activity, ANativeWindow * window)
 
 	Renderer::GetInstance()->m_resizeNeeded = true;
 
-	if(System::GetInstance()->GetCurrentScene() != nullptr)
+	if (System::GetInstance()->GetCurrentScene() != nullptr)
 		System::GetInstance()->GetCurrentScene()->FlushDimensions();
 
 	LOGI("Renderer: Resize scheduled %dx%d", w, h);
 }
+
+#endif // !PLATRORM_WINDOWS
+

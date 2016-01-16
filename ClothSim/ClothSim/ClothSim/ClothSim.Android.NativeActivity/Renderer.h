@@ -5,7 +5,7 @@
 #include "Settings.h"
 #include "System.h"
 #include "ResourceManager.h"
-#include "SOIL2.h"
+//#include "SOIL2.h"
 
 #include <fstream>
 #include <string>
@@ -29,6 +29,8 @@ const string SN_FONT = "Font";
 */
 
 // dont forget about vsync here
+#ifndef PLATFORM_WINDOWS
+
 const EGLint attribs[] = {
 	EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 	EGL_BLUE_SIZE, 8,
@@ -44,6 +46,8 @@ const EGLint attribsContext[] =
 	EGL_CONTEXT_CLIENT_VERSION, 3,
 	EGL_NONE
 };
+
+#endif // !PLATFORM_WINDOWS
 
 class Renderer : public Singleton<Renderer>
 {
@@ -95,6 +99,8 @@ public:
 	static void LoadTexture(const string*, const unsigned char*, int, int, int, int, TextureID*);
 	static void ShutdownTexture(TextureID*);
 
+#ifndef PLATFORM_WINDOWS
 	static void AHandleResize(ANativeActivity* activity, ANativeWindow* window);
+#endif // !PLATFORM_WINDOWS
 };
 

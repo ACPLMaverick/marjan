@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "GUIPicture.h"
 #include "MeshGLRectButton.h"
 

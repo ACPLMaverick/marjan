@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "GUISettingsScreen.h"
 #include "GUIPicture.h"
 #include "GUIButton.h"

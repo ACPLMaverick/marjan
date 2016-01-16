@@ -9,13 +9,17 @@ Header file for common includes and switches
 #include <glm\glm\glm.hpp>
 
 // MAKE SURE THERE'S ONLY AND EXACTLY ONE SWITCH TURNED ON AT A TIME
-//#define BUILD_CUDA
-#define BUILD_OPENCL
+#define PLATFORM_WINDOWS
 
-// MAKE SURE THERE'S ONLY AND EXACTLY ONE SWITCH TURNED ON AT A TIME
-//#define BUILD_OPENGL
-#define BUILD_OPENGLES
+#ifdef PLATFORM_WINDOWS
 
+#include <GL\glew.h>
+#include <GLFW\glfw3.h>
+#include <SOIL2\SOIL2.h>
+
+typedef unsigned int uint;
+
+#endif
 
 // error defines
 #define CS_ERR_NONE 0
@@ -33,8 +37,18 @@ Header file for common includes and switches
 //////////////////
 
 // other helpful defines
+
+#ifndef PLATFORM_WINDOWS
+
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "AndroidProject1.NativeActivity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "AndroidProject1.NativeActivity", __VA_ARGS__))
+
+#else
+
+#define LOGI(...) (printf(__VA_ARGS__))
+#define LOGW(...) (LOGI(__VA_ARGS__))
+
+#endif
 
 // structure definitions
 struct TextureID

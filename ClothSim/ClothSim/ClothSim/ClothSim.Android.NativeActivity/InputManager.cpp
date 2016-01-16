@@ -44,6 +44,12 @@ unsigned int InputManager::Run()
 {
 	unsigned int err = CS_ERR_NONE;
 
+#ifdef PLATFORM_WINDOWS
+
+	// here goes data readout from mouse
+
+#endif
+
 	for (std::vector<TwoBool*>::iterator it = m_tBools.begin(); it != m_tBools.end(); ++it)
 	{
 		(*it)->Update();
@@ -185,13 +191,6 @@ void InputManager::ComputeScaleFactors(glm::vec2 * factors)
 	factors->y = factorY;
 }
 
-void InputManager::UpdateAcceleration(const ASensorVector* sVec)
-{
-	glm::vec3 newAcc = glm::vec3(sVec->x, sVec->y, sVec->z);
-	m_accelerationDelta = newAcc - m_acceleration;
-	m_acceleration = newAcc;
-}
-
 bool InputManager::GUIElementAreaInClick(GUIElement * button, const glm::vec2 * clickPos)
 {
 	// we have an event here, so we calculate current finger position
@@ -267,6 +266,14 @@ unsigned int InputManager::ProcessButtonHolds(const glm::vec2 * clickPos)
 	return ctr;
 }
 
+#ifndef PLATFORM_WINDOWS
+
+void InputManager::UpdateAcceleration(const ASensorVector* sVec)
+{
+	glm::vec3 newAcc = glm::vec3(sVec->x, sVec->y, sVec->z);
+	m_accelerationDelta = newAcc - m_acceleration;
+	m_acceleration = newAcc;
+}
 /**
 * Process the next input event.
 */
@@ -374,3 +381,5 @@ int32_t InputManager::AHandleInput(struct android_app* app, AInputEvent* event)
 	
 	return 0;
 }
+
+#endif

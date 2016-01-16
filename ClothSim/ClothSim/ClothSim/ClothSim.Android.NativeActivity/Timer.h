@@ -7,8 +7,6 @@
 #include "Common.h"
 #include "Singleton.h"
 
-//#include <GL\glew.h>
-//#include <GLFW\glfw3.h>
 #include <map>
 
 #define TICKS_TO_UNLOCK_FIXED 10

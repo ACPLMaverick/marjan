@@ -9,9 +9,6 @@ This is an abstract representation of a Mesh rendered by OpenGL 3.3.
 #include "LightAmbient.h"
 #include "LightDirectional.h"
 
-#include <EGL/egl.h>
-#include <GLES/gl.h>
-#include <glm\glm\glm.hpp>
 #include <glm\glm\gtx\transform.hpp>
 
 ////////////

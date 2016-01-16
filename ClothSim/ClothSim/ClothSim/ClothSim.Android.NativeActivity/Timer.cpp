@@ -62,9 +62,17 @@ unsigned int Timer::Run()
 double Timer::GetCurrentTimeMS()
 {
 	double ret;
+
+#ifdef PLATFORM_WINDOWS
+
+#else
+
 	timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	ret = (double)ts.tv_nsec / 1000000.0 + (double)ts.tv_sec * 1000.0;
+
+#endif
+
 	return ret;
 }
 

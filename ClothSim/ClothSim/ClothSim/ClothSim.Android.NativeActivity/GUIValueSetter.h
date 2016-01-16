@@ -1,6 +1,9 @@
 #pragma once
 #include "GUIElement.h"
 #include <vector>
+#ifdef PLATFORM_WINDOWS
+#include <functional>
+#endif
 
 class GUIPicture;
 class GUIButton;

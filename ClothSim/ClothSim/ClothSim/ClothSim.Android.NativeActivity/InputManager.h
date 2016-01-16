@@ -100,7 +100,10 @@ protected:
 	inline unsigned int ProcessButtonHolds(const glm::vec2 * clickPos);
 	inline void ComputeScaleFactors(glm::vec2* factors);
 
+#ifndef PLATFORM_WINDOWS
 	void UpdateAcceleration(const ASensorVector* sVec);
+#endif // !PLATFORM_WINDOWS
+
 public:
 	InputManager(const InputManager*);
 	~InputManager();
@@ -125,8 +128,9 @@ public:
 
 	void AddGUIElement(GUIElement* button);
 	void RemoveGUIElement(GUIElement* button);
-
+#ifndef PLATFORM_WINDOWS
 	static int32_t AHandleInput(struct android_app* app, AInputEvent* event);
+#endif
 	bool GUIElementAreaInClick(GUIElement* button, const glm::vec2* clickPos);
 	void GetClickPosInScreenCoords(const glm::vec2* clPos, glm::vec2* retPos);
 };

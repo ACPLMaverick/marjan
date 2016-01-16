@@ -328,7 +328,7 @@ void GUIController::ActionMoveActiveObject(std::vector<void*>* params, const glm
 		break;
 	}
 
-	glm::vec3 cPosVector = cObj->GetTransform()->GetPositionCopy();
+	glm::vec3 cPosVector = *cObj->GetTransform()->GetPosition();
 
 	mVector = mVector * BOX_SPEED * (float)Timer::GetInstance()->GetDeltaTime();
 

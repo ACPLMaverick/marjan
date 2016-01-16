@@ -25,6 +25,14 @@ unsigned int System::Initialize()
 
 	// initializing main singletons
 
+#ifdef PLATFORM_WINDOWS
+
+	m_engine = new Engine();
+	m_engine->height = 0;
+	m_engine->width = 0;
+
+#endif
+
 	err = Renderer::GetInstance()->Initialize();
 	if (err != CS_ERR_NONE) return err;
 
@@ -89,6 +97,10 @@ unsigned int System::Shutdown()
 	PhysicsManager::DestroyInstance();
 	ResourceManager::DestroyInstance();
 
+#ifdef PLATFORM_WINDOWS
+	delete m_engine;
+#endif
+
 	// shutting down gui
 
 #ifdef _DEBUG
@@ -101,6 +113,17 @@ unsigned int System::Shutdown()
 unsigned int System::Run()
 {
 	unsigned int err = CS_ERR_NONE;
+
+#ifdef PLATFORM_WINDOWS
+
+	while (m_running)
+	{
+		err = Tick();
+		if (err != CS_ERR_NONE)
+			return err;
+	}
+
+#else
 
 	while (1)
 	{
@@ -116,6 +139,8 @@ unsigned int System::Run()
 		}
 	}
 
+#endif
+
 	return err;
 }
 
@@ -129,6 +154,7 @@ unsigned int System::Tick()
 	if (err != CS_ERR_NONE)
 		return err;
 
+#ifndef PLATFORM_WINDOWS
 	// update android-related stuff, mainly events
 	err = RunAndroid();
 	if (err != CS_ERR_NONE)
@@ -136,7 +162,7 @@ unsigned int System::Tick()
 		LOGW("DESTROY!");
 		return err;
 	}
-		
+#endif // !PLATFORM_WINDOWS		
 
 	// update input
 	err = InputManager::GetInstance()->Run();
@@ -166,14 +192,19 @@ unsigned int System::Tick()
 void System::Stop()
 {
 	m_running = false;
+#ifndef PLATFORM_WINDOWS
 	Shutdown();
 	ANativeActivity_finish(m_engine->app->activity);
+#endif // PLATFORM_WINDOWS
 }
 
 
 /**
 * Initialize android necessary stuff
 */
+
+#ifndef PLATFORM_WINDOWS
+
 unsigned int System::InitAndroid(android_app* app)
 {
 	m_engine = new Engine();
@@ -198,16 +229,16 @@ unsigned int System::InitAndroid(android_app* app)
 	m_engine->animating = 1;
 	/*
 	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-			decorView.setSystemUiVisibility(
-				View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-				| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-				| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-				| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-				| View.SYSTEM_UI_FLAG_FULLSCREEN
-				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-		}
+	super.onWindowFocusChanged(hasFocus);
+	if (hasFocus) {
+	decorView.setSystemUiVisibility(
+	View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+	| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+	| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+	| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+	| View.SYSTEM_UI_FLAG_FULLSCREEN
+	| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+	}
 	}
 	*/
 	// loop waiting for recieving context from android
@@ -270,7 +301,7 @@ unsigned int System::RunAndroid()
 	// If animating, we loop until all events are read, then continue
 	// to draw the next frame of animation.
 	while ((ident = ALooper_pollAll(m_engine->animating ? 0 : -1, NULL, &events,
-		(void**)&source)) >= 0) 
+		(void**)&source)) >= 0)
 	{
 
 		// Process this event.
@@ -286,7 +317,7 @@ unsigned int System::RunAndroid()
 				ASensorEvent event;
 				while (ASensorEventQueue_getEvents(m_engine->sensorEventQueue,
 					&event, 1) > 0) {
-					
+
 					//LOGI("accelerometer: x=%f y=%f z=%f",
 					//event.acceleration.x, event.acceleration.y,
 					//event.acceleration.z);
@@ -309,7 +340,7 @@ unsigned int System::RunAndroid()
 /**
 * Process the next main command.
 */
-void System::AHandleCmd(struct android_app* app, int32_t cmd) 
+void System::AHandleCmd(struct android_app* app, int32_t cmd)
 {
 	struct Engine* engine = (struct Engine*)app->userData;
 	switch (cmd) {
@@ -324,7 +355,7 @@ void System::AHandleCmd(struct android_app* app, int32_t cmd)
 
 	case APP_CMD_INIT_WINDOW:
 		// Initalize everything.
-		if (engine->app->window != NULL) 
+		if (engine->app->window != NULL)
 		{
 			System::GetInstance()->Initialize();
 
@@ -392,6 +423,13 @@ void System::AHandleCmd(struct android_app* app, int32_t cmd)
 }
 
 
+#endif // !PLATFORM_WINDOWS
+
+Engine* System::GetEngineData()
+{
+	return m_engine;
+}
+
 bool System::GetRunning()
 {
 	return m_running;
@@ -400,9 +438,4 @@ bool System::GetRunning()
 Scene* System::GetCurrentScene()
 {
 	return m_scene;
-}
-
-Engine* System::GetEngineData()
-{
-	return m_engine;
 }

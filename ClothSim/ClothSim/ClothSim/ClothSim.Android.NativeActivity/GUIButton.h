@@ -11,6 +11,9 @@
 #include "MeshGLRectButton.h"
 
 #include <vector>
+#ifdef PLATFORM_WINDOWS
+#include <functional>
+#endif
 
 class GUIAction;
 class MeshGLRectButton;

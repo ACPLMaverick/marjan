@@ -15,13 +15,13 @@ class SimObject;
 class Transform : public Component
 {
 private:
-	glm::mat4* m_worldMatrix;
-	glm::mat4* m_worldInverseTransposeMatrix;
-	glm::mat4* m_lastWorldMatrix;
+	glm::mat4 m_worldMatrix;
+	glm::mat4 m_worldInverseTransposeMatrix;
+	glm::mat4 m_lastWorldMatrix;
 
-	glm::vec3* m_position;
-	glm::vec3* m_rotation;
-	glm::vec3* m_scale;
+	glm::vec3 m_position;
+	glm::vec3 m_rotation;
+	glm::vec3 m_scale;
 
 	bool m_isWorldMatrixDirty;
 
@@ -47,10 +47,6 @@ public:
 	glm::vec3* GetPosition();
 	glm::vec3* GetRotation();
 	glm::vec3* GetScale();
-
-	glm::vec3 GetPositionCopy();
-	glm::vec3 GetRotationCopy();
-	glm::vec3 GetScaleCopy();
 
 	void SetPosition(glm::vec3*);
 	void SetRotation(glm::vec3*);
