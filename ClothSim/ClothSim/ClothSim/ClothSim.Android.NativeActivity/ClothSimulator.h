@@ -175,41 +175,19 @@ protected:
 
 	const unsigned int KERNEL_NRM_OUTPUT_NAME_COUNT = 1;
 	const std::string KERNEL_NRM_NAME = "ClothNormal";
-	const char* KERNEL_NRM_INPUT_NAMES[1] =
-	{
-		"InPos"
-	};
-	const char* KERNEL_NRM_OUTPUT_NAMES[1] =
-	{
-		"OutNormal"
-	};
+	char* KERNEL_NRM_INPUT_NAMES[1];
+	char* KERNEL_NRM_OUTPUT_NAMES[1];
 
 	const unsigned int KERNEL_COL_OUTPUT_NAME_COUNT = 1;
 	const std::string KERNEL_COL_NAME = "ClothCollision";
-	const char* KERNEL_COL_INPUT_NAMES[3] =
-	{
-		"InPos",
-		"InBaaCols",
-		"InSCols"
-	};
-	const char* KERNEL_COL_OUTPUT_NAMES[1] =
-	{
-		"OutPos"
-	};
+	char* KERNEL_COL_INPUT_NAMES[3];
+	char* KERNEL_COL_OUTPUT_NAMES[1];
 
 	/////////
 
 	const unsigned int KERNEL_MSPOS_OUTPUT_NAME_COUNT = 2;
-	const char* KERNEL_MSPOS_INPUT_NAMES[2] =
-	{
-		"InPos",
-		"InPosLast"
-	};
-	const char* KERNEL_MSPOS_OUTPUT_NAMES[2] =
-	{
-		"OutPos",
-		"OutPosLast"
-	};
+	char* KERNEL_MSPOS_INPUT_NAMES[2];
+	char* KERNEL_MSPOS_OUTPUT_NAMES[2];
 	const std::string KERNEL_MSPOS_NAME = "ClothMSPosition";
 
 	KernelID* m_msPosKernelID;
@@ -218,16 +196,8 @@ protected:
 	/////////
 
 	const unsigned int KERNEL_PBPOS_OUTPUT_NAME_COUNT = 2;
-	const char* KERNEL_PBPOS_INPUT_NAMES[2] =
-	{
-		"InPos",
-		"InPosLast"
-	};
-	const char* KERNEL_PBPOS_OUTPUT_NAMES[2] =
-	{
-		"OutPos",
-		"OutPosLast"
-	};
+	char* KERNEL_PBPOS_INPUT_NAMES[2];
+	char* KERNEL_PBPOS_OUTPUT_NAMES[2];
 	const std::string KERNEL_PBPOS_NAME = "ClothPBPosition";
 
 	SimParams* m_tempSimParamsPtr = nullptr;

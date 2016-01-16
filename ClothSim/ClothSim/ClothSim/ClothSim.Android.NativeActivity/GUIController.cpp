@@ -4,9 +4,6 @@
 #include "ClothSimulator.h"
 #include "GUISettingsScreen.h"
 
-constexpr float GUIController::INFO_UPDATE_RATE;
-constexpr float GUIController::BOX_SPEED;
-
 GUIController::GUIController(SimObject* obj) : Component(obj)
 {
 }

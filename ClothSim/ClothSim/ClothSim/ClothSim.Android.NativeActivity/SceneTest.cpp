@@ -7,7 +7,6 @@
 #include "GUIText.h"
 #include "BoxAACollider.h"
 #include "SphereCollider.h"
-#include "ClothSimulatorMSGPU.h"
 #include "GUIButton.h"
 #include "GUIAction.h"
 #include "GUISettingsScreen.h"

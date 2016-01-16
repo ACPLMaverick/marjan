@@ -14,6 +14,8 @@ class GUIButton;
 class ClothSimulator;
 class GUISettingsScreen;
 
+#define BOX_SPEED 0.005f
+
 class GUIController :
 	public Component
 {
@@ -36,8 +38,7 @@ private:
 
 	double infoTimeDisplayHelper = 0.0;
 
-	static constexpr float INFO_UPDATE_RATE = 1000.0f;
-	static constexpr float BOX_SPEED = 0.005f;
+	const float INFO_UPDATE_RATE = 1000.0f;
 
 	InputMode m_inputMode = InputMode::ARROWS;
 

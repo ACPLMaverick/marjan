@@ -2,6 +2,21 @@
 
 ClothSimulator::ClothSimulator(SimObject* obj) : Component(obj)
 {
+	// here go the "constants"
+	KERNEL_NRM_INPUT_NAMES[0] = "InPos";
+	KERNEL_NRM_OUTPUT_NAMES[0] = "OutNormal";
+	KERNEL_COL_INPUT_NAMES[0] = "InPos";
+	KERNEL_COL_INPUT_NAMES[1] = "InBaaCols";
+	KERNEL_COL_INPUT_NAMES[2] = "InSCols";
+	KERNEL_COL_OUTPUT_NAMES[0] = "OutPos";
+	KERNEL_MSPOS_INPUT_NAMES[0] = "InPos";
+	KERNEL_MSPOS_INPUT_NAMES[1] = "InPosLast";
+	KERNEL_MSPOS_OUTPUT_NAMES[0] = "OutPos";
+	KERNEL_MSPOS_OUTPUT_NAMES[1] = "OutPosLast";
+	KERNEL_PBPOS_INPUT_NAMES[0] = "InPos";
+	KERNEL_PBPOS_INPUT_NAMES[1] = "InPosLast";
+	KERNEL_PBPOS_OUTPUT_NAMES[0] = "OutPos";
+	KERNEL_PBPOS_OUTPUT_NAMES[1] = "OutPosLast";
 }
 
 ClothSimulator::ClothSimulator(const ClothSimulator* c) : Component(c)

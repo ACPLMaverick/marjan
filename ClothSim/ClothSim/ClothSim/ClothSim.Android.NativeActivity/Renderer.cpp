@@ -1,4 +1,10 @@
 #include "Renderer.h"
+#ifndef PLATFORM_WINDOWS
+
+#include <SOIL2.h>
+
+#endif // !PLATFORM_WINDOWS
+
 
 Renderer::Renderer()
 {
