@@ -8,8 +8,8 @@ Header file for common includes and switches
 #include <vector>
 #include <glm\glm\glm.hpp>
 
-// MAKE SURE THERE'S ONLY AND EXACTLY ONE SWITCH TURNED ON AT A TIME
-//#define PLATFORM_WINDOWS
+// PLATFORM BUILD SWITCH
+#define PLATFORM_WINDOWS
 
 #ifdef PLATFORM_WINDOWS
 

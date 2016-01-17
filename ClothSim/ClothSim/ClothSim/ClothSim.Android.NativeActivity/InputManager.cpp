@@ -48,6 +48,60 @@ unsigned int InputManager::Run()
 
 	// here goes data readout from mouse
 
+	double pX, pY;
+	glfwGetCursorPos(Renderer::GetInstance()->GetWindowPtr(), &pX, &pY);
+	glm::vec2 mPos = glm::vec2((float)pX, (float)pY);
+	//Engine* engine = System::GetInstance()->GetEngineData();
+	//mPos.x = (mPos.x - ((float)engine->width / 2.0f)) / (float)engine->width * 2.0f;
+	//mPos.y = - (mPos.y - ((float)engine->height / 2.0f)) / (float)engine->height * 2.0f;
+	//LOGI("%f, %f\n", mPos.x, mPos.y);
+
+	m_touch01Direction = mPos - m_touch01Position;
+
+	if (mPos != m_touch01Position)
+		m_isMove = true;
+	else
+		m_isMove = false;
+
+	m_touch01Position = mPos;
+	m_touch02Position = m_touch01Position;
+	m_touch02Direction = m_touch01Direction;
+
+	if (glfwGetMouseButton(Renderer::GetInstance()->GetWindowPtr(), GLFW_MOUSE_BUTTON_1))
+	{
+		m_isHold = true;
+		ProcessButtonHolds(&m_touch01Position);
+	}
+	else
+	{
+		if (m_isHold)
+		{
+			m_isClick = true;
+			m_clickHelperTBool.SetVal(true);
+			ProcessButtonClicks(&m_touch01Position);
+		}
+		m_isHold = false;
+	}
+
+	if (glfwGetMouseButton(Renderer::GetInstance()->GetWindowPtr(), GLFW_MOUSE_BUTTON_2))
+	{
+		m_isHoldDouble = true;
+	}
+	else
+	{
+		m_isHoldDouble = false;
+	}
+
+	if (glfwGetMouseButton(Renderer::GetInstance()->GetWindowPtr(), GLFW_MOUSE_BUTTON_3))
+	{
+		m_isPinch = true;
+		m_pinchVal = m_touch02Direction.y;
+	}
+	else
+	{
+		m_isPinch = false;
+	}
+
 #endif
 
 	for (std::vector<TwoBool*>::iterator it = m_tBools.begin(); it != m_tBools.end(); ++it)
@@ -72,6 +126,8 @@ unsigned int InputManager::Run()
 
 	//////////////////////////////////////
 
+#ifndef PLATFORM_WINDOWS
+
 	if (m_isHold && m_isMove)
 	{
 		if (Timer::GetInstance()->GetCurrentTimeMS() - m_touchEventTime > m_touchEventInterval * 2.0f)
@@ -79,6 +135,8 @@ unsigned int InputManager::Run()
 			m_isMove = false;
 		}
 	}
+
+#endif // PLATFORM_WINDOWS
 
 	return err;
 }

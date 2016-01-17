@@ -161,19 +161,11 @@ unsigned int GUIController::Update()
 			glm::vec3 dirYZero = glm::vec3(dir.x, 0.0f, dir.z);
 			float dot = glm::dot(dir, dirYZero);
 
-			if (dot > CSSET_CAMERA_ROTATE_BARRIER)
+			if (dot > 0.01f)
 			{
 				System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&newPos);
 			}
 		}
-#ifdef BUILD_OPENGL
-		else if (cursorHideHelper)
-		{
-			glfwSetInputMode(Renderer::GetInstance()->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			glfwSetCursorPos(Renderer::GetInstance()->GetWindow(), CSSET_WINDOW_WIDTH / 2.0, CSSET_WINDOW_HEIGHT / 2.0);
-			cursorHideHelper = false;
-		}
-#endif
 
 		//////////////////////////
 

@@ -20,6 +20,9 @@ int main()
 	System::GetInstance()->Run();
 
 	System::GetInstance()->Shutdown();
+
+	LOGI("Program terminated.\n Close this window to exit.\n");
+
 	return 0;
 }
 

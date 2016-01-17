@@ -5,7 +5,6 @@
 #include "Settings.h"
 #include "System.h"
 #include "ResourceManager.h"
-//#include "SOIL2.h"
 
 #include <fstream>
 #include <string>
@@ -18,9 +17,11 @@ class ResourceManager;
 
 enum DrawMode { BASIC, WIREFRAME, BASIC_WIREFRAME };
 
+#ifndef PLATFORM_WINDOWS
 const string SN_BASIC = "Basic";
 const string SN_WIREFRAME = "Wireframe";
 const string SN_FONT = "Font";
+#endif
 
 /*
 * Here specify the attributes of the desired configuration.
@@ -56,6 +57,12 @@ class Renderer : public Singleton<Renderer>
 protected:
 	Renderer();
 
+#ifdef PLATFORM_WINDOWS
+	const string SN_BASIC = "Basic";
+	const string SN_WIREFRAME = "Wireframe";
+	const string SN_FONT = "Font";
+#endif
+
 	DrawMode m_mode;
 
 	//GLFWwindow* m_window;
@@ -64,6 +71,11 @@ protected:
 	ShaderID* m_basicShader;
 	ShaderID* m_wireframeShader;
 	ShaderID* m_fontShader;
+
+#ifdef PLATFORM_WINDOWS
+	GLFWwindow* m_window;
+	const string ASSET_PATH = "../ClothSim/ClothSim.Android.Packaging/assets/";
+#endif
 
 	bool m_initialized;
 	bool m_resizeNeeded;
@@ -101,6 +113,8 @@ public:
 
 #ifndef PLATFORM_WINDOWS
 	static void AHandleResize(ANativeActivity* activity, ANativeWindow* window);
+#else
+	GLFWwindow* GetWindowPtr();
 #endif // !PLATFORM_WINDOWS
 };
 

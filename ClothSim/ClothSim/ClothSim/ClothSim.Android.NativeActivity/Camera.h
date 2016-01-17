@@ -20,15 +20,15 @@ class Camera :
 	public Component
 {
 protected:
-	glm::mat4* m_viewMatrix;
-	glm::mat4* m_projMatrix;
-	glm::mat4* m_viewProjMatrix;
+	glm::mat4 m_viewMatrix;
+	glm::mat4 m_projMatrix;
+	glm::mat4 m_viewProjMatrix;
 
-	glm::vec3* m_position; 
-	glm::vec3* m_target;
-	glm::vec3* m_direction;
-	glm::vec3* m_up;
-	glm::vec3* m_right;
+	glm::vec3 m_position; 
+	glm::vec3 m_target;
+	glm::vec3 m_direction;
+	glm::vec3 m_up;
+	glm::vec3 m_right;
 
 	float m_fov, m_near, m_far;
 

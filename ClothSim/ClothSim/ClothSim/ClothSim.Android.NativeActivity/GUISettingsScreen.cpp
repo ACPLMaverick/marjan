@@ -63,11 +63,11 @@ unsigned int GUISettingsScreen::Initialize()
 	string vsElasticityLBL = "Elasticity";
 	string vsMassLBL = "Mass";
 	string vsAirDampLBL = "Air damp";
-	string vsElDampLBL ="Elasticity damp";
+	string vsElDampLBL ="El. damp";
 
 	string mainLBL = "Cloth parameters";
 
-	glm::vec2 txtScale = glm::vec2(0.05, 0.05f);
+	glm::vec2 txtScale = glm::vec2(0.05f, 0.05f);
 	glm::vec2 txtPos = glm::vec2(-0.7f, 0.73f);
 	glm::vec2 btnScale = glm::vec2(0.2f, 0.2f);
 	glm::vec2 btnApplyPos = glm::vec2(-0.0f, -0.8f);

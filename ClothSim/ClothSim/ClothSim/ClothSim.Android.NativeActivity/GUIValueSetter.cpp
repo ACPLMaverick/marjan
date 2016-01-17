@@ -83,7 +83,7 @@ unsigned int GUIValueSetter::Initialize()
 	float sclMplier = 2.2f;
 	float txtMplier = 0.75f;
 	glm::vec2 itemScale = glm::vec2(sclFactor, sclFactor);
-	glm::vec2 offsetLbl = glm::vec2(-m_scale.x * 0.75f, m_scale.y);
+	glm::vec2 offsetLbl = glm::vec2(-m_scale.x * 0.45f, m_scale.y);
 
 	string idTl = m_id + "_TextLabel";
 	string idTv = m_id + "_TextVal";

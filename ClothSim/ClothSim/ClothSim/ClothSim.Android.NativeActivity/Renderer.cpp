@@ -3,6 +3,10 @@
 
 #include <SOIL2.h>
 
+#else
+
+#include "Settings.h"
+
 #endif // !PLATFORM_WINDOWS
 
 
@@ -28,8 +32,32 @@ unsigned int Renderer::Initialize()
 
 #ifdef PLATFORM_WINDOWS
 
+	if (!glfwInit()) return CS_ERR_WINDOW_FAILED;
 
+	glfwWindowHint(GLFW_SAMPLES, CSSET_GLFW_SAMPLES_VALUE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	Engine* engine = System::GetInstance()->GetEngineData();
+	m_window = glfwCreateWindow(CSSET_WINDOW_WIDTH_DEFAULT, CSSET_WINDOW_HEIGHT_DEFAULT, CSSET_WINDOW_NAME, nullptr, nullptr);
+	engine->width = CSSET_WINDOW_WIDTH_DEFAULT;
+	engine->height = CSSET_WINDOW_HEIGHT_DEFAULT;
+	m_screenRatio = (float)engine->height / (float)engine->width;
+
+	if (m_window == nullptr)
+	{
+		glfwTerminate();
+		return CS_ERR_WINDOW_FAILED;
+	}
+
+	glfwMakeContextCurrent(m_window);
+	glewExperimental = true;
+
+	if (glewInit() != GLEW_OK) return CS_ERR_WINDOW_FAILED;
+
+	glfwSwapInterval(CSSET_VSYNC_ENALBED);
 #else
 
 	// initialize OpenGL ES and EGL
@@ -129,6 +157,12 @@ unsigned int Renderer::Shutdown()
 	unsigned int err = CS_ERR_NONE;
 #ifdef PLATFORM_WINDOWS
 
+	if (m_window != nullptr)
+	{
+		glfwDestroyWindow(m_window);
+		m_window = nullptr;
+	}
+
 #else
 	Engine* engine = System::GetInstance()->GetEngineData();
 
@@ -202,6 +236,9 @@ unsigned int Renderer::Run()
 	System::GetInstance()->GetCurrentScene()->DrawGUI();
 
 #ifdef PLATFORM_WINDOWS
+	
+	glfwSwapBuffers(m_window);
+	glfwPollEvents();
 
 #else
 
@@ -264,12 +301,15 @@ void Renderer::LoadKernel(const string * filePath, const string * newName, Kerne
 	// Read vs code from file
 	char *vertexShaderCode;
 	vertexShaderCode = LoadKernelFromAssets(filePath);
-	char * fragmentShaderCode =
-	{
+
+	string fragmentShaderCode =
+#ifdef PLATFORM_WINDOWS
+		"#version 330 core  \n"
+#else
 		"#version 300 es	\n"
+#endif
 		"out vec4 color;	\n"
-		"void main() { color = vec4(1.0f, 1.0f, 1.0f, 1.0f);}"
-	};
+		"void main() { color = vec4(1.0f, 1.0f, 1.0f, 1.0f);}\0";
 
 	GLint result = 500;
 	int infoLogLength = 10;
@@ -289,7 +329,7 @@ void Renderer::LoadKernel(const string * filePath, const string * newName, Kerne
 
 	// Compile Fragment Shader
 	LOGI("Compiling dummy fragment shader.\n");
-	char const * FragmentSourcePointer = fragmentShaderCode;
+	char const * FragmentSourcePointer = fragmentShaderCode.c_str();
 	glShaderSource(fragmentShaderID, 1, &FragmentSourcePointer, NULL);
 	glCompileShader(fragmentShaderID);
 
@@ -316,8 +356,7 @@ void Renderer::LoadKernel(const string * filePath, const string * newName, Kerne
 
 	glDeleteShader(vertexShaderID);
 	glDeleteShader(fragmentShaderID);
-	delete vertexShaderCode;
-	delete fragmentShaderCode;
+	delete[] vertexShaderCode;
 
 	data->id = ProgramID;
 	data->name = *newName;
@@ -379,8 +418,8 @@ void Renderer::LoadShaders(const string* vertexFilePath, const string* fragmentF
 
 	glDeleteShader(vertexShaderID);
 	glDeleteShader(fragmentShaderID);
-	delete vertexShaderCode;
-	delete fragmentShaderCode;
+	delete[] vertexShaderCode;
+	delete[] fragmentShaderCode;
 
 	n->id = ProgramID;
 	n->name = (*newName);
@@ -407,7 +446,30 @@ char* Renderer::LoadShaderFromAssets(const string * path)
 	// fuck you, assetmanager
 #ifdef PLATFORM_WINDOWS
 
-	return nullptr;
+	fPath = Renderer::GetInstance()->ASSET_PATH + fPath;
+
+	string sCode;
+	ifstream vertexShaderStream(fPath.c_str(), ios::in);
+	if (vertexShaderStream.is_open())
+	{
+		string Line = "";
+		while (getline(vertexShaderStream, Line))
+		{
+			if (Line == "#version 300 es")
+			{
+				Line = "#version 330 core";
+			}
+			sCode += "\n" + Line;
+		}
+		vertexShaderStream.close();
+	}
+
+	int length = sCode.length();
+	char* ret = new char[length + 1];
+	strcpy(ret, sCode.c_str());
+	ret[length] = '\0';
+
+	return ret;
 
 #else
 
@@ -432,7 +494,30 @@ char* Renderer::LoadKernelFromAssets(const string * path)
 	string fPath = prefix + *path + suffix;
 #ifdef PLATFORM_WINDOWS
 
-	return nullptr;
+	fPath = Renderer::GetInstance()->ASSET_PATH + fPath;
+
+	string sCode;
+	ifstream vertexShaderStream(fPath.c_str(), ios::in);
+	if (vertexShaderStream.is_open())
+	{
+		string Line = "";
+		while (getline(vertexShaderStream, Line))
+		{
+			if (Line == "#version 300 es")
+			{
+				Line = "#version 330 core";
+			}
+			sCode += "\n" + Line;
+		}
+		vertexShaderStream.close();
+	}
+
+	int length = sCode.length();
+	char* ret = new char[length + 1];
+	strcpy(ret, sCode.c_str());
+	ret[length] = '\0';
+
+	return ret;
 
 #else
 
@@ -465,8 +550,11 @@ void Renderer::LoadTexture(const string* filePath, TextureID* id)
 {
 #ifdef PLATFORM_WINDOWS
 
-	//id->id = SOIL_load_OGL_texture((*filePath).c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
-			//SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	string nPath = Renderer::GetInstance()->ASSET_PATH + *filePath;
+
+	id->name = *filePath;
+	id->id = SOIL_load_OGL_texture(nPath.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
+			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB);
 
 #else
 
@@ -529,6 +617,13 @@ void Renderer::AHandleResize(ANativeActivity * activity, ANativeWindow * window)
 		System::GetInstance()->GetCurrentScene()->FlushDimensions();
 
 	LOGI("Renderer: Resize scheduled %dx%d", w, h);
+}
+
+#else
+
+GLFWwindow * Renderer::GetWindowPtr()
+{
+	return m_window;
 }
 
 #endif // !PLATRORM_WINDOWS

@@ -21,6 +21,12 @@ Timer::~Timer()
 
 unsigned int Timer::Initialize()
 {
+#ifdef PLATFORM_WINDOWS
+
+	glfwSetTime(0.0);
+
+#endif
+
 	m_startTime = GetCurrentTimeMS();
 
 	return CS_ERR_NONE;
@@ -64,6 +70,8 @@ double Timer::GetCurrentTimeMS()
 	double ret;
 
 #ifdef PLATFORM_WINDOWS
+
+	ret = glfwGetTime() * 1000.0f;
 
 #else
 
