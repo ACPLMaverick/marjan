@@ -57,7 +57,7 @@ unsigned int Renderer::Initialize()
 
 	if (glewInit() != GLEW_OK) return CS_ERR_WINDOW_FAILED;
 
-	glfwSwapInterval(CSSET_VSYNC_ENALBED);
+	glfwSwapInterval(1);
 #else
 
 	// initialize OpenGL ES and EGL
@@ -489,7 +489,11 @@ char* Renderer::LoadShaderFromAssets(const string * path)
 
 char* Renderer::LoadKernelFromAssets(const string * path)
 {
+#ifdef PLATFORM_WINDOWS
+	string prefix = "kernelsPC/";
+#elif
 	string prefix = "kernels/";
+#endif
 	string suffix = ".glsl";
 	string fPath = prefix + *path + suffix;
 #ifdef PLATFORM_WINDOWS
@@ -503,10 +507,6 @@ char* Renderer::LoadKernelFromAssets(const string * path)
 		string Line = "";
 		while (getline(vertexShaderStream, Line))
 		{
-			if (Line == "#version 300 es")
-			{
-				Line = "#version 330 core";
-			}
 			sCode += "\n" + Line;
 		}
 		vertexShaderStream.close();

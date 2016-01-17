@@ -9,6 +9,7 @@ ClothSimulator::ClothSimulator(SimObject* obj) : Component(obj)
 	KERNEL_COL_INPUT_NAMES[1] = "InBaaCols";
 	KERNEL_COL_INPUT_NAMES[2] = "InSCols";
 	KERNEL_COL_OUTPUT_NAMES[0] = "OutPos";
+	KERNEL_COL_OUTPUT_NAMES[1] = "OutPosLast";
 	KERNEL_MSPOS_INPUT_NAMES[0] = "InPos";
 	KERNEL_MSPOS_INPUT_NAMES[1] = "InPosLast";
 	KERNEL_MSPOS_OUTPUT_NAMES[0] = "OutPos";
@@ -390,6 +391,7 @@ unsigned int ClothSimulator::Initialize()
 		glTransformFeedbackVaryings(m_collisionsKernel->id, KERNEL_COL_OUTPUT_NAME_COUNT, KERNEL_COL_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
 		glLinkProgram(m_collisionsKernel->id);
 
+#ifndef PLATFORM_WINDOWS
 		for (uint i = 0; i < 2; ++i)
 		{
 			m_texColPosID[i] = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[0]);
@@ -399,6 +401,20 @@ unsigned int ClothSimulator::Initialize()
 		m_texColSID = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[2]);
 		glUniformBlockBinding(m_collisionsKernel->id, m_texColBAAID, 0);
 		glUniformBlockBinding(m_collisionsKernel->id, m_texColSID, 2);
+#else
+		for (uint i = 0; i < 2; ++i)
+		{
+			glGenTextures(1, &m_texColPosID[i]);
+			glBindTexture(GL_TEXTURE_BUFFER, m_texColPosID[i]);
+			glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboPosID[i]);
+		}
+		glGenTextures(1, &m_texColBAAID);
+		glBindTexture(GL_TEXTURE_BUFFER, m_texColBAAID);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboColBAAID);
+		glGenTextures(1, &m_texColSID);
+		glBindTexture(GL_TEXTURE_BUFFER, m_texColSID);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboColSID);
+#endif
 
 		glGenBuffers(1, &m_vboColBAAID);
 		glBindBuffer(GL_UNIFORM_BUFFER, m_vboColBAAID);
@@ -426,15 +442,26 @@ unsigned int ClothSimulator::Initialize()
 		glTransformFeedbackVaryings(m_normalsKernel->id, KERNEL_NRM_OUTPUT_NAME_COUNT, KERNEL_NRM_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
 		glLinkProgram(m_normalsKernel->id);
 
+#ifndef PLATFORM_WINDOWS
 		for (uint i = 0; i < 2; ++i)
 		{
 			m_texNrmPosID[i] = glGetUniformBlockIndex(m_normalsKernel->id, KERNEL_NRM_INPUT_NAMES[0]);
 			glUniformBlockBinding(m_normalsKernel->id, m_texNrmPosID[i], 0);
 		}
+#else
+		for (uint i = 0; i < 2; ++i)
+		{
+			glGenTextures(1, &m_texNrmPosID[i]);
+			glBindTexture(GL_TEXTURE_BUFFER, m_texNrmPosID[i]);
+			glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboPosID[i]);
+		}
+#endif
 
 		// Sim-specific initialization. Sim-related transform feedback initialization and kernel loading goes here.
-		err = InitializeSimMSGPU();
-		err = InitializeSimPBGPU();
+		if(m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU)
+			err = InitializeSimMSGPU();
+		else
+			err = InitializeSimPBGPU();
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -525,6 +552,15 @@ unsigned int ClothSimulator::Shutdown()
 	{
 		err = ShutdownSimMSGPU();
 		err = ShutdownSimPBGPU();
+
+#ifndef PLATFORM_WINDOWS
+
+#else
+		glDeleteTextures(1, &m_texColBAAID);
+		glDeleteTextures(1, &m_texColSID);
+		glDeleteTextures(2, m_texColPosID);
+		glDeleteTextures(2, m_texNrmPosID);
+#endif
 
 		glDeleteVertexArrays(2, m_vaoUpdateID);
 		glDeleteBuffers(2, m_vboPosLastID);
@@ -993,6 +1029,7 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glUniform1i(m_collisionsKernel->uniformIDs->at(9), m_simData.m_vertexCount);
 	glUniform1i(m_collisionsKernel->uniformIDs->at(10), COLLISION_CHECK_WINDOW_SIZE);
 
+#ifndef PLATFORM_WINDOWS
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColPosID[m_readID], m_vboPosID[m_readID]);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, m_vboColBAAID);
@@ -1002,17 +1039,45 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glBindBuffer(GL_UNIFORM_BUFFER, m_vboColSID);
 	glBufferData(GL_UNIFORM_BUFFER, scCount * sizeof(SphereData), sphereData, GL_DYNAMIC_COPY);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColSID, m_vboColSID);
+#else
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_BUFFER, m_texColPosID[m_readID]);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboColBAAID);
+	glBufferData(GL_ARRAY_BUFFER, bcCount * sizeof(BoxAAData), boxAAData, GL_DYNAMIC_COPY);
+	glBindTexture(GL_TEXTURE_BUFFER, m_texColBAAID);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboColBAAID);
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboColSID);
+	glBufferData(GL_ARRAY_BUFFER, scCount * sizeof(SphereData), sphereData, GL_DYNAMIC_COPY);
+	glBindTexture(GL_TEXTURE_BUFFER, m_texColSID);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboColSID);
+
+	GLint loc = glGetUniformLocation(m_collisionsKernel->id, "InPos");
+	glUniform1i(loc, 0);
+	loc = glGetUniformLocation(m_collisionsKernel->id, "InBaaCols");
+	glUniform1i(loc, 1);
+	loc = glGetUniformLocation(m_collisionsKernel->id, "InSCols");
+	glUniform1i(loc, 2);
+#endif
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosLastID[m_readID]);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
 	glEnable(GL_RASTERIZER_DISCARD);
 
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_ctfID);
 
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_vboPosID[m_readID]);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_vboPosID[m_writeID]);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, m_vboPosLastID[m_writeID]);
 
 	glBeginTransformFeedback(GL_POINTS);
 	glDrawArrays(GL_POINTS, 0, m_simData.m_vertexCount);
@@ -1020,11 +1085,16 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 
 	glDisable(GL_RASTERIZER_DISCARD);
 
+	//glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosLastID[m_writeID]);
+	//glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 1, GL_MAP_READ_BIT);
+	//LOGW("%f %f %f %f\n", ptr->x, ptr->y, ptr->z, ptr->w);
+	//glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
+
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColPosID[m_readID], 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
 
-	SwapRWIds();
+
 
 	// execute normal computation kernel
 
@@ -1036,20 +1106,28 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, 0);
 
+#ifndef PLATFORM_WINDOWS
+
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texNrmPosID[m_readID], m_vboPosID[m_readID]);
+
+#else
+
+	glBindTexture(GL_TEXTURE_BUFFER, m_texNrmPosID[m_readID]);
+
+#endif
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	/*
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighboursDiag);
 
-	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourDiagMultipliers);
-	*/
+	//glEnableVertexAttribArray(3);
+	//glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighboursDiag);
+
+	//glEnableVertexAttribArray(6);
+	//glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbourDiagMultipliers);
+
 	glEnable(GL_RASTERIZER_DISCARD);
 
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_ntfID);
@@ -1062,11 +1140,10 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 
 	glDisable(GL_RASTERIZER_DISCARD);
 
-	SwapRWIds();
-
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texNrmPosID[m_readID], 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, 0);
 	glBindVertexArray(0);
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 
@@ -1081,11 +1158,17 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glDisableVertexAttribArray(6);
 	glDisableVertexAttribArray(7);
 
-	//SwapRWIds();
+	SwapRWIds();
 
-	m_meshPlane->SwapDataPtrs();
+	//m_meshPlane->SwapDataPtrs();
 
 	glUseProgram(cShaderID->id);
+
+#ifndef PLATFORM_WINDOWS
+
+#else
+	glBindTexture(GL_TEXTURE_BUFFER, 0);
+#endif
 
 	return err;
 }
@@ -1102,6 +1185,7 @@ inline unsigned int ClothSimulator::InitializeSimMSGPU()
 	glTransformFeedbackVaryings(m_msPosKernelID->id, KERNEL_MSPOS_OUTPUT_NAME_COUNT, KERNEL_MSPOS_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
 	glLinkProgram(m_msPosKernelID->id);
 
+#ifndef PLATFORM_WINDOWS
 	for (uint i = 0; i < 2; ++i)
 	{
 		m_texPosID[i] = glGetUniformBlockIndex(m_msPosKernelID->id, KERNEL_MSPOS_INPUT_NAMES[0]);
@@ -1109,6 +1193,17 @@ inline unsigned int ClothSimulator::InitializeSimMSGPU()
 		glUniformBlockBinding(m_msPosKernelID->id, m_texPosID[i], 1);
 		glUniformBlockBinding(m_msPosKernelID->id, m_texPosID[i], 0);
 	}
+#else
+	for (uint i = 0; i < 2; ++i)
+	{
+		glGenTextures(1, &m_texPosID[i]);
+		glBindTexture(GL_TEXTURE_BUFFER, m_texPosID[i]);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboPosID[i]);
+		glGenTextures(1, &m_texPosLastID[i]);
+		glBindTexture(GL_TEXTURE_BUFFER, m_texPosLastID[i]);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboPosLastID[i]);
+	}
+#endif
 
 	m_msPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_msPosKernelID->id, "VertexCount"));
 	m_msPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_msPosKernelID->id, "EdgesWidthAll"));
@@ -1128,6 +1223,8 @@ inline unsigned int ClothSimulator::ShutdownSimMSGPU()
 	glDeleteTransformFeedbacks(1, &m_msPtfID);
 
 	// shutdown method-related data
+	glDeleteTextures(2, m_texPosID);
+	glDeleteTextures(2, m_texPosLastID);
 
 	return err;
 }
@@ -1149,8 +1246,13 @@ inline unsigned int ClothSimulator::UpdateSimMSGPU(glm::vec3* gravity, float fix
 		m_simData.c_springLengths.z,
 		m_simData.c_springLengths.w);
 
+#ifndef PLATFORM_WINDOWS
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], m_vboPosID[m_readID]);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], m_vboPosLastID[m_readID]);
+#else
+	glBindTexture(GL_TEXTURE_BUFFER, m_texPosID[m_readID]);
+	glBindTexture(GL_TEXTURE_BUFFER, m_texPosLastID[m_readID]);
+#endif
 
 	glEnable(GL_RASTERIZER_DISCARD);
 
@@ -1164,16 +1266,22 @@ inline unsigned int ClothSimulator::UpdateSimMSGPU(glm::vec3* gravity, float fix
 	glEndTransformFeedback();
 
 	glDisable(GL_RASTERIZER_DISCARD);
-	/*
-	glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[m_writeID]);
-	glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 1, GL_MAP_READ_BIT);
-	for (int i = 0; i < 1; ++i, ++ptr)
-	LOGW("%f %f %f %f", ptr->x, ptr->y, ptr->z, ptr->w);
-	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
-	*/
+
+	//glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[m_writeID]);
+	//glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 1, GL_MAP_READ_BIT) + 1;
+	//LOGW("%f %f %f %f\n", ptr->x, ptr->y, ptr->z, ptr->w);
+	//glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
+
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], 0);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], 0);
+#ifndef PLATFORM_WINDOWS
+	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], 0);
+	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], 0);
+#else
+	glBindTexture(GL_TEXTURE_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+#endif
 
 	return err;
 }
@@ -1192,6 +1300,7 @@ inline unsigned int ClothSimulator::InitializeSimPBGPU()
 	glTransformFeedbackVaryings(m_pbPosKernelID->id, KERNEL_PBPOS_OUTPUT_NAME_COUNT, KERNEL_PBPOS_OUTPUT_NAMES, GL_SEPARATE_ATTRIBS);
 	glLinkProgram(m_pbPosKernelID->id);
 
+#ifndef PLATFORM_WINDOWS
 	for (uint i = 0; i < 2; ++i)
 	{
 		m_texPosID[i] = glGetUniformBlockIndex(m_pbPosKernelID->id, KERNEL_PBPOS_INPUT_NAMES[0]);
@@ -1199,6 +1308,17 @@ inline unsigned int ClothSimulator::InitializeSimPBGPU()
 		glUniformBlockBinding(m_pbPosKernelID->id, m_texPosID[i], 1);
 		glUniformBlockBinding(m_pbPosKernelID->id, m_texPosID[i], 0);
 	}
+#else
+	for (uint i = 0; i < 2; ++i)
+	{
+		glGenTextures(1, &m_texPosID[i]);
+		glBindTexture(GL_TEXTURE_BUFFER, m_texPosID[i]);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboPosID[i]);
+		glGenTextures(1, &m_texPosLastID[i]);
+		glBindTexture(GL_TEXTURE_BUFFER, m_texPosLastID[i]);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboPosLastID[i]);
+	}
+#endif
 
 	m_pbPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_pbPosKernelID->id, "VertexCount"));
 	m_pbPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_pbPosKernelID->id, "EdgesWidthAll"));
@@ -1218,7 +1338,8 @@ inline unsigned int ClothSimulator::ShutdownSimPBGPU()
 	glDeleteTransformFeedbacks(1, &m_pbPtfID);
 
 	// shutdown method-related data
-
+	glDeleteTextures(2, m_texPosID);
+	glDeleteTextures(2, m_texPosLastID);
 	return err;
 }
 
@@ -1239,8 +1360,13 @@ inline unsigned int ClothSimulator::UpdateSimPBGPU(glm::vec3* gravity, float fix
 		m_simData.c_springLengths.z,
 		m_simData.c_springLengths.w);
 
+#ifndef PLATFORM_WINDOWS
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], m_vboPosID[m_readID]);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], m_vboPosLastID[m_readID]);
+#else
+	glBindTexture(GL_TEXTURE_BUFFER, m_texPosID[m_readID]);
+	glBindTexture(GL_TEXTURE_BUFFER, m_texPosLastID[m_readID]);
+#endif
 
 	glEnable(GL_RASTERIZER_DISCARD);
 
@@ -1262,8 +1388,13 @@ inline unsigned int ClothSimulator::UpdateSimPBGPU(glm::vec3* gravity, float fix
 	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
 	*/
 
+#ifndef PLATFORM_WINDOWS
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], 0);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], 0);
+#else
+	glBindTexture(GL_TEXTURE_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+#endif
 
 	return err;
 }

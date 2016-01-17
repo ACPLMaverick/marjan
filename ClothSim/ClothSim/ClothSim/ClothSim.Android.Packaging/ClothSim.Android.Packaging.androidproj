@@ -119,7 +119,6 @@
     <Content Include="assets\kernels\ClothPBPositionKernel.glsl" />
     <Content Include="assets\kernels\ClothNormalKernel.glsl" />
     <Content Include="assets\kernels\ClothMSPositionKernel.glsl" />
-    <Content Include="assets\kernels\KernelDummyKernel.glsl" />
     <Content Include="assets\shaders\BasicFragmentShader.glsl" />
     <Content Include="assets\shaders\BasicVertexShader.glsl" />
     <Content Include="assets\shaders\FontFragmentShader.glsl" />
@@ -159,6 +158,9 @@
     <ProjectReference Include="..\ClothSim.Android.NativeActivity\ClothSim.Android.NativeActivity.vcxproj">
       <Project>{45352494-ca0f-4879-a59e-75e1606feb13}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\kernelsPC\" />
   </ItemGroup>
   <Import Project="$(AndroidTargetsPath)\Android.targets" />
   <ImportGroup Label="ExtensionTargets" />

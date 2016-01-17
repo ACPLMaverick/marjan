@@ -390,23 +390,28 @@ void GUIController::ActionApplyPreferences(std::vector<void*>* params, const glm
 	ClothSimulationVersusObject v = inst->m_sScreen->GetSimParams()->vsObj;
 	glm::vec3 tPos = (glm::vec3(0.0f, 2.5f, 0.0f));
 	glm::vec3 outPos = (glm::vec3(0.0f, 999.0f, 0.0f));
-	System::GetInstance()->GetCurrentScene()->GetObject()->GetTransform()->SetPosition(&outPos);
-	System::GetInstance()->GetCurrentScene()->GetObject()->SetVisible(false);
-	System::GetInstance()->GetCurrentScene()->GetObject()->SetEnabled(false);
+	int me, other;
+	me = other = 0;
 	switch (v)
 	{
 	case ClothSimulationVersusObject::OBJ_SPHERE:
-
-		System::GetInstance()->GetCurrentScene()->SetCurrentObject(1);
-
+		me = 1;
+		other = 2;
 		break;
 	case ClothSimulationVersusObject::OBJ_BOX:
-		System::GetInstance()->GetCurrentScene()->SetCurrentObject(2);
+		me = 2;
+		other = 1;
 		break;
 	}
-	System::GetInstance()->GetCurrentScene()->GetObject()->GetTransform()->SetPosition(&tPos);
-	System::GetInstance()->GetCurrentScene()->GetObject()->SetVisible(true);
-	System::GetInstance()->GetCurrentScene()->GetObject()->SetEnabled(true);
+	System::GetInstance()->GetCurrentScene()->SetCurrentObject(me);
+
+	System::GetInstance()->GetCurrentScene()->GetObject(other)->GetTransform()->SetPosition(&outPos);
+	System::GetInstance()->GetCurrentScene()->GetObject(other)->SetVisible(false);
+	System::GetInstance()->GetCurrentScene()->GetObject(other)->SetEnabled(false);
+
+	System::GetInstance()->GetCurrentScene()->GetObject(me)->GetTransform()->SetPosition(&tPos);
+	System::GetInstance()->GetCurrentScene()->GetObject(me)->SetVisible(true);
+	System::GetInstance()->GetCurrentScene()->GetObject(me)->SetEnabled(true);
 
 	inst->m_cSimulator->Restart(inst->m_sScreen->GetSimParams());
 

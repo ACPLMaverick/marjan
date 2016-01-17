@@ -178,10 +178,10 @@ protected:
 	char* KERNEL_NRM_INPUT_NAMES[1];
 	char* KERNEL_NRM_OUTPUT_NAMES[1];
 
-	const unsigned int KERNEL_COL_OUTPUT_NAME_COUNT = 1;
+	const unsigned int KERNEL_COL_OUTPUT_NAME_COUNT = 2;
 	const std::string KERNEL_COL_NAME = "ClothCollision";
 	char* KERNEL_COL_INPUT_NAMES[3];
-	char* KERNEL_COL_OUTPUT_NAMES[1];
+	char* KERNEL_COL_OUTPUT_NAMES[2];
 
 	/////////
 

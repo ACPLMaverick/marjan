@@ -53,9 +53,9 @@ void MeshGLSphere::GenerateVertexData()
 	}
 
 	i = 0;
-	for (int r = 0; r < m_rings; ++r)
+	for (int r = 0; r < m_rings - 1; ++r)
 	{
-		for (int s = 0; s < m_sectors; ++s, i+=6)
+		for (int s = 0; s < m_sectors - 1; ++s, i+=6)
 		{
 			m_vertexData->data->indexBuffer[i] = r * m_sectors + s;
 			m_vertexData->data->indexBuffer[i + 1] = r * m_sectors + s + 1;
@@ -66,4 +66,19 @@ void MeshGLSphere::GenerateVertexData()
 			m_vertexData->data->indexBuffer[i + 5] = (r + 1) * m_sectors + s;
 		}
 	}
+	//for (i = 0; i < m_vertexData->data->indexCount; i += 3)
+	//{
+	//	LOGI("%f %f %f \n", m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i]].x, m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i]].y,
+	//		m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i]].z);
+	//	LOGI("%f %f %f \n", m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i + 1]].x, m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i + 1]].y,
+	//		m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i + 1]].z);
+	//	LOGI("%f %f %f \n\n", m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i + 1]].x, m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i + 1]].y,
+	//		m_vertexData->data->colorBuffer[m_vertexData->data->indexBuffer[i + 1]].z);
+	//}
+	//for (i = 0; i < m_vertexData->data->vertexCount; ++i)
+	//{
+	//	LOGI("%f %f %f \n", m_vertexData->data->colorBuffer[i].x, m_vertexData->data->colorBuffer[i].y,
+	//		m_vertexData->data->colorBuffer[i].z);
+	//}
+	
 }

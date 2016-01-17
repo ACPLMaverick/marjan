@@ -126,6 +126,7 @@ unsigned int MeshGL::Draw()
 	glUniform1f(ids->id_specular, m_specular);
 
 	// here we will set up texture?
+	glActiveTexture(GL_TEXTURE0);
 	if (m_texID != nullptr)
 		glBindTexture(GL_TEXTURE_2D, m_texID->id);
 	else

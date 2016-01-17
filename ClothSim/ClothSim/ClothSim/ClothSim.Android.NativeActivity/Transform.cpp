@@ -117,6 +117,8 @@ void Transform::SetPosition(glm::vec3* newPos)
 {
 	m_position = *newPos;
 
+	CalculateWorldMatrix();
+
 	m_obj->UpdateColliders();
 	vector<Collider*>* cols = m_obj->GetColliders();
 	CollisonTestResult tR;
@@ -130,8 +132,6 @@ void Transform::SetPosition(glm::vec3* newPos)
 		m_position = m_position + tR.colVector;
 		m_obj->UpdateColliders();
 	}
-
-	m_isWorldMatrixDirty = true;
 }
 
 void Transform::SetRotation(glm::vec3* newRot)
