@@ -67,6 +67,9 @@ struct SimData
 	glm::vec4* b_positionLast;
 	glm::vec4* b_elMassCoeffs;
 	glm::vec4* b_multipliers;
+	glm::vec4* b_sLengths;
+	glm::vec4* b_sLengthsDiag;
+	glm::vec4* b_sLengths2;
 
 	glm::vec4 c_springLengths;
 	glm::vec4 c_touchVector;

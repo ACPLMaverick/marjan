@@ -94,7 +94,7 @@ void main()
 		// distance constriant. XYZ is position, W is inverse of mass
 		vec4 constraint;
 		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, sls1[i], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
-		cPos -= constraint.xyz * constraint.w * NeighbourMultipliers[i];
+		posPredicted -= constraint.xyz * constraint.w * NeighbourMultipliers[i] * Multipliers.x;
 
 		// bending constraint. Using the triangle bending constriant method. XYZ is position
 		// currently impossible to implement due to per-vertex calculations method?
@@ -109,7 +109,7 @@ void main()
 
 		vec4 constraint;
 		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, sls2[i], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
-		cPos -= constraint.xyz * constraint.w * NeighbourDiagMultipliers[i];
+		posPredicted -= constraint.xyz * constraint.w * NeighbourDiagMultipliers[i] * Multipliers.x;
 	}
 	
 	for(int i = 0; i < 4; ++i)
@@ -120,11 +120,11 @@ void main()
 
 		vec4 constraint;
 		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, sls3[i], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
-		cPos -= constraint.xyz * constraint.w * Neighbour2Multipliers[i];
+		posPredicted -= constraint.xyz * constraint.w * Neighbour2Multipliers[i] * Multipliers.x;
 	}
 
 	// apply constraints
-	vec3 finalPos = posPredicted + cPos * Multipliers.x;
+	vec3 finalPos = posPredicted;
 
 	// update positions
 	OutPos = vec4(finalPos, 1.0f);

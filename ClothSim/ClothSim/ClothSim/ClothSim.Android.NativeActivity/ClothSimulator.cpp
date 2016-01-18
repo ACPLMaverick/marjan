@@ -68,16 +68,14 @@ unsigned int ClothSimulator::Initialize()
 	m_simData.b_neighbour2Multipliers = new glm::vec4[m_simData.m_vertexCount];
 	m_simData.b_elMassCoeffs = new glm::vec4[m_simData.m_vertexCount];
 	m_simData.b_multipliers = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_sLengths = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_sLengthsDiag = new glm::vec4[m_simData.m_vertexCount];
+	m_simData.b_sLengths2 = new glm::vec4[m_simData.m_vertexCount];
 
-	//glm::vec3 baseLength = glm::vec3(
-	//	abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData.m_edgesWidthAll].x),
-	//	0.0f,
-	//	abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[1].z)
-	//	);
 	glm::vec3 baseLength = glm::vec3(
-		abs(m_vd[0]->data->positionBuffer[0].x - m_vd[0]->data->positionBuffer[m_simData.m_vertexCount - 1].x) / (float)(m_simData.m_edgesWidthAll - 1),
+		glm::length(m_vd[0]->data->positionBuffer[0] - m_vd[0]->data->positionBuffer[m_simData.m_edgesWidthAll]),
 		0.0f,
-		abs(m_vd[0]->data->positionBuffer[0].z - m_vd[0]->data->positionBuffer[m_simData.m_vertexCount - 1].z) / (float)(m_simData.m_edgesLengthAll - 1)
+		glm::length(m_vd[0]->data->positionBuffer[0] - m_vd[0]->data->positionBuffer[1])
 		);
 	m_simData.c_springLengths.x = baseLength.x;	// two different spring lengths, horizontal and vertical
 	m_simData.c_springLengths.y = baseLength.z;
@@ -107,7 +105,9 @@ unsigned int ClothSimulator::Initialize()
 		// calculating neighbouring vertices ids and spring lengths
 
 		// upper
-		m_simData.b_neighbours[i][0] = (i - 1) % m_simData.m_vertexCount;
+		int id = (i - 1) % m_simData.m_vertexCount;
+		m_simData.b_neighbours[i][0] = (float)id;
+		m_simData.b_sLengths[i][0] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i % m_simData.m_edgesLengthAll)
 		{
 			m_simData.b_neighbourMultipliers[i][0] = 1.0f;
@@ -118,7 +118,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// left
-		m_simData.b_neighbours[i][1] = (i - m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		id = (i - m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		m_simData.b_neighbours[i][1] = id;
+		m_simData.b_sLengths[i][1] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i >= m_simData.m_edgesLengthAll)
 		{
 			m_simData.b_neighbourMultipliers[i][1] = 1.0f;
@@ -129,7 +131,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// lower
-		m_simData.b_neighbours[i][2] = (i + 1) % m_simData.m_vertexCount;
+		id = (i + 1) % m_simData.m_vertexCount;
+		m_simData.b_neighbours[i][2] = id;
+		m_simData.b_sLengths[i][2] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1))
 		{
 			m_simData.b_neighbourMultipliers[i][2] = 1.0f;
@@ -140,7 +144,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// right
-		m_simData.b_neighbours[i][3] = (i + m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		id = (i + m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		m_simData.b_neighbours[i][3] = id;
+		m_simData.b_sLengths[i][3] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll))
 		{
 			m_simData.b_neighbourMultipliers[i][3] = 1.0f;
@@ -151,7 +157,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// tl
-		m_simData.b_neighboursDiag[i][0] = (i - m_simData.m_edgesLengthAll - 1) % m_simData.m_vertexCount;
+		id = (i - m_simData.m_edgesLengthAll - 1) % m_simData.m_vertexCount;
+		m_simData.b_neighboursDiag[i][0] = id;
+		m_simData.b_sLengthsDiag[i][0] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i >= m_simData.m_edgesLengthAll && i % m_simData.m_edgesLengthAll)
 		{
 			m_simData.b_neighbourDiagMultipliers[i][0] = 1.0f;
@@ -162,7 +170,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// bl
-		m_simData.b_neighboursDiag[i][1] = (i - m_simData.m_edgesLengthAll + 1) % m_simData.m_vertexCount;
+		id = (i - m_simData.m_edgesLengthAll + 1) % m_simData.m_vertexCount;
+		m_simData.b_neighboursDiag[i][1] = id;
+		m_simData.b_sLengthsDiag[i][1] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i >= m_simData.m_edgesLengthAll && (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1)))
 		{
 			m_simData.b_neighbourDiagMultipliers[i][1] = 1.0f;
@@ -173,7 +183,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// br
-		m_simData.b_neighboursDiag[i][2] = (i + m_simData.m_edgesLengthAll + 1) % m_simData.m_vertexCount;
+		id = (i + m_simData.m_edgesLengthAll + 1) % m_simData.m_vertexCount;
+		m_simData.b_neighboursDiag[i][2] = id;
+		m_simData.b_sLengthsDiag[i][2] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) && (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1)))
 		{
 			m_simData.b_neighbourDiagMultipliers[i][2] = 1.0f;
@@ -184,7 +196,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// tr
-		m_simData.b_neighboursDiag[i][3] = (i + m_simData.m_edgesLengthAll - 1) % m_simData.m_vertexCount;
+		id = (i + m_simData.m_edgesLengthAll - 1) % m_simData.m_vertexCount;
+		m_simData.b_neighboursDiag[i][3] = id;
+		m_simData.b_sLengthsDiag[i][3] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) && i % m_simData.m_edgesLengthAll)
 		{
 			m_simData.b_neighbourDiagMultipliers[i][3] = 1.0f;
@@ -195,7 +209,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// upper2
-		m_simData.b_neighbours2[i][0] = (i - 2) % m_simData.m_vertexCount;
+		id = (i - 2) % m_simData.m_vertexCount;
+		m_simData.b_neighbours2[i][0] = id;
+		m_simData.b_sLengths2[i][0] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i % m_simData.m_edgesLengthAll > 1)
 		{
 			m_simData.b_neighbour2Multipliers[i][0] = 1.0f;
@@ -206,7 +222,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// left2
-		m_simData.b_neighbours2[i][1] = (i - 2 * m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		id = (i - 2 * m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		m_simData.b_neighbours2[i][1] = id;
+		m_simData.b_sLengths2[i][1] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i >= 2 * m_simData.m_edgesLengthAll)
 		{
 			m_simData.b_neighbour2Multipliers[i][1] = 1.0f;
@@ -217,7 +235,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// lower2
-		m_simData.b_neighbours2[i][2] = (i + 2) % m_simData.m_vertexCount;
+		id = (i + 2) % m_simData.m_vertexCount;
+		m_simData.b_neighbours2[i][2] = id;
+		m_simData.b_sLengths2[i][2] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i % m_simData.m_edgesLengthAll < (m_simData.m_edgesLengthAll - 2))
 		{
 			m_simData.b_neighbour2Multipliers[i][2] = 1.0f;
@@ -228,7 +248,9 @@ unsigned int ClothSimulator::Initialize()
 		}
 
 		// right2
-		m_simData.b_neighbours2[i][3] = (i + 2 * m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		id = (i + 2 * m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		m_simData.b_neighbours2[i][3] = id;
+		m_simData.b_sLengths2[i][3] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i < (m_simData.m_vertexCount -  2 * m_simData.m_edgesLengthAll))
 		{
 			m_simData.b_neighbour2Multipliers[i][3] = 1.0f;
@@ -852,41 +874,21 @@ void* ClothSimulator::UpdatePartial(void * args)
 		glm::mat4* vw = System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewMatrix();
 		glm::mat4* pr = System::GetInstance()->GetCurrentScene()->GetCamera()->GetProjMatrix();
 
-		glm::vec4 sls1 =
-		{
-			tData->inst->m_simData.c_springLengths.y,
-			tData->inst->m_simData.c_springLengths.x,
-			tData->inst->m_simData.c_springLengths.y,
-			tData->inst->m_simData.c_springLengths.x
-		};
-		glm::vec4 sls2 =
-		{
-			tData->inst->m_simData.c_springLengths.z,
-			tData->inst->m_simData.c_springLengths.z,
-			tData->inst->m_simData.c_springLengths.z,
-			tData->inst->m_simData.c_springLengths.z
-		};
-		glm::vec4 sls3 =
-		{
-			tData->inst->m_simData.c_springLengths.y * tData->inst->m_simData.c_springLengths.w,
-			tData->inst->m_simData.c_springLengths.x * tData->inst->m_simData.c_springLengths.w,
-			tData->inst->m_simData.c_springLengths.y * tData->inst->m_simData.c_springLengths.w,
-			tData->inst->m_simData.c_springLengths.x * tData->inst->m_simData.c_springLengths.w
-		};
-
 		// first stage
 		if (tData->inst->m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPUx4)
 		{
 			for (int i = tData->diBegin; i < tData->diEnd; ++i)
 			{
-				tData->inst->CPUComputePositionMS(i, &sls1, &sls2, &sls3, (float)Timer::GetInstance()->GetFixedDeltaTime(), PhysicsManager::GetInstance()->GetGravity());
+				tData->inst->CPUComputePositionMS(i, &tData->inst->m_simData.b_sLengths[i], &tData->inst->m_simData.b_sLengthsDiag[i], &tData->inst->m_simData.b_sLengths2[i],
+					(float)Timer::GetInstance()->GetFixedDeltaTime(), PhysicsManager::GetInstance()->GetGravity());
 			}
 		}
 		else if (tData->inst->m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPUx4)
 		{
 			for (int i = tData->diBegin; i < tData->diEnd; ++i)
 			{
-				tData->inst->CPUComputePositionPB(i, &sls1, &sls2, &sls3, (float)Timer::GetInstance()->GetFixedDeltaTime(), PhysicsManager::GetInstance()->GetGravity());
+				tData->inst->CPUComputePositionPB(i, &tData->inst->m_simData.b_sLengths[i], &tData->inst->m_simData.b_sLengthsDiag[i], &tData->inst->m_simData.b_sLengths2[i],
+					(float)Timer::GetInstance()->GetFixedDeltaTime(), PhysicsManager::GetInstance()->GetGravity());
 			}
 		}
 
@@ -1233,7 +1235,7 @@ inline unsigned int ClothSimulator::UpdateSimMSGPU(glm::vec3* gravity, float fix
 	glUniform1i(m_msPosKernelID->uniformIDs->at(2), m_simData.m_edgesLengthAll);
 	glUniform1f(m_msPosKernelID->uniformIDs->at(3), fixedDelta);
 	glUniform1f(m_msPosKernelID->uniformIDs->at(4), -gravity->y);
-	glUniform4f(m_msPosKernelID->uniformIDs->at(5), 
+	glUniform4f(m_msPosKernelID->uniformIDs->at(5),																// !!!!!!!!!!!!!!!
 		m_simData.c_springLengths.x, 
 		m_simData.c_springLengths.y, 
 		m_simData.c_springLengths.z,
@@ -1348,7 +1350,7 @@ inline unsigned int ClothSimulator::UpdateSimPBGPU(glm::vec3* gravity, float fix
 	glUniform1i(m_pbPosKernelID->uniformIDs->at(2), m_simData.m_edgesLengthAll);
 	glUniform1f(m_pbPosKernelID->uniformIDs->at(3), fixedDelta);
 	glUniform1f(m_pbPosKernelID->uniformIDs->at(4), -gravity->y);
-	glUniform4f(m_pbPosKernelID->uniformIDs->at(5),
+	glUniform4f(m_pbPosKernelID->uniformIDs->at(5),														// !!!!!!!!!!
 		m_simData.c_springLengths.x,
 		m_simData.c_springLengths.y,
 		m_simData.c_springLengths.z,
@@ -1397,31 +1399,9 @@ inline unsigned int ClothSimulator::UpdateSimMSCPU(glm::vec3* gravity, float fix
 {
 	unsigned int err = CS_ERR_NONE;
 
-	glm::vec4 sls1 = 
-	{
-		m_simData.c_springLengths.y, 
-		m_simData.c_springLengths.x, 
-		m_simData.c_springLengths.y, 
-		m_simData.c_springLengths.x
-	};
-	glm::vec4 sls2 =
-	{
-		m_simData.c_springLengths.z,
-		m_simData.c_springLengths.z,
-		m_simData.c_springLengths.z,
-		m_simData.c_springLengths.z
-	};
-	glm::vec4 sls3 =
-	{
-		m_simData.c_springLengths.y * m_simData.c_springLengths.w,
-		m_simData.c_springLengths.x * m_simData.c_springLengths.w,
-		m_simData.c_springLengths.y * m_simData.c_springLengths.w,
-		m_simData.c_springLengths.x * m_simData.c_springLengths.w
-	};
-
 	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
-		CPUComputePositionMS(i, &sls1, &sls2, &sls3, fixedDelta, gravity);
+		CPUComputePositionMS(i, &m_simData.b_sLengths[i], &m_simData.b_sLengthsDiag[i], &m_simData.b_sLengths2[i], fixedDelta, gravity);
 	}
 
 	return err;
@@ -1430,31 +1410,10 @@ inline unsigned int ClothSimulator::UpdateSimMSCPU(glm::vec3* gravity, float fix
 inline unsigned int ClothSimulator::UpdateSimPBCPU(glm::vec3* gravity, float fixedDelta)
 {
 	unsigned int err = CS_ERR_NONE;
-	glm::vec4 sls1 =
-	{
-		m_simData.c_springLengths.y,
-		m_simData.c_springLengths.x,
-		m_simData.c_springLengths.y,
-		m_simData.c_springLengths.x
-	};
-	glm::vec4 sls2 =
-	{
-		m_simData.c_springLengths.z,
-		m_simData.c_springLengths.z,
-		m_simData.c_springLengths.z,
-		m_simData.c_springLengths.z
-	};
-	glm::vec4 sls3 =
-	{
-		m_simData.c_springLengths.y * m_simData.c_springLengths.w,
-		m_simData.c_springLengths.x * m_simData.c_springLengths.w,
-		m_simData.c_springLengths.y * m_simData.c_springLengths.w,
-		m_simData.c_springLengths.x * m_simData.c_springLengths.w
-	};
 
 	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
-		CPUComputePositionPB(i, &sls1, &sls2, &sls3, fixedDelta, gravity);
+		CPUComputePositionPB(i, &m_simData.b_sLengths[i], &m_simData.b_sLengthsDiag[i], &m_simData.b_sLengths2[i], fixedDelta, gravity);
 	}
 	
 	return err;
@@ -1532,7 +1491,7 @@ inline void ClothSimulator::CPUComputePositionMS(int i, glm::vec4* sls1, glm::ve
 
 inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::vec4* sls2, glm::vec4* sls3, float fixedDelta, glm::vec3* gravity)
 {
-	glm::vec3 posCurrent, posLast, velocity, force, posPredicted, cPos, posNew;
+	glm::vec3 posCurrent, posLast, velocity, force, posPredicted, /*cPos,*/ posNew;
 	float elasticity, airDamp, mass, lockMultiplier;
 	float elBias = 0.0004f;
 
@@ -1552,7 +1511,7 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 	posPredicted = 2.0f * posCurrent - posLast + force * fixedDelta * fixedDelta;
 	//posPredicted = posCurrent;
 
-	cPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	//cPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	for (int j = 3; j >= 0; --j)
 	{
 		int nID = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
@@ -1565,7 +1524,8 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
 		float w = 1.0f;
 		CalcDistConstraint(&posPredicted, &nPos, mass, (*sls1)[j], elasticity, &cstr, &w);
-		cPos += cstr * w * m_simData.b_neighbourMultipliers[i][j];
+		cstr = cstr * w * m_simData.b_neighbourMultipliers[i][j];
+		posPredicted -= cstr * lockMultiplier;
 	}
 	for (int j = 3; j >= 0; --j)
 	{
@@ -1579,7 +1539,8 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
 		float w = 1.0f;
 		CalcDistConstraint(&posPredicted, &nPos, mass, (*sls2)[j], elasticity, &cstr, &w);
-		cPos += cstr * w * m_simData.b_neighbourDiagMultipliers[i][j] * lockMultiplier;
+		cstr = cstr * w * m_simData.b_neighbourDiagMultipliers[i][j];
+		posPredicted -= cstr * lockMultiplier;
 	}
 	for (int j = 3; j >= 0; --j)
 	{
@@ -1593,10 +1554,11 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
 		float w = 1.0f;
 		CalcDistConstraint(&posPredicted, &nPos, mass, (*sls3)[j], elasticity, &cstr, &w);
-		cPos += cstr * w * m_simData.b_neighbour2Multipliers[i][j] * lockMultiplier;
+		cstr = cstr * w * m_simData.b_neighbour2Multipliers[i][j];
+		posPredicted -= cstr * lockMultiplier;
 	}
 
-	posNew = posPredicted - cPos * lockMultiplier;
+	posNew = posPredicted;
 	m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(posNew, 1.0f);
 	m_vdCopy[m_writeID]->data->positionBuffer[i] = glm::vec4(posCurrent, 1.0f);
 }
