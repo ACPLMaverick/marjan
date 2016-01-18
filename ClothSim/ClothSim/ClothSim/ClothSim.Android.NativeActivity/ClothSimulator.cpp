@@ -95,25 +95,15 @@ unsigned int ClothSimulator::Initialize()
 		m_simData.b_neighbour2Multipliers[i] = glm::vec4(0.0f);
 		///
 		m_simData.b_positionLast[i] = m_vd[0]->data->positionBuffer[i];
-		m_simData.b_elMassCoeffs[i].y = glm::max(m_simParams.vertexMass / glm::sqrt((float)m_simData.m_vertexCount), MIN_MASS);
+		m_simData.b_elMassCoeffs[i].y = m_simParams.vertexMass;		// mass
 		m_simData.b_elMassCoeffs[i].w = m_simParams.vertexAirDamp;
 		m_simData.b_multipliers[i].x = 1.0f;
 
 		m_simData.b_multipliers[i].y = glm::min(glm::min(baseLength.x, baseLength.z) / 2.0f, VERTEX_COLLIDER_MULTIPLIER);
 
-		m_simData.b_elMassCoeffs[i].x = m_simParams.elasticity;
-		m_simData.b_elMassCoeffs[i].z = m_simParams.elasticityDamp;
-		/*
-		if (i < m_simData.m_edgesLengthAll ||
-			i >= (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) ||
-			i % m_simData.m_edgesLengthAll == 0 ||
-			i % m_simData.m_edgesLengthAll == (m_simData.m_edgesLengthAll - 1)
-			)
-		{
-			m_simData.b_elMassCoeffs[i].x *= SPRING_BORDER_MULTIPLIER;
-			m_simData.b_elMassCoeffs[i].z *= SPRING_BORDER_MULTIPLIER;
-		}
-		*/
+		m_simData.b_elMassCoeffs[i].x = m_simParams.elasticity;						// elasticity
+		m_simData.b_elMassCoeffs[i].z = m_simParams.elasticityDamp;	// el damp
+
 		// calculating neighbouring vertices ids and spring lengths
 
 		// upper
@@ -392,6 +382,11 @@ unsigned int ClothSimulator::Initialize()
 		glLinkProgram(m_collisionsKernel->id);
 
 #ifndef PLATFORM_WINDOWS
+		glGenBuffers(1, &m_vboColBAAID);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_vboColBAAID);
+		glGenBuffers(1, &m_vboColSID);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_vboColSID);
+
 		for (uint i = 0; i < 2; ++i)
 		{
 			m_texColPosID[i] = glGetUniformBlockIndex(m_collisionsKernel->id, KERNEL_COL_INPUT_NAMES[0]);
@@ -415,11 +410,6 @@ unsigned int ClothSimulator::Initialize()
 		glBindTexture(GL_TEXTURE_BUFFER, m_texColSID);
 		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_vboColSID);
 #endif
-
-		glGenBuffers(1, &m_vboColBAAID);
-		glBindBuffer(GL_UNIFORM_BUFFER, m_vboColBAAID);
-		glGenBuffers(1, &m_vboColSID);
-		glBindBuffer(GL_UNIFORM_BUFFER, m_vboColSID);
 
 		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "WorldMatrix"));
 		m_collisionsKernel->uniformIDs->push_back(glGetUniformLocation(m_collisionsKernel->id, "ViewMatrix"));
@@ -554,7 +544,8 @@ unsigned int ClothSimulator::Shutdown()
 		err = ShutdownSimPBGPU();
 
 #ifndef PLATFORM_WINDOWS
-
+		glDeleteBuffers(1, &m_vboColBAAID);
+		glDeleteBuffers(1, &m_vboColSID);
 #else
 		glDeleteTextures(1, &m_texColBAAID);
 		glDeleteTextures(1, &m_texColSID);
@@ -564,8 +555,6 @@ unsigned int ClothSimulator::Shutdown()
 
 		glDeleteVertexArrays(2, m_vaoUpdateID);
 		glDeleteBuffers(2, m_vboPosLastID);
-		glDeleteBuffers(1, &m_vboColBAAID);
-		glDeleteBuffers(1, &m_vboColSID);
 
 		glDeleteBuffers(1, &m_simData.i_neighbours);
 		glDeleteBuffers(1, &m_simData.i_neighboursDiag);
@@ -751,19 +740,19 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 	{
 		err = UpdateSimMSCPU(
 			PhysicsManager::GetInstance()->GetGravity(),
-			(float)FIXED_DELTA
+			fixedDelta
 			);
 	}
 	else if (m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
 	{
 		err = UpdateSimPBCPU(
 			PhysicsManager::GetInstance()->GetGravity(),
-			(float)FIXED_DELTA
+			fixedDelta
 			);
 	}
 
 	SwapRWIds();
-
+	
 	// compute collisions and finger movement
 	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
@@ -994,14 +983,14 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	{
 		err = UpdateSimMSGPU(
 			PhysicsManager::GetInstance()->GetGravity(),
-			(float)FIXED_DELTA
+			fixedDelta
 			);
 	}
 	else if (m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
 		err = UpdateSimPBGPU(
 			PhysicsManager::GetInstance()->GetGravity(),
-			(float)FIXED_DELTA
+			fixedDelta
 			);
 	}
 
@@ -1223,8 +1212,12 @@ inline unsigned int ClothSimulator::ShutdownSimMSGPU()
 	glDeleteTransformFeedbacks(1, &m_msPtfID);
 
 	// shutdown method-related data
+#ifndef PLATFORM_WINDOWS
+
+#else
 	glDeleteTextures(2, m_texPosID);
 	glDeleteTextures(2, m_texPosLastID);
+#endif
 
 	return err;
 }
@@ -1272,9 +1265,6 @@ inline unsigned int ClothSimulator::UpdateSimMSGPU(glm::vec3* gravity, float fix
 	//LOGW("%f %f %f %f\n", ptr->x, ptr->y, ptr->z, ptr->w);
 	//glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
 
-
-	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], 0);
-	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], 0);
 #ifndef PLATFORM_WINDOWS
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], 0);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosLastID[m_readID], 0);
@@ -1338,8 +1328,12 @@ inline unsigned int ClothSimulator::ShutdownSimPBGPU()
 	glDeleteTransformFeedbacks(1, &m_pbPtfID);
 
 	// shutdown method-related data
+#ifndef PLATFORM_WINDOWS
+
+#else
 	glDeleteTextures(2, m_texPosID);
 	glDeleteTextures(2, m_texPosLastID);
+#endif
 	return err;
 }
 
@@ -1540,7 +1534,7 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 {
 	glm::vec3 posCurrent, posLast, velocity, force, posPredicted, cPos, posNew;
 	float elasticity, airDamp, mass, lockMultiplier;
-	float elBias = 0.0005f;
+	float elBias = 0.0004f;
 
 	posCurrent = glm::vec3(m_vd[m_readID]->data->positionBuffer[i]);
 	posLast = glm::vec3(m_vdCopy[m_readID]->data->positionBuffer[i]);
@@ -1556,9 +1550,10 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 	force *= lockMultiplier;
 	force = force / mass;
 	posPredicted = 2.0f * posCurrent - posLast + force * fixedDelta * fixedDelta;
+	//posPredicted = posCurrent;
 
 	cPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	for (int j = 0; j < 4; ++j)
+	for (int j = 3; j >= 0; --j)
 	{
 		int nID = (int)(glm::roundEven(m_simData.b_neighbours[i][j]));
 		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
@@ -1569,10 +1564,10 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 		glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
 		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
 		float w = 1.0f;
-		CalcDistConstraint(&posCurrent, &nPos, mass, (*sls1)[j], elasticity, &cstr, &w);
-		cPos -= cstr * w * m_simData.b_neighbourMultipliers[i][j];
+		CalcDistConstraint(&posPredicted, &nPos, mass, (*sls1)[j], elasticity, &cstr, &w);
+		cPos += cstr * w * m_simData.b_neighbourMultipliers[i][j];
 	}
-	for (int j = 0; j < 4; ++j)
+	for (int j = 3; j >= 0; --j)
 	{
 		int nID = (int)(glm::roundEven(m_simData.b_neighboursDiag[i][j]));
 		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
@@ -1583,10 +1578,10 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 		glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
 		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
 		float w = 1.0f;
-		CalcDistConstraint(&posCurrent, &nPos, mass, (*sls2)[j], elasticity, &cstr, &w);
-		cPos -= cstr * w * m_simData.b_neighbourDiagMultipliers[i][j];
+		CalcDistConstraint(&posPredicted, &nPos, mass, (*sls2)[j], elasticity, &cstr, &w);
+		cPos += cstr * w * m_simData.b_neighbourDiagMultipliers[i][j] * lockMultiplier;
 	}
-	for (int j = 0; j < 4; ++j)
+	for (int j = 3; j >= 0; --j)
 	{
 		int nID = (int)(glm::roundEven(m_simData.b_neighbours2[i][j]));
 		if (nID < 0 || nID >= m_simData.m_vertexCount || nID == i)
@@ -1597,11 +1592,11 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 		glm::vec3 nPos = glm::vec3(m_vd[m_readID]->data->positionBuffer[nID]);
 		glm::vec3 cstr = glm::vec3(0.0f, 0.0f, 0.0f);
 		float w = 1.0f;
-		CalcDistConstraint(&posCurrent, &nPos, mass, (*sls3)[j], elasticity, &cstr, &w);
-		cPos -= cstr * w * m_simData.b_neighbour2Multipliers[i][j];
+		CalcDistConstraint(&posPredicted, &nPos, mass, (*sls3)[j], elasticity, &cstr, &w);
+		cPos += cstr * w * m_simData.b_neighbour2Multipliers[i][j] * lockMultiplier;
 	}
 
-	posNew = posPredicted + cPos * lockMultiplier;
+	posNew = posPredicted - cPos * lockMultiplier;
 	m_vd[m_writeID]->data->positionBuffer[i] = glm::vec4(posNew, 1.0f);
 	m_vdCopy[m_writeID]->data->positionBuffer[i] = glm::vec4(posCurrent, 1.0f);
 }

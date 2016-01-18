@@ -83,7 +83,7 @@ void main()
 
 
 	// compute constraints
-	float elBias = 0.0005;
+	float elBias = 0.0004f;
 	vec3 cPos = vec3(0.0f);
 	for(int i = 0; i < 4; ++i)
 	{

@@ -9,7 +9,7 @@ Header file for common includes and switches
 #include <glm\glm\glm.hpp>
 
 // PLATFORM BUILD SWITCH
-#define PLATFORM_WINDOWS
+//#define PLATFORM_WINDOWS
 
 #ifdef PLATFORM_WINDOWS
 

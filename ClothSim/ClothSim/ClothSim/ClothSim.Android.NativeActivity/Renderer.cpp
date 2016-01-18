@@ -491,7 +491,7 @@ char* Renderer::LoadKernelFromAssets(const string * path)
 {
 #ifdef PLATFORM_WINDOWS
 	string prefix = "kernelsPC/";
-#elif
+#else
 	string prefix = "kernels/";
 #endif
 	string suffix = ".glsl";

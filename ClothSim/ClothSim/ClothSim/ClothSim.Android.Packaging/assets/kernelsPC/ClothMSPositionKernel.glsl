@@ -40,9 +40,8 @@ vec3 CalcSpringForce(vec3 mPos, vec3 mPosLast, vec3 nPos, vec3 nPosLast, float s
 
 	vec3 dV = mVel - nVel;
 	float damp = dampCoeff * (dot(dV, f) / fLength);
-	vec3 damping = damp * n;
 	float sL = length(springiness);
-	damping = n * min(sL, damp);
+	vec3 damping = n * min(sL, damp);
 
 	ret = (springiness + damping);
 

@@ -1,6 +1,7 @@
 #version 300 es
 
 layout(location = 0) in vec4 Pos;					//current position
+layout(location = 1) in vec4 PosLast;				//previous position
 layout(location = 3) in vec4 Neighbours;			//neighbours id
 layout(location = 6) in vec4 NeighbourMultipliers;	// neighbour multipliers (i.e. do I have to take it into consideration)
 layout(location = 10) in vec4 Multipliers;			// x - lock muliplier, y - collision multiplier
@@ -31,6 +32,7 @@ uniform int VertexCount;
 uniform int InternalCollisionCheckWindowSize;
 
 out vec4 OutPos;
+out vec4 OutPosLast;
 
 void Vec3LengthSquared(in vec3 vec, out float ret)
 {
@@ -147,6 +149,7 @@ void main()
 
 	// update positions
 	OutPos = finalPos;
+	OutPosLast = PosLast;
 	//OutPos = vec4(sBuffer[0][0], sBuffer[0][1], sBuffer[0][2], sBuffer[0][3]);
 	gl_Position = Pos;
 }
