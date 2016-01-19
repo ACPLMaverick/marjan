@@ -228,6 +228,8 @@ unsigned int SceneTest::Initialize()
 	string t3v = "Simulation time [ms]: ";
 	string t4n = "SimModeTitle";
 	string t4v = "Simulation mode: ";
+	string t5n = "DTitle";
+	string t5v = "Vibrations: ";
 	string tb1 = "BtnExit";
 	string tb2 = "BtnPreferences";
 	string tb3 = "BtnWireframe";
@@ -243,6 +245,7 @@ unsigned int SceneTest::Initialize()
 	string tval02 = "DTvalue";
 	string tval03 = "STvalue";
 	string tval04 = "SKvalue";
+	string tval05 = "Dvalue";
 	string slid0 = "Sld";
 	string sllab0 = "Test";
 	string dummy = "Dummy";
@@ -330,6 +333,16 @@ unsigned int SceneTest::Initialize()
 	gt8->SetPosition(glm::vec2(-0.22f, 0.71f));
 	gt8->SetScale(scl);
 
+	GUIText* gt9 = new GUIText(&t5n, &t5v, ResourceManager::GetInstance()->GetTexture(&tex));
+	gt9->Initialize();
+	gt9->SetPosition(glm::vec2(-0.95f, 0.64f));
+	gt9->SetScale(scl);
+
+	GUIText* gt10 = new GUIText(&tval05, &dummy, ResourceManager::GetInstance()->GetTexture(&tex));
+	gt10->Initialize();
+	gt10->SetPosition(glm::vec2(-0.22f, 0.64f));
+	gt10->SetScale(scl);
+
 	geGroupText->AddChild(gt);
 	geGroupText->AddChild(gt2);
 	geGroupText->AddChild(gt3);
@@ -338,6 +351,8 @@ unsigned int SceneTest::Initialize()
 	geGroupText->AddChild(gt6);
 	geGroupText->AddChild(gt7);
 	geGroupText->AddChild(gt8);
+	geGroupText->AddChild(gt9);
+	geGroupText->AddChild(gt10);
 
 	GUIButton* gb1 = new GUIButton(&tb1);
 	gb1->Initialize();

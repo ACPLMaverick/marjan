@@ -426,3 +426,5 @@ ClothSimPraca/praca_tex/main.synctex.gz
 *.dia~
 *.ipdb
 *.iobj
+ClothSim/ClothSim/ARM/
+ClothSim/ClothSim/SOIL2/

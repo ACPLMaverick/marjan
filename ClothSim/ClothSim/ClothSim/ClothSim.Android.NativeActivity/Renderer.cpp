@@ -57,7 +57,7 @@ unsigned int Renderer::Initialize()
 
 	if (glewInit() != GLEW_OK) return CS_ERR_WINDOW_FAILED;
 
-	glfwSwapInterval(1);
+	glfwSwapInterval(CSSET_VSYNC_ENALBED);
 #else
 
 	// initialize OpenGL ES and EGL

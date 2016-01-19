@@ -555,7 +555,7 @@
 		%(p_{t_{x}} - p_{i_{x}})^{2} + (p_{t_{y}} - p_{i_{y}})^{2}
 		
 		\begin{equation}
-		c = Aexp(\frac{(\mathbf{p}_{t_{x}} - \mathbf{p}_{i_{x}})^{2} + (\mathbf{p}_{t_{y}} - \mathbf{p}_{i_{y}})^{2}}{2 \sigma}) \ .
+		c = A\exp{\frac{(\mathbf{p}_{t_{x}} - \mathbf{p}_{i_{x}})^{2} + (\mathbf{p}_{t_{y}} - \mathbf{p}_{i_{y}})^{2}}{2 \sigma}} \ .
 		\end{equation} 
 		
 		Gdzie parametry \( A \) i~\( \sigma \) są na sztywno określonymi stałymi i~wynoszą odpowiednio: \(200\) i~\(300\). Natomiast \( \mathbf{p}_{t} \) to pozycja dotyku, a~\( \mathbf{p}_{i} \)  -- wierzchołka. Mając już przesunięcie, musimy wyrazić je z~powrotem w koordynatach modelu. Dokonujemy tego mnożąc przez odwrotności wspomnianych wyżej macierzy -- projekcji, widoku i~świata. Po zrobieniu tego, możemy po prostu dodać wektor przesunięcia do aktualnej pozycji.

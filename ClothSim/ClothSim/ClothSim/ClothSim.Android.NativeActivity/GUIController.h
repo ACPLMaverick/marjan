@@ -46,6 +46,7 @@ private:
 	GUIText* m_dtText;
 	GUIText* m_ttText;
 	GUIText* m_stText;
+	GUIText* m_dText;
 
 	std::vector<GUIElement*> m_otherGroups;
 	GUISettingsScreen* m_sScreen;

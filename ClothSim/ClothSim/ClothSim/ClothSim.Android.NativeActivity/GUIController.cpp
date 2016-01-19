@@ -46,6 +46,7 @@ unsigned int GUIController::Initialize()
 	string tval02 = "DTvalue";
 	string tval03 = "STvalue";
 	string tval04 = "SKvalue";
+	string tval05 = "Dvalue";
 	string slid0 = "Sld";
 	string sllab0 = "Test";
 	GUIElement* group = (GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr1);
@@ -53,6 +54,7 @@ unsigned int GUIController::Initialize()
 	m_dtText = (GUIText*)group->GetChild(&tval02);
 	m_ttText = (GUIText*)group->GetChild(&tval03);
 	m_stText = (GUIText*)group->GetChild(&tval04);
+	m_dText = (GUIText*)group->GetChild(&tval05);
 
 	m_otherGroups.push_back(group);
 	m_otherGroups.push_back((GUIElement*)System::GetInstance()->GetCurrentScene()->GetGUIElement(&gr2));
@@ -122,7 +124,7 @@ unsigned int GUIController::Update()
 	if (Timer::GetInstance()->GetTotalTime() - infoTimeDisplayHelper >= INFO_UPDATE_RATE)
 	{
 		double fps, dt, tt;
-		string fpsTxt, dtTxt, ttTxt;
+		string fpsTxt, dtTxt, ttTxt, dTxt;
 		fps = Timer::GetInstance()->GetFps();
 		dt = Timer::GetInstance()->GetDeltaTime();
 		tt = m_cSimulator->GetSimTimeMS();
@@ -131,10 +133,12 @@ unsigned int GUIController::Update()
 		DoubleToStringPrecision(fps, 2, &fpsTxt);
 		DoubleToStringPrecision(dt, 4, &dtTxt);
 		DoubleToStringPrecision(tt, 4, &ttTxt);
+		DoubleToStringPrecision(m_cSimulator->GetD(), 8, &dTxt);
 
 		m_fpsText->SetText(&fpsTxt);
 		m_dtText->SetText(&dtTxt);
 		m_ttText->SetText(&ttTxt);
+		m_dText->SetText(&dTxt);
 	}
 
 	///////////////////////////

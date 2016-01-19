@@ -243,6 +243,8 @@ protected:
 
 	double m_timeStartMS;
 	double m_timeSimMS;
+	glm::vec3 m_dLast = glm::vec3(0.0f);
+	float m_d = 0.0f;
 
 	//////////////////////////
 	// threading sync structures
@@ -382,6 +384,7 @@ public:
 
 	ClothSimulationMode GetMode();
 	double GetSimTimeMS();
+	float GetD();
 
 	void UpdateSimParams(SimParams* params);
 	void UpdateTouchVector(const glm::vec2* pos, const glm::vec2* dir);

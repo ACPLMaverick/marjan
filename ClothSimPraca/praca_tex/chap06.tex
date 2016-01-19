@@ -1,88 +1,76 @@
 \chapter{Wyniki testów symulatora}
 \label{t:wyniki}
 
+	\section{Czas wykonania}
+	\label{t:wyniki:czas_wykonania}
 
-	\section{Model masy na sprężynie - GPU - Android}
-	\label{t:wyniki:masa_gpu_andro}
-	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:masa_gpu_andro:czas}
+		Czas wykonania rozumiemy jako czas potrzebny na przetworzenie jednego pełnego kroku symulacji tkaniny. Wyrażony został w milisekundach. Jest on najważniejszym kryterium porównawczym, gdyż mówi nam, jak bardzo nasze obliczenia obciążają sprzęt, jak duży procent całości pracy silnika stanowią i w efekcie -- czy działanie symulatora jest płynne. 
 		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:masa_gpu_andro:pamiec}
+		Wpływ na czas wykonania ma ilość przetwarzanych danych, czyli gęstość siatki tkaniny, oraz oczywiście wybrana implementacja. Pierwszą zależność przedstawiono w formie tabel oraz wykresów, osobno dla każdej metody i implementacji. Liczbę wierzchołków można w aplikacji łatwo modyfikować, zmieniając liczbę krawędzi poziomych i pionowych. Przyjęto zakres od siatki posiadającej \(10 \times 10 \) wszystkich krawędzi (100 wierzchołków) do \( 120 \times 120 \) (14400 wierzchołków), z krokiem co 10 krawędzi poziomych i pionowych.
 		
-		\subsection{Stabilność}
-		\label{t:wyniki:masa_gpu_andro:stabilnosc}
+		Warto wspomnieć, że do zachowania pełnej płynności obrazu na ekranie należy rysować jedną jego klatkę przynajmniej 30 razy na sekundę. Oznacza to, iż czas wykonania symulacji nie może być większy niż ok. 33 ms. Najbardziej satysfakcjonującym wynikiem byłoby osiągnięcie go niższego niż ok. 16 ms, co równe jest 60 klatkom na sekundę -- to maksymalna szybkość renderingu przy włączonej synchronizacji pionowej obrazu. Założono oczywiście, że pozostałe obliczenia związane z pracą silnika symulacji są pomijalnie krótkie.
 		
-		\subsection{Efekt wizualny}
-		\label{t:wyniki:masa_gpu_andro:wizual}
+		\subsection{Model masy na sprężynie -- GPU -- Android}
+		\label{t:wyniki:czas_wykonania:ms_gpu_andro}
 		
-	
-	\section{Model oparty na pozycji - GPU - Android}
-	\label{t:wyniki:poz_gpu_andro}
-	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:poz_gpu_andro:czas}
 		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:poz_gpu_andro:pamiec}
+		\subsection{Model oparty na pozycji -- GPU -- Android}
+		\label{t:wyniki:czas_wykonania:pb_gpu_andro}
 		
-		\subsection{Stabilność}
-		\label{t:wyniki:poz_gpu_andro:stabilnosc}
 		
-		\subsection{Efekt wizualny}
-		\label{t:wyniki:poz_gpu_andro:wizual}
-	
-	
-	\section{Model masy na sprężynie - CPU - Android}
-	\label{t:wyniki:masa_cpu_andro}
-	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:masa_cpu_andro:czas}
+		\subsection{Model masy na sprężynie -- GPU -- Windows}
+		\label{t:wyniki:czas_wykonania:ms_gpu_pc}
 		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:masa_cpu_andro:pamiec}
 		
-		\subsection{Stabilność}
-		\label{t:wyniki:masa_cpu_andro:stabilnosc}
+		\subsection{Model oparty na pozycji -- GPU -- Windows}
+		\label{t:wyniki:czas_wykonania:pb_gpu_pc}
 		
-		\subsection{Efekt wizualny}
-		\label{t:wyniki:masa_cpu_andro:wizual}
+		
+		\subsection{Model masy na sprężynie -- CPU -- Android}
+		\label{t:wyniki:czas_wykonania:ms_cpu_andro}
+		
+		
+		\subsection{Model oparty na pozycji -- CPU -- Android}
+		\label{t:wyniki:czas_wykonania:pb_cpu_andro}
+		
+		
+		\subsection{Model masy na sprężynie -- CPU (4 wątki) -- Android}
+		\label{t:wyniki:czas_wykonania:ms_cpux4_andro}
+		
+		
+		\subsection{Model oparty na pozycji -- CPU (4 wątki) -- Android}
+		\label{t:wyniki:czas_wykonania:pb_cpux4_andro}
 		
 	
-	\section{Model oparty na pozycji - CPU - Android}
-	\label{t:wyniki:poz_cpu_andro}
+	\section{Stabilność}
+	\label{t:wyniki:stabilnosc}
 	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:poz_cpu_andro:czas}
+		Drugą najważniejszą cechą symulacji jest jej stabilność, rozumiana jako skłonność do wpadania siatki tkaniny w niekontrolowane drgania, co w efekcie może prowadzić do ``eksplozji'', czyli dążenia pozycji wierzchołków do nieskończoności. Mamy tu do czynienia ze zjawiskiem z wiadomych powodów bardzo niepożądanym i zmuszającym do uruchomienia symulatora od początku.
 		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:poz_cpu_andro:pamiec}
+		Trudno określić, które dokładnie parametry mają wpływ na stabilność tkaniny. Z pewnością najważniejszym z nich jest elastyczność -- większe siły sprężystości bądź większy udział ograniczników mogą prowadzić do powstawania anomalii w procesie symulacji. Dla modelu masy na sprężynie znaczenie w redukcji drgań ma także współczynnik ich tłumienia. Nie bez wpływu pozostają też takie zmienne, jak gęstość siatki, masa czy siła grawitacji.
 		
-		\subsection{Stabilność}
-		\label{t:wyniki:poz_cpu_andro:stabilnosc}
+		Na potrzeby testów wybrano jeden z położonych w środku tkaniny wierzchołków oraz zbadano jego drgania w stanie spoczynku, tj. średnią różnicę pomiędzy położeniem obecnym a poprzednim, w każdym kroku symulacji. Pomiarów dokonano dla różnych współczynników elastyczności, a następnie przedstawiono tę zależność w postaci tabel i wykresów. Przy każdej metodzie zostały zbadane dwa przypadki, uwzględniające inne masy, siły grawitacji, współczynniki tłumienia oraz gęstości siatki. Stan spoczynku określono jako stan, w którym tkanina opadnie swobodnie z pozycji poziomej do pionowej, zawieszonej w dwóch punktach i przestanie się poruszać. Platformą testową jest mobilna wersja aplikacji, z implementacją na GPU.
 		
-		\subsection{Efekt wizualny}
-		\label{t:wyniki:poz_cpu_andro:wizual}
+		Pomiar pierwszy -- elastyczność: [50, 600], krok 50; masa: 0.2 \(kg\); grawitacja: 1 \(\frac{m}{s^2}\); współczynnik tłumienia: -0.5; gęstość siatki: 625 wierzchołków.
 		
-		
-	\section{Model masy na sprężynie - GPU - PC}
-	\label{t:wyniki:masa_gpu_pc}
+		Pomiar drugi -- elastyczność: [50, 600], krok 50; masa: 20 \(kg\); grawitacja: 9 \(\frac{m}{s^2}\); współczynnik tłumienia: -10; gęstość siatki: 6400 wierzchołków.
 	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:masa_gpu_pc:czas}
-		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:masa_gpu_pc:pamiec}
+		\subsection{Model masy na sprężynie}
+		\label{t:wyniki:stabilnosc:ms}
 		
 		
+		\subsection{Model oparty na pozycji}
+		\label{t:wyniki:stabilnosc:pb}
 		
-	\section{Model oparty na pozycji - GPU - PC}
-	\label{t:wyniki:poz_gpu_pc}
-	
-		\subsection{Czas wykonania}
-		\label{t:wyniki:poz_gpu_pc:czas}
 		
-		\subsection{Użycie pamięci}
-		\label{t:wyniki:poz_gpu_pc:pamiec}
-
+	\section{Efekt wizualny}
+	\label{t:wyniki:efektwiz}
+		
+		Ostatnim kryterium oceny to tzw. ``efekt wizualny''. Przyjęta nazwa oznacza po prostu stopień, w jakim zachowanie i wygląd symulowanej tkaniny odzwierciedla rzeczywistość. Wyznacznik ten jest całkowicie subiektywny, jednak na pewno można zauważyć wprost proporcjonalną zależność pomiędzy jakością a gęstością siatki. Mała liczba wierzchołków fizycznie nie pozwala na wygenerowanie realistycznych zmarszczek ani zagięć, tak charakterystycznych elementów animacji tkanin. Dla każdego modelu symulacji zaprezentowane zostaną zrzuty ekranu, prezentujące ``efekt wizualny'' z różnymi liczbami krawędzi pionowych oraz poziomych. Zakres przyjęto od \(10 \times 10\) do \(120 \times 120\) wszystkich krawędzi siatki. Platformą testową jest mobilna wersja aplikacji, z implementacją na GPU.
+			
+		\subsection{Model masy na sprężynie}
+		\label{t:wyniki:efektwiz:ms}
+			
+			
+		\subsection{Model oparty na pozycji}
+		\label{t:wyniki:efektwiz:pb}
