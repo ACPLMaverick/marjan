@@ -22,6 +22,12 @@
 \usepackage{float}
 \usepackage{textpos}
 
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{units}
+
 \definecolor{dkgreen}{rgb}{0, 0.4, 0}
 
 
@@ -44,6 +50,23 @@
 		\label{#4}
 	\end{figure}}
 \usepackage{listings}
+
+
+\pgfplotstableset{
+	begin table=\begin{longtable}, % -------- CF
+		end table=\end{longtable},
+	every head row/.style={
+		%before row=\caption{X-Powered-By header}\\\toprule, after row=\bottomrule \endhead,% --------- CF
+		% as in the previous example, this patches the first row:
+		before row={\hline},
+		after row=\hline,
+	},
+	every last row/.style={% ------------ CF
+		after row=\hline,
+	},
+	every even row/.style={
+		before row={\rowcolor[gray]{0.92}}},
+}
 	
 \lstset{frame=tb,
 	aboveskip=3mm,
