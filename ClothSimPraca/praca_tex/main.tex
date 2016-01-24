@@ -39,8 +39,10 @@
 \tolerance=500
 
 \setcounter{secnumdepth}{4}
+\usepackage{listings}
 
-\newcommand{\myfigure}[4]{\begin{figure}[H]
+\newcommand{\myfigure}[4]{
+	\begin{figure}[H]
 		\centering
 		\scalebox{#3}
 		{
@@ -48,8 +50,52 @@
 		}
 		\caption[#1]{#1}
 		\label{#4}
-	\end{figure}}
-\usepackage{listings}
+	\end{figure}
+}
+\newcommand{\myownfigure}[4]{
+	\begin{figure}[H]
+		\centering
+		\scalebox{#3}
+		{
+			\includegraphics{#2}
+		}
+		\caption[#1]{#1 Źródło: opracowanie własne.}
+		\label{#4}
+	\end{figure}
+}
+\newcommand{\myownextfigure}[4]{
+	\begin{figure}[H]
+		\centering
+		\scalebox{#3}
+		{
+			\includegraphics{#2}
+		}
+		\caption[#1]{#1 Źródło: opracowanie własne w oparciu o źródło zewnętrzne.\footnotemark}
+		\label{#4}
+	\end{figure}
+}
+\newcommand{\myextfigure}[4]{
+	\begin{figure}[H]
+		\centering
+		\scalebox{#3}
+		{
+			\includegraphics{#2}
+		}
+		\caption[#1]{#1\footnotemark}
+		\label{#4}
+	\end{figure}
+}
+\newcommand{\myextcitefigure}[5]{
+	\begin{figure}[H]
+		\centering
+		\scalebox{#4}
+		{
+			\includegraphics{#3}
+		}
+		\caption[#1]{#1 #2}
+		\label{#5}
+	\end{figure}
+}
 
 
 \pgfplotstableset{
