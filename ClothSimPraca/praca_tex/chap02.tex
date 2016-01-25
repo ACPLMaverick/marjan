@@ -8,7 +8,7 @@
 		\subsection{Model masy na sprężynie}
 		\label{t:teoria:analiza:masa}		
 			
-			Pierwszym z~rozważanych w niniejszej pracy modeli symulacji tkanin jest model masy na sprężynie. Rysowana przez API graficzne tkanina jest w postaci siatki wielokątowej. Siatka taka składa się z~punktów w przestrzeni 3D -- wierzchołków. Na potrzeby symulacji przyjęto, że każdy z~tych wierzchołków ma określoną masę i~poddano go działaniu sił, w wyniku których następuje przemieszczenie. Aby zachować kształt i~odpowiednie dla tkaniny zachowanie się siatki, wierzchołki połączone są sprężynami o~określonych współczynnikach sprężystości oraz tłumienia drgań. 
+			Pierwszym z~rozważanych w niniejszej pracy modeli symulacji tkanin jest model masy na sprężynie. Rysowana przez API graficzne tkanina jest w postaci siatki wielokątowej. Siatka taka składa się z~punktów w przestrzeni 3D -- wierzchołków. Na potrzeby symulacji przyjęto, że każdy z~tych wierzchołków ma określoną masę i~poddano go działaniu sił, w~wyniku których następuje przemieszczenie. Aby zachować kształt i~odpowiednie dla tkaniny zachowanie się siatki, wierzchołki połączone są sprężynami o~określonych współczynnikach sprężystości oraz tłumienia drgań. 
 			
 			
 			\myownfigure{Schemat modelu masy na sprężynie. Kolorami zaznaczono wszystkie sprężyny biorące udział w obliczeniach położenia wierzchołka A.}{figures/pic_2_1.png}{0.22}{pic_2_1}
@@ -119,7 +119,7 @@
 		\subsection{Porównanie powyższych metod}
 		\label{t:teoria:analiza:porownanie}
 		
-			Podsumowując przedstawienie zastosowanych metod symulacji tkaniny, należy zauważyć, że każda z nich ma swoje plusy i~minusy. Największą zaletą modelu masy na sprężynie jest z pewnością prostota i~łatwość implementacji. Nietrudno wyobrazić sobie tkaninę, jako zbiór wierzchołków połączonych elastycznymi sprężynami, których siły sprężystości są wyliczane przy pomocy prostych praw fizyki. Trochę gorzej jest w przypadku drugiej omawianej metody -- tutaj zrozumienie zasady działania modelu wymaga wgłębienia się w wyprowadzenia wzorów matematycznych. Jednakże sama implementacja okazuje się równie prosta, ilość kodu jaką programista musi napisać, jest tak naprawdę podobna.
+			Podsumowując przedstawienie zastosowanych metod symulacji tkaniny, należy zauważyć, że każda z nich ma swoje plusy i~minusy. Największą zaletą modelu masy na sprężynie jest z~pewnością prostota i~łatwość implementacji. Nietrudno wyobrazić sobie tkaninę, jako zbiór wierzchołków połączonych elastycznymi sprężynami, których siły sprężystości są wyliczane przy pomocy prostych praw fizyki. Trochę gorzej jest w przypadku drugiej omawianej metody -- tutaj zrozumienie zasady działania modelu wymaga wgłębienia się w~wyprowadzenia wzorów matematycznych. Jednakże sama implementacja okazuje się równie prosta, ilość kodu jaką programista musi napisać, jest tak naprawdę podobna.
 			
 			Z pewnością największą zaletą modelu opartego na pozycji jest przewaga wydajnościowa. Wynika ona z~braku konieczności użycia całkowania numerycznego. Zachowanie tkaniny nie jest określane przez zbiór sił sprężystości, a~ograniczników, od razu modyfikujących pozycję. Całkować trzeba co najwyżej chcąc obliczyć siły zewnętrzne. Pozwala to na duże oszczędności obliczeniowe. W~przypadku modelu masy na sprężynie nie można uniknąć już tych obliczeń dla każdej ze sprężyn. W~celu uzyskania dokładniejszych wyników należy zastosować bardziej skomplikowane metody całkowania. Prowadzi to do spadku wydajności.
 			
@@ -151,21 +151,25 @@
 				\mathbf{p}_{i} = \mathbf{p}_{i} + (\frac{\mathbf{p}_{C1} - \mathbf{p}_{C2}}{|\mathbf{p}_{C1} - \mathbf{p}_{C2}|})(R_{1} + R_{2} - d) \ .
 				\end{equation}
 				
-				Jak można się domyślić, wadą sfer okalających jest ich niska dokładność -- obiekty idealnie kuliste rzadko występują w~świecie rzeczywistym. Na potrzeby symulowania świata otaczającego tkaninę w niniejszej pracy jednak takie rozwiązanie w~zupełności wystarcza. Przyjęto, że każdy wierzchołek posiada swoją własną BS, o~pozycji środka identycznej z pozycją punktu oraz o~promieniu równym pewnemu procentowi najkrótszej odległości między dwoma wierzchołkami, mniejszemu niż jej połowa. W każdym kroku symulacji każdy z~nich zostaje sprawdzony, czy nie zaszła kolizja z którymś, bądź wieloma, obiektami sceny. Jeśli tak, poprawia się jego położenie. 
+				Jak można się domyślić, wadą sfer okalających jest ich niska dokładność -- obiekty idealnie kuliste rzadko występują w~świecie rzeczywistym. Na potrzeby symulowania świata otaczającego tkaninę w niniejszej pracy jednak takie rozwiązanie w~zupełności wystarcza. Przyjęto, że każdy wierzchołek posiada swoją własną BS, o~pozycji środka identycznej z~pozycją punktu oraz o~promieniu równym pewnemu procentowi najkrótszej odległości między dwoma wierzchołkami, mniejszemu niż jej połowa. W każdym kroku symulacji każdy z~nich zostaje sprawdzony, czy nie zaszła kolizja z którymś, bądź wieloma, obiektami sceny. Jeśli tak, poprawia się jego położenie. 
 				
 				Jest to rozwiązanie szybkie, jednak ma jedną istotną wadę - BS nie pokrywają całej powierzchni siatki tkaniny, a tylko obszary w okolicach wierzchołków. Kolizje na środkach trójkątów nie są sprawdzane, co może doprowadzić do przenikania obiektów przez tkaninę przy niskiej jej rozdzielczości. Założono jednak, że jest to rozwiązanie wystarczające -- nie obciążamy urządzenia mobilnego nadmiarem obliczeń związanych z detekcją kolizji. Poza tym gęstość siatki potrzebna do odwzorowania realistycznego wyglądu tkaniny jest na tyle duża, by szczeliny pomiędzy BS były na tyle małe, aby sensownie zminimalizować ryzyko wystąpienia przenikania.
 				
-				\myownfigure{Przykład kolizji BS z prostopadłościanem AABB.}{figures/pic_2_5.png}{0.3}{pic_2_5}		%dwa boksy p1min, p1max, p2min, p2max
+				\myownfigure{Przykład kolizji BS z prostopadłościanem AABB.}{figures/pic_2_5.png}{0.35}{pic_2_5}		%dwa boksy p1min, p1max, p2min, p2max
 				
 				Obiekty zewnętrzne znajdujące się w świecie symulacji mogą posiadać dwa rodzaje detektorów kolizji. Są albo sferami okalającymi, w którym to przypadku do wykrycia przecięć zastosowane zostają opisane powyżej wzory (2.15) i (2.16), albo AABB -- prostopadłościany, których położenie i~rozmiary są wyznaczane przez dwa punkty w przestrzeni: minimum \(\mathbf{p}_{i_{min}}\) oraz maksimum \(\mathbf{p}_{i_{max}}\). W jaki sposób figury są tworzone na podstawie tych dwóch pozycji -- widać na rysunku \ref{pic_2_5}. Można zauważyć, że ten sposób interpretacji dwóch wymienionych wyżej danych skutkuje niską zajętością pamięciową (tylko dwa wektory trójwymiarowe reprezentują AABB) oraz prostotą wzorów wykrycia przecięcia, a~co za tym idzie -- szybkością obliczeń tychże. Ewidentną wadą jest jednak znowu niska dokładność -- fakt, że kolejne ścianki prostopadłościanu zawsze będą prostopadłe do kolejnych osi układu współrzędnych. Utrudnia to odwzorowanie dokładnych kolizji np. dla obiektów pochyłych. Detekcja i~rozwiązanie przecięć pomiędzy AABB i BS następuje według nieco innych zasad, niż w~przypadku dwóch BS \cite{wzory_sfera} \cite{wzory_sfera_box}:
 				
 				\begin{equation}
-				\mathbf{c}_{i} =  min(max(\mathbf{p}_{C1}, \mathbf{p}_{i_{min}}), \mathbf{p}_{i_{max}})  \ .
+				\mathbf{k}_{i} =  min(max(\mathbf{p}_{C1}, \mathbf{p}_{i_{min}}), \mathbf{p}_{i_{max}})  \ .
 				\end{equation}
 				
 				\begin{equation}
-				\mathbf{p}_{i} = \mathbf{p}_{i} + \frac{\mathbf{c}_{i}}{|\mathbf{c}_{i}|}(R1 - |\mathbf{c}_{i} - \mathbf{p}_{C1}|) \ .
+				\mathbf{p}_{i} = \mathbf{p}_{i} + \frac{\mathbf{p}_{C1} - \mathbf{k}_{i}}{|\mathbf{p}_{C1} - \mathbf{k}_{i}|}(R1 - |\mathbf{k}_{i} - \mathbf{p}_{C1}|) \ .
 				\end{equation}
+				
+				% tutaj coś dopisać
+				
+				Punkt \( \mathbf{k}_i \) obliczany wzorem (2.17) jest widoczny na rysunku \ref{pic_2_5}, zaznaczony na czerwono. Wektor reakcji na kolizję otrzymano następnie dzięki odjęciu pozycji sfery i~punktu \( \mathbf{k}_i \) (zielony wektor) oraz odpowiedniej zmianie jego długości. Ta ostatnia została dokonana poprzez kolejno: normalizację i~pomnożenie przez różnicę promienia sfery okalającej i~długości wektora \(\mathbf{k}_{i} - \mathbf{p}_{C1}\). Działanie to obrazuje wzór (2.18), a~wynik oznaczono na rysunku \ref{pic_2_5} wektorem w~kolorze magenta.
 			
 			\subsubsection{Kolizje wewnętrzne}
 			\label{t:teoria:analiza:kolizje:wewn}

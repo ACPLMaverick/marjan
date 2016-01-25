@@ -197,7 +197,7 @@
 		
 		\myownfigure{Wygląd tkaniny po przeniknięciu przez prostopadłościan (model oparty na pozycji).}{figures/pic_6_4.png}{0.38}{pic_6_4}
 		
-		Co gorsza, w~przypadku prostopadłościanu ześlizgiwanie się wierzchołków może stopniowo prowadzić także do kompletnego zsunięcia się tkaniny z obiektu kolizyjnego, poprzez powolne przenikanie przez niego kolejnych punktów masy. Efekt tego widać na 4ysunku \ref{pic_6_4}. Zdecydowanie sytuację poprawiłoby wprowadzenie siły tarcia bądź dokładniejszej metody detekcji kolizji, gdzie brane pod uwagę byłyby trójkąty siatki, a~nie tylko same wierzchołki.
+		Co gorsza, w~przypadku prostopadłościanu ześlizgiwanie się wierzchołków może stopniowo prowadzić także do kompletnego zsunięcia się tkaniny z obiektu kolizyjnego, poprzez powolne przenikanie przez niego kolejnych punktów masy. Efekt tego widać na rysunku \ref{pic_6_4}. Zdecydowanie sytuację poprawiłoby wprowadzenie siły tarcia bądź dokładniejszej metody detekcji kolizji, gdzie brane pod uwagę byłyby trójkąty siatki, a~nie tylko same wierzchołki.
 		
 		Zieloną ramką oznaczono fragment tkaniny, gdzie wystąpił błąd rozwiązywania kolizji wewnętrznych. Widać, że przeniknął on przez inną część modelu i~zawinął się w drugą stronę. Stało się tak z~powodu bardzo uproszczonej techniki sprawdzania tych kolizji, biorącej pod uwagę tylko cztery sąsiednie wierzchołki. Najprostszym rozwiązaniem problemu byłoby zwiększenie ich liczby, jednak wiąże się to z~coraz większym kosztem obliczeniowym. Wyjściem jest także zastosowanie innej metody detekcji, o~której mowa w~poprzednim akapicie.
 			
