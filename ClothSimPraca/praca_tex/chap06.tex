@@ -13,50 +13,66 @@
 		Przyjęto oznaczenia:
 		
 		\begin{enumerate}
-			\item C -- liczba wszystkich wierzchołków,
-			\item MS-GPU-A -- Model masy na sprężynie, implementacja GPU, platforma Android,
-			\item PB-GPU-A -- Model oparty na pozycji, implementacja GPU, platforma Android,
-			\item MS-GPU-W -- Model masy na sprężynie, implementacja GPU, platforma Windows,
-			\item PB-GPU-W -- Model oparty na pozycji, implementacja GPU, platforma Windows,
-			\item MS-CPU-A -- Model masy na sprężynie, implementacja CPU, platforma Android,
-			\item PB-CPU-A -- Model oparty na pozycji, implementacja CPU, platforma Android,
-			\item MS-CPUx4-A -- Model masy na sprężynie, implementacja CPU (4 wątki robocze), platforma Android,
+			\item C -- liczba wszystkich wierzchołków.
+			\item MS-GPU-A -- Model masy na sprężynie, implementacja GPU, platforma Android.
+			\item PB-GPU-A -- Model oparty na pozycji, implementacja GPU, platforma Android.
+			\item MS-GPU-W -- Model masy na sprężynie, implementacja GPU, platforma Windows.
+			\item PB-GPU-W -- Model oparty na pozycji, implementacja GPU, platforma Windows.
+			\item MS-CPU-A -- Model masy na sprężynie, implementacja CPU, platforma Android.
+			\item PB-CPU-A -- Model oparty na pozycji, implementacja CPU, platforma Android.
+			\item MS-CPUx4-A -- Model masy na sprężynie, implementacja CPU (4 wątki robocze), platforma Android.
 			\item PB-CPUx4-A -- Model oparty na pozycji, implementacja CPU (4 wątki robocze), platforma Android.
-			\newline
 		\end{enumerate}
 		
-		\pgfplotstabletypeset{chart_6_1_a.dat}
+		\pgfplotstabletypeset
+		[
+			every head row/.append style={before row={%
+					\caption{Czas wykonania dla różnych gęstości siatki.}%
+					\label{tab_6_1a}\\\toprule}}
+		]
+		{chart_6_1_a.dat}
 		
-		\pgfplotstabletypeset{chart_6_1_b.dat}
+		\pgfplotstabletypeset
+		[
+		every head row/.append style={before row={%
+				\caption{Czas wykonania dla różnych g. siatki. (cd.)}%
+				\label{tab_6_1b}\\\toprule}}
+		]
+		{chart_6_1_b.dat}
 		
-		\begin{tikzpicture}
-			\begin{axis}[
-			xlabel=C,
-			ylabel=$t_{x}$,
-			y SI prefix=milli,
-			y unit=s,
-			width=15cm,
-			grid=major,
-			legend style={at={(0.025, 0.8)}, anchor=west}
-			]
-			\addplot[orange, very thick] table [y=$t_{MS-GPU-A}$, x=C]{chart_6_1_a.dat};
-			\addlegendentry{$t_{MS-GPU-A}$}
-			\addplot[red, very thick] table [y=$t_{PB-GPU-A}$, x=C]{chart_6_1_a.dat};
-			\addlegendentry{$t_{PB-GPU-A}$}
-			\addplot[yellow, very thick] table [y=$t_{MS-GPU-W}$, x=C]{chart_6_1_a.dat};
-			\addlegendentry{$t_{MS-GPU-W}$}
-			\addplot[purple, very thick] table [y=$t_{PB-GPU-W}$, x=C]{chart_6_1_a.dat};
-			\addlegendentry{$t_{PB-GPU-W}$}
-			\addplot[blue, very thick] table [y=$t_{MS-CPU-A}$, x=C]{chart_6_1_b.dat};
-			\addlegendentry{$t_{MS-CPU-A}$}
-			\addplot[cyan, very thick] table [y=$t_{PB-CPU-A}$, x=C]{chart_6_1_b.dat};
-			\addlegendentry{$t_{PB-CPU-A}$}
-			\addplot[green, very thick] table [y=$t_{MS-CPUx4-A}$, x=C]{chart_6_1_b.dat};
-			\addlegendentry{$t_{MS-CPUx4-A}$}
-			\addplot[olive, very thick] table [y=$t_{PB-CPUx4-A}$, x=C]{chart_6_1_b.dat};
-			\addlegendentry{$t_{PB-CPUx4-A}$}
-			\end{axis}
-		\end{tikzpicture}
+		\begin{figure}[H]
+			\begin{tikzpicture}
+				\begin{axis}[
+				xlabel=C,
+				ylabel=$t_{x}$,
+				y SI prefix=milli,
+				y unit=s,
+				width=15cm,
+				height=11cm,
+				grid=major,
+				legend style={at={(0.025, 0.76)}, anchor=west}
+				]
+				\addplot[orange, very thick] table [y=$t_{MS-GPU-A}$, x=C]{chart_6_1_a.dat};
+				\addlegendentry{$t_{MS-GPU-A}$}
+				\addplot[red, very thick] table [y=$t_{PB-GPU-A}$, x=C]{chart_6_1_a.dat};
+				\addlegendentry{$t_{PB-GPU-A}$}
+				\addplot[yellow, very thick] table [y=$t_{MS-GPU-W}$, x=C]{chart_6_1_a.dat};
+				\addlegendentry{$t_{MS-GPU-W}$}
+				\addplot[purple, very thick] table [y=$t_{PB-GPU-W}$, x=C]{chart_6_1_a.dat};
+				\addlegendentry{$t_{PB-GPU-W}$}
+				\addplot[blue, very thick] table [y=$t_{MS-CPU-A}$, x=C]{chart_6_1_b.dat};
+				\addlegendentry{$t_{MS-CPU-A}$}
+				\addplot[cyan, very thick] table [y=$t_{PB-CPU-A}$, x=C]{chart_6_1_b.dat};
+				\addlegendentry{$t_{PB-CPU-A}$}
+				\addplot[green, very thick] table [y=$t_{MS-CPUx4-A}$, x=C]{chart_6_1_b.dat};
+				\addlegendentry{$t_{MS-CPUx4-A}$}
+				\addplot[olive, very thick] table [y=$t_{PB-CPUx4-A}$, x=C]{chart_6_1_b.dat};
+				\addlegendentry{$t_{PB-CPUx4-A}$}
+				\end{axis}
+			\end{tikzpicture}
+			\caption[Wykres zależności czasu wykonania od liczby wierzchołków.]{Wykres zależności czasu wykonania od liczby wierzchołków. Źródło: opracowanie własne.}
+			\label{wykr_6_1}
+		\end{figure}
 		
 		Wykres pokazuje dużą przewagę wydajnościową metod implementowanych na GPU. W~przypadku Androida, czas obliczeń jest niemalże stały, niezależnie od liczby wierzchołków tkaniny. Drobne wahania wynikają głównie z~błędu pomiaru (rzędu kilku ms). Niewielki wzrost czasu przetwarzania w~końcowej fazie testów może wynikać nie tyle z~samego narzutu obliczeniowego, ile z~rosnącej temperatury urządzenia i~związanego z tym stopniowego obniżania wydajności przez system operacyjny. 
 		
@@ -116,31 +132,42 @@
 		Drgania (\(d_{x}\)) podano w mikrometrach. Ponadto przyjęto oznaczenia: \(A-n\), gdzie \(A\) -- rodzaj zastosowanego modelu symulacji (MS -- masy na sprężynie, PB -- oparty na pozycji), \(n\) -- numer pomiaru.
 		\newline
 		
-		\pgfplotstabletypeset{chart_6_2.dat}
+		\pgfplotstabletypeset
+		[
+		every head row/.append style={before row={%
+				\caption{Drgania dla różnych wsp. sztywności.}%
+				\label{tab_6_2}\\\toprule}}
+		]
+		{chart_6_2.dat}
 		
-		\begin{tikzpicture}
-			\begin{axis}[
-			xlabel=s,
-			ylabel=$d_{x}$,
-			y SI prefix=micro,
-			y unit=s,
-			width=14cm,
-			grid=major,
-			legend style={at={(0.025, 0.9)}, anchor=west},
-			every axis y label/.style={
-				at={(-0.12, 0.5)}, rotate=90,
-				anchor=east}
-			]
-			\addplot[orange, very thick] table [y=$d_{MS-01}$, x=s]{chart_6_2.dat};
-			\addlegendentry{$d_{MS-01}$}
-			\addplot[green, very thick] table [y=$d_{PB-01}$, x=s]{chart_6_2.dat};
-			\addlegendentry{$d_{PB-01}$}
-			\addplot[red, very thick] table [y=$d_{MS-02}$, x=s]{chart_6_2.dat};
-			\addlegendentry{$d_{MS-02}$}
-			\addplot[olive, very thick] table [y=$d_{PB-02}$, x=s]{chart_6_2.dat};
-			\addlegendentry{$d_{PB-02}$}
-			\end{axis}
-		\end{tikzpicture}
+		\begin{figure}[H]
+			\begin{tikzpicture}
+				\begin{axis}[
+				xlabel=s,
+				ylabel=$d_{x}$,
+				y SI prefix=micro,
+				y unit=s,
+				width=14cm,
+				height=10cm,
+				grid=major,
+				legend style={at={(0.025, 0.84)}, anchor=west},
+				every axis y label/.style={
+					at={(-0.12, 0.5)}, rotate=90,
+					anchor=east}
+				]
+				\addplot[orange, very thick] table [y=$d_{MS-01}$, x=s]{chart_6_2.dat};
+				\addlegendentry{$d_{MS-01}$}
+				\addplot[green, very thick] table [y=$d_{PB-01}$, x=s]{chart_6_2.dat};
+				\addlegendentry{$d_{PB-01}$}
+				\addplot[red, very thick] table [y=$d_{MS-02}$, x=s]{chart_6_2.dat};
+				\addlegendentry{$d_{MS-02}$}
+				\addplot[olive, very thick] table [y=$d_{PB-02}$, x=s]{chart_6_2.dat};
+				\addlegendentry{$d_{PB-02}$}
+				\end{axis}
+			\end{tikzpicture}
+		\caption[Wykres zależności drgań od współczynnika sztywności.]{Wykres zależności drgań od współczynnika sztywności. Źródło: opracowanie własne.}
+		\label{wykr_6_2}
+		\end{figure}
 		\pagebreak
 		
 		\myownfigure{Niestabilności występujące w obu modelach symulacji.}{figures/pic_6_1.png}{0.38}{pic_6_1}

@@ -238,7 +238,7 @@
 			
 			\item[Długość]Zakres: \(1\ -\ 50\ m\). Rozmiar tkaniny w~osi Z układu współrzędnych, zakładając, że siatka tkaniny jest równoległa do płaszczyzny XZ.
 			
-			\item[Ilość krawędzi poziomych] Zakres: \(0\ -\ 126\). Ten i~następny są kluczowymi parametrami dla testów wydajności i~efektu wizualnego. Ilość krawędzi ma wpływ na gęstość siatki tkaniny, a~co za tym idzie na dokładność oraz ciężar obliczeniowy symulacji. Wartości tych parametrów są ograniczone do 126, czyli maksymalnie można wygenerować siatkę o~gęstości \( 128 \times 128 \) krawędzi. Nie jest to dużo, jednak limit ten wynika z opisanej w~Rozdziale \ref{t:technologie:narzedzia:bufory} konieczności zastosowania buforów jednorodnych, które mają niewielką pojemność.
+			\item[Ilość krawędzi poziomych] Zakres: \(0\ -\ 126\). Ten i~następny są kluczowymi parametrami dla testów wydajności i~efektu wizualnego. Ilość krawędzi ma wpływ na gęstość siatki tkaniny, a~co za tym idzie na dokładność oraz ciężar obliczeniowy symulacji. Wartości tych parametrów są ograniczone do 126, czyli maksymalnie można wygenerować siatkę o~gęstości \( 128 \times 128 \) krawędzi. Nie jest to dużo, jednak limit ten wynika z~opisanej w~Rozdziale \ref{t:technologie:narzedzia:bufory} konieczności zastosowania buforów jednorodnych, które mają niewielką pojemność.
 			
 			\item[Ilość krawędzi pionowych] Zakres: \(0\ -\ 126\).
 			
@@ -314,7 +314,7 @@
 		Jest to pierwszy etap symulacji i~zarazem najważniejsza jego część. To tutaj obliczane są przemieszczenia wierzchołków w~taki sposób, aby odwzorować zachowanie tkaniny. Poniżej podano fragmenty kodu w~języku GLSL najpierw dla modelu masy na sprężynie, a~następnie -- modelu opartego na pozycji. Należy pamiętać, że wykonuje się on dla pojedynczego wierzchołka. Kod implementacji na CPU jest analogiczny.
 		\newpage	
 		
-		\begin{lstlisting}[language=GLSL]
+		\begin{lstlisting}[language=GLSL,caption={Obliczanie przesunięcia -- model masy na sprężynie.},label={lst_5_1}]
 		vec3 CalcSpringForce(vec3 mPos, vec3 mPosLast, vec3 nPos, vec3 nPosLast, 
 			float sLength, float elCoeff, float dampCoeff)
 		{
@@ -369,8 +369,7 @@
 		}
 		\end{lstlisting}
 		
-		
-		\begin{lstlisting}[language=GLSL]
+		\begin{lstlisting}[language=GLSL,caption={Obliczanie przesunięcia -- model oparty na pozycji},label={lst_5_2}]
 		void CalcDistConstraint(vec3 mPos, vec3 nPos, float mass, 
 			float sLength, float elCoeff, float dampCoeff,
 			out vec4 constraint)
@@ -392,31 +391,45 @@
 			vec3 posPredicted = vec3(0.0f);
 			...
 			vec3 acc = mForce / ElMassCoeffs.y;	// masa
-			posPredicted = 2.0f * vec3(Pos) - vec3(PosLast) + acc * DeltaTime * DeltaTime;
+			posPredicted = 2.0f * vec3(Pos) - vec3(PosLast) + acc 
+				* DeltaTime * DeltaTime;
 			// ograniczniki
 			float elBias = 0.0005;
 			vec3 cPos = vec3(0.0f);
-			for(int i = 0; i < 4; ++i)
+			for(int i = 0; i < 2; ++i)
 			{
-				int nID = int(roundEven(Neighbours[i]));
+				int id = fOrder[i];
+				int nID = int(roundEven(Neighbours[id]));
 				vec3 nPos = vec3(InPosBuffer[nID]);
 				vec3 nPosLast = vec3(InPosLastBuffer[nID]);
-				
-				// ogranicznik pozycji. XYZ to pozycja, W to odwrotnosc masy
+				// ogranicznik pozycji. XYZ to pozycja, W - odwrotnosc masy
 				vec4 constraint;
 				CalcDistConstraint(...);
-				cPos -= constraint.xyz * constraint.w * NeighbourMultipliers[i];
+				cPos -= constraint.xyz * constraint.w * 
+					NeighbourMultipliers[id] * Multipliers.x;
 			}
+			posPredicted += cPos;
+			cPos = vec3(0.0f);
+			for(int i = 2; i < 4; ++i)
+			{
+				int id = fOrder[i];
+				int nID = int(roundEven(Neighbours[id]));
+				vec3 nPos = vec3(InPosBuffer[nID]);
+				vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+				vec4 constraint;
+				CalcDistConstraint(...);
+				cPos -= constraint.xyz * constraint.w * 
+					NeighbourMultipliers[id] * Multipliers.x;
+			}
+			posPredicted += cPos;
 			...
-			// aplikowanie ogranicznikow
-			vec3 finalPos = posPredicted + cPos * Multipliers.x;
 			// aktualizacja pozycji
 			OutPos = vec4(finalPos, 1.0f);
 			OutPosLast = Pos;
 			gl_Position = Pos;
 		}	
 		\end{lstlisting}
-		
+		\newpage
 		Jak widać, implementacje obu modeli symulacji mają ze sobą sporo wspólnego i~tak naprawdę ich główna różnica polega na podejściu do kalkulacji sprężyn bądź ograniczników. Zauważyć można zastosowanie wzorów z~rozdziałów \ref{t:teoria:analiza:masa} i~\ref{t:teoria:analiza:poz}. Cały proces dotyczący obliczania sił zewnętrznych wygląda w~obu przypadkach tak samo i~został tu pominięty. Metody różnią się także kolejnością wykonywania działań. W~modelu masy na sprężynie siły sprężystości są obliczane na początku, chociaż kolejność nie ma tu tak naprawdę znaczenia. Z~kolei ma ona znaczenie w~modelu opartym na pozycji -- tutaj ograniczniki nałożone zostają już na obliczoną pozycję, zmienioną pod wpływem sił zewnętrznych.
 		
 		\subsection{Rozwiązywanie kolizji}
@@ -426,7 +439,7 @@
 		
 		Etapem drugim jest rozwiązanie kolizji zewnętrznych, wewnętrznych, a~także uwzględnienie działania użytkownika na tkaninę. Aby dokonać pierwszej z~tych czynności, należy mieć dane wszystkich struktur okalających dla każdego obiektu w~scenie. Zapewnia je nam klasa--singleton \texttt{PhysicsManager}, który posiada funkcjonalność przechowywania ich w~formie upakowanych struktur, o~rozmiarze wyrównanym do wielokrotności 4~B. Dzięki temu można, korzystając z~buforów jednorodnych, bezpośrednio wysłać je do GPU jako parametry. Warto pamiętać także o~tym, że każdy wierzchołek tkaniny ma własną sferę okalającą. Na tej podstawie da się ustalić i~rozwiązać kolizje z innymi obiektami. Poniżej zaprezentowano fragment kodu GLSL, zawartego w~kernelu \emph{ClothCollisionKernel.glsl}, odpowiedzialnego za tę czynność.
 		
-		\begin{lstlisting}[language=GLSL]
+		\begin{lstlisting}[language=GLSL,caption={Rozwiązywanie kolizji.},label={lst_5_3}]
 		
 		void Vec3LengthSquared(in vec3 vec, out float ret)
 		{
@@ -524,9 +537,8 @@
 		Gdzie parametry \( A \) i~\( \sigma \) są na sztywno określonymi stałymi i~wynoszą odpowiednio: \(200\) i~\(300\). Natomiast \( \mathbf{p}_{t} \) to pozycja dotyku, a~\( \mathbf{p}_{i} \)  -- wierzchołka. Mając już przesunięcie, trzeba wyrazić je z~powrotem w koordynatach modelu. Dokonuje się tego mnożąc przez odwrotności wspomnianych wyżej macierzy -- projekcji, widoku i~świata. Po zrobieniu tego, można po prostu dodać wektor przesunięcia do aktualnej pozycji.
 		\newline
 		
-		\begin{lstlisting}[language=GLSL]
+		\begin{lstlisting}[language=GLSL,caption={Obliczenie reakcji tkaniny na dotyk ekranu.},label={lst_5_4}]
 		
-		// aplikujemy wektor dotyku
 		vec4 mPosScreen = ProjMatrix * (ViewMatrix * (WorldMatrix * finalPos));
 		vec4 mPosScreenNorm = mPosScreen / mPosScreen.w;
 		vec4 fPosScreen = vec4(TouchVector.x, TouchVector.y, 0.0f, mPosScreenNorm.w);
@@ -561,9 +573,9 @@
 		\begin{equation}
 		\mathbf{n}_{i} = normalize( \sum_{n = 0}^{n < 8} ( (\mathbf{p}_{i} - \mathbf{p}_{n}) \times (\mathbf{p}_{i} - \mathbf{p}_{(n+1)\ MOD\ 8}) ) ) \ .
 		\end{equation}
-		\newpage
+		\newline
 		
-		\begin{lstlisting}[language=GLSL]
+		\begin{lstlisting}[language=GLSL,caption={Przeliczenie wektorów normalnych.},label={lst_5_5}]
 		
 		for(int i = 0; i < 8; ++i)
 		{
@@ -579,6 +591,7 @@
 		normal = normalize(normal);
 		
 		\end{lstlisting}
+		\newpage
 		
 	%\section{Budowa i działanie symulatora tkaniny na platformie Windows}	% - ni ma CUDY, będzie to samo	%\label{t:praktyka:symulacjapc}
 	

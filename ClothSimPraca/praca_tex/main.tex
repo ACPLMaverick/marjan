@@ -17,7 +17,7 @@
 
 \usepackage{color}
 \usepackage[normalem]{ulem}
-
+\usepackage{listings}
 \usepackage{rotating}
 \usepackage{float}
 \usepackage{textpos}
@@ -39,7 +39,6 @@
 \tolerance=500
 
 \setcounter{secnumdepth}{4}
-\usepackage{listings}
 
 \newcommand{\myfigure}[4]{
 	\begin{figure}[H]
@@ -218,21 +217,7 @@
 	morecomment=[l][keywordstyle4]{\#},
 }
 
-\makeatletter
-\AtBeginDocument{%
-	\let\l@algorithm\l@figure%
-	\let\listofalgorithms\listoffigures% Copy \listoffigures
-	%\let\@cftmakeloatitle\@cftmakeloftitle% Copy LoF title
-	% Update LoA-related macros
-	\patchcmd{\listofalgorithms}{\@cftmakeloftitle}{\@cftmakeloatitle}{}{}%
-	\patchcmd{\listofalgorithms}{\@starttoc{lof}}{\@starttoc{loa}}{}{}%
-	\patchcmd{\@cftmakeloatitle}{\listfigurename}{\listalgorithmname}{}{}%
-	% Add per-chapter LoA space (similar to LoF)
-	\patchcmd{\@chapter}{\addtocontents}{%
-		\addtocontents{loa}{\protect\addvspace{10\p@}}%
-		\addtocontents}{}{}%
-}
-\makeatother
+\renewcommand*{\lstlistlistingname}{Spis listing\'ow}
 
 \begin{document}
 \author{Marcin Wawrzonowski}
@@ -290,6 +275,8 @@ Nr albumu: 180729
 
 \include{ang}
 
+\lstlistoflistings
+
 \listoffigures
 
 \listoftables
@@ -299,7 +286,17 @@ Nr albumu: 180729
 \newpage
 \thispagestyle{empty}
 \begin{textblock}{1}(-2.65,-1.65)
-\includegraphics{figures/oswiadczenie_o_samodzielnosci.pdf}
+\includegraphics{figures/zal1.pdf}
+\end{textblock}
+\newpage
+\thispagestyle{empty}
+\begin{textblock}{1}(-2.65,-1.65)
+	\includegraphics{figures/zal2.pdf}
+\end{textblock}
+\newpage
+\thispagestyle{empty}
+\begin{textblock}{1}(-2.65,-1.65)
+	\includegraphics{figures/zal3.pdf}
 \end{textblock}
 
 \end{document}
