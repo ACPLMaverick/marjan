@@ -37,7 +37,7 @@ void CalcDistConstraint(vec3 mPos, vec3 nPos, float mass, float sLength, float e
 {
 	elCoeff = clamp(elCoeff, 0.0f, 1.0f);
 	vec3 diff = mPos - nPos;
-	float cLength = length(diff);
+	float cLength = max(length(diff), 0.0000001f);
 	vec3 dP = (2.0f * mass) * (cLength - sLength) * (diff / cLength) * elCoeff;
 	constraint.xyz = dP;
 	constraint.w = 1.0f / mass;
@@ -71,90 +71,133 @@ void main()
 	// compute constraints
 	ivec4 fOrder = ivec4(0, 2, 1, 3);
 	float elBias = 0.0004f;
+	int id = 0; 
+	int nID = 0;
+	vec3 nPos = vec3(0.0f); 
+	vec3 nPosLast = vec3(0.0f);
+	vec4 constraint = vec4(0.0f);
+
+	// the manual loop unroll was necessary to prevent GPU crashing (EGL_CONTEXT_LOST) on high number of vertices
+	// might be an issue with Adreno GLSL compiler
+	// one might think two-iteration loops would always be automatically unrolled
 
 	vec3 cPos = vec3(0.0f);
-	for(int i = 0; i < 2; ++i)
-	{
-		int id = fOrder[i];
-		int nID = int(roundEven(Neighbours[id]));
-		vec3 nPos = vec3(InPosBuffer[nID]);
-		vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+		id = fOrder[0];
+		nID = int(roundEven(Neighbours[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
 		// distance constriant. XYZ is position, W is inverse of mass
-		vec4 constraint;
 		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
 		cPos -= constraint.xyz * constraint.w * NeighbourMultipliers[id] * Multipliers.x;
-	}
-	posPredicted += cPos;
-	cPos = vec3(0.0f);
-	for(int i = 2; i < 4; ++i)
-	{
-		int id = fOrder[i];
-		int nID = int(roundEven(Neighbours[id]));
-		vec3 nPos = vec3(InPosBuffer[nID]);
-		vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+
+		id = fOrder[1];
+		nID = int(roundEven(Neighbours[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
 		// distance constriant. XYZ is position, W is inverse of mass
-		vec4 constraint;
 		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
 		cPos -= constraint.xyz * constraint.w * NeighbourMultipliers[id] * Multipliers.x;
-	}
 	posPredicted += cPos;
 
+
 	cPos = vec3(0.0f);
-	for(int i = 0; i < 2; ++i)
-	{
-		int id = fOrder[i];
-		int nID = int(roundEven(NeighboursDiag[id]));
-		vec3 nPos = vec3(InPosBuffer[nID]);
-		vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+		id = fOrder[2];
+		nID = int(roundEven(Neighbours[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
 		// distance constriant. XYZ is position, W is inverse of mass
-		vec4 constraint;
+		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
+		cPos -= constraint.xyz * constraint.w * NeighbourMultipliers[id] * Multipliers.x;
+
+		id = fOrder[3];
+		nID = int(roundEven(Neighbours[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
+		// distance constriant. XYZ is position, W is inverse of mass
+		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
+		cPos -= constraint.xyz * constraint.w * NeighbourMultipliers[id] * Multipliers.x;
+	posPredicted += cPos;
+
+
+
+
+	cPos = vec3(0.0f);
+		id = fOrder[0];
+		nID = int(roundEven(NeighboursDiag[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
+		// distance constriant. XYZ is position, W is inverse of mass
 		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengthsDiag[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
 		cPos -= constraint.xyz * constraint.w * NeighbourDiagMultipliers[id] * Multipliers.x;
-	}
-	posPredicted += cPos;
 
-	cPos = vec3(0.0f);
-	for(int i = 2; i < 4; ++i)
-	{
-		int id = fOrder[i];
-		int nID = int(roundEven(NeighboursDiag[id]));
-		vec3 nPos = vec3(InPosBuffer[nID]);
-		vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+		id = fOrder[1];
+		nID = int(roundEven(NeighboursDiag[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
 		// distance constriant. XYZ is position, W is inverse of mass
-		vec4 constraint;
 		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengthsDiag[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
 		cPos -= constraint.xyz * constraint.w * NeighbourDiagMultipliers[id] * Multipliers.x;
-	}
 	posPredicted += cPos;
 
-	cPos = vec3(0.0f);
-	for(int i = 0; i < 2; ++i)
-	{
-		int id = fOrder[i];
-		int nID = int(roundEven(Neighbours2[id]));
-		vec3 nPos = vec3(InPosBuffer[nID]);
-		vec3 nPosLast = vec3(InPosLastBuffer[nID]);
-		// distance constriant. XYZ is position, W is inverse of mass
-		vec4 constraint;
-		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths2[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
-		cPos -= constraint.xyz * constraint.w * Neighbour2Multipliers[id] * Multipliers.x;
-	}
-	posPredicted += cPos;
 
 	cPos = vec3(0.0f);
-	for(int i = 2; i < 4; ++i)
-	{
-		int id = fOrder[i];
-		int nID = int(roundEven(Neighbours2[id]));
-		vec3 nPos = vec3(InPosBuffer[nID]);
-		vec3 nPosLast = vec3(InPosLastBuffer[nID]);
+		id = fOrder[2];
+		nID = int(roundEven(NeighboursDiag[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
 		// distance constriant. XYZ is position, W is inverse of mass
-		vec4 constraint;
+		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengthsDiag[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
+		cPos -= constraint.xyz * constraint.w * NeighbourDiagMultipliers[id] * Multipliers.x;
+
+		id = fOrder[3];
+		nID = int(roundEven(NeighboursDiag[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
+		// distance constriant. XYZ is position, W is inverse of mass
+		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengthsDiag[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
+		cPos -= constraint.xyz * constraint.w * NeighbourDiagMultipliers[id] * Multipliers.x;
+	posPredicted += cPos;
+
+
+
+
+	cPos = vec3(0.0f);
+		id = fOrder[0];
+		nID = int(roundEven(Neighbours2[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
+		// distance constriant. XYZ is position, W is inverse of mass
 		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths2[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
 		cPos -= constraint.xyz * constraint.w * Neighbour2Multipliers[id] * Multipliers.x;
-	}
+
+		id = fOrder[1];
+		nID = int(roundEven(Neighbours2[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
+		// distance constriant. XYZ is position, W is inverse of mass
+		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths2[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
+		cPos -= constraint.xyz * constraint.w * Neighbour2Multipliers[id] * Multipliers.x;
 	posPredicted += cPos;
-	
+
+
+	cPos = vec3(0.0f);
+		id = fOrder[2];
+		nID = int(roundEven(Neighbours2[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
+		// distance constriant. XYZ is position, W is inverse of mass
+		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths2[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
+		cPos -= constraint.xyz * constraint.w * Neighbour2Multipliers[id] * Multipliers.x;
+
+		id = fOrder[3];
+		nID = int(roundEven(Neighbours2[id]));
+		nPos = vec3(InPosBuffer[nID]);
+		nPosLast = vec3(InPosLastBuffer[nID]);
+		// distance constriant. XYZ is position, W is inverse of mass
+		CalcDistConstraint(posPredicted, nPos, ElMassCoeffs.y, SLengths2[id], ElMassCoeffs.x * elBias, ElMassCoeffs.z * elBias, constraint);
+		cPos -= constraint.xyz * constraint.w * Neighbour2Multipliers[id] * Multipliers.x;
+	posPredicted += cPos;
+
 	// apply constraints
 	vec3 finalPos = posPredicted;
 
