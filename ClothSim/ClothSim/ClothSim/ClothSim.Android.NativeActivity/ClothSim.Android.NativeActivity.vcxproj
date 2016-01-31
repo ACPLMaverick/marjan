@@ -272,7 +272,6 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="RotateMe.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneSim.h" />
     <ClInclude Include="SceneTest.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SimObject.h" />
@@ -318,7 +317,6 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="RotateMe.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneSim.cpp" />
     <ClCompile Include="SceneTest.cpp" />
     <ClCompile Include="SimObject.cpp" />
     <ClCompile Include="Singleton.cpp" />

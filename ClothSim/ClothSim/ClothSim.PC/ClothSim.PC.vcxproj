@@ -362,7 +362,6 @@
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\ResourceManager.h" />
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\RotateMe.h" />
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\Scene.h" />
-    <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\SceneSim.h" />
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\SceneTest.h" />
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\Settings.h" />
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\SimObject.h" />
@@ -407,7 +406,6 @@
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\ResourceManager.cpp" />
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\RotateMe.cpp" />
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\Scene.cpp" />
-    <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\SceneSim.cpp" />
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\SceneTest.cpp" />
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\SimObject.cpp" />
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\Singleton.cpp" />

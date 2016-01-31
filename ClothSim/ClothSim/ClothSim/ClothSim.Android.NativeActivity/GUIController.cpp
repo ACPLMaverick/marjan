@@ -161,11 +161,11 @@ unsigned int GUIController::Update()
 			camCurrentPos = camCurrentPos * horRotation * vertRotation;
 			glm::vec3 newPos = glm::vec3(camCurrentPos.x, camCurrentPos.y, camCurrentPos.z);
 
-			glm::vec3 dir = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget() - newPos;
-			glm::vec3 dirYZero = glm::vec3(dir.x, 0.0f, dir.z);
+			glm::vec3 dir = glm::normalize(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget() - newPos);
+			glm::vec3 dirYZero = glm::vec3(0.0f, -1.0f, 0.0f);
 			float dot = glm::dot(dir, dirYZero);
 
-			if (dot > 0.01f)
+			if (dot < CSSET_CAMERA_ROTATE_BARRIER && newPos.y > CSSET_CAMERA_ROTATE_MIN_Y)
 			{
 				System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&newPos);
 			}
@@ -193,7 +193,6 @@ unsigned int GUIController::Update()
 		//////////////////////////
 
 		// MOVING CAMERA ON XZ PLANE
-
 		if (InputManager::GetInstance()->GetDoubleTouch() && InputHandler::GetInstance()->GetMove())
 		{
 			glm::vec2 mVec;
@@ -201,8 +200,34 @@ unsigned int GUIController::Update()
 
 			if (mVec.x != 0.0f || mVec.y != 0.0f)
 			{
+				glm::vec4 cTarget = glm::vec4(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget(), 1.0f);
+				glm::vec4 cPos = glm::vec4(*System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition(), 1.0f);
+				glm::mat4 viewMatrix = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetViewMatrix();
+				glm::mat4 projMatrix = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetProjMatrix();
+				cTarget = projMatrix * (viewMatrix * cTarget);
+				cPos = projMatrix * (viewMatrix * cPos);
+				cTarget.x += -mVec.x * CSSET_CAMERA_MOVE_SPEED;
+				cTarget.y += mVec.y * CSSET_CAMERA_MOVE_SPEED;
+				cPos.x += -mVec.x * CSSET_CAMERA_MOVE_SPEED;
+				cPos.y += mVec.y * CSSET_CAMERA_MOVE_SPEED;
+				cTarget = glm::inverse(viewMatrix) * (glm::inverse(projMatrix) * cTarget);
+				cPos = glm::inverse(viewMatrix) * (glm::inverse(projMatrix) * cPos);
+
+				if (glm::abs(cPos.x) <= CSSET_CAMERA_POSITION_MAX && 
+					glm::abs(cPos.y) <= CSSET_CAMERA_POSITION_MAX &&
+					glm::abs(cPos.z) <= CSSET_CAMERA_POSITION_MAX)
+				{
+					glm::vec3 fTarget = glm::vec3(cTarget);
+					glm::vec3 fPos = glm::vec3(cPos);
+
+					System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&fPos);
+					System::GetInstance()->GetCurrentScene()->GetCamera()->SetTarget(&fTarget);
+				}
+
+				/*
 				glm::vec3 cTarget = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetTarget();
 				glm::vec3 cPos = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetPosition();
+
 				glm::vec3 cDir = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetDirection();
 				glm::vec3 cRght = *System::GetInstance()->GetCurrentScene()->GetCamera()->GetRight();
 				cDir.y = 0.0f;
@@ -218,6 +243,7 @@ unsigned int GUIController::Update()
 					System::GetInstance()->GetCurrentScene()->GetCamera()->SetPosition(&cPos);
 					System::GetInstance()->GetCurrentScene()->GetCamera()->SetTarget(&cTarget);
 				}
+				*/
 			}
 		}
 	}

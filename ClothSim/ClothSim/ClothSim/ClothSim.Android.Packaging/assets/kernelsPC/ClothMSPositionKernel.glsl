@@ -10,8 +10,11 @@ layout(location = 5) in vec4 Neighbours2;
 layout(location = 6) in vec4 NeighbourMultipliers;	// neighbour multipliers (i.e. do I have to take it into consideration)
 layout(location = 7) in vec4 NeighbourDiagMultipliers;
 layout(location = 8) in vec4 Neighbour2Multipliers;
-layout(location = 9) in vec4 ElMassCoeffs;			// x - elasticity, y - mass, z - el damp coeff, w - air damp coeff
-layout(location = 10) in vec4 Multipliers;			// x - lock muliplier, y - collision multiplier
+layout(location = 9) in vec4 SLengths;
+layout(location = 10) in vec4 SLengthsDiag;
+layout(location = 11) in vec4 SLengths2;
+layout(location = 12) in vec4 ElMassCoeffs;			// x - elasticity, y - mass, z - el damp coeff, w - air damp coeff
+layout(location = 13) in vec4 Multipliers;			// x - lock muliplier, y - collision multiplier
 
 uniform samplerBuffer InPos;
 uniform samplerBuffer InPosLast;
@@ -21,7 +24,6 @@ uniform int EdgesWidthAll;
 uniform int EdgesLengthAll;
 uniform float DeltaTime;
 uniform float Gravity;
-uniform vec4 SpringLengths;
 
 out vec4 OutPos;
 out vec4 OutPosLast;
@@ -44,7 +46,6 @@ vec3 CalcSpringForce(vec3 mPos, vec3 mPosLast, vec3 nPos, vec3 nPosLast, float s
 	vec3 damping = n * min(sL, damp);
 
 	ret = (springiness + damping);
-
 	return ret;
 }
 
@@ -55,15 +56,6 @@ void main()
 	vec3 mPosLast = vec3(PosLast);
 	vec3 mVel = (mPos - mPosLast) / DeltaTime;
 	vec3 mForce = vec3(0.0f, 0.0f, 0.0f);
-	float sls1[4] = float[4](
-		SpringLengths.y, SpringLengths.x, SpringLengths.y, SpringLengths.x
-		);
-	float sls2[4] = float[4](
-		SpringLengths.z, SpringLengths.z, SpringLengths.z, SpringLengths.z
-		);
-	float sls3[4] = float[4](
-		SpringLengths.y * SpringLengths.w, SpringLengths.x * SpringLengths.w, SpringLengths.y * SpringLengths.w, SpringLengths.x * SpringLengths.w
-		);
 
 	// calculate elasticity force for each neighbouring vertices
 	for(int i = 0; i < 4; ++i)
@@ -72,17 +64,17 @@ void main()
 		vec3 nPos = vec3(texelFetchBuffer(InPos, nID));
 		vec3 nPosLast = vec3(texelFetchBuffer(InPosLast, nID));
 		
-		vec3 force = CalcSpringForce(mPos, mPosLast, nPos, nPosLast, sls1[i], ElMassCoeffs.x, ElMassCoeffs.z);
+		vec3 force = CalcSpringForce(mPos, mPosLast, nPos, nPosLast, SLengths[i], ElMassCoeffs.x, ElMassCoeffs.z);
 		mForce += force * NeighbourMultipliers[i];
 	}
-	
+
 	for(int i = 0; i < 4; ++i)
 	{
 		int nID = int(roundEven(NeighboursDiag[i]));
 		vec3 nPos = vec3(texelFetchBuffer(InPos, nID));
 		vec3 nPosLast = vec3(texelFetchBuffer(InPosLast, nID));
 		
-		vec3 force = CalcSpringForce(mPos, mPosLast, nPos, nPosLast, sls2[i], ElMassCoeffs.x, ElMassCoeffs.z);
+		vec3 force = CalcSpringForce(mPos, mPosLast, nPos, nPosLast, SLengthsDiag[i], ElMassCoeffs.x, ElMassCoeffs.z);
 		mForce += force * NeighbourDiagMultipliers[i];
 	}
 	
@@ -92,10 +84,10 @@ void main()
 		vec3 nPos = vec3(texelFetchBuffer(InPos, nID));
 		vec3 nPosLast = vec3(texelFetchBuffer(InPosLast, nID));
 		
-		vec3 force = CalcSpringForce(mPos, mPosLast, nPos, nPosLast, sls3[i], ElMassCoeffs.x, ElMassCoeffs.z);
+		vec3 force = CalcSpringForce(mPos, mPosLast, nPos, nPosLast, SLengths2[i], ElMassCoeffs.x, ElMassCoeffs.z);
 		mForce += force * Neighbour2Multipliers[i];
 	}
-	
+
 	// calculate gravity force
 	float grav = Gravity;
 	mForce = mForce + (ElMassCoeffs.y * vec3(0.0f, -grav, 0.0f));

@@ -73,14 +73,10 @@ unsigned int ClothSimulator::Initialize()
 	m_simData.b_sLengths2 = new glm::vec4[m_simData.m_vertexCount];
 
 	glm::vec3 baseLength = glm::vec3(
-		glm::length(m_vd[0]->data->positionBuffer[0] - m_vd[0]->data->positionBuffer[m_simData.m_edgesWidthAll]),
+		glm::length(m_vd[0]->data->positionBuffer[0] - m_vd[0]->data->positionBuffer[m_simData.m_edgesLengthAll]),
 		0.0f,
 		glm::length(m_vd[0]->data->positionBuffer[0] - m_vd[0]->data->positionBuffer[1])
 		);
-	m_simData.c_springLengths.x = baseLength.x;	// two different spring lengths, horizontal and vertical
-	m_simData.c_springLengths.y = baseLength.z;
-	m_simData.c_springLengths.z = glm::sqrt(baseLength.x * baseLength.x + baseLength.z * baseLength.z);	// diagonal length
-	m_simData.c_springLengths.w = 2.0f;	// multiplier for lenghts of neighbours2
 
 	m_cellSize = glm::max(baseLength.x, baseLength.z) * 1.5f;
 
@@ -106,6 +102,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// upper
 		int id = (i - 1) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighbours[i][0] = (float)id;
 		m_simData.b_sLengths[i][0] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i % m_simData.m_edgesLengthAll)
@@ -119,6 +117,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// left
 		id = (i - m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighbours[i][1] = id;
 		m_simData.b_sLengths[i][1] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i >= m_simData.m_edgesLengthAll)
@@ -132,6 +132,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// lower
 		id = (i + 1) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighbours[i][2] = id;
 		m_simData.b_sLengths[i][2] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1))
@@ -145,6 +147,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// right
 		id = (i + m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighbours[i][3] = id;
 		m_simData.b_sLengths[i][3] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll))
@@ -158,6 +162,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// tl
 		id = (i - m_simData.m_edgesLengthAll - 1) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighboursDiag[i][0] = id;
 		m_simData.b_sLengthsDiag[i][0] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i >= m_simData.m_edgesLengthAll && i % m_simData.m_edgesLengthAll)
@@ -171,6 +177,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// bl
 		id = (i - m_simData.m_edgesLengthAll + 1) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighboursDiag[i][1] = id;
 		m_simData.b_sLengthsDiag[i][1] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i >= m_simData.m_edgesLengthAll && (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1)))
@@ -184,6 +192,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// br
 		id = (i + m_simData.m_edgesLengthAll + 1) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighboursDiag[i][2] = id;
 		m_simData.b_sLengthsDiag[i][2] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) && (i % m_simData.m_edgesLengthAll != (m_simData.m_edgesLengthAll - 1)))
@@ -197,6 +207,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// tr
 		id = (i + m_simData.m_edgesLengthAll - 1) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighboursDiag[i][3] = id;
 		m_simData.b_sLengthsDiag[i][3] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i < (m_simData.m_vertexCount - m_simData.m_edgesLengthAll) && i % m_simData.m_edgesLengthAll)
@@ -210,6 +222,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// upper2
 		id = (i - 2) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighbours2[i][0] = id;
 		m_simData.b_sLengths2[i][0] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i % m_simData.m_edgesLengthAll > 1)
@@ -223,6 +237,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// left2
 		id = (i - 2 * m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighbours2[i][1] = id;
 		m_simData.b_sLengths2[i][1] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i >= 2 * m_simData.m_edgesLengthAll)
@@ -236,6 +252,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// lower2
 		id = (i + 2) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighbours2[i][2] = id;
 		m_simData.b_sLengths2[i][2] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i % m_simData.m_edgesLengthAll < (m_simData.m_edgesLengthAll - 2))
@@ -249,6 +267,8 @@ unsigned int ClothSimulator::Initialize()
 
 		// right2
 		id = (i + 2 * m_simData.m_edgesLengthAll) % m_simData.m_vertexCount;
+		if (id < 0 || id >= m_simData.m_vertexCount)
+			id = ((i + 1) % m_simData.m_vertexCount);
 		m_simData.b_neighbours2[i][3] = id;
 		m_simData.b_sLengths2[i][3] = glm::length(m_vd[0]->data->positionBuffer[i] - m_vd[0]->data->positionBuffer[id]);
 		if (i < (m_simData.m_vertexCount -  2 * m_simData.m_edgesLengthAll))
@@ -377,14 +397,41 @@ unsigned int ClothSimulator::Initialize()
 		glEnableVertexAttribArray(8);
 		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
+		glGenBuffers(1, &m_simData.i_sLengths);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_sLengths);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_sLengths[0]),
+			m_simData.b_sLengths,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(9);
+		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_sLengthsDiag);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_sLengthsDiag);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_sLengthsDiag[0]),
+			m_simData.b_sLengthsDiag,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(10);
+		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &m_simData.i_sLengths2);
+		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_sLengths2);
+		glBufferData(GL_ARRAY_BUFFER,
+			m_simData.m_vertexCount * sizeof(m_simData.b_sLengths2[0]),
+			m_simData.b_sLengths2,
+			GL_STATIC_DRAW);
+		glEnableVertexAttribArray(11);
+		glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
 		glGenBuffers(1, &m_simData.i_elMassCoeffs);
 		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_elMassCoeffs);
 		glBufferData(GL_ARRAY_BUFFER,
 			m_simData.m_vertexCount * sizeof(m_simData.b_elMassCoeffs[0]),
 			m_simData.b_elMassCoeffs,
 			GL_STATIC_DRAW);
-		glEnableVertexAttribArray(9);
-		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(12);
+		glVertexAttribPointer(12, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 		glGenBuffers(1, &m_simData.i_multipliers);
 		glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_multipliers);
@@ -392,8 +439,8 @@ unsigned int ClothSimulator::Initialize()
 			m_simData.m_vertexCount * sizeof(m_simData.b_multipliers[0]),
 			m_simData.b_multipliers,
 			GL_STATIC_DRAW);
-		glEnableVertexAttribArray(10);
-		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(13);
+		glVertexAttribPointer(13, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 		// Other kernel loading and feedbacks initialization goes here
 		m_collisionsKernel = ResourceManager::GetInstance()->LoadKernel(&KERNEL_COL_NAME);
@@ -564,8 +611,10 @@ unsigned int ClothSimulator::Shutdown()
 	// Sim-specific shutdown
 	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
-		err = ShutdownSimMSGPU();
-		err = ShutdownSimPBGPU();
+		if(m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU)
+			err = ShutdownSimMSGPU();
+		else
+			err = ShutdownSimPBGPU();
 
 #ifndef PLATFORM_WINDOWS
 		glDeleteBuffers(1, &m_vboColBAAID);
@@ -586,6 +635,9 @@ unsigned int ClothSimulator::Shutdown()
 		glDeleteBuffers(1, &m_simData.i_neighbourMultipliers);
 		glDeleteBuffers(1, &m_simData.i_neighbourDiagMultipliers);
 		glDeleteBuffers(1, &m_simData.i_neighbour2Multipliers);
+		glDeleteBuffers(1, &m_simData.i_sLengths);
+		glDeleteBuffers(1, &m_simData.i_sLengthsDiag);
+		glDeleteBuffers(1, &m_simData.i_sLengths2);
 		glDeleteBuffers(1, &m_simData.i_elMassCoeffs);
 		glDeleteBuffers(1, &m_simData.i_multipliers);
 
@@ -992,12 +1044,21 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_neighbour2Multipliers);
 	glEnableVertexAttribArray(8);
 	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_elMassCoeffs);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_sLengths);
 	glEnableVertexAttribArray(9);
 	glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_multipliers);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_sLengthsDiag);
 	glEnableVertexAttribArray(10);
 	glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_sLengths2);
+	glEnableVertexAttribArray(11);
+	glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_elMassCoeffs);
+	glEnableVertexAttribArray(12);
+	glVertexAttribPointer(12, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_simData.i_multipliers);
+	glEnableVertexAttribArray(13);
+	glVertexAttribPointer(13, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	// execute simulation kernel
 	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU)
@@ -1031,12 +1092,11 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 		m_dLast = dNew;
 	}
 
-
 	// execute collision computation kernel
 
 	glUseProgram(m_collisionsKernel->id);
 
-	glDisableVertexAttribArray(0);
+	//glDisableVertexAttribArray(0);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texColPosID[m_readID], 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
@@ -1088,7 +1148,8 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glUniform1i(loc, 2);
 #endif
 
-
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -1110,8 +1171,8 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 
 	glDisable(GL_RASTERIZER_DISCARD);
 
-	//glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosLastID[m_writeID]);
-	//glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 1, GL_MAP_READ_BIT);
+	//glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[m_writeID]);
+	//ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(glm::vec4), GL_MAP_READ_BIT);
 	//LOGW("%f %f %f %f\n", ptr->x, ptr->y, ptr->z, ptr->w);
 	//glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
 
@@ -1120,12 +1181,11 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
 
 
-
 	// execute normal computation kernel
 
 	glUseProgram(m_normalsKernel->id);
 
-	glDisableVertexAttribArray(0);
+	//glDisableVertexAttribArray(0);
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texNrmPosID[m_readID], 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[m_readID]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
@@ -1182,9 +1242,15 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glDisableVertexAttribArray(5);
 	glDisableVertexAttribArray(6);
 	glDisableVertexAttribArray(7);
+	glDisableVertexAttribArray(8);
+	glDisableVertexAttribArray(9);
+	glDisableVertexAttribArray(10);
+	glDisableVertexAttribArray(11);
+	glDisableVertexAttribArray(12);
+	glDisableVertexAttribArray(13);
 
 	SwapRWIds();
-
+	
 	//m_meshPlane->SwapDataPtrs();
 
 	glUseProgram(cShaderID->id);
@@ -1235,7 +1301,6 @@ inline unsigned int ClothSimulator::InitializeSimMSGPU()
 	m_msPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_msPosKernelID->id, "EdgesLengthAll"));
 	m_msPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_msPosKernelID->id, "DeltaTime"));
 	m_msPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_msPosKernelID->id, "Gravity"));
-	m_msPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_msPosKernelID->id, "SpringLengths"));
 
 	return err;
 }
@@ -1269,11 +1334,6 @@ inline unsigned int ClothSimulator::UpdateSimMSGPU(glm::vec3* gravity, float fix
 	glUniform1i(m_msPosKernelID->uniformIDs->at(2), m_simData.m_edgesLengthAll);
 	glUniform1f(m_msPosKernelID->uniformIDs->at(3), fixedDelta);
 	glUniform1f(m_msPosKernelID->uniformIDs->at(4), -gravity->y);
-	glUniform4f(m_msPosKernelID->uniformIDs->at(5),																// !!!!!!!!!!!!!!!
-		m_simData.c_springLengths.x, 
-		m_simData.c_springLengths.y, 
-		m_simData.c_springLengths.z,
-		m_simData.c_springLengths.w);
 
 #ifndef PLATFORM_WINDOWS
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], m_vboPosID[m_readID]);
@@ -1297,7 +1357,7 @@ inline unsigned int ClothSimulator::UpdateSimMSGPU(glm::vec3* gravity, float fix
 	glDisable(GL_RASTERIZER_DISCARD);
 
 	//glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m_vboPosID[m_writeID]);
-	//glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 1, GL_MAP_READ_BIT) + 1;
+	//glm::vec4* ptr = (glm::vec4*)glMapBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(glm::vec4), GL_MAP_READ_BIT);
 	//LOGW("%f %f %f %f\n", ptr->x, ptr->y, ptr->z, ptr->w);
 	//glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
 
@@ -1351,7 +1411,6 @@ inline unsigned int ClothSimulator::InitializeSimPBGPU()
 	m_pbPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_pbPosKernelID->id, "EdgesLengthAll"));
 	m_pbPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_pbPosKernelID->id, "DeltaTime"));
 	m_pbPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_pbPosKernelID->id, "Gravity"));
-	m_pbPosKernelID->uniformIDs->push_back(glGetUniformLocation(m_pbPosKernelID->id, "SpringLengths"));
 
 	return err;
 }
@@ -1384,11 +1443,6 @@ inline unsigned int ClothSimulator::UpdateSimPBGPU(glm::vec3* gravity, float fix
 	glUniform1i(m_pbPosKernelID->uniformIDs->at(2), m_simData.m_edgesLengthAll);
 	glUniform1f(m_pbPosKernelID->uniformIDs->at(3), fixedDelta);
 	glUniform1f(m_pbPosKernelID->uniformIDs->at(4), -gravity->y);
-	glUniform4f(m_pbPosKernelID->uniformIDs->at(5),														// !!!!!!!!!!
-		m_simData.c_springLengths.x,
-		m_simData.c_springLengths.y,
-		m_simData.c_springLengths.z,
-		m_simData.c_springLengths.w);
 
 #ifndef PLATFORM_WINDOWS
 	glBindBufferBase(GL_UNIFORM_BUFFER, m_texPosID[m_readID], m_vboPosID[m_readID]);

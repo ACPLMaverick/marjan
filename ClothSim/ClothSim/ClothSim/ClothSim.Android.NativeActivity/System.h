@@ -17,7 +17,6 @@
 #include "PhysicsManager.h"
 #include "Scene.h"
 #include "SceneTest.h"
-#include "SceneSim.h"
 #include "Timer.h"
 
 class Renderer;

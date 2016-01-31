@@ -71,7 +71,6 @@ struct SimData
 	glm::vec4* b_sLengthsDiag;
 	glm::vec4* b_sLengths2;
 
-	glm::vec4 c_springLengths;
 	glm::vec4 c_touchVector;
 
 	GLuint i_neighbours;
@@ -80,6 +79,9 @@ struct SimData
 	GLuint i_neighbourMultipliers;
 	GLuint i_neighbourDiagMultipliers;
 	GLuint i_neighbour2Multipliers;
+	GLuint i_sLengths;
+	GLuint i_sLengthsDiag;
+	GLuint i_sLengths2;
 	GLuint i_position;
 	GLuint i_positionLast;
 	GLuint i_elMassCoeffs;
@@ -108,6 +110,9 @@ struct SimData
 		i_positionLast = 0;
 		i_elMassCoeffs = 0;
 		i_multipliers = 0;
+		i_sLengths = 0;
+		i_sLengthsDiag = 0;
+		i_sLengths2 = 0;
 		c_touchVector = glm::vec4(0.0f);
 	}
 

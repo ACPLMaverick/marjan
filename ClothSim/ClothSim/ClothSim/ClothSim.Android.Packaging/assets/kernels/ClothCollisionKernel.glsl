@@ -4,7 +4,7 @@ layout(location = 0) in vec4 Pos;					//current position
 layout(location = 1) in vec4 PosLast;				//previous position
 layout(location = 3) in vec4 Neighbours;			//neighbours id
 layout(location = 6) in vec4 NeighbourMultipliers;	// neighbour multipliers (i.e. do I have to take it into consideration)
-layout(location = 10) in vec4 Multipliers;			// x - lock muliplier, y - collision multiplier
+layout(location = 13) in vec4 Multipliers;			// x - lock muliplier, y - collision multiplier
 
 uniform InPos
 {
@@ -132,6 +132,7 @@ void main()
 	vec4 finalPos = vec4(Pos.x + totalOffset.x * Multipliers.x, Pos.y + totalOffset.y * Multipliers.x, Pos.z + totalOffset.z * Multipliers.x, Pos.w);
 	
 	// apply touch vector
+
 	vec4 mPosScreen = ProjMatrix * (ViewMatrix * (WorldMatrix * finalPos));
 	vec4 mPosScreenNorm = mPosScreen / mPosScreen.w;
 	vec4 fPosScreen = vec4(TouchVector.x, TouchVector.y, 0.0f, mPosScreenNorm.w);

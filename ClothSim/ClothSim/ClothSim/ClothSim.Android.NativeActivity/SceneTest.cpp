@@ -61,7 +61,7 @@ unsigned int SceneTest::Initialize()
 	triangle->SetTextureID(ResourceManager::GetInstance()->GetTextureWhite());
 	ground->AddMesh(triangle);
 
-	tPosMin = glm::vec3(-0.5f, -1.0f, -0.5f);
+	tPosMin = glm::vec3(-0.5f, -100000.0f, -0.5f);
 	tPosMax = glm::vec3(0.5f, 0.001f, 0.5f);
 	BoxAACollider* gCollider = PhysicsManager::GetInstance()->CreateBoxAACollider(ground, &tPosMin, &tPosMax);
 	ground->AddCollider(gCollider);

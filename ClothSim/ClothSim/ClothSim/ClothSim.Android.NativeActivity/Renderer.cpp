@@ -243,6 +243,11 @@ unsigned int Renderer::Run()
 #else
 
 	EGLBoolean res = eglSwapBuffers(engine->display, engine->surface);
+	if (res != EGL_TRUE)
+	{
+		LOGW("eglSwapBuffers error occured! Shutting down.");
+		System::GetInstance()->Stop();
+	}
 
 #endif // PLATFORM_WINDOWS
 

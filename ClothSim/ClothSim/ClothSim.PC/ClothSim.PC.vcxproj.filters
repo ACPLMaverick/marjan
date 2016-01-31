@@ -123,9 +123,6 @@
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\SceneSim.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\SceneTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -252,9 +249,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\SceneSim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\SceneTest.cpp">

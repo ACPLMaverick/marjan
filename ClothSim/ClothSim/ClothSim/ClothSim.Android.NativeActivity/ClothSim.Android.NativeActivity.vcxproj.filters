@@ -91,9 +91,6 @@
     <ClInclude Include="Scene.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="SceneSim.h">
-      <Filter>Core\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="SceneTest.h">
       <Filter>Core\Scenes</Filter>
     </ClInclude>
@@ -224,9 +221,6 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneSim.cpp">
-      <Filter>Core\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="SceneTest.cpp">
       <Filter>Core\Scenes</Filter>

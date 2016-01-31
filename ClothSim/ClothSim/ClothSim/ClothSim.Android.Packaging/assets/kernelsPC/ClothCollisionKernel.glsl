@@ -5,7 +5,7 @@ layout(location = 0) in vec4 Pos;					//current position
 layout(location = 1) in vec4 PosLast;				//previous position
 layout(location = 3) in vec4 Neighbours;			//neighbours id
 layout(location = 6) in vec4 NeighbourMultipliers;	// neighbour multipliers (i.e. do I have to take it into consideration)
-layout(location = 10) in vec4 Multipliers;			// x - lock muliplier, y - collision multiplier
+layout(location = 13) in vec4 Multipliers;			// x - lock muliplier, y - collision multiplier
 
 uniform samplerBuffer InPos;
 uniform samplerBuffer InBaaCols;
