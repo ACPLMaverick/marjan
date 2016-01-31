@@ -1,4 +1,5 @@
 #include "MeshGLPlane.h"
+#include <random>
 
 MeshGLPlane::MeshGLPlane(SimObject* obj) : MeshGL(obj)
 {
@@ -59,8 +60,8 @@ MeshGLPlane::~MeshGLPlane()
 void MeshGLPlane::GenerateVertexData()
 {
 	unsigned int vertCount = (m_edgesWidth + 2) * (m_edgesLength + 2);
-	unsigned int faceCount = (m_edgesWidth + 1) * (m_edgesLength + 1);
-	CreateVertexDataBuffers(vertCount, faceCount * 6, GL_DYNAMIC_DRAW);
+	unsigned int faceCount = (m_edgesWidth + 1) * (m_edgesLength + 1) * 6;
+	CreateVertexDataBuffers(vertCount, faceCount, GL_DYNAMIC_DRAW);
 
 	float additionW = m_width / (float)(m_edgesWidth + 1);
 	float additionL = m_length / (float)(m_edgesLength + 1);
@@ -94,6 +95,54 @@ void MeshGLPlane::GenerateVertexData()
 		m_vertexData->data->indexBuffer[iInd + 5] = i;
 
 		iInd += 6;
+	}
+}
+
+void MeshGLPlane::GenerateBarycentricCoords()
+{
+	glm::vec4 bar0 = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 bar1 = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+	glm::vec4 bar2 = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+
+	srand(Timer::GetInstance()->GetCurrentTimeMS() * 1000.0);
+	glm::vec4 bara[3] = { bar0, bar1, bar2 };
+	glm::vec4 barr[3] = { bara[rand() % 3], bara[rand() % 3], bara[rand() % 3] };
+	glm::vec4 bart;
+
+	if (m_edgesLength % 3 == 2)
+	{
+		for (int i = 0; i < m_vertexData->data->indexCount; i += 3)
+		{
+			m_vertexData->data->barycentricBuffer[i] = bar0;
+			m_vertexData->data->barycentricBuffer[i + 1] = bar1;
+			m_vertexData->data->barycentricBuffer[i + 2] = bar2;
+		}
+	}
+	else if (m_edgesLength % 3 == 1)
+	{
+		for (int i = 0; i < m_vertexData->data->indexCount; i += 6)
+		{
+			m_vertexData->data->barycentricBuffer[i] = bara[rand() % 3];
+			m_vertexData->data->barycentricBuffer[i + 1] = bara[rand() % 3];
+			m_vertexData->data->barycentricBuffer[i + 2] = bara[rand() % 3];
+			m_vertexData->data->barycentricBuffer[i + 3] = bara[rand() % 3];
+			m_vertexData->data->barycentricBuffer[i + 4] = bara[rand() % 3];
+			m_vertexData->data->barycentricBuffer[i + 5] = bara[rand() % 3];
+		}
+
+		//for (int i = 0; i < m_vertexData->data->indexCount; ++i)
+		//{
+		//	LOGI("%d: %f %f %f \n", i, m_vertexData->data->barycentricBuffer[i].x, m_vertexData->data->barycentricBuffer[i].y, m_vertexData->data->barycentricBuffer[i].z);
+		//}
+	}
+	else
+	{
+		for (int i = 0; i < m_vertexData->data->indexCount; i += 3)
+		{
+			m_vertexData->data->barycentricBuffer[i] = bar2;
+			m_vertexData->data->barycentricBuffer[i + 1] = bar0;
+			m_vertexData->data->barycentricBuffer[i + 2] = bar1;
+		}
 	}
 }
 

@@ -18,6 +18,7 @@ protected:
 	VertexData* m_vertexDataDual[2];
 
 	virtual void GenerateVertexData();
+	virtual void GenerateBarycentricCoords();
 public:
 	MeshGLPlane(SimObject*);
 	MeshGLPlane(SimObject*, float, float);

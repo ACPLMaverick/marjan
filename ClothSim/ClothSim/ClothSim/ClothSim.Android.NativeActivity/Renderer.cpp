@@ -113,6 +113,7 @@ unsigned int Renderer::Initialize()
 
 	m_basicShader = ResourceManager::GetInstance()->LoadShader(&SN_BASIC);
 	m_wireframeShader = ResourceManager::GetInstance()->LoadShader(&SN_WIREFRAME);
+	m_basicWireframeShader = ResourceManager::GetInstance()->LoadShader(&SN_BASICWIREFRAME);
 	m_fontShader = ResourceManager::GetInstance()->LoadShader(&SN_FONT);
 	m_shaderID = m_basicShader;
 
@@ -224,7 +225,7 @@ unsigned int Renderer::Run()
 
 	else if (m_mode == BASIC_WIREFRAME) // Drawing wireframe with fill (no specular)
 	{
-		m_shaderID = m_basicShader;	////!!!!!!!
+		m_shaderID = m_basicWireframeShader;
 		glUseProgram(m_shaderID->id);
 	}
 

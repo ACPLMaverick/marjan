@@ -20,6 +20,7 @@ enum DrawMode { BASIC, WIREFRAME, BASIC_WIREFRAME };
 #ifndef PLATFORM_WINDOWS
 const string SN_BASIC = "Basic";
 const string SN_WIREFRAME = "Wireframe";
+const string SN_BASICWIREFRAME = "BasicWireframe";
 const string SN_FONT = "Font";
 #endif
 
@@ -60,6 +61,7 @@ protected:
 #ifdef PLATFORM_WINDOWS
 	const string SN_BASIC = "Basic";
 	const string SN_WIREFRAME = "Wireframe";
+	const string SN_BASICWIREFRAME = "BasicWireframe";
 	const string SN_FONT = "Font";
 #endif
 
@@ -70,6 +72,7 @@ protected:
 
 	ShaderID* m_basicShader;
 	ShaderID* m_wireframeShader;
+	ShaderID* m_basicWireframeShader;
 	ShaderID* m_fontShader;
 
 #ifdef PLATFORM_WINDOWS

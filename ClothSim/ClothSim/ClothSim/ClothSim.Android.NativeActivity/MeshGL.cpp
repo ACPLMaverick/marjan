@@ -334,10 +334,14 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 
 void MeshGL::GenerateBarycentricCoords()
 {
+	glm::vec4 bar0 = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 bar1 = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+	glm::vec4 bar2 = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+
 	for (int i = 0; i < m_vertexData->data->indexCount; i += 3)
 	{
-		m_vertexData->data->barycentricBuffer[i] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-		m_vertexData->data->barycentricBuffer[i + 1] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-		m_vertexData->data->barycentricBuffer[i + 2] = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+		m_vertexData->data->barycentricBuffer[i] = bar0;
+		m_vertexData->data->barycentricBuffer[i + 1] = bar1;
+		m_vertexData->data->barycentricBuffer[i + 2] = bar2;
 	}
 }

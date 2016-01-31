@@ -118,7 +118,7 @@ protected:
 
 	virtual void GenerateVertexData() = 0;
 	void CreateVertexDataBuffers(unsigned int, unsigned int, GLenum);
-	void GenerateBarycentricCoords();
+	virtual void GenerateBarycentricCoords();
 public:
 	MeshGL(SimObject*);
 	MeshGL(const MeshGL*);

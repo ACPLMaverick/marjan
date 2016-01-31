@@ -82,7 +82,7 @@ unsigned int SceneTest::Initialize()
 	testObjTransform->SetScale(&tScl);
 	testObj->SetTransform(testObjTransform);
 	
-	MeshGLSphere* sph = new MeshGLSphere(testObj, 2.0f, 32, 32, &tCol);
+	MeshGLSphere* sph = new MeshGLSphere(testObj, 2.0f, 16, 16, &tCol);
 	sph->Initialize();
 	sph->SetGloss(20.0f);
 	sph->SetSpecular(0.6f);

@@ -53,6 +53,11 @@ void MeshGLSphere::GenerateVertexData()
 	}
 
 	i = 0;
+	for (int i = 0; i < indexCount; ++i)
+	{
+		m_vertexData->data->indexBuffer[i] = 0;
+	}
+
 	for (int r = 0; r < m_rings - 1; ++r)
 	{
 		for (int s = 0; s < m_sectors - 1; ++s, i+=6)
