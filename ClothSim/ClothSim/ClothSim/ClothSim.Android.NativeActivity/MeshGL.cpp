@@ -52,7 +52,7 @@ unsigned int MeshGL::Initialize()
 
 	glGenBuffers(1, &m_vertexData->ids->barycentricBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->barycentricBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->barycentricBuffer[0]) * m_vertexData->data->indexCount,
+	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->barycentricBuffer[0]) * m_vertexData->data->vertexCount,
 		m_vertexData->data->barycentricBuffer, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &m_vertexData->ids->indexBuffer);
@@ -283,7 +283,7 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 	m_vertexData->data->uvBuffer = new glm::vec2[m_vertexData->data->vertexCount];
 	m_vertexData->data->normalBuffer = new glm::vec4[m_vertexData->data->vertexCount];
 	m_vertexData->data->colorBuffer = new glm::vec4[m_vertexData->data->vertexCount];
-	m_vertexData->data->barycentricBuffer = new glm::vec4[m_vertexData->data->indexCount];
+	m_vertexData->data->barycentricBuffer = new glm::vec4[m_vertexData->data->vertexCount];
 
 	if (ifPos)
 	{
@@ -327,7 +327,7 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 
 		glGenBuffers(1, &m_vertexData->ids->barycentricBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->barycentricBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->barycentricBuffer[0]) * m_vertexData->data->indexCount,
+		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->barycentricBuffer[0]) * m_vertexData->data->vertexCount,
 			m_vertexData->data->barycentricBuffer, target);
 	}
 }
@@ -337,11 +337,10 @@ void MeshGL::GenerateBarycentricCoords()
 	glm::vec4 bar0 = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	glm::vec4 bar1 = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 	glm::vec4 bar2 = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+	glm::vec4 bara[3] = { bar0, bar1, bar2 };
 
-	for (int i = 0; i < m_vertexData->data->indexCount; i += 3)
+	for (int i = 0; i < m_vertexData->data->vertexCount; ++i)
 	{
-		m_vertexData->data->barycentricBuffer[i] = bar0;
-		m_vertexData->data->barycentricBuffer[i + 1] = bar1;
-		m_vertexData->data->barycentricBuffer[i + 2] = bar2;
+		m_vertexData->data->barycentricBuffer[i] = bara[i % 3];
 	}
 }

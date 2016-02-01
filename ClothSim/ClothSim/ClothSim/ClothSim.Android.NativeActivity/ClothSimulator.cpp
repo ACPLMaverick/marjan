@@ -1947,7 +1947,7 @@ inline void ClothSimulator::CopyVertexData(VertexData * source, VertexData * des
 		dest->data->colorBuffer[i] = source->data->colorBuffer[i];
 	}
 
-	for (unsigned int i = 0; i < dest->data->indexCount; ++i)
+	for (unsigned int i = 0; i < dest->data->vertexCount; ++i)
 	{
 		dest->data->indexBuffer[i] = source->data->indexBuffer[i];
 		dest->data->barycentricBuffer[i] = source->data->barycentricBuffer[i];

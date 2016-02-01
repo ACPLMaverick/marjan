@@ -108,6 +108,10 @@ unsigned int Renderer::Initialize()
 
 	eglSwapInterval(engine->display, CSSET_VSYNC_ENALBED);
 
+	int val;
+	eglGetConfigAttrib(engine->display, config, EGL_DEPTH_SIZE, &val);
+	LOGI("DEPTH SIZE: %d", val);
+
 #endif
 	// Shaders Loading
 
@@ -123,6 +127,7 @@ unsigned int Renderer::Initialize()
 
 	glClearColor(CSSET_CLEAR_COLORS[0], CSSET_CLEAR_COLORS[1], CSSET_CLEAR_COLORS[2], CSSET_CLEAR_COLORS[3]);
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
 	if (CSSET_BACKFACE_CULLING)
 	{
@@ -140,9 +145,6 @@ unsigned int Renderer::Initialize()
 	*/
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-
-	glDepthFunc(GL_LEQUAL);
 
 	/////////////////////////
 

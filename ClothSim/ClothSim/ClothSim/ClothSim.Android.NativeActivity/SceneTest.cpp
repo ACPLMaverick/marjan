@@ -43,7 +43,7 @@ unsigned int SceneTest::Initialize()
 	SimObject* ground = new SimObject();
 	ground->Initialize("Ground");
 
-	tPos = (glm::vec3(0.0f, m_groundLevel - 1.0f, 0.0f));
+	tPos = (glm::vec3(0.0f, m_groundLevel - 0.1f, 0.0f));
 	tRot = (glm::vec3(-3.14f / 2.0f, 0.0f, 0.0f));
 	tScl = (glm::vec3(100.0f, 100.0f, 100.0f));
 	tCol = (glm::vec4(0.8f, 0.8f, 0.9f, 1.0f));
@@ -188,7 +188,7 @@ unsigned int SceneTest::Initialize()
 	////////////////////////
 	/////////// Camera
 
-	Camera* testCam = new Camera(nullptr, 0.6f, 0.01f, 1000.0f);
+	Camera* testCam = new Camera(nullptr, CSSET_WINDOW_FOV, CSSET_WINDOW_NEAR, CSSET_WINDOW_FAR);
 	testCam->Initialize();
 	
 	tPos = glm::vec3(-8.0f, 15.0f, 15.0f) * 2.0f;

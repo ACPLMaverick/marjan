@@ -21,7 +21,7 @@ out vec4 color;
 
 void main()
 {
-	vec3 d = fwidth(Bar) + vec3(0.025f);
+	vec3 d = fwidth(Bar) + vec3(0.05f);
     vec3 a3 = smoothstep(vec3(0.0f), d*1.5, Bar);
     float edgeFactor = min(min(a3.x, a3.y), a3.z);
     edgeFactor = clamp(edgeFactor, 0.0f, 1.0f);

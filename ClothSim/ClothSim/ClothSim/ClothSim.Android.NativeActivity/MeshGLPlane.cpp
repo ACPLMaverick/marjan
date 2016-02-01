@@ -1,5 +1,4 @@
 #include "MeshGLPlane.h"
-#include <random>
 
 MeshGLPlane::MeshGLPlane(SimObject* obj) : MeshGL(obj)
 {
@@ -104,45 +103,25 @@ void MeshGLPlane::GenerateBarycentricCoords()
 	glm::vec4 bar1 = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 	glm::vec4 bar2 = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	srand(Timer::GetInstance()->GetCurrentTimeMS() * 1000.0);
 	glm::vec4 bara[3] = { bar0, bar1, bar2 };
-	glm::vec4 barr[3] = { bara[rand() % 3], bara[rand() % 3], bara[rand() % 3] };
-	glm::vec4 bart;
+	int barInd = -1;
+	int barAdd = 0;
 
-	if (m_edgesLength % 3 == 2)
+	for (int i = 0; i < m_vertexData->data->vertexCount; ++i)
 	{
-		for (int i = 0; i < m_vertexData->data->indexCount; i += 3)
+		if (!(i % (m_edgesLength + 2)))
 		{
-			m_vertexData->data->barycentricBuffer[i] = bar0;
-			m_vertexData->data->barycentricBuffer[i + 1] = bar1;
-			m_vertexData->data->barycentricBuffer[i + 2] = bar2;
+			barInd = (barInd + 1) % 3;
+			barAdd = 0;
 		}
-	}
-	else if (m_edgesLength % 3 == 1)
-	{
-		for (int i = 0; i < m_vertexData->data->indexCount; i += 6)
+		else
 		{
-			m_vertexData->data->barycentricBuffer[i] = bara[rand() % 3];
-			m_vertexData->data->barycentricBuffer[i + 1] = bara[rand() % 3];
-			m_vertexData->data->barycentricBuffer[i + 2] = bara[rand() % 3];
-			m_vertexData->data->barycentricBuffer[i + 3] = bara[rand() % 3];
-			m_vertexData->data->barycentricBuffer[i + 4] = bara[rand() % 3];
-			m_vertexData->data->barycentricBuffer[i + 5] = bara[rand() % 3];
+			++barAdd;
 		}
 
-		//for (int i = 0; i < m_vertexData->data->indexCount; ++i)
-		//{
-		//	LOGI("%d: %f %f %f \n", i, m_vertexData->data->barycentricBuffer[i].x, m_vertexData->data->barycentricBuffer[i].y, m_vertexData->data->barycentricBuffer[i].z);
-		//}
-	}
-	else
-	{
-		for (int i = 0; i < m_vertexData->data->indexCount; i += 3)
-		{
-			m_vertexData->data->barycentricBuffer[i] = bar2;
-			m_vertexData->data->barycentricBuffer[i + 1] = bar0;
-			m_vertexData->data->barycentricBuffer[i + 2] = bar1;
-		}
+		m_vertexData->data->barycentricBuffer[i] = bara[(barInd + barAdd) % 3];
+
+		//LOGI("%d: %f, %f, %f\n", i, m_vertexData->data->barycentricBuffer[i].x, m_vertexData->data->barycentricBuffer[i].y, m_vertexData->data->barycentricBuffer[i].z);
 	}
 }
 
@@ -201,7 +180,7 @@ unsigned int MeshGLPlane::Initialize()
 
 		glGenBuffers(1, &m_vertexDataDual[i]->ids->barycentricBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexDataDual[i]->ids->barycentricBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexDataDual[i]->data->barycentricBuffer[0]) * m_vertexDataDual[i]->data->indexCount,
+		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexDataDual[i]->data->barycentricBuffer[0]) * m_vertexDataDual[i]->data->vertexCount,
 			m_vertexDataDual[i]->data->barycentricBuffer, GL_STATIC_DRAW);
 
 		glGenBuffers(1, &m_vertexDataDual[i]->ids->indexBuffer);
