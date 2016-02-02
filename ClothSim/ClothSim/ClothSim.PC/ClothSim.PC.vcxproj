@@ -370,6 +370,7 @@
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\System.h" />
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\Timer.h" />
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\Transform.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\BoxAACollider.cpp" />
@@ -413,6 +414,13 @@
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\System.cpp" />
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\Timer.cpp" />
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\Transform.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ClothSim.PC.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\_INF\_INZ\gfx\favicon.ico" />
+    <Image Include="..\ClothSim\ClothSim.Android.Packaging\res\drawable\icon.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

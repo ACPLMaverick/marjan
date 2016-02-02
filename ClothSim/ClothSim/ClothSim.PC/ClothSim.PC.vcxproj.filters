@@ -147,6 +147,9 @@
     <ClInclude Include="..\ClothSim\ClothSim.Android.NativeActivity\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\BoxAACollider.cpp">
@@ -272,5 +275,18 @@
     <ClCompile Include="..\ClothSim\ClothSim.Android.NativeActivity\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ClothSim.PC.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\_INF\_INZ\gfx\favicon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\ClothSim\ClothSim.Android.Packaging\res\drawable\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
