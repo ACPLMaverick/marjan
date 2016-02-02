@@ -108,9 +108,7 @@ unsigned int Renderer::Initialize()
 
 	eglSwapInterval(engine->display, CSSET_VSYNC_ENALBED);
 
-	int val;
-	eglGetConfigAttrib(engine->display, config, EGL_DEPTH_SIZE, &val);
-	LOGI("DEPTH SIZE: %d", val);
+	AConfiguration_setNavigation(engine->app->config, ACONFIGURATION_NAVHIDDEN_YES);
 
 #endif
 	// Shaders Loading

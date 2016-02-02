@@ -30,6 +30,11 @@ unsigned int Scene::Shutdown()
 
 	for (map<string, GUIElement*>::iterator it = m_guiElements.begin(); it != m_guiElements.end(); ++it)
 	{
+		err = it->second->Shutdown();
+
+		if (err != CS_ERR_NONE)
+			return err;
+
 		delete it->second;
 	}
 	m_guiElements.clear();

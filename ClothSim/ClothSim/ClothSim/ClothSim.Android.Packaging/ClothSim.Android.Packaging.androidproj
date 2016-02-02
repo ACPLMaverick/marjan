@@ -151,6 +151,7 @@
     <Content Include="assets\textures\ExportedFont.tga" />
     <Content Include="assets\textures\slider_bar.png" />
     <Content Include="assets\textures\slider_head.png" />
+    <Content Include="res\drawable\icon.png" />
     <Content Include="res\values\strings.xml" />
     <AntBuildXml Include="build.xml" />
     <AndroidManifest Include="AndroidManifest.xml" />

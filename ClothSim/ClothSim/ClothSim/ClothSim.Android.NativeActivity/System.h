@@ -75,6 +75,7 @@ private:
 	Engine* m_engine;
 
 	bool m_running;
+	bool m_exit;
 
 	Scene* m_scene;
 

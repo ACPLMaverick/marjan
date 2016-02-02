@@ -3,6 +3,7 @@
 System::System()
 {
 	m_running = false;
+	m_exit = false;
 	m_scene = nullptr;
 }
 
@@ -68,8 +69,8 @@ unsigned int System::Shutdown()
 {
 	unsigned int err = CS_ERR_NONE;
 
-	if (!m_running)
-		return CS_ERR_SHUTDOWN_PENDING;
+	//if (!m_running)
+	//	return CS_ERR_SHUTDOWN_PENDING;
 
 	m_running = false;
 
@@ -125,18 +126,31 @@ unsigned int System::Run()
 
 #else
 
-	while (1)
+	while (!m_exit)
 	{
-		if (m_running)
+		while (m_running)
 		{
 			err = Tick();
 		}
-		else
+		//else
+		//{
+		//	err = RunAndroid();
+		//	if (err != CS_ERR_NONE)
+		//		return err;
+		//}
+		//Shutdown();
+		ANativeActivity_finish(m_engine->app->activity);
+
+		while (!m_running && !m_exit)
 		{
 			err = RunAndroid();
 			if (err != CS_ERR_NONE)
 				return err;
 		}
+
+		ASensorManager_destroyEventQueue(instance->m_engine->sensorManager, instance->m_engine->sensorEventQueue);
+		ShutdownAndroid();
+
 	}
 
 #endif
@@ -192,10 +206,6 @@ unsigned int System::Tick()
 void System::Stop()
 {
 	m_running = false;
-#ifndef PLATFORM_WINDOWS
-	Shutdown();
-	ANativeActivity_finish(m_engine->app->activity);
-#endif // PLATFORM_WINDOWS
 }
 
 
@@ -328,8 +338,9 @@ unsigned int System::RunAndroid()
 		}
 
 		// Check if we are exiting.
-		if (m_engine->app->destroyRequested != 0) {
-			System::GetInstance()->Shutdown();
+		if (m_engine->app->destroyRequested != 0) 
+		{
+			m_engine->app->activity->vm->DetachCurrentThread();
 			return CS_ERR_SHUTDOWN_PENDING;
 		}
 	}
@@ -380,6 +391,12 @@ void System::AHandleCmd(struct android_app* app, int32_t cmd)
 
 		// Shutdown and clean up everything.
 		System::GetInstance()->Shutdown();
+
+		break;
+
+	case APP_CMD_DESTROY:
+
+		instance->m_exit = true;
 
 		break;
 
