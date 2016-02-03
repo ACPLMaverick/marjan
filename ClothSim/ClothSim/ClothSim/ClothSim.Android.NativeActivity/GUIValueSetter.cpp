@@ -5,7 +5,7 @@
 
 
 GUIValueSetter::GUIValueSetter(const std::string * name, const std::string* label, TextureID* leftTex, TextureID* leftTex_a, TextureID* rightTex, TextureID* rightTex_a, TextureID * fontTex,
-	unsigned int states, unsigned int defState, float labelMultiplier, float labelOffset, int labeldigits, float labelposoffset) : GUIElement(name)
+	unsigned int states, unsigned int defState, float labelMultiplier, float labelOffset, int labeldigits, float labelposoffset, bool rewind, bool reversed) : GUIElement(name)
 {
 	m_label = *label;
 
@@ -18,6 +18,8 @@ GUIValueSetter::GUIValueSetter(const std::string * name, const std::string* labe
 	m_defState = defState;
 	m_labelDigits = labeldigits;
 	m_labelPosOffset = labelposoffset;
+	m_rewind = rewind;
+	m_reversed = reversed;
 	
 	m_labelMultiplier = labelMultiplier;
 	m_labelOffset = labelOffset;
@@ -27,8 +29,8 @@ GUIValueSetter::GUIValueSetter(const std::string * name, const std::string* labe
 }
 
 GUIValueSetter::GUIValueSetter(const std::string * name, const std::string* label, TextureID* leftTex, TextureID* leftTex_a, TextureID* rightTex, TextureID* rightTex_a, TextureID * fontTex,
-	unsigned int states, unsigned int defState, std::vector<string>* labels, float labelposoffset) 
-	: GUIValueSetter(name, label, leftTex, leftTex_a, rightTex, rightTex_a, fontTex, states, defState, 0.0f, 0.0f, 0, labelposoffset)
+	unsigned int states, unsigned int defState, std::vector<std::string>* labels, float labelposoffset, bool rewind, bool reversed) 
+	: GUIValueSetter(name, label, leftTex, leftTex_a, rightTex, rightTex_a, fontTex, states, defState, 0.0f, 0.0f, 0, labelposoffset, rewind, reversed)
 {
 	size_t size = labels->size();
 
@@ -96,11 +98,10 @@ unsigned int GUIValueSetter::Initialize()
 	m_textLabel->Initialize();
 	AddChild(m_textLabel);
 
-	m_textValue = new GUIText(&idTv, &(m_valStrings.at(0)), m_fontTex);
+	m_textValue = new GUIText(&idTv, &(m_valStrings.at(m_currentState)), m_fontTex);
 	m_textValue->SetScale(itemScale * txtMplier);
 	m_textValue->SetPosition(m_position - glm::vec2(sclFactor * 2.0f - m_labelPosOffset, sclFactor * 1.5f));
 	m_textValue->Initialize();
-	m_textValue->SetText(&m_valStrings.at(m_currentState));
 	AddChild(m_textValue);
 
 	m_btnLeft = new GUIButton(&idBt);
@@ -170,13 +171,7 @@ unsigned int GUIValueSetter::ExecuteClick(const glm::vec2 * clickPos)
 		{
 			if (InputManager::GetInstance()->GUIElementAreaInClick(it->second, clickPos))
 			{
-				if (it->second == m_btnLeft)
-				{
-					//ModifyState(m_currentState - 1);
-					m_firstHold = true;
-					m_currentHoldDeltaMS = M_HOLD_DELTA_MS;
-				}
-				else if (it->second == m_btnRight)
+				if (it->second == m_btnRight || it->second == m_btnLeft)
 				{
 					//ModifyState(m_currentState + 1);
 					m_firstHold = true;
@@ -197,17 +192,30 @@ unsigned int GUIValueSetter::ExecuteHold(const glm::vec2 * clickPos)
 {
 	unsigned int ctr = 0;
 
+	GUIButton* down, *up;
+
+	if (m_reversed)
+	{
+		down = m_btnRight;
+		up = m_btnLeft;
+	}
+	else
+	{
+		down = m_btnLeft;
+		up = m_btnRight;
+	}
+
 	if (m_isEnabled)
 	{
 		for (std::map<std::string, GUIElement*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
 		{
 			if (InputManager::GetInstance()->GUIElementAreaInClick(it->second, clickPos))
 			{
-				if (it->second == m_btnLeft)
+				if (it->second == down)
 				{
 					ModifyStateOnHold(m_currentState - 1);
 				}
-				else if (it->second == m_btnRight)
+				else if (it->second == up)
 				{
 					ModifyStateOnHold(m_currentState + 1);
 				}
@@ -269,18 +277,28 @@ void GUIValueSetter::ModifyStateOnHold(unsigned int mVal)
 	{
 		m_timeHelperMS = timeMS;
 		ModifyState(mVal);
-		m_currentHoldDeltaMS *= 0.75f;
-		//LOGI("%f", m_currentHoldDeltaMS);
+		if(!m_rewind)
+			m_currentHoldDeltaMS *= M_HOLD_SPEEDUP_RATE;
 	}
 }
 
 void GUIValueSetter::ModifyState(unsigned int mVal)
 {
-	if (mVal == -1)
-		mVal = 0;
-	if (mVal >= m_states)
-		mVal = m_states - 1;
-	m_currentState = mVal;
+	int smVal = (int)mVal;
+	if (m_rewind)
+	{
+		smVal = smVal % m_states;
+		if (smVal < 0)
+			smVal = m_states - 1;
+	}
+	else
+	{
+		if (smVal < 0)
+			smVal = 0;
+		else if (smVal >= m_states)
+			smVal = m_states - 1;
+	}
+	m_currentState = (unsigned int)smVal;
 	m_textValue->SetText(&m_valStrings.at(m_currentState));
 	for (std::vector<std::function<void(unsigned int)>>::iterator it = EventStateChanged.begin(); it != EventStateChanged.end(); ++it)
 	{

@@ -1,6 +1,7 @@
 #include "PhysicsManager.h"
 #include "BoxAACollider.h"
 #include "SphereCollider.h"
+#include "System.h"
 
 PhysicsManager::PhysicsManager()
 {
@@ -140,6 +141,30 @@ void PhysicsManager::CollisionCheck(Collider * col, CollisonTestResult* result)
 
 		if(res.ifCollision) result->ifCollision = true;
 		result->colVector += res.colVector;
+
+		// ground level
+		float gLevel = System::GetInstance()->GetCurrentScene()->GetGroundLevel();
+		if (col->m_type == BOX_AA)
+		{
+			BoxAACollider* bc = (BoxAACollider*)col;
+			float glAddition = glm::max(gLevel - bc->m_minEffective.y, 0.0f);
+			if (glAddition != 0.0f)
+			{
+				result->ifCollision = true;
+				result->colVector.y += glAddition;
+			}
+				
+		}
+		else if (col->m_type == SPHERE)
+		{
+			SphereCollider* s = (SphereCollider*)col;
+			float glAddition = glm::max(gLevel - (s->m_effectiveCenter.y - s->m_effectiveRadius), 0.0f);
+			if (glAddition != 0.0f)
+			{
+				result->ifCollision = true;
+				result->colVector.y += glAddition;
+			}
+		}
 	}
 }
 

@@ -83,7 +83,7 @@ unsigned int GUISettingsScreen::Initialize()
 
 	////////////////////////////////
 
-	std::vector<string> vsSimTypeStateLabels;
+	std::vector<std::string> vsSimTypeStateLabels;
 	vsSimTypeStateLabels.push_back("MassSpring - GPU");
 	vsSimTypeStateLabels.push_back("MassSpring - CPU");
 	vsSimTypeStateLabels.push_back("MassSpring - CPUx4");
@@ -103,13 +103,15 @@ unsigned int GUISettingsScreen::Initialize()
 			6,
 			0,
 			&vsSimTypeStateLabels,
-			-0.3f
+			-0.3f,
+			true,
+			false
 		);
 	m_vsSimType->SetPosition(m_position + glm::vec2(0.0f, vsYStart));
 	m_vsSimType->SetScale(vsSScale);
 	m_vsSimType->Initialize();
 
-	std::vector<string> vsObjTypeStateLabels;
+	std::vector<std::string> vsObjTypeStateLabels;
 	vsObjTypeStateLabels.push_back("Sphere");
 	vsObjTypeStateLabels.push_back("Box");
 	m_vsObjType = new GUIValueSetter
@@ -121,10 +123,12 @@ unsigned int GUISettingsScreen::Initialize()
 			ResourceManager::GetInstance()->LoadTexture(&tMinus),
 			ResourceManager::GetInstance()->LoadTexture(&tMinusA),
 			ResourceManager::GetInstance()->LoadTexture(&tText),
-			2,
-			0,
+			(unsigned int)2,
+			(unsigned int)0,
 			&vsObjTypeStateLabels,
-			-0.05f
+			-0.05f,
+			true,
+			false
 			);
 
 	m_vsGravity = new GUIValueSetter
@@ -141,7 +145,9 @@ unsigned int GUISettingsScreen::Initialize()
 			0.1f,
 			0.1f,
 			2,
-			0.0f
+			0.0f,
+			false,
+			false
 			);
 
 	m_vsWidth = new GUIValueSetter
@@ -158,7 +164,9 @@ unsigned int GUISettingsScreen::Initialize()
 			1.0f,
 			1.0f,
 			0,
-			0.0f
+			0.0f,
+			false,
+			false
 			);
 
 	m_vsLength = new GUIValueSetter
@@ -175,7 +183,9 @@ unsigned int GUISettingsScreen::Initialize()
 			1.0f,
 			1.0f,
 			0,
-			0.0f
+			0.0f,
+			false,
+			false
 			);
 
 	m_vsEdgesWidth = new GUIValueSetter
@@ -192,7 +202,9 @@ unsigned int GUISettingsScreen::Initialize()
 			1.0f,
 			2.0f,
 			0,
-			0.0f
+			0.0f,
+			false,
+			false
 			);
 
 	m_vsEdgesLength = new GUIValueSetter
@@ -209,7 +221,9 @@ unsigned int GUISettingsScreen::Initialize()
 			1.0f,
 			2.0f,
 			0,
-			0.0f
+			0.0f,
+			false,
+			false
 			);
 
 	m_vsElasticity = new GUIValueSetter
@@ -226,7 +240,9 @@ unsigned int GUISettingsScreen::Initialize()
 			1.0f,
 			0.0f,
 			1,
-			-0.01f
+			-0.01f,
+			false,
+			false
 			);
 
 	m_vsMass = new GUIValueSetter
@@ -243,7 +259,9 @@ unsigned int GUISettingsScreen::Initialize()
 			0.1f,
 			0.1f,
 			2,
-			0.0f
+			0.0f,
+			false,
+			false
 			);
 
 	m_vsAirDamp = new GUIValueSetter
@@ -260,7 +278,9 @@ unsigned int GUISettingsScreen::Initialize()
 			0.01f,
 			0.0f,
 			2,
-			0.0f
+			0.0f,
+			false,
+			false
 			);
 
 	m_vsElDamp = new GUIValueSetter
@@ -277,7 +297,9 @@ unsigned int GUISettingsScreen::Initialize()
 			-0.1f,
 			0.0f,
 			2,
-			-0.05f
+			-0.05f,
+			false,
+			true
 			);
 
 	AddChild(m_vsSimType);

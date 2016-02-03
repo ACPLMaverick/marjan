@@ -34,10 +34,13 @@ protected:
 	unsigned int m_states;
 	unsigned int m_defState;
 	unsigned int m_currentState;
+	bool m_rewind;
+	bool m_reversed;
 
 	float m_timeHelperMS = 0.0f;
 	bool m_firstHold = false;
 	const float M_HOLD_DELTA_MS = 250.0f;
+	const float M_HOLD_SPEEDUP_RATE = 0.75f;
 	float m_currentHoldDeltaMS = M_HOLD_DELTA_MS;
 
 	bool labelInitialized = false;
@@ -48,9 +51,9 @@ public:
 	std::vector<std::function<void(unsigned int)>> EventStateChanged;
 
 	GUIValueSetter(const std::string* name, const std::string* label, TextureID* leftTex, TextureID* leftTex_a, TextureID* rightTex, TextureID* rightTex_a,
-		TextureID* fontTex, unsigned int states, unsigned int defState, float labelMultiplier, float labelOffset, int labelDigits, float labelposoffset);
+		TextureID* fontTex, unsigned int states, unsigned int defState, float labelMultiplier, float labelOffset, int labelDigits, float labelposoffset, bool rewind, bool reversed);
 	GUIValueSetter(const std::string* name, const std::string* label, TextureID* leftTex, TextureID* leftTex_a, TextureID* rightTex, TextureID* rightTex_a,
-		TextureID* fontTex, unsigned int states, unsigned int defState, std::vector<string>* labels, float labelposoffset);
+		TextureID* fontTex, unsigned int states, unsigned int defState, std::vector<string>* labels, float labelposoffset, bool rewind, bool reversed);
 	GUIValueSetter(const GUIValueSetter* c);
 	~GUIValueSetter();
 

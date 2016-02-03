@@ -52,3 +52,4 @@ D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_m
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\textures\btn_movTouch_a.png
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\BasicWireframeFragmentShader.glsl
 D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\assets\shaders\BasicWireframeVertexShader.glsl
+D:\Repositories\marjan\ClothSim\ClothSim\ARM\Debug\Package\res\drawable\icon.png

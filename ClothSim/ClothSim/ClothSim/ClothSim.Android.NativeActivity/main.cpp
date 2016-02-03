@@ -21,7 +21,7 @@ int main()
 
 	System::GetInstance()->Shutdown();
 
-	LOGI("Program terminated.\n Close this window to exit.\n");
+	LOGI("\nProgram terminated.\n Close this window to exit.\n");
 
 	return 0;
 }

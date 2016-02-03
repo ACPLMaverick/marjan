@@ -420,7 +420,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\_INF\_INZ\gfx\favicon.ico" />
-    <Image Include="..\ClothSim\ClothSim.Android.Packaging\res\drawable\icon.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

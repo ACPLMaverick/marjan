@@ -138,6 +138,11 @@ void main()
 	finalPos.y += fDirScreen.y;
 	finalPos.z += fDirScreen.z;
 
+	// ground level
+	vec4 mPosWorld = WorldMatrix * finalPos;
+	float glAddition = max(GroundLevel - mPosWorld.y, 0.0f);
+	finalPos.y += glAddition;
+
 	// update positions
 	OutPos = finalPos;
 	OutPosLast = PosLast;

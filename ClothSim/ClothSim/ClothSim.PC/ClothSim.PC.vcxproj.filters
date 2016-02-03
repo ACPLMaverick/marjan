@@ -285,8 +285,5 @@
     <Image Include="..\..\..\..\..\_INF\_INZ\gfx\favicon.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\ClothSim\ClothSim.Android.Packaging\res\drawable\icon.png">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

@@ -226,9 +226,6 @@ void MeshGLText::UpdateVertexDataUV()
 	float one = 1.0f / 16.0f;
 	float oneX = one * SPACE_BETWEEN_LETTERS;
 	
-	//glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
-	//float* mapped = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
 	while (ctr < m_textLetterCount && temp != '\0')
 	{
 		if (temp < START_CHAR)
@@ -243,26 +240,16 @@ void MeshGLText::UpdateVertexDataUV()
 		m_vertexData->data->uvBuffer[4 * ctr + 2] = glm::vec2(uvX, uvY + one);
 		m_vertexData->data->uvBuffer[4 * ctr + 3] = glm::vec2(uvX + oneX, uvY + one);
 
-		//write to mapped buffer
-		//mapped[ctr] = m_vertexData->data->uvBuffer[4 * ctr].y;
-		//mapped[4 * ctr + 1] = m_vertexData->data->uvBuffer[4 * ctr + 1];
-		//mapped[4 * ctr + 2] = m_vertexData->data->uvBuffer[4 * ctr + 2];
-		//mapped[4 * ctr + 3] = m_vertexData->data->uvBuffer[4 * ctr + 3];
-
 		// load next char
 		++ctr;
 		if (ctr < m_textLetterCount)
 			temp = m_text->at(ctr);
 	}
-	//glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexData->ids->uvBuffer);
 	glBufferSubData(GL_ARRAY_BUFFER, 0,
 		sizeof(m_vertexData->data->uvBuffer[0]) * m_vertexData->data->vertexCount, m_vertexData->data->uvBuffer);
 
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->uvBuffer[0]) * m_vertexData->data->vertexCount,
-	//	m_vertexData->data->uvBuffer, GL_DYNAMIC_DRAW);
-	//const GLubyte* b = glewGetErrorString(glGetError());
 }
 
 const string* MeshGLText::GetText()
@@ -270,7 +257,7 @@ const string* MeshGLText::GetText()
 	return m_text;
 }
 
-void MeshGLText::SetText(const string* text)
+void MeshGLText::SetText(const string* text)		
 {
 	int newLength = text->length();
 
@@ -282,9 +269,9 @@ void MeshGLText::SetText(const string* text)
 		GenerateVertexData();
 		BindVertexData();
 	}
-	if (newLength <= m_textLetterCount)
+	else
 	{
 		m_textLetterCount = newLength;
 	}
-	UpdateVertexDataUV();
+	UpdateVertexDataUV();	// we have to do this always, as the GenerateVertexData method does not cover it
 }

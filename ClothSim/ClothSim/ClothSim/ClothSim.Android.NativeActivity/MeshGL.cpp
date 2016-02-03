@@ -225,7 +225,7 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 {
 	m_vertexData->data->vertexCount = vCount;
 	m_vertexData->data->indexCount = iCount;
-
+	/*
 	bool ifPos, ifInd, ifUv, ifNrm, ifCol, ifBar;
 	ifPos = ifInd = ifUv = ifNrm = ifCol = ifBar = false;
 
@@ -277,6 +277,38 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 		delete[] m_vertexData->data->barycentricBuffer;
 		m_vertexData->data->barycentricBuffer = nullptr;
 	}
+	*/
+
+	if (m_vertexData->data->positionBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->positionBuffer;
+		m_vertexData->data->positionBuffer = nullptr;
+	}
+	if (m_vertexData->data->indexBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->indexBuffer;
+		m_vertexData->data->indexBuffer = nullptr;
+	}
+	if (m_vertexData->data->uvBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->uvBuffer;
+		m_vertexData->data->uvBuffer = nullptr;
+	}
+	if (m_vertexData->data->normalBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->normalBuffer;
+		m_vertexData->data->normalBuffer = nullptr;
+	}
+	if (m_vertexData->data->colorBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->colorBuffer;
+		m_vertexData->data->colorBuffer = nullptr;
+	}
+	if (m_vertexData->data->barycentricBuffer != nullptr)
+	{
+		delete[] m_vertexData->data->barycentricBuffer;
+		m_vertexData->data->barycentricBuffer = nullptr;
+	}
 
 	m_vertexData->data->positionBuffer = new glm::vec4[m_vertexData->data->vertexCount];
 	m_vertexData->data->indexBuffer = new unsigned int[m_vertexData->data->indexCount];	
@@ -284,7 +316,7 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 	m_vertexData->data->normalBuffer = new glm::vec4[m_vertexData->data->vertexCount];
 	m_vertexData->data->colorBuffer = new glm::vec4[m_vertexData->data->vertexCount];
 	m_vertexData->data->barycentricBuffer = new glm::vec4[m_vertexData->data->vertexCount];
-
+	/*
 	if (ifPos)
 	{
 		glGenBuffers(1, &m_vertexData->ids->vertexBuffer);
@@ -330,6 +362,7 @@ void MeshGL::CreateVertexDataBuffers(unsigned int vCount, unsigned int iCount, G
 		glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertexData->data->barycentricBuffer[0]) * m_vertexData->data->vertexCount,
 			m_vertexData->data->barycentricBuffer, target);
 	}
+	*/
 }
 
 void MeshGL::GenerateBarycentricCoords()

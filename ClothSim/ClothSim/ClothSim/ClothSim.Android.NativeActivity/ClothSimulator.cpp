@@ -704,6 +704,7 @@ unsigned int ClothSimulator::Update()
 		sphereData = &(PhysicsManager::GetInstance()->GetSphereCollidersData()->at(0));
 	int bcCount = PhysicsManager::GetInstance()->GetBoxCollidersData()->size();
 	int scCount = PhysicsManager::GetInstance()->GetSphereCollidersData()->size();
+	float groundLevel = System::GetInstance()->GetCurrentScene()->GetGroundLevel();
 
 	glm::mat4 zero = glm::mat4();
 	glm::mat4* wm = &zero;
@@ -716,15 +717,15 @@ unsigned int ClothSimulator::Update()
 
 	if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPU)
 	{
-		err = UpdateSimCPU(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
+		err = UpdateSimCPU(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime(), groundLevel);
 	}
 	else if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_CPUx4 || m_simParams.mode == ClothSimulationMode::POSITION_BASED_CPUx4)
 	{
-		err = UpdateSimCPUx4(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
+		err = UpdateSimCPUx4(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime(), groundLevel);
 	}
 	else if (m_simParams.mode == ClothSimulationMode::MASS_SPRING_GPU || m_simParams.mode == ClothSimulationMode::POSITION_BASED_GPU)
 	{
-		err = UpdateSimGPU(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime());
+		err = UpdateSimGPU(clothData, boxData, sphereData, bcCount, scCount, wm, vw, pr, PhysicsManager::GetInstance()->GetGravity(), Timer::GetInstance()->GetFixedDeltaTime(), groundLevel);
 	}
 
 	/////////////////////////
@@ -811,7 +812,8 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 		glm::mat4* viewMatrix,
 		glm::mat4* projMatrix,
 		glm::vec3* gravity,
-		float fixedDelta
+		float fixedDelta,
+		float groundLevel
 	)
 {
 	unsigned int err = CS_ERR_NONE;
@@ -833,11 +835,19 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 	}
 
 	SwapRWIds();
+
+	// getting the D
+
+	int dID = m_simData.m_vertexCount / 2;
+	glm::vec3 data = glm::vec3(m_vd[m_readID]->data->positionBuffer[dID]);
+	m_d = glm::length(data - m_dLast);
+	m_dLast = data;
+	glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
 	
 	// compute collisions and finger movement
 	for (int i = 0; i < m_simData.m_vertexCount; ++i)
 	{
-		CPUComputeCollision(i, worldMatrix, viewMatrix, projMatrix, boxAAData, sphereData, bcCount, scCount);
+		CPUComputeCollision(i, worldMatrix, viewMatrix, projMatrix, boxAAData, sphereData, bcCount, scCount, groundLevel);
 	}
 	SwapRWIds();
 
@@ -865,7 +875,8 @@ inline unsigned int ClothSimulator::UpdateSimCPU
 	return err;
 }
 
-inline unsigned int ClothSimulator::UpdateSimCPUx4(VertexData * vertexData, BoxAAData * boxAAData, SphereData * sphereData, int bcCount, int scCount, glm::mat4 * worldMatrix, glm::mat4 * viewMatrix, glm::mat4 * projMatrix, glm::vec3* gravity, float fixedDelta)
+inline unsigned int ClothSimulator::UpdateSimCPUx4(VertexData * vertexData, BoxAAData * boxAAData, SphereData * sphereData, int bcCount, int scCount, 
+	glm::mat4 * worldMatrix, glm::mat4 * viewMatrix, glm::mat4 * projMatrix, glm::vec3* gravity, float fixedDelta, float groundLevel)
 {
 	// one step of cloth simulation
 	pthread_mutex_unlock(m_mutexHold);
@@ -935,6 +946,7 @@ void* ClothSimulator::UpdatePartial(void * args)
 			sphereData = &(PhysicsManager::GetInstance()->GetSphereCollidersData()->at(0));
 		int bcCount = PhysicsManager::GetInstance()->GetBoxCollidersData()->size();
 		int scCount = PhysicsManager::GetInstance()->GetSphereCollidersData()->size();
+		float groundLevel = System::GetInstance()->GetCurrentScene()->GetGroundLevel();
 
 		glm::mat4 zero = glm::mat4();
 		glm::mat4* wm = &zero;
@@ -973,7 +985,7 @@ void* ClothSimulator::UpdatePartial(void * args)
 		//second stage
 		for (int i = tData->diBegin; i < tData->diEnd; ++i)
 		{
-			tData->inst->CPUComputeCollision(i, wm, vw, pr, boxData, sphereData, bcCount, scCount);
+			tData->inst->CPUComputeCollision(i, wm, vw, pr, boxData, sphereData, bcCount, scCount, groundLevel);
 		}
 
 		pthread_mutex_lock(tData->inst->m_mutexBarrierCounter);
@@ -1009,7 +1021,8 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 		glm::mat4* viewMatrix,
 		glm::mat4* projMatrix,
 		glm::vec3* gravity,
-		float fixedDelta
+		float fixedDelta,
+		float groundLevel
 	)
 {
 	unsigned int err = CS_ERR_NONE;
@@ -1086,10 +1099,10 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	//LOGW("%f %f %f %f\n", ptr->x, ptr->y, ptr->z, ptr->w);
 	if (ptr != nullptr)
 	{
-		glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
 		glm::vec3 dNew = glm::vec3(*ptr);
 		m_d = glm::length(dNew - m_dLast);
 		m_dLast = dNew;
+		glUnmapBuffer(GL_TRANSFORM_FEEDBACK_BUFFER);
 	}
 
 	// execute collision computation kernel
@@ -1106,7 +1119,7 @@ inline unsigned int ClothSimulator::UpdateSimGPU
 	glUniformMatrix4fv(m_collisionsKernel->uniformIDs->at(1), 1, GL_FALSE, (float*)viewMatrix);
 	glUniformMatrix4fv(m_collisionsKernel->uniformIDs->at(2), 1, GL_FALSE, (float*)projMatrix);
 	glUniform4fv(m_collisionsKernel->uniformIDs->at(3), 1, (float*)&m_simData.c_touchVector);
-	glUniform1f(m_collisionsKernel->uniformIDs->at(4), System::GetInstance()->GetCurrentScene()->GetGroundLevel());
+	glUniform1f(m_collisionsKernel->uniformIDs->at(4), groundLevel);
 	glUniform1i(m_collisionsKernel->uniformIDs->at(5), bcCount);
 	glUniform1i(m_collisionsKernel->uniformIDs->at(6), scCount);
 	glUniform1i(m_collisionsKernel->uniformIDs->at(7), m_simData.m_edgesWidthAll);
@@ -1717,7 +1730,7 @@ inline void ClothSimulator::CPUComputePositionPB(int i, glm::vec4* sls1, glm::ve
 }
 
 inline void ClothSimulator::CPUComputeCollision(int i, glm::mat4* worldMatrix, glm::mat4* viewMatrix, glm::mat4* projMatrix, BoxAAData boxAAData[], SphereData sphereData[],
-	int bcCount, int scCount)
+	int bcCount, int scCount, float groundLevel)
 {
 	glm::vec3 colOffset = glm::vec3(0.0f);
 	glm::vec4 modelPos = m_vd[m_readID]->data->positionBuffer[i];
@@ -1808,6 +1821,11 @@ inline void ClothSimulator::CPUComputeCollision(int i, glm::mat4* worldMatrix, g
 	finalPos.x += fDirScreen.x;
 	finalPos.y += fDirScreen.y;
 	finalPos.z += fDirScreen.z;
+
+	// ground level
+	glm::vec4 mPosWorld = *worldMatrix * finalPos;
+	float glAddition = glm::max(groundLevel - mPosWorld.y, 0.0f);
+	finalPos.y += glAddition;
 
 	m_vd[m_writeID]->data->positionBuffer[i] = finalPos;
 	m_vdCopy[m_writeID]->data->positionBuffer[i] = lPos;
@@ -1968,35 +1986,11 @@ inline void ClothSimulator::AppendRestart()
 
 inline void ClothSimulator::RestartSimulation()
 {
-	// update simulation parameters from UI
-
-	// update data buffers on GPU with initial values
-
 	if(m_readID == 1)
 		m_meshPlane->SwapDataPtrs();
 
 	m_readID = 0;
 	m_writeID = 1;
-	//for (uint i = 0; i < 2; ++i)
-	//{
-	//	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosID[i]);
-	//	glBufferSubData(GL_ARRAY_BUFFER, 0,
-	//		m_vdCopy->data->vertexCount * sizeof(m_vdCopy->data->positionBuffer[0]),
-	//		&m_vdCopy->data->positionBuffer[0].x);
-
-	//	glBindBuffer(GL_ARRAY_BUFFER, m_vboPosLastID[i]);
-	//	glBufferSubData(GL_ARRAY_BUFFER, 0,
-	//		m_simData.m_vertexCount * sizeof(m_vdCopy->data->positionBuffer[0]),
-	//		&m_vdCopy->data->positionBuffer[0].x);
-
-	//	glBindBuffer(GL_ARRAY_BUFFER, m_vboNrmID[i]);
-	//	glBufferSubData(GL_ARRAY_BUFFER, 0,
-	//		m_vdCopy->data->vertexCount * sizeof(m_vdCopy->data->normalBuffer[0]),
-	//		m_vdCopy->data->normalBuffer);
-	//}
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
 
 	Shutdown();
 

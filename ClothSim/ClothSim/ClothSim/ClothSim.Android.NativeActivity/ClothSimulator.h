@@ -9,10 +9,8 @@
 #include "MeshGLPlane.h"
 #include "Timer.h"
 
-//#include <CL\opencl.h>
 #include <pthread.h>
 
-//#define VERTEX_NEIGHBOURING_VERTICES 12
 #define ALMOST_ZERO 0.000000001f
 
 ////////////////////////////////////
@@ -281,7 +279,8 @@ protected:
 			glm::mat4* viewMatrix,
 			glm::mat4* projMatrix,
 			glm::vec3* gravity,
-			float fixedDelta
+			float fixedDelta,
+			float groundLevel
 			);
 	virtual inline unsigned int UpdateSimCPUx4
 		(
@@ -294,7 +293,8 @@ protected:
 			glm::mat4* viewMatrix,
 			glm::mat4* projMatrix,
 			glm::vec3* gravity,
-			float fixedDelta
+			float fixedDelta,
+			float groundLevel
 			);
 	virtual inline unsigned int UpdateSimGPU
 		(
@@ -307,7 +307,8 @@ protected:
 			glm::mat4* viewMatrix,
 			glm::mat4* projMatrix,
 			glm::vec3* gravity,
-			float fixedDelta
+			float fixedDelta,
+			float groundLevel
 			);
 
 	virtual inline unsigned int InitializeSimMSGPU();
@@ -339,7 +340,7 @@ protected:
 	virtual inline void CPUComputePositionMS(int i, glm::vec4* sls1, glm::vec4* sls2, glm::vec4* sls3, float fixedDelta, glm::vec3* gravity);
 	virtual inline void CPUComputePositionPB(int i, glm::vec4* sls1, glm::vec4* sls2, glm::vec4* sls3, float fixedDelta, glm::vec3* gravity);
 	virtual inline void CPUComputeCollision(int i, glm::mat4* worldMatrix, glm::mat4* viewMatrix, glm::mat4* projMatrix, BoxAAData boxAAData[], SphereData sphereData[],
-		int bcCount, int scCount);
+		int bcCount, int scCount, float groundLevel);
 	virtual inline void CPUComputeNormal(int i);
 
 	inline void CalculateSpringForce

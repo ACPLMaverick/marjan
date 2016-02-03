@@ -40,8 +40,8 @@ typedef unsigned int uint;
 
 #ifndef PLATFORM_WINDOWS
 
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "AndroidProject1.NativeActivity", __VA_ARGS__))
-#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "AndroidProject1.NativeActivity", __VA_ARGS__))
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ClothSim.NativeActivity", __VA_ARGS__))
+#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "ClothSim.NativeActivity", __VA_ARGS__))
 
 #else
 
