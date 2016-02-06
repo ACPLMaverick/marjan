@@ -60,10 +60,10 @@ unsigned int GUISettingsScreen::Initialize()
 	string vsLengthLBL = "Length";
 	string vsEdgesWidthLBL = "Edges width";
 	string vsEdgesLengthLBL = "Edges length";
-	string vsElasticityLBL = "Elasticity";
+	string vsElasticityLBL = "Stiffness";
 	string vsMassLBL = "Mass";
 	string vsAirDampLBL = "Air damp";
-	string vsElDampLBL ="El. damp";
+	string vsElDampLBL ="Spring damp";
 
 	string mainLBL = "Cloth parameters";
 
@@ -297,7 +297,7 @@ unsigned int GUISettingsScreen::Initialize()
 			-0.1f,
 			0.0f,
 			2,
-			-0.05f,
+			-0.08f,
 			false,
 			true
 			);

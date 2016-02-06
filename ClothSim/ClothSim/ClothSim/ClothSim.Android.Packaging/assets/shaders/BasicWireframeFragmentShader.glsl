@@ -2,8 +2,8 @@
 #extension GL_OES_standard_derivatives : enable 
 
 in vec4 ProjPos;
-smooth in vec4 WorldPos;
-smooth in vec3 Normal;
+in vec4 WorldPos;
+in vec3 Normal;
 in vec2 UV;
 in vec4 Vcol;
 in vec3 Bar;

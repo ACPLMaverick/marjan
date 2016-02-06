@@ -3,9 +3,9 @@
 #define POWER_CORRECTION 1.0f
 
 in vec4 ProjPos;
-smooth in vec4 WorldPos;
+in vec4 WorldPos;
 in vec4 Vcol;
-smooth in vec3 Normal;
+in vec3 Normal;
 in vec2 UV;
 
 out vec4 color;

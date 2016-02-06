@@ -130,7 +130,7 @@
 		\subsection{Detekcja kolizji}
 		\label{t:teoria:analiza:kolizje}
 		
-			Kluczowym aspektem symulacji tkaniny jest wykrywanie kolizji i~rozwiązywanie ich, czyli przemieszczanie wierzchołków tak, by obiekty się nie przenikały. Zwiększa to wrażenie autentyczności, realizmu symulacji z~punktu widzenia użytkownika. Do uzyskania odpowiedniego efektu musimy jednak zadbać także o~stabilność algorytmu rozwiązywania kolizji, chociażby po to, aby uniknąć znanego chyba wszystkim użytkownikom wirtualnych symulacji i~gier efektu ''podrygiwania''. Obliczenia mogą pochłonąć tu bardzo dużo czasu procesora, dlatego kluczowy jest dobór odpowiednio wydajnego algorytmu, szczególnie, że w niniejszej pracy rozważa się implementację symulacji na urządzeniu mobilnym. Dlatego właśnie w~tej kwestii uwagę poświęcono na najprostszym rozwiązaniom.
+			Kluczowym aspektem symulacji tkaniny jest wykrywanie kolizji i~rozwiązywanie ich, czyli przemieszczanie wierzchołków tak, by obiekty się nie przenikały. Zwiększa to wrażenie autentyczności, realizmu symulacji z~punktu widzenia użytkownika. Do uzyskania odpowiedniego efektu musimy jednak zadbać także o~stabilność algorytmu rozwiązywania kolizji, chociażby po to, aby uniknąć znanego chyba wszystkim użytkownikom wirtualnych symulacji i~gier efektu ,,podrygiwania''. Obliczenia mogą pochłonąć tu bardzo dużo czasu procesora, dlatego kluczowy jest dobór odpowiednio wydajnego algorytmu, szczególnie, że w niniejszej pracy rozważa się implementację symulacji na urządzeniu mobilnym. Dlatego właśnie w~tej kwestii uwagę poświęcono najprostszym rozwiązaniom.
 		
 			\subsubsection{Kolizje zewnętrzne}
 			\label{t:teoria:analiza:kolizje:zewn}
@@ -157,7 +157,7 @@
 				
 				\myownfigure{Przykład kolizji BS z prostopadłościanem AABB.}{figures/pic_2_5.png}{0.35}{pic_2_5}		%dwa boksy p1min, p1max, p2min, p2max
 				
-				Obiekty zewnętrzne znajdujące się w świecie symulacji mogą posiadać dwa rodzaje detektorów kolizji. Są albo sferami okalającymi, w którym to przypadku do wykrycia przecięć zastosowane zostają opisane powyżej wzory (2.15) i (2.16), albo AABB -- prostopadłościany, których położenie i~rozmiary są wyznaczane przez dwa punkty w przestrzeni: minimum \(\mathbf{p}_{i_{min}}\) oraz maksimum \(\mathbf{p}_{i_{max}}\). W jaki sposób figury są tworzone na podstawie tych dwóch pozycji -- widać na rysunku \ref{pic_2_5}. Można zauważyć, że ten sposób interpretacji dwóch wymienionych wyżej danych skutkuje niską zajętością pamięciową (tylko dwa wektory trójwymiarowe reprezentują AABB) oraz prostotą wzorów wykrycia przecięcia, a~co za tym idzie -- szybkością obliczeń tychże. Ewidentną wadą jest jednak znowu niska dokładność -- fakt, że kolejne ścianki prostopadłościanu zawsze będą prostopadłe do kolejnych osi układu współrzędnych. Utrudnia to odwzorowanie dokładnych kolizji np. dla obiektów pochyłych. Detekcja i~rozwiązanie przecięć pomiędzy AABB i BS następuje według nieco innych zasad, niż w~przypadku dwóch BS \cite{wzory_sfera} \cite{wzory_sfera_box}:
+				Obiekty zewnętrzne znajdujące się w świecie symulacji mogą posiadać dwa rodzaje detektorów kolizji. Są albo sferami okalającymi, w którym to przypadku do wykrycia przecięć zastosowane zostają opisane powyżej wzory (2.15) i (2.16), albo AABB -- prostopadłościany, których położenie i~rozmiary są wyznaczane przez dwa punkty w przestrzeni: minimum \(\mathbf{p}_{i_{min}}\) oraz maksimum \(\mathbf{p}_{i_{max}}\). W jaki sposób figury są tworzone na podstawie tych dwóch pozycji -- widać na rysunku \ref{pic_2_5}. Można zauważyć, że ten sposób interpretacji dwóch wymienionych wyżej danych skutkuje niską zajętością pamięciową (tylko dwa wektory trójwymiarowe reprezentują AABB) oraz prostotą wzorów wykrycia przecięcia, a~co za tym idzie -- szybkością obliczeń tychże. Ewidentną wadą jest jednak znowu niska dokładność -- fakt, że kolejne ścianki prostopadłościanu zawsze będą prostopadłe do kolejnych osi układu współrzędnych. Utrudnia to odwzorowanie dokładnych kolizji np. dla obiektów pochyłych. Detekcja i~rozwiązanie przecięć pomiędzy AABB i BS następuje według nieco innych zasad, niż w~przypadku dwóch BS \cite{wzory_sfera, wzory_sfera_box}:
 				
 				\begin{equation}
 				\mathbf{k}_{i} =  min(max(\mathbf{p}_{C1}, \mathbf{p}_{i_{min}}), \mathbf{p}_{i_{max}})  \ .
@@ -195,10 +195,10 @@
 		\subsection{Architektura i programowanie GPU}
 		\label{t:teoria:gpu:architektura}
 		
-		\myownextfigure{Typowa architektura GPU.}{figures/pic_2_7.png}{0.3}{pic_2_7}		% schemat GPU
+		\myownextfigure{Typowa architektura GPU}{figures/pic_2_7.png}{0.3}{pic_2_7}		% schemat GPU
 		% kiedy i po co GPU, dzisiejsze zastosowania, GPGPU, równoległość obliczeń, podział na SM, SP, wątki, dzisiejsze wydajności
 		
-		\footnotetext{https://goo.gl/VEjIeU}
+		\footnotetext{https://www.google.pl/search?q=gpu+architecture\&tbm=isch\&biw=1920\&bih=955}
 		GPU jest układem złożonym z~wielu jednostek obliczeniowych, pracujących ze sobą równolegle. Zrównoleglenie obliczeń wynika z~charakterystyki pierwotnego zastosowania GPU, czyli renderingu grafiki. Obliczenia na każdym wierzchołku, bądź fragmencie obrazu są zazwyczaj niezależne od siebie i~takie same dla każdego z nich. Można więc dla tychże elementów identyczny ciąg instrukcji wykonywać równolegle, dostarczając do niego inne dane. GPU jest sztandarowym przykładem wdrożenia architektury SIMD (\emph{Single Instruction, Multiple Data} \cite{simd}). Jak się szybko okazało, ten model przetwarzania znalazł zastosowanie nie tylko przy rysowaniu trójkątów, ale też w~wielu innych dziedzinach, często niezwiązanych z~grami czy wizualizacjami.
 		
 		Na rysunku \ref{pic_2_7} widać budowę przykładowego układu, jednakową dla większości tego typu urządzeń. Nadrzędną jednostką, z której składa się GPU jest multiprocesor strumieniowy (SM -- \emph{Streaming Multiprocessor}), będący samodzielną jednostką obliczeniową, aczkolwiek dzielący część pamięci z~innymi SM. Przykładowo karta grafiki NVIDIA GeForce 9800 GTX ma osiem SM. Każdy z nich dzieli się na procesory strumieniowe (SP -- \emph{Streaming Processor}), w~danym przypadku jest ich w sumie 128 na całym GPU. SP są tak skonstruowane, by móc przetwarzać jak najwięcej operacji równolegle. W technologiach stricte GPGPU programista zależnie od potrzeb może uruchomić konkretną liczbę SP, na każdym zaprzęgając do pracy ustaloną z~góry liczbę wątków, nieprzekraczającą jednak maksymalnej wartości, zależnej od modelu urządzenia \cite{cuda}.
@@ -214,13 +214,13 @@
 		\subsection{Porównanie GPU i CPU pod kątem architektury i zastosowań}
 		\label{t:teoria:gpu:porownanie}
 		
-		\myownextfigure{Porównanie budowy CPU i GPU.}{figures/pic_2_10.png}{0.35}{pic_2_10}		% proste schematy GPU i CPU obok
+		\myownextfigure{Porównanie budowy CPU i GPU}{figures/pic_2_10.png}{0.35}{pic_2_10}		% proste schematy GPU i CPU obok
 		\footnotetext{http://blog.goldenhelix.com/mthiesen/video-graphics-and-genomics-a-real-game-changer/}
 		
 		Rysunek \ref{pic_2_10} przedstawia uproszczone schematy architektury CPU i~GPU, co doskonale obrazuje różnice między nimi, a~także pozwala wywnioskować zastosowania. W~rozdziale \ref{t:teoria:gpu:architektura} podano, że GPU jest urządzeniem zbudowanym z~wielu procesorów pracujących równolegle, natomiast CPU składa się z~niewielkiej liczby jednostek obliczeniowych (w~dzisiejszych czasach 4~to standardowa liczba dla zapotrzebowań osobistych), jednakże dużo szybszych. Procesory CPU są dużo bardziej zaawansowane technologiczne, wyposażone w~większą liczbę zaawansowanych instrukcji oraz algorytmów przyspieszających ich działanie w~specjalnych sytuacjach. Przykładem może być predykcja wyboru instrukcji warunkowych, znacznie skracająca czas obliczeń bloków \texttt{if-else} \cite{branch_prediction_wiki}. Z kolei w~GPU ta technologia jest dużo uboższa. Wynika z tego, że sekwencyjny kod z~dużą liczbą rozgałęzień szybciej działa na CPU, a~GPU nadaje się lepiej do obliczeń równoległych, w~których warunków należy unikać. 
 		\newpage
 		
-		\myextfigure{Różnica rozwoju wydajności CPU i GPU na przestrzeni ostatnich lat.}{figures/pic_2_11.png}{0.5}{pic_2_11}		% 2 wykresy - przewaga GPU nad CPU w danych obliczeniach i odwrotnie
+		\myextfigure{Różnica rozwoju wydajności CPU i GPU na przestrzeni ostatnich lat}{figures/pic_2_11.png}{0.5}{pic_2_11}		% 2 wykresy - przewaga GPU nad CPU w danych obliczeniach i odwrotnie
 		\footnotetext{https://algconsultings.wordpress.com/2011/02/28/can-we-afford-to-have-a-supercomputer}
 		
 		Na rysunku \ref{pic_2_11} widać, że na przestrzeni ostatnich lat teoretyczna wydajność kart graficznych, liczona w gigaflopach na sekundę, wzrosła znacznie w~stosunku do procesorów. Można zaobserwować kolejny rozstrzał między tymi platformami, CPU nie robi większej różnicy precyzja liczb, na których wykonywane jest przetwarzanie. Natomiast GPU zoptymalizowana jest pod kątem obliczeń na zmiennych typu \texttt{float} -- pojedynczej precyzji. Prawdopodobnie po raz kolejny widać skutki najczęstszego stosowania GPU do renderingu grafiki trójwymiarowej, gdzie pojedyncza precyzja jest wystarczająca.
