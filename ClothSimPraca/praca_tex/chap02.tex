@@ -238,6 +238,6 @@
 		
 		W przypadku chęci stworzenia implementacji symulacji na CPU, należałoby sekwencyjnie wykonywać wszystkie obliczenia na kolejnych wierzchołkach, kolejno w pętli. W najlepszym przypadku można podzielić przetwarzanie na wątki, jednak maksymalnie i~tak byłoby dostępnych niewiele jednostek przetwarzających. W GPU jest ich dużo więcej, oprócz tego urządzenie z definicji przystosowano do obliczeń równoległych, co pozwala uzyskać maksymalną wydajność. Jedyną sytuacją, w której CPU mogłoby mieć przewagę, jest detekcja dużej liczby kolizji, z~racji konieczności użycia tutaj instrukcji warunkowych, a~jak wiemy, GPU nie najlepiej sobie z nimi radzi.
 		
-		\myextcitefigure{Porównanie wydajności implementacji CPU i GPU}{\cite{bibid}.}{figures/pic_2_12.png}{0.395}{pic_2_12}		% wykres - porównanie GPU i CPU dla tkanin
+		\myextcitefigure{Porównanie wydajności implementacji CPU i GPU}{\cite{deformable}.}{figures/pic_2_12.png}{0.395}{pic_2_12}		% wykres - porównanie GPU i CPU dla tkanin
 		
 		Autorzy \cite{deformable} wykonali porównanie szybkości przetwarzania symulacji tkaniny osobno dla CPU i~GPU. Widać tutaj miażdżącą przewagę karty graficznej nad procesorem w~kwestii wydajności, co pozwala wnioskować o sensowności zastosowania GPU do rozwiązania omawianego problemu.

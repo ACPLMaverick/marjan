@@ -8,16 +8,16 @@
 	
 	Całość funkcji dotyczących symulacji tkaniny skupiono w~klasie \texttt{ClothSimulator}. Dziedziczy ona po typie abstrakcyjnym \texttt{Component}. Za sprawą tego bardzo dobrze komponuje się z~architekturą silnika, bez problemu można ją dodać do dowolnego \texttt{SimObjectu} oraz powielić, a~także włączać lub wyłączać jej działanie.
 	
-	W prezentowanej aplikacji został umieszczony jednak tylko jeden \texttt{ClothSimulator}, aby uprościć pracę programu i~ułatwić pomiary testowe. Za cel części praktycznej pracy postawiono sobie możliwość zasymulowania zachowania pojedynczej tkaniny o~prostokątnym kształcie (rysowane czworokąty mają kształt prostokątów), zawieszonej sztywno w powietrzu za dwa sąsiednie narożniki, poddającej się działaniom sił grawitacji oporu powietrza i~wchodzącej w interakcje z~obiektami sceny oraz sygnałami od użytkownika, za pośrednictwem ekranu dotykowego smartfona. Symulacja miała udostępniać opcję bycia obliczaną dwoma metodami -- masy na sprężynie i~bazującą na pozycji oraz trzema sposobami -- przy użyciu GPU, sekwencyjnie na CPU oraz współbieżnie na CPU, z~wykorzystaniem czterech wątków roboczych. Użytkownikowi pozwolono na zmianę istotnych parametrów symulacji poprzez ich wybór z~ustalonego zakresu. Wszystkie wymienione wyżej cele zostały zrealizowane. Przeznaczeniem symulatora jest jednak nie tylko wizualizacja, ale też i~udostępnienie możliwości oceny modeli tkanin oraz ich implementacji pod kątem wydajności, dlatego program wyświetla informacje o~czasie trwania pojedynczego kroku symulacji, a~także o~całościowym okresie jednego przebiegu pętli głównej programu. 
+	W prezentowanej aplikacji został umieszczony jednak tylko jeden \texttt{ClothSimulator}, aby uprościć pracę programu i~ułatwić pomiary testowe. Za cel części praktycznej pracy postawiono sobie możliwość zasymulowania zachowania pojedynczej tkaniny o~prostokątnym kształcie (rysowane czworokąty mają kształt prostokątów), zawieszonej sztywno w powietrzu za dwa sąsiednie narożniki, poddającej się działaniom sił grawitacji oporu powietrza i~wchodzącej w interakcje z~obiektami sceny oraz sygnałami od użytkownika, za pośrednictwem ekranu dotykowego smartfona. Symulacja miała udostępniać opcję bycia obliczaną dwoma metodami -- masy na sprężynie i~bazującą na pozycji oraz zostać zaimplementowana na trzy sposoby -- przy użyciu GPU, sekwencyjnie na CPU oraz współbieżnie na CPU, z~wykorzystaniem czterech wątków roboczych. Użytkownikowi pozwolono na zmianę istotnych parametrów symulacji poprzez ich wybór z~ustalonego zakresu. Wszystkie wymienione wyżej cele zostały zrealizowane. Przeznaczeniem symulatora jest jednak nie tylko wizualizacja, ale też i~udostępnienie możliwości oceny modeli tkanin oraz ich implementacji pod kątem wydajności, dlatego program wyświetla informacje o~czasie trwania pojedynczego kroku symulacji, a~także o~całościowym okresie jednego przebiegu pętli głównej programu. 
 	
 	\section{Wydajność a użycie pamięci}
 	\label{t:symulacja:wydajnoscpamiec}
 	
-	Jako, że flagowym celem niniejszej pracy było zaimplementowanie symulacji z~użyciem GPU, nadrzędne założenie przy projektowaniu to jak największe przyspieszenie przetwarzania kosztem większego użycia pamięci. Wszystkie możliwe dane i~czynniki zostają obliczone podczas inicjalizacji symulatora, a~wyniki są po prostu przesyłane do odpowiednich funkcji w~trakcie działania programu. Wpasowuje się to doskonale w~metodykę programowania GPU, za sprawą chociażby minimalizacji liczby instrukcji warunkowych oraz uniknięcia obliczeń, które niepotrzebnie byłyby wykonywane dla każdego wierzchołka tkaniny, a~mogą przecież zostać przetworzone tylko raz. 
+	Jako, że flagowym celem niniejszej pracy było zaimplementowanie wydajnej symulacji z~użyciem GPU, nadrzędne założenie przy projektowaniu to jak największe przyspieszenie przetwarzania kosztem większego użycia pamięci. Wszystkie możliwe dane, które nie muszą być przeliczane w każdym kroku, zostają obliczone podczas inicjalizacji symulatora, a~wyniki są po prostu przesyłane do odpowiednich funkcji w~trakcie działania programu. Wpasowuje się to doskonale w~metodykę programowania GPU, za sprawą chociażby minimalizacji liczby instrukcji warunkowych oraz uniknięcia zbędnych obliczeń, które byłyby wielokrotnie wykonywane.
 	
 	Przykładowo, sprawdzając sąsiadów wierzchołka, należy obliczyć ich identyfikatory (tzn. poznać, które to konkretnie są wierzchołki) oraz zawsze mieć pewność, iż takowy istnieje -- nie wszystkie mają czterech sąsiadów, a~dokładnie -- nie posiadają tylu te znajdujące się na zewnętrznych krawędziach siatki. Problem zostaje rozwiązany, gdy każdemu wierzchołkowi przypisane zostaną, ustalone przy starcie komponentu, lista identyfikatorów oraz mnożników, które wynoszą 1 gdy sąsiad istnieje, bądź 0 gdy go nie ma, i~w tym przypadku obliczona siła bądź przesunięcie nie biorą udziału w~dalszym przetwarzaniu. Wyeliminowana jest także konieczność użycia instrukcji warunkowej, co dodatkowo poprawia wydajność. 
 	
-	Niestety, takie podejście zwiększa zużycie pamięci. Jak można się domyślić, jest ono proporcjonalne do ustalonej przez użytkownika gęstości siatki tkaniny. Ponadto, wszystkie wierzchołki wraz z~ich parametrami są przechowywane dwukrotnie, z~racji konieczności posiadania informacji o pozycjach poprzednich, dla całkowania Verleta (wzór (2.9), Rozdział \ref{t:teoria:analiza:masa}). W przypadku, gdy wybranym trybem symulacji jest tryb GPU, wszystkie te dane zostają dodatkowo skopiowane do pamięci karty graficznej. Dochodzą jeszcze do tego parametry pomocnicze, takie jak wymienione wyżej listy identyfikatorów sąsiadów. Przykładowo, użytkownik chce stworzyć siatkę o~\(m \times n\) dodatkowych krawędzi bocznych. Ilość wierzchołków będzie wynosić \( (m + 2)(n + 2) \). Z~każdym z~nich wiążą się następujące atrybuty:
+	Niestety, takie podejście zwiększa zużycie pamięci. Jak można się domyślić, jest ono proporcjonalne do ustalonej przez użytkownika gęstości siatki tkaniny. Ponadto, wszystkie wierzchołki wraz z~ich parametrami są przechowywane dwukrotnie, z~racji konieczności posiadania informacji o pozycjach poprzednich, dla całkowania Verleta (wzór (2.9), Rozdział \ref{t:teoria:analiza:masa}). W przypadku, gdy wybranym trybem symulacji jest tryb GPU, wszystkie te dane zostają dodatkowo skopiowane do pamięci karty graficznej. Dochodzą jeszcze do tego parametry pomocnicze, takie jak wymienione wyżej listy identyfikatorów sąsiadów. Przykładowo, użytkownik chce stworzyć siatkę o~\(m \times n\) dodatkowych krawędzi bocznych. Liczba wierzchołków będzie wynosić \( (m + 2)(n + 2) \). Z~każdym z~nich wiążą się następujące atrybuty:
 	
 	\begin{itemize}
 		\item Pozycja (16 B),
@@ -28,13 +28,13 @@
 		\item Indeks (4 B).
 	\end{itemize}
 	
-	Wielkość niektórych elementów została sztucznie zwiększona tak, aby była wielokrotnością 4 B. Dzięki temu dane zostały poprawnie ułożone w buforach jednorodnych, omawianych w Rozdziale \ref{t:technologie:narzedzia:bufory}. W~sumie jeden wierzchołek zajmuje 152 B pamięci -- wzięto pod uwagę podwójne występowanie. Należy jednak pamiętać jeszcze o~właściwych dla symulacji parametrach, opisanych w~podrozdziale \ref{t:symulacja:dzialanie:parametry}, z~których część jest przypisywana każdemu wierzchołkowi oddzielnie. Dodają one do naszych obliczeń kolejne 128 B. W~sumie cała tkanina wraz z~parametrami waży:
+	Rozmiar niektórych elementów został sztucznie zwiększony tak, aby był wielokrotnością 4 B. Dzięki temu dane zostały poprawnie ułożone w buforach jednorodnych, omawianych w rozdziale \ref{t:technologie:narzedzia:bufory}. W~sumie jeden wierzchołek zajmuje 152 B pamięci -- wzięto pod uwagę podwójne występowanie. Należy jednak pamiętać jeszcze o~właściwych dla symulacji parametrach, opisanych w~podrozdziale \ref{t:symulacja:dzialanie:parametry}, z~których część jest przypisywana każdemu wierzchołkowi oddzielnie. Dodają one do naszych obliczeń kolejne 128 B. W~sumie cała tkanina wraz z~parametrami waży:
 	
 	\begin{equation}
-	s = 280(m + 2)(n + 2) + 32 \ .
+	s = 280(m + 2)(n + 2) + 32 \ ,
 	\end{equation} 
 	
-	Ostatnia wartość wynika z~konieczności przechowywania pojedynczego wektora początkowych odległości między danym a~sąsiednimi wierzchołkami, takich samych dla każdego, gdyż wzięto pod uwagę jednorodną prostokątną siatkę, oraz wektora przesunięcia palca użytkownika po ekranie dotykowym, kluczowego dla realizacji opisanej w podrozdziale \ref{t:symulacja:dzialanie:interakcja} interakcji. Przykładowo, dla gęstej, jak na warunki urządzenia mobilnego, siatki \( 98 \times 98 \) krawędzi, zajętość pamięci wynosi 2800032 B, czyli ok. 2,7 MiB. Jest to liczba spora jak na jeden obiekt logiczny, lecz w~żadnym wypadku nie krytyczna dla testowego smartfona, wyposażonego w~2~GB RAM. Oczywiście w~naszych obliczeniach zignorowane zostały rozmaite zmienne pomocniczych dla symulatora tkanin, identyfikatory buforów i~struktur GPU oraz zapisane wartości parametrów, jednakże ich rozmiar jest tu pomijalnie mały.
+	gdzie \(s\) to rozmiar w bajtach. Ostatnia wartość wynika z~konieczności przechowywania pojedynczego wektora początkowych odległości między danym a~sąsiednimi wierzchołkami, takich samych dla każdego, gdyż wzięto pod uwagę jednorodną prostokątną siatkę, oraz wektora przesunięcia palca użytkownika po ekranie dotykowym, kluczowego dla realizacji opisanej w podrozdziale \ref{t:symulacja:dzialanie:interakcja} interakcji. Przykładowo, dla gęstej, jak na warunki urządzenia mobilnego, siatki \( 98 \times 98 \) krawędzi, zajętość pamięci wynosi 2800032 B, czyli ok. 2,7 MiB. Jest to liczba spora jak na jeden obiekt logiczny, lecz w~żadnym wypadku nie krytyczna dla testowego smartfona, wyposażonego w~2~GB RAM. Oczywiście w~naszych obliczeniach zignorowane zostały rozmaite zmienne pomocniczych dla symulatora tkanin, identyfikatory buforów i~struktur GPU oraz zapisane wartości parametrów, jednakże ich rozmiar jest pomijalnie mały.
 	
 	\section{Zasada działania}
 	\label{t:symulacja:dzialanie}
@@ -42,11 +42,11 @@
 		\subsection{Ogólny algorytm}
 		\label{t:symulacja:dzialanie:algorytm}
 		
-		Algorytm działania symulacji jest taki sam dla wszystkich trzech obsługiwanych implementacji -- GPU, CPU i~CPU na 4 wątkach. Różnice oczywiście pojawiają się tylko w~wywołaniach funkcji. 
+		Algorytm działania symulacji jest taki sam dla wszystkich trzech obsługiwanych implementacji -- GPU, CPU i~CPU na 4 wątkach. Różnice pojawiają się tylko w~wywołaniach funkcji. 
 		
 		Dla pierwszego przypadku w każdym kroku należy przeprowadzić przypisanie GPU odpowiednich tablic atrybutów wierzchołków, które zawierają niezbędne symulacji, wygenerowane uprzednio dane. Następnie zostaje ustawiony dla OpenGL program wykonujący obliczenia, ustawione są wszystkie zmienne jednorodne, związane bufory jednorodne i~uruchomione sprzężenie transformacyjne. Wywołanie \texttt{glDrawArrays} rozpoczyna obliczenia. 
 		
-		W przypadku CPU sprawa jest dużo prostsza, jako, że wszystkie dane i~tablice są już zainicjalizowane. Można od razu przystąpić do działania. Sytuacja komplikuje się, gdy wykorzystana została opcja wielowątkowości. W~tej metodzie rozłożono pracę na cztery wątki robocze, z~racji tego, iż urządzenie dysponuje czterema fizycznymi jednostkami przetwarzającymi. Algorytm podziału jest prosty -- liczbę wierzchołków dopełnia się do liczby podzielnej bez reszty przez 4~i~dzieli ją na cztery równe zakresy, przy czym koniec ostatniego z~zakresów jest oczywiście tą ,,prawdziwą'' liczbą wierzchołków. Do synchronizacji użyto muteksów i~licznika wątków, które zakończyły pracę. Działaniem wątków roboczych zarządza, wątek główny. Każdy z~tych pierwszych jest uśpiony na muteksie, dopóki nie nadejdzie wywołanie funkcji \texttt{Update} symulatora. Wtedy zostają one obudzone i~rozpoczynają obliczenia. Po ich zakończeniu podnoszą licznik i~czekają na następnym muteksie. Główny wątek z~kolei czeka, aż licznik osiągnie wymaganą wartość i~odblokowuje następny etap obliczeń.
+		W przypadku CPU sprawa jest dużo prostsza, jako, że wszystkie dane i~tablice są już zainicjalizowane. Można od razu przystąpić do działania. Sytuacja komplikuje się, gdy wykorzystana została opcja wielowątkowości. W~tej metodzie rozłożono pracę na cztery wątki robocze, z~racji tego, iż urządzenie dysponuje czterema fizycznymi jednostkami przetwarzającymi. Algorytm podziału jest prosty -- liczbę wierzchołków dopełnia się do liczby podzielnej bez reszty przez 4~i~dzieli ją na cztery równe zakresy, przy czym brane pod uwagę są pierwsze trzy, a ostatni jest równy liczbie pozostałych wierzchołków. Do synchronizacji użyto muteksów i~licznika wątków, które zakończyły pracę. Działaniem wątków roboczych zarządza wątek główny. Każdy z~tych pierwszych jest uśpiony na muteksie, dopóki nie nadejdzie wywołanie funkcji \texttt{Update} symulatora. Wtedy zostają one obudzone i~rozpoczynają obliczenia. Po ich zakończeniu podnoszą licznik i~czekają na następnym muteksie. Główny wątek z~kolei czeka, aż licznik osiągnie wymaganą wartość i~odblokowuje następny etap obliczeń.
 		
 		Cały proces podzielono na trzy oddzielne etapy, omówione dalej. Pierwszy to obliczenia ruchu tkaniny, zgodnie z~przyjętym modelem symulacji, drugi -- rozwiązywanie kolizji oraz zaaplikowanie ruchu tkaniny wynikłego z~interakcji użytkownika. Te dwie kwestie opisano w~oddzielnych podrozdziałach, jednak z~punktu widzenia implementacji wchodzą one w~skład jednego etapu. Ostatnim jest przeliczenie wektorów normalnych. Po dwóch pierwszych etapach następuje zamiana identyfikatorów struktury danych wejściowych ze strukturą danych wyjściowych, zastosowano tu tzw. metodę ping--pongową. Gdyby tego nie robić, efektem byłby szybki ,,wybuch'' symulacji, jako że obliczenia na danym wierzchołku mogłyby pobierać część danych już w danym kroku zaktualizowanych, a część nie. W przypadku obu implementacji na CPU po zakończeniu kroku przetwarzania należy jeszcze przesłać nowe dane o~pozycjach i~wektorach normalnych wierzchołków do GPU, w~celu umożliwienia ich narysowania. Dzieje się to przy pomocy funkcji \texttt{glBufferSubData}.
 		
@@ -142,7 +142,7 @@
 			
 			Inicjalizuj parametry tkaniny.
 			
-			Utwórz muteksy: trzy dla każdego etapu obliczeń, dla licznika wątków i zmiennej logicznej kończącej obliczenia -- \texttt{m\_threadsRunning} (\texttt{pthread\_mutex\_init})
+			Utwórz muteksy: trzy dla każdego etapu obliczeń, dla licznika wątków i zmiennej logicznej kończącej obliczenia -- \texttt{m\_threadsRunning}. (\texttt{pthread\_mutex\_init})
 			
 			Zablokuj muteksy odpowiadające etapom obliczeń. (\texttt{pthread\_mutex\_lock})
 			
@@ -216,7 +216,7 @@
 			
 		% lista parametrów z objaśnieniami, proces inicjalizacji paramterów
 		
-		Symulacja tkanin do działania wymaga zdefiniowania pokaźnej liczby parametrów. Niektóre z~nich mogą być charakterystyczne dla każdego wierzchołka, dlatego przekazywane są do GPU w~postaci tablic atrybutów. Inne będą zawsze takie same, niezależnie od tego, który wierzchołek jest przetwarzany i~przesłanie ich jako parametry jednorodne cechuje się większą optymalnością. Większość parametrów użytkownik może zmienić, wybierając wartość ze z~góry ustalonego zakresu bądź zbioru. Poniżej wymienione i opisane są wszystkie kluczowe parametry dostępne do modyfikacji przez użytkownika, wraz z~ich znaczeniem dla symulacji. W programie, dla wygody, zostały one upakowane w strukturach \texttt{SimParams} i~\texttt{SimData}. Pierwsza z~nich znajduje zastosowanie podczas pobierania parametrów z~interfejsu użytkownika i~przekazywania ich do klasy \texttt{ClothSimulator}. Zawartość drugiej powstaje w~procesie inicjalizacji tablic danych, gotowych do wykorzystania podczas obliczeń.
+		Symulacja tkanin do działania wymaga zdefiniowania pokaźnej liczby parametrów. Niektóre z~nich mogą być różne dla każdego wierzchołka, dlatego przekazywane są do GPU w~postaci tablic atrybutów. Inne będą zawsze takie same, niezależnie od tego, który wierzchołek jest przetwarzany i~przesłanie ich jako parametry jednorodne cechuje się większą optymalnością. Większość parametrów użytkownik może zmienić, wybierając wartość ze z~góry ustalonego zakresu bądź zbioru. Poniżej wymienione i opisane są wszystkie kluczowe parametry dostępne do modyfikacji przez użytkownika, wraz z~ich znaczeniem dla symulacji. W programie, dla wygody, zostały one upakowane w strukturach \texttt{SimParams} i~\texttt{SimData}. Pierwsza z~nich znajduje zastosowanie podczas pobierania parametrów z~interfejsu użytkownika i~przekazywania ich do klasy \texttt{ClothSimulator}. Zawartość drugiej powstaje w~procesie inicjalizacji tablic danych, gotowych do wykorzystania podczas obliczeń.
 		
 		\begin{description}
 			
@@ -232,13 +232,13 @@
 			
 			\item[Współczynnik elastyczności] Zakres: \(0\ -\ 1000\). Używany zarówno jako współczynnik elastyczności sprężyn tkaniny w modelu masy na sprężynie, jak i~jako parametr sztywności ograniczników w~modelu opartym na pozycji, po odpowiednim przeskalowaniu.
 			
-			\item[Współczynnik tłumienia drgań] Zakres: \(0\ -\ -20\). Używany w obliczeniach sił sprężystości dla modelu masy na sprężynie. Dzięki niemu minimalizowane jest ryzyko wpadnięcia tkaniny w~niekontrolowane drgania.
+			\item[Współczynnik tłumienia drgań] Zakres: \(0\ -\ \)-20. Używany w obliczeniach sił sprężystości dla modelu masy na sprężynie. Dzięki niemu minimalizowane jest ryzyko wpadnięcia tkaniny w~niekontrolowane drgania.
 			
 			\item[Szerokość] Zakres: \(1\ -\ 50\ m\). Rozmiar tkaniny w~osi X układu współrzędnych, zakładając, że siatka tkaniny jest równoległa do płaszczyzny XZ.
 			
 			\item[Długość]Zakres: \(1\ -\ 50\ m\). Rozmiar tkaniny w~osi Z układu współrzędnych, zakładając, że siatka tkaniny jest równoległa do płaszczyzny XZ.
 			
-			\item[Ilość krawędzi poziomych] Zakres: \(0\ -\ 126\). Ten i~następny są kluczowymi parametrami dla testów wydajności i~efektu wizualnego. Ilość krawędzi ma wpływ na gęstość siatki tkaniny, a~co za tym idzie na dokładność oraz ciężar obliczeniowy symulacji. Wartości tych parametrów są ograniczone do 126, czyli maksymalnie można wygenerować siatkę o~gęstości \( 128 \times 128 \) krawędzi. Nie jest to dużo, jednak limit ten wynika z~opisanej w~Rozdziale \ref{t:technologie:narzedzia:bufory} konieczności zastosowania buforów jednorodnych, które mają niewielką pojemność.
+			\item[Ilość krawędzi poziomych] Zakres: \(0\ -\ 126\). Ten i~następny są kluczowymi parametrami dla testów wydajności i~efektu wizualnego. Liczba krawędzi ma wpływ na gęstość siatki tkaniny, a~co za tym idzie na dokładność oraz ciężar obliczeniowy symulacji. Wartości tych parametrów są ograniczone do 126, czyli maksymalnie można wygenerować siatkę o~gęstości \( 128 \times 128 \) krawędzi. Limit ten wynika z~opisanej w~Rozdziale \ref{t:technologie:narzedzia:bufory} konieczności zastosowania buforów jednorodnych, które mają niewielką pojemność.
 			
 			\item[Ilość krawędzi pionowych] Zakres: \(0\ -\ 126\).
 			
@@ -248,13 +248,13 @@
 		
 		\begin{description}
 			
-			\item[Początkowa pozycja tkaniny] Ustalona na sztywno, w~ogóle poza klasą \texttt{ClothSimulator} -- w~komponencie \texttt{Transform} tego samego obiektu. Wynosi \(10\ m\) ponad początkiem układu współrzędnych. Reprezentowana w~postaci macierzy świata o~wymiarach \(4\times4 \).
+			\item[Początkowa pozycja tkaniny] Ustalona poza klasą \texttt{ClothSimulator} -- w~komponencie \texttt{Transform} tego samego obiektu. Wynosi \(10\ m\) ponad początkiem układu współrzędnych. Reprezentowana w~postaci macierzy świata o~wymiarach \(4\times4 \).
 			
 			\item[Wektor położenia wierzchołka] Składa się z~czterech komponentów. Ostatni nie bierze udziału w obliczeniach, a~ma znaczenie dla kwestii poprawnego ułożenia danych w~pamięci. Aktualizowany w~każdym kroku symulacji.
 			
 			\item[Wektor normalny wierzchołka] Jak wyżej. Służy do wyliczenia równania oświetlenia podczas rysowania tkaniny. Także aktualizowany w~każdym kroku.
 			
-			\item[Indeksy sąsiadów wierzchołka] Używane do wyboru wierzchołków, z~którymi przetwarzany aktualnie wierzchołek połączony jest sprężynami bądź ogranicznikami. Jest ich 12 -- 8 dla najbliższych sąsiadów i~4 dla sąsiadów oddalonych o~2 pozycje, tylko po krawędziach prostopadłych do osi układu współrzędnych. 
+			\item[Indeksy sąsiadów wierzchołka] Używane do wyboru wierzchołków, z~którymi przetwarzany aktualnie wierzchołek połączono sprężynami bądź ogranicznikami. Jest ich 12 -- 8 dla najbliższych sąsiadów i~4 dla sąsiadów oddalonych o~2 pozycje, tylko po krawędziach prostopadłych do osi układu współrzędnych. 
 			
 			\item[Mnożniki sąsiadów wierzchołka] Jest ich także 12. Algorytm wybierający sąsiadów, przydziela ich zawsze taką samą liczbę, nie biorąc pod uwagę, czy sąsiad faktycznie istnieje. Może tak być dla wierzchołków znajdujących się na zewnętrznych krawędziach siatki. Mnożniki przyjmujące wartości 0~lub 1~rozwiązują ten problem -- dla nieistniejącego sąsiada obliczone przesunięcie nie bierze udziału w~dalszym przetwarzaniu.
 			
@@ -262,11 +262,11 @@
 			
 			\item[Promień sfery okalającej wierzchołka] Kluczowy przy detekcji kolizji. Każdy wierzchołek posiada własną sferę okalającą, a~jej promień jest obliczany wzorem podanym w~algorytmie \ref{alg_5_4}.
 			
-			\item[Odległości początkowe od sąsiadów wierzchołka] Niezbędne w~obliczaniu sił sprężystości bądź ograniczników. Każdy ze wzorów tam użytych wymaga dostarczenia tych danych. Obliczane we wzorze podanym w algorytmie \ref{alg_5_4}. Przechowywane w~pamięci tylko raz, jako, że w~przypadku prostokątnej siatki są takie same dla każdego wierzchołka.
+			\item[Odległości początkowe od sąsiadów wierzchołka] Niezbędne w~obliczaniu sił sprężystości bądź ograniczników. Każdy ze wzorów użytych w modelach symulacji wymaga dostarczenia tych danych. Obliczane we wzorze podanym w algorytmie \ref{alg_5_4}.
 			
 		\end{description}
 		
-		Proces wspomnianej wyżej inicjalizacji struktur parametrów, z~których korzystać będzie później symulacja, można opisać podanym poniżej algorytmem \ref{alg_5_4}. Ma on miejsce zawsze, kiedy użytkownik wybierze opcję zatwierdzenia ustawień na ekranie ich wyboru. W~algorytmie zastosowano następujące oznaczenia: \(C\) -- liczba wierzchołków, \(E_{w}\) -- całkowita liczba krawędzi prostopadłych do osi X układu współrzędnych, \(E_{l}\) -- całkowita liczba krawędzi prostopadłych do osi Z układu współrzędnych (przy założeniu, że siatka tkaniny jest równoległa do płaszczyzny XZ), \(p_{i}\) -- położenie wierzchołka, \(M\) -- masa całkowita, będąca parametrem wprowadzonym przez użytkownika.
+		Proces wspomnianej wyżej inicjalizacji struktur parametrów, z~których korzystać będzie symulacja, można opisać podanym poniżej algorytmem \ref{alg_5_4}. Ma on miejsce zawsze, kiedy użytkownik wybierze opcję zatwierdzenia ustawień na ekranie ich wyboru. W~algorytmie zastosowano następujące oznaczenia: \(C\) -- liczba wierzchołków, \(E_{w}\) -- całkowita liczba krawędzi prostopadłych do osi X układu współrzędnych, \(E_{l}\) -- całkowita liczba krawędzi prostopadłych do osi Z układu współrzędnych (przy założeniu, że siatka tkaniny jest równoległa do płaszczyzny XZ), \(p_{i}\) -- położenie wierzchołka, \(M\) -- masa całkowita, będąca parametrem wprowadzonym przez użytkownika.
 		
 		\begin{algorithm}
 			\label{alg_5_4}
@@ -274,23 +274,23 @@
 			
 			Alokuj pamięć na potrzebne struktury danych i~bufory.
 			
-			Oblicz odległości początkowe pomiędzy wierzchołkami.
-			
-			\Indp
-			
-				Odległość względem długości: \( b_{l} = (p_{0_{z}} - p_{(C-1)_{z}}) / (E_{w} - 1) \ . \)
-				
-				Odległość względem szerokości: \( b_{w} = (p_{0_{x}} - p_{(C-1)_{x}}) / (E_{l} - 1) \ . \)
-				
-				Odległość diagonalna: \( b_{d} = \sqrt{ (b_{l})^{2} + (b_{w})^2 } \ . \)
-				
-				Zapisz mnożnik dla odległości od wierzchołków następnych po sąsiadach: \(2 \ .\)
-			
-			\Indm
-			
 			Dla każdego wierzchołka:
 			
 			\Indp
+			
+				Oblicz i przypisz odległości początkowe pomiędzy wierzchołkami.
+				
+				\Indp
+				
+					Odległość względem długości: \( b_{l} = (p_{0_{z}} - p_{(C-1)_{z}}) / (E_{w} - 1) \ . \)
+					
+					Odległość względem szerokości: \( b_{w} = (p_{0_{x}} - p_{(C-1)_{x}}) / (E_{l} - 1) \ . \)
+					
+					Odległość diagonalna: \( b_{d} = \sqrt{ (b_{l})^{2} + (b_{w})^2 } \ . \)
+					
+					Zapisz mnożnik dla odległości od wierzchołków następnych po sąsiadach: \(2 \ .\)
+				
+				\Indm
 			
 				Oblicz i przypisz masę pojedynczego wierzchołka: \( m_{i} = \frac{M}{\sqrt{(min(C, 0.02)}} \  kg. \)
 				
@@ -311,7 +311,7 @@
 			
 		% różnice między MS i PB z punktu widzenia implementacji, listing dla MS, listing dla PB
 		
-		Jest to pierwszy etap symulacji i~zarazem najważniejsza jego część. To tutaj obliczane są przemieszczenia wierzchołków w~taki sposób, aby odwzorować zachowanie tkaniny. Poniżej podano fragmenty kodu w~języku GLSL najpierw dla modelu masy na sprężynie, a~następnie -- modelu opartego na pozycji. Należy pamiętać, że wykonuje się on dla pojedynczego wierzchołka. Kod implementacji na CPU jest analogiczny.
+		Jest to pierwszy etap symulacji i~zarazem najważniejsza jego część. To tutaj obliczane są przemieszczenia wierzchołków w~taki sposób, aby odwzorować zachowanie tkaniny. Poniżej podano fragmenty kodu w~języku GLSL najpierw dla modelu masy na sprężynie, a~następnie -- modelu opartego na pozycji. Należy pamiętać, że wykonuje się on dla pojedynczego wierzchołka. Kod implementacji na CPU jest analogiczny, przy czym zamiast równoległych obliczeń użyto pętli \texttt{for}.
 		\newpage	
 		
 		\begin{lstlisting}[language=GLSL,caption={Obliczanie przesunięcia -- model masy na sprężynie.},label={lst_5_1}]
@@ -437,7 +437,7 @@
 			
 		% listing, komunikacja z PhysicsManagerem -- struktury i pakowanie tego na GPU
 		
-		Etapem drugim jest rozwiązanie kolizji zewnętrznych, wewnętrznych, a~także uwzględnienie działania użytkownika na tkaninę. Aby dokonać pierwszej z~tych czynności, należy mieć dane wszystkich struktur okalających dla każdego obiektu w~scenie. Zapewnia je nam klasa--singleton \texttt{PhysicsManager}, który posiada funkcjonalność przechowywania ich w~formie upakowanych struktur, o~rozmiarze wyrównanym do wielokrotności 4~B. Dzięki temu można, korzystając z~buforów jednorodnych, bezpośrednio wysłać je do GPU jako parametry. Warto pamiętać także o~tym, że każdy wierzchołek tkaniny ma własną sferę okalającą. Na tej podstawie da się ustalić i~rozwiązać kolizje z innymi obiektami. Poniżej zaprezentowano fragment kodu GLSL, zawartego w~kernelu \emph{ClothCollisionKernel.glsl}, odpowiedzialnego za tę czynność.
+		Etapem drugim jest rozwiązanie kolizji zewnętrznych, wewnętrznych, a~także uwzględnienie działania użytkownika na tkaninę. Aby dokonać pierwszej z~tych czynności, należy mieć dane wszystkich struktur okalających dla każdego obiektu w~scenie. Zapewnia je nam klasa--singleton \texttt{PhysicsManager}, gdzie przechowywane są one w~formie upakowanych struktur, o~rozmiarze wyrównanym do wielokrotności 4~B. Dzięki temu można, korzystając z~buforów jednorodnych, bezpośrednio wysłać je do GPU jako parametry jednorodne. Warto pamiętać także o~tym, że każdy wierzchołek tkaniny ma własną sferę okalającą. Na tej podstawie da się sprawdzić i~rozwiązać kolizje z innymi obiektami. Poniżej zaprezentowano fragment kodu GLSL, zawartego w~kernelu \emph{ClothCollisionKernel.glsl}, odpowiedzialnego za tę czynność.
 		
 		\begin{lstlisting}[language=GLSL,caption={Rozwiązywanie kolizji.},label={lst_5_3}]
 		
@@ -524,9 +524,9 @@
 			
 		% po co, co możemy robić -- i obiekt i palec, jak to działa, wzory, listing
 		
-		Jak wiadomo, istnieją dwa sposoby interakcji użytkownika z~tkaniną. Poprzez przesuwanie obiektu sfery bądź prostopadłościanu, z którym wchodzi ona w~kolizje, albo przy pomocy ekranu dotykowego. W~pierwszym przypadku, efekty są aplikowane w~trakcie rozwiązywania kolizji zewnętrznych. Dla drugiego sposobu, należy dokonać specjalnych obliczeń, by wiedzieć, które wierzchołki trzeba dodatkowo przesunąć, w~którą stronę i~w~jakim stopniu. Dzieje się to w~ramach etapu drugiego, w~kernelu \emph{ClothCollisionKernel.glsl}.
+		Istnieją dwa sposoby interakcji użytkownika z~tkaniną. Poprzez przesuwanie obiektu sfery bądź prostopadłościanu, z którym wchodzi ona w~kolizje, albo przy pomocy ekranu dotykowego. W~pierwszym przypadku, efekty są aplikowane w~trakcie rozwiązywania kolizji zewnętrznych. Dla drugiego sposobu, należy dokonać specjalnych obliczeń, by wiedzieć, które wierzchołki trzeba dodatkowo przesunąć, w~którą stronę i~w~jakim stopniu. Dzieje się to w~ramach etapu drugiego, w~kernelu \emph{ClothCollisionKernel.glsl}.
 		
-		Jedynymi danymi wejściowymi są dwuwymiarowe tzw. wektory dotyku. Jeden określa miejsce na ekranie, w~którym nastąpiło dotknięcie ekranu, a~drugi -- kierunek, w~jakim przesuwa się palec. Oczywiście wyrażono je w~przestrzeni ekranu. Aby na ich podstawie dokonać przesunięcia wierzchołka, trzeba mieć jego wektor położenia także w~tej przestrzeni. Uzyskiwany jest poprzez pomnożenie go przez macierze, kolejno świata, widoku i~projekcji oraz podzielenie wyniku przez jego komponent \(w\). W~ten sposób otrzymano położenie wierzchołka w~zakresie \(<-1, 1>\), takim samym jak wektor dotyku. Następnie przy pomocy wzoru Gaussa obliczono współczynnik \(c\) określający, w~jakim stopniu nastąpi przesunięcie. Jest ono wprost proporcjonalne do odległości pozycji wierzchołka od punktu dotyku:
+		Jedynymi danymi wejściowymi są dwuwymiarowe tzw. wektory dotyku. Jeden określa miejsce na ekranie, w~którym nastąpiło dotknięcie ekranu, a~drugi -- kierunek, w~jakim przesuwa się palec. Wyrażono je w~przestrzeni ekranu. Aby na ich podstawie dokonać przesunięcia wierzchołka, trzeba mieć jego wektor położenia także w~tej przestrzeni. Uzyskiwany jest poprzez pomnożenie go przez macierze, kolejno świata, widoku i~projekcji oraz podzielenie wyniku przez jego komponent \(w\). W~ten sposób otrzymano położenie wierzchołka w~zakresie \(<-1, 1>\), takim samym jak wektor dotyku. Następnie przy pomocy wzoru Gaussa obliczono współczynnik \(c\) określający, w~jakim stopniu nastąpi przesunięcie. Jest ono wprost proporcjonalne do odległości pozycji wierzchołka od punktu dotyku:
 		
 		%(p_{t_{x}} - p_{i_{x}})^{2} + (p_{t_{y}} - p_{i_{y}})^{2}
 		
@@ -534,7 +534,7 @@
 		c = A\exp{\frac{(\mathbf{p}_{t_{x}} - \mathbf{p}_{i_{x}})^{2} + (\mathbf{p}_{t_{y}} - \mathbf{p}_{i_{y}})^{2}}{2 \sigma}} \ .
 		\end{equation} 
 		
-		Gdzie parametry \( A \) i~\( \sigma \) są na sztywno określonymi stałymi i~wynoszą odpowiednio: \(200\) i~\(300\). Natomiast \( \mathbf{p}_{t} \) to pozycja dotyku, a~\( \mathbf{p}_{i} \)  -- wierzchołka. Mając już przesunięcie, trzeba wyrazić je z~powrotem w koordynatach modelu. Dokonuje się tego mnożąc przez odwrotności wspomnianych wyżej macierzy -- projekcji, widoku i~świata. Po zrobieniu tego, można po prostu dodać wektor przesunięcia do aktualnej pozycji.
+		Gdzie parametry \( A \) i~\( \sigma \) są odgórnie określonymi stałymi i~wynoszą odpowiednio: \(200\) i~\(300\). Natomiast \( \mathbf{p}_{t} \) to pozycja dotyku, a~\( \mathbf{p}_{i} \)  -- wierzchołka. Mając już przesunięcie, trzeba wyrazić je z~powrotem w koordynatach modelu. Dokonuje się tego mnożąc przez odwrotności wspomnianych wyżej macierzy -- projekcji, widoku i~świata. Na koniec można po prostu dodać wektor przesunięcia do aktualnej pozycji.
 		\newline
 		
 		\begin{lstlisting}[language=GLSL,caption={Obliczenie reakcji tkaniny na dotyk ekranu.},label={lst_5_4}]
@@ -566,9 +566,9 @@
 			
 		% po co, wzór, algorytm
 		
-		Proces obliczenia wektorów normalnych wierzchołków jest ostatnim etapem symulacji. Nie ma on wpływu na samo zachowanie tkaniny, jednak posiada kluczowe znaczenie przy jej wizualizacji. Na początku siatka przyjmuje postać prostokąta położonego równolegle do płaszczyzny XZ układu współrzędnych, a~wektory normalne są skierowane w kierunku dodatnich wartości osi Y. Jeśli nie zostaną one za każdym razem przeliczone na nowo, tkanina pozostanie oświetlona zawsze w taki sam sposób, niezależnie od jej ruchu. Da to bardzo niesatysfakcjonujący efekt wizualny.
+		Proces obliczenia wektorów normalnych wierzchołków jest ostatnim etapem symulacji. Nie ma on wpływu na samo zachowanie tkaniny, jednak posiada kluczowe znaczenie przy jej wizualizacji. Na początku siatka przyjmuje postać prostokąta położonego równolegle do płaszczyzny XZ układu współrzędnych, a~wektory normalne są skierowane w kierunku dodatnich wartości osi Y. Jeśli nie zostaną one za każdym razem przeliczone na nowo, tkanina pozostanie oświetlona zawsze w taki sam sposób, niezależnie od jej ruchu. Poskutkuje to bardzo niesatysfakcjonującym efektem wizualnym.
 		
-		Proces obliczenia wektora normalnego jest bardzo prosty. Wykorzystano tutaj własność iloczynu wektorowego, który daje nam zawsze wektor prostopadły do płaszczyzny tworzonej przez wektory wchodzące w~skład działania. Obliczono iloczyn dla każdej pary: dany wierzchołek -- jego sąsiad. Pozwala to wziąć pod uwagę wszystkie płaszczyzny ,,schodzące'' się w~przetwarzanym wierzchołku. Wyniki uśredniono poprzez ich zsumowanie, a~następnie normalizację otrzymanego wektora. Proces ten opisują poniższy wzór oraz fragment kodu GLSL:
+		Proces obliczenia wektora normalnego jest bardzo prosty. Wykorzystano tutaj własność iloczynu wektorowego, który daje nam zawsze wektor prostopadły do płaszczyzny tworzonej przez wektory wchodzące w~skład działania. Obliczono iloczyn dla każdej grupy: dany wierzchołek -- jego dwóch kolejnych sąsiadów. Pozwala to wziąć pod uwagę wszystkie płaszczyzny ,,schodzące'' się w~przetwarzanym wierzchołku. Wyniki uśredniono poprzez ich zsumowanie, a~następnie normalizację otrzymanego wektora. Proces ten opisują poniższy wzór oraz fragment kodu GLSL:
 		
 		\begin{equation}
 		\mathbf{n}_{i} = normalize( \sum_{n = 0}^{n < 8} ( (\mathbf{p}_{i} - \mathbf{p}_{n}) \times (\mathbf{p}_{i} - \mathbf{p}_{(n+1)\ MOD\ 8}) ) ) \ .
