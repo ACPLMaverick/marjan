@@ -28,6 +28,13 @@
 \usepackage{pgfplotstable}
 \usepackage{pdflscape}
 \usepgfplotslibrary{units}
+\usepackage{afterpage}
+
+\newcommand\blankpage{%
+	\null
+	\thispagestyle{empty}%
+	%\addtocounter{page}{-1}%
+	\newpage}
 
 \definecolor{dkgreen}{rgb}{0, 0.4, 0}
 
@@ -263,6 +270,8 @@ Specjalność: Technologie Gier i Symulacji Komputerowych
 \end{textblock}
 \end{center}
 \end{titlepage}
+
+\blankpage
 
 \tableofcontents
 
