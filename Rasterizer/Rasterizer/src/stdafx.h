@@ -20,3 +20,12 @@
 
 #include <iostream>
 #include "SystemSettings.h"
+#include "Float3.h"
+#include "Color32.h"
+
+// DEFINES FOR RENDERER VERSION
+// ONLY ONE AT A TIME CAN BE DEFINED
+
+//#define RENDERER_FGK
+#define RENDERER_MAV
+//#define RENDERER_MAJSTER

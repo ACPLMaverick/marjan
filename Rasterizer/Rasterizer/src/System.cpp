@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "System.h"
 #include "Scene.h"
-#include "SceneRaytracer.h"
+#include "SceneTriangle.h"
 
-System::System() :
-	m_BufferColor(800, 600),
-	m_BufferDepth(800, 600)
+#include "SpecificObjectFactory.h"
+
+System::System()
 {
 }
 
@@ -16,66 +16,67 @@ System::~System()
 
 void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	m_settings.m_hInstance = hInstance;
-	m_settings.m_lpCmdLine = lpCmdLine;
-	m_settings.m_nCmdShow = nCmdShow;
+	_settings._hInstance = hInstance;
+	_settings._lpCmdLine = lpCmdLine;
+	_settings._nCmdShow = nCmdShow;
 
 	// initialize window in current OS
 	InitWindow(hInstance, lpCmdLine, nCmdShow);
 
 	// initialize DIB
 	RECT r;
-	GetClientRect(m_settings.m_hwnd, &r);
+	GetClientRect(_settings._hwnd, &r);
 	
-	ZeroMemory(&m_bitmapScreenBufferInfo, sizeof(BITMAPINFO));
-	m_bitmapScreenBufferInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	m_bitmapScreenBufferInfo.bmiHeader.biWidth = r.right - r.left;
-	m_bitmapScreenBufferInfo.bmiHeader.biHeight = r.bottom - r.top;
-	m_bitmapScreenBufferInfo.bmiHeader.biPlanes = 1;
-	m_bitmapScreenBufferInfo.bmiHeader.biBitCount = 32;
-	m_bitmapScreenBufferInfo.bmiHeader.biSizeImage = m_settings.GetWindowWidth() * m_settings.GetWindowHeight();
-	m_bitmapScreenBufferInfo.bmiHeader.biCompression = BI_RGB;
-	m_bitmapScreenBufferInfo.bmiHeader.biSizeImage = 0;
+	ZeroMemory(&_bitmapScreenBufferInfo, sizeof(BITMAPINFO));
+	_bitmapScreenBufferInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	_bitmapScreenBufferInfo.bmiHeader.biWidth = r.right - r.left;
+	_bitmapScreenBufferInfo.bmiHeader.biHeight = r.bottom - r.top;
+	_bitmapScreenBufferInfo.bmiHeader.biPlanes = 1;
+	_bitmapScreenBufferInfo.bmiHeader.biBitCount = 32;
+	_bitmapScreenBufferInfo.bmiHeader.biSizeImage = _settings.GetWindowWidth() * _settings.GetWindowHeight();
+	_bitmapScreenBufferInfo.bmiHeader.biCompression = BI_RGB;
+	_bitmapScreenBufferInfo.bmiHeader.biSizeImage = 0;
 
-	HDC dc = GetWindowDC(m_settings.m_hwnd);
-	m_bitmapScreenBuffer = CreateDIBSection(dc, &m_bitmapScreenBufferInfo, DIB_RGB_COLORS, &m_bitmapScreenBufferDataPtr, NULL, NULL);
+	HDC dc = GetWindowDC(_settings._hwnd);
+	_bitmapScreenBuffer = CreateDIBSection(dc, &_bitmapScreenBufferInfo, DIB_RGB_COLORS, &_bitmapScreenBufferDataPtr, NULL, NULL);
+
+	_settings._displayWidth = _bitmapScreenBufferInfo.bmiHeader.biWidth;
+	_settings._displayHeight = _bitmapScreenBufferInfo.bmiHeader.biHeight;
 
 	// initialize managers
+	_renderer = SpecificObjectFactory::GetRenderer(&_settings);
 
 	// initialize scenes
-	m_scenes.push_back(new SceneRaytracer());
-	std::string sName = "SceneRaytracer";
-	m_scenes[0]->Initialize(0, &sName);
+	_scenes.push_back(new SceneTriangle());
+	std::string sName = "SceneTriangle";
+	_scenes[0]->Initialize(0, &sName);
 }
 
 void System::Shutdown()
 {
 	// shutdown managers
 
-	UnregisterClass((m_settings.s_windowTitle.c_str()), m_settings.m_hInstance);
-	DestroyWindow(m_settings.m_hwnd);
+	UnregisterClass((_settings.s_windowTitle.c_str()), _settings._hInstance);
+	DestroyWindow(_settings._hwnd);
 	PostQuitMessage(0);
 }
 
 void System::Run()
 {
-	while (m_running)
+	while (_running)
 	{
 		RunMessages();
 
 		// update scene instances
-		m_scenes[m_currentScene]->Update();
-
-		m_BufferColor.Fill(0x00FF0000);
-		m_BufferDepth.Fill(0.0f);
+		_scenes[_currentScene]->Update();
 
 		// draw scene to buffer
-		m_scenes[m_currentScene]->Draw(&m_BufferColor, &m_BufferDepth);
+		_renderer->Draw(_scenes[_currentScene]);
 
 		// draw buffer to window
 		RECT r;
-		GetClientRect(m_settings.m_hwnd, &r);
-		InvalidateRect(m_settings.m_hwnd, &r, false);
+		GetClientRect(_settings._hwnd, &r);
+		InvalidateRect(_settings._hwnd, &r, false);
 	}
 }
 
@@ -85,21 +86,21 @@ void System::Pause()
 
 void System::Stop()
 {
-	m_running = false;
+	_running = false;
 }
 
 void System::AddEventHandlerMessage(std::function<void(UINT, WPARAM, LPARAM)>* func)
 {
-	m_eventsMessage.push_back(func);
+	_eventsMessage.push_back(func);
 }
 
 bool System::RemoveEventHandlerMessage(std::function<void(UINT, WPARAM, LPARAM)>* func)
 {
-	for (std::vector<std::function<void(UINT, WPARAM, LPARAM)>*>::iterator it = m_eventsMessage.begin(); it != m_eventsMessage.end(); ++it)
+	for (std::vector<std::function<void(UINT, WPARAM, LPARAM)>*>::iterator it = _eventsMessage.begin(); it != _eventsMessage.end(); ++it)
 	{
 		if (*it == func)
 		{
-			m_eventsMessage.erase(it);
+			_eventsMessage.erase(it);
 			return true;
 		}
 	}
@@ -117,33 +118,33 @@ void System::InitWindow(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
 	wc.hInstance = hInstance;
 	wc.lpfnWndProc = WndProc;
-	wc.lpszClassName = (m_settings.s_windowTitle.c_str());
+	wc.lpszClassName = (_settings.s_windowTitle.c_str());
 	wc.lpszMenuName = 0;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 
 	RegisterClass(&wc);
 
-	m_settings.m_hwnd = CreateWindow(
-		(m_settings.s_windowTitle.c_str()),
-		(m_settings.s_windowTitle.c_str()),
+	_settings._hwnd = CreateWindow(
+		(_settings.s_windowTitle.c_str()),
+		(_settings.s_windowTitle.c_str()),
 		WS_OVERLAPPEDWINDOW,
 		10, 10,
-		m_settings.s_windowWidth, m_settings.s_windowHeight,
+		_settings.s_windowWidth, _settings.s_windowHeight,
 		NULL, NULL,
 		hInstance, NULL
 		);
 
 	int x = GetLastError();
 
-	ShowWindow(m_settings.m_hwnd, nCmdShow);
-	UpdateWindow(m_settings.m_hwnd);
+	ShowWindow(_settings._hwnd, nCmdShow);
+	UpdateWindow(_settings._hwnd);
 }
 
 inline void System::RunMessages()
 {
 	MSG msg;
 
-	while (PeekMessageW(&msg, m_settings.m_hwnd, 0, 0, PM_REMOVE))
+	while (PeekMessageW(&msg, _settings._hwnd, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -152,47 +153,47 @@ inline void System::RunMessages()
 
 inline void System::ResizeWindowBitmap()
 {
-	if (m_bitmapScreenBuffer == nullptr || m_bitmapScreenBufferDataPtr == nullptr)
+	if (_bitmapScreenBuffer == nullptr || _bitmapScreenBufferDataPtr == nullptr)
 		return;
 
 }
 
 inline void System::DrawColorBuffer()
 {
-	if (m_bitmapScreenBuffer == nullptr || m_bitmapScreenBufferDataPtr == nullptr)
+	if (_bitmapScreenBuffer == nullptr || _bitmapScreenBufferDataPtr == nullptr)
 		return;
 
 	PAINTSTRUCT ps;
 	BITMAP nbm;
-	HDC hdc = BeginPaint(m_settings.m_hwnd, &ps);
+	HDC hdc = BeginPaint(_settings._hwnd, &ps);
 
 	// fill bitmap with color buffer data
-	size_t tj = m_bitmapScreenBufferInfo.bmiHeader.biWidth;
-	size_t ti = m_bitmapScreenBufferInfo.bmiHeader.biHeight;
+	size_t tj = _bitmapScreenBufferInfo.bmiHeader.biWidth;
+	size_t ti = _bitmapScreenBufferInfo.bmiHeader.biHeight;
 	for (size_t i = 0; i < ti; ++i)
 	{
 		for (size_t j = 0; j < tj; ++j)
 		{
-			((int32_t*)m_bitmapScreenBufferDataPtr)[i * tj + j] = (int32_t)m_BufferColor.GetPixelScaled((uint16_t)j, (uint16_t)i, tj, ti);
+			((uint32_t*)_bitmapScreenBufferDataPtr)[i * tj + j] = (uint32_t)(System::GetInstance()->_renderer->GetColorBuffer()->GetPixelScaled((uint16_t)j, (uint16_t)i, (uint16_t)tj, (uint16_t)ti).color);
 		}
 	}
 
 	HDC hdcMem = CreateCompatibleDC(hdc);
-	HBITMAP oldBitmap = (HBITMAP)SelectObject(hdcMem, (HBITMAP)m_bitmapScreenBuffer);
-	GetObject((HBITMAP)m_bitmapScreenBuffer, sizeof(BITMAP), &nbm);
+	HBITMAP oldBitmap = (HBITMAP)SelectObject(hdcMem, (HBITMAP)_bitmapScreenBuffer);
+	GetObject((HBITMAP)_bitmapScreenBuffer, sizeof(BITMAP), &nbm);
 	BitBlt(hdc, 0, 0, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top,
 		hdcMem, 0, 0, SRCCOPY);
 
 	SelectObject(hdcMem, oldBitmap);
 	DeleteDC(hdcMem);
 
-	EndPaint(m_settings.m_hwnd, &ps);
+	EndPaint(_settings._hwnd, &ps);
 }
 
 LRESULT System::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	// pass message to event handlers
-	for (std::vector<std::function<void(UINT, WPARAM, LPARAM)>*>::iterator it = instance->m_eventsMessage.begin(); it != instance->m_eventsMessage.end(); ++it)
+	for (std::vector<std::function<void(UINT, WPARAM, LPARAM)>*>::iterator it = instance->_eventsMessage.begin(); it != instance->_eventsMessage.end(); ++it)
 	{
 		(*(*it))(message, wParam, lParam);
 	}

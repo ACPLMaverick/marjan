@@ -8,8 +8,8 @@ protected:
 
 #pragma region Protected
 
-	uint64_t m_id;
-	std::string m_name;
+	uint64_t _id;
+	std::string _name;
 
 #pragma endregion
 
@@ -24,8 +24,8 @@ public:
 
 #pragma region Accessors
 
-	uint64_t GetUID() { return m_id; }
-	const std::string* GetName() { return &m_name; }
+	uint64_t GetUID() { return _id; }
+	const std::string* GetName() { return &_name; }
 
 #pragma endregion
 

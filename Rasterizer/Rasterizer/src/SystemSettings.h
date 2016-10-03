@@ -36,13 +36,13 @@ private:
 	bool s_windowFullscreen = false;
 	bool s_soundEnabled = true;
 
-	HINSTANCE m_hInstance = NULL;
-	LPWSTR m_lpCmdLine = NULL;
-	int m_nCmdShow = 0;
-	HWND m_hwnd = NULL;
+	HINSTANCE _hInstance = NULL;
+	LPWSTR _lpCmdLine = NULL;
+	int _nCmdShow = 0;
+	HWND _hwnd = NULL;
 
-	int32_t m_displayWidth = 0;
-	int32_t m_displayHeight = 0;
+	int32_t _displayWidth = 0;
+	int32_t _displayHeight = 0;
 
 #pragma endregion
 
@@ -60,13 +60,13 @@ public:
 	bool GetWindowFullscreen() { return s_windowFullscreen; }
 	bool GetSoundEnabled() { return s_soundEnabled; }
 
-	HINSTANCE GetHInstance() { return m_hInstance; }
-	LPWSTR* GetLpCmdLine() { return &m_lpCmdLine; }
-	int GetCmdShow() { return m_nCmdShow; }
-	HWND GetWindowPtr() { return m_hwnd; }
+	HINSTANCE GetHInstance() { return _hInstance; }
+	LPWSTR* GetLpCmdLine() { return &_lpCmdLine; }
+	int GetCmdShow() { return _nCmdShow; }
+	HWND GetWindowPtr() { return _hwnd; }
 
-	int32_t GetDisplayWidth() { return m_displayWidth; }
-	int32_t GetDisplayHeight() { return m_displayHeight; }
+	int32_t GetDisplayWidth() { return _displayWidth; }
+	int32_t GetDisplayHeight() { return _displayHeight; }
 
 #pragma endregion
 };

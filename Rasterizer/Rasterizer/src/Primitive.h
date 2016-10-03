@@ -23,10 +23,10 @@ public:
 #pragma region Functions Public
 
 	Primitive();
-	~Primitive();
+	virtual ~Primitive();
 
 	virtual void Update() = 0;
-	virtual void Draw(Buffer<int32_t> * const buf, Buffer<float>* const depth) = 0;
+	virtual void Draw() = 0;
 
 #pragma region Accessors
 

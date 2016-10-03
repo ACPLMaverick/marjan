@@ -12,12 +12,12 @@ class Timer :
 	friend class Singleton<Timer>;
 protected:
 
-	double m_freq = 1.0;
+	double _freq = 1.0;
 
-	double m_startTime = 0.0;
-	double m_currentTime = 0.0;
-	double m_deltaTime = 0.0;
-	double m_fps = 0.0;
+	double _startTime = 0.0;
+	double _currentTime = 0.0;
+	double _deltaTime = 0.0;
+	double _fps = 0.0;
 
 	Timer();
 
@@ -32,11 +32,11 @@ public:
 
 #pragma region Accessors
 
-	double GetStartTime() { return m_startTime; }
-	double GetActualTime() { return m_currentTime; }
-	double GetDeltaTime() { return m_deltaTime; }
-	double GetTotalTimeElapsed() { return m_currentTime - m_startTime; }
-	double GetFPS() { return m_fps; }
+	double GetStartTime() { return _startTime; }
+	double GetActualTime() { return _currentTime; }
+	double GetDeltaTime() { return _deltaTime; }
+	double GetTotalTimeElapsed() { return _currentTime - _startTime; }
+	double GetFPS() { return _fps; }
 
 #pragma endregion
 

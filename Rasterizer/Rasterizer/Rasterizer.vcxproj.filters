@@ -33,13 +33,7 @@
     <ClCompile Include="src\Singleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Primitive.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SceneRaytracer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Buffer.cpp">
@@ -51,7 +45,25 @@
     <ClCompile Include="src\Color32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\IRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Primitive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\Triangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SpecificObjectFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendererMav\RendererMav.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendererMav\TriangleMav.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneTriangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,13 +86,7 @@
     <ClInclude Include="src\Singleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Primitive.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SceneRaytracer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Buffer.h">
@@ -92,10 +98,28 @@
     <ClInclude Include="src\Color32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Primitive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math.h">
+    <ClInclude Include="src\SpecificObjectFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendererMav\RendererMav.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendererMav\TriangleMav.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneTriangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

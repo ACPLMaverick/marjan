@@ -14,71 +14,71 @@ Scene::~Scene()
 
 void Scene::Initialize(uint32_t uID, std::string * name)
 {
-	m_name = *name;
-	m_uID = uID;
+	_name = *name;
+	_uID = uID;
 
 	InitializeScene();
 }
 
 void Scene::Shutdown()
 {
-	for (std::vector<Primitive*>::iterator it = m_primitives.begin(); it != m_primitives.end(); ++it)
+	for (std::vector<Primitive*>::iterator it = _primitives.begin(); it != _primitives.end(); ++it)
 	{
 		delete *it;
 	}
 
-	for (std::vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	for (std::vector<Camera*>::iterator it = _cameras.begin(); it != _cameras.end(); ++it)
 	{
 		delete *it;
 	}
 
-	m_primitives.clear();
-	m_cameras.clear();
+	_primitives.clear();
+	_cameras.clear();
 }
 
 void Scene::Update()
 {
-	if (m_flagToAddPrimitive)
+	if (_flagToAddPrimitive)
 	{
-		m_flagToAddPrimitive = false;
-		for (std::vector<Primitive*>::iterator it = m_primitivesToAdd.begin(); it != m_primitivesToAdd.end(); ++it)
+		_flagToAddPrimitive = false;
+		for (std::vector<Primitive*>::iterator it = _primitivesToAdd.begin(); it != _primitivesToAdd.end(); ++it)
 		{
-			m_primitives.push_back(*it);
+			_primitives.push_back(*it);
 		}
-		m_primitivesToAdd.clear();
+		_primitivesToAdd.clear();
 	}
-	if (m_flagToRemovePrimitive)
+	if (_flagToRemovePrimitive)
 	{
-		m_flagToRemovePrimitive = false;
-		for (std::vector<std::vector<Primitive*>::iterator>::iterator it = m_primitivesToRemove.begin(); it != m_primitivesToRemove.end(); ++it)
+		_flagToRemovePrimitive = false;
+		for (std::vector<std::vector<Primitive*>::iterator>::iterator it = _primitivesToRemove.begin(); it != _primitivesToRemove.end(); ++it)
 		{
-			m_primitives.erase(*it);
+			_primitives.erase(*it);
 		}
-		m_primitivesToRemove.clear();
+		_primitivesToRemove.clear();
 	}
 
-	for (std::vector<Primitive*>::iterator it = m_primitives.begin(); it != m_primitives.end(); ++it)
+	for (std::vector<Primitive*>::iterator it = _primitives.begin(); it != _primitives.end(); ++it)
 	{
 		(*it)->Update();
 	}
 
-	for (std::vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	for (std::vector<Camera*>::iterator it = _cameras.begin(); it != _cameras.end(); ++it)
 	{
 		(*it)->Update();
 	}
 }
 
-void Scene::Draw(Buffer<int32_t> * const buf, Buffer<float>* const depth)
+void Scene::Draw()
 {
-	for (std::vector<Primitive*>::iterator it = m_primitives.begin(); it != m_primitives.end(); ++it)
+	for (std::vector<Primitive*>::iterator it = _primitives.begin(); it != _primitives.end(); ++it)
 	{
-		(*it)->Draw(buf, depth);
+		(*it)->Draw();
 	}
 }
 
 Camera * const Scene::GetCamera(uint32_t uid)
 {
-	for (std::vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	for (std::vector<Camera*>::iterator it = _cameras.begin(); it != _cameras.end(); ++it)
 	{
 		if ((*it)->GetUID() == uid)
 		{
@@ -91,7 +91,7 @@ Camera * const Scene::GetCamera(uint32_t uid)
 
 Camera * const Scene::GetCamera(std::string * name)
 {
-	for (std::vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	for (std::vector<Camera*>::iterator it = _cameras.begin(); it != _cameras.end(); ++it)
 	{
 		if (*(*it)->GetName() == *name)
 		{
@@ -104,23 +104,23 @@ Camera * const Scene::GetCamera(std::string * name)
 
 void Scene::AddPrimitive(Primitive * const Primitive)
 {
-	m_primitivesToAdd.push_back(Primitive);
-	m_flagToAddPrimitive = true;
+	_primitivesToAdd.push_back(Primitive);
+	_flagToAddPrimitive = true;
 }
 
 void Scene::AddCamera(Camera * const camera)
 {
-	m_cameras.push_back(camera);
+	_cameras.push_back(camera);
 }
 
 Camera * const Scene::RemoveCamera(uint32_t uid)
 {
-	for (std::vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	for (std::vector<Camera*>::iterator it = _cameras.begin(); it != _cameras.end(); ++it)
 	{
 		if ((*it)->GetUID() == uid)
 		{
 			Camera* tmp = *it;
-			m_cameras.erase(it);
+			_cameras.erase(it);
 			return *it;
 		}
 	}
@@ -130,12 +130,12 @@ Camera * const Scene::RemoveCamera(uint32_t uid)
 
 Camera * const Scene::RemoveCamera(std::string * name)
 {
-	for (std::vector<Camera*>::iterator it = m_cameras.begin(); it != m_cameras.end(); ++it)
+	for (std::vector<Camera*>::iterator it = _cameras.begin(); it != _cameras.end(); ++it)
 	{
 		if (*(*it)->GetName() == *name)
 		{
 			Camera* tmp = *it;
-			m_cameras.erase(it);
+			_cameras.erase(it);
 			return *it;
 		}
 	}

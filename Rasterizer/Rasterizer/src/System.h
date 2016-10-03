@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "Singleton.h"
 #include "Buffer.h"
+#include "IRenderer.h"
 
 #include <vector>
 #include <functional>
@@ -16,33 +17,32 @@ protected:
 
 #pragma region SettingsSystem
 
-	SystemSettings m_settings;
+	SystemSettings _settings;
 
 #pragma endregion
 
 #pragma region Draw Related
 
-	Buffer<int32_t> m_BufferColor;
-	Buffer<float> m_BufferDepth;
+	IRenderer* _renderer;
 
-	HBITMAP m_bitmapScreenBuffer;
-	BITMAPINFO m_bitmapScreenBufferInfo;
-	void* m_bitmapScreenBufferDataPtr;
+	HBITMAP _bitmapScreenBuffer;
+	BITMAPINFO _bitmapScreenBufferInfo;
+	void* _bitmapScreenBufferDataPtr;
 
 #pragma endregion
 
 #pragma region Variables
 
-	bool m_active = true;
-	bool m_running = true;
+	bool _active = true;
+	bool _running = true;
 
 #pragma endregion
 
 #pragma region Collections
 
-	std::vector<std::function<void(UINT, WPARAM, LPARAM)>*> m_eventsMessage;
-	std::vector<Scene*> m_scenes;
-	uint32_t m_currentScene = 0;
+	std::vector<std::function<void(UINT, WPARAM, LPARAM)>*> _eventsMessage;
+	std::vector<Scene*> _scenes;
+	uint32_t _currentScene = 0;
 
 #pragma endregion
 
@@ -73,9 +73,10 @@ public:
 
 #pragma region Accessors
 
-	SystemSettings* GetSystemSettings() { return &m_settings; }
-	Scene* GetCurrentScene() { return m_scenes[m_currentScene]; }
-	std::vector<Scene*>* const GetSceneCollection() { return &m_scenes; }
+	SystemSettings* GetSystemSettings() { return &_settings; }
+	Scene* GetCurrentScene() { return _scenes[_currentScene]; }
+	std::vector<Scene*>* const GetSceneCollection() { return &_scenes; }
+	IRenderer* GetRenderer() { return _renderer; }
 
 	void AddEventHandlerMessage(std::function<void(UINT, WPARAM, LPARAM)>* func);
 	bool RemoveEventHandlerMessage(std::function<void(UINT, WPARAM, LPARAM)>* func);

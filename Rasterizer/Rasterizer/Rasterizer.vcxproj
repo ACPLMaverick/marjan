@@ -19,10 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\SpecificObjectFactory.cpp" />
+    <ClCompile Include="src\rendererMav\RendererMav.cpp" />
+    <ClCompile Include="src\IRenderer.cpp" />
     <ClCompile Include="src\Color32.cpp" />
     <ClCompile Include="src\Buffer.cpp" />
     <ClCompile Include="src\Float3.cpp" />
-    <ClCompile Include="src\SceneRaytracer.cpp" />
+    <ClCompile Include="src\rendererMav\TriangleMav.cpp" />
+    <ClCompile Include="src\SceneTriangle.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Primitive.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -34,11 +38,15 @@
     <ClCompile Include="src\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Math.h" />
+    <ClInclude Include="src\SpecificObjectFactory.h" />
+    <ClInclude Include="src\rendererMav\RendererMav.h" />
+    <ClInclude Include="src\IRenderer.h" />
+    <ClInclude Include="src\Math.h" />
     <ClInclude Include="src\Color32.h" />
     <ClInclude Include="src\Buffer.h" />
     <ClInclude Include="src\Float3.h" />
-    <ClInclude Include="src\SceneRaytracer.h" />
+    <ClInclude Include="src\rendererMav\TriangleMav.h" />
+    <ClInclude Include="src\SceneTriangle.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Primitive.h" />
     <ClInclude Include="src\Scene.h" />

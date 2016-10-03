@@ -7,10 +7,10 @@ class Buffer
 {
 protected:
 
-	T* m_data;
+	T* _data;
 
-	uint16_t m_width;
-	uint16_t m_height;
+	uint16_t _width;
+	uint16_t _height;
 
 public:
 
@@ -25,8 +25,8 @@ public:
 
 	void Fill(T val);
 
-	uint16_t GetWidth() { return m_width; }
-	uint16_t GetHeight() { return m_height; }
+	uint16_t GetWidth() { return _width; }
+	uint16_t GetHeight() { return _height; }
 
 #pragma endregion
 };
@@ -35,16 +35,16 @@ public:
 
 
 template <class T> Buffer<T>::Buffer(uint16_t width, uint16_t height) :
-	m_width(width),
-	m_height(height)
+	_width(width),
+	_height(height)
 {
-	m_data = new T[width * height];
-	ZeroMemory(m_data, width * height * sizeof(T));
+	_data = new T[width * height];
+	ZeroMemory(_data, width * height * sizeof(T));
 }
 
 template <class T> Buffer<T>::~Buffer()
 {
-	delete[] m_data;
+	delete[] _data;
 }
 
 
@@ -53,32 +53,32 @@ template <class T> Buffer<T>::~Buffer()
 template<class T>
 inline void Buffer<T>::SetPixel(uint16_t x, uint16_t y, T val)
 {
-	if (x >= 0 && x <= m_width && y >= 0 && y <= m_height)
+	if (x >= 0 && x <= _width && y >= 0 && y <= _height)
 	{
-		m_data[y * (m_width - 1) + x] = val;
+		_data[y * (_width - 1) + x] = val;
 	}
 }
 
 template<class T>
 inline T Buffer<T>::GetPixel(uint16_t x, uint16_t y)
 {
-	return m_data[y * (m_width - 1) + x];
+	return _data[y * (_width - 1) + x];
 }
 
 template<class T>
 inline T Buffer<T>::GetPixelScaled(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
-	uint16_t coordX = (uint16_t)((float)x * (float)(m_width) / (float)(w));
-	uint16_t coordY = (uint16_t)((float)y * (float)(m_height) / (float)(y));
+	uint16_t coordX = (uint16_t)((float)x * (float)(_width) / (float)(w));
+	uint16_t coordY = (uint16_t)((float)y * (float)(_height) / (float)(y));
 	return GetPixel(x, y);
 }
 
 template<class T>
 inline void Buffer<T>::Fill(T val)
 {
-	size_t t = m_width * m_height;
+	size_t t = _width * _height;
 	for (size_t i = 0; i < t; ++i)
 	{
-		m_data[i] = val;
+		_data[i] = val;
 	}
 }

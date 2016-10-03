@@ -15,10 +15,10 @@ void Timer::Initialize()
 {
 	LARGE_INTEGER li;
 	QueryPerformanceFrequency(&li);
-	m_freq = double(li.QuadPart);
+	_freq = double(li.QuadPart);
 
-	m_startTime = GetCurrentTimeS();
-	m_currentTime = m_startTime;
+	_startTime = GetCurrentTimeS();
+	_currentTime = _startTime;
 }
 
 void Timer::Shutdown()
@@ -28,10 +28,10 @@ void Timer::Shutdown()
 void Timer::Update()
 {
 	double time = GetCurrentTimeS();
-	m_deltaTime = time - m_currentTime;
-	m_currentTime = time;
+	_deltaTime = time - _currentTime;
+	_currentTime = time;
 
-	m_fps = 1.0f / max(m_deltaTime, 0.00000000001);
+	_fps = 1.0f / max(_deltaTime, 0.00000000001);
 }
 
 double Timer::GetCurrentTimeS()
@@ -39,6 +39,6 @@ double Timer::GetCurrentTimeS()
 	double t;
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
-	t = double(li.QuadPart) / m_freq - m_startTime;
+	t = double(li.QuadPart) / _freq - _startTime;
 	return t;
 }

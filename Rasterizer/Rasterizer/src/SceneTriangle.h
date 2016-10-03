@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 
-class SceneRaytracer :
+class SceneTriangle :
 	public Scene
 {
 protected:
@@ -13,7 +13,7 @@ protected:
 #pragma endregion
 
 public:
-	SceneRaytracer();
-	~SceneRaytracer();
+	SceneTriangle();
+	~SceneTriangle();
 };
 
