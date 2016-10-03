@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Color32.cpp" />
+    <ClCompile Include="src\Buffer.cpp" />
+    <ClCompile Include="src\Float3.cpp" />
     <ClCompile Include="src\SceneRaytracer.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Primitive.cpp" />
@@ -28,8 +31,13 @@
     <ClCompile Include="src\System.cpp" />
     <ClCompile Include="src\SystemSettings.cpp" />
     <ClCompile Include="src\Timer.cpp" />
+    <ClCompile Include="src\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Math.h" />
+    <ClInclude Include="src\Color32.h" />
+    <ClInclude Include="src\Buffer.h" />
+    <ClInclude Include="src\Float3.h" />
     <ClInclude Include="src\SceneRaytracer.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Primitive.h" />
@@ -39,11 +47,13 @@
     <ClInclude Include="src\System.h" />
     <ClInclude Include="src\SystemSettings.h" />
     <ClInclude Include="src\Timer.h" />
+    <ClInclude Include="src\Triangle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B2B6FFA4-446C-4866-814B-DFD8FBDE95DC}</ProjectGuid>
     <RootNamespace>FGK_Raytracer</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>Rasterizer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -1,8 +1,6 @@
 #pragma once
 
-// a container for all game elements, also govern their update and draw cycle
-// This is an abstract class. InitializeScene can be implemented to set
-// objects which will be contained here
+#include "Buffer.h"
 
 #include <vector>
 
@@ -47,6 +45,7 @@ public:
 	void Initialize(uint32_t uID, std::string* name);
 	void Shutdown();
 	void Update();
+	void Draw(Buffer<int32_t>* const buf, Buffer<float>* const depth);
 
 #pragma endregion
 
@@ -56,16 +55,12 @@ public:
 	const std::string* GetName() { return &m_name; }
 	Camera* const GetCurrentCamera() { return (m_cameras.size() > 0 ? m_cameras[m_currentCamera] : nullptr); }
 
-	Primitive* const GetPrimitive(uint32_t uid);
-	Primitive* const GetPrimitive(std::string* name);
 	Camera* const GetCamera(uint32_t uid);
 	Camera* const GetCamera(std::string* name);
 
 	void AddPrimitive(Primitive* const Primitive);
 	void AddCamera(Camera* const camera);
 
-	Primitive* const RemovePrimitive(uint32_t uid);
-	Primitive* const RemovePrimitive(std::string* name);
 	Camera* const RemoveCamera(uint32_t uid);
 	Camera* const RemoveCamera(std::string* name);
 

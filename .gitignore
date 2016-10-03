@@ -430,3 +430,5 @@ ClothSim/ClothSim/ARM/
 ClothSim/ClothSim/SOIL2/
 *.loa
 *.lol
+Rasterizer/Rasterizer/x64/
+*.db

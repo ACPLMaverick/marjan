@@ -68,30 +68,12 @@ void Scene::Update()
 	}
 }
 
-Primitive * const Scene::GetPrimitive(uint32_t uid)
+void Scene::Draw(Buffer<int32_t> * const buf, Buffer<float>* const depth)
 {
 	for (std::vector<Primitive*>::iterator it = m_primitives.begin(); it != m_primitives.end(); ++it)
 	{
-		if ((*it)->GetUID() == uid)
-		{
-			return *it;
-		}
+		(*it)->Draw(buf, depth);
 	}
-
-	return nullptr;
-}
-
-Primitive * const Scene::GetPrimitive(std::string * name)
-{
-	for (std::vector<Primitive*>::iterator it = m_primitives.begin(); it != m_primitives.end(); ++it)
-	{
-		if (*(*it)->GetName() == *name)
-		{
-			return *it;
-		}
-	}
-
-	return nullptr;
 }
 
 Camera * const Scene::GetCamera(uint32_t uid)
@@ -129,36 +111,6 @@ void Scene::AddPrimitive(Primitive * const Primitive)
 void Scene::AddCamera(Camera * const camera)
 {
 	m_cameras.push_back(camera);
-}
-
-Primitive * const Scene::RemovePrimitive(uint32_t uid)
-{
-	for (std::vector<Primitive*>::iterator it = m_primitives.begin(); it != m_primitives.end(); ++it)
-	{
-		if ((*it)->GetUID() == uid)
-		{
-			m_primitivesToRemove.push_back(it);
-			m_flagToRemovePrimitive = true;
-			return *it;
-		}
-	}
-
-	return nullptr;
-}
-
-Primitive * const Scene::RemovePrimitive(std::string * name)
-{
-	for (std::vector<Primitive*>::iterator it = m_primitives.begin(); it != m_primitives.end(); ++it)
-	{
-		if (*(*it)->GetName() == *name)
-		{
-			m_primitivesToRemove.push_back(it);
-			m_flagToRemovePrimitive = true;
-			return *it;
-		}
-	}
-
-	return nullptr;
 }
 
 Camera * const Scene::RemoveCamera(uint32_t uid)

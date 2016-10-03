@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "Singleton.h"
+#include "Buffer.h"
 
 #include <vector>
 #include <functional>
@@ -16,6 +17,17 @@ protected:
 #pragma region SettingsSystem
 
 	SystemSettings m_settings;
+
+#pragma endregion
+
+#pragma region Draw Related
+
+	Buffer<int32_t> m_BufferColor;
+	Buffer<float> m_BufferDepth;
+
+	HBITMAP m_bitmapScreenBuffer;
+	BITMAPINFO m_bitmapScreenBufferInfo;
+	void* m_bitmapScreenBufferDataPtr;
 
 #pragma endregion
 
@@ -41,6 +53,8 @@ protected:
 		_In_ LPWSTR    lpCmdLine,
 		_In_ int       nCmdShow);
 	inline void RunMessages();
+	inline void ResizeWindowBitmap();
+	inline void DrawColorBuffer();
 
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
