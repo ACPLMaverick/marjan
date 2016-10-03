@@ -29,7 +29,7 @@ IRenderer * SpecificObjectFactory::GetRenderer(SystemSettings* ss)
 #endif // RENDERER_MAJSTER
 }
 
-Triangle * SpecificObjectFactory::GetTriangle(Float3 x, Float3 y, Float3 z, Color32 col)
+Triangle * SpecificObjectFactory::GetTriangle(math::Float3 x, math::Float3 y, math::Float3 z, Color32 col)
 {
 #ifdef RENDERER_FGK
 

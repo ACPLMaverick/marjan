@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Plane.cpp" />
+    <ClCompile Include="src\Ray.cpp" />
     <ClCompile Include="src\SpecificObjectFactory.cpp" />
     <ClCompile Include="src\rendererMav\RendererMav.cpp" />
     <ClCompile Include="src\IRenderer.cpp" />
@@ -32,12 +34,15 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Singleton.cpp" />
+    <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\System.cpp" />
     <ClCompile Include="src\SystemSettings.cpp" />
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Plane.h" />
+    <ClInclude Include="src\Ray.h" />
     <ClInclude Include="src\SpecificObjectFactory.h" />
     <ClInclude Include="src\rendererMav\RendererMav.h" />
     <ClInclude Include="src\IRenderer.h" />
@@ -51,6 +56,7 @@
     <ClInclude Include="src\Primitive.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Singleton.h" />
+    <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\System.h" />
     <ClInclude Include="src\SystemSettings.h" />

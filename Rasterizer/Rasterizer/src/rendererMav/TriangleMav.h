@@ -11,7 +11,7 @@ namespace rendererMav
 	protected:
 #pragma region Functions Protected
 
-		TriangleMav(Float3 x, Float3 y, Float3 z, Color32 col = Color32());
+		TriangleMav(math::Float3 x, math::Float3 y, math::Float3 z, Color32 col = Color32());
 
 #pragma endregion
 

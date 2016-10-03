@@ -3,7 +3,7 @@
 
 namespace rendererMav
 {
-	TriangleMav::TriangleMav(Float3 x, Float3 y, Float3 z, Color32 col) :
+	TriangleMav::TriangleMav(math::Float3 x, math::Float3 y, math::Float3 z, Color32 col) :
 		Triangle(x, y, z, col)
 	{
 	}

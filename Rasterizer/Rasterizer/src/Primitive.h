@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Ray.h"
 #include "Buffer.h"
 
 class Primitive
@@ -24,6 +25,8 @@ public:
 
 	Primitive();
 	virtual ~Primitive();
+
+	virtual RayHit CalcIntersect(Ray& ray) = 0;
 
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
