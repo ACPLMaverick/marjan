@@ -5,9 +5,6 @@
 #include "Float3.h"
 #include "Color32.h"
 
-/// <summary>
-/// Winding direction - clockwise
-/// </summary>
 class Triangle :
 	public Primitive
 {
@@ -15,9 +12,14 @@ protected:
 
 public:
 	math::Float3 v1, v2, v3;
+	math::Float3 u1, u2, u3;
+	math::Float3 c1, c2, c3;
 	Color32 col;
 
-	Triangle(math::Float3 x, math::Float3 y, math::Float3 z, Color32 col = Color32());
+	Triangle(math::Float3 x, math::Float3 y, math::Float3 z, 
+		math::Float3 ux, math::Float3 uy, math::Float3 uz,
+		math::Float3 cx = math::Float3(1.0f, 1.0f, 1.0f), math::Float3 cy = math::Float3(1.0f, 1.0f, 1.0f), math::Float3 cz = math::Float3(1.0f, 1.0f, 1.0f),
+		Color32 col = Color32());
 	virtual ~Triangle();
 
 	RayHit CalcIntersect(Ray& ray) override;

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "stdafx.h"
+#include <stdint.h>
+#include "Math.h"
 
 struct Color32
 {
@@ -9,7 +10,7 @@ struct Color32
 	{
 		uint32_t color;
 		uint8_t colors[4];
-		uint8_t r, g, b, a;
+		struct { uint8_t b, g, r, a; };
 	};
 
 	Color32()
@@ -29,5 +30,106 @@ struct Color32
 		colors[2] = g;
 		colors[3] = b;
 	}
-};
 
+	Color32(float a, float r, float g, float b)
+	{
+		colors[0] = (uint8_t)(Clamp(a, 0.0f, 1.0f) * 255.0f);
+		colors[1] = (uint8_t)(Clamp(r, 0.0f, 1.0f) * 255.0f);
+		colors[2] = (uint8_t)(Clamp(g, 0.0f, 1.0f) * 255.0f);
+		colors[3] = (uint8_t)(Clamp(b, 0.0f, 1.0f) * 255.0f);
+	}
+
+	Color32& operator=(const Color32& c)
+	{
+		a = c.a;
+		r = c.r;
+		g = c.g;
+		b = c.b;
+		return *this;
+	}
+
+	bool operator==(const Color32& c)
+	{
+		return(color == c.color);
+	}
+
+	bool operator!=(const Color32& c)
+	{
+		return !operator==(c);
+	}
+
+	Color32& operator*(const Color32 c)
+	{
+		uint32_t ma = ((uint32_t)a);
+		uint32_t mr = ((uint32_t)r);
+		uint32_t mg = ((uint32_t)g);
+		uint32_t mb = ((uint32_t)b);
+
+		uint32_t ca = ((uint32_t)c.a);
+		uint32_t cr = ((uint32_t)c.r);
+		uint32_t cg = ((uint32_t)c.g);
+		uint32_t cb = ((uint32_t)c.b);
+
+		a = (uint8_t)((ma * ca) / UINT8_MAX);
+		r = (uint8_t)((mr * cr) / UINT8_MAX);
+		g = (uint8_t)((mg * cg) / UINT8_MAX);
+		b = (uint8_t)((mb * cb) / UINT8_MAX);
+		return *this;
+	}
+
+	Color32& operator*(const float flt)
+	{
+		a = (uint8_t)(Clamp((float)a * flt, 0, 255));
+		r = (uint8_t)(Clamp((float)r * flt, 0, 255));
+		g = (uint8_t)(Clamp((float)g * flt, 0, 255));
+		b = (uint8_t)(Clamp((float)b * flt, 0, 255));
+	}
+
+	Color32& operator*=(const Color32 c)
+	{
+		uint32_t ma = ((uint32_t)a);
+		uint32_t mr = ((uint32_t)r);
+		uint32_t mg = ((uint32_t)g);
+		uint32_t mb = ((uint32_t)b);
+
+		uint32_t ca = ((uint32_t)c.a);
+		uint32_t cr = ((uint32_t)c.r);
+		uint32_t cg = ((uint32_t)c.g);
+		uint32_t cb = ((uint32_t)c.b);
+
+		a = (uint8_t)((ma * ca) / UINT8_MAX);
+		r = (uint8_t)((mr * cr) / UINT8_MAX);
+		g = (uint8_t)((mg * cg) / UINT8_MAX);
+		b = (uint8_t)((mb * cb) / UINT8_MAX);
+		return *this;
+	}
+
+	bool operator==(const int32_t& c)
+	{
+		return(color == c);
+	}
+
+	bool operator!=(const int32_t& c)
+	{
+		return !operator==(c);
+	}
+
+	static Color32 Lerp(const Color32& a, const Color32&b, float s)
+	{
+		Color32 col;
+		col.a = (uint8_t)((float)a.a * (1.0f - s) + (float)b.a * s);
+		col.r = (uint8_t)((float)a.r * (1.0f - s) + (float)b.r * s);
+		col.g = (uint8_t)((float)a.g * (1.0f - s) + (float)b.g * s);
+		col.b = (uint8_t)((float)a.b * (1.0f - s) + (float)b.b * s);
+		return col;
+	}
+
+	static Color32 LerpNoAlpha(const Color32& a, const Color32&b, float s)
+	{
+		Color32 col;
+		col.r = (uint8_t)((float)a.r * (1.0f - s) + (float)b.r * s);
+		col.g = (uint8_t)((float)a.g * (1.0f - s) + (float)b.g * s);
+		col.b = (uint8_t)((float)a.b * (1.0f - s) + (float)b.b * s);
+		return col;
+	}
+};

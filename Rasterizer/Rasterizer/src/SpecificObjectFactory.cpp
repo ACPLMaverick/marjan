@@ -29,7 +29,10 @@ IRenderer * SpecificObjectFactory::GetRenderer(SystemSettings* ss)
 #endif // RENDERER_MAJSTER
 }
 
-Triangle * SpecificObjectFactory::GetTriangle(math::Float3 x, math::Float3 y, math::Float3 z, Color32 col)
+Triangle * SpecificObjectFactory::GetTriangle(math::Float3 x, math::Float3 y, math::Float3 z,
+	math::Float3 ux, math::Float3 uy, math::Float3 uz,
+	math::Float3 cx, math::Float3 cy, math::Float3 cz,
+	Color32 col)
 {
 #ifdef RENDERER_FGK
 
@@ -37,7 +40,7 @@ Triangle * SpecificObjectFactory::GetTriangle(math::Float3 x, math::Float3 y, ma
 
 #ifdef RENDERER_MAV
 
-	return new rendererMav::TriangleMav(x, y, z, col);
+	return new rendererMav::TriangleMav(x, y, z, ux, uy, uz, cx, cy, cz, col);
 
 #endif // RENDERER_MAV
 

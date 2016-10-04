@@ -24,6 +24,7 @@ namespace rendererMav
 		~RendererMav();
 
 		virtual void Draw(Scene* scene);
+		virtual Buffer<float>* GetDepthBuffer();
 
 #pragma endregion
 	};

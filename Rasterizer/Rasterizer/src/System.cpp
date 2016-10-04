@@ -73,7 +73,18 @@ void System::Run()
 		// draw scene to buffer
 		_renderer->Draw(_scenes[_currentScene]);
 
-		// draw buffer to window
+		// fill bitmap with color buffer data
+		size_t tj = _bitmapScreenBufferInfo.bmiHeader.biWidth;
+		size_t ti = _bitmapScreenBufferInfo.bmiHeader.biHeight;
+		for (size_t i = 0; i < ti; ++i)
+		{
+			for (size_t j = 0; j < tj; ++j)
+			{
+				((uint32_t*)_bitmapScreenBufferDataPtr)[i * tj + j] = (uint32_t)(_renderer->GetColorBuffer()->GetPixelScaled((uint16_t)j, (uint16_t)i, (uint16_t)tj, (uint16_t)ti).color);
+			}
+		}
+
+		// draw bitmap in window
 		RECT r;
 		GetClientRect(_settings._hwnd, &r);
 		InvalidateRect(_settings._hwnd, &r, false);
@@ -166,17 +177,6 @@ inline void System::DrawColorBuffer()
 	PAINTSTRUCT ps;
 	BITMAP nbm;
 	HDC hdc = BeginPaint(_settings._hwnd, &ps);
-
-	// fill bitmap with color buffer data
-	size_t tj = _bitmapScreenBufferInfo.bmiHeader.biWidth;
-	size_t ti = _bitmapScreenBufferInfo.bmiHeader.biHeight;
-	for (size_t i = 0; i < ti; ++i)
-	{
-		for (size_t j = 0; j < tj; ++j)
-		{
-			((uint32_t*)_bitmapScreenBufferDataPtr)[i * tj + j] = (uint32_t)(System::GetInstance()->_renderer->GetColorBuffer()->GetPixelScaled((uint16_t)j, (uint16_t)i, (uint16_t)tj, (uint16_t)ti).color);
-		}
-	}
 
 	HDC hdcMem = CreateCompatibleDC(hdc);
 	HBITMAP oldBitmap = (HBITMAP)SelectObject(hdcMem, (HBITMAP)_bitmapScreenBuffer);

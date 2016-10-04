@@ -69,8 +69,8 @@ template<class T>
 inline T Buffer<T>::GetPixelScaled(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
 	uint16_t coordX = (uint16_t)((float)x * (float)(_width) / (float)(w));
-	uint16_t coordY = (uint16_t)((float)y * (float)(_height) / (float)(y));
-	return GetPixel(x, y);
+	uint16_t coordY = (uint16_t)((float)y * (float)(_height) / (float)(h));
+	return GetPixel(coordX, coordY);
 }
 
 template<class T>
