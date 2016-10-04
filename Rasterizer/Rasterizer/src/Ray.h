@@ -24,10 +24,15 @@ public:
 class Ray
 {
 protected:
-	math::Float3 _start;
+	math::Float3 _origin;
 	math::Float3 _dir;
+
+	float _distance;
 
 public:
 	Ray();
 	Ray(math::Float3& s, math::Float3& dir);
+
+	math::Float3 GetOrigin();
+	math::Float3 GetDirection();
 };
