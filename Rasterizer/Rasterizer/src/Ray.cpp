@@ -2,12 +2,23 @@
 
 Ray::Ray()
 {
-	this->_start = math::Float3();
-	this->_dir = math::Float3(0, -1.0f, 0);
+	this->_origin = math::Float3();
+	this->_dir = math::Float3();
+	this->_distance = 0.0f;
 }
 
 Ray::Ray(math::Float3& s, math::Float3& d)
 {
-	this->_start = s;
+	this->_origin = s;
 	this->_dir = d;
+}
+
+math::Float3 Ray::GetOrigin()
+{
+	return _origin;
+}
+
+math::Float3 Ray::GetDirection()
+{
+	return _dir;
 }
