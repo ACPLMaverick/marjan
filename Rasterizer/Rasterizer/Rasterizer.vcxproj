@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Float4.cpp" />
+    <ClCompile Include="src\Matrix4x4.cpp" />
     <ClCompile Include="src\Int2.cpp" />
     <ClCompile Include="src\rendererMav\GraphicsDevice.cpp" />
     <ClCompile Include="src\Plane.cpp" />
@@ -43,6 +45,8 @@
     <ClCompile Include="src\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Float4.h" />
+    <ClInclude Include="src\Matrix4x4.h" />
     <ClInclude Include="src\Int2.h" />
     <ClInclude Include="src\rendererMav\GraphicsDevice.h" />
     <ClInclude Include="src\Plane.h" />

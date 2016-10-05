@@ -15,8 +15,8 @@ Sphere::Sphere(math::Float3& c, float r)
 RayHit Sphere::CalcIntersect(Ray& ray)
 {
 	math::Float3 ocVec = ray.GetOrigin() - _center;
-	float B = -math::Dot(ray.GetDirection(), ocVec);
-	float det = (B * B) - math::Dot(ocVec, ocVec) + (_radius * _radius);
+	float B = -math::Float3::Dot(ray.GetDirection(), ocVec);
+	float det = (B * B) - math::Float3::Dot(ocVec, ocVec) + (_radius * _radius);
 	
 	if (det > 0)
 	{
@@ -36,6 +36,10 @@ RayHit Sphere::CalcIntersect(Ray& ray)
 				//Ray origin in front of sphere case
 				return RayHit(true, math::Float3(ray.GetOrigin() + ray.GetDirection() * d1));
 			}
+		}
+		else
+		{
+			return RayHit();
 		}
 	}
 	else if (det == 0)

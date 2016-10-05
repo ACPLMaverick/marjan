@@ -55,14 +55,14 @@ inline void Buffer<T>::SetPixel(uint16_t x, uint16_t y, T val)
 {
 	if (x >= 0 && x <= _width && y >= 0 && y <= _height)
 	{
-		_data[y * (_width - 1) + x] = val;
+		_data[y * (_width) + x] = val;
 	}
 }
 
 template<class T>
 inline T Buffer<T>::GetPixel(uint16_t x, uint16_t y)
 {
-	return _data[y * (_width - 1) + x];
+	return _data[y * (_width) + x];
 }
 
 template<class T>

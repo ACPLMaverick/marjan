@@ -104,22 +104,16 @@ namespace math
 
 			return data;
 		}
+
+		static void PrintVector(Float3& f);
+		
+		static void Normalize(Float3& f);
+		static float Length(Float3& f);
+		static float LengthSquared(Float3& f);
+		static float Dot(Float3& f1, Float3& f2);
+		static Float3 Cross(Float3& f1, Float3& f2);
+		
+		static Float3 Reflect(Float3& left, Float3& normal);
+		static Float3 Lerp(Float3& v, float f);
 	};
-
-	void PrintVector(Float3& f);
-
-	void Normalize(Float3& f);
-	float Length(Float3& f);
-	float LengthSquared(Float3& f);
-	float Dot(Float3& f1, Float3& f2);
-	Float3 Cross(Float3& f1, Float3& f2);
-	//void Negate(Float3& f);
-	//void Add(Float3& f1, Float3& f2);
-	//void Sub(Float3& f1, Float3& f2);
-	//void Div(Float3& f1, float f2);
-	//void Mul(Float3& f1, float f2);
-
-	Float3 Reflect(Float3& left, Float3& normal);
-	//Float3 MagProduct(Float3& v, float f);
-	Float3 Lerp(Float3& v, float f);
 }
