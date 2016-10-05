@@ -17,8 +17,6 @@ namespace rendererMav
 	protected:
 #pragma region Functions Protected
 
-		virtual inline uint16_t ConvertFromScreenToBuffer(float point, uint16_t maxValue);
-
 		TriangleMav(math::Float3 x, math::Float3 y, math::Float3 z,
 			math::Float3 ux, math::Float3 uy, math::Float3 uz,
 			math::Float3 cx = math::Float3(1.0f, 1.0f, 1.0f), math::Float3 cy = math::Float3(1.0f, 1.0f, 1.0f), math::Float3 cz = math::Float3(1.0f, 1.0f, 1.0f),

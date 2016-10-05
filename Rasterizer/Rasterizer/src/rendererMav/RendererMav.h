@@ -2,6 +2,7 @@
 
 #include "../IRenderer.h"
 #include "../SpecificObjectFactory.h"
+#include "GraphicsDevice.h"
 
 namespace rendererMav
 {
@@ -12,6 +13,8 @@ namespace rendererMav
 	protected:
 
 #pragma region Functions Protected
+
+		GraphicsDevice _device;
 
 		RendererMav(SystemSettings* settings);
 
@@ -25,6 +28,7 @@ namespace rendererMav
 
 		virtual void Draw(Scene* scene);
 		virtual Buffer<float>* GetDepthBuffer();
+		virtual GraphicsDevice* GetGraphicsDevice();
 
 #pragma endregion
 	};

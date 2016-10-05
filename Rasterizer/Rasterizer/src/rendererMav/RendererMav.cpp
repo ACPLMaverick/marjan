@@ -6,11 +6,13 @@ namespace rendererMav
 	RendererMav::RendererMav(SystemSettings * settings) :
 		IRenderer(settings)
 	{
+		_device.Initialize(&_bufferColor, &_bufferDepth);
 	}
 
 
 	RendererMav::~RendererMav()
 	{
+		_device.Shutdown();
 	}
 
 	void RendererMav::Draw(Scene * scene)
@@ -23,5 +25,9 @@ namespace rendererMav
 	Buffer<float>* RendererMav::GetDepthBuffer()
 	{
 		return &_bufferDepth;
+	}
+	GraphicsDevice * RendererMav::GetGraphicsDevice()
+	{
+		return &_device;
 	}
 }

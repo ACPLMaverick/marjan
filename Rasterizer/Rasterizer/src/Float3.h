@@ -40,7 +40,7 @@ namespace math
 			return Float3(this->x * right.x, this->y * right.y, this->z * right.z);
 		}
 
-		Float3 operator*(float scalar)
+		Float3 operator*(float scalar) const
 		{
 			return Float3(this->x * scalar, this->y * scalar, this->z * scalar);
 		}

@@ -25,10 +25,10 @@ struct Color32
 
 	Color32(uint8_t a, uint8_t r, uint8_t g, uint8_t b)
 	{
-		colors[0] = a;
-		colors[1] = r;
-		colors[2] = g;
-		colors[3] = b;
+		colors[0] = b;
+		colors[1] = g;
+		colors[2] = r;
+		colors[3] = a;
 	}
 
 	Color32(float a, float r, float g, float b)
