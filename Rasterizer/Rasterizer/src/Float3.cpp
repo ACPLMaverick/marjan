@@ -2,17 +2,16 @@
 
 namespace math
 {
-	void Float3::PrintVector(Float3& f)
-	{
-		std::cout << "Float3(" << f.x << ", " << f.y << ", " << f.z << ")" << std::endl;
-	}
-
 	void Float3::Normalize(Float3& f)
 	{
 		float n = Length(f);
-		if (n != 0)
+		if (n >= 0.000001f)
 		{
 			f = f / n;
+		}
+		else
+		{
+			f.x = f.y = f.z = 0.0f;
 		}
 	}
 
@@ -41,12 +40,12 @@ namespace math
 		return left - (normal * 2.0f * Dot(left, normal));
 	}
 
-	Float3 Float3::Lerp(Float3 & v, float f)
+	Float3 Float3::Lerp(Float3& a, Float3 & b, float f)
 	{
-		Float3 out;
-		out.x = v.x + f * (out.x + v.x);
-		out.y = v.y + f * (out.y + v.y);
-		out.z = v.z + f * (out.z + v.z);
-		return out;
+		return Float3(
+			FloatLerp(a.x, b.x, f),
+			FloatLerp(a.y, b.y, f),
+			FloatLerp(a.z, b.z, f)
+		);
 	}
 }

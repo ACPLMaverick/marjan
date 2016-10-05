@@ -87,6 +87,11 @@ namespace math
 			return tab[ind];
 		}
 
+		friend std::ostream& operator<<(std::ostream& ost, const Float3 flt)
+		{
+			ost << "(" << flt.x << ", " << flt.y << ", " << flt.z << ")" << std::endl;
+		}
+
 		operator Color32() const
 		{
 			Color32 data;
@@ -104,8 +109,6 @@ namespace math
 
 			return data;
 		}
-
-		static void PrintVector(Float3& f);
 		
 		static void Normalize(Float3& f);
 		static float Length(Float3& f);
@@ -114,6 +117,6 @@ namespace math
 		static Float3 Cross(Float3& f1, Float3& f2);
 		
 		static Float3 Reflect(Float3& left, Float3& normal);
-		static Float3 Lerp(Float3& v, float f);
+		static Float3 Lerp(Float3& a, Float3 & b, float f);
 	};
 }

@@ -2,8 +2,17 @@
 #include "System.h"
 #include "Scene.h"
 #include "SceneTriangle.h"
-
 #include "SpecificObjectFactory.h"
+
+// testing
+#ifdef _DEBUG
+#include "Float3.h"
+#include "Float4.h"
+#include "Matrix4x4.h"
+#endif // _DEBUG
+
+#include <fcntl.h>
+#include <io.h>
 
 System::System()
 {
@@ -22,6 +31,43 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	// initialize window in current OS
 	InitWindow(hInstance, lpCmdLine, nCmdShow);
+
+	// initialize console - debug only
+
+#ifdef _DEBUG
+
+	std::cout.clear();
+
+	AllocConsole();
+	
+	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
+	FILE* hf_out = _fdopen(hCrt, "w");
+	int g = setvbuf(hf_out, NULL, _IONBF, 1);
+	*stdout = *hf_out;
+
+	std::cout.clear();
+	std::ios::sync_with_stdio();
+	std::cout << "Hi." << std::endl;
+
+	// math tests
+	math::Matrix4x4 m1(
+		Float4(),
+		Float4(),
+		Float4(),
+		Float4()
+		);
+
+	math::Matrix4x4 m2(
+		Float4(),
+		Float4(),
+		Float4(),
+		Float4()
+	);
+
+	//math::Matrix4x4 m3 = m2 * m1;
+
+#endif // _DEBUG
 
 	// initialize DIB
 	RECT r;
@@ -54,6 +100,12 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 void System::Shutdown()
 {
+#ifdef _DEBUG
+
+	FreeConsole();
+
+#endif // _DEBUG
+
 	// shutdown managers
 
 	UnregisterClass((_settings.s_windowTitle.c_str()), _settings._hInstance);
