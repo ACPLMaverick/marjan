@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <iostream>
 #include "Color32.h"
+#include "Float4.h"
 
 namespace math
 {
@@ -35,6 +36,13 @@ namespace math
 			this->z = z;
 		}
 
+		Float3(const Float4& g)
+		{
+			this->x = g.x;
+			this->y = g.y;
+			this->z = g.z;
+		}
+
 		Float3 operator*(const Float3& right)
 		{
 			return Float3(this->x * right.x, this->y * right.y, this->z * right.z);
@@ -47,14 +55,13 @@ namespace math
 
 		Float3 operator/(float scalar)
 		{
-			Float3 f = Float3();
 			float inverse = 1.0f / scalar;
 
-			f.x *= inverse;
-			f.y *= inverse;
-			f.z *= inverse;
+			x *= inverse;
+			y *= inverse;
+			z *= inverse;
 
-			return f;
+			return *this;
 		}
 
 		Float3 operator+(const Float3& right) const

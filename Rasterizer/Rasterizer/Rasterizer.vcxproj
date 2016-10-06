@@ -43,6 +43,7 @@
     <ClCompile Include="src\SystemSettings.cpp" />
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Triangle.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Float4.h" />
@@ -70,6 +71,7 @@
     <ClInclude Include="src\SystemSettings.h" />
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\Triangle.h" />
+    <ClInclude Include="src\Transform.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B2B6FFA4-446C-4866-814B-DFD8FBDE95DC}</ProjectGuid>

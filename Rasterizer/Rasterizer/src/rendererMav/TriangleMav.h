@@ -30,6 +30,7 @@ namespace rendererMav
 
 		virtual ~TriangleMav();
 
+		virtual void Update() override;
 		virtual void Draw();
 
 #pragma endregion

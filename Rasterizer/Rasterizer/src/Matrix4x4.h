@@ -58,7 +58,7 @@ namespace math
 
 #pragma region Operators
 
-		Matrix4x4 operator=(const Matrix4x4& right) const;
+		Matrix4x4& operator=(const Matrix4x4& right);
 		Matrix4x4 operator*(const Matrix4x4& right) const;
 		Matrix4x4& operator*(const float right);
 		Matrix4x4& operator*=(const Matrix4x4& right);

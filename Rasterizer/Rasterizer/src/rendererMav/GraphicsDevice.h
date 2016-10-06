@@ -5,6 +5,7 @@
 #include "../Color32.h"
 #include "../Float3.h"
 #include "../Int2.h"
+#include "../Matrix4x4.h"
 
 class GraphicsDevice
 {
@@ -53,16 +54,19 @@ protected:
 	Buffer<Color32>* _bufferColor;
 	Buffer<float>* _bufferDepth;
 
-	math::Float3* _vb;
-	math::Float3* _cb;
-	math::Float3* _ub;
-	uint16_t* _ib;
+	const math::Float3* _vb;
+	const math::Float3* _cb;
+	const math::Float3* _ub;
+
+	const math::Matrix4x4* _wvpMat;
+	const math::Matrix4x4* _wMat;
+	const math::Matrix4x4* _wInvTransMat;
 
 #pragma endregion
 
 #pragma region Functions Protected
 
-	virtual inline uint16_t ConvertFromScreenToBuffer(float point, uint16_t maxValue);
+	virtual inline int32_t ConvertFromScreenToBuffer(float point, uint16_t maxValue);
 
 	virtual inline void VertexShader
 		(
@@ -96,11 +100,15 @@ public:
 	void Shutdown();
 
 	void Draw(size_t triangleNum);
-	void DrawIndexed(size_t triangleNum);
+	void DrawIndexed(size_t triangleNum, const uint16_t* ib);
 
-	void SetVertexBuffer(math::Float3* buf);
-	void SetColorBuffer(math::Float3* buf);
-	void SetUVBuffer(math::Float3* buf);
+	void SetVertexBuffer(const math::Float3* buf);
+	void SetColorBuffer(const math::Float3* buf);
+	void SetUVBuffer(const math::Float3* buf);
+
+	void SetWorldViewProjMatrix(const math::Matrix4x4* m);
+	void SetWorldMatrix(const math::Matrix4x4* m);
+	void SetWorldInverseTransposeMatrix(const math::Matrix4x4* m);
 
 #pragma endregion
 };

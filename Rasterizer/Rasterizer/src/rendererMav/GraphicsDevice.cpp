@@ -44,35 +44,52 @@ void GraphicsDevice::Draw(size_t triangleNum)
 	}
 }
 
-void GraphicsDevice::DrawIndexed(size_t triangleNum)
+void GraphicsDevice::DrawIndexed(size_t triangleNum, const uint16_t* ib)
 {
 
 }
 
-void GraphicsDevice::SetVertexBuffer(math::Float3 * buf)
+void GraphicsDevice::SetVertexBuffer(const math::Float3 * buf)
 {
 	_vb = buf;
 }
 
-void GraphicsDevice::SetColorBuffer(math::Float3 * buf)
+void GraphicsDevice::SetColorBuffer(const math::Float3 * buf)
 {
 	_cb = buf;
 }
 
-void GraphicsDevice::SetUVBuffer(math::Float3 * buf)
+void GraphicsDevice::SetUVBuffer(const math::Float3 * buf)
 {
 	_ub = buf;
 }
 
-uint16_t GraphicsDevice::ConvertFromScreenToBuffer(float point, uint16_t maxValue)
+void GraphicsDevice::SetWorldViewProjMatrix(const math::Matrix4x4 * m)
 {
-	return (uint16_t)(point * (float)maxValue * 0.5f + ((float)maxValue * 0.5f));
+	_wvpMat = m;
+}
+
+void GraphicsDevice::SetWorldMatrix(const math::Matrix4x4 * m)
+{
+	_wMat = m;
+}
+
+void GraphicsDevice::SetWorldInverseTransposeMatrix(const math::Matrix4x4 * m)
+{
+	_wInvTransMat = m;
+}
+
+int32_t GraphicsDevice::ConvertFromScreenToBuffer(float point, uint16_t maxValue)
+{
+	return (int32_t)(point * (float)maxValue * 0.5f + ((float)maxValue * 0.5f));
 }
 
 
 void GraphicsDevice::VertexShader(const VertexInput & in, VertexOutput & out)
 {
-	out.Position = in.Position;
+	math::Float4 outP = math::Float4(in.Position);
+	outP = *_wvpMat * outP;
+	out.Position = math::Float3(outP / outP.w);
 	out.WorldPosition = in.Position;
 	out.Color = in.Color;
 	out.Uv = in.Uv;

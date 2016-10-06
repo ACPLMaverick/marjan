@@ -70,13 +70,31 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	std::cout << flt;
 	*/
 
-	math::Matrix4x4 lookAt, persp;
-	math::Matrix4x4::LookAt(&math::Float3(2.0f, 3.0f, 4.0f),
-		&math::Float3(0.0f, 1.0f, 0.0f),
-		&math::Float3(0.0f, 0.0f, -1.0f),
-		&lookAt);
+	//math::Matrix4x4 lookAt, persp;
+	//math::Matrix4x4::LookAt(&math::Float3(2.0f, 3.0f, 4.0f),
+	//	&math::Float3(0.0f, 1.0f, 0.0f),
+	//	&math::Float3(0.0f, 0.0f, -1.0f),
+	//	&lookAt);
 
-	std::cout << lookAt << persp;
+	//std::cout << lookAt << persp;
+
+	math::Matrix4x4 janusz;
+	math::Matrix4x4 waclaw;
+	math::Matrix4x4::LookAt(&math::Float3(0.0f, 1.0f, 5.0f),
+			&math::Float3(0.0f, 0.0f, 0.0f),
+			&math::Float3(0.0f, 1.0f, 0.0f),
+			&janusz);
+	math::Matrix4x4::Perspective(
+		75.0f,
+		800.0f / 600.0f,
+		0.01f,
+		100.0f,
+		&waclaw
+	);
+	math::Float4 dupa = math::Float4(-5.0f, 5.0f, 5.0f, 1.0f);
+	dupa = janusz * waclaw * dupa;
+
+	std::cout << dupa;
 #endif // _DEBUG
 
 

@@ -2,6 +2,8 @@
 #include "RendererMav.h"
 #include "GraphicsDevice.h"
 #include "../System.h"
+#include "../Camera.h"
+#include "../Scene.h"
 
 namespace rendererMav
 {
@@ -17,12 +19,23 @@ namespace rendererMav
 	{
 	}
 
+	void TriangleMav::Update()
+	{
+		math::Float3 trans = *_transform.GetRotation();
+		trans.x += 0.1f;
+		_transform.SetRotation(&trans);
+	}
+
 	void TriangleMav::Draw()
 	{
 		GraphicsDevice* gd = ((RendererMav*)System::GetInstance()->GetRenderer())->GetGraphicsDevice();
 		gd->SetVertexBuffer(&v1);
 		gd->SetUVBuffer(&u1);
 		gd->SetColorBuffer(&c1);
+
+		Camera* cam = System::GetInstance()->GetCurrentScene()->GetCurrentCamera();
+		math::Matrix4x4 wvp = *_transform.GetWorldMatrix() * *cam->GetViewProjMatrix();
+		gd->SetWorldViewProjMatrix(&wvp);
 
 		gd->Draw(1);
 	}
