@@ -2,11 +2,9 @@
 
 #include <Windows.h>
 #include <iostream>
-#include <cmath>
+#include "Math.h"
 #include "Float4.h"
 #include "Float3.h"
-
-struct Float4;
 
 namespace math
 {
@@ -14,6 +12,7 @@ namespace math
 	{
 		union
 		{
+			float tab[16];
 			Float4 tabf[4];
 			struct
 			{
@@ -59,8 +58,8 @@ namespace math
 
 #pragma region Operators
 
-		Matrix4x4& operator=(const Matrix4x4& right);
-		Matrix4x4 operator*(const Matrix4x4& right);
+		Matrix4x4 operator=(const Matrix4x4& right) const;
+		Matrix4x4 operator*(const Matrix4x4& right) const;
 		Matrix4x4& operator*(const float right);
 		Matrix4x4& operator*=(const Matrix4x4& right);
 		Matrix4x4& operator*=(const float right);
@@ -68,7 +67,7 @@ namespace math
 		Matrix4x4& operator+=(const Matrix4x4& right);
 		Float4& operator[](const size_t ind);
 		friend std::ostream& operator<<(std::ostream& ost, const Matrix4x4& m);
-		friend Float4& operator*(Float4& left, const Matrix4x4& right);
+		friend Float4& operator*(const Matrix4x4& left, Float4& right);
 
 #pragma endregion
 
@@ -77,7 +76,7 @@ namespace math
 		static void Identity(Matrix4x4* out);
 		static void Translation(const Float3* trans, Matrix4x4* out);
 		static void Scale(const Float3* scale, Matrix4x4* out);
-		static void Rotate(const Float3* rotationXYZdeg, Matrix4x4* out);
+		static void Rotation(const Float3* rotationXYZdeg, Matrix4x4* out);
 		static void Transpose(const Matrix4x4* in, Matrix4x4* out);
 		static void Inverse(const Matrix4x4* in, Matrix4x4* out);
 		static void LookAt(const Float3* cameraPos, const Float3* cameraTarget, const Float3* cameraUp, Matrix4x4* out);

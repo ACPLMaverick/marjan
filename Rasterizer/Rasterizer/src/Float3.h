@@ -57,12 +57,12 @@ namespace math
 			return f;
 		}
 
-		Float3 operator+(const Float3& right)
+		Float3 operator+(const Float3& right) const
 		{
 			return Float3(this->x + right.x, this->y + right.y, this->z + right.z);
 		}
 
-		Float3 operator-(const Float3& right)
+		Float3 operator-(const Float3& right) const
 		{
 			return Float3(this->x - right.x, this->y - right.y, this->z - right.z);
 		}

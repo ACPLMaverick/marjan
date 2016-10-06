@@ -37,7 +37,7 @@ namespace math
 
 	Float4& Float4::operator*=(float scalar)
 	{
-		this->x * scalar; this->y * scalar; this->z * scalar; this->w * scalar;
+		*this = *this * scalar;
 		return *this;
 	}
 

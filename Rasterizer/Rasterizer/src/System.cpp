@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "stdafx.h"
 #include "System.h"
 #include "Scene.h"
@@ -6,12 +7,14 @@
 
 // testing
 #ifdef _DEBUG
+#define _CRT_SECURE_NO_DEPRECATE
 #include "Float3.h"
-#include "Float4.h"
 #include "Matrix4x4.h"
+#include "Float4.h"
 #endif // _DEBUG
 
 #include <fcntl.h>
+#include <stdio.h>
 #include <io.h>
 
 System::System()
@@ -29,46 +32,58 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	_settings._lpCmdLine = lpCmdLine;
 	_settings._nCmdShow = nCmdShow;
 
-	// initialize window in current OS
-	InitWindow(hInstance, lpCmdLine, nCmdShow);
-
-	// initialize console - debug only
-
 #ifdef _DEBUG
 
 	std::cout.clear();
 
 	AllocConsole();
-	
-	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
-	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
-	FILE* hf_out = _fdopen(hCrt, "w");
-	int g = setvbuf(hf_out, NULL, _IONBF, 1);
-	*stdout = *hf_out;
+	freopen("CONIN$", "r", stdin);
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
 
 	std::cout.clear();
 	std::ios::sync_with_stdio();
 	std::cout << "Hi." << std::endl;
-
+	/*
 	// math tests
 	math::Matrix4x4 m1(
-		Float4(),
-		Float4(),
-		Float4(),
-		Float4()
+		math::Float4(1.0f, 0.0f, 0.0f, 0.0f),
+		math::Float4(2.0f, 1.0f, 0.0f, 0.0f),
+		math::Float4(4.0f, 0.0f, 1.0f, 0.0f),
+		math::Float4(6.0f, 0.0f, 0.0f, 1.0f)
 		);
 
 	math::Matrix4x4 m2(
-		Float4(),
-		Float4(),
-		Float4(),
-		Float4()
+		math::Float4(1.0f, 8.0f, 10.0f, 12.0f),
+		math::Float4(0.0f, 1.0f, 0.0f, 0.0f),
+		math::Float4(0.0f, 0.0f, 1.0f, 15.0f),
+		math::Float4(0.0f, 0.0f, 0.0f, 1.0f)
 	);
 
-	//math::Matrix4x4 m3 = m2 * m1;
+	math::Matrix4x4 m3 = m1 * m2;
 
+	std::cout << m3;
+
+	math::Float4 flt = math::Float4(1.0f, 3.0f, 5.0f, 7.0f);
+	flt = m1 * flt;
+
+	std::cout << flt;
+	*/
+
+	math::Matrix4x4 lookAt, persp;
+	math::Matrix4x4::LookAt(&math::Float3(2.0f, 3.0f, 4.0f),
+		&math::Float3(0.0f, 1.0f, 0.0f),
+		&math::Float3(0.0f, 0.0f, -1.0f),
+		&lookAt);
+
+	std::cout << lookAt << persp;
 #endif // _DEBUG
 
+
+	// initialize window in current OS
+	InitWindow(hInstance, lpCmdLine, nCmdShow);
+
+	// initialize console - debug only
 	// initialize DIB
 	RECT r;
 	GetClientRect(_settings._hwnd, &r);
