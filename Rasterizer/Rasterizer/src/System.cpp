@@ -78,6 +78,23 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	//std::cout << lookAt << persp;
 
+	//FGK_TESTY
+	Sphere stefan = Sphere(math::Float3(0, 0, 0), 10);
+
+	Ray robert1 = Ray(math::Float3(0.0f, 0.0f, -20.f), math::Float3(0.0f, 0.0f, 1.0f));
+	Ray robert2 = Ray(math::Float3(0.0f, 0.0f, -20.f), math::Float3(0.0f, 1.0f, 0.0f));
+	RayHit hitRoberta1 = RayHit();
+	RayHit hitRoberta2 = RayHit();
+
+	hitRoberta1 = stefan.CalcIntersect(robert1);
+	hitRoberta2 = stefan.CalcIntersect(robert2);
+
+	std::cout << "CZY PIERWSZY ROBERT TRAFIL? " << hitRoberta1.hit << "GDZIE? " << hitRoberta1.point.x << " " << hitRoberta1.point.y <<
+		" " << hitRoberta1.point.z << std::endl;
+	std::cout << "CZY DRUGI ROBERT TRAFIL?" << hitRoberta2.hit << std::endl;
+	//KONIEC FGK TESTÓW
+
+
 	math::Matrix4x4 janusz;
 	math::Matrix4x4 waclaw;
 	math::Matrix4x4::LookAt(&math::Float3(0.0f, 1.0f, 5.0f),

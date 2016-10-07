@@ -16,4 +16,6 @@ public:
 
 	void Update() override;
 	void Draw() override;
+
+	inline math::Float3 GetCenter() { return _center; }
 };
