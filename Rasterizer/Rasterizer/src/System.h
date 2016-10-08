@@ -5,6 +5,7 @@
 #include "Buffer.h"
 #include "IRenderer.h"
 #include "Sphere.h"
+#include "Plane.h"
 
 #include <vector>
 #include <functional>

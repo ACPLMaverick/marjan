@@ -83,15 +83,31 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	Ray robert1 = Ray(math::Float3(0.0f, 0.0f, -20.f), math::Float3(0.0f, 0.0f, 1.0f));
 	Ray robert2 = Ray(math::Float3(0.0f, 0.0f, -20.f), math::Float3(0.0f, 1.0f, 0.0f));
+	Ray robert3 = Ray(math::Float3(0.0f, -10.0f, -20.f), math::Float3(0.0f, 0.0f, 1.0f));
 	RayHit hitRoberta1 = RayHit();
 	RayHit hitRoberta2 = RayHit();
+	RayHit hitRoberta3 = RayHit();
 
 	hitRoberta1 = stefan.CalcIntersect(robert1);
 	hitRoberta2 = stefan.CalcIntersect(robert2);
+	hitRoberta3 = stefan.CalcIntersect(robert3);
 
-	std::cout << "CZY PIERWSZY ROBERT TRAFIL? " << hitRoberta1.hit << "GDZIE? " << hitRoberta1.point.x << " " << hitRoberta1.point.y <<
+	std::cout << "CZY PIERWSZY ROBERT TRAFIL? " << hitRoberta1.hit << " GDZIE? " << hitRoberta1.point.x << " " << hitRoberta1.point.y <<
 		" " << hitRoberta1.point.z << std::endl;
 	std::cout << "CZY DRUGI ROBERT TRAFIL?" << hitRoberta2.hit << std::endl;
+	std::cout << "CZY TRZECI ROBERT TRAFIL? " << hitRoberta3.hit << " GDZIE? " << hitRoberta3.point.x << " " << hitRoberta3.point.y <<
+		" " << hitRoberta3.point.z << std::endl;
+	
+	math::Float3 test = math::Float3(0, sqrt(2), sqrt(2));
+	math::Float3::Normalize(test);
+
+	Plane przemek = Plane(math::Float3(0, 0, 0), test);
+	
+	hitRoberta2 = przemek.CalcIntersect(robert2);
+
+	std::cout << "CZY DRUGI ROBERT TRAFIL PRZEMKA?" << hitRoberta2.hit << " GDZIE? " << hitRoberta2.point.x << " " << 
+		hitRoberta2.point.y << " " << hitRoberta2.point.z << std::endl;
+	
 	//KONIEC FGK TESTÓW
 
 
