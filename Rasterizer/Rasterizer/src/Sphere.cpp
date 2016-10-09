@@ -1,5 +1,7 @@
 #include "Sphere.h"
 
+#include <stdio.h>
+
 Sphere::Sphere()
 {
 	this->_center = math::Float3();
@@ -17,24 +19,24 @@ RayHit Sphere::CalcIntersect(Ray& ray)
 	math::Float3 ocVec = ray.GetOrigin() - _center;
 	float B = -math::Float3::Dot(ray.GetDirection(), ocVec);
 	float det = (B * B) - math::Float3::Dot(ocVec, ocVec) + (_radius * _radius);
-	
+
 	if (det > 0)
 	{
 		det = sqrt(det);
 		float d1 = B + det;
 		float d2 = B - det;
 
-		if (d2 > 0)
+		if (d1 > 0)
 		{
-			if (d1 < 0)
+			if (d2 < 0)
 			{
 				//Ray origin inside sphere case
-				return RayHit(true, math::Float3(ray.GetOrigin() + ray.GetDirection() * d2));
+				return RayHit(true, math::Float3(ray.GetOrigin() + ray.GetDirection() * d1));
 			}
 			else
 			{
 				//Ray origin in front of sphere case
-				return RayHit(true, math::Float3(ray.GetOrigin() + ray.GetDirection() * d1));
+				return RayHit(true, math::Float3(ray.GetOrigin() + ray.GetDirection() * d2));
 			}
 		}
 		else
