@@ -163,7 +163,7 @@ void GraphicsDevice::Rasterizer(const VertexOutput& in1, const VertexOutput& in2
 				// depth interpolation
 				float cDepth = _bufferDepth->GetPixel(j, i);
 				float mDepth = in1.Position.z * bv + in2.Position.z * bw + in3.Position.z * bu;
-				if (mDepth > cDepth)
+				if (mDepth < cDepth)
 				{
 					// write z to depth buffer
 					_bufferDepth->SetPixel(j, i, mDepth);

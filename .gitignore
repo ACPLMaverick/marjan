@@ -432,3 +432,4 @@ ClothSim/ClothSim/SOIL2/
 *.lol
 Rasterizer/Rasterizer/x64/
 *.db
+*.opendb

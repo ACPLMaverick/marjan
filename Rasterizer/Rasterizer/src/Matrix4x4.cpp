@@ -89,10 +89,10 @@ namespace math
 	
 	Float4& operator*(const Matrix4x4& left, Float4& right)
 	{
-		right = Float4(left.a00, left.a10, left.a20, left.a30) * right.x +
-			Float4(left.a01, left.a11, left.a21, left.a31) * right.y +
-			Float4(left.a02, left.a12, left.a22, left.a32) * right.z +
-			Float4(left.a03, left.a13, left.a23, left.a33) * right.w;
+		right = left.row1 * right.x +
+			left.row2 * right.y +
+			left.row3 * right.z +
+			left.row4 * right.w;
 		return right;
 	}
 

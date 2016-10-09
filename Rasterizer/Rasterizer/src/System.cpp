@@ -80,21 +80,22 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	math::Matrix4x4 janusz;
 	math::Matrix4x4 waclaw;
-	math::Matrix4x4::LookAt(&math::Float3(0.0f, 1.0f, 5.0f),
+	math::Matrix4x4 zbychu, zdzichu;
+	math::Matrix4x4::LookAt(&math::Float3(0.0f, 0.0f, -5.0f),
 			&math::Float3(0.0f, 0.0f, 0.0f),
 			&math::Float3(0.0f, 1.0f, 0.0f),
 			&janusz);
 	math::Matrix4x4::Perspective(
-		75.0f,
-		800.0f / 600.0f,
+		45.0f,
+		640.0f / 640.0f,
 		0.01f,
-		100.0f,
+		1000.0f,
 		&waclaw
 	);
-	math::Float4 dupa = math::Float4(-5.0f, 5.0f, 5.0f, 1.0f);
-	dupa = janusz * waclaw * dupa;
-
-	std::cout << dupa;
+	zbychu = waclaw * janusz;
+	zdzichu = janusz * waclaw;
+	std::cout << janusz << std::endl << waclaw << std::endl <<
+		zbychu << std::endl << zdzichu << std::endl;
 #endif // _DEBUG
 
 

@@ -21,9 +21,9 @@ namespace rendererMav
 
 	void TriangleMav::Update()
 	{
-		math::Float3 trans = *_transform.GetRotation();
-		trans.x += 0.1f;
-		_transform.SetRotation(&trans);
+		//math::Float3 trans = *_transform.GetRotation();
+		//trans.x += 0.1f;
+		//_transform.SetRotation(&trans);
 	}
 
 	void TriangleMav::Draw()

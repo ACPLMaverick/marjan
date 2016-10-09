@@ -39,7 +39,7 @@ void SceneTriangle::InitializeScene()
 		Color32(0xFFFFFFFF)
 	));
 	_primitives.push_back(SpecificObjectFactory::GetTriangle(
-		math::Float3(-0.0f, 0.8f, 50.0f),
+		math::Float3(-0.2f, 0.4f, -2.0f),
 		math::Float3(0.8f, 0.8f, 0.0f),
 		math::Float3(0.5f, -0.5f, 0.0f),
 
