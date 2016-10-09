@@ -433,3 +433,5 @@ ClothSim/ClothSim/SOIL2/
 Rasterizer/Rasterizer/x64/
 *.db
 *.opendb
+*.obj
+!Rasterizer/Rasterizer/meshes/*

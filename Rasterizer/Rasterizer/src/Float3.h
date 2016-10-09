@@ -79,6 +79,11 @@ namespace math
 			return Float3(-this->x, -this->y, -this->z);
 		}
 
+		Float3 operator+(float scalar) const
+		{
+			return Float3(this->x + scalar, this->y + scalar, this->z + scalar);
+		}
+
 		bool operator==(const Float3& right)
 		{
 			return (this->x == right.x && this->y == right.y && this->z == right.z);

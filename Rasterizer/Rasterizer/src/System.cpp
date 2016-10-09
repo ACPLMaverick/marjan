@@ -3,6 +3,7 @@
 #include "System.h"
 #include "Scene.h"
 #include "SceneTriangle.h"
+#include "SceneMeshes.h"
 #include "SpecificObjectFactory.h"
 
 // testing
@@ -111,24 +112,24 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	//KONIEC FGK TESTÓW
 
 
-	math::Matrix4x4 janusz;
-	math::Matrix4x4 waclaw;
-	math::Matrix4x4 zbychu, zdzichu;
-	math::Matrix4x4::LookAt(&math::Float3(0.0f, 0.0f, -5.0f),
-			&math::Float3(0.0f, 0.0f, 0.0f),
-			&math::Float3(0.0f, 1.0f, 0.0f),
-			&janusz);
-	math::Matrix4x4::Perspective(
-		45.0f,
-		640.0f / 640.0f,
-		0.01f,
-		1000.0f,
-		&waclaw
-	);
-	zbychu = waclaw * janusz;
-	zdzichu = janusz * waclaw;
-	std::cout << janusz << std::endl << waclaw << std::endl <<
-		zbychu << std::endl << zdzichu << std::endl;
+	//math::Matrix4x4 janusz;
+	//math::Matrix4x4 waclaw;
+	//math::Matrix4x4 zbychu, zdzichu;
+	//math::Matrix4x4::LookAt(&math::Float3(0.0f, 0.0f, -5.0f),
+	//		&math::Float3(0.0f, 0.0f, 0.0f),
+	//		&math::Float3(0.0f, 1.0f, 0.0f),
+	//		&janusz);
+	//math::Matrix4x4::Perspective(
+	//	45.0f,
+	//	640.0f / 640.0f,
+	//	0.01f,
+	//	1000.0f,
+	//	&waclaw
+	//);
+	//zbychu = waclaw * janusz;
+	//zdzichu = janusz * waclaw;
+	//std::cout << janusz << std::endl << waclaw << std::endl <<
+	//	zbychu << std::endl << zdzichu << std::endl;
 #endif // _DEBUG
 
 
@@ -160,8 +161,10 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	_renderer = SpecificObjectFactory::GetRenderer(&_settings);
 
 	// initialize scenes
-	_scenes.push_back(new SceneTriangle());
-	std::string sName = "SceneTriangle";
+	//_scenes.push_back(new SceneTriangle());
+	//std::string sName = "SceneTriangle";
+	_scenes.push_back(new SceneMeshes());
+	std::string sName = "SceneMeshes";
 	_scenes[0]->Initialize(0, &sName);
 }
 

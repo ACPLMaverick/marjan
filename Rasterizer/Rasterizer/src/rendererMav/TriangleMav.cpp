@@ -8,7 +8,7 @@
 namespace rendererMav
 {
 	TriangleMav::TriangleMav(math::Float3 x, math::Float3 y, math::Float3 z,
-		math::Float3 ux, math::Float3 uy, math::Float3 uz,
+		math::Float2 ux, math::Float2 uy, math::Float2 uz,
 		math::Float3 cx, math::Float3 cy, math::Float3 cz,
 		Color32 col) :
 		Triangle(x, y, z, ux, uy, uz, cx, cy, cz, col)
@@ -34,7 +34,7 @@ namespace rendererMav
 		gd->SetColorBuffer(&c1);
 
 		Camera* cam = System::GetInstance()->GetCurrentScene()->GetCurrentCamera();
-		math::Matrix4x4 wvp = *_transform.GetWorldMatrix() * *cam->GetViewProjMatrix();
+		math::Matrix4x4 wvp/* = *_transform.GetWorldMatrix() * *cam->GetViewProjMatrix()*/;
 		gd->SetWorldViewProjMatrix(&wvp);
 
 		gd->Draw(1);

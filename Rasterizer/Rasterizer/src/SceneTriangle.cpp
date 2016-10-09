@@ -28,9 +28,9 @@ void SceneTriangle::InitializeScene()
 		math::Float3(0.0f, 0.8f, 0.0f),
 		math::Float3(0.5f, -0.5f, 0.0f),
 
-		math::Float3(0.0f, 0.0f, 0.0f),
-		math::Float3(0.0f, 1.0f, 0.0f),
-		math::Float3(1.0f, 1.0f, 0.0f),
+		math::Float2(0.0f, 0.0f),
+		math::Float2(0.0f, 1.0f),
+		math::Float2(1.0f, 1.0f),
 
 		math::Float3(1.0f, 0.0f, 0.0f),
 		math::Float3(0.0f, 1.0f, 0.0f),
@@ -43,9 +43,9 @@ void SceneTriangle::InitializeScene()
 		math::Float3(0.8f, 0.8f, 0.0f),
 		math::Float3(0.5f, -0.5f, 0.0f),
 
-		math::Float3(0.0f, 0.0f, 0.0f),
-		math::Float3(0.0f, 1.0f, 0.0f),
-		math::Float3(1.0f, 1.0f, 0.0f),
+		math::Float2(0.0f, 0.0f),
+		math::Float2(0.0f, 1.0f),
+		math::Float2(1.0f, 1.0f),
 
 		math::Float3(1.0f, 1.0f, 0.0f),
 		math::Float3(0.0f, 1.0f, 1.0f),

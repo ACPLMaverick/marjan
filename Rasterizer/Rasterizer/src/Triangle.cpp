@@ -3,7 +3,7 @@
 
 
 Triangle::Triangle(math::Float3 x, math::Float3 y, math::Float3 z, 
-	math::Float3 ux, math::Float3 uy, math::Float3 uz,
+	math::Float2 ux, math::Float2 uy, math::Float2 uz,
 	math::Float3 cx, math::Float3 cy, math::Float3 cz,
 	Color32 col) :
 	Primitive()

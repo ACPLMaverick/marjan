@@ -22,10 +22,10 @@ void GraphicsDevice::Shutdown()
 
 void GraphicsDevice::Draw(size_t triangleNum)
 {
+	VertexInput vinput1, vinput2, vinput3;
+	VertexOutput voutput1, voutput2, voutput3;
 	for (size_t i = 0; i < triangleNum; i += 3)
 	{
-		VertexInput vinput1, vinput2, vinput3;
-		VertexOutput voutput1, voutput2, voutput3;
 		vinput1.Position = _vb[i];
 		vinput2.Position = _vb[i + 1];
 		vinput3.Position = _vb[i + 2];
@@ -44,9 +44,30 @@ void GraphicsDevice::Draw(size_t triangleNum)
 	}
 }
 
-void GraphicsDevice::DrawIndexed(size_t triangleNum, const uint16_t* ib)
+void GraphicsDevice::DrawIndexed(size_t triangleCount, const math::UShort3* ib)
 {
+	VertexInput vinput1, vinput2, vinput3;
+	VertexOutput voutput1, voutput2, voutput3;
+	math::UShort3 id1, id2, id3;
+	size_t vertCount = triangleCount * 3;
+	for (size_t i = 0; i < vertCount; i += 3)
+	{
+		vinput1.Position = _vb[ib[i].p];
+		vinput2.Position = _vb[ib[i + 1].p];
+		vinput3.Position = _vb[ib[i + 2].p];
+		vinput1.Color = _cb[ib[i].n];			// temporarily putting normal into color channel
+		vinput2.Color = _cb[ib[i + 1].n];
+		vinput3.Color = _cb[ib[i + 2].n];
+		vinput1.Uv = _ub[ib[i].t];
+		vinput2.Uv = _ub[ib[i + 1].t];
+		vinput3.Uv = _ub[ib[i + 2].t];
 
+		VertexShader(vinput1, voutput1);
+		VertexShader(vinput2, voutput2);
+		VertexShader(vinput3, voutput3);
+
+		Rasterizer(voutput1, voutput2, voutput3);
+	}
 }
 
 void GraphicsDevice::SetVertexBuffer(const math::Float3 * buf)
@@ -59,7 +80,7 @@ void GraphicsDevice::SetColorBuffer(const math::Float3 * buf)
 	_cb = buf;
 }
 
-void GraphicsDevice::SetUVBuffer(const math::Float3 * buf)
+void GraphicsDevice::SetUVBuffer(const math::Float2 * buf)
 {
 	_ub = buf;
 }
@@ -144,9 +165,16 @@ void GraphicsDevice::Rasterizer(const VertexOutput& in1, const VertexOutput& in2
 			int32_t e32edgeEquation = (dx3x2 * (i - v2y) - dy3y2 * (j - v2x));
 			int32_t e12edgeEquation = (dx1x3 * (i - v3y) - dy1y3 * (j - v3x));
 			if (
-				((e21edgeEquation < 0) || (e21isTopLeft && e21edgeEquation <= 0)) &&
-				((e32edgeEquation < 0) || (e32isTopLeft && e32edgeEquation <= 0)) &&
-				((e12edgeEquation < 0) || (e12isTopLeft && e12edgeEquation <= 0))
+					(
+						((e21edgeEquation < 0) || (e21isTopLeft && e21edgeEquation <= 0)) &&
+						((e32edgeEquation < 0) || (e32isTopLeft && e32edgeEquation <= 0)) &&
+						((e12edgeEquation < 0) || (e12isTopLeft && e12edgeEquation <= 0))
+					) /*||
+					(
+						((e21edgeEquation > 0) || (e21isTopLeft && e21edgeEquation >= 0)) &&
+						((e32edgeEquation > 0) || (e32isTopLeft && e32edgeEquation >= 0)) &&
+						((e12edgeEquation > 0) || (e12isTopLeft && e12edgeEquation >= 0))
+					)*/
 				)
 			{
 				// barycentric coords calculation

@@ -29,9 +29,9 @@ private:
 
 #pragma region Settings
 
-	std::string s_windowTitle = "FGK - Raytracer";
-	int32_t s_windowWidth = 800;
-	int32_t s_windowHeight = 600;
+	std::string s_windowTitle = "FGK Raytracer / MiAGK Rasterizer";
+	int32_t s_windowWidth = 640;
+	int32_t s_windowHeight = 480;
 	bool s_windowVsync = false;
 	bool s_windowFullscreen = false;
 	bool s_soundEnabled = true;

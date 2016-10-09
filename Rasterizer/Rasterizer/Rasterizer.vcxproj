@@ -19,12 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendererMav\MeshMav.cpp" />
+    <ClCompile Include="src\Float2.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Float4.cpp" />
     <ClCompile Include="src\Matrix4x4.cpp" />
     <ClCompile Include="src\Int2.cpp" />
     <ClCompile Include="src\rendererMav\GraphicsDevice.cpp" />
     <ClCompile Include="src\Plane.cpp" />
     <ClCompile Include="src\Ray.cpp" />
+    <ClCompile Include="src\SceneMeshes.cpp" />
     <ClCompile Include="src\SpecificObjectFactory.cpp" />
     <ClCompile Include="src\rendererMav\RendererMav.cpp" />
     <ClCompile Include="src\IRenderer.cpp" />
@@ -44,14 +48,19 @@
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Triangle.cpp" />
     <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\UShort3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendererMav\MeshMav.h" />
+    <ClInclude Include="src\Float2.h" />
+    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Float4.h" />
     <ClInclude Include="src\Matrix4x4.h" />
     <ClInclude Include="src\Int2.h" />
     <ClInclude Include="src\rendererMav\GraphicsDevice.h" />
     <ClInclude Include="src\Plane.h" />
     <ClInclude Include="src\Ray.h" />
+    <ClInclude Include="src\SceneMeshes.h" />
     <ClInclude Include="src\SpecificObjectFactory.h" />
     <ClInclude Include="src\rendererMav\RendererMav.h" />
     <ClInclude Include="src\IRenderer.h" />
@@ -72,6 +81,7 @@
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\Triangle.h" />
     <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\UShort3.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B2B6FFA4-446C-4866-814B-DFD8FBDE95DC}</ProjectGuid>
