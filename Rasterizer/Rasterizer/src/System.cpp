@@ -5,6 +5,7 @@
 #include "SceneTriangle.h"
 #include "SceneMeshes.h"
 #include "SpecificObjectFactory.h"
+#include "Timer.h"
 
 // testing
 #ifdef _DEBUG
@@ -14,9 +15,12 @@
 #include "Float4.h"
 #endif // _DEBUG
 
+#include <Commctrl.h>
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <io.h>
+#include <string>
 
 System::System()
 {
@@ -159,6 +163,7 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	// initialize managers
 	_renderer = SpecificObjectFactory::GetRenderer(&_settings);
+	Timer::GetInstance()->Initialize();
 
 	// initialize scenes
 	//_scenes.push_back(new SceneTriangle());
@@ -177,6 +182,9 @@ void System::Shutdown()
 #endif // _DEBUG
 
 	// shutdown managers
+	delete _renderer;
+	Timer::GetInstance()->Shutdown();
+	Timer::GetInstance()->DestroyInstance();
 
 	UnregisterClass((_settings.s_windowTitle.c_str()), _settings._hInstance);
 	DestroyWindow(_settings._hwnd);
@@ -188,6 +196,9 @@ void System::Run()
 	while (_running)
 	{
 		RunMessages();
+
+		// update timer
+		Timer::GetInstance()->Update();
 
 		// update scene instances
 		_scenes[_currentScene]->Update();
@@ -260,14 +271,28 @@ void System::InitWindow(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	_settings._hwnd = CreateWindow(
 		(_settings.s_windowTitle.c_str()),
 		(_settings.s_windowTitle.c_str()),
-		WS_OVERLAPPEDWINDOW,
+		(WS_OVERLAPPED |
+			WS_CAPTION |
+			WS_SYSMENU),
 		10, 10,
 		_settings.s_windowWidth, _settings.s_windowHeight,
 		NULL, NULL,
 		hInstance, NULL
 		);
 
-	int x = GetLastError();
+	// bottom bar for fps
+	InitCommonControls();
+	_settings._hwndStatus = CreateWindowEx(
+		0,
+		STATUSCLASSNAME,
+		(PCTSTR)NULL,
+		WS_CHILD | WS_VISIBLE,
+		0, 0, 0, 0,
+		_settings._hwnd,
+		(HMENU)1,
+		_settings._hInstance,
+		NULL
+	);
 
 	ShowWindow(_settings._hwnd, nCmdShow);
 	UpdateWindow(_settings._hwnd);
@@ -312,6 +337,25 @@ inline void System::DrawColorBuffer()
 	EndPaint(_settings._hwnd, &ps);
 }
 
+inline void System::DrawFPS()
+{
+	std::string fps = std::to_string(Timer::GetInstance()->GetFPS());
+	fps = fps.substr(0, 6);
+	std::string fpsFormatted = "FPS: " + fps ;
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(_settings._hwndStatus, &ps);
+
+	int result = DrawText(
+		hdc,
+		fpsFormatted.c_str(),
+		-1,
+		&ps.rcPaint,
+		DT_LEFT | DT_BOTTOM
+	);
+
+	EndPaint(_settings._hwndStatus, &ps);
+}
+
 LRESULT System::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	// pass message to event handlers
@@ -333,6 +377,7 @@ LRESULT System::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		{
 			System::GetInstance()->DrawColorBuffer();
+			System::GetInstance()->DrawFPS();
 		}
 		
 		break;

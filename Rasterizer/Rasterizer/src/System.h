@@ -48,6 +48,12 @@ protected:
 
 #pragma endregion
 
+#pragma region Timers
+
+
+
+#pragma endregion
+
 	System();
 
 	inline void InitWindow(
@@ -57,6 +63,7 @@ protected:
 	inline void RunMessages();
 	inline void ResizeWindowBitmap();
 	inline void DrawColorBuffer();
+	inline void DrawFPS();
 
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 

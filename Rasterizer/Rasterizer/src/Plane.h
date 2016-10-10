@@ -17,4 +17,6 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	math::Float3 GetPoint() { return _point; }
+	math::Float3 GetNormal() { return _normal; }
 };

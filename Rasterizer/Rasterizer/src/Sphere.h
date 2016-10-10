@@ -17,5 +17,6 @@ public:
 	void Update() override;
 	void Draw() override;
 
-	inline math::Float3 GetCenter() { return _center; }
+	math::Float3 GetCenter() { return _center; }
+	float GetRadius() { return _radius; }
 };
