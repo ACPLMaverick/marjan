@@ -4,6 +4,12 @@
 #include "SystemSettings.h"
 #include "Float2.h"
 
+namespace light
+{
+	class LightAmbient;
+	class LightDirectional;
+	class LightSpot;
+}
 class Triangle;
 class IRenderer;
 class Mesh;
@@ -42,6 +48,22 @@ public:
 		const math::Float3* rot,
 		const math::Float3* scl,
 		const std::string* fPath);
+	static light::LightAmbient* GetLightAmbient(
+		const Color32* color
+	);
+	static light::LightDirectional* GetLightDirectional(
+		const Color32* col, const math::Float3* direction
+	);
+	static light::LightSpot* GetLightSpot(
+		const Color32* col,
+		const math::Float3* dir,
+		float attC,
+		float attL,
+		float attQ,
+		float umbra,
+		float penumbra,
+		float falloff
+	);
 
 #pragma endregion
 };

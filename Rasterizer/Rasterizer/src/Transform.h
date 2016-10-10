@@ -10,6 +10,7 @@ protected:
 #pragma region Protected
 
 	math::Matrix4x4 _worldMatrix;
+	math::Matrix4x4 _worldMatrixInverseTranspose;
 
 	math::Float3 _position;
 	math::Float3 _rotation;
@@ -42,6 +43,7 @@ public:
 	const math::Float3* GetScale() const { return &_scale; }
 
 	const math::Matrix4x4* GetWorldMatrix() const { return &_worldMatrix; }
+	const math::Matrix4x4* GetWorldInverseTransposeMatrix() const { return &_worldMatrixInverseTranspose; }
 
 	void SetPosition(const math::Float3* pos) { _position = *pos; GenerateWorldMatrix(); }
 	void SetRotation(const math::Float3* rot) 

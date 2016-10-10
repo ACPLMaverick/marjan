@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\light\LightAmbient.cpp" />
+    <ClCompile Include="src\light\LightDirectional.cpp" />
+    <ClCompile Include="src\light\LightSpot.cpp" />
     <ClCompile Include="src\rendererMav\MeshMav.cpp" />
     <ClCompile Include="src\Float2.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
@@ -51,6 +54,9 @@
     <ClCompile Include="src\UShort3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\light\LightAmbient.h" />
+    <ClInclude Include="src\light\LightDirectional.h" />
+    <ClInclude Include="src\light\LightSpot.h" />
     <ClInclude Include="src\rendererMav\MeshMav.h" />
     <ClInclude Include="src\Float2.h" />
     <ClInclude Include="src\Mesh.h" />

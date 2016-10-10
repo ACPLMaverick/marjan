@@ -68,10 +68,6 @@ void Mesh::LoadFromFile(const std::string * filePath)
 					std::stof(lineSplitSpace[3].c_str())
 				);
 
-				// temporary for putting normals as colors
-				n = n + 1.0f;
-				n = n * 0.5f;
-
 				math::Float3::Normalize(n);
 				_normalArray.push_back(n);
 				++_normalCount;

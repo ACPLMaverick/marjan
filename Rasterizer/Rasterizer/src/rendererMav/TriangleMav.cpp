@@ -31,7 +31,7 @@ namespace rendererMav
 		GraphicsDevice* gd = ((RendererMav*)System::GetInstance()->GetRenderer())->GetGraphicsDevice();
 		gd->SetVertexBuffer(&v1);
 		gd->SetUVBuffer(&u1);
-		gd->SetColorBuffer(&c1);
+		gd->SetNormalBuffer(&c1);
 
 		Camera* cam = System::GetInstance()->GetCurrentScene()->GetCurrentCamera();
 		math::Matrix4x4 wvp/* = *_transform.GetWorldMatrix() * *cam->GetViewProjMatrix()*/;

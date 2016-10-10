@@ -1,8 +1,15 @@
 #include "SpecificObjectFactory.h"
 
+#include "System.h"
+
 #include "rendererMav/RendererMav.h"
+#include "rendererMav/GraphicsDevice.h"
 #include "rendererMav/TriangleMav.h"
 #include "rendererMav/MeshMav.h"
+
+#include "light/LightAmbient.h"
+#include "light/LightDirectional.h"
+#include "light/LightSpot.h"
 
 SpecificObjectFactory::SpecificObjectFactory()
 {
@@ -61,6 +68,84 @@ Mesh * SpecificObjectFactory::GetMesh(const math::Float3 * pos, const math::Floa
 	return new rendererMav::MeshMav(pos, rot, scl, fPath);
 
 #endif // RENDERER_MAV
+
+#ifdef RENDERER_MAJSTER
+
+#endif // RENDERER_MAJSTER
+}
+
+light::LightAmbient * SpecificObjectFactory::GetLightAmbient(const Color32 * color)
+{
+#ifdef RENDERER_FGK
+
+#endif // RENDERER_FGK
+
+#ifdef RENDERER_MAV
+
+	rendererMav::GraphicsDevice* gd = ((rendererMav::RendererMav*)System::GetInstance()->GetRenderer())->GetGraphicsDevice();
+	uint8_t id = gd->EnableLightAmbient(color);
+	if (id != (uint8_t)-1)
+	{
+		return gd->GetLightAmbient(id);
+	}
+	else
+	{
+		return nullptr;
+	}
+
+#endif
+
+#ifdef RENDERER_MAJSTER
+
+#endif // RENDERER_MAJSTER
+}
+
+light::LightDirectional * SpecificObjectFactory::GetLightDirectional(const Color32 * col, const math::Float3 * direction)
+{
+#ifdef RENDERER_FGK
+
+#endif // RENDERER_FGK
+
+#ifdef RENDERER_MAV
+
+	rendererMav::GraphicsDevice* gd = ((rendererMav::RendererMav*)System::GetInstance()->GetRenderer())->GetGraphicsDevice();
+	uint8_t id = gd->EnableDirectionalLight(col, direction);
+	if (id != (uint8_t)-1)
+	{
+		return gd->GetLightDirectional(id);
+	}
+	else
+	{
+		return nullptr;
+	}
+
+#endif
+
+#ifdef RENDERER_MAJSTER
+
+#endif // RENDERER_MAJSTER
+}
+
+light::LightSpot * SpecificObjectFactory::GetLightSpot(const Color32 * col, const math::Float3 * dir, float attC, float attL, float attQ, float umbra, float penumbra, float falloff)
+{
+#ifdef RENDERER_FGK
+
+#endif // RENDERER_FGK
+
+#ifdef RENDERER_MAV
+
+	rendererMav::GraphicsDevice* gd = ((rendererMav::RendererMav*)System::GetInstance()->GetRenderer())->GetGraphicsDevice();
+	uint8_t id = gd->EnableSpotLight(col, dir, attC, attL, attQ, umbra, penumbra, falloff);
+	if (id != (uint8_t)-1)
+	{
+		return gd->GetLightSpot(id);
+	}
+	else
+	{
+		return nullptr;
+	}
+
+#endif
 
 #ifdef RENDERER_MAJSTER
 

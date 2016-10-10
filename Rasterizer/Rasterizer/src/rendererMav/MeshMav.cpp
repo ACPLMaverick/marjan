@@ -4,6 +4,7 @@
 #include "../System.h"
 #include "../Camera.h"
 #include "../Scene.h"
+#include "../Timer.h"
 
 namespace rendererMav
 {
@@ -30,7 +31,7 @@ namespace rendererMav
 	void MeshMav::Update()
 	{
 		math::Float3 trans = *_transform.GetRotation();
-		trans.y += 0.4f;
+		trans.y += 20.0f * (float)Timer::GetInstance()->GetDeltaTime();
 		_transform.SetRotation(&trans);
 	}
 
@@ -39,11 +40,14 @@ namespace rendererMav
 		GraphicsDevice* gd = ((RendererMav*)System::GetInstance()->GetRenderer())->GetGraphicsDevice();
 		gd->SetVertexBuffer(_positionArray.data());
 		gd->SetUVBuffer(_uvArray.data());
-		gd->SetColorBuffer(_normalArray.data());	// temporarily setting normal buffer as color buffer
+		gd->SetNormalBuffer(_normalArray.data());	// temporarily setting normal buffer as color buffer
 
 		Camera* cam = System::GetInstance()->GetCurrentScene()->GetCurrentCamera();
 		math::Matrix4x4 wvp = *_transform.GetWorldMatrix() * *cam->GetViewProjMatrix();
 		gd->SetWorldViewProjMatrix(&wvp);
+
+		gd->SetWorldMatrix(_transform.GetWorldMatrix());
+		gd->SetWorldInverseTransposeMatrix(_transform.GetWorldInverseTransposeMatrix());
 
 		gd->DrawIndexed(_triangleCount, _indexArray.data());
 	}

@@ -7,6 +7,13 @@
 class Primitive;
 class Camera;
 
+namespace light
+{
+	class LightAmbient;
+	class LightDirectional;
+	class LightSpot;
+}
+
 class Scene
 {
 protected:
@@ -15,6 +22,11 @@ protected:
 
 	std::vector<Primitive*> _primitives;
 	std::vector<Camera*> _cameras;
+
+	std::vector<light::LightDirectional*> _lightsDirectional;
+	std::vector<light::LightSpot*> _lightsSpot;
+
+	light::LightAmbient* _lightAmbient;
 
 #pragma endregion
 
@@ -60,6 +72,9 @@ public:
 
 	void AddPrimitive(Primitive* const Primitive);
 	void AddCamera(Camera* const camera);
+	void AddLightAmbient(light::LightAmbient* const la);
+	void AddLightDirectional(light::LightDirectional* const ld);
+	void AddLightSpot(light::LightSpot* const ls);
 
 	Camera* const RemoveCamera(uint32_t uid);
 	Camera* const RemoveCamera(std::string* name);

@@ -4,6 +4,10 @@
 #include "SpecificObjectFactory.h"
 #include "System.h"
 #include "Mesh.h"
+#include "light/LightAmbient.h"
+#include "light/LightDirectional.h"
+#include "light/LightSpot.h"
+
 
 SceneMeshes::SceneMeshes()
 {
@@ -27,7 +31,14 @@ void SceneMeshes::InitializeScene()
 
 	math::Float3 cPos(0.0f, 0.0f, 0.0f);
 	math::Float3 cRot(0.0f, 0.0f, 0.0f);
-	math::Float3 cScl(1.0f, 1.0f, 1.0f);
-	std::string cPath = "cube";
+	math::Float3 cScl(2.0f, 2.0f, 2.0f);
+	std::string cPath = "sphere";
 	_primitives.push_back(SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath));
+
+	Color32 ambCol(1.0f, 0.15f, 0.1f, 0.2f);
+	_lightAmbient = SpecificObjectFactory::GetLightAmbient(&ambCol);
+
+	Color32 dirCol(1.0f, 0.8f, 0.8f, 0.9f);
+	math::Float3 dirDir(-1.0f, -1.0f, 1.0f);
+	_lightsDirectional.push_back(SpecificObjectFactory::GetLightDirectional(&dirCol, &dirDir));
 }
