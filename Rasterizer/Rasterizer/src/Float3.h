@@ -53,20 +53,49 @@ namespace math
 			return Float3(this->x * right.x, this->y * right.y, this->z * right.z);
 		}
 
+		Float3 operator/(const Float3& right) const
+		{
+			return Float3(this->x / right.x, this->y / right.y, this->z / right.z);
+		}
+
+		Float3& operator/=(const Float3& right)
+		{
+			*this = *this / right;
+			return *this;
+		}
+
 		Float3 operator*(float scalar) const
 		{
 			return Float3(this->x * scalar, this->y * scalar, this->z * scalar);
 		}
 
-		Float3 operator/(float scalar)
+		Float3& operator*=(float scalar)
+		{
+			*this = *this * scalar;
+			return *this;
+		}
+
+		Float3 operator/(float scalar) const
 		{
 			float inverse = 1.0f / scalar;
 
-			x *= inverse;
-			y *= inverse;
-			z *= inverse;
+			return Float3(this->x * inverse, this->y * inverse, this->z * inverse);
+		}
 
+		Float3& operator/=(float scalar)
+		{
+			*this = *this / scalar;
 			return *this;
+		}
+
+		friend Float3 operator/(Float3& left, Float3& right)
+		{
+			return Float3(left.x / right.x, left.y / right.y, left.z / right.z);
+		}
+
+		friend Float3 operator/(float scalar, Float3& right)
+		{
+			return Float3(scalar / right.x, scalar / right.y, scalar / right.z);
 		}
 
 		Float3 operator+(const Float3& right) const

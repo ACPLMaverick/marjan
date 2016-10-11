@@ -16,7 +16,7 @@ namespace rendererMav
 		_bufferColor = cb;
 		_bufferDepth = db;
 
-		std::string tName = "canteen_albedo_specular";
+		std::string tName = "janusz";
 		_tex = new Texture(&tName);
 	}
 
@@ -266,7 +266,7 @@ namespace rendererMav
 		out.Uv = in.Uv;
 	}
 
-	void GraphicsDevice::Rasterizer(const VertexOutput& in1, const VertexOutput& in2, const VertexOutput& in3)
+	void GraphicsDevice::Rasterizer(VertexOutput& in1, VertexOutput& in2, VertexOutput& in3)
 	{
 		PixelInput pi;
 		Color32 col;
@@ -278,6 +278,26 @@ namespace rendererMav
 		v2y = (int32_t)ConvertFromScreenToBuffer(in2.Position.y, _bufferColor->GetHeight());
 		v3x = (int32_t)ConvertFromScreenToBuffer(in3.Position.x, _bufferColor->GetWidth());
 		v3y = (int32_t)ConvertFromScreenToBuffer(in3.Position.y, _bufferColor->GetHeight());
+
+#ifdef PERSP_CORRECT
+
+		// divide all attribs by z
+		in1.Normal /= in1.Position.z;
+		in1.Uv /= in1.Position.z;
+		in1.WorldPosition /= in1.Position.z;
+		in2.Normal /= in2.Position.z;
+		in2.Uv /= in2.Position.z;
+		in2.WorldPosition /= in2.Position.z;
+		in3.Normal /= in3.Position.z;
+		in3.Uv /= in3.Position.z;
+		in3.WorldPosition /= in3.Position.z;
+
+		// precompute for 1 over z
+		in1.Position = 1.0f / in1.Position;
+		in2.Position = 1.0f / in2.Position;
+		in3.Position = 1.0f / in3.Position;
+
+#endif // PERSP_CORRECT
 
 		// triangle bounding box
 		int32_t minX = (min(min(v1x, v2x), v3x));
@@ -355,7 +375,18 @@ namespace rendererMav
 						math::Float3::Normalize(pi.Normal);
 						pi.Uv = in1.Uv * bv + in2.Uv * bw + in3.Uv * bu;
 
+#ifdef PERSP_CORRECT
+
+						float z = 1.0f / (bw * in1.Position.z + bu * in2.Position.z + bv * in3.Position.z);
+						pi.WorldPosition *= z;
+						pi.Uv *= z;
+						pi.Normal *= z;
+
+#endif // PERSP_CORRECT
+
 						PixelShader(pi, col);
+
+						//col = Color32(1.0f, mDepth, mDepth, mDepth);
 
 						// write output color to buffer
 						_bufferColor->SetPixel(j, i, col);
@@ -371,7 +402,7 @@ namespace rendererMav
 	{
 		math::Float3 temp;
 		Color32 color(0xFF000000);
-		Color32 tex = _tex->GetColor(&in.Uv);
+		Color32 tex = _tex->GetColor(&in.Uv, Texture::WrapMode::WRAP, Texture::FilterMode::LINEAR);
 		float dot;
 		float spec;
 

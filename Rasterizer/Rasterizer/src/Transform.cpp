@@ -27,7 +27,7 @@ void Transform::GenerateWorldMatrix()
 	math::Matrix4x4::Rotation(&_rotation, &rot);
 	math::Matrix4x4::Scale(&_scale, &scl);
 
-	_worldMatrix = trans * rot * scl;
+	_worldMatrix = scl * rot * trans;
 	_worldMatrixInverseTranspose = _worldMatrix;
 	math::Matrix4x4::Inverse(&_worldMatrixInverseTranspose, &_worldMatrixInverseTranspose);
 	math::Matrix4x4 temp = _worldMatrixInverseTranspose;

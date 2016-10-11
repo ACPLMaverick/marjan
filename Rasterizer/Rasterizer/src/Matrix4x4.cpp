@@ -113,9 +113,9 @@ namespace math
 	void Matrix4x4::Translation(const Float3 * trans, Matrix4x4 * out)
 	{
 		Identity(out);
-		out->a03 = trans->x;
-		out->a13 = trans->y;
-		out->a23 = trans->z;
+		out->a30 = trans->x;
+		out->a31 = trans->y;
+		out->a32 = trans->z;
 	}
 
 	void Matrix4x4::Scale(const Float3 * scale, Matrix4x4 * out)

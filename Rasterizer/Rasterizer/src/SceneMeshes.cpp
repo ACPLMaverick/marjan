@@ -25,8 +25,10 @@ void SceneMeshes::InitializeScene()
 		&math::Float3(0.0f, 0.0f, 0.0f),
 		&math::Float3(0.0f, 1.0f, 0.0f),
 		50.0f,
-		(float)System::GetInstance()->GetSystemSettings()->GetDisplayWidth() / 
-			(float)System::GetInstance()->GetSystemSettings()->GetDisplayHeight()
+		(float)System::GetInstance()->GetSystemSettings()->GetDisplayWidth() /
+		(float)System::GetInstance()->GetSystemSettings()->GetDisplayHeight(),
+		1.0f,
+		1.1f
 	));
 
 	math::Float3 cPos(0.0f, 0.0f, 0.0f);
@@ -35,10 +37,14 @@ void SceneMeshes::InitializeScene()
 	std::string cPath = "sphere";
 	_primitives.push_back(SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath));
 
+	cPath = "cube";
+	cPos = math::Float3(-8.0f, 0.0f, 4.0f);
+	_primitives.push_back(SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath));
+
 	Color32 ambCol(1.0f, 0.15f, 0.1f, 0.2f);
 	_lightAmbient = SpecificObjectFactory::GetLightAmbient(&ambCol);
 
-	Color32 dirCol(1.0f, 0.8f, 0.8f, 0.9f);
+	Color32 dirCol(1.0f, 1.0f, 1.0f, 1.0f);
 	math::Float3 dirDir(-1.0f, -1.0f, 1.0f);
 	_lightsDirectional.push_back(SpecificObjectFactory::GetLightDirectional(&dirCol, &dirDir));
 }

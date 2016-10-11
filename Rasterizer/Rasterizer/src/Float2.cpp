@@ -30,6 +30,10 @@ namespace math
 	{
 		return Float2(x * right, y * right);
 	}
+	Float2 Float2::operator/(const float right) const
+	{
+		return Float2(x / right, y / right);
+	}
 	Float2 Float2::operator+(const Float2 & right) const
 	{
 		return Float2(x + right.x, y + right.y);
@@ -37,6 +41,14 @@ namespace math
 	Float2 Float2::operator-(const Float2 & right) const
 	{
 		return Float2(x - right.x, y - right.y);
+	}
+	Float2 Float2::operator*(const Float2 & right) const
+	{
+		return Float2(x * right.x, y * right.y);
+	}
+	Float2 Float2::operator/(const Float2 & right) const
+	{
+		return Float2(x / right.x, y / right.y);
 	}
 	Float2 & Float2::operator=(const Float2 & right)
 	{
@@ -52,6 +64,26 @@ namespace math
 	Float2 & Float2::operator-=(const Float2 & right)
 	{
 		*this = *this - right;
+		return *this;
+	}
+	Float2 & Float2::operator*=(const Float2 & right)
+	{
+		*this = *this * right;
+		return *this;
+	}
+	Float2 & Float2::operator/=(const Float2 & right)
+	{
+		*this = *this / right;
+		return *this;
+	}
+	Float2 & Float2::operator*=(const float right)
+	{
+		*this = *this * right;
+		return *this;
+	}
+	Float2 & Float2::operator/=(const float right)
+	{
+		*this = *this / right;
 		return *this;
 	}
 }

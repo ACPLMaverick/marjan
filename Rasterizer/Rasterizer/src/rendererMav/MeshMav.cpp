@@ -44,6 +44,7 @@ namespace rendererMav
 
 		Camera* cam = System::GetInstance()->GetCurrentScene()->GetCurrentCamera();
 		math::Matrix4x4 wvp = *_transform.GetWorldMatrix() * *cam->GetViewProjMatrix();
+		math::Matrix4x4 wv = *_transform.GetWorldMatrix() * *cam->GetViewMatrix();
 		gd->SetWorldViewProjMatrix(&wvp);
 
 		gd->SetWorldMatrix(_transform.GetWorldMatrix());

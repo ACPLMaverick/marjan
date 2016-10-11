@@ -13,6 +13,8 @@
 #include "../light/LightSpot.h"
 #include "../Texture.h"
 
+//#define PERSP_CORRECT
+
 namespace rendererMav
 {
 	class GraphicsDevice
@@ -101,9 +103,9 @@ namespace rendererMav
 
 		virtual inline void Rasterizer
 		(
-			const VertexOutput& in1,
-			const VertexOutput& in2,
-			const VertexOutput& in3
+			VertexOutput& in1,
+			VertexOutput& in2,
+			VertexOutput& in3
 		);
 
 		virtual inline void PixelShader
