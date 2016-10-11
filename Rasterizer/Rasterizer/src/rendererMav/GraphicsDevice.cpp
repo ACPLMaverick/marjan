@@ -387,9 +387,6 @@ namespace rendererMav
 			temp = temp - *_lightsDir[i].GetDirection();
 			math::Float3::Normalize(temp);
 			spec = pow(math::Float3::Dot(temp, in.Normal), _tmpGloss) * _tmpSpecular * tex.GetFltA();
-
-			// white specular for now
-			color += Color32(1.0f, spec, spec, spec);
 		}
 
 		// Spot
@@ -400,6 +397,9 @@ namespace rendererMav
 		
 		// Texture (multiply with color)
 		color = Color32::MulNoAlpha(color, tex);
+
+		// white specular for now
+		color += Color32(1.0f, spec, spec, spec);
 
 		// Ambient
 		if (_lAmbCount)
