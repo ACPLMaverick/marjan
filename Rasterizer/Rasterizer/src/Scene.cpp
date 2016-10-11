@@ -2,6 +2,8 @@
 #include "Scene.h"
 #include "Primitive.h"
 #include "Camera.h"
+#include "Material.h"
+#include "Texture.h"
 
 Scene::Scene()
 {
@@ -17,6 +19,14 @@ void Scene::Initialize(uint32_t uID, std::string * name)
 	_name = *name;
 	_uID = uID;
 
+	Texture* blankDiff = new Texture(Color32(0xFFFFFFFF));
+	Texture* blankNrm = new Texture(Color32((uint8_t)255, (uint8_t)127, (uint8_t)127, (uint8_t)255));
+	_defaultMaterial = new Material
+	(
+		blankDiff,
+		blankNrm
+	);
+
 	InitializeScene();
 }
 
@@ -31,6 +41,12 @@ void Scene::Shutdown()
 	{
 		delete *it;
 	}
+
+	for (std::vector<Material*>::iterator it = _materials.begin(); it != _materials.end(); ++it)
+	{
+		delete *it;
+	}
+	delete _defaultMaterial;
 
 #ifndef RENDERER_MAV
 

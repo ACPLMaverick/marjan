@@ -11,11 +11,13 @@ namespace rendererMav
 	MeshMav::MeshMav() :
 		Mesh()
 	{
+		_material = System::GetInstance()->GetCurrentScene()->GetDefaultMaterial();
 	}
 
 	MeshMav::MeshMav(const math::Float3 * pos, const math::Float3 * rot, const math::Float3 * scl, const std::string * fPath) :
 		Mesh(pos, rot, scl, fPath)
 	{
+		_material = System::GetInstance()->GetCurrentScene()->GetDefaultMaterial();
 	}
 
 
@@ -51,6 +53,7 @@ namespace rendererMav
 		gd->SetWorldInverseTransposeMatrix(_transform.GetWorldInverseTransposeMatrix());
 
 		gd->SetCameraPosition(cam->GetPosition());
+		gd->SetMaterial(_material);
 
 		gd->DrawIndexed(_triangleCount, _indexArray.data());
 	}

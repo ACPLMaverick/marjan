@@ -12,6 +12,7 @@
 #include "../light/LightDirectional.h"
 #include "../light/LightSpot.h"
 #include "../Texture.h"
+#include "../Material.h"
 
 //#define PERSP_CORRECT
 
@@ -60,11 +61,6 @@ namespace rendererMav
 		static const int _LIGHT_SPOT_COUNT = 2;
 		const float _fltInv255 = 1.0f / 255.0f;
 
-		// temporary
-		const float _tmpSpecular = 1.0f;
-		const float _tmpGloss = 50.0f;
-		Texture* _tex;
-
 #pragma endregion
 
 #pragma region Protected
@@ -81,6 +77,8 @@ namespace rendererMav
 		const math::Matrix4x4* _wvpMat;
 		const math::Matrix4x4* _wMat;
 		const math::Matrix4x4* _wInvTransMat;
+
+		const Material* _material;
 
 		light::LightAmbient _lightAmb;
 		light::LightDirectional _lightsDir[_LIGHT_DIRECTIONAL_COUNT];
@@ -138,6 +136,8 @@ namespace rendererMav
 		void SetWorldInverseTransposeMatrix(const math::Matrix4x4* m);
 
 		void SetCameraPosition(const math::Float3* pos);
+
+		void SetMaterial(const Material* mat);
 
 		uint8_t EnableLightAmbient(const Color32* color);
 		uint8_t EnableDirectionalLight(const Color32* col, const math::Float3* direction);

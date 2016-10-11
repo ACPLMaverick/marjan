@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\light\LightAmbient.cpp" />
     <ClCompile Include="src\light\LightDirectional.cpp" />
     <ClCompile Include="src\light\LightSpot.cpp" />
@@ -55,6 +56,7 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\light\LightAmbient.h" />
     <ClInclude Include="src\light\LightDirectional.h" />
     <ClInclude Include="src\light\LightSpot.h" />

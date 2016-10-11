@@ -6,6 +6,7 @@
 
 class Primitive;
 class Camera;
+class Material;
 
 namespace light
 {
@@ -23,9 +24,12 @@ protected:
 	std::vector<Primitive*> _primitives;
 	std::vector<Camera*> _cameras;
 
+	std::vector<Material*> _materials;
+
 	std::vector<light::LightDirectional*> _lightsDirectional;
 	std::vector<light::LightSpot*> _lightsSpot;
 
+	Material* _defaultMaterial;
 	light::LightAmbient* _lightAmbient;
 
 #pragma endregion
@@ -69,6 +73,8 @@ public:
 
 	Camera* const GetCamera(uint32_t uid);
 	Camera* const GetCamera(std::string* name);
+
+	Material* const GetDefaultMaterial() { return _defaultMaterial; }
 
 	void AddPrimitive(Primitive* const Primitive);
 	void AddCamera(Camera* const camera);

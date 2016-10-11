@@ -47,14 +47,15 @@ public:
 #pragma region Functions Public
 
 	Texture();
+	Texture(Color32 col);
 	Texture(const std::string* name);
 	~Texture();
 
-	Color32 GetColor(const math::Float2* uv, WrapMode wrp = WrapMode::WRAP, FilterMode fm = FilterMode::NEAREST);
+	Color32 GetColor(const math::Float2* uv, WrapMode wrp = WrapMode::WRAP, FilterMode fm = FilterMode::NEAREST) const;
 
 #pragma region Accessors
 
-	uint16_t GetWidth() { return _width; }
+	uint16_t GetWidth() const { return _width; }
 
 #pragma endregion
 

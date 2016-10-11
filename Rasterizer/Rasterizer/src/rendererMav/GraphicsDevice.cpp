@@ -15,14 +15,10 @@ namespace rendererMav
 	{
 		_bufferColor = cb;
 		_bufferDepth = db;
-
-		std::string tName = "janusz";
-		_tex = new Texture(&tName);
 	}
 
 	void GraphicsDevice::Shutdown()
 	{
-		delete _tex;
 	}
 
 	void GraphicsDevice::Draw(size_t triangleNum)
@@ -108,6 +104,11 @@ namespace rendererMav
 	void GraphicsDevice::SetCameraPosition(const math::Float3* pos)
 	{
 		_camPos = pos;
+	}
+
+	void GraphicsDevice::SetMaterial(const Material * mat)
+	{
+		_material = mat;
 	}
 
 	uint8_t GraphicsDevice::EnableLightAmbient(const Color32 * color)
@@ -402,7 +403,7 @@ namespace rendererMav
 	{
 		math::Float3 temp;
 		Color32 color(0xFF000000);
-		Color32 tex = _tex->GetColor(&in.Uv, Texture::WrapMode::WRAP, Texture::FilterMode::LINEAR);
+		Color32 tex = _material->GetMapDiffuse()->GetColor(&in.Uv, Texture::WrapMode::WRAP, Texture::FilterMode::LINEAR);
 		float dot;
 		float spec;
 
@@ -417,7 +418,7 @@ namespace rendererMav
 			math::Float3::Normalize(temp);
 			temp = temp - *_lightsDir[i].GetDirection();
 			math::Float3::Normalize(temp);
-			spec = pow(math::Float3::Dot(temp, in.Normal), _tmpGloss) * _tmpSpecular * tex.GetFltA();
+			spec = pow(math::Float3::Dot(temp, in.Normal), _material->GetCoefficentGloss()) * tex.GetFltA();
 		}
 
 		// Spot
@@ -427,15 +428,15 @@ namespace rendererMav
 		}
 		
 		// Texture (multiply with color)
-		color = Color32::MulNoAlpha(color, tex);
-
-		// white specular for now
-		color += Color32(1.0f, spec, spec, spec);
+		color = Color32::MulNoAlpha(color, tex) * *_material->GetColorDiffuse();
+		
+		// specular addition after texture
+		color += *_material->GetColorSpecular() * spec;
 
 		// Ambient
 		if (_lAmbCount)
 		{
-			color += *_lightAmb.GetColor();
+			color += *_lightAmb.GetColor() * *_material->GetColorAmbient();
 		}
 		out = color;
 	}

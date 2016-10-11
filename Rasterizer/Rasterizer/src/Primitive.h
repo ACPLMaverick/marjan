@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "Ray.h"
 #include "Transform.h"
+#include "Material.h"
 
 class Primitive
 {
@@ -11,6 +12,8 @@ protected:
 #pragma region Protected
 
 	Transform _transform;
+
+	Material* _material;
 
 #pragma endregion
 
@@ -40,6 +43,9 @@ public:
 #pragma region Accessors
 
 	Transform* GetTransform() { return &_transform; }
+	Material* GetMaterialPtr() { return _material; }
+
+	void SetMaterialPtr(Material* mat) { _material = mat; }
 
 #pragma endregion
 
