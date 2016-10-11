@@ -5,6 +5,8 @@
 
 namespace math
 {
+	struct Float3;
+
 	struct Float4
 	{
 		union
@@ -16,6 +18,7 @@ namespace math
 
 		Float4();
 		Float4(float nx, float ny, float nz, float nw);
+		Float4(const Float3& g);
 		~Float4();
 
 		Float4 operator*(const Float4& right) const;

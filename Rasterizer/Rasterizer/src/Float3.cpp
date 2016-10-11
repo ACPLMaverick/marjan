@@ -25,7 +25,7 @@ namespace math
 		return (f.x * f.x) + (f.y * f.y) + (f.z * f.z);
 	}
 
-	float Float3::Dot(Float3 & f1, Float3 & f2)
+	float Float3::Dot(const Float3 & f1, const Float3 & f2)
 	{
 		return (f1.x * f2.x + f1.y * f2.y + f1.z * f2.z);
 	}

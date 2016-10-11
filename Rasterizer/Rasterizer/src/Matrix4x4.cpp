@@ -26,15 +26,10 @@ namespace math
 
 	}
 
-	Matrix4x4 Matrix4x4::operator=(const Matrix4x4 & right) const
+	Matrix4x4& Matrix4x4::operator=(const Matrix4x4 & right)
 	{
-		Matrix4x4 ret;
-		memcpy(&ret, &right, sizeof(float) * 16);
-		//for (size_t i = 0; i < 4; ++i)
-		//{
-		//	ret.tabf[i] = right.tabf[i];
-		//}
-		return ret;
+		memcpy((Matrix4x4*)this, &right, sizeof(float) * 16);
+		return *this;
 	}
 
 	Matrix4x4 Matrix4x4::operator*(const Matrix4x4& right) const
@@ -94,10 +89,10 @@ namespace math
 	
 	Float4& operator*(const Matrix4x4& left, Float4& right)
 	{
-		right = Float4(left.a00, left.a10, left.a20, left.a30) * right.x +
-			Float4(left.a01, left.a11, left.a21, left.a31) * right.y +
-			Float4(left.a02, left.a12, left.a22, left.a32) * right.z +
-			Float4(left.a03, left.a13, left.a23, left.a33) * right.w;
+		right = left.row1 * right.x +
+			left.row2 * right.y +
+			left.row3 * right.z +
+			left.row4 * right.w;
 		return right;
 	}
 
@@ -303,7 +298,7 @@ namespace math
 		if (det == 0)
 			return;
 
-		det = 1.0 / det;
+		det = 1.0f / det;
 
 		for (i = 0; i < 16; i++)
 			out->tab[i] = inv[i] * det;
@@ -311,38 +306,47 @@ namespace math
 
 	void Matrix4x4::LookAt(const Float3 * cameraPos, const Float3 * cameraTarget, const Float3 * cameraUp, Matrix4x4 * out)
 	{
-		Matrix4x4 eyeTrans, eyeRot;
-		eyeTrans.a03 = -cameraPos->x;
-		eyeTrans.a13 = -cameraPos->y;
-		eyeTrans.a23 = -cameraPos->z;
+		*out = Matrix4x4();
 
-		Float3 forward = *cameraTarget - *cameraPos;
+		Float3 pos = *cameraPos;
+		Float3 zAxis = *cameraTarget - *cameraPos;
+		Float3::Normalize(zAxis);
 		Float3 up = *cameraUp;
-		Float3 right = Float3::Cross(forward, up);
+		Float3 xAxis = Float3::Cross(up, zAxis);
+		Float3::Normalize(xAxis);
+		Float3 yAxis = Float3::Cross(zAxis, xAxis);
 
-		eyeRot.a00 = right.x;
-		eyeRot.a01 = right.y;
-		eyeRot.a02 = right.z;
-		eyeRot.a10 = up.x;
-		eyeRot.a11 = up.y;
-		eyeRot.a12 = up.z;
-		eyeRot.a20 = -forward.x;
-		eyeRot.a21 = -forward.y;
-		eyeRot.a22 = -forward.z;
+		out->a00 = xAxis.x;
+		out->a01 = yAxis.x;
+		out->a02 = zAxis.x;
+		
+		out->a10 = xAxis.y;
+		out->a11 = yAxis.y;
+		out->a12 = zAxis.y;
 
-		*out = eyeTrans;
+		out->a20 = xAxis.z;
+		out->a21 = yAxis.z;
+		out->a22 = zAxis.z;
+
+		out->a30 = -Float3::Dot(xAxis, pos);
+		out->a31 = -Float3::Dot(yAxis, pos);
+		out->a32 = -Float3::Dot(zAxis, pos);
 	}
 
 	void Matrix4x4::Perspective(const float fovAngle, const float aspectRatio, const float nearPlane, const float farPlane, Matrix4x4 * out)
 	{
-		float dNear = farPlane - nearPlane;
-		float fADiv2 = fovAngle * 0.5f;
-		float aRDiv2 = aspectRatio * 0.5f;
-		Identity(out);
-		out->a00 = cos(aRDiv2) / sin(aRDiv2);
-		out->a11 = cos(fADiv2) / sin(fADiv2);
-		out->a22 = -(farPlane + nearPlane) / dNear;
-		out->a23 = -2.0f * (farPlane * nearPlane) / dNear;
-		out->a32 = -1.0f;
+		*out = Matrix4x4();
+
+		float fyDiv2 = DegToRad(fovAngle) * 0.5f;
+		float yScale = cos(fyDiv2) / sin(fyDiv2);
+		float xScale = yScale / aspectRatio;
+		float dNear = 1.0f / (farPlane - nearPlane);
+		
+		out->a00 = xScale;
+		out->a11 = yScale;
+		out->a22 = farPlane * dNear;
+		out->a23 = 1.0f;
+		out->a32 = -nearPlane * farPlane * dNear;
+		out->a33 = 0.0f;
 	}
 }

@@ -18,7 +18,7 @@ namespace rendererMav
 #pragma region Functions Protected
 
 		TriangleMav(math::Float3 x, math::Float3 y, math::Float3 z,
-			math::Float3 ux, math::Float3 uy, math::Float3 uz,
+			math::Float2 ux, math::Float2 uy, math::Float2 uz,
 			math::Float3 cx = math::Float3(1.0f, 1.0f, 1.0f), math::Float3 cy = math::Float3(1.0f, 1.0f, 1.0f), math::Float3 cz = math::Float3(1.0f, 1.0f, 1.0f),
 			Color32 col = Color32());
 
@@ -30,6 +30,7 @@ namespace rendererMav
 
 		virtual ~TriangleMav();
 
+		virtual void Update() override;
 		virtual void Draw();
 
 #pragma endregion

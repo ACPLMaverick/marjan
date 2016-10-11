@@ -29,9 +29,9 @@ private:
 
 #pragma region Settings
 
-	std::string s_windowTitle = "FGK - Raytracer";
-	int32_t s_windowWidth = 800;
-	int32_t s_windowHeight = 600;
+	std::string s_windowTitle = "FGK Raytracer / MiAGK Rasterizer";
+	int32_t s_windowWidth = 640;
+	int32_t s_windowHeight = 480;
 	bool s_windowVsync = false;
 	bool s_windowFullscreen = false;
 	bool s_soundEnabled = true;
@@ -40,6 +40,7 @@ private:
 	LPWSTR _lpCmdLine = NULL;
 	int _nCmdShow = 0;
 	HWND _hwnd = NULL;
+	HWND _hwndStatus = NULL;
 
 	int32_t _displayWidth = 0;
 	int32_t _displayHeight = 0;
@@ -64,6 +65,7 @@ public:
 	LPWSTR* GetLpCmdLine() { return &_lpCmdLine; }
 	int GetCmdShow() { return _nCmdShow; }
 	HWND GetWindowPtr() { return _hwnd; }
+	HWND GetStatusPtr() { return _hwndStatus; }
 
 	int32_t GetDisplayWidth() { return _displayWidth; }
 	int32_t GetDisplayHeight() { return _displayHeight; }

@@ -19,12 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\light\LightAmbient.cpp" />
+    <ClCompile Include="src\light\LightDirectional.cpp" />
+    <ClCompile Include="src\light\LightSpot.cpp" />
+    <ClCompile Include="src\rendererMav\MeshMav.cpp" />
+    <ClCompile Include="src\Float2.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Float4.cpp" />
     <ClCompile Include="src\Matrix4x4.cpp" />
     <ClCompile Include="src\Int2.cpp" />
     <ClCompile Include="src\rendererMav\GraphicsDevice.cpp" />
     <ClCompile Include="src\Plane.cpp" />
     <ClCompile Include="src\Ray.cpp" />
+    <ClCompile Include="src\SceneMeshes.cpp" />
     <ClCompile Include="src\SpecificObjectFactory.cpp" />
     <ClCompile Include="src\rendererMav\RendererMav.cpp" />
     <ClCompile Include="src\IRenderer.cpp" />
@@ -43,14 +50,23 @@
     <ClCompile Include="src\SystemSettings.cpp" />
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Triangle.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\UShort3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\light\LightAmbient.h" />
+    <ClInclude Include="src\light\LightDirectional.h" />
+    <ClInclude Include="src\light\LightSpot.h" />
+    <ClInclude Include="src\rendererMav\MeshMav.h" />
+    <ClInclude Include="src\Float2.h" />
+    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Float4.h" />
     <ClInclude Include="src\Matrix4x4.h" />
     <ClInclude Include="src\Int2.h" />
     <ClInclude Include="src\rendererMav\GraphicsDevice.h" />
     <ClInclude Include="src\Plane.h" />
     <ClInclude Include="src\Ray.h" />
+    <ClInclude Include="src\SceneMeshes.h" />
     <ClInclude Include="src\SpecificObjectFactory.h" />
     <ClInclude Include="src\rendererMav\RendererMav.h" />
     <ClInclude Include="src\IRenderer.h" />
@@ -70,6 +86,8 @@
     <ClInclude Include="src\SystemSettings.h" />
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\Triangle.h" />
+    <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\UShort3.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B2B6FFA4-446C-4866-814B-DFD8FBDE95DC}</ProjectGuid>
@@ -138,6 +156,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>Comctl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -163,6 +184,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Comctl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -20,6 +20,14 @@ namespace math
 		w = nw;
 	}
 
+	Float4::Float4(const Float3 & g)
+	{
+		x = g.x;
+		y = g.y;
+		z = g.z;
+		w = 1.0f;
+	}
+
 	Float4::~Float4()
 	{
 

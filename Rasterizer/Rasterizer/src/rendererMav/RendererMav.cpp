@@ -18,7 +18,7 @@ namespace rendererMav
 	void RendererMav::Draw(Scene * scene)
 	{
 		_bufferColor.Fill(0x00CCCCCC);
-		_bufferDepth.Fill(-FLT_MAX);
+		_bufferDepth.Fill(FLT_MAX);
 		scene->Draw();
 	}
 

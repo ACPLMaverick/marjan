@@ -33,10 +33,10 @@ struct Color32
 
 	Color32(float a, float r, float g, float b)
 	{
-		colors[0] = (uint8_t)(Clamp(a, 0.0f, 1.0f) * 255.0f);
-		colors[1] = (uint8_t)(Clamp(r, 0.0f, 1.0f) * 255.0f);
-		colors[2] = (uint8_t)(Clamp(g, 0.0f, 1.0f) * 255.0f);
-		colors[3] = (uint8_t)(Clamp(b, 0.0f, 1.0f) * 255.0f);
+		colors[0] = (uint8_t)(Clamp(b, 0.0f, 1.0f) * 255.0f);
+		colors[1] = (uint8_t)(Clamp(g, 0.0f, 1.0f) * 255.0f);
+		colors[2] = (uint8_t)(Clamp(r, 0.0f, 1.0f) * 255.0f);
+		colors[3] = (uint8_t)(Clamp(a, 0.0f, 1.0f) * 255.0f);
 	}
 
 	Color32& operator=(const Color32& c)
@@ -77,12 +77,14 @@ struct Color32
 		return *this;
 	}
 
-	Color32& operator*(const float flt)
+	Color32 operator*(const float flt) const
 	{
-		a = (uint8_t)(Clamp((float)a * flt, 0, 255));
-		r = (uint8_t)(Clamp((float)r * flt, 0, 255));
-		g = (uint8_t)(Clamp((float)g * flt, 0, 255));
-		b = (uint8_t)(Clamp((float)b * flt, 0, 255));
+		return Color32(
+			((float)a / 255.0f) * flt,
+			((float)r / 255.0f) * flt,
+			((float)g / 255.0f) * flt,
+			((float)b / 255.0f) * flt
+		);
 	}
 
 	Color32& operator*=(const Color32 c)
@@ -101,6 +103,23 @@ struct Color32
 		r = (uint8_t)((mr * cr) / UINT8_MAX);
 		g = (uint8_t)((mg * cg) / UINT8_MAX);
 		b = (uint8_t)((mb * cb) / UINT8_MAX);
+		return *this;
+	}
+
+	Color32 operator+(const Color32& c) const
+	{
+		return Color32((uint8_t)(Clamp(a + c.a, 0, 255)), 
+			(uint8_t)(Clamp(r + c.r, 0, 255)), 
+			(uint8_t)(Clamp(g + c.g, 0, 255)), 
+			(uint8_t)(Clamp(b + c.b, 0, 255)));
+	}
+
+	Color32& operator+=(const Color32& c)
+	{
+		a = Clamp(a + c.a, 0, 255);
+		r = Clamp(r + c.r, 0, 255);
+		g = Clamp(g + c.g, 0, 255);
+		b = Clamp(b + c.b, 0, 255);
 		return *this;
 	}
 

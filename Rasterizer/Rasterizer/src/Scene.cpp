@@ -32,8 +32,24 @@ void Scene::Shutdown()
 		delete *it;
 	}
 
+#ifndef RENDERER_MAV
+
+	delete _lightAmbient;
+	for (std::vector<LightDirectional*>::iterator it = _lightsDirectional.begin(); it != _lightsDirectional.end(); ++it)
+	{
+		delete *it;
+	}
+	for (std::vector<LightSpot*>::iterator it = _lightsSpot.begin(); it != _lightsSpot.end(); ++it)
+	{
+		delete *it;
+	}
+
+#endif // !RENDERER_MAV
+
 	_primitives.clear();
 	_cameras.clear();
+	_lightsDirectional.clear();
+	_lightsSpot.clear();
 }
 
 void Scene::Update()
@@ -111,6 +127,21 @@ void Scene::AddPrimitive(Primitive * const Primitive)
 void Scene::AddCamera(Camera * const camera)
 {
 	_cameras.push_back(camera);
+}
+
+void Scene::AddLightAmbient(light::LightAmbient * const la)
+{
+	_lightAmbient = la;
+}
+
+void Scene::AddLightDirectional(light::LightDirectional * const ld)
+{
+	_lightsDirectional.push_back(ld);
+}
+
+void Scene::AddLightSpot(light::LightSpot * const ls)
+{
+	_lightsSpot.push_back(ls);
 }
 
 Camera * const Scene::RemoveCamera(uint32_t uid)

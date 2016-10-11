@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <iostream>
 #include "Color32.h"
+#include "Float4.h"
 
 namespace math
 {
@@ -35,7 +36,19 @@ namespace math
 			this->z = z;
 		}
 
-		Float3 operator*(const Float3& right)
+		Float3(const Float4& g)
+		{
+			this->x = g.x;
+			this->y = g.y;
+			this->z = g.z;
+		}
+
+		Float3 operator-() const
+		{
+			return Float3(-x, -y, -z);
+		}
+
+		Float3 operator*(const Float3& right) const
 		{
 			return Float3(this->x * right.x, this->y * right.y, this->z * right.z);
 		}
@@ -47,14 +60,13 @@ namespace math
 
 		Float3 operator/(float scalar)
 		{
-			Float3 f = Float3();
 			float inverse = 1.0f / scalar;
 
-			f.x *= inverse;
-			f.y *= inverse;
-			f.z *= inverse;
+			x *= inverse;
+			y *= inverse;
+			z *= inverse;
 
-			return f;
+			return *this;
 		}
 
 		Float3 operator+(const Float3& right) const
@@ -70,6 +82,11 @@ namespace math
 		Float3 operator-()
 		{
 			return Float3(-this->x, -this->y, -this->z);
+		}
+
+		Float3 operator+(float scalar) const
+		{
+			return Float3(this->x + scalar, this->y + scalar, this->z + scalar);
 		}
 
 		bool operator==(const Float3& right)
@@ -113,7 +130,7 @@ namespace math
 		static void Normalize(Float3& f);
 		static float Length(Float3& f);
 		static float LengthSquared(Float3& f);
-		static float Dot(Float3& f1, Float3& f2);
+		static float Dot(const Float3& f1, const Float3& f2);
 		static Float3 Cross(Float3& f1, Float3& f2);
 		
 		static Float3 Reflect(Float3& left, Float3& normal);
