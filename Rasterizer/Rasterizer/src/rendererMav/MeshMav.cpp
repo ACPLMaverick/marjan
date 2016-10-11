@@ -33,7 +33,7 @@ namespace rendererMav
 	void MeshMav::Update()
 	{
 		math::Float3 trans = *_transform.GetRotation();
-		trans.y += 20.0f * (float)Timer::GetInstance()->GetDeltaTime();
+		trans = trans + _rotationVector * (float)Timer::GetInstance()->GetDeltaTime();
 		_transform.SetRotation(&trans);
 	}
 

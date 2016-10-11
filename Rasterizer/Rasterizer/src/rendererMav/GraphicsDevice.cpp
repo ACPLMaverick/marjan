@@ -139,11 +139,11 @@ namespace rendererMav
 		}
 	}
 
-	uint8_t GraphicsDevice::EnableSpotLight(const Color32 * col, const math::Float3 * dir, float attC, float attL, float attQ, float umbra, float penumbra, float falloff)
+	uint8_t GraphicsDevice::EnableSpotLight(const Color32 * col, const math::Float3 * dir, const math::Float3* pos, float attC, float attL, float attQ, float umbra, float penumbra, float falloff)
 	{
 		if (_lSpotCount < _LIGHT_SPOT_COUNT)
 		{
-			_lightsSpot[_lSpotCount] = light::LightSpot(col, dir, attC, attL, attQ, umbra, penumbra, falloff);
+			_lightsSpot[_lSpotCount] = light::LightSpot(col, dir, pos, attC, attL, attQ, umbra, penumbra, falloff);
 			++_lSpotCount;
 			return _lSpotCount - 1;
 		}
@@ -402,29 +402,62 @@ namespace rendererMav
 	void GraphicsDevice::PixelShader(const PixelInput & in, Color32 & out)
 	{
 		math::Float3 temp;
-		Color32 color(0xFF000000);
-		Color32 tex = _material->GetMapDiffuse()->GetColor(&in.Uv, Texture::WrapMode::WRAP, Texture::FilterMode::LINEAR);
-		float dot;
-		float spec;
 
+		math::Float3 camDir = *_camPos - in.WorldPosition;
+		temp = *_camPos - in.WorldPosition;
+		math::Float3::Normalize(temp);
+
+		math::Float3::Normalize(camDir);
+		Color32 color(0xFF000000);
+		Color32 tempColor;
+		Color32 tex = _material->GetMapDiffuse()->GetColor(&in.Uv);
+		float dot;
+		float spec = 0.0f;
+		
+		float spotEffect;
+		float distance;
 
 		// Directional
 		for (size_t i = 0; i < _lDirCount; ++i)
 		{
 			dot = max(math::Float3::Dot(in.Normal, -*_lightsDir[i].GetDirection()), 0.0f);
-			color += *_lightsDir[i].GetColor() * dot;
+			tempColor = *_lightsDir[i].GetColor() * dot;
+			color += tempColor;
 
-			temp = *_camPos - in.WorldPosition;
+			temp = camDir - *_lightsDir[i].GetDirection();
 			math::Float3::Normalize(temp);
-			temp = temp - *_lightsDir[i].GetDirection();
-			math::Float3::Normalize(temp);
-			spec = pow(math::Float3::Dot(temp, in.Normal), _material->GetCoefficentGloss()) * tex.GetFltA();
+			spec += pow(math::Float3::Dot(temp, in.Normal), _material->GetCoefficentGloss()) * tex.GetFltA() * tempColor.GetAverageNoAlpha();
 		}
 
 		// Spot
 		for (size_t i = 0; i < _lSpotCount; ++i)
 		{
+			// direction of light ray
+			temp = in.WorldPosition - *_lightsSpot[i].GetPostition();
+			math::Float3::Normalize(temp);
 
+			// spotEffect
+			spotEffect = math::Float3::Dot(*_lightsSpot[i].GetDirection(), temp);
+
+			// check whether we are out or inside spot area
+			if (spotEffect > _lightsSpot[i].GetUmbraAngleRad())
+			{
+				spotEffect = pow(spotEffect, _lightsSpot[i].GetFalloffFactor());
+				
+				// attenuation
+				distance = math::Float3::LengthSquared(temp);
+				spotEffect = spotEffect / (_lightsSpot[i].GetAttenuationConstant() +
+					_lightsSpot[i].GetAttenuationLinear() * distance * 0.25f +
+					_lightsSpot[i].GetAttenuationQuadratic() * distance);
+
+				dot = max(math::Float3::Dot(in.Normal, -temp), 0.0f);
+				tempColor = *_lightsSpot[i].GetColor() * dot * spotEffect;
+				color += tempColor;
+
+				temp = camDir - *_lightsSpot[i].GetDirection();
+				math::Float3::Normalize(temp);
+				spec += pow(math::Float3::Dot(temp, in.Normal), _material->GetCoefficentGloss()) * tex.GetFltA() * tempColor.GetAverageNoAlpha();
+			}
 		}
 		
 		// Texture (multiply with color)

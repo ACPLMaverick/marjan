@@ -154,6 +154,25 @@ struct Color32
 		return ((float)a / 255.0f);
 	}
 
+	float GetAverage()
+	{
+		float tab[4];
+		tab[0] = GetFltR();
+		tab[1] = GetFltG();
+		tab[2] = GetFltB();
+		tab[3] = GetFltA();
+		return (tab[0] + tab[1] + tab[2] + tab[3]) * 0.25f;
+	}
+
+	float GetAverageNoAlpha()
+	{
+		float tab[3];
+		tab[0] = GetFltR();
+		tab[1] = GetFltG();
+		tab[2] = GetFltB();
+		return (tab[0] + tab[1] + tab[2]) * 0.34f;
+	}
+
 	static Color32 Lerp(const Color32& a, const Color32&b, float s)
 	{
 		Color32 col;

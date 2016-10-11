@@ -7,15 +7,19 @@ Texture::Texture()
 {
 }
 
-Texture::Texture(Color32 col)
+Texture::Texture(Color32 col, WrapMode wm, FilterMode fm)
 {
+	_wm = wm;
+	_fm = fm;
 	_width = 1;
 	_data = new Color32[1];
 	_data[0] = col;
 }
 
-Texture::Texture(const std::string * name)
+Texture::Texture(const std::string * name, WrapMode wm , FilterMode fm)
 {
+	_wm = wm;
+	_fm = fm;
 	LoadFromFile(name);
 }
 
@@ -27,28 +31,28 @@ Texture::~Texture()
 	}
 }
 
-Color32 Texture::GetColor(const math::Float2 * uv, WrapMode wrp, FilterMode fm) const
+Color32 Texture::GetColor(const math::Float2 * uv) const
 {
 	math::Float2 newUV = *uv;
 	newUV.v = 1.0f - newUV.v;
 
-	if (wrp == WrapMode::CLAMP)
+	if (_wm == WrapMode::CLAMP)
 	{
 		newUV.u = Clamp(newUV.u, 0.0f, 1.0f);
 		newUV.v = Clamp(newUV.v, 0.0f, 1.0f);
 	}
-	else if (wrp == WrapMode::WRAP)
+	else if (_wm == WrapMode::WRAP)
 	{
 		math::Float2 floors(floorf(newUV.u), floorf(newUV.v));
 		newUV = newUV - floors;
 	}
 
-	if (fm == FilterMode::NEAREST)
+	if (_fm == FilterMode::NEAREST)
 	{
 		newUV = math::Float2(roundf(newUV.u * (_width - 1.0f)), roundf(newUV.v * (_width - 1.0f)));
 		return _data[(int32_t)newUV.y * (int32_t)_width + (int32_t)newUV.x];
 	}
-	else if (fm == FilterMode::LINEAR)
+	else if (_fm == FilterMode::LINEAR)
 	{
 		newUV = math::Float2(newUV.u * (_width - 1.0f), newUV.v * (_width - 1.0f));
 		math::Float2 floors(floorf(newUV.u), floorf(newUV.v));

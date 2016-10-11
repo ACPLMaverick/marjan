@@ -126,7 +126,7 @@ light::LightDirectional * SpecificObjectFactory::GetLightDirectional(const Color
 #endif // RENDERER_MAJSTER
 }
 
-light::LightSpot * SpecificObjectFactory::GetLightSpot(const Color32 * col, const math::Float3 * dir, float attC, float attL, float attQ, float umbra, float penumbra, float falloff)
+light::LightSpot * SpecificObjectFactory::GetLightSpot(const Color32 * col, const math::Float3 * dir, const math::Float3* pos, float attC, float attL, float attQ, float umbra, float penumbra, float falloff)
 {
 #ifdef RENDERER_FGK
 
@@ -135,7 +135,7 @@ light::LightSpot * SpecificObjectFactory::GetLightSpot(const Color32 * col, cons
 #ifdef RENDERER_MAV
 
 	rendererMav::GraphicsDevice* gd = ((rendererMav::RendererMav*)System::GetInstance()->GetRenderer())->GetGraphicsDevice();
-	uint8_t id = gd->EnableSpotLight(col, dir, attC, attL, attQ, umbra, penumbra, falloff);
+	uint8_t id = gd->EnableSpotLight(col, dir, pos, attC, attL, attQ, umbra, penumbra, falloff);
 	if (id != (uint8_t)-1)
 	{
 		return gd->GetLightSpot(id);

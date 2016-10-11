@@ -8,8 +8,9 @@ namespace light
 	{
 	}
 
-	LightSpot::LightSpot(const Color32 * col, const math::Float3* dir, float attC, float attL, float attQ, float umbra, float penumbra, float falloff) :
+	LightSpot::LightSpot(const Color32 * col, const math::Float3* dir, const math::Float3* pos, float attC, float attL, float attQ, float umbra, float penumbra, float falloff) :
 		LightDirectional(col, dir),
+		_position(*pos),
 		_attenuationConstant(attC),
 		_attenuationLinear(attL),
 		_attenuationQuadratic(attQ),

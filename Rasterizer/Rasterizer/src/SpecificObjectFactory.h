@@ -57,6 +57,7 @@ public:
 	static light::LightSpot* GetLightSpot(
 		const Color32* col,
 		const math::Float3* dir,
+		const math::Float3* pos,
 		float attC,
 		float attL,
 		float attQ,

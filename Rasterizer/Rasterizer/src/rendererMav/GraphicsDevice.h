@@ -144,6 +144,7 @@ namespace rendererMav
 		uint8_t EnableSpotLight(
 			const Color32* col,
 			const math::Float3* dir,
+			const math::Float3* pos,
 			float attC,
 			float attL,
 			float attQ,
