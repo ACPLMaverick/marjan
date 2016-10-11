@@ -56,7 +56,7 @@ namespace rendererMav
 			vinput1.Position = _vb[ib[i].p];
 			vinput2.Position = _vb[ib[i + 1].p];
 			vinput3.Position = _vb[ib[i + 2].p];
-			vinput1.Normal = _nb[ib[i].n];			// temporarily putting normal into color channel
+			vinput1.Normal = _nb[ib[i].n];			
 			vinput2.Normal = _nb[ib[i + 1].n];
 			vinput3.Normal = _nb[ib[i + 2].n];
 			vinput1.Uv = _ub[ib[i].t];
@@ -99,6 +99,11 @@ namespace rendererMav
 	void GraphicsDevice::SetWorldInverseTransposeMatrix(const math::Matrix4x4 * m)
 	{
 		_wInvTransMat = m;
+	}
+
+	void GraphicsDevice::SetCameraPosition(const math::Float3* pos)
+	{
+		_camPos = pos;
 	}
 
 	uint8_t GraphicsDevice::EnableLightAmbient(const Color32 * color)
@@ -343,7 +348,9 @@ namespace rendererMav
 						pi.Position = math::Int2(j, i);
 						pi.WorldPosition = in1.WorldPosition * bv + in2.WorldPosition * bw + in3.WorldPosition * bu;
 						pi.Normal = in1.Normal * bv + in2.Normal * bw + in3.Normal * bu;
+						math::Float3::Normalize(pi.Normal);
 						pi.Uv = in1.Uv * bv + in2.Uv * bw + in3.Uv * bu;
+
 						PixelShader(pi, col);
 
 						// write output color to buffer
@@ -358,21 +365,26 @@ namespace rendererMav
 
 	void GraphicsDevice::PixelShader(const PixelInput & in, Color32 & out)
 	{
+		math::Float3 temp;
 		Color32 color(0xFF000000);
 		float dot;
 		float spec;
 
-		// Ambient
-		if (_lAmbCount)
-		{
-			color += *_lightAmb.GetColor();
-		}
 
 		// Directional
 		for (size_t i = 0; i < _lDirCount; ++i)
 		{
 			dot = max(math::Float3::Dot(in.Normal, -*_lightsDir[i].GetDirection()), 0.0f);
 			color += *_lightsDir[i].GetColor() * dot;
+
+			temp = *_camPos - in.WorldPosition;
+			math::Float3::Normalize(temp);
+			temp = temp - *_lightsDir[i].GetDirection();
+			math::Float3::Normalize(temp);
+			spec = pow(math::Float3::Dot(temp, in.Normal), _tmpGloss) * _tmpSpecular;
+
+			// white specular for now
+			color += Color32(1.0f, spec, spec, spec);
 		}
 
 		// Spot
@@ -380,7 +392,14 @@ namespace rendererMav
 		{
 
 		}
+		
+		// Texture (multiply with color)
 
+		// Ambient
+		if (_lAmbCount)
+		{
+			color += *_lightAmb.GetColor();
+		}
 		out = color;
 	}
 

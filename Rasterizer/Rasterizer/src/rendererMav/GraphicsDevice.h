@@ -59,7 +59,7 @@ namespace rendererMav
 
 		// temporary
 		const float _tmpSpecular = 1.0f;
-		const float _tmpGloss = 1.0f;
+		const float _tmpGloss = 50.0f;
 
 #pragma endregion
 
@@ -71,6 +71,8 @@ namespace rendererMav
 		const math::Float3* _vb;
 		const math::Float3* _nb;
 		const math::Float2* _ub;
+
+		const math::Float3* _camPos;
 
 		const math::Matrix4x4* _wvpMat;
 		const math::Matrix4x4* _wMat;
@@ -130,6 +132,8 @@ namespace rendererMav
 		void SetWorldViewProjMatrix(const math::Matrix4x4* m);
 		void SetWorldMatrix(const math::Matrix4x4* m);
 		void SetWorldInverseTransposeMatrix(const math::Matrix4x4* m);
+
+		void SetCameraPosition(const math::Float3* pos);
 
 		uint8_t EnableLightAmbient(const Color32* color);
 		uint8_t EnableDirectionalLight(const Color32* col, const math::Float3* direction);

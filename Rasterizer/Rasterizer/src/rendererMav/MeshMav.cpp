@@ -49,6 +49,8 @@ namespace rendererMav
 		gd->SetWorldMatrix(_transform.GetWorldMatrix());
 		gd->SetWorldInverseTransposeMatrix(_transform.GetWorldInverseTransposeMatrix());
 
+		gd->SetCameraPosition(cam->GetPosition());
+
 		gd->DrawIndexed(_triangleCount, _indexArray.data());
 	}
 
