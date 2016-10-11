@@ -11,6 +11,7 @@
 #include "../light/LightAmbient.h"
 #include "../light/LightDirectional.h"
 #include "../light/LightSpot.h"
+#include "../Texture.h"
 
 namespace rendererMav
 {
@@ -60,6 +61,7 @@ namespace rendererMav
 		// temporary
 		const float _tmpSpecular = 1.0f;
 		const float _tmpGloss = 50.0f;
+		Texture* _tex;
 
 #pragma endregion
 

@@ -14,7 +14,12 @@ namespace math
 		Float2(float nx, float ny);
 		~Float2();
 
+		Float2 operator-() const;
 		Float2 operator*(const float right) const;
 		Float2 operator+(const Float2& right) const;
+		Float2 operator-(const Float2& right) const;
+		Float2& operator=(const Float2& right);
+		Float2& operator+=(const Float2& right);
+		Float2& operator-=(const Float2& right);
 	};
 }

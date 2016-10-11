@@ -58,8 +58,9 @@ struct Color32
 		return !operator==(c);
 	}
 
-	Color32& operator*(const Color32 c)
+	Color32 operator*(const Color32 c) const
 	{
+		Color32 ret;
 		uint32_t ma = ((uint32_t)a);
 		uint32_t mr = ((uint32_t)r);
 		uint32_t mg = ((uint32_t)g);
@@ -70,11 +71,11 @@ struct Color32
 		uint32_t cg = ((uint32_t)c.g);
 		uint32_t cb = ((uint32_t)c.b);
 
-		a = (uint8_t)((ma * ca) / UINT8_MAX);
-		r = (uint8_t)((mr * cr) / UINT8_MAX);
-		g = (uint8_t)((mg * cg) / UINT8_MAX);
-		b = (uint8_t)((mb * cb) / UINT8_MAX);
-		return *this;
+		ret.a = (uint8_t)((ma * ca) / UINT8_MAX);
+		ret.r = (uint8_t)((mr * cr) / UINT8_MAX);
+		ret.g = (uint8_t)((mg * cg) / UINT8_MAX);
+		ret.b = (uint8_t)((mb * cb) / UINT8_MAX);
+		return ret;
 	}
 
 	Color32 operator*(const float flt) const
@@ -133,6 +134,26 @@ struct Color32
 		return !operator==(c);
 	}
 
+	float GetFltR()
+	{
+		return ((float)r / 255.0f);
+	}
+
+	float GetFltG()
+	{
+		return ((float)g / 255.0f);
+	}
+
+	float GetFltB()
+	{
+		return ((float)b / 255.0f);
+	}
+
+	float GetFltA()
+	{
+		return ((float)a / 255.0f);
+	}
+
 	static Color32 Lerp(const Color32& a, const Color32&b, float s)
 	{
 		Color32 col;
@@ -150,5 +171,13 @@ struct Color32
 		col.g = (uint8_t)((float)a.g * (1.0f - s) + (float)b.g * s);
 		col.b = (uint8_t)((float)a.b * (1.0f - s) + (float)b.b * s);
 		return col;
+	}
+
+	static Color32 MulNoAlpha(const Color32& a, const Color32&b)
+	{
+		uint8_t la = a.a;
+		Color32 ret = a * b;
+		ret.a = la;
+		return ret;
 	}
 };

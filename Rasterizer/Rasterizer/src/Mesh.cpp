@@ -90,7 +90,11 @@ void Mesh::LoadFromFile(const std::string * filePath)
 		return;
 	}
 
+#ifdef _DEBUG
+
 	std::cout << "Unable to open file: " << MESH_PATH + *filePath + MESH_EXTENSION << std::endl;
+
+#endif // _DEBUG
 }
 
 void Mesh::SplitString(const std::string * str, const std::string delim, std::vector<std::string>* vec)

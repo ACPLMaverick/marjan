@@ -15,10 +15,14 @@ namespace rendererMav
 	{
 		_bufferColor = cb;
 		_bufferDepth = db;
+
+		std::string tName = "canteen_albedo_specular";
+		_tex = new Texture(&tName);
 	}
 
 	void GraphicsDevice::Shutdown()
 	{
+		delete _tex;
 	}
 
 	void GraphicsDevice::Draw(size_t triangleNum)
@@ -367,6 +371,7 @@ namespace rendererMav
 	{
 		math::Float3 temp;
 		Color32 color(0xFF000000);
+		Color32 tex = _tex->GetColor(&in.Uv);
 		float dot;
 		float spec;
 
@@ -381,7 +386,7 @@ namespace rendererMav
 			math::Float3::Normalize(temp);
 			temp = temp - *_lightsDir[i].GetDirection();
 			math::Float3::Normalize(temp);
-			spec = pow(math::Float3::Dot(temp, in.Normal), _tmpGloss) * _tmpSpecular;
+			spec = pow(math::Float3::Dot(temp, in.Normal), _tmpGloss) * _tmpSpecular * tex.GetFltA();
 
 			// white specular for now
 			color += Color32(1.0f, spec, spec, spec);
@@ -394,6 +399,7 @@ namespace rendererMav
 		}
 		
 		// Texture (multiply with color)
+		color = Color32::MulNoAlpha(color, tex);
 
 		// Ambient
 		if (_lAmbCount)
