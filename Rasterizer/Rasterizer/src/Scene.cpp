@@ -5,6 +5,14 @@
 #include "Material.h"
 #include "Texture.h"
 
+#ifndef RENDERER_MAV
+
+#include "light/LightAmbient.h"
+#include "light/LightDirectional.h"
+#include "light/LightSpot.h"
+
+#endif
+
 Scene::Scene()
 {
 }
@@ -51,11 +59,11 @@ void Scene::Shutdown()
 #ifndef RENDERER_MAV
 
 	delete _lightAmbient;
-	for (std::vector<LightDirectional*>::iterator it = _lightsDirectional.begin(); it != _lightsDirectional.end(); ++it)
+	for (std::vector<light::LightDirectional*>::iterator it = _lightsDirectional.begin(); it != _lightsDirectional.end(); ++it)
 	{
 		delete *it;
 	}
-	for (std::vector<LightSpot*>::iterator it = _lightsSpot.begin(); it != _lightsSpot.end(); ++it)
+	for (std::vector<light::LightSpot*>::iterator it = _lightsSpot.begin(); it != _lightsSpot.end(); ++it)
 	{
 		delete *it;
 	}

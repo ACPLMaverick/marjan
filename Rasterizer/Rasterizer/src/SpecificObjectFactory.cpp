@@ -2,6 +2,8 @@
 
 #include "System.h"
 
+#include "rendererFGK/RendererFGK.h"
+
 #include "rendererMav/RendererMav.h"
 #include "rendererMav/GraphicsDevice.h"
 #include "rendererMav/TriangleMav.h"
@@ -24,6 +26,8 @@ IRenderer * SpecificObjectFactory::GetRenderer(SystemSettings* ss)
 {
 #ifdef RENDERER_FGK
 
+	return new rendererFGK::RendererFGK(ss);
+
 #endif // RENDERER_FGK
 
 #ifdef RENDERER_MAV
@@ -44,6 +48,8 @@ Triangle * SpecificObjectFactory::GetTriangle(math::Float3 x, math::Float3 y, ma
 {
 #ifdef RENDERER_FGK
 
+	return nullptr;
+
 #endif // RENDERER_FGK
 
 #ifdef RENDERER_MAV
@@ -61,6 +67,8 @@ Mesh * SpecificObjectFactory::GetMesh(const math::Float3 * pos, const math::Floa
 {
 #ifdef RENDERER_FGK
 
+	return nullptr;
+
 #endif // RENDERER_FGK
 
 #ifdef RENDERER_MAV
@@ -77,6 +85,8 @@ Mesh * SpecificObjectFactory::GetMesh(const math::Float3 * pos, const math::Floa
 light::LightAmbient * SpecificObjectFactory::GetLightAmbient(const Color32 * color)
 {
 #ifdef RENDERER_FGK
+
+	return new light::LightAmbient(color);
 
 #endif // RENDERER_FGK
 
@@ -104,6 +114,8 @@ light::LightDirectional * SpecificObjectFactory::GetLightDirectional(const Color
 {
 #ifdef RENDERER_FGK
 
+	return new light::LightDirectional(col, direction);
+
 #endif // RENDERER_FGK
 
 #ifdef RENDERER_MAV
@@ -129,6 +141,8 @@ light::LightDirectional * SpecificObjectFactory::GetLightDirectional(const Color
 light::LightSpot * SpecificObjectFactory::GetLightSpot(const Color32 * col, const math::Float3 * dir, const math::Float3* pos, float attC, float attL, float attQ, float umbra, float penumbra, float falloff)
 {
 #ifdef RENDERER_FGK
+
+	return new light::LightSpot(col, dir, pos, attC, attL, attQ, umbra, penumbra, falloff);
 
 #endif // RENDERER_FGK
 

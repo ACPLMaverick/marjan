@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "SceneTriangle.h"
 #include "SceneMeshes.h"
+#include "SceneSphere.h"
 #include "SpecificObjectFactory.h"
 #include "Timer.h"
 
@@ -168,8 +169,8 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	// initialize scenes
 	//_scenes.push_back(new SceneTriangle());
 	//std::string sName = "SceneTriangle";
-	_scenes.push_back(new SceneMeshes());
-	std::string sName = "SceneMeshes";
+	_scenes.push_back(new SceneSphere());
+	std::string sName = "SceneSphere";
 	_scenes[0]->Initialize(0, &sName);
 }
 

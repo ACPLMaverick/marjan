@@ -18,6 +18,8 @@ protected:
 	math::Float3 _target;
 	math::Float3 _up;
 
+	math::Float3 _direction;
+
 	uint64_t _id;
 	std::string _name;
 
@@ -64,6 +66,7 @@ public:
 	const math::Float3* GetPosition() const { return &_position; }
 	const math::Float3* GetTarget() const { return &_target; }
 	const math::Float3* GetUp() const { return &_up; }
+	const math::Float3* GetDirection() const { return &_direction; }
 
 	void SetPosition(const math::Float3* pos) { _position = *pos; _viewMatrixNeedUpdate = true; }
 	void SetTarget(const math::Float3* tgt) { _target = *tgt; _viewMatrixNeedUpdate = true; }

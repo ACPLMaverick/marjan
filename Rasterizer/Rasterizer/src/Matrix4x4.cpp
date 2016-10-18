@@ -8,6 +8,11 @@ namespace math
 		a00 = a11 = a22 = a33 = 1.0f;
 	}
 
+	Matrix4x4::Matrix4x4(const Matrix4x4 & c)
+	{
+		memcpy(tabf, c.tabf, sizeof(float) * 16);
+	}
+
 	Matrix4x4::Matrix4x4(
 		const Float4& r1,
 		const Float4& r2,
@@ -94,6 +99,16 @@ namespace math
 			left.row3 * right.z +
 			left.row4 * right.w;
 		return right;
+	}
+
+	Float4 operator*(Float4& left, const Matrix4x4 right)
+	{
+		return Float4(
+			(right.a00 + right.a10 + right.a20 + right.a30) * left.x,
+			(right.a01 + right.a11 + right.a21 + right.a31) * left.y,
+			(right.a02 + right.a12 + right.a22 + right.a32) * left.z,
+			(right.a03 + right.a13 + right.a23 + right.a33) * left.w
+			);
 	}
 
 	std::ostream& operator<<(std::ostream& ost, const Matrix4x4& m)

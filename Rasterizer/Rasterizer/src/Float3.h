@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Color32.h"
 #include "Float4.h"
+#include "Float2.h"
 
 namespace math
 {
@@ -41,6 +42,13 @@ namespace math
 			this->x = g.x;
 			this->y = g.y;
 			this->z = g.z;
+		}
+
+		Float3(const Float2& g)
+		{
+			this->x = g.x;
+			this->y = g.y;
+			this->z = 0.0f;
 		}
 
 		Float3 operator-() const
@@ -106,6 +114,16 @@ namespace math
 		Float3 operator-(const Float3& right) const
 		{
 			return Float3(this->x - right.x, this->y - right.y, this->z - right.z);
+		}
+
+		Float3 operator+(const Float2& right) const
+		{
+			return Float3(this->x + right.x, this->y + right.y, this->z);
+		}
+
+		Float3 operator-(const Float2& right) const
+		{
+			return Float3(this->x - right.x, this->y - right.y, this->z);
 		}
 
 		Float3 operator-()

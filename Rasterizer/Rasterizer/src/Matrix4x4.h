@@ -45,6 +45,7 @@ namespace math
 #pragma region Ctors
 
 		Matrix4x4();
+		Matrix4x4(const Matrix4x4& c);
 		Matrix4x4(
 			const Float4& r1,
 			const Float4& r2,
@@ -67,6 +68,7 @@ namespace math
 		Matrix4x4& operator+=(const Matrix4x4& right);
 		Float4& operator[](const size_t ind);
 		friend std::ostream& operator<<(std::ostream& ost, const Matrix4x4& m);
+		friend Float4 operator*(Float4& left, const Matrix4x4 right);
 		friend Float4& operator*(const Matrix4x4& left, Float4& right);
 
 #pragma endregion

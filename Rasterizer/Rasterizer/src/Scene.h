@@ -70,6 +70,7 @@ public:
 	uint32_t GetUID() { return _uID; }
 	const std::string* GetName() { return &_name; }
 	Camera* const GetCurrentCamera() { return (_cameras.size() > 0 ? _cameras[_currentCamera] : nullptr); }
+	std::vector<Primitive*>* GetPrimitives() { return &_primitives; }
 
 	Camera* const GetCamera(uint32_t uid);
 	Camera* const GetCamera(std::string* name);

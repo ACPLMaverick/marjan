@@ -22,6 +22,9 @@ Camera::Camera(
 	math::Matrix4x4::LookAt(&_position, &_target, &_up, &_viewMatrix);
 	math::Matrix4x4::Perspective(_fovY, _aspectRatio, _nearPlane, _farPlane, &_projMatrix);
 	_viewProjMatrix = _viewMatrix * _projMatrix;
+
+	_direction = _target - _position;
+	math::Float3::Normalize(_direction);
 }
 
 
@@ -36,6 +39,8 @@ void Camera::Update()
 		if (_viewMatrixNeedUpdate)
 		{
 			math::Matrix4x4::LookAt(&_position, &_target, &_up, &_viewMatrix);
+			_direction = _target - _position;
+			math::Float3::Normalize(_direction);
 			_viewMatrixNeedUpdate = false;
 		}
 		if (_projMatrixNeedUpdate)

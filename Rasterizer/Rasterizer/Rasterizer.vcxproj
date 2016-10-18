@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\SceneSphere.cpp" />
+    <ClCompile Include="src\rendererFGK\RendererFGK.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\light\LightAmbient.cpp" />
     <ClCompile Include="src\light\LightDirectional.cpp" />
@@ -56,6 +58,8 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SceneSphere.h" />
+    <ClInclude Include="src\rendererFGK\RendererFGK.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\light\LightAmbient.h" />
     <ClInclude Include="src\light\LightDirectional.h" />
