@@ -12,6 +12,7 @@ protected:
 
 	math::Matrix4x4 _viewProjMatrix;
 	math::Matrix4x4 _viewMatrix;
+	math::Matrix4x4 _viewInvMatrix;
 	math::Matrix4x4 _projMatrix;
 
 	math::Float3 _position;
@@ -59,8 +60,15 @@ public:
 	uint64_t GetUID() { return _id; }
 	const std::string* GetName() { return &_name; }
 
+	float GetFOVY() const { return _fovY; }
+	float GetFOVYRads() const { return DegToRad(_fovY); }
+	float GetAspectRatio() const { return _aspectRatio; }
+	float GetNearPlane() const { return _nearPlane; }
+	float GetFarPlane() const { return _farPlane; }
+
 	const math::Matrix4x4* GetViewProjMatrix() const { return &_viewProjMatrix; }
 	const math::Matrix4x4* GetViewMatrix() const { return &_viewMatrix; }
+	const math::Matrix4x4* GetViewInvMatrix() const { return &_viewInvMatrix; }
 	const math::Matrix4x4* GetProjMatrix() const { return &_projMatrix; }
 
 	const math::Float3* GetPosition() const { return &_position; }

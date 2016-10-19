@@ -23,32 +23,32 @@ namespace rendererFGK
 
 		// for each pixel, cast ray into scene
 		Camera* cam = scene->GetCurrentCamera();
+
 		uint16_t w = _bufferColor.GetWidth();
 		uint16_t h = _bufferColor.GetHeight();
+		float tanFovByTwo = tan(cam->GetFOVYRads() * 0.5f);
+		float aspect = cam->GetAspectRatio();
+		float nearPlane = cam->GetNearPlane();
+
 		math::Float3 camOrigin = *cam->GetPosition();
 		math::Float3 camDirection = *cam->GetDirection();
 		std::vector<Primitive*>* prims = scene->GetPrimitives();
-
-		math::Matrix4x4 matInv;
-		math::Matrix4x4::Inverse(cam->GetProjMatrix(), &matInv);
 
 		for (uint16_t i = 0; i < h; ++i)
 		{
 			for (uint16_t j = 0; j < w; ++j)
 			{
-				math::Float3 origin(GetViewSpacePosition(math::Int2(j, i)));
-				math::Float4 originP(origin.x, origin.y, 0.0f, 1.0f);
-				origin = matInv * originP;
-
-
-
-				math::Float3 dir = origin - camOrigin;
-				dir = dir + camDirection;
-				math::Float3::Normalize(dir);
+				math::Float3 point(GetViewSpacePosition(math::Int2(j, i)));
+				point *= tanFovByTwo;
+				point.x *= aspect;
+				point.z = 1.0f;
+				point = *cam->GetViewInvMatrix() * math::Float4(point);
+				point = point - camOrigin;
+				math::Float3::Normalize(point);
 
 				Ray ray(
-					camOrigin + origin,
-					dir
+					camOrigin,
+					point
 					);
 
 				for (std::vector<Primitive*>::iterator it = prims->begin(); it != prims->end(); ++it)
@@ -56,9 +56,13 @@ namespace rendererFGK
 					RayHit hit = (*it)->CalcIntersect(ray);
 					if (hit.hit)
 					{
-						Material* mt = (*it)->GetMaterialPtr();
-						//math::Int2 sPos = GetScreenSpacePosition(hit.point);
-						_bufferColor.SetPixel(j, i, *mt->GetColorDiffuse());
+						float distanceToCamera = math::Float3::LengthSquared(hit.point - camOrigin);
+						if (distanceToCamera < _bufferDepth.GetPixel(j, i))	// depth test
+						{
+							Material* mt = (*it)->GetMaterialPtr();
+							_bufferColor.SetPixel(j, i, *mt->GetColorDiffuse());
+							_bufferDepth.SetPixel(j, i, distanceToCamera);
+						}
 					}
 				}
 			}
