@@ -134,27 +134,27 @@ struct Color32
 		return !operator==(c);
 	}
 
-	float GetFltR()
+	float GetFltR() const
 	{
 		return ((float)r / 255.0f);
 	}
 
-	float GetFltG()
+	float GetFltG() const
 	{
 		return ((float)g / 255.0f);
 	}
 
-	float GetFltB()
+	float GetFltB() const
 	{
 		return ((float)b / 255.0f);
 	}
 
-	float GetFltA()
+	float GetFltA() const
 	{
 		return ((float)a / 255.0f);
 	}
 
-	float GetAverage()
+	float GetAverage() const
 	{
 		float tab[4];
 		tab[0] = GetFltR();
@@ -164,13 +164,28 @@ struct Color32
 		return (tab[0] + tab[1] + tab[2] + tab[3]) * 0.25f;
 	}
 
-	float GetAverageNoAlpha()
+	float GetAverageNoAlpha() const
 	{
 		float tab[3];
 		tab[0] = GetFltR();
 		tab[1] = GetFltG();
 		tab[2] = GetFltB();
 		return (tab[0] + tab[1] + tab[2]) * 0.34f;
+	}
+
+	static Color32 AverageFour(const Color32* a)
+	{
+		return Color32(
+			(uint8_t)(((uint32_t)a[0].a + (uint32_t)a[1].a + (uint32_t)a[2].a + (uint32_t)a[3].a) / 4),
+			(uint8_t)(((uint32_t)a[0].r + (uint32_t)a[1].r + (uint32_t)a[2].r + (uint32_t)a[3].r) / 4),
+			(uint8_t)(((uint32_t)a[0].g + (uint32_t)a[1].g + (uint32_t)a[2].g + (uint32_t)a[3].g) / 4),
+			(uint8_t)(((uint32_t)a[0].b + (uint32_t)a[1].b + (uint32_t)a[2].b + (uint32_t)a[3].b) / 4)
+			);
+	}
+
+	static float Distance(const Color32&a, const Color32&b)
+	{
+		return (float)fabs(b.GetFltA() - a.GetFltA()) + (float)fabs(b.GetFltA() - a.GetFltA()) + (float)fabs(b.GetFltA() - a.GetFltA()) + (float)fabs(b.GetFltA() - a.GetFltA());
 	}
 
 	static Color32 Lerp(const Color32& a, const Color32&b, float s)
