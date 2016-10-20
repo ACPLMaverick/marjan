@@ -10,8 +10,8 @@ namespace rendererFGK
 	RendererFGK::RendererFGK(SystemSettings* settings) :
 		IRenderer(settings),
 		_aaMode(AntialiasingMode::ADAPTIVE),
-		_aaColorDistance(0.1f),
-		_clearColor(0x00AAAAAA),
+		_aaColorDistance(1.0f),
+		_clearColor(0xFFAAAAAA),
 		_aaDepth(4)
 	{
 		uint16_t w = _bufferColor.GetWidth();
@@ -88,13 +88,15 @@ namespace rendererFGK
 
 	Ray RendererFGK::CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin)
 	{
-		math::Float3 point = px * tanFovByTwo;
-		point.x *= aspect;
-		point.z = 1.0f;
-		point = *vmInv * math::Float4(point);
-		point = point - *camOrigin;
-		math::Float3::Normalize(point);
-		return Ray(*camOrigin, point);
+		//math::Float3 point = px * tanFovByTwo;
+		//point.x *= aspect;
+		//point.z = 1.0f;
+		//point = *vmInv * math::Float4(point);
+		//point = point - *camOrigin;
+		//math::Float3::Normalize(point);
+		//return Ray(*camOrigin, point);
+		math::Float3 point = px;
+		return Ray(point, math::Float3(0.0f, 0.0f, 1.0f));
 	}
 
 	inline Color32 RendererFGK::RaySample(Ray & ray, Scene * scene, const math::Float3 camOrigin, const math::Int2 ndcPos)
@@ -130,7 +132,7 @@ namespace rendererFGK
 
 		// check recursion warunek
 		if (ctr < _aaDepth)
-		{/*
+		{
 			// check corner ray colour
 			for (size_t k = 0; k < 4; ++k)
 			{
@@ -144,7 +146,7 @@ namespace rendererFGK
 				{
 					// distance is bigger, so sample further this pixel
 					//halfPxSize = halfPxSize * 0.5f;
-					if (k == 0)
+					/*if (k == 0)
 					{
 						// tl
 						cols[k] = RaySampleAdaptive
@@ -239,10 +241,10 @@ namespace rendererFGK
 							aspect,
 							ctr + 1
 						);
-					}
+					}*/
 				}
 			}
-			*/
+ 
 			return Color32::AverageFour(cols);
 		}
 		else

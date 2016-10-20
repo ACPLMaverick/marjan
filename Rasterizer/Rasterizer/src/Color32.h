@@ -185,7 +185,7 @@ struct Color32
 
 	static float Distance(const Color32&a, const Color32&b)
 	{
-		return (float)fabs(b.GetFltA() - a.GetFltA()) + (float)fabs(b.GetFltA() - a.GetFltA()) + (float)fabs(b.GetFltA() - a.GetFltA()) + (float)fabs(b.GetFltA() - a.GetFltA());
+		return (float)fabs(b.GetFltA() - a.GetFltA()) + (float)fabs(b.GetFltR() - a.GetFltR()) + (float)fabs(b.GetFltG() - a.GetFltG()) + (float)fabs(b.GetFltB() - a.GetFltB());
 	}
 
 	static Color32 Lerp(const Color32& a, const Color32&b, float s)
