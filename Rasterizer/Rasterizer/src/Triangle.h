@@ -23,7 +23,7 @@ public:
 		Color32 col = Color32());
 	virtual ~Triangle();
 
-	RayHit CalcIntersect(Ray& ray) override;
+	virtual RayHit CalcIntersect(Ray& ray) = 0;
 	virtual void Update() override;
 	virtual void Draw() = 0;
 };

@@ -83,7 +83,7 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	//	&lookAt);
 
 	//std::cout << lookAt << persp;
-
+	/*
 	//FGK_TESTY
 	Sphere stefan = Sphere(math::Float3(0, 0, 0), 10);
 
@@ -104,10 +104,10 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	std::cout << "CZY TRZECI ROBERT TRAFIL? " << hitRoberta3.hit << " GDZIE? " << hitRoberta3.point.x << " " << hitRoberta3.point.y <<
 		" " << hitRoberta3.point.z << std::endl;
 	
-	math::Float3 test = math::Float3(0, sqrt(2), sqrt(2));
+	math::Float3 test = math::Float3(0.0f, (float)sqrt(2.0f), (float)sqrt(2.0f));
 	math::Float3::Normalize(test);
 
-	Plane przemek = Plane(math::Float3(0, 0, 0), test);
+	Plane przemek = Plane(math::Float3(0.0f, 0.0f, 0.0f), test);
 	
 	hitRoberta2 = przemek.CalcIntersect(robert2);
 
@@ -115,7 +115,7 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 		hitRoberta2.point.y << " " << hitRoberta2.point.z << std::endl;
 	
 	//KONIEC FGK TESTÓW
-
+	*/
 
 	//math::Matrix4x4 janusz;
 	//math::Matrix4x4 waclaw;
@@ -167,10 +167,10 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	Timer::GetInstance()->Initialize();
 
 	// initialize scenes
-	//_scenes.push_back(new SceneTriangle());
-	//std::string sName = "SceneTriangle";
-	_scenes.push_back(new SceneSphere());
-	std::string sName = "SceneSphere";
+	_scenes.push_back(new SceneTriangle());
+	std::string sName = "SceneTriangle";
+	//_scenes.push_back(new SceneSphere());
+	//std::string sName = "SceneSphere";
 	_scenes[0]->Initialize(0, &sName);
 }
 

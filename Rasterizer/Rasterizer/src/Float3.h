@@ -141,6 +141,26 @@ namespace math
 			return (this->x == right.x && this->y == right.y && this->z == right.z);
 		}
 
+		bool operator>(const Float3& right)
+		{
+			return (this->x > right.x && this->y > right.y && this->z > right.z);
+		}
+
+		bool operator<(const Float3& right)
+		{
+			return (this->x < right.x && this->y < right.y && this->z < right.z);
+		}
+
+		bool operator>=(const Float3& right)
+		{
+			return (this->x >= right.x && this->y >= right.y && this->z >= right.z);
+		}
+
+		bool operator<=(const Float3& right)
+		{
+			return (this->x <= right.x && this->y <= right.y && this->z <= right.z);
+		}
+
 		bool operator!=(const Float3& right)
 		{
 			return (this->x != right.x || this->y != right.y || this->z != right.z);

@@ -3,6 +3,7 @@
 #include "System.h"
 
 #include "rendererFGK/RendererFGK.h"
+#include "rendererFGK/TriangleFGK.h"
 
 #include "rendererMav/RendererMav.h"
 #include "rendererMav/GraphicsDevice.h"
@@ -48,7 +49,7 @@ Triangle * SpecificObjectFactory::GetTriangle(math::Float3 x, math::Float3 y, ma
 {
 #ifdef RENDERER_FGK
 
-	return nullptr;
+	return new rendererFGK::TriangleFGK(x, y, z, ux, uy, uz, cx, cy, cz, col);
 
 #endif // RENDERER_FGK
 

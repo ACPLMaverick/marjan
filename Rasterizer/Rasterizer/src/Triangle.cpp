@@ -20,12 +20,6 @@ Triangle::Triangle(math::Float3 x, math::Float3 y, math::Float3 z,
 	this->col = col;
 }
 
-RayHit Triangle::CalcIntersect(Ray& ray)
-{
-	return RayHit();
-}
-
-
 Triangle::~Triangle()
 {
 }

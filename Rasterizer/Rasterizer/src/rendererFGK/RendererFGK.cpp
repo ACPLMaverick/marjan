@@ -9,7 +9,7 @@ namespace rendererFGK
 {
 	RendererFGK::RendererFGK(SystemSettings* settings) :
 		IRenderer(settings),
-		_aaMode(AntialiasingMode::ADAPTIVE),
+		_aaMode(AntialiasingMode::NONE),
 		_aaColorDistance(0.2f),
 		_clearColor(0xFFAAAAAA),
 		_aaDepth(4)
@@ -119,7 +119,16 @@ namespace rendererFGK
 
 		if (prim != nullptr)
 		{
-			ret = *prim->GetMaterialPtr()->GetColorDiffuse();
+			Material* mat = prim->GetMaterialPtr();
+			if (mat != nullptr)
+			{
+				ret = *mat->GetColorDiffuse();
+			}
+			else
+			{
+				// no material - draw white
+				ret.color = 0xFFFFFFFF;
+			}
 		}
 		return ret;
 	}

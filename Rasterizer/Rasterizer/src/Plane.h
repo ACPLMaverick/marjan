@@ -11,6 +11,7 @@ protected:
 public:	
 	Plane();
 	Plane(math::Float3& p, math::Float3& n);
+	Plane(math::Float3& p1, math::Float3& p2, math::Float3& p3);
 
 	RayHit CalcIntersect(Ray& ray) override;
 
