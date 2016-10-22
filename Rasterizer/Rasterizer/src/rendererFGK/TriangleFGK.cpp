@@ -43,12 +43,12 @@ namespace rendererFGK
 		{
 			// bounding box check
 			if (
-				rayHit.point >= _bbMin &&
-				rayHit.point <= _bbMax
+				rayHit.point.GreaterEqualsEpsilon(_bbMin, 0.1f) &&
+				rayHit.point.SmallerEqualsEpsilon(_bbMax, 0.1f)
 				)
 			{
 				// barycentric check
-
+				
 				// constant pre-calculation
 				float dx2x1 = v2.x - v1.x;
 				float dy2y1 = v2.y - v1.y;

@@ -47,6 +47,7 @@ namespace rendererFGK
 			{
 				math::Float3 ssPixel(GetViewSpacePosition(math::Int2(j, i)));
 				Ray ray = CalculateRay(ssPixel, tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin);
+				//Ray ray = CalculateRayOrtho(ssPixel, aspect, cam->GetViewInvMatrix(), &camOrigin, &camDirection);
 
 				if (_aaMode == AntialiasingMode::ADAPTIVE)
 				{
@@ -97,12 +98,22 @@ namespace rendererFGK
 		return Ray(*camOrigin, point);
 	}
 
+	Ray RendererFGK::CalculateRayOrtho(const math::Float3& px, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin, math::Float3* camDirection)
+	{
+		math::Float3 point = px * 5.0f;
+		point.x *= aspect;
+		point.z = 0.0f;
+		point = *vmInv * math::Float4(point);
+		return Ray(point, *camDirection);
+	}
+
 	inline Color32 RendererFGK::RaySample(Ray & ray, Scene * scene, const math::Float3 camOrigin, const math::Int2 ndcPos)
 	{
 		Color32 ret = _clearColor;
 		std::vector<Primitive*>* prims = scene->GetPrimitives();
 		float closestDist = FLT_MAX;
 		Primitive* prim = nullptr;
+		bool error = false;
 		for (std::vector<Primitive*>::iterator it = prims->begin(); it != prims->end(); ++it)
 		{
 			RayHit hit = (*it)->CalcIntersect(ray);
@@ -115,9 +126,17 @@ namespace rendererFGK
 					prim = (*it);
 				}
 			}
+			if (hit.debugFlag != 0)
+			{
+				error = true;
+			}
 		}
 
-		if (prim != nullptr)
+		if (error)
+		{
+			ret.color = 0xFFFF0000;
+		}
+		else if (prim != nullptr)
 		{
 			Material* mat = prim->GetMaterialPtr();
 			if (mat != nullptr)

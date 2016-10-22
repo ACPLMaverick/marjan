@@ -12,6 +12,11 @@ struct RayHit
 	/// </summary>
 	math::Float3 barycentric;
 
+	/// <summary>
+	/// This is for teting
+	/// </summary>
+	int debugFlag = 0;
+
 	RayHit() :
 		hit(false),
 		point(math::Float3()),
