@@ -129,6 +129,9 @@
     <ClCompile Include="src\rendererFGK\TriangleFGK.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\rendererFGK\MeshFGK.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Scene.h">
@@ -246,6 +249,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\rendererFGK\TriangleFGK.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendererFGK\MeshFGK.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

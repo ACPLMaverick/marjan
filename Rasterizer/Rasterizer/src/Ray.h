@@ -6,6 +6,10 @@ struct RayHit
 {
 	bool hit;
 	math::Float3 point;
+
+	/// <summary>
+	/// This is only valid for ray-triangle intersection.
+	/// </summary>
 	math::Float3 barycentric;
 
 	RayHit() :

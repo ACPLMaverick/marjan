@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendererFGK\MeshFGK.cpp" />
     <ClCompile Include="src\SceneSphere.cpp" />
     <ClCompile Include="src\rendererFGK\RendererFGK.cpp" />
     <ClCompile Include="src\Material.cpp" />
@@ -59,6 +60,7 @@
     <ClCompile Include="src\rendererFGK\TriangleFGK.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendererFGK\MeshFGK.h" />
     <ClInclude Include="src\SceneSphere.h" />
     <ClInclude Include="src\rendererFGK\RendererFGK.h" />
     <ClInclude Include="src\Material.h" />

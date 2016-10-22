@@ -19,6 +19,7 @@ namespace math
 		Float4();
 		Float4(float nx, float ny, float nz, float nw);
 		Float4(const Float3& g);
+		Float4(const Float3& g, float w);
 		~Float4();
 
 		Float4 operator*(const Float4& right) const;
@@ -30,7 +31,7 @@ namespace math
 		Float4 operator-() const;
 		bool operator==(const Float4& right) const;
 		bool operator!=(const Float4& right) const;
-		float operator[](const size_t ind);
+		float operator[](size_t ind);
 		friend std::ostream& operator<<(std::ostream& ost, const Float4& flt);
 
 		static void Normalize(Float4& f);

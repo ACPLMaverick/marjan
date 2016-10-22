@@ -3,13 +3,24 @@
 
 namespace rendererFGK
 {
-
-	TriangleFGK::TriangleFGK(math::Float3 x, math::Float3 y, math::Float3 z,
-		math::Float2 ux, math::Float2 uy, math::Float2 uz,
-		math::Float3 cx, math::Float3 cy, math::Float3 cz,
-		Color32 col) :
+	TriangleFGK::TriangleFGK(math::Float3& x, math::Float3& y, math::Float3& z,
+		math::Float2& ux, math::Float2& uy, math::Float2& uz,
+		math::Float3& cx, math::Float3& cy, math::Float3& cz,
+		Color32& col) :
 		Triangle(x, y, z, ux, uy, uz, cx, cy, cz, col),
-		_plane(x, y, z)
+		_plane(x, y, z),
+		_bbMin
+		(
+			min(min(v1.x, v2.x), v3.x),
+			min(min(v1.y, v2.y), v3.y),
+			min(min(v1.z, v2.z), v3.z)
+		),
+		_bbMax
+		(
+			max(max(v1.x, v2.x), v3.x),
+			max(max(v1.y, v2.y), v3.y),
+			max(max(v1.z, v2.z), v3.z)
+		)
 	{
 	}
 
@@ -20,27 +31,20 @@ namespace rendererFGK
 
 	RayHit TriangleFGK::CalcIntersect(Ray & ray)
 	{
+		// normal check
+		if (math::Float3::Dot(ray.GetDirection(), _plane.GetNormal()) < 0.0f)
+		{
+			return RayHit();
+		}
+
 		// plane check
 		RayHit rayHit(_plane.CalcIntersect(ray));
 		if (rayHit.hit)
 		{
 			// bounding box check
-			math::Float3 bbMin
-			(
-				min(min(v1.x, v2.x), v3.x),
-				min(min(v1.y, v2.y), v3.y),
-				min(min(v1.z, v2.z), v3.z)
-			);
-			math::Float3 bbMax
-			(
-				max(max(v1.x, v2.x), v3.x),
-				max(max(v1.y, v2.y), v3.y),
-				max(max(v1.z, v2.z), v3.z)
-			);
-
 			if (
-				rayHit.point >= bbMin &&
-				rayHit.point <= bbMax
+				rayHit.point >= _bbMin &&
+				rayHit.point <= _bbMax
 				)
 			{
 				// barycentric check
@@ -99,4 +103,43 @@ namespace rendererFGK
 	{
 	}
 
+	void TriangleFGK::SetPosition(const math::Float3 & x, const math::Float3 & y, const math::Float3 & z)
+	{
+		v1 = x;
+		v2 = y;
+		v3 = z;
+
+		RecalculatePlane();
+	}
+
+	void TriangleFGK::SetNormals(const math::Float3 & x, const math::Float3 & y, const math::Float3 & z)
+	{
+		c1 = x;
+		c2 = y;
+		c3 = z;
+	}
+
+	void TriangleFGK::SetUvs(const math::Float2 & x, const math::Float2 & y, const math::Float2 & z)
+	{
+		u1 = x;
+		u2 = y;
+		u3 = z;
+	}
+
+	void TriangleFGK::RecalculatePlane()
+	{
+		_plane = Plane(v1, v2, v3);
+		_bbMin = math::Float3
+		(
+			min(min(v1.x, v2.x), v3.x),
+			min(min(v1.y, v2.y), v3.y),
+			min(min(v1.z, v2.z), v3.z)
+		);
+		_bbMax = math::Float3
+		(
+			max(max(v1.x, v2.x), v3.x),
+			max(max(v1.y, v2.y), v3.y),
+			max(max(v1.z, v2.z), v3.z)
+		);
+	}
 }

@@ -167,10 +167,10 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	Timer::GetInstance()->Initialize();
 
 	// initialize scenes
-	_scenes.push_back(new SceneTriangle());
-	std::string sName = "SceneTriangle";
-	//_scenes.push_back(new SceneSphere());
-	//std::string sName = "SceneSphere";
+	//_scenes.push_back(new SceneTriangle());
+	//std::string sName = "SceneTriangle";
+	_scenes.push_back(new SceneMeshes());
+	std::string sName = "SceneMeshes";
 	_scenes[0]->Initialize(0, &sName);
 }
 
