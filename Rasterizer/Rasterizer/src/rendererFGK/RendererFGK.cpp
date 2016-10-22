@@ -10,7 +10,7 @@ namespace rendererFGK
 	RendererFGK::RendererFGK(SystemSettings* settings) :
 		IRenderer(settings),
 		_aaMode(AntialiasingMode::ADAPTIVE),
-		_aaColorDistance(1.0f),
+		_aaColorDistance(0.2f),
 		_clearColor(0xFFAAAAAA),
 		_aaDepth(4)
 	{
@@ -88,34 +88,38 @@ namespace rendererFGK
 
 	Ray RendererFGK::CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin)
 	{
-		//math::Float3 point = px * tanFovByTwo;
-		//point.x *= aspect;
-		//point.z = 1.0f;
-		//point = *vmInv * math::Float4(point);
-		//point = point - *camOrigin;
-		//math::Float3::Normalize(point);
-		//return Ray(*camOrigin, point);
-		math::Float3 point = px;
-		return Ray(point, math::Float3(0.0f, 0.0f, 1.0f));
+		math::Float3 point = px * tanFovByTwo;
+		point.x *= aspect;
+		point.z = 1.0f;
+		point = *vmInv * math::Float4(point);
+		point = point - *camOrigin;
+		math::Float3::Normalize(point);
+		return Ray(*camOrigin, point);
 	}
 
 	inline Color32 RendererFGK::RaySample(Ray & ray, Scene * scene, const math::Float3 camOrigin, const math::Int2 ndcPos)
 	{
 		Color32 ret = _clearColor;
 		std::vector<Primitive*>* prims = scene->GetPrimitives();
+		float closestDist = FLT_MAX;
+		Primitive* prim = nullptr;
 		for (std::vector<Primitive*>::iterator it = prims->begin(); it != prims->end(); ++it)
 		{
 			RayHit hit = (*it)->CalcIntersect(ray);
 			if (hit.hit)
 			{
 				float distanceToCamera = math::Float3::LengthSquared(hit.point - camOrigin);
-				if (distanceToCamera <= _bufferDepth.GetPixel(ndcPos.x, ndcPos.y))	// depth test
+				if (distanceToCamera <= closestDist)	// depth test
 				{
-					Material* mt = (*it)->GetMaterialPtr();
-					_bufferDepth.SetPixel(ndcPos.x, ndcPos.y, distanceToCamera);
-					ret = *mt->GetColorDiffuse();
+					closestDist = distanceToCamera;
+					prim = (*it);
 				}
 			}
+		}
+
+		if (prim != nullptr)
+		{
+			ret = *prim->GetMaterialPtr()->GetColorDiffuse();
 		}
 		return ret;
 	}
@@ -146,7 +150,7 @@ namespace rendererFGK
 				{
 					// distance is bigger, so sample further this pixel
 					//halfPxSize = halfPxSize * 0.5f;
-					/*if (k == 0)
+					if (k == 0)
 					{
 						// tl
 						cols[k] = RaySampleAdaptive
@@ -241,7 +245,7 @@ namespace rendererFGK
 							aspect,
 							ctr + 1
 						);
-					}*/
+					}
 				}
 			}
  
