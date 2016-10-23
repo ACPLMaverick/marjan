@@ -435,3 +435,5 @@ Rasterizer/Rasterizer/x64/
 *.opendb
 *.obj
 !Rasterizer/Rasterizer/meshes/*
+CurvaSnake/Library/
+CurvaSnake/Temp/
