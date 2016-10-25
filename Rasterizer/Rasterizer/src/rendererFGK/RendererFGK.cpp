@@ -250,7 +250,7 @@ namespace rendererFGK
 							ctr + 1
 						);
 					}
-					else
+					else if (k == 3)
 					{
 						// bl
 						cols[k] = RaySampleAdaptive
@@ -263,7 +263,7 @@ namespace rendererFGK
 								CalculateRay(math::Float3(ssPixel.x, ssPixel.y - halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
 								rays.bl
 							),
-							math::Float2(ssPixel.x + halfPxSize.x * 0.5f, ssPixel.y - halfPxSize.y * 0.5f),
+							math::Float2(ssPixel.x - halfPxSize.x * 0.5f, ssPixel.y - halfPxSize.y * 0.5f),
 							halfPxSize * 0.5f,
 							scene,
 							vmInv,
@@ -278,10 +278,12 @@ namespace rendererFGK
 			}
  
 			return Color32::AverageFour(cols);
+			//return RaySample(rays.center, scene, *camOrigin, ndcPos);
 		}
 		else
 		{
-			return Color32::AverageFour(cols);
+			//return Color32::AverageFour(cols);
+			return RaySample(rays.center, scene, *camOrigin, ndcPos);
 		}
 	}
 

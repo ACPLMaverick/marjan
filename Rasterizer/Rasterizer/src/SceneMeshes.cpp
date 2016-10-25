@@ -76,7 +76,7 @@ void SceneMeshes::InitializeScene()
 		mat3Diff,
 		mat3Nrm,
 		Color32(0xFFFFFFFF),
-		Color32(0xFFFFFFFF),
+		Color32(0xFFFF0000),
 		Color32(0xFFFFFFFF),
 		55.0f
 	);
@@ -93,7 +93,7 @@ void SceneMeshes::InitializeScene()
 	_primitives.push_back(m1);
 
 	cPath = "cube";
-	cPos = math::Float3(-8.0f, 0.0f, 4.0f);
+	cPos = math::Float3(-8.0f, 0.5f, 4.0f);
 	Mesh* m2 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
 	m2->SetMaterialPtr(mat2);
 	_primitives.push_back(m2);
