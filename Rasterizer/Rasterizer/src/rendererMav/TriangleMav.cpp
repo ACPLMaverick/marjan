@@ -7,10 +7,10 @@
 
 namespace rendererMav
 {
-	TriangleMav::TriangleMav(math::Float3 x, math::Float3 y, math::Float3 z,
-		math::Float2 ux, math::Float2 uy, math::Float2 uz,
-		math::Float3 cx, math::Float3 cy, math::Float3 cz,
-		Color32 col) :
+	TriangleMav::TriangleMav(math::Float3& x, math::Float3& y, math::Float3& z,
+		math::Float2& ux, math::Float2& uy, math::Float2& uz,
+		math::Float3& cx, math::Float3& cy, math::Float3& cz,
+		Color32& col) :
 		Triangle(x, y, z, ux, uy, uz, cx, cy, cz, col)
 	{
 	}

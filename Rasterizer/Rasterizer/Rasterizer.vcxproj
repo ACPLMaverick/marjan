@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\rendererFGK\MeshFGK.cpp" />
     <ClCompile Include="src\SceneSphere.cpp" />
     <ClCompile Include="src\rendererFGK\RendererFGK.cpp" />
     <ClCompile Include="src\Material.cpp" />
@@ -56,8 +57,10 @@
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\UShort3.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\rendererFGK\TriangleFGK.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendererFGK\MeshFGK.h" />
     <ClInclude Include="src\SceneSphere.h" />
     <ClInclude Include="src\rendererFGK\RendererFGK.h" />
     <ClInclude Include="src\Material.h" />
@@ -96,6 +99,7 @@
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\UShort3.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\rendererFGK\TriangleFGK.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B2B6FFA4-446C-4866-814B-DFD8FBDE95DC}</ProjectGuid>

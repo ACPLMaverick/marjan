@@ -28,6 +28,14 @@ namespace math
 		w = 1.0f;
 	}
 
+	Float4::Float4(const Float3 & g, float w)
+	{
+		x = g.x;
+		y = g.y;
+		z = g.z;
+		w = w;
+	}
+
 	Float4::~Float4()
 	{
 
@@ -81,7 +89,7 @@ namespace math
 		return (this->x != right.x || this->y != right.y || this->z != right.z || this->w != right.w);
 	}
 
-	float Float4::operator[](const size_t ind)
+	float Float4::operator[](size_t ind)
 	{
 		return tab[ind];
 	}

@@ -3,6 +3,8 @@
 #include "System.h"
 
 #include "rendererFGK/RendererFGK.h"
+#include "rendererFGK/TriangleFGK.h"
+#include "rendererFGK/MeshFGK.h"
 
 #include "rendererMav/RendererMav.h"
 #include "rendererMav/GraphicsDevice.h"
@@ -41,14 +43,14 @@ IRenderer * SpecificObjectFactory::GetRenderer(SystemSettings* ss)
 #endif // RENDERER_MAJSTER
 }
 
-Triangle * SpecificObjectFactory::GetTriangle(math::Float3 x, math::Float3 y, math::Float3 z,
-	math::Float2 ux, math::Float2 uy, math::Float2 uz,
-	math::Float3 cx, math::Float3 cy, math::Float3 cz,
-	Color32 col)
+Triangle * SpecificObjectFactory::GetTriangle(math::Float3& x, math::Float3& y, math::Float3& z,
+	math::Float2& ux, math::Float2& uy, math::Float2& uz,
+	math::Float3& cx, math::Float3& cy, math::Float3& cz,
+	Color32& col)
 {
 #ifdef RENDERER_FGK
 
-	return nullptr;
+	return new rendererFGK::TriangleFGK(x, y, z, ux, uy, uz, cx, cy, cz, col);
 
 #endif // RENDERER_FGK
 
@@ -67,7 +69,7 @@ Mesh * SpecificObjectFactory::GetMesh(const math::Float3 * pos, const math::Floa
 {
 #ifdef RENDERER_FGK
 
-	return nullptr;
+	return new rendererFGK::MeshFGK(pos, rot, scl, fPath);
 
 #endif // RENDERER_FGK
 

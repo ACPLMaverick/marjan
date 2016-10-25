@@ -2,6 +2,31 @@
 
 namespace math
 {
+	bool Float3::EqualsEpsilon(Float3 & right, float epsilon)
+	{
+		return *this >= (right - epsilon) && *this <= (right + epsilon);
+	}
+
+	bool Float3::GreaterEpsilon(Float3 & right, float epsilon)
+	{
+		return *this > (right - epsilon);
+	}
+
+	bool Float3::SmallerEpsilon(Float3 & right, float epsilon)
+	{
+		return *this < (right + epsilon);
+	}
+
+	bool Float3::GreaterEqualsEpsilon(Float3 & right, float epsilon)
+	{
+		return *this >= (right - epsilon);
+	}
+
+	bool Float3::SmallerEqualsEpsilon(Float3 & right, float epsilon)
+	{
+		return *this <= (right + epsilon);
+	}
+
 	void Float3::Normalize(Float3& f)
 	{
 		float n = Length(f);

@@ -4,20 +4,38 @@
 
 struct RayHit
 {
-public:
 	bool hit;
 	math::Float3 point;
 
-	RayHit()
+	/// <summary>
+	/// This is only valid for ray-triangle intersection.
+	/// </summary>
+	math::Float3 barycentric;
+
+	/// <summary>
+	/// This is for teting
+	/// </summary>
+	int debugFlag = 0;
+
+	RayHit() :
+		hit(false),
+		point(math::Float3()),
+		barycentric(math::Float3())
 	{
-		hit = false;
-		point = math::Float3();
 	}
 
-	RayHit(bool isHit, math::Float3& p)
+	RayHit(bool isHit, math::Float3& p) :
+		barycentric(math::Float3())
 	{
 		this->hit = isHit;
 		this->point = p;
+	}
+
+	RayHit(bool isHit, math::Float3& p, math::Float3& bar)
+	{
+		this->hit = isHit;
+		this->point = p;
+		this->barycentric = bar;
 	}
 };
 

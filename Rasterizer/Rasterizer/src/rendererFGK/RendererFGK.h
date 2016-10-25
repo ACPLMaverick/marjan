@@ -95,6 +95,7 @@ namespace rendererFGK
 		inline math::Float2 GetViewSpacePosition(const math::Int2& pos);
 		inline math::Int2 GetScreenSpacePosition(const math::Float3& pos);
 		inline Ray CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin);
+		inline Ray RendererFGK::CalculateRayOrtho(const math::Float3& px, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin, math::Float3* camDirection);
 		inline Color32 RaySample(Ray& ray, Scene* scene, const math::Float3 camOrigin, const math::Int2 ndcPos);
 		inline Color32 RaySampleAdaptive(AdaptiveRays& rays, math::Float2 ssPixel, math::Float2 halfPxSize, Scene* scene, 
 			const math::Matrix4x4* vmInv, math::Float3* camOrigin, const math::Int2 ndcPos, float tanFovByTwo, float aspect, int ctr);

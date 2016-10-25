@@ -111,6 +111,16 @@ namespace math
 			return Float3(this->x + right.x, this->y + right.y, this->z + right.z);
 		}
 
+		Float3 operator+(const float right) const
+		{
+			return Float3(this->x + right, this->y + right, this->z + right);
+		}
+
+		Float3 operator-(const float right) const
+		{
+			return Float3(this->x - right, this->y - right, this->z - right);
+		}
+
 		Float3 operator-(const Float3& right) const
 		{
 			return Float3(this->x - right.x, this->y - right.y, this->z - right.z);
@@ -131,14 +141,29 @@ namespace math
 			return Float3(-this->x, -this->y, -this->z);
 		}
 
-		Float3 operator+(float scalar) const
-		{
-			return Float3(this->x + scalar, this->y + scalar, this->z + scalar);
-		}
-
 		bool operator==(const Float3& right)
 		{
 			return (this->x == right.x && this->y == right.y && this->z == right.z);
+		}
+
+		bool operator>(const Float3& right)
+		{
+			return (this->x > right.x && this->y > right.y && this->z > right.z);
+		}
+
+		bool operator<(const Float3& right)
+		{
+			return (this->x < right.x && this->y < right.y && this->z < right.z);
+		}
+
+		bool operator>=(const Float3& right)
+		{
+			return (this->x >= right.x && this->y >= right.y && this->z >= right.z);
+		}
+
+		bool operator<=(const Float3& right)
+		{
+			return (this->x <= right.x && this->y <= right.y && this->z <= right.z);
 		}
 
 		bool operator!=(const Float3& right)
@@ -173,6 +198,12 @@ namespace math
 
 			return data;
 		}
+
+		bool EqualsEpsilon(Float3& right, float epsilon);
+		bool GreaterEpsilon(Float3& right, float epsilon);
+		bool SmallerEpsilon(Float3& right, float epsilon);
+		bool GreaterEqualsEpsilon(Float3& right, float epsilon);
+		bool SmallerEqualsEpsilon(Float3& right, float epsilon);
 		
 		static void Normalize(Float3& f);
 		static float Length(Float3& f);
