@@ -1,4 +1,5 @@
 #include "RendererFGK.h"
+#include "../System.h"
 #include "../Scene.h"
 #include "../Camera.h"
 #include "../Primitive.h"
@@ -9,7 +10,7 @@ namespace rendererFGK
 {
 	RendererFGK::RendererFGK(SystemSettings* settings) :
 		IRenderer(settings),
-		_aaMode(AntialiasingMode::NONE),
+		_aaMode(AntialiasingMode::ADAPTIVE),
 		_aaColorDistance(0.2f),
 		_clearColor(0xFFAAAAAA),
 		_aaDepth(4)
@@ -17,10 +18,21 @@ namespace rendererFGK
 		uint16_t w = _bufferColor.GetWidth();
 		uint16_t h = _bufferColor.GetHeight();
 		_halfPxSize = math::Float2(0.5f / (float)w, 0.5f / (float)h);
+
+//#ifdef RENDERER_FGK_MULTITHREAD
+//
+//		InitThreads();
+//
+//#endif // RENDERER_FGK_MULTITHREAD
 	}
 
 	RendererFGK::~RendererFGK()
 	{
+#ifdef RENDERER_FGK_MULTITHREAD
+
+		DestroyThreads();
+
+#endif // RENDERER_FGK_MULTITHREAD
 	}
 
 	void RendererFGK::Draw(Scene * scene)
@@ -41,32 +53,119 @@ namespace rendererFGK
 		math::Float3 camOrigin = *cam->GetPosition();
 		math::Float3 camDirection = *cam->GetDirection();
 
+#ifdef RENDERER_FGK_MULTITHREAD
+
+		// wait for all threads to set in begin position
+		EnterSynchronizationBarrier(&_barrier, SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY | SYNCHRONIZATION_BARRIER_FLAGS_NO_DELETE);
+
+		// wait for all threads to complete
+		EnterSynchronizationBarrier(&_barrier, SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY | SYNCHRONIZATION_BARRIER_FLAGS_NO_DELETE);
+
+#else
+
 		for (uint16_t i = 0; i < h; ++i)
 		{
 			for (uint16_t j = 0; j < w; ++j)
 			{
-				math::Float3 ssPixel(GetViewSpacePosition(math::Int2(j, i)));
-				Ray ray = CalculateRay(ssPixel, tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin);
-				//Ray ray = CalculateRayOrtho(ssPixel, aspect, cam->GetViewInvMatrix(), &camOrigin, &camDirection);
-
-				if (_aaMode == AntialiasingMode::ADAPTIVE)
-				{
-					AdaptiveRays aCoords
-					(
-						ray,
-						CalculateRay(math::Float3(ssPixel.x - _halfPxSize.x, ssPixel.y + _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin),
-						CalculateRay(math::Float3(ssPixel.x + _halfPxSize.x, ssPixel.y + _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin),
-						CalculateRay(math::Float3(ssPixel.x + _halfPxSize.x, ssPixel.y - _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin),
-						CalculateRay(math::Float3(ssPixel.x - _halfPxSize.x, ssPixel.y - _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin)
-					);
-
-					_bufferColor.SetPixel(j, i, RaySampleAdaptive(aCoords, math::Float2(ssPixel.x, ssPixel.y), _halfPxSize, scene, cam->GetViewInvMatrix(), &camOrigin, math::Int2(j, i), tanFovByTwo, aspect, 0));
-				}
-				else
-				{
-					_bufferColor.SetPixel(j, i, RaySample(ray, scene, camOrigin, math::Int2(j, i)));
-				}
+				ComputePixel(math::Int2(j, i), scene, cam, tanFovByTwo);
 			}
+		}
+
+#endif // RENDERER_FGK_MULTITHREAD
+	}
+
+	void RendererFGK::InitThreads()
+	{
+		InitializeSynchronizationBarrier(&_barrier, 9, 0);
+
+		for (size_t i = 0; i < NUM_THREADS; ++i)
+		{
+			_threadHandles[i] = CreateThread
+			(
+				NULL,
+				0,
+				ThreadFunc, // tu bêdzie wskaŸnik
+				(LPVOID)i,
+				NULL,
+				NULL
+			);
+		}
+	}
+
+	inline void RendererFGK::DestroyThreads()
+	{
+		for (size_t i = 0; i < NUM_THREADS; ++i)
+		{
+			TerminateThread(_threadHandles[i], 0);
+		}
+	}
+
+	DWORD RendererFGK::ThreadFunc(LPVOID lpParameter)
+	{
+		// compute pixel range
+		RendererFGK* rendererObj = (RendererFGK*)System::GetInstance()->GetRenderer();
+		Buffer<Color32>* prBuffer = System::GetInstance()->GetRenderer()->GetColorBuffer();
+		Scene* scene = System::GetInstance()->GetCurrentScene();
+		Camera* cam = scene->GetCurrentCamera();
+
+		size_t prCount = (prBuffer->GetWidth() * prBuffer->GetHeight());
+		size_t prPart = prCount / RendererFGK::NUM_THREADS;
+		size_t pxBegin = prPart * (size_t)lpParameter;
+		size_t pxEndExclusive = pxBegin + prPart;
+
+		float tanFovByTwo = tan(cam->GetFOVYRads() * 0.5f);
+
+		if ((size_t)lpParameter == RendererFGK::NUM_THREADS - 1)
+		{
+			// last thread get the division rest
+			pxEndExclusive = prCount;
+		}
+		// enter loop
+		while (true)
+		{
+			// wait for start signal
+			EnterSynchronizationBarrier(&rendererObj->_barrier, SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY | SYNCHRONIZATION_BARRIER_FLAGS_NO_DELETE);
+
+			// compute colors
+			for (size_t i = pxBegin; i < pxEndExclusive; ++i)
+			{
+				size_t y = i / prBuffer->GetWidth();
+				size_t x = i % prBuffer->GetWidth();
+				rendererObj->ComputePixel(math::Int2(x, y), scene, cam, tanFovByTwo);
+			}
+
+			// signal end and wait for other threads to complete
+			EnterSynchronizationBarrier(&rendererObj->_barrier, SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY | SYNCHRONIZATION_BARRIER_FLAGS_NO_DELETE);
+		}
+
+		return 0;
+	}
+
+	void RendererFGK::ComputePixel(math::Int2 pos, Scene* scene, Camera* cam, float tanFovByTwo)
+	{
+		math::Float3 camOrigin = *cam->GetPosition();
+		math::Float3 camDirection = *cam->GetDirection();
+		float aspect = cam->GetAspectRatio();
+		math::Float3 ssPixel(GetViewSpacePosition(pos));
+		Ray ray = CalculateRay(ssPixel, tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin);
+		//Ray ray = CalculateRayOrtho(ssPixel, aspect, cam->GetViewInvMatrix(), &camOrigin, &camDirection);
+
+		if (_aaMode == AntialiasingMode::ADAPTIVE)
+		{
+			AdaptiveRays aCoords
+			(
+				ray,
+				CalculateRay(math::Float3(ssPixel.x - _halfPxSize.x, ssPixel.y + _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin),
+				CalculateRay(math::Float3(ssPixel.x + _halfPxSize.x, ssPixel.y + _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin),
+				CalculateRay(math::Float3(ssPixel.x + _halfPxSize.x, ssPixel.y - _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin),
+				CalculateRay(math::Float3(ssPixel.x - _halfPxSize.x, ssPixel.y - _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin)
+			);
+
+			_bufferColor.SetPixel(pos.x, pos.y, RaySampleAdaptive(aCoords, math::Float2(ssPixel.x, ssPixel.y), _halfPxSize, scene, cam->GetViewInvMatrix(), &camOrigin, pos, tanFovByTwo, aspect, 0));
+		}
+		else
+		{
+			_bufferColor.SetPixel(pos.x, pos.y, RaySample(ray, scene, camOrigin, pos));
 		}
 	}
 

@@ -7,6 +7,8 @@
 #include "../Matrix4x4.h"
 #include "../Ray.h"
 
+class Camera;
+
 namespace rendererFGK
 {
 	class RendererFGK :
@@ -76,6 +78,8 @@ namespace rendererFGK
 
 #pragma region Const
 
+		static const int32_t NUM_THREADS = 8;
+
 #pragma endregion
 
 #pragma region Protected
@@ -86,12 +90,20 @@ namespace rendererFGK
 		Color32 _clearColor;
 		uint8_t _aaDepth;
 
+		HANDLE _threadHandles[NUM_THREADS];
+		SYNCHRONIZATION_BARRIER _barrier;
+
 #pragma endregion
 
 #pragma region Functions Protected
 
 		RendererFGK(SystemSettings* settings);
 
+		
+		void DestroyThreads();
+		static DWORD WINAPI ThreadFunc(_In_ LPVOID lpParameter);
+
+		inline void ComputePixel(math::Int2 pos, Scene* scene, Camera* cam, float tanFovByTwo);
 		inline math::Float2 GetViewSpacePosition(const math::Int2& pos);
 		inline math::Int2 GetScreenSpacePosition(const math::Float3& pos);
 		inline Ray CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin);
@@ -108,6 +120,7 @@ namespace rendererFGK
 
 		~RendererFGK();
 
+		void InitThreads();
 		virtual void Draw(Scene* scene) override;
 
 #pragma endregion

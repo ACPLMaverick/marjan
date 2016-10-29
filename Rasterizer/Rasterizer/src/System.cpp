@@ -8,6 +8,8 @@
 #include "SpecificObjectFactory.h"
 #include "Timer.h"
 
+#include "rendererFGK\RendererFGK.h"
+
 // testing
 #ifdef _DEBUG
 #define _CRT_SECURE_NO_DEPRECATE
@@ -164,6 +166,7 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	// initialize managers
 	_renderer = SpecificObjectFactory::GetRenderer(&_settings);
+
 	Timer::GetInstance()->Initialize();
 
 	// initialize scenes
@@ -174,6 +177,14 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	//_scenes.push_back(new SceneSphere());
 	//std::string sName = "SceneSpheres";
 	_scenes[0]->Initialize(0, &sName);
+
+#ifdef RENDERER_FGK
+#ifdef RENDERER_FGK_MULTITHREAD
+
+	((rendererFGK::RendererFGK*)_renderer)->InitThreads();
+
+#endif // RENDERER_FGK_MULTITHREAD
+#endif
 }
 
 void System::Shutdown()
