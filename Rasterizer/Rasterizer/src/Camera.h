@@ -29,6 +29,8 @@ protected:
 	float _nearPlane;
 	float _farPlane;
 
+	const float _cameraSpeed = 0.1f;
+
 	bool _viewMatrixNeedUpdate = false;
 	bool _projMatrixNeedUpdate = false;
 

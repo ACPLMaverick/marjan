@@ -471,8 +471,9 @@ namespace rendererFGK
 		float dot = max(math::Float3::Dot(normal, -lightDir), 0.0f);
 		math::Float3 reflected = math::Float3::Reflect(-lightDir, normal);
 		float spec = 10.0f * pow(max(math::Float3::Dot(eyeDir, reflected), 0.0f), mat->GetCoefficentGloss());
+		Color32 diffuseMap = mat->GetMapDiffuse()->GetColor(&uv);
 
 		actualColor += (lightColor * (*mat->GetColorDiffuse() * dot + 
-			*mat->GetColorSpecular() * spec)) * mat->GetMapDiffuse()->GetColor(&uv);
+			*mat->GetColorSpecular() * spec * diffuseMap.GetFltA())) * diffuseMap;
 	}
 }

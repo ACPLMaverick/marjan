@@ -1,5 +1,5 @@
 #include "Camera.h"
-
+#include "Input.h"
 
 
 Camera::Camera(
@@ -35,6 +35,40 @@ Camera::~Camera()
 
 void Camera::Update()
 {
+	// camera movement
+	if (Input::GetInstance()->GetKeyDown('W'))
+	{
+		_position = _position + math::Float3(0.0f, 0.0f, _cameraSpeed);
+		_viewMatrixNeedUpdate = true;
+	}
+	else if (Input::GetInstance()->GetKeyDown('A'))
+	{
+		_position = _position + math::Float3(-_cameraSpeed, 0.0f, 0.0f);
+		_viewMatrixNeedUpdate = true;
+	}
+	else if (Input::GetInstance()->GetKeyDown('S'))
+	{
+		_position = _position + math::Float3(0.0f, 0.0f, -_cameraSpeed);
+		_viewMatrixNeedUpdate = true;
+	}
+	else if (Input::GetInstance()->GetKeyDown('D'))
+	{
+		_position = _position + math::Float3(_cameraSpeed, 0.0f, 0.0f);
+		_viewMatrixNeedUpdate = true;
+	}
+	else if (Input::GetInstance()->GetKeyDown('Q'))
+	{
+		_position = _position + math::Float3(0.0f, _cameraSpeed, 0.0f);
+		_viewMatrixNeedUpdate = true;
+	}
+	else if (Input::GetInstance()->GetKeyDown('Z'))
+	{
+		_position = _position + math::Float3(0.0f, -_cameraSpeed, 0.0f);
+		_viewMatrixNeedUpdate = true;
+	}
+
+	// update of the matrices
+
 	if (_viewMatrixNeedUpdate || _projMatrixNeedUpdate)
 	{
 		if (_viewMatrixNeedUpdate)

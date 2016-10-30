@@ -7,6 +7,7 @@
 #include "SceneSphere.h"
 #include "SpecificObjectFactory.h"
 #include "Timer.h"
+#include "Input.h"
 
 #include "rendererFGK\RendererFGK.h"
 
@@ -168,6 +169,7 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	_renderer = SpecificObjectFactory::GetRenderer(&_settings);
 
 	Timer::GetInstance()->Initialize();
+	Input::GetInstance()->Initialize();
 
 	// initialize scenes
 	//_scenes.push_back(new SceneTriangle());
@@ -197,6 +199,8 @@ void System::Shutdown()
 
 	// shutdown managers
 	delete _renderer;
+	Input::GetInstance()->Shutdown();
+	Input::GetInstance()->DestroyInstance();
 	Timer::GetInstance()->Shutdown();
 	Timer::GetInstance()->DestroyInstance();
 
@@ -210,6 +214,11 @@ void System::Run()
 	while (_running)
 	{
 		RunMessages();
+
+		if (Input::GetInstance()->GetKeyDown(VK_ESCAPE))
+		{
+			Stop();
+		}
 
 		// update timer
 		Timer::GetInstance()->Update();
@@ -400,6 +409,11 @@ LRESULT System::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_SETCURSOR:
 		SetCursor(NULL);
+		break;
+	case WM_INPUT:
+
+		Input::GetInstance()->Update((HRAWINPUT)lParam);
+
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
