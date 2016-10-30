@@ -168,6 +168,11 @@ void Scene::AddLightSpot(light::LightSpot * const ls)
 	_lightsSpot.push_back(ls);
 }
 
+void Scene::AddLightPoint(light::LightPoint * const lp)
+{
+	_lightsPoint.push_back(lp);
+}
+
 Camera * const Scene::RemoveCamera(uint32_t uid)
 {
 	for (std::vector<Camera*>::iterator it = _cameras.begin(); it != _cameras.end(); ++it)

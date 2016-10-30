@@ -63,7 +63,7 @@ void SceneMeshes::InitializeScene()
 		mat2Nrm,
 		Color32(0xFF00FF00),
 		Color32(0xFF00FF00),
-		Color32(0xFF00FFFF),
+		Color32(0xFFFFFFFF),
 		5.0f
 	);
 	_materials.push_back(mat2);
@@ -76,7 +76,7 @@ void SceneMeshes::InitializeScene()
 		mat3Diff,
 		mat3Nrm,
 		Color32(0xFFFFFFFF),
-		Color32(0xFFFF0000),
+		Color32(0xFFFFFFFF),
 		Color32(0xFFFFFFFF),
 		55.0f
 	);
@@ -84,7 +84,7 @@ void SceneMeshes::InitializeScene()
 
 	// meshes
 
-	math::Float3 cPos(0.0f, 0.0f, 0.0f);
+	math::Float3 cPos(0.0f, 1.0f, 0.0f);
 	math::Float3 cRot(0.0f, 0.0f, 0.0f);
 	math::Float3 cScl(2.0f, 2.0f, 2.0f);
 	cPath = "sphere";
@@ -99,10 +99,10 @@ void SceneMeshes::InitializeScene()
 	_primitives.push_back(m2);
 
 	cPath = "floor";
-	cPos = math::Float3(0.0f, -2.0f, 9.0f);
-	cScl = math::Float3(3.0f, 3.0f, 3.0f);
+	cPos = math::Float3(0.0f, -1.0f, 9.0f);
+	cScl = math::Float3(4.0f, 4.0f, 4.0f);
 	Mesh* m3 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
-	//m3->SetMaterialPtr(mat3);
+	m3->SetMaterialPtr(mat3);
 	_primitives.push_back(m3);
 
 	cPath = "cubeStretchedUVs";
@@ -137,7 +137,7 @@ void SceneMeshes::InitializeScene()
 	Color32 col(1.0f, 0.05f, 0.02f, 0.1f);
 	_lightAmbient = SpecificObjectFactory::GetLightAmbient(&col);
 
-	col = Color32(1.0f, 0.3f, 0.3f, 0.3f);
+	col = Color32(1.0f, 0.4f, 0.5f, 0.4f);
 	math::Float3 dirDir(-1.0f, -1.0f, 1.0f);
 	_lightsDirectional.push_back(SpecificObjectFactory::GetLightDirectional(&col, &dirDir));
 
@@ -149,11 +149,11 @@ void SceneMeshes::InitializeScene()
 		&dirDir,
 		&cPos,
 		0.0f,
-		0.15f,
-		0.15f,
+		0.05f,
+		0.05f,
 		0.0f,
 		0.0f,
-		1.0f
+		0.5f
 	));
 
 #ifdef RENDERER_MAV

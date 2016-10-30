@@ -445,7 +445,7 @@ namespace rendererMav
 				spotEffect = pow(spotEffect, _lightsSpot[i].GetFalloffFactor());
 				
 				// attenuation
-				distance = math::Float3::LengthSquared(temp);
+				distance = math::Float3::LengthSquared(in.WorldPosition - *_lightsSpot[i].GetPostition());
 				spotEffect = spotEffect / (_lightsSpot[i].GetAttenuationConstant() +
 					_lightsSpot[i].GetAttenuationLinear() * distance * 0.25f +
 					_lightsSpot[i].GetAttenuationQuadratic() * distance);

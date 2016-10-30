@@ -70,6 +70,12 @@ namespace rendererFGK
 				}
 				else
 				{
+					// calculate interpolated normal and uv
+					rayHit.normal = c2 * rayHit.barycentric.x + c3 * rayHit.barycentric.y + c1 * rayHit.barycentric.z;
+					math::Float3::Normalize(rayHit.normal);
+
+					rayHit.uv = u2 * rayHit.barycentric.x + u3 * rayHit.barycentric.y + u1 * rayHit.barycentric.z;
+
 					rayHit.hit = true;
 				}
 			}

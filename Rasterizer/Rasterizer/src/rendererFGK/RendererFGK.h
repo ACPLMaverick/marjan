@@ -8,6 +8,7 @@
 #include "../Ray.h"
 
 class Camera;
+class Material;
 
 namespace rendererFGK
 {
@@ -99,18 +100,20 @@ namespace rendererFGK
 
 		RendererFGK(SystemSettings* settings);
 
-		
 		void DestroyThreads();
 		static DWORD WINAPI ThreadFunc(_In_ LPVOID lpParameter);
 
 		inline void ComputePixel(math::Int2 pos, Scene* scene, Camera* cam, float tanFovByTwo);
 		inline math::Float2 GetViewSpacePosition(const math::Int2& pos);
 		inline math::Int2 GetScreenSpacePosition(const math::Float3& pos);
-		inline Ray CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin);
-		inline Ray RendererFGK::CalculateRayOrtho(const math::Float3& px, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin, math::Float3* camDirection);
-		inline Color32 RaySample(Ray& ray, Scene* scene, const math::Float3 camOrigin, const math::Int2 ndcPos);
+		inline Ray CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, const math::Float3* camOrigin);
+		inline Ray RendererFGK::CalculateRayOrtho(const math::Float3& px, float aspect, const math::Matrix4x4* vmInv, const math::Float3* camOrigin, const math::Float3* camDirection);
+		inline Color32 RaySample(Ray& ray, Scene* scene, const Camera* cam, const math::Int2 ndcPos);
 		inline Color32 RaySampleAdaptive(AdaptiveRays& rays, math::Float2 ssPixel, math::Float2 halfPxSize, Scene* scene, 
-			const math::Matrix4x4* vmInv, math::Float3* camOrigin, const math::Int2 ndcPos, float tanFovByTwo, float aspect, int ctr);
+			const math::Matrix4x4* vmInv, const Camera* cam, const math::Int2 ndcPos, float tanFovByTwo, float aspect, int ctr);
+
+		inline bool CheckPathToLight(math::Float3 start, math::Float3 dir, Scene* scene);
+		inline void Phong(math::Float3& normal, math::Float2& uv, math::Float3& lightDir, math::Float3& eyeDir, Color32& lightColor, Material* mat, Color32& actualColor);
 
 #pragma endregion
 

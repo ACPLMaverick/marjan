@@ -7,7 +7,7 @@ Ray::Ray()
 	this->_distance = 0.0f;
 }
 
-Ray::Ray(math::Float3& s, math::Float3& d)
+Ray::Ray(const math::Float3& s, const math::Float3& d)
 {
 	this->_origin = s;
 	this->_dir = d;

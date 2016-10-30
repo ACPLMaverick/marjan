@@ -4,13 +4,18 @@
 #include "../Camera.h"
 #include "../Primitive.h"
 
+#include "../light/LightAmbient.h"
+#include "../light/LightDirectional.h"
+#include "../light/LightSpot.h"
+#include "../light/LightPoint.h"
+
 #include <stack>
 
 namespace rendererFGK
 {
 	RendererFGK::RendererFGK(SystemSettings* settings) :
 		IRenderer(settings),
-		_aaMode(AntialiasingMode::ADAPTIVE),
+		_aaMode(AntialiasingMode::NONE),
 		_aaColorDistance(0.2f),
 		_clearColor(0xFFAAAAAA),
 		_aaDepth(4)
@@ -129,8 +134,8 @@ namespace rendererFGK
 			// compute colors
 			for (size_t i = pxBegin; i < pxEndExclusive; ++i)
 			{
-				size_t y = i / prBuffer->GetWidth();
-				size_t x = i % prBuffer->GetWidth();
+				int32_t y = i / prBuffer->GetWidth();
+				int32_t x = i % prBuffer->GetWidth();
 				rendererObj->ComputePixel(math::Int2(x, y), scene, cam, tanFovByTwo);
 			}
 
@@ -161,11 +166,11 @@ namespace rendererFGK
 				CalculateRay(math::Float3(ssPixel.x - _halfPxSize.x, ssPixel.y - _halfPxSize.y, 0.0f), tanFovByTwo, aspect, cam->GetViewInvMatrix(), &camOrigin)
 			);
 
-			_bufferColor.SetPixel(pos.x, pos.y, RaySampleAdaptive(aCoords, math::Float2(ssPixel.x, ssPixel.y), _halfPxSize, scene, cam->GetViewInvMatrix(), &camOrigin, pos, tanFovByTwo, aspect, 0));
+			_bufferColor.SetPixel(pos.x, pos.y, RaySampleAdaptive(aCoords, math::Float2(ssPixel.x, ssPixel.y), _halfPxSize, scene, cam->GetViewInvMatrix(), cam, pos, tanFovByTwo, aspect, 0));
 		}
 		else
 		{
-			_bufferColor.SetPixel(pos.x, pos.y, RaySample(ray, scene, camOrigin, pos));
+			_bufferColor.SetPixel(pos.x, pos.y, RaySample(ray, scene, cam, pos));
 		}
 	}
 
@@ -186,7 +191,7 @@ namespace rendererFGK
 			);
 	}
 
-	Ray RendererFGK::CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin)
+	Ray RendererFGK::CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, const math::Float3* camOrigin)
 	{
 		math::Float3 point = px * tanFovByTwo;
 		point.x *= aspect;
@@ -197,7 +202,7 @@ namespace rendererFGK
 		return Ray(*camOrigin, point);
 	}
 
-	Ray RendererFGK::CalculateRayOrtho(const math::Float3& px, float aspect, const math::Matrix4x4* vmInv, math::Float3* camOrigin, math::Float3* camDirection)
+	Ray RendererFGK::CalculateRayOrtho(const math::Float3& px, float aspect, const math::Matrix4x4* vmInv, const math::Float3* camOrigin, const math::Float3* camDirection)
 	{
 		math::Float3 point = px * 5.0f;
 		point.x *= aspect;
@@ -206,23 +211,25 @@ namespace rendererFGK
 		return Ray(point, *camDirection);
 	}
 
-	inline Color32 RendererFGK::RaySample(Ray & ray, Scene * scene, const math::Float3 camOrigin, const math::Int2 ndcPos)
+	inline Color32 RendererFGK::RaySample(Ray & ray, Scene * scene, const Camera* cam, const math::Int2 ndcPos)
 	{
 		Color32 ret = _clearColor;
 		std::vector<Primitive*>* prims = scene->GetPrimitives();
 		float closestDist = FLT_MAX;
 		Primitive* prim = nullptr;
 		bool error = false;
+		RayHit hit;
 		for (std::vector<Primitive*>::iterator it = prims->begin(); it != prims->end(); ++it)
 		{
-			RayHit hit = (*it)->CalcIntersect(ray);
-			if (hit.hit)
+			RayHit cHit = (*it)->CalcIntersect(ray);
+			if (cHit.hit)
 			{
-				float distanceToCamera = math::Float3::LengthSquared(hit.point - camOrigin);
+				float distanceToCamera = math::Float3::LengthSquared(cHit.point - *cam->GetPosition());
 				if (distanceToCamera <= closestDist)	// depth test
 				{
 					closestDist = distanceToCamera;
 					prim = (*it);
+					hit = cHit;
 				}
 			}
 			if (hit.debugFlag != 0)
@@ -240,25 +247,83 @@ namespace rendererFGK
 			Material* mat = prim->GetMaterialPtr();
 			if (mat != nullptr)
 			{
-				ret = *mat->GetColorDiffuse();
+				// phong
+				ret = Color32(0xFF000000);
+				math::Float3 eyeDir = *cam->GetDirection();
+
+				for (std::vector<light::LightDirectional*>::iterator it = scene->GetLightsDirectional()->begin();
+					it != scene->GetLightsDirectional()->end(); ++it)
+				{
+					if (CheckPathToLight(hit.point, *(*it)->GetDirection(), scene))
+					{
+						math::Float3 dir = *(*it)->GetDirection();
+						Color32 diffuse = *(*it)->GetColor();
+						Phong(hit.normal, hit.uv, dir, ray.GetDirection(), diffuse, mat, ret);
+					}
+				}
+
+				for (std::vector<light::LightSpot*>::iterator it = scene->GetLightsSpot()->begin();
+					it != scene->GetLightsSpot()->end(); ++it)
+				{
+					math::Float3 dir = hit.point - *(*it)->GetPostition();
+					math::Float3::Normalize(dir);
+
+					if (CheckPathToLight(hit.point, dir, scene))
+					{
+						float spotEffect = math::Float3::Dot(*(*it)->GetDirection(), dir);
+
+						if (spotEffect > (*it)->GetUmbraAngleRad())
+						{
+							spotEffect = pow(spotEffect, (*it)->GetFalloffFactor());
+							float distance = math::Float3::LengthSquared(hit.point - *(*it)->GetPostition());
+							spotEffect = spotEffect / ((*it)->GetAttenuationConstant() +
+								(*it)->GetAttenuationLinear() * distance * 0.25f +
+								(*it)->GetAttenuationQuadratic() * distance);
+
+							Color32 col = *(*it)->GetColor() * spotEffect;
+							Phong(hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
+						}
+					}
+				}
+
+				for (std::vector<light::LightPoint*>::iterator it = scene->GetLightsPoint()->begin();
+					it != scene->GetLightsPoint()->end(); ++it)
+				{
+					math::Float3 dir = hit.point - *(*it)->GetPosition();
+					math::Float3::Normalize(dir);
+
+					if (CheckPathToLight(hit.point, dir, scene))
+					{
+						float distance = math::Float3::LengthSquared(hit.point - *(*it)->GetPosition());
+						float pointEffect = 1.0f / ((*it)->GetAttenuationConstant() +
+							(*it)->GetAttenuationLinear() * distance * 0.25f +
+							(*it)->GetAttenuationQuadratic() * distance);
+
+						Color32 col = *(*it)->GetColor() * pointEffect;
+						Phong(hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
+					}
+				}
+
+				ret += *scene->GetLightAmbient()->GetColor();
+
 			}
 			else
 			{
-				// no material - draw white
-				ret.color = 0xFFFFFFFF;
+				// no material - draw magenta
+				ret.color = 0xFFFF00FF;
 			}
 		}
 		return ret;
 	}
 
 	Color32 RendererFGK::RaySampleAdaptive(AdaptiveRays& rays, math::Float2 ssPixel, math::Float2 halfPxSize, Scene* scene,
-		const math::Matrix4x4* vmInv, math::Float3* camOrigin, const math::Int2 ndcPos, float tanFovByTwo, float aspect, int ctr)
+		const math::Matrix4x4* vmInv, const Camera* cam, const math::Int2 ndcPos, float tanFovByTwo, float aspect, int ctr)
 	{
 		// sample four corner rays
 		Color32 cols[4];
 		for (size_t i = 1; i < 5; ++i)
 		{
-			cols[i - 1] = RaySample(rays.tab[i], scene, *camOrigin, ndcPos);
+			cols[i - 1] = RaySample(rays.tab[i], scene, cam, ndcPos);
 		}
 
 		// check recursion warunek
@@ -284,17 +349,17 @@ namespace rendererFGK
 						(
 							AdaptiveRays
 							(
-								CalculateRay(math::Float3(ssPixel.x - halfPxSize.x * 0.5f, ssPixel.y + halfPxSize.y * 0.5f, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
+								CalculateRay(math::Float3(ssPixel.x - halfPxSize.x * 0.5f, ssPixel.y + halfPxSize.y * 0.5f, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
 								rays.tl,
-								CalculateRay(math::Float3(ssPixel.x, ssPixel.y + halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
+								CalculateRay(math::Float3(ssPixel.x, ssPixel.y + halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
 								rays.center,
-								CalculateRay(math::Float3(ssPixel.x - halfPxSize.x, ssPixel.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin)
+								CalculateRay(math::Float3(ssPixel.x - halfPxSize.x, ssPixel.y, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition())
 							),
 							math::Float2(ssPixel.x - halfPxSize.x * 0.5f, ssPixel.y + halfPxSize.y * 0.5f),
 							halfPxSize * 0.5f,
 							scene,
 							vmInv,
-							camOrigin,
+							cam,
 							ndcPos,
 							tanFovByTwo,
 							aspect,
@@ -308,17 +373,17 @@ namespace rendererFGK
 						(
 							AdaptiveRays
 							(
-								CalculateRay(math::Float3(ssPixel.x + halfPxSize.x * 0.5f, ssPixel.y + halfPxSize.y * 0.5f, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
-								CalculateRay(math::Float3(ssPixel.x, ssPixel.y + halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
+								CalculateRay(math::Float3(ssPixel.x + halfPxSize.x * 0.5f, ssPixel.y + halfPxSize.y * 0.5f, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
+								CalculateRay(math::Float3(ssPixel.x, ssPixel.y + halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
 								rays.tr,
-								CalculateRay(math::Float3(ssPixel.x + halfPxSize.x, ssPixel.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
+								CalculateRay(math::Float3(ssPixel.x + halfPxSize.x, ssPixel.y, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
 								rays.center
 							),
 							math::Float2(ssPixel.x + halfPxSize.x * 0.5f, ssPixel.y + halfPxSize.y * 0.5f),
 							halfPxSize * 0.5f,
 							scene,
 							vmInv,
-							camOrigin,
+							cam,
 							ndcPos,
 							tanFovByTwo,
 							aspect,
@@ -332,17 +397,17 @@ namespace rendererFGK
 						(
 							AdaptiveRays
 							(
-								CalculateRay(math::Float3(ssPixel.x + halfPxSize.x * 0.5f, ssPixel.y - halfPxSize.y * 0.5f, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
+								CalculateRay(math::Float3(ssPixel.x + halfPxSize.x * 0.5f, ssPixel.y - halfPxSize.y * 0.5f, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
 								rays.center,
-								CalculateRay(math::Float3(ssPixel.x + halfPxSize.x, ssPixel.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
+								CalculateRay(math::Float3(ssPixel.x + halfPxSize.x, ssPixel.y, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
 								rays.br,
-								CalculateRay(math::Float3(ssPixel.x, ssPixel.y - halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin)
+								CalculateRay(math::Float3(ssPixel.x, ssPixel.y - halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition())
 							),
 							math::Float2(ssPixel.x + halfPxSize.x * 0.5f, ssPixel.y - halfPxSize.y * 0.5f),
 							halfPxSize * 0.5f,
 							scene,
 							vmInv,
-							camOrigin,
+							cam,
 							ndcPos,
 							tanFovByTwo,
 							aspect,
@@ -356,17 +421,17 @@ namespace rendererFGK
 						(
 							AdaptiveRays
 							(
-								CalculateRay(math::Float3(ssPixel.x - halfPxSize.x * 0.5f, ssPixel.y - halfPxSize.y * 0.5f, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
-								CalculateRay(math::Float3(ssPixel.x - halfPxSize.x, ssPixel.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
+								CalculateRay(math::Float3(ssPixel.x - halfPxSize.x * 0.5f, ssPixel.y - halfPxSize.y * 0.5f, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
+								CalculateRay(math::Float3(ssPixel.x - halfPxSize.x, ssPixel.y, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
 								rays.center,
-								CalculateRay(math::Float3(ssPixel.x, ssPixel.y - halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, camOrigin),
+								CalculateRay(math::Float3(ssPixel.x, ssPixel.y - halfPxSize.y, 0.0f), tanFovByTwo, aspect, vmInv, cam->GetPosition()),
 								rays.bl
 							),
 							math::Float2(ssPixel.x - halfPxSize.x * 0.5f, ssPixel.y - halfPxSize.y * 0.5f),
 							halfPxSize * 0.5f,
 							scene,
 							vmInv,
-							camOrigin,
+							cam,
 							ndcPos,
 							tanFovByTwo,
 							aspect,
@@ -382,8 +447,32 @@ namespace rendererFGK
 		else
 		{
 			//return Color32::AverageFour(cols);
-			return RaySample(rays.center, scene, *camOrigin, ndcPos);
+			return RaySample(rays.center, scene, cam, ndcPos);
 		}
 	}
 
+	inline bool RendererFGK::CheckPathToLight(math::Float3 start, math::Float3 dir, Scene * scene)
+	{
+		for (std::vector<Primitive*>::iterator it = scene->GetPrimitives()->begin(); it != scene->GetPrimitives()->end(); ++it)
+		{
+			RayHit cHit = (*it)->CalcIntersect(Ray(start, -dir));
+			if (cHit.hit)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	void RendererFGK::Phong(math::Float3 & normal, math::Float2 & uv, math::Float3 & lightDir, math::Float3 & eyeDir,
+		Color32 & lightColor, Material * mat, Color32 & actualColor)
+	{
+		float dot = max(math::Float3::Dot(normal, -lightDir), 0.0f);
+		math::Float3 reflected = math::Float3::Reflect(-lightDir, normal);
+		float spec = 10.0f * pow(max(math::Float3::Dot(eyeDir, reflected), 0.0f), mat->GetCoefficentGloss());
+
+		actualColor += (lightColor * (*mat->GetColorDiffuse() * dot + 
+			*mat->GetColorSpecular() * spec)) * mat->GetMapDiffuse()->GetColor(&uv);
+	}
 }

@@ -13,6 +13,7 @@ namespace light
 	class LightAmbient;
 	class LightDirectional;
 	class LightSpot;
+	class LightPoint;
 }
 
 class Scene
@@ -28,6 +29,7 @@ protected:
 
 	std::vector<light::LightDirectional*> _lightsDirectional;
 	std::vector<light::LightSpot*> _lightsSpot;
+	std::vector<light::LightPoint*> _lightsPoint;
 
 	Material* _defaultMaterial;
 	light::LightAmbient* _lightAmbient;
@@ -71,6 +73,10 @@ public:
 	const std::string* GetName() { return &_name; }
 	Camera* const GetCurrentCamera() { return (_cameras.size() > 0 ? _cameras[_currentCamera] : nullptr); }
 	std::vector<Primitive*>* GetPrimitives() { return &_primitives; }
+	std::vector<light::LightDirectional*>* GetLightsDirectional() { return &_lightsDirectional; }
+	std::vector<light::LightSpot*>* GetLightsSpot() { return &_lightsSpot; }
+	std::vector<light::LightPoint*>* GetLightsPoint() { return &_lightsPoint; }
+	light::LightAmbient* GetLightAmbient() { return _lightAmbient; }
 
 	Camera* const GetCamera(uint32_t uid);
 	Camera* const GetCamera(std::string* name);
@@ -82,6 +88,7 @@ public:
 	void AddLightAmbient(light::LightAmbient* const la);
 	void AddLightDirectional(light::LightDirectional* const ld);
 	void AddLightSpot(light::LightSpot* const ls);
+	void AddLightPoint(light::LightPoint* const lp);
 
 	Camera* const RemoveCamera(uint32_t uid);
 	Camera* const RemoveCamera(std::string* name);
