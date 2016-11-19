@@ -85,9 +85,9 @@ void SceneMeshes::InitializeScene()
 	// meshes
 
 	math::Float3 cPos(0.0f, 1.0f, 0.0f);
-	math::Float3 cRot(0.0f, 0.0f, 0.0f);
+	math::Float3 cRot(0.0f, 180.0f, 0.0f);
 	math::Float3 cScl(2.0f, 2.0f, 2.0f);
-	cPath = "sphere";
+	cPath = "monkey";
 	Mesh* m1 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
 	m1->SetMaterialPtr(mat1);
 	_primitives.push_back(m1);
