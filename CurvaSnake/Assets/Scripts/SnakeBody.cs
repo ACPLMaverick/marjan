@@ -21,6 +21,9 @@ public class SnakeBody : MonoBehaviour
 
     #region Fields
 
+    [SerializeField]
+    protected int _PenaltyPointsPerLostPart = 1;
+
     #endregion
 
     #region Properties
@@ -94,6 +97,38 @@ public class SnakeBody : MonoBehaviour
         }
 	}
 
+    protected virtual void OnTriggerEnter2D(Collider2D coll)
+    {
+        if(coll.gameObject.CompareTag("fruit"))
+        {
+            Fruit fr = coll.gameObject.GetComponent<Fruit>();
+            if(fr != null)
+            {
+                PickFruit(fr);
+            }
+        }
+        else if(coll.gameObject.CompareTag("head"))
+        {
+            SnakeHead head = coll.GetComponent<SnakeHead>();
+            if (head != Previous)
+            {
+                Kill();
+            }
+        }
+        else if (coll.gameObject.CompareTag("snake"))
+        {
+            SnakeBody body = coll.GetComponent<SnakeBody>();
+            if(body != Previous && body != Next)
+            {
+                Kill();
+            }
+        }
+        else
+        {
+            Kill();
+        }
+    }
+
     #endregion
 
     #region Functions Public
@@ -118,6 +153,20 @@ public class SnakeBody : MonoBehaviour
         _transform.position = Head.GetComponent<Transform>().position + offset;
 
         _initialized = true;
+    }
+
+    public virtual void Kill()
+    {
+        if(_initialized)
+        {
+            if (Next != null)
+            {
+                Next.Kill();
+            }
+            MyPlayer.AddPoints(-_PenaltyPointsPerLostPart);
+            Destroy(gameObject);
+            _initialized = false;
+        }
     }
 
     #endregion
@@ -154,6 +203,12 @@ public class SnakeBody : MonoBehaviour
                 }
             }
         }
+    }
+
+    protected void PickFruit(Fruit fr)
+    {
+        Head.OnFruitCollected(fr.SpeedAddition);
+        MyPlayer.AddPoints(fr.Points);
     }
 
     #endregion

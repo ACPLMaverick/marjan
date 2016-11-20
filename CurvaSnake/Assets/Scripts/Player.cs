@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.Events;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
@@ -12,9 +13,18 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Events
+
+    public class UnityEventPlayerLose : UnityEvent<Player> { }
+
+    public UnityEventPlayerLose EventLose = new UnityEventPlayerLose();
+
+    #endregion
+
     #region Properties
 
     public Color MyColor { get { return _MyColor; } }
+    public int Points { get; protected set; }
 
     #endregion
 
@@ -41,27 +51,45 @@ public class Player : MonoBehaviour
 
     #region Functions Public
 
+    public void AddPoints(int count)
+    {
+        Points += count;
+    }
+
+    public void Stop()
+    {
+        _MySnakeHead.AssignDirection(SnakeHead.DirectionType.STOP);
+    }
+
+    public void Lose()
+    {
+        EventLose.Invoke(this);
+    }
+
     #endregion
 
     #region Functions Protected
 
     protected void UpdateControls()
     {
-        if(Input.GetKey(KeyCode.UpArrow))
+        if(_MySnakeHead != null)
         {
-            _MySnakeHead.AssignDirection(SnakeHead.DirectionType.UP);
-        }
-        else if(Input.GetKey(KeyCode.RightArrow))
-        {
-            _MySnakeHead.AssignDirection(SnakeHead.DirectionType.RIGHT);
-        }
-        else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            _MySnakeHead.AssignDirection(SnakeHead.DirectionType.DOWN);
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            _MySnakeHead.AssignDirection(SnakeHead.DirectionType.LEFT);
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                _MySnakeHead.AssignDirection(SnakeHead.DirectionType.UP);
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                _MySnakeHead.AssignDirection(SnakeHead.DirectionType.RIGHT);
+            }
+            else if (Input.GetKey(KeyCode.DownArrow))
+            {
+                _MySnakeHead.AssignDirection(SnakeHead.DirectionType.DOWN);
+            }
+            else if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                _MySnakeHead.AssignDirection(SnakeHead.DirectionType.LEFT);
+            }
         }
     }
 

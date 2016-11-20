@@ -8,8 +8,9 @@ public class SnakeHead : SnakeBody
     public enum DirectionType
     {
         UP,
-        RIGHT,
         DOWN,
+        STOP,
+        RIGHT,
         LEFT
     }
 
@@ -22,7 +23,7 @@ public class SnakeHead : SnakeBody
     [SerializeField]
     protected float _StartSpeed = 1.0f;
     [SerializeField]
-    protected uint _StartNumberOfParts = 4;
+    protected uint _StartNumberOfParts = 2;
     [SerializeField]
     protected DirectionType _StartDirection = DirectionType.UP;
 
@@ -37,6 +38,7 @@ public class SnakeHead : SnakeBody
     #region Protected
 
     protected List<SnakeBody> _allBodyParts = new List<SnakeBody>();
+    protected DirectionType _currentDirectionType;
 
     #endregion
 
@@ -47,8 +49,13 @@ public class SnakeHead : SnakeBody
     {
         base.Start();
 
-
+        _distanceSinceLastDirectionChange = _sizeWorld.x;
         Speed = _StartSpeed;
+        _currentDirectionType = (DirectionType)(((int)_StartDirection + 2) % 4);
+        if(_currentDirectionType == DirectionType.STOP)
+        {
+            ++_currentDirectionType;
+        }
         AssignDirection(_StartDirection);
 
         // this is hard coded as it cannot be the other way
@@ -62,13 +69,33 @@ public class SnakeHead : SnakeBody
         base.Update();
     }
 
+    protected override void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.gameObject.CompareTag("fruit"))
+        {
+            Fruit fr = coll.gameObject.GetComponent<Fruit>();
+            if (fr != null)
+            {
+                PickFruit(fr);
+            }
+        }
+        else if(coll.gameObject.CompareTag("snake") || coll.gameObject.CompareTag("head"))
+        {
+            // do nothing
+        }
+        else
+        {
+            Kill();
+        }
+    }
+
     #endregion
 
-    #region Functions Public
+        #region Functions Public
 
-    /// <summary>
-    /// This override of the base Initialize only calls the Head-specific Initialize(Player) function. You should not use it.
-    /// </summary>
+        /// <summary>
+        /// This override of the base Initialize only calls the Head-specific Initialize(Player) function. You should not use it.
+        /// </summary>
     public override void Initialize(Player player, SnakeHead head, SnakeBody next, SnakeBody prev, uint number)
     {
         Initialize(player);
@@ -103,7 +130,7 @@ public class SnakeHead : SnakeBody
             }
             else
             {
-                next = _allBodyParts[i];
+                next = _allBodyParts[i + 1];
             }
 
             if(i == 0)
@@ -118,14 +145,23 @@ public class SnakeHead : SnakeBody
             _allBodyParts[i].Initialize(MyPlayer, this, next, prev, (uint)(i + 1));
         }
 
+        Next = _allBodyParts[0];
         _initialized = true;
+    }
+
+    public override void Kill()
+    {
+        base.Kill();
+        MyPlayer.Lose();
     }
 
     public void AssignDirection(DirectionType dir)
     {
-        if(_distanceSinceLastDirectionChange >= _sizeWorld.x)   // assuming it is square
+        if(_distanceSinceLastDirectionChange >= _sizeWorld.x &&     // assuming it is square
+            (Mathf.Abs((int)dir - (int)_currentDirectionType) > 1))   
         {
             _distanceSinceLastDirectionChange = 0.0f;
+            _currentDirectionType = dir;
             switch (dir)
             {
                 case DirectionType.DOWN:
@@ -141,9 +177,21 @@ public class SnakeHead : SnakeBody
                     Direction = Vector2.up;
                     break;
                 default:
+                    Direction = Vector2.zero;
                     break;
             }
         }
+        else if(dir == DirectionType.STOP)
+        {
+            _distanceSinceLastDirectionChange = 0.0f;
+            _currentDirectionType = dir;
+            Direction = Vector2.zero;
+        }
+    }
+
+    public void OnFruitCollected(float addition)
+    {
+        Speed += addition;
     }
 
     #endregion
