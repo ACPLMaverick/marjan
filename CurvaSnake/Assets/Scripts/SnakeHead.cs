@@ -37,6 +37,9 @@ public class SnakeHead : SnakeBody
 
     #region Protected
 
+    protected float _invSpeed { get { return 1.0f / Mathf.Max(Speed, 0.00001f); } }
+    protected float _movementTimer = 0.0f;
+
     protected List<SnakeBody> _allBodyParts = new List<SnakeBody>();
     protected DirectionType _currentDirectionType;
 
@@ -67,6 +70,40 @@ public class SnakeHead : SnakeBody
     protected override void Update()
     {
         base.Update();
+
+        if(_initialized)
+        {
+            if (_movementTimer >= _invSpeed)
+            {
+                ApplyMovement();
+                if(Direction == Vector2.up)
+                {
+                    _currentDirectionType = DirectionType.UP;
+                }
+                else if(Direction == Vector2.right)
+                {
+                    _currentDirectionType = DirectionType.RIGHT;
+                }
+                else if(Direction == Vector2.down)
+                {
+                    _currentDirectionType = DirectionType.DOWN;
+                }
+                else if(Direction == Vector2.left)
+                {
+                    _currentDirectionType = DirectionType.LEFT;
+                }
+
+                for (int i = 0; i < _allBodyParts.Count; ++i)
+                {
+                    _allBodyParts[i].Move();
+                }
+                _movementTimer = 0.0f;
+            }
+            else
+            {
+                _movementTimer += Time.deltaTime;
+            }
+        }
     }
 
     protected override void OnTriggerEnter2D(Collider2D coll)
@@ -117,7 +154,7 @@ public class SnakeHead : SnakeBody
 
         for(int i = 1; i <= _StartNumberOfParts; ++i)
         {
-            _allBodyParts.Add(CreateNewPart());
+            _allBodyParts.Add(CreateNewPart(i));
         }
 
         for (int i = 0; i < _StartNumberOfParts; ++i)
@@ -146,6 +183,7 @@ public class SnakeHead : SnakeBody
         }
 
         Next = _allBodyParts[0];
+        Previous = null;
         _initialized = true;
     }
 
@@ -157,11 +195,9 @@ public class SnakeHead : SnakeBody
 
     public void AssignDirection(DirectionType dir)
     {
-        if(_distanceSinceLastDirectionChange >= _sizeWorld.x &&     // assuming it is square
+        if(/*_distanceSinceLastDirectionChange >= _sizeWorld.x &&*/     // assuming it is square
             (Mathf.Abs((int)dir - (int)_currentDirectionType) > 1))   
         {
-            _distanceSinceLastDirectionChange = 0.0f;
-            _currentDirectionType = dir;
             switch (dir)
             {
                 case DirectionType.DOWN:
@@ -183,24 +219,37 @@ public class SnakeHead : SnakeBody
         }
         else if(dir == DirectionType.STOP)
         {
-            _distanceSinceLastDirectionChange = 0.0f;
             _currentDirectionType = dir;
             Direction = Vector2.zero;
         }
     }
 
+    public void BodyPartCleanup()
+    {
+        _allBodyParts.RemoveAll(x => x == null);
+    }
+
     public void OnFruitCollected(float addition)
     {
-        Speed += addition;
+        Speed += addition + 0.1f * Speed;
+
+        BodyPartCleanup();
+
+        SnakeBody tail = _allBodyParts[_allBodyParts.Count - 1];
+        SnakeBody next = CreateNewPart(_allBodyParts.Count + 1);
+        tail.Next = next;
+        next.Initialize(MyPlayer, this, null, tail, (uint)_allBodyParts.Count + 1);
+        _allBodyParts.Add(next);
     }
 
     #endregion
 
     #region Functions Protected
 
-    protected SnakeBody CreateNewPart()
+    protected SnakeBody CreateNewPart(int iter)
     {
         GameObject obj = Instantiate(_BodyPartPrefab);
+        obj.name = obj.name + string.Format("_{0}", iter);
         obj.GetComponent<SpriteRenderer>().color = MyPlayer.MyColor;
         SnakeBody b = obj.GetComponent<SnakeBody>();
         return b;

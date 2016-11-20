@@ -35,12 +35,12 @@ public class SnakeBody : MonoBehaviour
     /// <summary>
     /// Part further away from the head.
     /// </summary>
-    public SnakeBody Next { get; protected set; }
+    public SnakeBody Next { get; set; }
 
     /// <summary>
     /// Part closer to the head.
     /// </summary>
-    public SnakeBody Previous { get; protected set; }
+    public SnakeBody Previous { get; set; }
 
     #endregion
 
@@ -79,22 +79,7 @@ public class SnakeBody : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update ()
     {
-        if(_initialized)
-        {
-            float scalarShift = Head.Speed * Time.deltaTime;
-            _distanceSinceLastDirectionChange += scalarShift;
-            _transform.position += new Vector3(Direction.x, Direction.y, 0.0f) * scalarShift;
 
-            if(Previous != null)
-            {
-                if(Previous.Direction != _lastAddedDirection)
-                {
-                    AddDirectionChange(Previous.Direction);
-                }
-
-                UpdateDirectionChanges();
-            }
-        }
 	}
 
     protected virtual void OnTriggerEnter2D(Collider2D coll)
@@ -112,6 +97,7 @@ public class SnakeBody : MonoBehaviour
             SnakeHead head = coll.GetComponent<SnakeHead>();
             if (head != Previous)
             {
+                Head.BodyPartCleanup();
                 Kill();
             }
         }
@@ -120,11 +106,13 @@ public class SnakeBody : MonoBehaviour
             SnakeBody body = coll.GetComponent<SnakeBody>();
             if(body != Previous && body != Next)
             {
+                Head.BodyPartCleanup();
                 Kill();
             }
         }
         else
         {
+            Head.BodyPartCleanup();
             Kill();
         }
     }
@@ -137,20 +125,16 @@ public class SnakeBody : MonoBehaviour
     {
         _distanceSinceLastDirectionChange = 0.0f;
         MyPlayer = player;
-        Direction = head.Direction;
+        Direction = prev.Direction;
         _lastAddedDirection = Direction;
         Head = head;
         Next = next;
         Previous = prev;
 
-        Vector3 offset = -Direction;
+        Vector3 offset = -Direction * _sizeWorld.x;
         offset.z = 0.0f;
-        for (int i = 0; i < 2; ++i)
-        {
-            offset[i] *= number * _sizeWorld[i];
-        }
 
-        _transform.position = Head.GetComponent<Transform>().position + offset;
+        _transform.position = Previous.GetComponent<Transform>().position + offset;
 
         _initialized = true;
     }
@@ -169,40 +153,33 @@ public class SnakeBody : MonoBehaviour
         }
     }
 
+    public void Move()
+    {
+        if (_initialized)
+        {
+            if(_lastAddedDirection != Direction)
+            {
+                Direction = _lastAddedDirection;
+            }
+
+            ApplyMovement();
+
+            if(Previous != null && Previous.Direction != _lastAddedDirection)
+            {
+                _lastAddedDirection = Previous.Direction;
+            }
+        }
+    }
+
     #endregion
 
     #region Functions Protected
 
-    protected void AddDirectionChange(Vector2 newDirection)
+    protected void ApplyMovement()
     {
-        _directionQueue.Enqueue(new DirectionChange(newDirection));
-        _lastAddedDirection = newDirection;
-    }
-
-    protected void UpdateDirectionChanges()
-    {
-        if(_directionQueue.Count != 0)
-        {
-            DirectionChange dc = _directionQueue.Peek();
-            dc.CompletionProgress += Head.Speed * Time.deltaTime;
-
-            if (dc.CompletionProgress >= _sizeWorld.x)   // assuming size world is square
-            {
-                _directionQueue.Dequeue();
-                Direction = dc.Direction;
-                _distanceSinceLastDirectionChange = 0.0f;
-                
-                // fix the position as it could exceed the previous
-                if (Direction == Vector2.up || Direction == Vector2.down)
-                {
-                    _transform.position = new Vector3(Previous.GetComponent<Transform>().position.x, _transform.position.y, _transform.position.z);
-                }
-                else
-                {
-                    _transform.position = new Vector3(_transform.position.x, Previous.GetComponent<Transform>().position.y, _transform.position.z);
-                }
-            }
-        }
+        float scalarMovement = _sizeWorld.x;
+        Vector3 vectorMovement = new Vector3(Direction.x * scalarMovement, Direction.y * scalarMovement, 0.0f);
+        _transform.position += vectorMovement;
     }
 
     protected void PickFruit(Fruit fr)
