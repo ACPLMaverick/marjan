@@ -39,8 +39,8 @@ void SceneMeshes::InitializeScene()
 
 	// materials
 
-	std::string cPath = "canteen_albedo_specular";
-	Texture* mat1Diff = new Texture(&cPath);
+	std::string cPath = "sunflowers";
+	Texture* mat1Diff = new Texture(&cPath, Texture::SampleMode::SPHERICAL);
 	cPath = "canteen_normals";
 	Texture* mat1Nrm = new Texture(&cPath);
 	Material* mat1 = new Material
@@ -55,7 +55,7 @@ void SceneMeshes::InitializeScene()
 	_materials.push_back(mat1);
 
 	cPath = "janusz";
-	Texture* mat2Diff = new Texture(&cPath, Texture::WrapMode::CLAMP);
+	Texture* mat2Diff = new Texture(&cPath, Texture::SampleMode::UV, Texture::WrapMode::CLAMP);
 	Texture* mat2Nrm = new Texture(Color32((uint8_t)255, 127, 127, 255));
 	Material* mat2 = new Material
 	(
@@ -87,7 +87,8 @@ void SceneMeshes::InitializeScene()
 	math::Float3 cPos(0.0f, 1.0f, 0.0f);
 	math::Float3 cRot(0.0f, 180.0f, 0.0f);
 	math::Float3 cScl(2.0f, 2.0f, 2.0f);
-	cPath = "monkey";
+	//cPath = "monkey";
+	cPath = "sphere";
 	Mesh* m1 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
 	m1->SetMaterialPtr(mat1);
 	_primitives.push_back(m1);

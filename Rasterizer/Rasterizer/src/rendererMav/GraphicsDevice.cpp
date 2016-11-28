@@ -410,7 +410,7 @@ namespace rendererMav
 		math::Float3::Normalize(camDir);
 		Color32 color(0xFF000000);
 		Color32 tempColor;
-		Color32 tex = _material->GetMapDiffuse()->GetColor(&in.Uv);
+		Color32 tex = _material->GetMapDiffuse()->GetColor(in.Uv, math::Float3());
 		float dot;
 		float spec = 0.0f;
 		

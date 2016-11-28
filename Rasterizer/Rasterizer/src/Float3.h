@@ -199,19 +199,19 @@ namespace math
 			return data;
 		}
 
-		bool EqualsEpsilon(Float3& right, float epsilon);
-		bool GreaterEpsilon(Float3& right, float epsilon);
-		bool SmallerEpsilon(Float3& right, float epsilon);
-		bool GreaterEqualsEpsilon(Float3& right, float epsilon);
-		bool SmallerEqualsEpsilon(Float3& right, float epsilon);
+		bool EqualsEpsilon(const Float3& right, const float epsilon);
+		bool GreaterEpsilon(const Float3& right, const float epsilon);
+		bool SmallerEpsilon(const Float3& right, const float epsilon);
+		bool GreaterEqualsEpsilon(const Float3& right, const float epsilon);
+		bool SmallerEqualsEpsilon(const Float3& right, const float epsilon);
 		
 		static void Normalize(Float3& f);
-		static float Length(Float3& f);
-		static float LengthSquared(Float3& f);
+		static float Length(const Float3& f);
+		static float LengthSquared(const Float3& f);
 		static float Dot(const Float3& f1, const Float3& f2);
-		static Float3 Cross(Float3& f1, Float3& f2);
+		static Float3 Cross(const Float3& f1, const Float3& f2);
 		
-		static Float3 Reflect(Float3& left, Float3& normal);
-		static Float3 Lerp(Float3& a, Float3 & b, float f);
+		static Float3 Reflect(const Float3& left, const Float3& normal);
+		static Float3 Lerp(const Float3& a, const Float3 & b, float f);
 	};
 }

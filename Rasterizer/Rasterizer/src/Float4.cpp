@@ -33,7 +33,7 @@ namespace math
 		x = g.x;
 		y = g.y;
 		z = g.z;
-		w = w;
+		this->w = w;				// AAAAAAAAAAAAAAAA KRUWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AMæ
 	}
 
 	Float4::~Float4()

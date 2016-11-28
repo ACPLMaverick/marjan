@@ -13,6 +13,12 @@ public:
 
 #pragma region Enums Public
 
+	enum SampleMode
+	{
+		UV,
+		SPHERICAL
+	};
+
 	enum WrapMode
 	{
 		WRAP,
@@ -32,6 +38,7 @@ protected:
 #pragma region Protected
 
 	Color32* _data = nullptr;
+	SampleMode _sm = SampleMode::UV;
 	WrapMode _wm = WrapMode::WRAP;
 	FilterMode _fm = FilterMode::LINEAR;
 	uint16_t _width = 0;
@@ -49,11 +56,11 @@ public:
 #pragma region Functions Public
 
 	Texture();
-	Texture(Color32 col, WrapMode wm = WrapMode::WRAP, FilterMode fm = FilterMode::LINEAR);
-	Texture(const std::string* name, WrapMode wm = WrapMode::WRAP, FilterMode fm = FilterMode::LINEAR);
+	Texture(Color32 col, SampleMode sm = SampleMode::UV, WrapMode wm = WrapMode::WRAP, FilterMode fm = FilterMode::LINEAR);
+	Texture(const std::string* name, SampleMode sm = SampleMode::UV, WrapMode wm = WrapMode::WRAP, FilterMode fm = FilterMode::LINEAR);
 	~Texture();
 
-	Color32 GetColor(const math::Float2* uv) const;
+	Color32 GetColor(const math::Float2& uv, const math::Float3& modelPos) const;
 
 #pragma region Accessors
 

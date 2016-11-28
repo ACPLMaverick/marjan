@@ -113,7 +113,8 @@ namespace rendererFGK
 			const math::Matrix4x4* vmInv, const Camera* cam, const math::Int2 ndcPos, float tanFovByTwo, float aspect, int ctr);
 
 		inline bool CheckPathToLight(math::Float3 start, math::Float3 dir, Scene* scene);
-		inline void Phong(math::Float3& normal, math::Float2& uv, math::Float3& lightDir, math::Float3& eyeDir, Color32& lightColor, Material* mat, Color32& actualColor);
+		inline void Phong(const math::Matrix4x4& transformMatrix, const math::Float3 & worldPosition, const math::Float3& normal,
+			const math::Float2& uv, const math::Float3& lightDir, const math::Float3& eyeDir, const Color32& lightColor, const Material* mat, Color32& actualColor);
 
 #pragma endregion
 

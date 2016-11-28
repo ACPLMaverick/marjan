@@ -245,6 +245,7 @@ namespace rendererFGK
 		else if (prim != nullptr)
 		{
 			Material* mat = prim->GetMaterialPtr();
+			const math::Matrix4x4* worldMatrix = prim->GetTransform()->GetWorldMatrix();
 			if (mat != nullptr)
 			{
 				// phong
@@ -258,7 +259,7 @@ namespace rendererFGK
 					{
 						math::Float3 dir = *(*it)->GetDirection();
 						Color32 diffuse = *(*it)->GetColor();
-						Phong(hit.normal, hit.uv, dir, ray.GetDirection(), diffuse, mat, ret);
+						Phong(*worldMatrix, hit.point, hit.normal, hit.uv, dir, ray.GetDirection(), diffuse, mat, ret);
 					}
 				}
 
@@ -281,7 +282,7 @@ namespace rendererFGK
 								(*it)->GetAttenuationQuadratic() * distance);
 
 							Color32 col = *(*it)->GetColor() * spotEffect;
-							Phong(hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
+							Phong(*worldMatrix, hit.point, hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
 						}
 					}
 				}
@@ -300,7 +301,7 @@ namespace rendererFGK
 							(*it)->GetAttenuationQuadratic() * distance);
 
 						Color32 col = *(*it)->GetColor() * pointEffect;
-						Phong(hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
+						Phong(*worldMatrix, hit.point, hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
 					}
 				}
 
@@ -455,7 +456,7 @@ namespace rendererFGK
 	{
 		for (std::vector<Primitive*>::iterator it = scene->GetPrimitives()->begin(); it != scene->GetPrimitives()->end(); ++it)
 		{
-			RayHit cHit = (*it)->CalcIntersect(Ray(start, -dir));
+			RayHit cHit = (*it)->CalcIntersect(Ray(start - dir * 0.01f, -dir));
 			if (cHit.hit)
 			{
 				return false;
@@ -465,13 +466,18 @@ namespace rendererFGK
 		return true;
 	}
 
-	void RendererFGK::Phong(math::Float3 & normal, math::Float2 & uv, math::Float3 & lightDir, math::Float3 & eyeDir,
-		Color32 & lightColor, Material * mat, Color32 & actualColor)
+	void RendererFGK::Phong(const math::Matrix4x4& transformMatrix, const math::Float3 & worldPosition, const math::Float3 & normal,
+		const math::Float2 & uv, const math::Float3 & lightDir, const math::Float3 & eyeDir,
+		const Color32 & lightColor, const  Material * mat, Color32 & actualColor)
 	{
 		float dot = max(math::Float3::Dot(normal, -lightDir), 0.0f);
 		math::Float3 reflected = math::Float3::Reflect(-lightDir, normal);
 		float spec = 10.0f * pow(max(math::Float3::Dot(eyeDir, reflected), 0.0f), mat->GetCoefficentGloss());
-		Color32 diffuseMap = mat->GetMapDiffuse()->GetColor(&uv);
+
+		math::Matrix4x4 invTransform;
+		math::Matrix4x4::Inverse(&transformMatrix, &invTransform);
+		math::Float3 modelPosition(invTransform * math::Float4(worldPosition, 1.0f));
+		Color32 diffuseMap = mat->GetMapDiffuse()->GetColor(uv, modelPosition);
 
 		actualColor += (lightColor * (*mat->GetColorDiffuse() * dot + 
 			*mat->GetColorSpecular() * spec * diffuseMap.GetFltA())) * diffuseMap;
