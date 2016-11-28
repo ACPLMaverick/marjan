@@ -26,6 +26,7 @@ Camera::Camera(
 
 	_direction = _target - _position;
 	math::Float3::Normalize(_direction);
+	_right = math::Float3::Cross(_up, _direction);
 }
 
 
@@ -36,35 +37,60 @@ Camera::~Camera()
 void Camera::Update()
 {
 	// camera movement
+	math::Float3 addition;
 	if (Input::GetInstance()->GetKeyDown('W'))
 	{
-		_position = _position + math::Float3(0.0f, 0.0f, _cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime());
+		addition = _direction * _cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime();
+		_position = _position + addition;
+		_target = _target + addition;
 		_viewMatrixNeedUpdate = true;
 	}
 	if (Input::GetInstance()->GetKeyDown('A'))
 	{
-		_position = _position + math::Float3(-_cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime(), 0.0f, 0.0f);
+		addition = _right * -_cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime();
+		_position = _position + addition;
+		_target = _target + addition;
 		_viewMatrixNeedUpdate = true;
 	}
 	if (Input::GetInstance()->GetKeyDown('S'))
 	{
-		_position = _position + math::Float3(0.0f, 0.0f, -_cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime());
+		addition = _direction * (-_cameraSpeed) * (float)Timer::GetInstance()->GetDeltaTime();
+		_position = _position + addition;
+		_target = _target + addition;
 		_viewMatrixNeedUpdate = true;
 	}
 	if (Input::GetInstance()->GetKeyDown('D'))
 	{
-		_position = _position + math::Float3(_cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime(), 0.0f, 0.0f);
+		addition = _right * _cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime();
+		_position = _position + addition;
+		_target = _target + addition;
 		_viewMatrixNeedUpdate = true;
 	}
 	if (Input::GetInstance()->GetKeyDown('Q'))
 	{
-		_position = _position + math::Float3(0.0f, _cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime(), 0.0f);
+		addition = _up * _cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime();
+		_position = _position + addition;
+		_target = _target + addition;
 		_viewMatrixNeedUpdate = true;
 	}
 	if (Input::GetInstance()->GetKeyDown('Z'))
 	{
-		_position = _position + math::Float3(0.0f, -_cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime(), 0.0f);
+		addition = _up * -_cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime();
+		_position = _position + addition;
+		_target = _target + addition;
 		_viewMatrixNeedUpdate = true;
+	}
+
+	if (Input::GetInstance()->GetKeyDown(VK_RBUTTON))
+	{
+		math::Float2 delta = Input::GetInstance()->GetMouseRelativePosition() * _cameraSpeed * (float)Timer::GetInstance()->GetDeltaTime() * 2.0f;
+		delta.x *= -1.0f;
+
+		if (delta.x != 0.0f || delta.y != 0.0f)
+		{
+			_position = _position + _right * delta.x + _up * delta.y;
+			_viewMatrixNeedUpdate = true;
+		}
 	}
 
 	// update of the matrices
@@ -77,6 +103,7 @@ void Camera::Update()
 			math::Matrix4x4::Inverse(&_viewMatrix, &_viewInvMatrix);
 			_direction = _target - _position;
 			math::Float3::Normalize(_direction);
+			_right = math::Float3::Cross(_up, _direction);
 			_viewMatrixNeedUpdate = false;
 		}
 		if (_projMatrixNeedUpdate)
