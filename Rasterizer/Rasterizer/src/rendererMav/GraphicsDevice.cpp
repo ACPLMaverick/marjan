@@ -410,7 +410,7 @@ namespace rendererMav
 		math::Float3::Normalize(camDir);
 		Color32 color(0xFF000000);
 		Color32 tempColor;
-		Color32 tex = _material->GetMapDiffuse()->GetColor(&in.Uv);
+		Color32 tex = _material->GetMapDiffuse()->GetColor(in.Uv, math::Float3());
 		float dot;
 		float spec = 0.0f;
 		
@@ -426,7 +426,7 @@ namespace rendererMav
 
 			temp = camDir - *_lightsDir[i].GetDirection();
 			math::Float3::Normalize(temp);
-			spec += pow(math::Float3::Dot(temp, in.Normal), _material->GetCoefficentGloss()) * tex.GetFltA() * tempColor.GetAverageNoAlpha();
+			spec += pow(math::Float3::Dot(temp, in.Normal), _material->GetGlossiness()) * tex.GetFltA() * tempColor.GetAverageNoAlpha();
 		}
 
 		// Spot
@@ -456,7 +456,7 @@ namespace rendererMav
 
 				temp = camDir - *_lightsSpot[i].GetDirection();
 				math::Float3::Normalize(temp);
-				spec += pow(math::Float3::Dot(temp, in.Normal), _material->GetCoefficentGloss()) * tex.GetFltA() * tempColor.GetAverageNoAlpha();
+				spec += pow(math::Float3::Dot(temp, in.Normal), _material->GetGlossiness()) * tex.GetFltA() * tempColor.GetAverageNoAlpha();
 			}
 		}
 		

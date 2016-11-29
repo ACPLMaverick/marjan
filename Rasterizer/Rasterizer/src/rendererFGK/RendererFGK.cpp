@@ -170,7 +170,7 @@ namespace rendererFGK
 		}
 		else
 		{
-			_bufferColor.SetPixel(pos.x, pos.y, RaySample(ray, scene, cam, pos));
+			_bufferColor.SetPixel(pos.x, pos.y, RaySample(ray, scene, cam, pos, 0));
 		}
 	}
 
@@ -211,7 +211,7 @@ namespace rendererFGK
 		return Ray(point, *camDirection);
 	}
 
-	inline Color32 RendererFGK::RaySample(Ray & ray, Scene * scene, const Camera* cam, const math::Int2 ndcPos)
+	inline Color32 RendererFGK::RaySample(Ray & ray, Scene * scene, const Camera* cam, const math::Int2 ndcPos, int recCtr)
 	{
 		Color32 ret = _clearColor;
 		std::vector<Primitive*>* prims = scene->GetPrimitives();
@@ -224,10 +224,10 @@ namespace rendererFGK
 			RayHit cHit = (*it)->CalcIntersect(ray);
 			if (cHit.hit)
 			{
-				float distanceToCamera = math::Float3::LengthSquared(cHit.point - *cam->GetPosition());
-				if (distanceToCamera <= closestDist)	// depth test
+				float distanceToOrigin = math::Float3::LengthSquared(cHit.point - ray.GetOrigin());
+				if (distanceToOrigin <= closestDist)	// depth test
 				{
-					closestDist = distanceToCamera;
+					closestDist = distanceToOrigin;
 					prim = (*it);
 					hit = cHit;
 				}
@@ -245,6 +245,7 @@ namespace rendererFGK
 		else if (prim != nullptr)
 		{
 			Material* mat = prim->GetMaterialPtr();
+			const math::Matrix4x4* worldMatrix = prim->GetTransform()->GetWorldMatrix();
 			if (mat != nullptr)
 			{
 				// phong
@@ -254,23 +255,25 @@ namespace rendererFGK
 				for (std::vector<light::LightDirectional*>::iterator it = scene->GetLightsDirectional()->begin();
 					it != scene->GetLightsDirectional()->end(); ++it)
 				{
-					if (CheckPathToLight(hit.point, *(*it)->GetDirection(), scene))
+					if (CheckPathToLight(hit.point, -*(*it)->GetDirection(), 0.0f, scene))
 					{
 						math::Float3 dir = *(*it)->GetDirection();
 						Color32 diffuse = *(*it)->GetColor();
-						Phong(hit.normal, hit.uv, dir, ray.GetDirection(), diffuse, mat, ret);
+						Phong(*worldMatrix, hit.point, hit.normal, hit.uv, dir, ray.GetDirection(), diffuse, mat, ret);
 					}
 				}
 
 				for (std::vector<light::LightSpot*>::iterator it = scene->GetLightsSpot()->begin();
 					it != scene->GetLightsSpot()->end(); ++it)
 				{
-					math::Float3 dir = hit.point - *(*it)->GetPostition();
-					math::Float3::Normalize(dir);
+					math::Float3 pos = *(*it)->GetPostition();
+					math::Float3 dir = pos - hit.point;
+					float dirLength = math::Float3::Length(dir);
+					dir = dir / dirLength;
 
-					if (CheckPathToLight(hit.point, dir, scene))
+					if (CheckPathToLight(hit.point, dir, dirLength, scene))
 					{
-						float spotEffect = math::Float3::Dot(*(*it)->GetDirection(), dir);
+						float spotEffect = math::Float3::Dot(*(*it)->GetDirection(), -dir);
 
 						if (spotEffect > (*it)->GetUmbraAngleRad())
 						{
@@ -281,7 +284,7 @@ namespace rendererFGK
 								(*it)->GetAttenuationQuadratic() * distance);
 
 							Color32 col = *(*it)->GetColor() * spotEffect;
-							Phong(hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
+							Phong(*worldMatrix, hit.point, hit.normal, hit.uv, -dir, ray.GetDirection(), col, mat, ret);
 						}
 					}
 				}
@@ -290,9 +293,10 @@ namespace rendererFGK
 					it != scene->GetLightsPoint()->end(); ++it)
 				{
 					math::Float3 dir = hit.point - *(*it)->GetPosition();
-					math::Float3::Normalize(dir);
+					float dirLength = math::Float3::Length(dir);
+					dir = dir / dirLength;
 
-					if (CheckPathToLight(hit.point, dir, scene))
+					if (CheckPathToLight(hit.point, -dir, dirLength, scene))
 					{
 						float distance = math::Float3::LengthSquared(hit.point - *(*it)->GetPosition());
 						float pointEffect = 1.0f / ((*it)->GetAttenuationConstant() +
@@ -300,12 +304,32 @@ namespace rendererFGK
 							(*it)->GetAttenuationQuadratic() * distance);
 
 						Color32 col = *(*it)->GetColor() * pointEffect;
-						Phong(hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
+						Phong(*worldMatrix, hit.point, hit.normal, hit.uv, dir, ray.GetDirection(), col, mat, ret);
 					}
 				}
 
 				ret += *scene->GetLightAmbient()->GetColor();
 
+				// reflection and refraction
+				
+				if (recCtr <= RAY_SAMPLE_MAX_RECURSION)
+				{
+					// reflection
+					if (mat->GetReflectivity() > 0.0f)
+					{
+						Color32 reflectionColor = RaySample(Ray(hit.point + hit.normal * -0.00001f, math::Float3::Reflect(ray.GetDirection(), hit.normal)), scene, cam, ndcPos, recCtr + 1);
+						ret = Color32::LerpNoAlpha(ret.color, reflectionColor, mat->GetReflectivity());
+					}
+
+					// refraction
+					if (mat->GetRefractivity() > 0.0f)
+					{
+						Color32 refractionColor = RaySample(Ray(hit.point + hit.normal * -0.00001f, 
+							math::Float3::Refract(ray.GetDirection(), hit.normal, mat->GetRefractionCoefficent())), 
+							scene, cam, ndcPos, recCtr + 1);
+						ret = Color32::LerpNoAlpha(ret.color, refractionColor, mat->GetRefractivity());
+					}
+				}
 			}
 			else
 			{
@@ -323,7 +347,7 @@ namespace rendererFGK
 		Color32 cols[4];
 		for (size_t i = 1; i < 5; ++i)
 		{
-			cols[i - 1] = RaySample(rays.tab[i], scene, cam, ndcPos);
+			cols[i - 1] = RaySample(rays.tab[i], scene, cam, ndcPos, 0);
 		}
 
 		// check recursion warunek
@@ -447,15 +471,15 @@ namespace rendererFGK
 		else
 		{
 			//return Color32::AverageFour(cols);
-			return RaySample(rays.center, scene, cam, ndcPos);
+			return RaySample(rays.center, scene, cam, ndcPos, 0);
 		}
 	}
 
-	inline bool RendererFGK::CheckPathToLight(math::Float3 start, math::Float3 dir, Scene * scene)
+	inline bool RendererFGK::CheckPathToLight(const math::Float3& start, const math::Float3& dir, float maxDist, Scene * scene)
 	{
 		for (std::vector<Primitive*>::iterator it = scene->GetPrimitives()->begin(); it != scene->GetPrimitives()->end(); ++it)
 		{
-			RayHit cHit = (*it)->CalcIntersect(Ray(start, -dir));
+			RayHit cHit = (*it)->CalcIntersect(Ray(start + dir * 0.001f, dir, maxDist));
 			if (cHit.hit)
 			{
 				return false;
@@ -465,13 +489,18 @@ namespace rendererFGK
 		return true;
 	}
 
-	void RendererFGK::Phong(math::Float3 & normal, math::Float2 & uv, math::Float3 & lightDir, math::Float3 & eyeDir,
-		Color32 & lightColor, Material * mat, Color32 & actualColor)
+	void RendererFGK::Phong(const math::Matrix4x4& transformMatrix, const math::Float3 & worldPosition, const math::Float3 & normal,
+		const math::Float2 & uv, const math::Float3 & lightDir, const math::Float3 & eyeDir,
+		const Color32 & lightColor, const  Material * mat, Color32 & actualColor)
 	{
 		float dot = max(math::Float3::Dot(normal, -lightDir), 0.0f);
 		math::Float3 reflected = math::Float3::Reflect(-lightDir, normal);
-		float spec = 10.0f * pow(max(math::Float3::Dot(eyeDir, reflected), 0.0f), mat->GetCoefficentGloss());
-		Color32 diffuseMap = mat->GetMapDiffuse()->GetColor(&uv);
+		float spec = 10.0f * pow(max(math::Float3::Dot(eyeDir, reflected), 0.0f), mat->GetGlossiness());
+
+		math::Matrix4x4 invTransform;
+		math::Matrix4x4::Inverse(&transformMatrix, &invTransform);
+		math::Float3 modelPosition(invTransform * math::Float4(worldPosition, 1.0f));
+		Color32 diffuseMap = mat->GetMapDiffuse()->GetColor(uv, modelPosition);
 
 		actualColor += (lightColor * (*mat->GetColorDiffuse() * dot + 
 			*mat->GetColorSpecular() * spec * diffuseMap.GetFltA())) * diffuseMap;

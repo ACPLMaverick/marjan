@@ -16,6 +16,16 @@ Sphere::Sphere(math::Float3& c, float r)
 
 RayHit Sphere::CalcIntersect(Ray& ray)
 {
+	//distance check
+	if (ray.GetMaxDistance() != 0.0f)
+	{
+		math::Float3 nearestPoint = _center - ray.GetDirection() * _radius;
+		if (math::Float3::LengthSquared(nearestPoint - ray.GetOrigin()) > ray.GetMaxDistanceSquared())
+		{
+			return RayHit();
+		}
+	}
+
 	math::Float3 ocVec = ray.GetOrigin() - _center;
 	float B = -math::Float3::Dot(ray.GetDirection(), ocVec);
 	float det = (B * B) - math::Float3::Dot(ocVec, ocVec) + (_radius * _radius);
@@ -31,12 +41,28 @@ RayHit Sphere::CalcIntersect(Ray& ray)
 			if (d2 < 0)
 			{
 				//Ray origin inside sphere case
-				return RayHit(true, math::Float3(ray.GetOrigin() + ray.GetDirection() * d1));
+				math::Float3 p = math::Float3(ray.GetOrigin() + ray.GetDirection() * d1);
+				if (math::Float3::LengthSquared(p - ray.GetOrigin()) > ray.GetMaxDistanceSquared())
+				{
+					return RayHit();
+				}
+				else
+				{
+					return RayHit(true, p);
+				}
 			}
 			else
 			{
 				//Ray origin in front of sphere case
-				return RayHit(true, math::Float3(ray.GetOrigin() + ray.GetDirection() * d2));
+				math::Float3 p = math::Float3(ray.GetOrigin() + ray.GetDirection() * d2);
+				if (math::Float3::LengthSquared(p - ray.GetOrigin()) > ray.GetMaxDistanceSquared())
+				{
+					return RayHit();
+				}
+				else
+				{
+					return RayHit(true, p);
+				}
 			}
 		}
 		else
@@ -47,7 +73,15 @@ RayHit Sphere::CalcIntersect(Ray& ray)
 	else if (det == 0)
 	{
 		//Ray intersects only in one point (sphere tangent)
-		return RayHit(true, math::Float3(ray.GetOrigin() + ray.GetDirection() * B));
+		math::Float3 p = math::Float3(ray.GetOrigin() + ray.GetDirection() * B);
+		if (math::Float3::LengthSquared(p - ray.GetOrigin()) > ray.GetMaxDistanceSquared())
+		{
+			return RayHit();
+		}
+		else
+		{
+			return RayHit(true, p);
+		}
 	}
 	else
 	{

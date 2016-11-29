@@ -7,8 +7,9 @@ Texture::Texture()
 {
 }
 
-Texture::Texture(Color32 col, WrapMode wm, FilterMode fm)
+Texture::Texture(Color32 col, SampleMode sm, WrapMode wm, FilterMode fm)
 {
+	_sm = sm;
 	_wm = wm;
 	_fm = fm;
 	_width = 1;
@@ -16,8 +17,9 @@ Texture::Texture(Color32 col, WrapMode wm, FilterMode fm)
 	_data[0] = col;
 }
 
-Texture::Texture(const std::string * name, WrapMode wm , FilterMode fm)
+Texture::Texture(const std::string * name, SampleMode sm, WrapMode wm , FilterMode fm)
 {
+	_sm = sm;
 	_wm = wm;
 	_fm = fm;
 	LoadFromFile(name);
@@ -31,10 +33,19 @@ Texture::~Texture()
 	}
 }
 
-Color32 Texture::GetColor(const math::Float2 * uv) const
+Color32 Texture::GetColor(const math::Float2& uv, const math::Float3& modelPos) const
 {
-	math::Float2 newUV = *uv;
+	math::Float2 newUV(uv);
 	newUV.v = 1.0f - newUV.v;
+
+	if (_sm == SampleMode::SPHERICAL)
+	{
+		math::Float3 normModelPos(modelPos);
+		math::Float3::Normalize(normModelPos);
+
+		newUV.u = atan2(normModelPos.x, normModelPos.z) * M_1_PI * 0.5f;
+		newUV.v = 1.0f - acos(normModelPos.y) * M_1_PI;
+	}
 
 	if (_wm == WrapMode::CLAMP)
 	{

@@ -15,7 +15,7 @@ struct Color32
 
 	Color32()
 	{
-		color = 0x00000000;
+		color = 0xFFFFFFFF;
 	}
 
 	Color32(uint32_t color)

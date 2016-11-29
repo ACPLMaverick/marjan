@@ -9,12 +9,18 @@ Material::Material
 	Color32 amb,
 	Color32 diff,
 	Color32 spec,
-	float gloss
+	float gloss,
+	float reflectivity,
+	float refractivity,
+	float refrCoeff
 ) :
 	_colorAmbient(amb),
 	_colorDiffuse(diff),
 	_colorSpecular(spec),
-	_coeffGloss(gloss),
+	_glossiness(gloss),
+	_reflectivity(Clamp(reflectivity, 0.0f, 1.0f)),
+	_refractivity(Clamp(refractivity, 0.0f, 1.0f)),
+	_refractionCoeff(refrCoeff),
 	_mapDiffuse(diffuse),
 	_mapNormal(normal)
 {

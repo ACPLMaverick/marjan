@@ -80,6 +80,7 @@ namespace rendererFGK
 #pragma region Const
 
 		static const int32_t NUM_THREADS = 8;
+		static const int32_t RAY_SAMPLE_MAX_RECURSION = 2;
 
 #pragma endregion
 
@@ -108,12 +109,13 @@ namespace rendererFGK
 		inline math::Int2 GetScreenSpacePosition(const math::Float3& pos);
 		inline Ray CalculateRay(const math::Float3& px, float tanFovByTwo, float aspect, const math::Matrix4x4* vmInv, const math::Float3* camOrigin);
 		inline Ray RendererFGK::CalculateRayOrtho(const math::Float3& px, float aspect, const math::Matrix4x4* vmInv, const math::Float3* camOrigin, const math::Float3* camDirection);
-		inline Color32 RaySample(Ray& ray, Scene* scene, const Camera* cam, const math::Int2 ndcPos);
+		inline Color32 RaySample(Ray& ray, Scene* scene, const Camera* cam, const math::Int2 ndcPos, int recCtr);
 		inline Color32 RaySampleAdaptive(AdaptiveRays& rays, math::Float2 ssPixel, math::Float2 halfPxSize, Scene* scene, 
 			const math::Matrix4x4* vmInv, const Camera* cam, const math::Int2 ndcPos, float tanFovByTwo, float aspect, int ctr);
 
-		inline bool CheckPathToLight(math::Float3 start, math::Float3 dir, Scene* scene);
-		inline void Phong(math::Float3& normal, math::Float2& uv, math::Float3& lightDir, math::Float3& eyeDir, Color32& lightColor, Material* mat, Color32& actualColor);
+		inline bool CheckPathToLight(const math::Float3& start, const math::Float3& dir, float maxDist, Scene* scene);
+		inline void Phong(const math::Matrix4x4& transformMatrix, const math::Float3 & worldPosition, const math::Float3& normal,
+			const math::Float2& uv, const math::Float3& lightDir, const math::Float3& eyeDir, const Color32& lightColor, const Material* mat, Color32& actualColor);
 
 #pragma endregion
 

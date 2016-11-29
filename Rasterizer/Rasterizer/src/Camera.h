@@ -20,6 +20,7 @@ protected:
 	math::Float3 _up;
 
 	math::Float3 _direction;
+	math::Float3 _right;
 
 	uint64_t _id;
 	std::string _name;
@@ -29,7 +30,7 @@ protected:
 	float _nearPlane;
 	float _farPlane;
 
-	const float _cameraSpeed = 0.1f;
+	const float _cameraSpeed = 3.0f;
 
 	bool _viewMatrixNeedUpdate = false;
 	bool _projMatrixNeedUpdate = false;

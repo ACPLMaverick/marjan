@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "SceneTriangle.h"
 #include "SceneMeshes.h"
+#include "SceneCornel.h"
 #include "SceneSphere.h"
 #include "SpecificObjectFactory.h"
 #include "Timer.h"
@@ -53,91 +54,7 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	std::cout.clear();
 	std::ios::sync_with_stdio();
 	std::cout << "Hi." << std::endl;
-	/*
-	// math tests
-	math::Matrix4x4 m1(
-		math::Float4(1.0f, 0.0f, 0.0f, 0.0f),
-		math::Float4(2.0f, 1.0f, 0.0f, 0.0f),
-		math::Float4(4.0f, 0.0f, 1.0f, 0.0f),
-		math::Float4(6.0f, 0.0f, 0.0f, 1.0f)
-		);
-
-	math::Matrix4x4 m2(
-		math::Float4(1.0f, 8.0f, 10.0f, 12.0f),
-		math::Float4(0.0f, 1.0f, 0.0f, 0.0f),
-		math::Float4(0.0f, 0.0f, 1.0f, 15.0f),
-		math::Float4(0.0f, 0.0f, 0.0f, 1.0f)
-	);
-
-	math::Matrix4x4 m3 = m1 * m2;
-
-	std::cout << m3;
-
-	math::Float4 flt = math::Float4(1.0f, 3.0f, 5.0f, 7.0f);
-	flt = m1 * flt;
-
-	std::cout << flt;
-	*/
-
-	//math::Matrix4x4 lookAt, persp;
-	//math::Matrix4x4::LookAt(&math::Float3(2.0f, 3.0f, 4.0f),
-	//	&math::Float3(0.0f, 1.0f, 0.0f),
-	//	&math::Float3(0.0f, 0.0f, -1.0f),
-	//	&lookAt);
-
-	//std::cout << lookAt << persp;
-	/*
-	//FGK_TESTY
-	Sphere stefan = Sphere(math::Float3(0, 0, 0), 10);
-
-	Ray robert1 = Ray(math::Float3(0.0f, 0.0f, -20.f), math::Float3(0.0f, 0.0f, 1.0f));
-	Ray robert2 = Ray(math::Float3(0.0f, 0.0f, -20.f), math::Float3(0.0f, 1.0f, 0.0f));
-	Ray robert3 = Ray(math::Float3(0.0f, -10.0f, -20.f), math::Float3(0.0f, 0.0f, 1.0f));
-	RayHit hitRoberta1 = RayHit();
-	RayHit hitRoberta2 = RayHit();
-	RayHit hitRoberta3 = RayHit();
-
-	hitRoberta1 = stefan.CalcIntersect(robert1);
-	hitRoberta2 = stefan.CalcIntersect(robert2);
-	hitRoberta3 = stefan.CalcIntersect(robert3);
-
-	std::cout << "CZY PIERWSZY ROBERT TRAFIL? " << hitRoberta1.hit << " GDZIE? " << hitRoberta1.point.x << " " << hitRoberta1.point.y <<
-		" " << hitRoberta1.point.z << std::endl;
-	std::cout << "CZY DRUGI ROBERT TRAFIL?" << hitRoberta2.hit << std::endl;
-	std::cout << "CZY TRZECI ROBERT TRAFIL? " << hitRoberta3.hit << " GDZIE? " << hitRoberta3.point.x << " " << hitRoberta3.point.y <<
-		" " << hitRoberta3.point.z << std::endl;
 	
-	math::Float3 test = math::Float3(0.0f, (float)sqrt(2.0f), (float)sqrt(2.0f));
-	math::Float3::Normalize(test);
-
-	Plane przemek = Plane(math::Float3(0.0f, 0.0f, 0.0f), test);
-	
-	hitRoberta2 = przemek.CalcIntersect(robert2);
-
-	std::cout << "CZY DRUGI ROBERT TRAFIL PRZEMKA?" << hitRoberta2.hit << " GDZIE? " << hitRoberta2.point.x << " " << 
-		hitRoberta2.point.y << " " << hitRoberta2.point.z << std::endl;
-	
-	//KONIEC FGK TESTÓW
-	*/
-
-	//math::Matrix4x4 janusz;
-	//math::Matrix4x4 waclaw;
-	//math::Matrix4x4 zbychu, zdzichu;
-	//math::Matrix4x4::LookAt(&math::Float3(0.0f, 0.0f, -5.0f),
-	//		&math::Float3(0.0f, 0.0f, 0.0f),
-	//		&math::Float3(0.0f, 1.0f, 0.0f),
-	//		&janusz);
-	//math::Matrix4x4::Perspective(
-	//	45.0f,
-	//	640.0f / 640.0f,
-	//	0.01f,
-	//	1000.0f,
-	//	&waclaw
-	//);
-	//zbychu = waclaw * janusz;
-	//zdzichu = janusz * waclaw;
-	//std::cout << janusz << std::endl << waclaw << std::endl <<
-	//	zbychu << std::endl << zdzichu << std::endl;
 #endif // _DEBUG
 
 
@@ -174,8 +91,10 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	// initialize scenes
 	//_scenes.push_back(new SceneTriangle());
 	//std::string sName = "SceneTriangle";
-	_scenes.push_back(new SceneMeshes());
-	std::string sName = "SceneMeshes";
+	//_scenes.push_back(new SceneMeshes());
+	//std::string sName = "SceneMeshes";
+	_scenes.push_back(new SceneCornel());
+	std::string sName = "SceneCornel";
 	//_scenes.push_back(new SceneSphere());
 	//std::string sName = "SceneSpheres";
 	_scenes[0]->Initialize(0, &sName);

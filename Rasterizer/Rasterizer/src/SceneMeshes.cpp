@@ -39,8 +39,8 @@ void SceneMeshes::InitializeScene()
 
 	// materials
 
-	std::string cPath = "canteen_albedo_specular";
-	Texture* mat1Diff = new Texture(&cPath);
+	std::string cPath = "sunflowers";
+	Texture* mat1Diff = new Texture(&cPath, Texture::SampleMode::SPHERICAL);
 	cPath = "canteen_normals";
 	Texture* mat1Nrm = new Texture(&cPath);
 	Material* mat1 = new Material
@@ -55,16 +55,16 @@ void SceneMeshes::InitializeScene()
 	_materials.push_back(mat1);
 
 	cPath = "janusz";
-	Texture* mat2Diff = new Texture(&cPath, Texture::WrapMode::CLAMP);
+	Texture* mat2Diff = new Texture(&cPath, Texture::SampleMode::UV, Texture::WrapMode::CLAMP);
 	Texture* mat2Nrm = new Texture(Color32((uint8_t)255, 127, 127, 255));
 	Material* mat2 = new Material
 	(
 		mat2Diff,
 		mat2Nrm,
-		Color32(0xFF00FF00),
-		Color32(0xFF00FF00),
 		Color32(0xFFFFFFFF),
-		5.0f
+		Color32(0xFFFFFFFF),
+		Color32(0xFFFFFFFF),
+		30.0f
 	);
 	_materials.push_back(mat2);
 
@@ -78,16 +78,17 @@ void SceneMeshes::InitializeScene()
 		Color32(0xFFFFFFFF),
 		Color32(0xFFFFFFFF),
 		Color32(0xFFFFFFFF),
-		55.0f
+		60.0f
 	);
 	_materials.push_back(mat3);
 
 	// meshes
 
 	math::Float3 cPos(0.0f, 1.0f, 0.0f);
-	math::Float3 cRot(0.0f, 180.0f, 0.0f);
+	math::Float3 cRot(0.0f, 90.0f, 0.0f);
 	math::Float3 cScl(2.0f, 2.0f, 2.0f);
-	cPath = "monkey";
+	//cPath = "monkey";
+	cPath = "sphere";
 	Mesh* m1 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
 	m1->SetMaterialPtr(mat1);
 	_primitives.push_back(m1);
@@ -123,13 +124,13 @@ void SceneMeshes::InitializeScene()
 	cScl = math::Float3(1.0f, 1.0f, 1.0f);
 	cRot = math::Float3(0.0f, 50.0f, 0.0f);
 	Mesh* m6 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
-	m6->SetMaterialPtr(mat1);
+	m6->SetMaterialPtr(mat2);
 	_primitives.push_back(m6);
 
 	cPos = math::Float3(3.0f, 0.0f, 4.0f);
 	cRot = math::Float3(0.0f, 0.0f, 0.0f);
 	Mesh* m7 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
-	m7->SetMaterialPtr(mat1);
+	m7->SetMaterialPtr(mat2);
 	_primitives.push_back(m7);
 
 	// lights
