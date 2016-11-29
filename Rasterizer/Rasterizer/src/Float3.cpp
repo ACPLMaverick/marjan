@@ -55,6 +55,11 @@ namespace math
 		return (f1.x * f2.x + f1.y * f2.y + f1.z * f2.z);
 	}
 
+	Float3 Float3::SqrtComponentWise(const Float3 & f)
+	{
+		return Float3(sqrt(f.x), sqrt(f.y), sqrt(f.z));
+	}
+
 	Float3 Float3::Cross(const Float3 & f1, const Float3 & f2)
 	{
 		return Float3(f1.y * f2.z - f1.z * f2.y, f1.z * f2.x - f1.x * f2.z, f1.x * f2.y - f1.y * f2.x);
@@ -63,6 +68,18 @@ namespace math
 	Float3 Float3::Reflect(const Float3 & left, const Float3 & normal)
 	{
 		return left - (normal * 2.0f * Dot(left, normal));
+	}
+
+	Float3 Float3::Refract(const Float3 & dir, const Float3 & normal, const float coeff)
+	{
+		float coeffR = 1.0f / coeff;
+		float dot = Dot(dir, normal);
+		Float3 refracted( 
+			(dir - normal * dot * coeffR) - 
+			( normal * SqrtComponentWise( Float3(1.0f, 1.0f, 1.0f) - ( (1.0f - dot * dot) * coeffR * coeffR) ) )
+			);
+		Normalize(refracted);
+		return refracted;
 	}
 
 	Float3 Float3::Lerp(const Float3& a, const Float3 & b, float f)

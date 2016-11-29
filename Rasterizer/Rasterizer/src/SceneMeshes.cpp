@@ -61,10 +61,10 @@ void SceneMeshes::InitializeScene()
 	(
 		mat2Diff,
 		mat2Nrm,
-		Color32(0xFF00FF00),
-		Color32(0xFF00FF00),
 		Color32(0xFFFFFFFF),
-		5.0f
+		Color32(0xFFFFFFFF),
+		Color32(0xFFFFFFFF),
+		30.0f
 	);
 	_materials.push_back(mat2);
 
@@ -78,14 +78,14 @@ void SceneMeshes::InitializeScene()
 		Color32(0xFFFFFFFF),
 		Color32(0xFFFFFFFF),
 		Color32(0xFFFFFFFF),
-		55.0f
+		60.0f
 	);
 	_materials.push_back(mat3);
 
 	// meshes
 
 	math::Float3 cPos(0.0f, 1.0f, 0.0f);
-	math::Float3 cRot(0.0f, 180.0f, 0.0f);
+	math::Float3 cRot(0.0f, 90.0f, 0.0f);
 	math::Float3 cScl(2.0f, 2.0f, 2.0f);
 	//cPath = "monkey";
 	cPath = "sphere";
@@ -124,13 +124,13 @@ void SceneMeshes::InitializeScene()
 	cScl = math::Float3(1.0f, 1.0f, 1.0f);
 	cRot = math::Float3(0.0f, 50.0f, 0.0f);
 	Mesh* m6 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
-	m6->SetMaterialPtr(mat1);
+	m6->SetMaterialPtr(mat2);
 	_primitives.push_back(m6);
 
 	cPos = math::Float3(3.0f, 0.0f, 4.0f);
 	cRot = math::Float3(0.0f, 0.0f, 0.0f);
 	Mesh* m7 = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
-	m7->SetMaterialPtr(mat1);
+	m7->SetMaterialPtr(mat2);
 	_primitives.push_back(m7);
 
 	// lights

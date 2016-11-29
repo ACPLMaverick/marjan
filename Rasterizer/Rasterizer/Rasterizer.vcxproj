@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\SceneCornel.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\light\LightPoint.cpp" />
     <ClCompile Include="src\rendererFGK\MeshFGK.cpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="src\rendererFGK\TriangleFGK.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SceneCornel.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\light\LightPoint.h" />
     <ClInclude Include="src\rendererFGK\MeshFGK.h" />

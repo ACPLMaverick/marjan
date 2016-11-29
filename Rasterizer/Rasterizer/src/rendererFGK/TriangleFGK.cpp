@@ -70,6 +70,16 @@ namespace rendererFGK
 				}
 				else
 				{
+					// ray distance check
+
+					if (ray.GetMaxDistance() != 0.0f)
+					{
+						if (math::Float3::LengthSquared(rayHit.point - ray.GetOrigin()) > ray.GetMaxDistanceSquared())
+						{
+							return RayHit();
+						}
+					}
+
 					// calculate interpolated normal and uv
 					rayHit.normal = c2 * rayHit.barycentric.x + c3 * rayHit.barycentric.y + c1 * rayHit.barycentric.z;
 					math::Float3::Normalize(rayHit.normal);

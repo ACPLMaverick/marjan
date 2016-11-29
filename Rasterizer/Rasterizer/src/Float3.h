@@ -209,9 +209,10 @@ namespace math
 		static float Length(const Float3& f);
 		static float LengthSquared(const Float3& f);
 		static float Dot(const Float3& f1, const Float3& f2);
+		static Float3 SqrtComponentWise(const Float3& f);
 		static Float3 Cross(const Float3& f1, const Float3& f2);
-		
 		static Float3 Reflect(const Float3& left, const Float3& normal);
+		static Float3 Refract(const Float3& dir, const Float3& normal, const float coeff);
 		static Float3 Lerp(const Float3& a, const Float3 & b, float f);
 	};
 }

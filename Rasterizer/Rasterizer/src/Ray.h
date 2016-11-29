@@ -4,7 +4,6 @@
 
 struct RayHit
 {
-	bool hit;
 	math::Float3 point;
 
 	/// <summary>
@@ -18,6 +17,7 @@ struct RayHit
 	/// This is for teting
 	/// </summary>
 	int debugFlag = 0;
+	bool hit;
 
 	RayHit() :
 		hit(false),
@@ -31,23 +31,26 @@ struct RayHit
 	RayHit(bool isHit, math::Float3& p) :
 		barycentric(math::Float3()),
 		normal(math::Float3(0.0f, 1.0f, 0.0f)),
-		uv(math::Float2())
+		uv(math::Float2()),
+		hit(isHit),
+		point(p)
 	{
-		this->hit = isHit;
-		this->point = p;
+
 	}
 
 	RayHit(bool isHit, 
+		float maxDist,
 		math::Float3& p, 
 		math::Float3& bar,
 		math::Float3& nrm,
-		math::Float2& uvv)
+		math::Float2& uvv) :
+		hit(isHit),
+		point(p),
+		barycentric(bar),
+		normal(nrm),
+		uv(uvv)
 	{
-		this->hit = isHit;
-		this->point = p;
-		this->barycentric = bar;
-		this->normal = nrm;
-		this->uv = uv;
+
 	}
 };
 
@@ -57,12 +60,14 @@ protected:
 	math::Float3 _origin;
 	math::Float3 _dir;
 
-	float _distance;
+	float _maxDistance;
 
 public:
 	Ray();
-	Ray(const math::Float3& s, const math::Float3& dir);
+	Ray(const math::Float3& s, const math::Float3& dir, float maxDistance = 0.0f);
 
 	math::Float3 GetOrigin();
 	math::Float3 GetDirection();
+	float GetMaxDistance();
+	float GetMaxDistanceSquared();
 };
