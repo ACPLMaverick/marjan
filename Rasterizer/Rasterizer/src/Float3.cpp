@@ -76,7 +76,7 @@ namespace math
 		float dot = Dot(dir, normal);
 		Float3 refracted( 
 			(dir - normal * dot * coeffR) - 
-			( normal * SqrtComponentWise( Float3(1.0f, 1.0f, 1.0f) - ( (1.0f - dot * dot) * coeffR * coeffR) ) )
+			( normal * sqrt( 1.0f - ( (1.0f - dot * dot) * coeffR * coeffR) ) )
 			);
 		Normalize(refracted);
 		return refracted;
