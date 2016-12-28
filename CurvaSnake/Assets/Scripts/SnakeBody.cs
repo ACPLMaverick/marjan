@@ -97,6 +97,7 @@ public class SnakeBody : MonoBehaviour
             SnakeHead head = coll.GetComponent<SnakeHead>();
             if (head != Previous)
             {
+                Head.RegisterCollision(this);
                 Head.BodyPartCleanup();
                 Kill();
             }
@@ -106,12 +107,14 @@ public class SnakeBody : MonoBehaviour
             SnakeBody body = coll.GetComponent<SnakeBody>();
             if(body != Previous && body != Next)
             {
+                Head.RegisterCollision(this);
                 Head.BodyPartCleanup();
                 Kill();
             }
         }
         else
         {
+            Head.RegisterCollision(this);
             Head.BodyPartCleanup();
             Kill();
         }

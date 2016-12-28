@@ -1,12 +1,29 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 public class GameController : MonoBehaviour
 {
+    #region Enums
+
+    public enum NetworkMode
+    {
+        Server,
+        Client
+    }
+
+    #endregion
+
     #region Fields
 
     [SerializeField]
-    protected List<Player> _Players;
+    protected GameObject _ServerPrefab;
+
+    [SerializeField]
+    protected NetworkMode _NetworkMode;
+
+    [SerializeField]
+    protected PlayerLocal _LocalPlayer;
 
     [SerializeField]
     protected List<GameObject> _FruitPrefabs;
@@ -31,19 +48,34 @@ public class GameController : MonoBehaviour
 
     #region Properties
 
-    public GameController Instance { get; private set; }
+    public static GameController Instance { get; private set; }
+    
+    public int ServerAddress { get { return _serverAddress; } }
 
     #endregion
 
     #region Protected
 
+    protected Network.Server _localServer;
+
+     /** 
+     * Every game has its own network client. 
+     * Here a server login is performed, ID is obtained from server
+     * And listening on game state change is performed.
+     */
+    protected Network.Client _gameClient;
+
+    protected int _serverAddress = Network.Server.SERVER_ADDRESS_LOCAL;
+
     protected Transform _fruitAreaMin;
     protected Transform _fruitAreaMax;
 
+    protected List<Player> _Players = new List<Player>();
     protected List<Player> _playersInGame = new List<Player>();
     protected List<Fruit> _fruitsOnLevel = new List<Fruit>();
     protected float _currentDelay = 0.0f;
     protected float _delayTimer = 0.0f;
+    protected bool _canEnableLocalPlayer = false;
 
     #endregion
 
@@ -59,11 +91,17 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        for(int i = 0; i < _Players.Count; ++i)
+        if(_NetworkMode == NetworkMode.Server)
         {
-            _Players[i].EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
-            _playersInGame.Add(_Players[i]);
+            GameObject srv = Instantiate(_ServerPrefab);
+            srv.transform.parent = transform;
+            _localServer = srv.GetComponent<Network.Server>();
         }
+
+        _gameClient = new Network.Client();
+        _gameClient.Connect(CallbackOnClientConnected);
+
+        _LocalPlayer.enabled = false;
     }
 
     // Update is called once per frame
@@ -75,13 +113,18 @@ public class GameController : MonoBehaviour
             if(_delayTimer <= 0.0f) // generate new fruit now
             {
                 GenerateNewFruit();
-                _currentDelay = Random.Range(_FruitGenerateDelayMin, _FruitGenerateDelayMax);
+                _currentDelay = UnityEngine.Random.Range(_FruitGenerateDelayMin, _FruitGenerateDelayMax);
                 _delayTimer = _currentDelay;
             }
             else // decrement the timer
             {
                 _delayTimer -= Time.deltaTime;
             }
+        }
+
+        if(_canEnableLocalPlayer && !_LocalPlayer.enabled)
+        {
+            _LocalPlayer.enabled = true;
         }
     }
 
@@ -111,7 +154,7 @@ public class GameController : MonoBehaviour
     protected void OnFruitCollected(Fruit fruit)
     {
         _fruitsOnLevel.Remove(fruit);
-        _currentDelay = Random.Range(_FruitGenerateDelayMin, _FruitGenerateDelayMax);
+        _currentDelay = UnityEngine.Random.Range(_FruitGenerateDelayMin, _FruitGenerateDelayMax);
         _delayTimer = _currentDelay;
     }
 
@@ -130,18 +173,47 @@ public class GameController : MonoBehaviour
 
     protected void GenerateNewFruit()
     {
-        int n = Random.Range(0, _FruitPrefabs.Count - 1);
+        int n = UnityEngine.Random.Range(0, _FruitPrefabs.Count - 1);
         GameObject newFruitObject = Instantiate(_FruitPrefabs[n]);
         newFruitObject.GetComponent<Transform>().position = new Vector3
             (
-                Random.Range(_fruitAreaMin.position.x, _fruitAreaMax.position.x),
-                Random.Range(_fruitAreaMin.position.y, _fruitAreaMax.position.y),
-                Random.Range(_fruitAreaMin.position.z, _fruitAreaMax.position.z)
+                UnityEngine.Random.Range(_fruitAreaMin.position.x, _fruitAreaMax.position.x),
+                UnityEngine.Random.Range(_fruitAreaMin.position.y, _fruitAreaMax.position.y),
+                UnityEngine.Random.Range(_fruitAreaMin.position.z, _fruitAreaMax.position.z)
             );
         Fruit fr = newFruitObject.GetComponent<Fruit>();
         fr.EventCollected.AddListener(new UnityEngine.Events.UnityAction<Fruit>(OnFruitCollected));
         _fruitsOnLevel.Add(fr);
     }
+
+    #region NetworkRelated
+
+    protected void CallbackOnClientConnected(IAsyncResult result)
+    {
+        _LocalPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
+        _LocalPlayer.Initialize((int)result.AsyncState, _gameClient);
+        _playersInGame.Add(_LocalPlayer);
+        _Players.Add(_LocalPlayer);
+
+        _canEnableLocalPlayer = true;
+    }
+
+    protected void CallbackOnClientDataSent(IAsyncResult result)
+    {
+
+    }
+
+    protected void CallbackOnAnotherPlayerConnected(IAsyncResult result)
+    {
+
+    }
+
+    protected void CallbackOnAnotherPlayerDisconnected(IAsyncResult result)
+    {
+
+    }
+
+    #endregion
 
     #endregion
 }
