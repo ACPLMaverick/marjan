@@ -46,7 +46,7 @@ namespace Network
         /**
          * Converts PlayerData to byte array which can by sent by network.
          */ 
-        public void ToByteArray(ref byte[] bytes)
+        public void ToByteArray(ref byte[] bytes, int offset = 0)
         {
             byte[] bPlayerID = BitConverter.GetBytes(PlayerID);
             byte[] bPoints = BitConverter.GetBytes(Points);
@@ -54,7 +54,6 @@ namespace Network
             byte[] bPartsCountBent = BitConverter.GetBytes(PartsBendsCount);
             byte[] bColl = BitConverter.GetBytes(CollisionAtPart);
 
-            int offset = 0;
             for (int i = 0; i < bPlayerID.Length; ++i, ++offset)
             {
                 bytes[offset] = bPlayerID[i];
@@ -119,11 +118,10 @@ namespace Network
         /**
          * Converts byte array to PlayerData object.
          */
-        public static PlayerData FromByteArray(byte[] bytes)
+        public static PlayerData FromByteArray(byte[] bytes, int offset = 0)
         {
             PlayerData data = new PlayerData();
 
-            int offset = 0;
             data.PlayerID = BitConverter.ToInt32(bytes, offset);
             offset += sizeof(int);
             data.Points = BitConverter.ToInt32(bytes, offset);

@@ -20,6 +20,12 @@ public class GameController : MonoBehaviour
     protected GameObject _ServerPrefab;
 
     [SerializeField]
+    protected GameObject _ClientPrefab;
+
+    [SerializeField]
+    protected string _ServerAddress;
+
+    [SerializeField]
     protected NetworkMode _NetworkMode;
 
     [SerializeField]
@@ -49,8 +55,6 @@ public class GameController : MonoBehaviour
     #region Properties
 
     public static GameController Instance { get; private set; }
-    
-    public int ServerAddress { get { return _serverAddress; } }
 
     #endregion
 
@@ -64,8 +68,6 @@ public class GameController : MonoBehaviour
      * And listening on game state change is performed.
      */
     protected Network.Client _gameClient;
-
-    protected int _serverAddress = Network.Server.SERVER_ADDRESS_LOCAL;
 
     protected Transform _fruitAreaMin;
     protected Transform _fruitAreaMax;
@@ -98,7 +100,11 @@ public class GameController : MonoBehaviour
             _localServer = srv.GetComponent<Network.Server>();
         }
 
-        _gameClient = new Network.Client();
+        _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
+        _gameClient.gameObject.transform.parent = transform;
+        _gameClient.SetServerAddress(_ServerAddress);
+        _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
+        _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
         _gameClient.Connect(CallbackOnClientConnected);
 
         _LocalPlayer.enabled = false;
@@ -188,10 +194,10 @@ public class GameController : MonoBehaviour
 
     #region NetworkRelated
 
-    protected void CallbackOnClientConnected(IAsyncResult result)
+    protected void CallbackOnClientConnected(int id)
     {
         _LocalPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
-        _LocalPlayer.Initialize((int)result.AsyncState, _gameClient);
+        _LocalPlayer.Initialize(id, _gameClient);
         _playersInGame.Add(_LocalPlayer);
         _Players.Add(_LocalPlayer);
 
@@ -203,12 +209,12 @@ public class GameController : MonoBehaviour
 
     }
 
-    protected void CallbackOnAnotherPlayerConnected(IAsyncResult result)
+    protected void CallbackOnAnotherPlayerConnected(int id)
     {
 
     }
 
-    protected void CallbackOnAnotherPlayerDisconnected(IAsyncResult result)
+    protected void CallbackOnAnotherPlayerDisconnected(int id)
     {
 
     }

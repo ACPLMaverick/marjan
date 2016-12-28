@@ -71,7 +71,10 @@ public class PlayerLocal : Player
     {
         base.OnPositionChanged();
 
-
+        if(_gameClient != null)
+        {
+            _gameClient.SendDataToServer(MyID, GetPlayerData(), null);
+        }
     }
 
     #endregion
