@@ -114,7 +114,7 @@ namespace Network
         {
             _sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             _sendEndPoint = new IPEndPoint(_serverAddress, Server.PORT_LISTEN);
-            _sendSocket.Bind(_sendEndPoint);
+            //_sendSocket.Bind(_sendEndPoint);
 
             _afterConnectingAction = callback;
 
@@ -123,7 +123,7 @@ namespace Network
             SendPacket(connectPck);
 
             _receiveSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            _receiveEndPoint = new IPEndPoint(_serverAddress, Server.PORT_SEND);
+            _receiveEndPoint = new IPEndPoint(IPAddress.Any, CLIENT_PORT_LISTEN);
             _receiveSocket.Bind(_receiveEndPoint);
             _receiveSocket.BeginReceiveFrom(_receiveData, 0, Server.MAX_PACKET_SIZE, SocketFlags.None, ref _receiveEndPoint, CbListener, this);
         }
@@ -142,9 +142,9 @@ namespace Network
 
         #region Functions Protected
 
-        protected override bool ReceivePacket(IAsyncResult data, Packet pck)
+        protected override bool ReceivePacket(IAsyncResult data, Packet pck, IPEndPoint remoteEndPoint)
         {
-            if(!base.ReceivePacket(data, pck))
+            if(!base.ReceivePacket(data, pck, remoteEndPoint))
             {
                 return false;
             }

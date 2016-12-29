@@ -30,19 +30,17 @@ namespace Network
 
         protected struct PlayerConnectionInfo
         {
-            public readonly IPAddress Address;
             public readonly Socket Socket;
             public readonly IPEndPoint EndP;
 
-            public PlayerConnectionInfo(IPAddress ipa, Socket sck, IPEndPoint ep)
+            public PlayerConnectionInfo(Socket sck, IPEndPoint ep)
             {
-                Address = ipa;
                 Socket = sck;
                 EndP = ep;
             }
         }
 
-        protected Dictionary<int, PlayerConnectionInfo> _players;
+        protected Dictionary<int, PlayerConnectionInfo> _players = new Dictionary<int, PlayerConnectionInfo>();
 
         #endregion
 
@@ -70,9 +68,9 @@ namespace Network
 
         #region Functions Protected
 
-        protected override bool ReceivePacket(IAsyncResult data, Packet pck)
+        protected override bool ReceivePacket(IAsyncResult data, Packet pck, IPEndPoint remoteEndPoint)
         {
-            if(!base.ReceivePacket(data, pck))
+            if(!base.ReceivePacket(data, pck, remoteEndPoint))
             {
                 return false;
             }
@@ -80,10 +78,30 @@ namespace Network
             // login new player
             if(pck.RawData[0] == SYMBOL_LOG)
             {
+                // check if player already connected
+                foreach(KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+                {
+                    if(pair.Value.EndP.Address.Equals(remoteEndPoint.Address))
+                    {
+                        return false;
+                    }
+                }
+
                 int newId = _players.Count + 1;
-                //_players.Add(newId);
-                
-                
+
+                Socket pSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                remoteEndPoint.Port = Client.CLIENT_PORT_LISTEN;
+                PlayerConnectionInfo pcinfo = new PlayerConnectionInfo(pSocket, remoteEndPoint);
+                _players.Add(newId, pcinfo);
+
+                Packet packet = new Packet();
+                packet.ControlSymbol = SYMBOL_ACK;
+                packet.PacketID = pck.PacketID;
+                packet.AdditionalData = new byte[sizeof(int)];
+
+                Array.Copy(BitConverter.GetBytes(newId), packet.AdditionalData, sizeof(int));
+
+                SendPacket(packet, pcinfo.Socket, pcinfo.EndP, true);
             }
 
             return true;

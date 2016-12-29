@@ -23,13 +23,17 @@ namespace Network
             public float Timer;
             public int RetryTimes;
             public readonly Packet Pck;
+            public readonly Socket Sck;
+            public readonly EndPoint Ep;
 
-            public PacketData(float ts, Packet pa)
+            public PacketData(float ts, Packet pa, Socket sck, EndPoint ep)
             {
                 TimeStamp = ts;
                 Timer = 0.0f;
                 RetryTimes = 0;
                 Pck = pa;
+                Sck = sck;
+                Ep = ep;
             }
         }
 
@@ -80,7 +84,7 @@ namespace Network
                 }
                 else if(_packetsSent[i].Timer > MAX_SEND_PACKET_WAIT)
                 {
-                    SendPacket(_packetsSent[i].Pck, true);
+                    SendPacket(_packetsSent[i].Pck, _packetsSent[i].Sck, _packetsSent[i].Ep, true);
                     ++_packetsSent[i].RetryTimes;
                 }
                 else
@@ -105,25 +109,30 @@ namespace Network
 
         }
 
-        protected virtual void SendPacket(Packet packet, bool retrying = false)
+        protected virtual void SendPacket(Packet packet, bool noAck = false)
+        {
+            SendPacket(packet, _sendSocket, _sendEndPoint, noAck);
+        }
+
+        protected virtual void SendPacket(Packet packet, Socket sck, EndPoint ep, bool noAck = false)
         {
             packet.CreateRawData();
-            int sent = _sendSocket.SendTo(packet.RawData, _sendEndPoint);
+            int sent = sck.SendTo(packet.RawData, ep);
 
-            if(!retrying)
+            if (!noAck)
             {
-                _packetsSent.Add(new PacketData(Time.time, packet));
+                _packetsSent.Add(new PacketData(GameController.TimeSeconds, packet, sck, ep));
             }
         }
 
-        protected virtual void ListenerInternal(IAsyncResult data)
+        protected virtual void ListenerInternal(IAsyncResult data, IPEndPoint remoteEndPoint)
         {
             // set up packet from received data
             Packet packet = Packet.FromRawData(_receiveData);
-            ReceivePacket(data, packet);
+            ReceivePacket(data, packet, remoteEndPoint);
         }
 
-        protected virtual bool ReceivePacket(IAsyncResult data, Packet pck)
+        protected virtual bool ReceivePacket(IAsyncResult data, Packet pck, IPEndPoint remoteEndPoint)
         {
             if(!pck.CheckDataIntegrity())
             {
@@ -136,7 +145,7 @@ namespace Network
                 int snum = _packetsSent.Count;
                 for(int i = 0; i < snum; ++i)
                 {
-                    if(_packetsSent[i].Pck.PacketID == BitConverter.ToInt32(pck.RawData, 1))
+                    if(_packetsSent[i].Pck.PacketID == pck.PacketID)
                     {
                         _packetsSent.RemoveAt(i);
                         break;
@@ -158,23 +167,18 @@ namespace Network
 
         protected void CbListener(IAsyncResult data)
         {
-            Debug.Log("Derp.");
             EndPoint remoteEndPoint = new IPEndPoint(0, 0);
             try
             {
                 int bytesRead = _receiveSocket.EndReceiveFrom(data, ref remoteEndPoint);
 
-                ListenerInternal(data);
+                ListenerInternal(data, (IPEndPoint)remoteEndPoint);
 
                 _receiveSocket.BeginReceiveFrom(_receiveData, 0, Server.MAX_PACKET_SIZE, SocketFlags.None, ref _receiveEndPoint, CbListener, this);
-
-                Debug.LogFormat("ServerListener: Recieved {0} bytes.", bytesRead);
-
             }
             catch (SocketException e)
             {
                 _receiveSocket.EndReceiveFrom(data, ref remoteEndPoint);
-                Debug.LogFormat("ServerListener: {0} {1}", e.ErrorCode, e.Message);
             }
         }
 

@@ -55,6 +55,7 @@ public class GameController : MonoBehaviour
     #region Properties
 
     public static GameController Instance { get; private set; }
+    public static float TimeSeconds { get; protected set; }
 
     #endregion
 
@@ -132,6 +133,8 @@ public class GameController : MonoBehaviour
         {
             _LocalPlayer.enabled = true;
         }
+
+        TimeSeconds = Time.time;
     }
 
     #endregion
