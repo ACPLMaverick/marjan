@@ -108,8 +108,6 @@ public class GameController : MonoBehaviour
         _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
         _gameClient.gameObject.transform.parent = transform;
         _gameClient.SetServerAddress(_ServerAddress);
-        _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
-        _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
         _gameClient.Connect(CallbackOnClientConnected);
 
         _LocalPlayer.enabled = false;
@@ -215,6 +213,10 @@ public class GameController : MonoBehaviour
 
     protected void CallbackOnClientConnected(int id)
     {
+        _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
+        _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
+        _gameClient.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
+
         _LocalPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
         _LocalPlayer.Initialize(id, _gameClient);
         _playersInGame.Add(_LocalPlayer);
@@ -223,19 +225,26 @@ public class GameController : MonoBehaviour
         _canEnableLocalPlayer = true;
     }
 
-    protected void CallbackOnClientDataSent(IAsyncResult result)
+    protected void CallbackOnClientDataReceived(int playerID, Network.PlayerData data)
     {
-
+        int playerCount = _playersInGame.Count;
+        for(int i = 0; i < playerCount; ++i)
+        {
+            if(_playersInGame[i].MyID == playerID)
+            {
+                _playersInGame[i].UpdateFromPlayerData(data);
+            }
+        }
     }
 
     protected void CallbackOnAnotherPlayerConnected(int id)
     {
-
+        Debug.Log("Player connected with ID " + id.ToString());
     }
 
     protected void CallbackOnAnotherPlayerDisconnected(int id)
     {
-
+        Debug.Log("Player disconnected with ID " + id.ToString());
     }
 
     #endregion

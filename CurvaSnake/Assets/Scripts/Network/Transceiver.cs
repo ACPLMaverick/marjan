@@ -10,6 +10,12 @@ namespace Network
     {
         #region Public
 
+        public const int MAX_PACKET_SIZE = 1280;
+        public const byte SYMBOL_LOG = 0x96;
+        public const byte SYMBOL_DTA = 0x69;
+        public const byte SYMBOL_ACK = 0x6;
+        public const byte SYMBOL_NAK = 0x15;
+
         public const float MAX_SEND_PACKET_WAIT = 0.1f;
         public const int MAX_SEND_PACKET_RETRY_TIMES = 100;
 
@@ -140,7 +146,7 @@ namespace Network
             }
 
             // check for acks for sent packets
-            if(pck.RawData[0] == Server.SYMBOL_ACK)
+            if(pck.RawData[0] == SYMBOL_ACK)
             {
                 int snum = _packetsSent.Count;
                 for(int i = 0; i < snum; ++i)
@@ -156,9 +162,24 @@ namespace Network
             return true;
         }
 
-        protected virtual bool ReceivePlayerData(List<Packet> packets)
+        protected int GetPlayerIDFromPacket(Packet pck)
         {
-            return true;
+            return pck.PacketID & 0x000000FF;
+        }
+
+        protected void AckPacket(Packet pck, Socket sck, EndPoint ep, byte[] dataToSend)
+        {
+            Packet packet = new Packet();
+            packet.ControlSymbol = SYMBOL_ACK;
+            packet.PacketID = pck.PacketID;
+
+            if (dataToSend != null)
+            {
+                packet.AdditionalData = new byte[dataToSend.Length];
+                Array.Copy(dataToSend, packet.AdditionalData, dataToSend.Length);
+            }
+
+            SendPacket(packet, sck, ep, true);
         }
 
         #endregion

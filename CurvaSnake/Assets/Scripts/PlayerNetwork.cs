@@ -28,6 +28,7 @@ public class PlayerNetwork : Player
         base.UpdateFromPlayerData(data);
 
         // sets all body parts positions according to player data
+        ApplyDirectlyPlayerData(data);
     }
 
     #endregion

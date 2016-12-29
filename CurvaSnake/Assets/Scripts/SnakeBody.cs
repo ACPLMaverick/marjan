@@ -29,7 +29,7 @@ public class SnakeBody : MonoBehaviour
     #region Properties
 
     public Player MyPlayer { get; protected set; }
-    public Vector2 Direction { get; protected set; }
+    public Vector2 Direction { get; set; }
     public SnakeHead Head { get; protected set; }
 
     /// <summary>

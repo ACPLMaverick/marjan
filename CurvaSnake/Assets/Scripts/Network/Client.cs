@@ -67,6 +67,7 @@ namespace Network
         #region Events
         
         public class ClientEventPlayerID : UnityEvent<int> { }
+        public class ClientEventPlayerIDData : UnityEvent<int, PlayerData> { }
         /**
          * Used to notify Game Controller that a new player has connected to the server and it needs to
          * instantiate him locally.
@@ -79,6 +80,8 @@ namespace Network
          * Arg - player ID
          */
         public ClientEventPlayerID EventPlayerDisconnected = new ClientEventPlayerID();
+
+        public ClientEventPlayerIDData EventPlayerDataReceived = new ClientEventPlayerIDData();
 
         #endregion
 
@@ -119,7 +122,7 @@ namespace Network
             _afterConnectingAction = callback;
 
             Packet connectPck = new Packet();
-            connectPck.ControlSymbol = Server.SYMBOL_LOG;
+            connectPck.ControlSymbol = SYMBOL_LOG;
             SendPacket(connectPck);
 
             _receiveSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -136,7 +139,7 @@ namespace Network
         public void SendDataToServer(PlayerData data)
         {
             Packet packet = new Packet();
-            packet.ControlSymbol = Server.SYMBOL_DTA;
+            packet.ControlSymbol = SYMBOL_DTA;
             packet.PData = data;
             SendPacket(packet);
         }
@@ -152,8 +155,16 @@ namespace Network
                 return false;
             }
 
+            // process received data
+            if(pck.ControlSymbol == SYMBOL_DTA)
+            {
+                AckPacket(pck, _sendSocket, _sendEndPoint, null);
+                Debug.Log("Data received.");
+                EventPlayerDataReceived.Invoke(GetPlayerIDFromPacket(pck), pck.PData);
+            }
+
             // check for connection ACK
-            if (!_connected && pck.RawData[0] == Server.SYMBOL_ACK)
+            if (!_connected && pck.ControlSymbol == SYMBOL_ACK)
             {
                 ConnectAfterAck(BitConverter.ToInt32(pck.AdditionalData, 0));
             }

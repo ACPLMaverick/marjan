@@ -126,7 +126,7 @@ public class Player : MonoBehaviour
 
     protected void ApplyDirectlyPlayerData(Network.PlayerData data)
     {
-
+        _MySnakeHead.SetPositionsAndDirectionsForAllParts(data.PartsCount, data.PartsBentPositions, data.PartsBentDirections);
     }
 
     protected virtual void OnPositionChanged()

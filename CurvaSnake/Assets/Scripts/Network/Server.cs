@@ -14,11 +14,6 @@ namespace Network
         public const float PLAYER_TIMEOUT_SECONDS = 5.0f;
         public const int PORT_SEND = 2301;
         public const int PORT_LISTEN = 2302;
-        public const int MAX_PACKET_SIZE = 1280;
-        public const byte SYMBOL_LOG = 0x96;
-        public const byte SYMBOL_DTA = 0x69;
-        public const byte SYMBOL_ACK = 0x6;
-        public const byte SYMBOL_NAK = 0x15;
 
         #endregion
 
@@ -32,7 +27,9 @@ namespace Network
         {
             public readonly Socket Socket;
             public readonly IPEndPoint EndP;
-            public PlayerData LastData;
+            public PlayerData NewestData;
+            public PlayerData PreviousData;
+            public bool NeedToMulticast;
 
             public PlayerConnectionInfo(Socket sck, IPEndPoint ep)
             {
@@ -63,6 +60,15 @@ namespace Network
         protected override void Update()
         {
             base.Update();
+
+            foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+            {
+                if (pair.Value.NeedToMulticast)
+                {
+                    pair.Value.NeedToMulticast = false;
+                    MulticastPlayerData(pair.Key, pair.Value.NewestData);
+                }
+            }
         }
 
         #endregion
@@ -79,14 +85,17 @@ namespace Network
             // process sent player data
             if(pck.ControlSymbol == SYMBOL_DTA)
             {
-                Debug.Log("DTA");
                 int playerID = GetPlayerIDFromPacket(pck);
                 PlayerConnectionInfo info;
                 _players.TryGetValue(playerID, out info);
 
                 if(info != null)
                 {
-                    AckPacket(pck, info, null);
+                    AckPacket(pck, info.Socket, info.EndP, null);
+
+                    info.PreviousData = info.NewestData;
+                    info.NewestData = pck.PData;
+                    info.NeedToMulticast = true;
                 }
                 else
                 {
@@ -113,30 +122,25 @@ namespace Network
                 PlayerConnectionInfo pcinfo = new PlayerConnectionInfo(pSocket, remoteEndPoint);
                 _players.Add(newId, pcinfo);
 
-                AckPacket(pck, pcinfo, BitConverter.GetBytes(newId));
+                AckPacket(pck, pcinfo.Socket, pcinfo.EndP, BitConverter.GetBytes(newId));
             }
 
             return true;
         }
 
-        protected void AckPacket(Packet pck, PlayerConnectionInfo player, byte[] dataToSend)
+        protected void MulticastPlayerData(int playerID, PlayerData data)
         {
             Packet packet = new Packet();
-            packet.ControlSymbol = SYMBOL_ACK;
-            packet.PacketID = pck.PacketID;
+            packet.ControlSymbol = SYMBOL_DTA;
+            packet.PData = data;
 
-            if (dataToSend != null)
+            foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
             {
-                packet.AdditionalData = new byte[dataToSend.Length];
-                Array.Copy(dataToSend, packet.AdditionalData, dataToSend.Length);
+                if (pair.Key == playerID)
+                    continue;
+
+                SendPacket(packet, pair.Value.Socket, pair.Value.EndP);
             }
-
-            SendPacket(packet, player.Socket, player.EndP, true);
-        }
-
-        protected int GetPlayerIDFromPacket(Packet pck)
-        {
-            return pck.PacketID & 0x000000FF;
         }
 
         #endregion
