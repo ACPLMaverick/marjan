@@ -40,14 +40,6 @@ public class PlayerLocal : Player
         _gameClient = clientRef;
     }
 
-    public override void UpdateFromPlayerData(Network.PlayerData data)
-    {
-        base.UpdateFromPlayerData(data);
-
-        // sets all body parts positions according to player data
-        ApplyDirectlyPlayerData(data);
-    }
-
     #endregion
 
     #region Functions Protected

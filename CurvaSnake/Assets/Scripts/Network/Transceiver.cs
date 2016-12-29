@@ -16,8 +16,8 @@ namespace Network
         public const byte SYMBOL_ACK = 0x6;
         public const byte SYMBOL_NAK = 0x15;
 
-        public const float MAX_SEND_PACKET_WAIT = 0.1f;
-        public const int MAX_SEND_PACKET_RETRY_TIMES = 100;
+        public const float MAX_SEND_PACKET_WAIT = 0.2f;
+        public const int MAX_SEND_PACKET_RETRY_TIMES = 10;
 
         #endregion
 
@@ -126,7 +126,7 @@ namespace Network
 
             if (!noAck)
             {
-                _packetsSent.Add(new PacketData(GameController.TimeSeconds, packet, sck, ep));
+                //_packetsSent.Add(new PacketData(GameController.TimeSeconds, packet, sck, ep));
             }
         }
 

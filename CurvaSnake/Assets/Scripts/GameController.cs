@@ -113,9 +113,9 @@ public class GameController : MonoBehaviour
 
         _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
         _gameClient.gameObject.transform.parent = transform;
-        _gameClient.SetServerAddress(_ServerAddress);
+        _gameClient.SetServerAddress(_ServerAddress, 2333);
         _gameClient.Connect(CallbackOnClientConnected);
-        /*
+
          //network players for tetin
         foreach(Player pl in _Players)
         {
@@ -133,8 +133,8 @@ public class GameController : MonoBehaviour
             pl.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
             pl.Initialize(2);
         }
-        */
-        _Players.Add(_LocalPlayer);
+
+        //_Players.Add(_LocalPlayer);
         _LocalPlayer.gameObject.SetActive(false);
 
     }
@@ -276,11 +276,11 @@ public class GameController : MonoBehaviour
         int playerCount = _playersInGame.Count;
         for (int i = 0; i < playerCount; ++i)
         {
-            if (_playersInGame[i].MyID == playerID)
-            {
-                _playersInGame[i].UpdateFromPlayerData(data);
-                break;
-            }
+            //if (_playersInGame[i].MyID == playerID)
+            //{
+            //    _playersInGame[i].UpdateFromPlayerData(data);
+            //    break;
+            //}
 
             _playersInGame[i].UpdateFromPlayerData(data);
         }

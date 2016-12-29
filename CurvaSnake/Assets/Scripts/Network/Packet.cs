@@ -9,7 +9,7 @@ namespace Network
 {
     public class Packet
     {
-        private const int HEADER_SIZE = 4 * sizeof(int) + 4;
+        private const int HEADER_SIZE = 4 * sizeof(int) + 4 + sizeof(float);
 
         public byte ControlSymbol { get; set; }
         public byte PartialFlag { get; private set; }
@@ -19,6 +19,7 @@ namespace Network
         public int Offset { get; private set; }
         public int PacketID { get { return _packetID; } set { _packetID = value; } }
         public int Checksum { get; private set; }
+        public float TimeStamp { get; private set; }
         public PlayerData PData { get; set; }
         public byte[] AdditionalData { get; set; }
 
@@ -38,6 +39,8 @@ namespace Network
                     PacketID |= (byte)PData.PlayerID;
                 }
             }
+
+            TimeStamp = GameController.TimeSeconds;
 
             Checksum = 0;
             Offset = 0;
@@ -73,10 +76,12 @@ namespace Network
             byte[] tlArray = BitConverter.GetBytes(TotalLength);
             byte[] ofArray = BitConverter.GetBytes(Offset);
             byte[] pidArray = BitConverter.GetBytes(PacketID);
+            byte[] tsArray = BitConverter.GetBytes(TimeStamp);
 
             Array.Copy(tlArray, 0, _rawData, 4, sizeof(int));
             Array.Copy(ofArray, 0, _rawData, 8, sizeof(int));
             Array.Copy(pidArray, 0, _rawData, 12, sizeof(int));
+            Array.Copy(tsArray, 0, _rawData, 20, sizeof(float));
 
             if(PData != null)
             {
@@ -115,6 +120,7 @@ namespace Network
             pck.Offset = BitConverter.ToInt32(pck._rawData, 8);
             pck.PacketID = BitConverter.ToInt32(pck._rawData, 12);
             pck.Checksum = BitConverter.ToInt32(pck._rawData, 16);
+            pck.TimeStamp = BitConverter.ToSingle(pck._rawData, 20);
 
             int pDataOffset = HEADER_SIZE;
             if(pck.PDataFlag != 0)

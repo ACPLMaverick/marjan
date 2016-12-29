@@ -62,12 +62,17 @@ public class SnakeHead : SnakeBody
         {
             List<SnakeBody> bent = new List<SnakeBody>();
             bent.Add(this);
+            if (_allBodyParts[0].Direction != this.Direction)
+            {
+                bent.Add(_allBodyParts[0]);
+            }
 
-            for(int i = 0; i < PartsCount - 1; ++i)
+            for (int i = 0; i < PartsCount - 1; ++i)
             {
                 if(_allBodyParts[i].Direction != _allBodyParts[i + 1].Direction)
                 {
                     bent.Add(_allBodyParts[i]);
+                    bent.Add(_allBodyParts[i + 1]);
                 }
             }
 
@@ -319,6 +324,7 @@ public class SnakeHead : SnakeBody
 
     public void SetPositionsAndDirectionsForAllParts(int allPartCount, Vector2[] positions, DirectionType[] directions)
     {
+        Vector2 offset = new Vector2(-2.0f, -2.0f);
         // data check
         if(positions.Length != directions.Length)
         {
@@ -327,7 +333,7 @@ public class SnakeHead : SnakeBody
 
         // it is not necessary to take fruit collecting / speed / points into account
         // as they will automatically be collected when moved snake to given position
-
+        
         // get ids of currently bent parts
         Vector2[] directionVectors = new Vector2[directions.Length];
         for(int i = 0; i < directionVectors.Length; ++i)
@@ -349,14 +355,39 @@ public class SnakeHead : SnakeBody
             // allbodyparts doesnt contain head.
         }
 
-        transform.position = positions[0];
+        transform.position = positions[0] + offset;
         Direction = DirectionTypeToDirection(directions[0]);
         _movementTimer = 0.0f;
 
         int bpCount = _allBodyParts.Count;
+        float governingPartAccumulator = _sizeWorld.x;
 
         SnakeBody governingPart = this;
-        int nextGoverningPartID = 1;
+        for (int i = 0, b = 1; i < bpCount; ++i)
+        {
+            if (b < bendsIDs.Length && (i + 1) == bendsIDs[b])
+            {
+                // this is a bent part. Set position and direction from received data
+                // And set this as governing part
+                _allBodyParts[i].transform.position = positions[b] + offset;
+                _allBodyParts[i].Direction = directionVectors[b];
+
+                ++b;
+                governingPart = _allBodyParts[i];
+                governingPartAccumulator = _sizeWorld.x;
+            }
+            else
+            {
+                _allBodyParts[i].transform.position = governingPart.transform.position - new Vector3(governingPart.Direction.x, governingPart.Direction.y, 0.0f) * governingPartAccumulator;
+                _allBodyParts[i].Direction = governingPart.Direction;
+                governingPartAccumulator += _sizeWorld.x;
+            }
+        }
+
+        /*
+        SnakeBody governingPart = this;
+
+        int nextGoverningPartID = 0;
         float governingPartAccumulator = _sizeWorld.x;
         for(int i = 0; i < bpCount; ++i)
         {
@@ -364,10 +395,10 @@ public class SnakeHead : SnakeBody
             {
                 // this is a bent part. Set position and direction from received data
                 // And set this as governing part
-                _allBodyParts[i].transform.position = positions[nextGoverningPartID];
+                _allBodyParts[i].transform.position = positions[nextGoverningPartID] + offset;
                 _allBodyParts[i].Direction = directionVectors[nextGoverningPartID];
                 governingPart = _allBodyParts[i];
-                ++nextGoverningPartID;
+                nextGoverningPartID = Mathf.Clamp(nextGoverningPartID + 1, 0, positions.Length - 1);
                 governingPartAccumulator = _sizeWorld.x;
             }
             else
@@ -378,6 +409,7 @@ public class SnakeHead : SnakeBody
                 governingPartAccumulator += _sizeWorld.x;
             }
         }
+        */
     }
 
     public void RegisterCollision(SnakeBody body)

@@ -29,12 +29,14 @@ namespace Network
             public readonly IPEndPoint EndP;
             public PlayerData NewestData;
             public PlayerData PreviousData;
+            public float TimeStamp;
             public bool NeedToMulticast;
 
             public PlayerConnectionInfo(Socket sck, IPEndPoint ep)
             {
                 Socket = sck;
                 EndP = ep;
+                TimeStamp = 0;
             }
         }
 
@@ -93,9 +95,13 @@ namespace Network
                 {
                     AckPacket(pck, info.Socket, info.EndP, null);
 
-                    info.PreviousData = info.NewestData;
-                    info.NewestData = pck.PData;
-                    info.NeedToMulticast = true;
+                    if(pck.TimeStamp > info.TimeStamp)
+                    {
+                        info.TimeStamp = pck.TimeStamp;
+                        info.PreviousData = info.NewestData;
+                        info.NewestData = pck.PData;
+                        info.NeedToMulticast = true;
+                    }
                 }
                 else
                 {
@@ -136,8 +142,8 @@ namespace Network
 
             foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
             {
-                if (pair.Key == playerID)
-                    continue;
+                //if (pair.Key == playerID)
+                //    continue;
 
                 SendPacket(packet, pair.Value.Socket, pair.Value.EndP);
             }
