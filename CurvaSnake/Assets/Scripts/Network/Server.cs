@@ -28,21 +28,20 @@ namespace Network
 
         #region Protected
 
-        protected struct PlayerConnectionInfo
+        protected internal class PlayerConnectionInfo
         {
-            public readonly IPAddress Address;
             public readonly Socket Socket;
             public readonly IPEndPoint EndP;
+            public PlayerData LastData;
 
-            public PlayerConnectionInfo(IPAddress ipa, Socket sck, IPEndPoint ep)
+            public PlayerConnectionInfo(Socket sck, IPEndPoint ep)
             {
-                Address = ipa;
                 Socket = sck;
                 EndP = ep;
             }
         }
 
-        protected Dictionary<int, PlayerConnectionInfo> _players;
+        protected Dictionary<int, PlayerConnectionInfo> _players = new Dictionary<int, PlayerConnectionInfo>();
 
         #endregion
 
@@ -70,28 +69,74 @@ namespace Network
 
         #region Functions Protected
 
-        protected override bool ReceivePacket(IAsyncResult data, Packet pck)
+        protected override bool ReceivePacket(IAsyncResult data, Packet pck, IPEndPoint remoteEndPoint)
         {
-            if(!base.ReceivePacket(data, pck))
+            if(!base.ReceivePacket(data, pck, remoteEndPoint))
             {
                 return false;
             }
 
-            // login new player
-            if(pck.RawData[0] == SYMBOL_LOG)
+            // process sent player data
+            if(pck.ControlSymbol == SYMBOL_DTA)
             {
+                Debug.Log("DTA");
+                int playerID = GetPlayerIDFromPacket(pck);
+                PlayerConnectionInfo info;
+                _players.TryGetValue(playerID, out info);
+
+                if(info != null)
+                {
+                    AckPacket(pck, info, null);
+                }
+                else
+                {
+                    Debug.LogWarning("Server: Sent data of not logged player.");
+                }
+            }
+
+            // login new player
+            if(pck.ControlSymbol == SYMBOL_LOG)
+            {
+                // check if player already connected
+                foreach(KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+                {
+                    if(pair.Value.EndP.Address.Equals(remoteEndPoint.Address))
+                    {
+                        return true;
+                    }
+                }
+
                 int newId = _players.Count + 1;
-                //_players.Add(newId);
-                
-                
+
+                Socket pSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                remoteEndPoint.Port = Client.CLIENT_PORT_LISTEN;
+                PlayerConnectionInfo pcinfo = new PlayerConnectionInfo(pSocket, remoteEndPoint);
+                _players.Add(newId, pcinfo);
+
+                AckPacket(pck, pcinfo, BitConverter.GetBytes(newId));
             }
 
             return true;
         }
 
-        protected void AckPacket(Packet pckToAck, PlayerConnectionInfo player, byte[] dataToSend)
+        protected void AckPacket(Packet pck, PlayerConnectionInfo player, byte[] dataToSend)
         {
+            Packet packet = new Packet();
+            packet.ControlSymbol = SYMBOL_ACK;
+            packet.PacketID = pck.PacketID;
 
+            if (dataToSend != null)
+            {
+                packet.AdditionalData = new byte[dataToSend.Length];
+                Array.Copy(dataToSend, packet.AdditionalData, dataToSend.Length);
+            }
+
+            SendPacket(packet, player.Socket, player.EndP, true);
+        }
+
+        protected int GetPlayerIDFromPacket(Packet pck)
+        {
+            return pck.PacketID & 0x000000FF;
         }
 
         #endregion

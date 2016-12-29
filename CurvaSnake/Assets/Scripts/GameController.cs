@@ -57,6 +57,7 @@ public class GameController : MonoBehaviour
     #region Properties
 
     public static GameController Instance { get; private set; }
+    public static float TimeSeconds { get; protected set; }
 
     public PlayerSpawner[] Spawners { get; private set; }
 
@@ -136,6 +137,8 @@ public class GameController : MonoBehaviour
         {
             _LocalPlayer.enabled = true;
         }
+
+        TimeSeconds = Time.time;
     }
 
     #endregion

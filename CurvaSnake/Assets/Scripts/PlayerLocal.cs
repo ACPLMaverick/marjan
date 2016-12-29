@@ -73,7 +73,7 @@ public class PlayerLocal : Player
 
         if(_gameClient != null)
         {
-            _gameClient.SendDataToServer(MyID, GetPlayerData(), null);
+            _gameClient.SendDataToServer(GetPlayerData());
         }
     }
 
