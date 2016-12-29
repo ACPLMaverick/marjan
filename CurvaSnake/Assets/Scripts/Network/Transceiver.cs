@@ -79,8 +79,7 @@ namespace Network
 
         protected void UpdatePacketsSent()
         {
-            int psCount = _packetsSent.Count;
-            for(int i = 0; i < psCount; ++i)
+            for(int i = 0; i < _packetsSent.Count; ++i)
             {
                 if(_packetsSent[i].RetryTimes > MAX_SEND_PACKET_RETRY_TIMES)
                 {
