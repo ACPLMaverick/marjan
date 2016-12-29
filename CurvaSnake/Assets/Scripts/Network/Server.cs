@@ -12,6 +12,7 @@ namespace Network
 
         public static readonly int ADDRESS_LOCAL = Utility.GetAddressAsInt(IPAddress.Loopback);
         public const float PLAYER_TIMEOUT_SECONDS = 5.0f;
+        public const float PLAYER_PACKAGE_TIME_OFFSET = 0.5f;
         public const int PORT_SEND = 2301;
         public const int PORT_LISTEN = 2302;
 
@@ -30,15 +31,20 @@ namespace Network
             public PlayerData NewestData;
             public PlayerData PreviousData;
             public bool NeedToMulticast;
+            public float LastReceiveTime;
+            public float NewReceiveTime;
 
             public PlayerConnectionInfo(Socket sck, IPEndPoint ep)
             {
                 Socket = sck;
                 EndP = ep;
+                LastReceiveTime = 0.0f;
             }
         }
 
         protected Dictionary<int, PlayerConnectionInfo> _players = new Dictionary<int, PlayerConnectionInfo>();
+
+        protected float _timer = 0.0f;
 
         #endregion
 
@@ -60,6 +66,8 @@ namespace Network
         protected override void Update()
         {
             base.Update();
+
+            _timer += Time.deltaTime;
 
             foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
             {
@@ -91,6 +99,19 @@ namespace Network
 
                 if(info != null)
                 {
+                    //NA SŁOWO HONORU (sprawdzanie czy pakiety od gracza są otrzymywane za szybko)
+                    info.NewReceiveTime = _timer;
+                    if(info.NewReceiveTime - info.LastReceiveTime >= PLAYER_PACKAGE_TIME_OFFSET)
+                    {
+                        print("TOO SLOW");
+                    }
+                    else if(info.LastReceiveTime - info.NewReceiveTime <= -PLAYER_PACKAGE_TIME_OFFSET)
+                    {
+                        print("TOO FAST");
+                    }
+                    info.LastReceiveTime = info.NewReceiveTime;
+                    ////////////////
+
                     AckPacket(pck, info.Socket, info.EndP, null);
 
                     info.PreviousData = info.NewestData;
