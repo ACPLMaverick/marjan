@@ -32,6 +32,9 @@ public class GameController : MonoBehaviour
     protected PlayerLocal _LocalPlayer;
 
     [SerializeField]
+    protected List<Player> _Players = new List<Player>();
+
+    [SerializeField]
     protected List<GameObject> _FruitPrefabs;
 
     [SerializeField]
@@ -74,12 +77,14 @@ public class GameController : MonoBehaviour
      */
     protected Network.Client _gameClient;
 
+    protected List<Network.Client> _networkTestClients = new List<Network.Client>();
+
     protected Transform _fruitAreaMin;
     protected Transform _fruitAreaMax;
 
-    protected List<Player> _Players = new List<Player>();
     protected List<Player> _playersInGame = new List<Player>();
     protected List<Fruit> _fruitsOnLevel = new List<Fruit>();
+    protected List<int> _connectedPlayerIds = new List<int>();
     protected float _currentDelay = 0.0f;
     protected float _delayTimer = 0.0f;
     protected bool _canEnableLocalPlayer = true;
@@ -109,8 +114,28 @@ public class GameController : MonoBehaviour
         _gameClient.gameObject.transform.parent = transform;
         _gameClient.SetServerAddress(_ServerAddress);
         _gameClient.Connect(CallbackOnClientConnected);
+        /*
+         //network players for tetin
+        foreach(Player pl in _Players)
+        {
+            Network.Client cl = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
+            cl.gameObject.transform.parent = transform;
+            cl.SetServerAddress(_ServerAddress);
+            cl.Connect(CallbackOnClientConnected);
+            _networkTestClients.Add(cl);
+            _playersInGame.Add(pl);
 
-        _LocalPlayer.enabled = false;
+            cl.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
+            cl.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
+            cl.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
+
+            pl.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
+            pl.Initialize(2);
+        }
+        */
+        _Players.Add(_LocalPlayer);
+        _LocalPlayer.gameObject.SetActive(false);
+
     }
 
     // Update is called once per frame
@@ -136,6 +161,15 @@ public class GameController : MonoBehaviour
             _LocalPlayer.enabled = true;
         }
 
+        if(_connectedPlayerIds.Count != 0)
+        {
+            for(int i = 0; i < _connectedPlayerIds.Count; ++i)
+            {
+                OnClientConnected(_connectedPlayerIds[i]);
+            }
+            _connectedPlayerIds.Clear();
+        }
+
         TimeSeconds = Time.time;
     }
 
@@ -145,7 +179,7 @@ public class GameController : MonoBehaviour
 
     public PlayerSpawner GetSpawner(int i)
     {
-        return _Spawners[i];
+        return _Spawners[i - 1];
     }
 
     #endregion
@@ -206,6 +240,11 @@ public class GameController : MonoBehaviour
 
     protected void CallbackOnClientConnected(int id)
     {
+        _connectedPlayerIds.Add(id);
+    }
+
+    protected void OnClientConnected(int id)
+    {
         _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
         _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
         _gameClient.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
@@ -213,9 +252,8 @@ public class GameController : MonoBehaviour
         _LocalPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
         _LocalPlayer.Initialize(id, _gameClient);
         _playersInGame.Add(_LocalPlayer);
-        _Players.Add(_LocalPlayer);
 
-        _canEnableLocalPlayer = true;
+        _LocalPlayer.gameObject.SetActive(true);
     }
 
     protected void CallbackOnClientDataReceived(int playerID, Network.PlayerData data)

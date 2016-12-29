@@ -36,7 +36,7 @@ public class PlayerLocal : Player
 
     public void Initialize(int id, Network.Client clientRef)
     {
-        MyID = id;
+        Initialize(id);
         _gameClient = clientRef;
     }
 

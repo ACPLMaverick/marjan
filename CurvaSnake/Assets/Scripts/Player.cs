@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
     #region Protected
 
     protected PlayerSpawner _AssignedSpawner;
-    protected Color[] _Colors = { Color.red, Color.blue, Color.green, Color.yellow };
+    protected Color[] _Colors = { Color.red, Color.green, Color.yellow, Color.magenta };
 
     #endregion
 
@@ -41,21 +41,7 @@ public class Player : MonoBehaviour
     // Use this for initialization
     protected virtual void Start()
     {
-        //Spawning player in spawner position --
-        _AssignedSpawner = GameController.Instance.GetSpawner(0); //temporary
-        if(_AssignedSpawner != null)
-        {
-            _AssignedSpawner.IsPlayerAssigned = true;
-        }
 
-        //Set color based on ID
-        _MyColor = _Colors[MyID % _Colors.Length];
-
-        _MySnakeHead.GetComponent<Transform>().position = GetComponent<Transform>().position;
-        _MySnakeHead.Initialize(this);
-        _MySnakeHead.SnakePositionChanged.AddListener(OnPositionChanged);
-
-        ChangePlayerLocationOnStart(_AssignedSpawner.MyPosition);
     }
 
     // Update is called once per frame
@@ -70,6 +56,21 @@ public class Player : MonoBehaviour
     public virtual void Initialize(int id)
     {
         MyID = id;
+        //Spawning player in spawner position --
+        _AssignedSpawner = GameController.Instance.GetSpawner(MyID);
+        if (_AssignedSpawner != null)
+        {
+            _AssignedSpawner.IsPlayerAssigned = true;
+        }
+
+        //Set color based on ID
+        _MyColor = _Colors[(MyID - 1) % _Colors.Length];
+
+        _MySnakeHead.GetComponent<Transform>().position = GetComponent<Transform>().position;
+        _MySnakeHead.Initialize(this);
+        _MySnakeHead.SnakePositionChanged.AddListener(OnPositionChanged);
+
+        ChangePlayerLocationOnStart(_AssignedSpawner.MyPosition);
     }
 
     public virtual void UpdateFromPlayerData(Network.PlayerData data)
