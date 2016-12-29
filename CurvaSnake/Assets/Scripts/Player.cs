@@ -31,6 +31,8 @@ public class Player : MonoBehaviour
 
     #region Protected
 
+    protected PlayerSpawner _AssignedSpawner;
+
     #endregion
 
     #region MonoBehaviours
@@ -38,6 +40,14 @@ public class Player : MonoBehaviour
     // Use this for initialization
     protected virtual void Start()
     {
+        //Spawning player in spawner position
+        _AssignedSpawner = GameController.Instance.GetUnassignedSpawner();
+        if(_AssignedSpawner != null)
+        {
+            GetComponent<Transform>().position = _AssignedSpawner.MyPosition;
+            _AssignedSpawner.IsPlayerAssigned = true;
+        }
+
         _MySnakeHead.GetComponent<Transform>().position = GetComponent<Transform>().position;
         _MySnakeHead.Initialize(this);
         _MySnakeHead.SnakePositionChanged.AddListener(OnPositionChanged);

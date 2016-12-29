@@ -49,6 +49,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     protected int _LengthToWin = 0;
 
+    [SerializeField]
+    protected PlayerSpawner[] _Spawners;
 
     #endregion
 
@@ -56,6 +58,8 @@ public class GameController : MonoBehaviour
 
     public static GameController Instance { get; private set; }
     public static float TimeSeconds { get; protected set; }
+
+    public PlayerSpawner[] Spawners { get; private set; }
 
     #endregion
 
@@ -140,6 +144,18 @@ public class GameController : MonoBehaviour
     #endregion
 
     #region Functions Public
+
+    public PlayerSpawner GetUnassignedSpawner()
+    {
+        for(int i = 0; i < _Spawners.Length; ++i)
+        {
+            if(!_Spawners[i].IsPlayerAssigned)
+            {
+                return _Spawners[i];
+            }
+        }
+        return null;
+    }
 
     #endregion
 
