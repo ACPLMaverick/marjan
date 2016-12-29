@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     #region Protected
 
     protected PlayerSpawner _AssignedSpawner;
+    protected Color[] _Colors = { Color.red, Color.blue, Color.green, Color.yellow };
 
     #endregion
 
@@ -40,17 +41,21 @@ public class Player : MonoBehaviour
     // Use this for initialization
     protected virtual void Start()
     {
-        //Spawning player in spawner position
-        _AssignedSpawner = GameController.Instance.GetUnassignedSpawner();
+        //Spawning player in spawner position --
+        _AssignedSpawner = GameController.Instance.GetSpawner(0); //temporary
         if(_AssignedSpawner != null)
         {
-            GetComponent<Transform>().position = _AssignedSpawner.MyPosition;
             _AssignedSpawner.IsPlayerAssigned = true;
         }
+
+        //Set color based on ID
+        _MyColor = _Colors[MyID % _Colors.Length];
 
         _MySnakeHead.GetComponent<Transform>().position = GetComponent<Transform>().position;
         _MySnakeHead.Initialize(this);
         _MySnakeHead.SnakePositionChanged.AddListener(OnPositionChanged);
+
+        ChangePlayerLocationOnStart(_AssignedSpawner.MyPosition);
     }
 
     // Update is called once per frame
@@ -110,6 +115,18 @@ public class Player : MonoBehaviour
         data.CollisionAtPart = _MySnakeHead.LastCollisionID;
 
         return data;
+    }
+
+    public void ChangePlayerLocationOnStart(Vector3 target)
+    {
+        GetComponent<Transform>().position = target;
+        _MySnakeHead.GetComponent<Transform>().position = target;
+
+        for(int i = 0; i < _MySnakeHead.PartsCount; ++i)
+        {
+            Transform bodyPart = _MySnakeHead.GetBodyPartPosition(i);
+            bodyPart.Translate(target);
+        }
     }
 
     #endregion

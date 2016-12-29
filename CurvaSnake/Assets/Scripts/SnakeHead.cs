@@ -299,6 +299,11 @@ public class SnakeHead : SnakeBody
         _allBodyParts.RemoveAll(x => x == null);
     }
 
+    public Transform GetBodyPartPosition(int i)
+    {
+        return _allBodyParts[i].GetComponent<Transform>();
+    }
+
     public void OnFruitCollected(float addition)
     {
         Speed += addition + 0.1f * Speed;
