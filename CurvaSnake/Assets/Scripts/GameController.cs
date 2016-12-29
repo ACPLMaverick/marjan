@@ -81,7 +81,7 @@ public class GameController : MonoBehaviour
     protected List<Fruit> _fruitsOnLevel = new List<Fruit>();
     protected float _currentDelay = 0.0f;
     protected float _delayTimer = 0.0f;
-    protected bool _canEnableLocalPlayer = false;
+    protected bool _canEnableLocalPlayer = true;
 
     #endregion
 
@@ -142,16 +142,9 @@ public class GameController : MonoBehaviour
 
     #region Functions Public
 
-    public PlayerSpawner GetUnassignedSpawner()
+    public PlayerSpawner GetSpawner(int i)
     {
-        for(int i = 0; i < _Spawners.Length; ++i)
-        {
-            if(!_Spawners[i].IsPlayerAssigned)
-            {
-                return _Spawners[i];
-            }
-        }
-        return null;
+        return _Spawners[i];
     }
 
     #endregion
