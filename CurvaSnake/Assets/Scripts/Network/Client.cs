@@ -133,9 +133,12 @@ namespace Network
          * Waits for ACK for every sent packet.
          * This method is asynchronous.
          */
-        public void SendDataToServer(int id, PlayerData data, AsyncCallback sent)
+        public void SendDataToServer(PlayerData data)
         {
-            
+            Packet packet = new Packet();
+            packet.ControlSymbol = Server.SYMBOL_DTA;
+            packet.PData = data;
+            SendPacket(packet);
         }
 
         #endregion
@@ -152,7 +155,7 @@ namespace Network
             // check for connection ACK
             if (!_connected && pck.RawData[0] == Server.SYMBOL_ACK)
             {
-                ConnectAfterAck(BitConverter.ToInt32(_receiveData, 1));
+                ConnectAfterAck(BitConverter.ToInt32(pck.AdditionalData, 0));
             }
 
             return true;
