@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     #region Protected
 
     protected PlayerSpawner _AssignedSpawner;
+    protected Color[] _Colors = { Color.red, Color.blue, Color.green, Color.yellow };
 
     #endregion
 
@@ -46,6 +47,9 @@ public class Player : MonoBehaviour
         {
             _AssignedSpawner.IsPlayerAssigned = true;
         }
+
+        //Set color based on ID
+        _MyColor = _Colors[MyID % _Colors.Length];
 
         _MySnakeHead.GetComponent<Transform>().position = GetComponent<Transform>().position;
         _MySnakeHead.Initialize(this);
