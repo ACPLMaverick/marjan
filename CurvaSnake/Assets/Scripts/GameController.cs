@@ -85,6 +85,7 @@ public class GameController : MonoBehaviour
     protected List<Player> _playersInGame = new List<Player>();
     protected List<Fruit> _fruitsOnLevel = new List<Fruit>();
     protected List<int> _connectedPlayerIds = new List<int>();
+    protected List<KeyValuePair<int, Network.PlayerData>> _playerDatasToUpdate = new List<KeyValuePair<int, Network.PlayerData>>();
     protected float _currentDelay = 0.0f;
     protected float _delayTimer = 0.0f;
     protected bool _canEnableLocalPlayer = true;
@@ -168,6 +169,15 @@ public class GameController : MonoBehaviour
                 OnClientConnected(_connectedPlayerIds[i]);
             }
             _connectedPlayerIds.Clear();
+        }
+
+        if(_playerDatasToUpdate.Count != 0)
+        {
+            for(int i = 0; i < _playerDatasToUpdate.Count; ++i)
+            {
+                OnClientDataRecieved(_playerDatasToUpdate[i].Key, _playerDatasToUpdate[i].Value);
+            }
+            _playerDatasToUpdate.Clear();
         }
 
         TimeSeconds = Time.time;
@@ -258,13 +268,21 @@ public class GameController : MonoBehaviour
 
     protected void CallbackOnClientDataReceived(int playerID, Network.PlayerData data)
     {
+        _playerDatasToUpdate.Add(new KeyValuePair<int, Network.PlayerData>(playerID, data));
+    }
+
+    protected void OnClientDataRecieved(int playerID, Network.PlayerData data)
+    {
         int playerCount = _playersInGame.Count;
-        for(int i = 0; i < playerCount; ++i)
+        for (int i = 0; i < playerCount; ++i)
         {
-            if(_playersInGame[i].MyID == playerID)
+            if (_playersInGame[i].MyID == playerID)
             {
                 _playersInGame[i].UpdateFromPlayerData(data);
+                break;
             }
+
+            _playersInGame[i].UpdateFromPlayerData(data);
         }
     }
 
