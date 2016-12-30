@@ -29,7 +29,7 @@ public class SnakeBody : MonoBehaviour
     #region Properties
 
     public Player MyPlayer { get; protected set; }
-    public Vector2 Direction { get; protected set; }
+    public Vector2 Direction { get; set; }
     public SnakeHead Head { get; protected set; }
 
     /// <summary>
@@ -84,19 +84,20 @@ public class SnakeBody : MonoBehaviour
 
     protected virtual void OnTriggerEnter2D(Collider2D coll)
     {
-        if(coll.gameObject.CompareTag("fruit"))
+        if (coll.gameObject.CompareTag("fruit"))
         {
             Fruit fr = coll.gameObject.GetComponent<Fruit>();
-            if(fr != null)
+            if (fr != null)
             {
                 PickFruit(fr);
             }
         }
-        else if(coll.gameObject.CompareTag("head"))
+        else if (coll.gameObject.CompareTag("head"))
         {
             SnakeHead head = coll.GetComponent<SnakeHead>();
             if (head != Previous)
             {
+                Head.RegisterCollision(this);
                 Head.BodyPartCleanup();
                 Kill();
             }
@@ -104,14 +105,16 @@ public class SnakeBody : MonoBehaviour
         else if (coll.gameObject.CompareTag("snake"))
         {
             SnakeBody body = coll.GetComponent<SnakeBody>();
-            if(body != Previous && body != Next)
+            if (body != Previous && body != Next)
             {
+                Head.RegisterCollision(this);
                 Head.BodyPartCleanup();
                 Kill();
             }
         }
         else
         {
+            Head.RegisterCollision(this);
             Head.BodyPartCleanup();
             Kill();
         }
