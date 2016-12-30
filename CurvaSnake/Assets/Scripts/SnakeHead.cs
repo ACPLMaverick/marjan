@@ -71,7 +71,6 @@ public class SnakeHead : SnakeBody
             {
                 if(_allBodyParts[i].Direction != _allBodyParts[i + 1].Direction)
                 {
-                    bent.Add(_allBodyParts[i]);
                     bent.Add(_allBodyParts[i + 1]);
                 }
             }
@@ -341,7 +340,6 @@ public class SnakeHead : SnakeBody
             directionVectors[i] = DirectionTypeToDirection(directions[i]);
         }
         int[] bendsIDs = new int[positions.Length];
-        bendsIDs[0] = 0;
 
         for(int i = 1; i < positions.Length; ++i)
         {
@@ -350,7 +348,7 @@ public class SnakeHead : SnakeBody
             float length = Vector2.Distance(startPos, endPos);
             int numParts = Mathf.RoundToInt(length / _sizeWorld.x);
 
-            bendsIDs[i] = Mathf.Clamp(numParts + bendsIDs[i - 1], 0, _allBodyParts.Count - 1); 
+            bendsIDs[i] = Mathf.Clamp(numParts + bendsIDs[i - 1], 0, _allBodyParts.Count); 
             //  not adding one because I need a part with different direction, not last with the same one AND I take into account that
             // allbodyparts doesnt contain head.
         }
@@ -365,7 +363,8 @@ public class SnakeHead : SnakeBody
         SnakeBody governingPart = this;
         for (int i = 0, b = 1; i < bpCount; ++i)
         {
-            if (b < bendsIDs.Length && (i + 1) == bendsIDs[b])
+
+            if (b < bendsIDs.Length /* for situations when only head is a gov part */ &&  (i + 1) == bendsIDs[b])
             {
                 // this is a bent part. Set position and direction from received data
                 // And set this as governing part
@@ -383,33 +382,6 @@ public class SnakeHead : SnakeBody
                 governingPartAccumulator += _sizeWorld.x;
             }
         }
-
-        /*
-        SnakeBody governingPart = this;
-
-        int nextGoverningPartID = 0;
-        float governingPartAccumulator = _sizeWorld.x;
-        for(int i = 0; i < bpCount; ++i)
-        {
-            if(i == bendsIDs[nextGoverningPartID])
-            {
-                // this is a bent part. Set position and direction from received data
-                // And set this as governing part
-                _allBodyParts[i].transform.position = positions[nextGoverningPartID] + offset;
-                _allBodyParts[i].Direction = directionVectors[nextGoverningPartID];
-                governingPart = _allBodyParts[i];
-                nextGoverningPartID = Mathf.Clamp(nextGoverningPartID + 1, 0, positions.Length - 1);
-                governingPartAccumulator = _sizeWorld.x;
-            }
-            else
-            {
-                // this is not a bent part. Set position and direction from governing part
-                _allBodyParts[i].transform.position = governingPart.transform.position - new Vector3(governingPart.Direction.x, governingPart.Direction.y, 0.0f) * governingPartAccumulator;
-                _allBodyParts[i].Direction = governingPart.Direction;
-                governingPartAccumulator += _sizeWorld.x;
-            }
-        }
-        */
     }
 
     public void RegisterCollision(SnakeBody body)
