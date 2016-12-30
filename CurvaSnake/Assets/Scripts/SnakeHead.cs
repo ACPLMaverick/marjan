@@ -360,11 +360,11 @@ public class SnakeHead : SnakeBody
         int bpCount = _allBodyParts.Count;
         float governingPartAccumulator = _sizeWorld.x;
 
-        SnakeBody governingPart = this;
+        SnakeBody bentPart = this;
         for (int i = 0, b = 1; i < bpCount; ++i)
         {
 
-            if (b < bendsIDs.Length /* for situations when only head is a gov part */ &&  (i + 1) == bendsIDs[b])
+            if (b < bendsIDs.Length /* for situations when only head is a bent part */ &&  (i + 1) == bendsIDs[b])
             {
                 // this is a bent part. Set position and direction from received data
                 // And set this as governing part
@@ -372,13 +372,14 @@ public class SnakeHead : SnakeBody
                 _allBodyParts[i].Direction = directionVectors[b];
 
                 ++b;
-                governingPart = _allBodyParts[i];
+                bentPart = _allBodyParts[i];
                 governingPartAccumulator = _sizeWorld.x;
             }
             else
             {
-                _allBodyParts[i].transform.position = governingPart.transform.position - new Vector3(governingPart.Direction.x, governingPart.Direction.y, 0.0f) * governingPartAccumulator;
-                _allBodyParts[i].Direction = governingPart.Direction;
+                // this is not a bent part, so just set it up after bent one
+                _allBodyParts[i].transform.position = bentPart.transform.position - new Vector3(bentPart.Direction.x, bentPart.Direction.y, 0.0f) * governingPartAccumulator;
+                _allBodyParts[i].Direction = bentPart.Direction;
                 governingPartAccumulator += _sizeWorld.x;
             }
         }

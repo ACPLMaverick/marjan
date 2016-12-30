@@ -126,7 +126,7 @@ namespace Network
 
             if (!noAck)
             {
-                //_packetsSent.Add(new PacketData(GameController.TimeSeconds, packet, sck, ep));
+                _packetsSent.Add(new PacketData(GameController.TimeSeconds, packet, sck, ep));
             }
         }
 

@@ -113,28 +113,28 @@ public class GameController : MonoBehaviour
 
         _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
         _gameClient.gameObject.transform.parent = transform;
-        _gameClient.SetServerAddress(_ServerAddress, 2333);
+        _gameClient.SetServerAddress(_ServerAddress);
         _gameClient.Connect(CallbackOnClientConnected);
 
-         //network players for tetin
-        foreach(Player pl in _Players)
-        {
-            Network.Client cl = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
-            cl.gameObject.transform.parent = transform;
-            cl.SetServerAddress(_ServerAddress);
-            cl.Connect(CallbackOnClientConnected);
-            _networkTestClients.Add(cl);
-            _playersInGame.Add(pl);
+        //network players for tetin
+        //foreach(Player pl in _Players)
+        //{
+        //    Network.Client cl = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
+        //    cl.gameObject.transform.parent = transform;
+        //    cl.SetServerAddress(_ServerAddress);
+        //    cl.Connect(CallbackOnClientConnected);
+        //    _networkTestClients.Add(cl);
+        //    _playersInGame.Add(pl);
 
-            cl.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
-            cl.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
-            cl.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
+        //    cl.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
+        //    cl.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
+        //    cl.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
 
-            pl.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
-            pl.Initialize(2);
-        }
+        //    pl.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
+        //    pl.Initialize(2);
+        //}
 
-        //_Players.Add(_LocalPlayer);
+        _Players.Add(_LocalPlayer);
         _LocalPlayer.gameObject.SetActive(false);
 
     }
@@ -143,6 +143,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         // Fruit generation.
+        /*
         if(_fruitsOnLevel.Count < _MaxFruitsOnLevel && _FruitPrefabs.Count > 0)
         {
             if(_delayTimer <= 0.0f) // generate new fruit now
@@ -156,7 +157,7 @@ public class GameController : MonoBehaviour
                 _delayTimer -= Time.deltaTime;
             }
         }
-
+        */
         if(_canEnableLocalPlayer && !_LocalPlayer.enabled)
         {
             _LocalPlayer.enabled = true;
@@ -276,13 +277,13 @@ public class GameController : MonoBehaviour
         int playerCount = _playersInGame.Count;
         for (int i = 0; i < playerCount; ++i)
         {
-            //if (_playersInGame[i].MyID == playerID)
-            //{
-            //    _playersInGame[i].UpdateFromPlayerData(data);
-            //    break;
-            //}
+            if (_playersInGame[i].MyID == playerID)
+            {
+                _playersInGame[i].UpdateFromPlayerData(data);
+                break;
+            }
 
-            _playersInGame[i].UpdateFromPlayerData(data);
+            //_playersInGame[i].UpdateFromPlayerData(data);
         }
     }
 

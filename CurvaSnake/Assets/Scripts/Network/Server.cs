@@ -163,8 +163,8 @@ namespace Network
 
             foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
             {
-                //if (pair.Key == playerID)
-                //    continue;
+                if (pair.Key == playerID)
+                    continue;
 
                 SendPacket(packet, pair.Value.Socket, pair.Value.EndP);
             }
