@@ -42,4 +42,8 @@ public class PlayerSpawner : MonoBehaviour {
 	}
 
     #endregion
+
+    #region Functions Public
+
+    #endregion
 }

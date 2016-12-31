@@ -23,6 +23,11 @@ public class PlayerNetwork : Player
 
     #region Functions Public
 
+    public override void Initialize(int id)
+    {
+        base.Initialize(id);
+    }
+
     public override void UpdateFromPlayerData(PlayerData data)
     {
         base.UpdateFromPlayerData(data);

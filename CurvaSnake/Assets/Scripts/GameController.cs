@@ -55,6 +55,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     protected PlayerSpawner[] _Spawners;
 
+    [SerializeField]
+    protected PlayerNetwork _PlayerNetworkPrefab;
+
     #endregion
 
     #region Properties
@@ -181,6 +184,13 @@ public class GameController : MonoBehaviour
             _playerDatasToUpdate.Clear();
         }
 
+        //FOR TETING
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            SpawnNetworkPlayer(2);
+        }
+        //
+
         TimeSeconds = Time.time;
     }
 
@@ -191,6 +201,24 @@ public class GameController : MonoBehaviour
     public PlayerSpawner GetSpawner(int i)
     {
         return _Spawners[i - 1];
+    }
+
+    public void SpawnNetworkPlayer(int id)
+    {
+        if (!GetSpawner(id).IsPlayerAssigned)
+        {
+            PlayerNetwork netPlayer = Instantiate<PlayerNetwork>(_PlayerNetworkPrefab);
+
+            netPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
+            netPlayer.Initialize(id);
+            _playersInGame.Add(netPlayer);
+
+            netPlayer.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogFormat("Player {0} already logged in", id);
+        }
     }
 
     #endregion
