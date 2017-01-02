@@ -82,16 +82,16 @@ public class GameController : MonoBehaviour
 
     protected List<Network.Client> _networkTestClients = new List<Network.Client>();
 
-    protected Transform _fruitAreaMin;
-    protected Transform _fruitAreaMax;
+    //protected Transform _fruitAreaMin;
+    //protected Transform _fruitAreaMax;
 
     protected List<Player> _playersInGame = new List<Player>();
     protected List<Fruit> _fruitsOnLevel = new List<Fruit>();
     protected List<int> _connectedPlayerIds = new List<int>();
     protected List<int> _disconnectedPlayerIds = new List<int>();
     protected List<KeyValuePair<int, Network.PlayerData>> _playerDatasToUpdate = new List<KeyValuePair<int, Network.PlayerData>>();
-    protected float _currentDelay = 0.0f;
-    protected float _delayTimer = 0.0f;
+    //protected float _currentDelay = 0.0f;
+    //protected float _delayTimer = 0.0f;
     protected int _localPlayerIDToSpawn = -1;
     protected bool _canEnableLocalPlayer = true;
 
@@ -102,8 +102,8 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        _fruitAreaMin = GetComponentsInChildren<Transform>()[1];
-        _fruitAreaMax = GetComponentsInChildren<Transform>()[2];
+        //_fruitAreaMin = GetComponentsInChildren<Transform>()[1];
+        //_fruitAreaMax = GetComponentsInChildren<Transform>()[2];
     }
 
     // Use this for initialization
@@ -141,6 +141,8 @@ public class GameController : MonoBehaviour
 
         _Players.Add(_LocalPlayer);
         _LocalPlayer.gameObject.SetActive(false);
+
+        _localServer.EventAddApple.AddListener(GenerateNewFruit);
 
     }
 
@@ -245,10 +247,16 @@ public class GameController : MonoBehaviour
         {
             if(_playersInGame[i].MyID == id)
             {
+                GetSpawner(id).IsPlayerAssigned = false;
                 Destroy(_playersInGame[i].gameObject);
                 _playersInGame.RemoveAt(i);
                 return;
             }
+        }
+
+        if (_playersInGame.Count == 1)
+        {
+            WinForPlayer(_playersInGame[0]);
         }
     }
 
@@ -274,8 +282,8 @@ public class GameController : MonoBehaviour
     protected void OnFruitCollected(Fruit fruit)
     {
         _fruitsOnLevel.Remove(fruit);
-        _currentDelay = UnityEngine.Random.Range(_FruitGenerateDelayMin, _FruitGenerateDelayMax);
-        _delayTimer = _currentDelay;
+        //_currentDelay = UnityEngine.Random.Range(_FruitGenerateDelayMin, _FruitGenerateDelayMax);
+        //_delayTimer = _currentDelay;
     }
 
     protected void WinForPlayer(Player player)
@@ -291,16 +299,16 @@ public class GameController : MonoBehaviour
         Application.Quit();
     }
 
-    protected void GenerateNewFruit()
+    protected void GenerateNewFruit(Vector2 pos)
     {
         int n = UnityEngine.Random.Range(0, _FruitPrefabs.Count - 1);
         GameObject newFruitObject = Instantiate(_FruitPrefabs[n]);
-        newFruitObject.GetComponent<Transform>().position = new Vector3
-            (
-                UnityEngine.Random.Range(_fruitAreaMin.position.x, _fruitAreaMax.position.x),
-                UnityEngine.Random.Range(_fruitAreaMin.position.y, _fruitAreaMax.position.y),
-                UnityEngine.Random.Range(_fruitAreaMin.position.z, _fruitAreaMax.position.z)
-            );
+        newFruitObject.GetComponent<Transform>().position = pos;//new Vector3
+ //           (
+ //               UnityEngine.Random.Range(_fruitAreaMin.position.x, _fruitAreaMax.position.x),
+ //               UnityEngine.Random.Range(_fruitAreaMin.position.y, _fruitAreaMax.position.y),
+ //               UnityEngine.Random.Range(_fruitAreaMin.position.z, _fruitAreaMax.position.z)
+ //           );
         Fruit fr = newFruitObject.GetComponent<Fruit>();
         fr.EventCollected.AddListener(new UnityEngine.Events.UnityAction<Fruit>(OnFruitCollected));
         _fruitsOnLevel.Add(fr);
@@ -318,6 +326,7 @@ public class GameController : MonoBehaviour
         _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
         _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
         _gameClient.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
+        _gameClient.EventAddApple.AddListener(CallbackOnAddApple);
 
         _LocalPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
         _LocalPlayer.Initialize(id, _gameClient);
@@ -356,6 +365,12 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Player disconnected with ID " + id.ToString());
     }
+
+    protected void CallbackOnAddApple(Vector2 pos)
+    {
+        GenerateNewFruit(pos);
+    }
+
 
     #endregion
 

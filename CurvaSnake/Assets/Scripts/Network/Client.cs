@@ -68,6 +68,7 @@ namespace Network
         
         public class ClientEventPlayerID : UnityEvent<int> { }
         public class ClientEventPlayerIDData : UnityEvent<int, PlayerData> { }
+        public class ClientEventVector2 : UnityEvent<Vector2> { }
         /**
          * Used to notify Game Controller that a new player has connected to the server and it needs to
          * instantiate him locally.
@@ -82,6 +83,8 @@ namespace Network
         public ClientEventPlayerID EventPlayerDisconnected = new ClientEventPlayerID();
 
         public ClientEventPlayerIDData EventPlayerDataReceived = new ClientEventPlayerIDData();
+
+        public ClientEventVector2 EventAddApple = new ClientEventVector2();
 
         #endregion
 
@@ -181,6 +184,27 @@ namespace Network
             else if (!_connected && pck.ControlSymbol == SYMBOL_ACK)
             {
                 ConnectAfterAck(BitConverter.ToInt32(pck.AdditionalData, 0));
+            }
+
+            // check for apple position
+            else if(pck.ControlSymbol == SYMBOL_APL)
+            {
+                Vector2 outVector = new Vector2(0, 0);
+                int offset = 0;
+                byte[] floatBytes = new byte[8];
+
+                for (int i = 0; i < 8; ++i)
+                {
+                    floatBytes[i] = pck.AdditionalData[i];
+                }
+
+                outVector.x = BitConverter.ToSingle(floatBytes, offset);
+                offset += sizeof(float);
+                outVector.y = BitConverter.ToSingle(floatBytes, offset);
+
+                //print(outVector);
+
+                EventAddApple.Invoke(outVector);   
             }
 
             return true;

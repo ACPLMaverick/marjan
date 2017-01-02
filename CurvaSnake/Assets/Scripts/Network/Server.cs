@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System;
+using UnityEngine.Events;
 
 namespace Network
 {
@@ -16,9 +17,20 @@ namespace Network
         public const int PORT_SEND = 2301;
         public const int PORT_LISTEN = 2302;
 
+        public const float FRUIT_GENERATE_DELAY_MIN = 1.0f;
+        public const float FRUIT_GENERATE_DELAY_MAX = 6.0f;
+
         #endregion
 
         #region Properties
+
+        #endregion
+
+        #region Events
+
+        public class ClientEventVector2 : UnityEvent<Vector2> { }
+
+        public ClientEventVector2 EventAddApple = new ClientEventVector2();
 
         #endregion
 
@@ -48,6 +60,11 @@ namespace Network
 
         protected float _timer = 0.0f;
 
+        protected float _appleTimer = 5.0f;
+        protected Transform _fruitAreaMin;
+        protected Transform _fruitAreaMax;
+        protected Vector2 _applePosition;
+
         #endregion
 
         #region MonoBehaviours
@@ -63,6 +80,9 @@ namespace Network
         protected override void Start()
         {
             base.Start();
+
+            _fruitAreaMin = GameObject.Find("GameController/FruitAreaMin").GetComponent<Transform>();
+            _fruitAreaMax = GameObject.Find("GameController/FruitAreaMax").GetComponent<Transform>();
         }
 
         protected override void Update()
@@ -78,6 +98,27 @@ namespace Network
                     pair.Value.NeedToMulticast = false;
                     MulticastPlayerData(pair.Key, pair.Value.NewestData);
                 }
+            }
+
+            if (_appleTimer <= 0.0f) // generate new fruit now
+            {
+               _applePosition = new Vector2
+                    (
+                        UnityEngine.Random.Range(_fruitAreaMin.position.x, _fruitAreaMax.position.x),
+                        UnityEngine.Random.Range(_fruitAreaMin.position.y, _fruitAreaMax.position.y)
+                    );
+                _appleTimer = 5.0f;
+
+                EventAddApple.Invoke(_applePosition);
+
+                foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+                {
+                    MulticastApplePosition(pair.Key, _applePosition);
+                }
+            }
+            else // decrement the timer
+            {
+                _appleTimer -= Time.deltaTime;
             }
         }
 
@@ -184,6 +225,27 @@ namespace Network
             Packet packet = new Packet();
             packet.ControlSymbol = SYMBOL_DTA;
             packet.PData = data;
+
+            MulticastPacket(packet, playerID);
+        }
+
+        protected void MulticastApplePosition(int playerID, Vector2 pos)
+        {
+            Packet packet = new Packet();
+            packet.ControlSymbol = SYMBOL_APL;
+
+            byte[] bytes = new byte[8]; //4 per float
+
+            for (int i = 0; i < 4; ++i)
+            {
+                bytes[i] = BitConverter.GetBytes(pos.x)[i];
+            }
+            for(int j = 0; j < 4; ++j)
+            {
+                bytes[4 + j] = BitConverter.GetBytes(pos.y)[j];
+            }
+
+            packet.AdditionalData = bytes;
 
             MulticastPacket(packet, playerID);
         }
