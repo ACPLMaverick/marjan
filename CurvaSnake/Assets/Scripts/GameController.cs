@@ -219,7 +219,7 @@ public class GameController : MonoBehaviour
 
     public PlayerSpawner GetSpawner(int i)
     {
-        return _Spawners[i - 1];
+        return _Spawners[Mathf.Clamp(i - 1, 0, _Spawners.Length - 1)];
     }
 
     public void SpawnNetworkPlayer(int id)
@@ -357,13 +357,12 @@ public class GameController : MonoBehaviour
 
     protected void CallbackOnAnotherPlayerConnected(int id)
     {
-        Debug.Log("Player connected with ID " + id.ToString());
         _connectedPlayerIds.Add(id);
     }
 
     protected void CallbackOnAnotherPlayerDisconnected(int id)
     {
-        Debug.Log("Player disconnected with ID " + id.ToString());
+        _disconnectedPlayerIds.Add(id);
     }
 
     protected void CallbackOnAddApple(Vector2 pos)
