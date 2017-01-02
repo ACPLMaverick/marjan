@@ -142,6 +142,8 @@ namespace Network
 
         protected virtual bool ReceivePacket(IAsyncResult data, Packet pck, IPEndPoint remoteEndPoint)
         {
+            Debug.Log("Received packet from " + remoteEndPoint.Address.ToString() + ":" + remoteEndPoint.Port.ToString() + " with control symbol " + pck.ControlSymbol.ToString());
+
             if(!pck.CheckDataIntegrity())
             {
                 return false;

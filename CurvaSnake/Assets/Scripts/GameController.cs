@@ -348,13 +348,12 @@ public class GameController : MonoBehaviour
 
     protected void CallbackOnAnotherPlayerConnected(int id)
     {
-        Debug.Log("Player connected with ID " + id.ToString());
         _connectedPlayerIds.Add(id);
     }
 
     protected void CallbackOnAnotherPlayerDisconnected(int id)
     {
-        Debug.Log("Player disconnected with ID " + id.ToString());
+        _disconnectedPlayerIds.Add(id);
     }
 
     #endregion
