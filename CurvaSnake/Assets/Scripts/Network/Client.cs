@@ -138,11 +138,12 @@ namespace Network
          * Waits for ACK for every sent packet.
          * This method is asynchronous.
          */
-        public void SendDataToServer(PlayerData data)
+        public void SendDataToServer(int id, PlayerData data)
         {
             Packet packet = new Packet();
             packet.ControlSymbol = SYMBOL_DTA;
             packet.PData = data;
+            packet.PacketID = id;
             SendPacket(packet);
         }
 
@@ -167,7 +168,8 @@ namespace Network
 
             else if(pck.ControlSymbol == SYMBOL_PCN)
             {
-                EventPlayerConnected.Invoke(GetPlayerIDFromPacket(pck));
+                int id = GetPlayerIDFromPacket(pck);
+                EventPlayerConnected.Invoke(id);
                 AckPacket(pck, _sendSocket, _sendEndPoint, null);
             }
 

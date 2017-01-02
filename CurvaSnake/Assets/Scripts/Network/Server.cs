@@ -41,6 +41,7 @@ namespace Network
                 EndP = ep;
                 TimeStamp = 0;
                 LastReceiveTime = 0.0f;
+                NewReceiveTime = 0.0f;
             }
         }
 
@@ -93,32 +94,35 @@ namespace Network
             }
 
             // process sent player data
-            if(pck.ControlSymbol == SYMBOL_DTA)
+            if (pck.ControlSymbol == SYMBOL_DTA)
             {
                 int playerID = GetPlayerIDFromPacket(pck);
                 PlayerConnectionInfo info;
                 _players.TryGetValue(playerID, out info);
 
-                if(info != null)
+                if (info != null)
                 {
                     // sprawdzanie czy pakiety od gracza są otrzymywane za szybko
                     info.NewReceiveTime = _timer;
-                    if(info.NewReceiveTime - info.LastReceiveTime >= PLAYER_PACKAGE_TIME_OFFSET)
+                    if(info.NewReceiveTime != 0.0f && info.LastReceiveTime != 0.0f)
                     {
-                        print("Server: Player at ID " + playerID.ToString() + " is sending packets TOO SLOW.");
-                        DropPlayer(playerID);
-                    }
-                    else if(info.LastReceiveTime - info.NewReceiveTime <= -PLAYER_PACKAGE_TIME_OFFSET)
-                    {
-                        print("Server: Player at ID " + playerID.ToString() + " is sending packets TOO FAST.");
-                        DropPlayer(playerID);
+                        if (info.NewReceiveTime - info.LastReceiveTime >= PLAYER_PACKAGE_TIME_OFFSET)
+                        {
+                            print("Server: Player at ID " + playerID.ToString() + " is sending packets TOO SLOW.");
+                            DropPlayer(playerID);
+                        }
+                        else if (info.LastReceiveTime - info.NewReceiveTime <= -PLAYER_PACKAGE_TIME_OFFSET)
+                        {
+                            print("Server: Player at ID " + playerID.ToString() + " is sending packets TOO FAST.");
+                            DropPlayer(playerID);
+                        }
                     }
                     info.LastReceiveTime = info.NewReceiveTime;
                     ////////////////
 
                     AckPacket(pck, info.Socket, info.EndP, null);
 
-                    if(pck.TimeStamp > info.TimeStamp)
+                    if (pck.TimeStamp > info.TimeStamp)
                     {
                         info.TimeStamp = pck.TimeStamp;
                         info.PreviousData = info.NewestData;
@@ -128,17 +132,17 @@ namespace Network
                 }
                 else
                 {
-                    Debug.LogWarning("Server: Sent data of not logged player.");
+                    Debug.LogWarning("Server: Received data of not logged player.");
                 }
             }
 
             // login new player
-            if(pck.ControlSymbol == SYMBOL_LOG)
+            else if (pck.ControlSymbol == SYMBOL_LOG)
             {
                 // check if player already connected
-                foreach(KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+                foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
                 {
-                    if(pair.Value.EndP.Address.Equals(remoteEndPoint.Address))
+                    if (pair.Value.EndP.Address.Equals(remoteEndPoint.Address))
                     {
                         Debug.LogWarning("Server: Already connected player is connecting.");
                         return true;
@@ -146,6 +150,7 @@ namespace Network
                 }
 
                 int newId = _players.Count + 1;
+                Debug.Log("Server: Assigning new id: " + newId.ToString());
 
                 Socket pSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 remoteEndPoint.Port = Client.CLIENT_PORT_LISTEN;
@@ -158,25 +163,36 @@ namespace Network
                 // inform other players that a new one has logged in
                 Packet info = new Packet();
                 info.ControlSymbol = SYMBOL_PCN;
-                info.AddAdditionalData(newId);
+                info.PacketID = newId;
 
                 MulticastPacket(info, newId);
-            }
 
+                // tell that player about all connected players on server
+                foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+                {
+                    if(pair.Key != newId)
+                    {
+                        Packet oldPlayersPacket = new Packet();
+                        info.ControlSymbol = SYMBOL_PCN;
+                        info.PacketID = pair.Key;
+                        SendPacket(oldPlayersPacket);
+                    }
+                }
+            }
             return true;
         }
 
         protected void DropPlayer(int playerID)
         {
-            Debug.Log("Server: DummyDrop of player + " + playerID.ToString() + ".");
+            Debug.Log("Server: DummyDrop of player " + playerID.ToString() + ".");
 
-            Packet packet = new Packet();
-            packet.ControlSymbol = SYMBOL_PDN;
-            packet.AddAdditionalData(playerID);
+            //Packet packet = new Packet();
+            //packet.ControlSymbol = SYMBOL_PDN;
+            //packet.AddAdditionalData(playerID);
 
-            _players.Remove(playerID);
+            //_players.Remove(playerID);
 
-            MulticastPacket(packet, playerID);
+            //MulticastPacket(packet, playerID);
         }
 
         protected void MulticastPlayerData(int playerID, PlayerData data)

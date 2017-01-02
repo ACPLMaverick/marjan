@@ -217,7 +217,7 @@ public class GameController : MonoBehaviour
 
     public PlayerSpawner GetSpawner(int i)
     {
-        return _Spawners[i - 1];
+        return _Spawners[Mathf.Clamp(i - 1, 0, _Spawners.Length - 1)];
     }
 
     public void SpawnNetworkPlayer(int id)
