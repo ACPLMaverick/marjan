@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
     public virtual void UpdateFromPlayerData(Network.PlayerData data)
     {
         // this function does nothing in default implementation
-    }
+    } 
 
     public void AddPoints(int count)
     {
@@ -91,6 +91,14 @@ public class Player : MonoBehaviour
     public void Lose()
     {
         EventLose.Invoke(this);
+    }
+
+    public void DestroyPlayer()
+    {
+        //Added this because invoking Lose() didn't work
+        _MySnakeHead.DestroyBody();
+        Destroy(_MySnakeHead.gameObject);
+        Destroy(this);
     }
 
     public Network.PlayerData GetPlayerData()
@@ -128,7 +136,7 @@ public class Player : MonoBehaviour
             Transform bodyPart = _MySnakeHead.GetBodyPartPosition(i);
             bodyPart.Translate(target);
         }
-    }
+    } 
 
     #endregion
 

@@ -189,6 +189,10 @@ public class GameController : MonoBehaviour
         {
             SpawnNetworkPlayer(2);
         }
+        if(Input.GetKeyDown(KeyCode.Backspace))
+        {
+            RemoveNetworkPlayer(2);
+        }
         //
 
         TimeSeconds = Time.time;
@@ -218,6 +222,22 @@ public class GameController : MonoBehaviour
         else
         {
             Debug.LogFormat("Player {0} already logged in", id);
+        }
+    }
+
+    public void RemoveNetworkPlayer(int id)
+    {
+        if(_playersInGame[id - 1] != null)
+        {
+            GetSpawner(id).IsPlayerAssigned = false;
+            print(_playersInGame[id - 1]);
+            _playersInGame[id - 1].DestroyPlayer();
+            _playersInGame.RemoveAt(id - 1);
+
+            if (_playersInGame.Count == 1)
+            {
+                WinForPlayer(_playersInGame[0]);
+            }
         }
     }
 
