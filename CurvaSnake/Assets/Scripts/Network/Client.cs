@@ -165,8 +165,20 @@ namespace Network
                 EventPlayerDataReceived.Invoke(GetPlayerIDFromPacket(pck), pck.PData);
             }
 
+            else if(pck.ControlSymbol == SYMBOL_PCN)
+            {
+                EventPlayerConnected.Invoke(GetPlayerIDFromPacket(pck));
+                AckPacket(pck, _sendSocket, _sendEndPoint, null);
+            }
+
+            else if(pck.ControlSymbol == SYMBOL_PDN)
+            {
+                EventPlayerDisconnected.Invoke(GetPlayerIDFromPacket(pck));
+                AckPacket(pck, _sendSocket, _sendEndPoint, null);
+            }
+
             // check for connection ACK
-            if (!_connected && pck.ControlSymbol == SYMBOL_ACK)
+            else if (!_connected && pck.ControlSymbol == SYMBOL_ACK)
             {
                 ConnectAfterAck(BitConverter.ToInt32(pck.AdditionalData, 0));
             }

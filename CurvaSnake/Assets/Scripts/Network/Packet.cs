@@ -4,6 +4,8 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Network
 {
@@ -151,6 +153,29 @@ namespace Network
                 md5.Clear();
 
                 return checksum == Checksum;
+            }
+        }
+
+        public void AddAdditionalData(object data)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, data);
+                byte[] bytes = ms.ToArray();
+
+                int adStartIndex = 0;
+                if(AdditionalData == null)
+                {
+                    AdditionalData = new byte[bytes.Length];
+                }
+                else
+                {
+                    adStartIndex = AdditionalData.Length;
+                    byte[] newAdditionalData = new byte[AdditionalData.Length + bytes.Length];
+                    AdditionalData = newAdditionalData;
+                }
+                Array.Copy(bytes, 0, AdditionalData, adStartIndex, bytes.Length);
             }
         }
     }

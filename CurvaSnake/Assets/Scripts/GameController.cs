@@ -88,9 +88,11 @@ public class GameController : MonoBehaviour
     protected List<Player> _playersInGame = new List<Player>();
     protected List<Fruit> _fruitsOnLevel = new List<Fruit>();
     protected List<int> _connectedPlayerIds = new List<int>();
+    protected List<int> _disconnectedPlayerIds = new List<int>();
     protected List<KeyValuePair<int, Network.PlayerData>> _playerDatasToUpdate = new List<KeyValuePair<int, Network.PlayerData>>();
     protected float _currentDelay = 0.0f;
     protected float _delayTimer = 0.0f;
+    protected int _localPlayerIDToSpawn = -1;
     protected bool _canEnableLocalPlayer = true;
 
     #endregion
@@ -166,15 +168,30 @@ public class GameController : MonoBehaviour
             _LocalPlayer.enabled = true;
         }
 
+        if(_localPlayerIDToSpawn != -1)
+        {
+            OnClientConnected(_localPlayerIDToSpawn);
+            _localPlayerIDToSpawn = -1;
+        }
+
         if(_connectedPlayerIds.Count != 0)
         {
             for(int i = 0; i < _connectedPlayerIds.Count; ++i)
             {
-                OnClientConnected(_connectedPlayerIds[i]);
+                //OnClientConnected(_connectedPlayerIds[i]);
+                SpawnNetworkPlayer(_connectedPlayerIds[i]);
             }
             _connectedPlayerIds.Clear();
         }
 
+        if (_disconnectedPlayerIds.Count != 0)
+        {
+            for (int i = 0; i < _connectedPlayerIds.Count; ++i)
+            {
+                DestroyNetworkPlayer(_disconnectedPlayerIds[i]);
+            }
+            _disconnectedPlayerIds.Clear();
+        }
         if(_playerDatasToUpdate.Count != 0)
         {
             for(int i = 0; i < _playerDatasToUpdate.Count; ++i)
@@ -218,6 +235,20 @@ public class GameController : MonoBehaviour
         else
         {
             Debug.LogFormat("Player {0} already logged in", id);
+        }
+    }
+
+    public void DestroyNetworkPlayer(int id)
+    {
+        int pCount = _playersInGame.Count;
+        for(int i = 0; i < pCount; ++i)
+        {
+            if(_playersInGame[i].MyID == id)
+            {
+                Destroy(_playersInGame[i].gameObject);
+                _playersInGame.RemoveAt(i);
+                return;
+            }
         }
     }
 
@@ -279,7 +310,7 @@ public class GameController : MonoBehaviour
 
     protected void CallbackOnClientConnected(int id)
     {
-        _connectedPlayerIds.Add(id);
+        _localPlayerIDToSpawn = id;
     }
 
     protected void OnClientConnected(int id)
@@ -318,6 +349,7 @@ public class GameController : MonoBehaviour
     protected void CallbackOnAnotherPlayerConnected(int id)
     {
         Debug.Log("Player connected with ID " + id.ToString());
+        _connectedPlayerIds.Add(id);
     }
 
     protected void CallbackOnAnotherPlayerDisconnected(int id)
