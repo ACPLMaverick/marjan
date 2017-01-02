@@ -284,6 +284,14 @@ public class SnakeHead : SnakeBody
         MyPlayer.Lose();
     }
 
+    public void DestroyBody()
+    {
+        for(int i = 0; i < _allBodyParts.Count; ++i)
+        {
+            Destroy(_allBodyParts[i].gameObject);
+        }
+    }
+
     public void AssignDirection(DirectionType dir)
     {
         if(/*_distanceSinceLastDirectionChange >= _sizeWorld.x &&*/     // assuming it is square
