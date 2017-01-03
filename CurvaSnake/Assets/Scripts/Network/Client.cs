@@ -64,6 +64,8 @@ namespace Network
 
         #region Public
 
+        public static int ClientPort = CLIENT_PORT_LISTEN;
+
         #region Events
         
         public class ClientEventPlayerID : UnityEvent<int> { }
@@ -97,19 +99,18 @@ namespace Network
         private UnityAction<int> _afterConnectingAction;
 
         private bool _connected = false;
-        private int _tempPort;
 
         #endregion
 
         #region Functions Public
 
-        public void SetServerAddress(string serverAddress, int port = CLIENT_PORT_LISTEN)
+        public void SetConnectionData(string serverAddress, int port = CLIENT_PORT_LISTEN)
         {
             if (!IPAddress.TryParse(serverAddress, out _serverAddress))
             {
                 _serverAddress = new IPAddress(Server.ADDRESS_LOCAL);
             }
-            _tempPort = port;
+            ClientPort = port;
         }
 
         /**
@@ -131,7 +132,7 @@ namespace Network
             SendPacket(connectPck);
 
             _receiveSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            _receiveEndPoint = new IPEndPoint(IPAddress.Any, _tempPort);
+            _receiveEndPoint = new IPEndPoint(IPAddress.Any, ClientPort);
             _receiveSocket.Bind(_receiveEndPoint);
             _receiveSocket.BeginReceiveFrom(_receiveData, 0, Server.MAX_PACKET_SIZE, SocketFlags.None, ref _receiveEndPoint, CbListener, this);
         }

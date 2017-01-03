@@ -94,6 +94,7 @@ namespace Network
                 {
                     SendPacket(_packetsSent[i].Pck, _packetsSent[i].Sck, _packetsSent[i].Ep, true);
                     ++_packetsSent[i].RetryTimes;
+                    _packetsSent[i].Timer = 0.0f;
                 }
                 else
                 {
