@@ -225,7 +225,19 @@ public class GameController : MonoBehaviour
             for(int i = 0; i < _connectedPlayerIds.Count; ++i)
             {
                 //OnClientConnected(_connectedPlayerIds[i]);
+
+                for(int j = 0; j < _playersInGame.Count; ++j)
+                {
+                    if(_playersInGame[j].MyID == _connectedPlayerIds[i])
+                    {
+                        goto ConnectedPlayerDuplicates;
+                    }
+                }
+
                 SpawnNetworkPlayer(_connectedPlayerIds[i]);
+
+            ConnectedPlayerDuplicates:;
+
             }
             _connectedPlayerIds.Clear();
         }
@@ -369,16 +381,19 @@ public class GameController : MonoBehaviour
 
     protected void OnClientConnected(int id)
     {
-        _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
-        _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
-        _gameClient.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
-        _gameClient.EventAddApple.AddListener(CallbackOnAddApple);
+        if(_LocalPlayer.MyID != id)
+        {
+            _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
+            _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
+            _gameClient.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
+            _gameClient.EventAddApple.AddListener(CallbackOnAddApple);
 
-        _LocalPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
-        _LocalPlayer.Initialize(id, _gameClient);
-        _playersInGame.Add(_LocalPlayer);
+            _LocalPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
+            _LocalPlayer.Initialize(id, _gameClient);
+            _playersInGame.Add(_LocalPlayer);
 
-        _LocalPlayer.gameObject.SetActive(true);
+            _LocalPlayer.gameObject.SetActive(true);
+        }
     }
 
     protected void CallbackOnClientDataReceived(int playerID, Network.PlayerData data)
@@ -403,12 +418,18 @@ public class GameController : MonoBehaviour
 
     protected void CallbackOnAnotherPlayerConnected(int id)
     {
-        _connectedPlayerIds.Add(id);
+        if(!_connectedPlayerIds.Contains(id))
+        {
+            _connectedPlayerIds.Add(id);
+        }
     }
 
     protected void CallbackOnAnotherPlayerDisconnected(int id)
     {
-        _disconnectedPlayerIds.Add(id);
+        if (!_disconnectedPlayerIds.Contains(id))
+        {
+            _disconnectedPlayerIds.Add(id);
+        }
     }
 
     protected void CallbackOnAddApple(int id, Vector2 pos)
