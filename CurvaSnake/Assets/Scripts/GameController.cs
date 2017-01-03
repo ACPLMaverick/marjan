@@ -26,9 +26,6 @@ public class GameController : MonoBehaviour
     protected string _ServerAddress;
 
     [SerializeField]
-    protected int _ClientPort = -1;
-
-    [SerializeField]
     protected NetworkMode _NetworkMode;
 
     [SerializeField]
@@ -117,20 +114,11 @@ public class GameController : MonoBehaviour
             GameObject srv = Instantiate(_ServerPrefab);
             srv.transform.parent = transform;
             _localServer = srv.GetComponent<Network.Server>();
-            _localServer.EventAddApple.AddListener(GenerateNewFruit);
         }
 
         _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
         _gameClient.gameObject.transform.parent = transform;
-
-        if (_ClientPort != -1)
-        {
-            _gameClient.SetConnectionData(_ServerAddress, _ClientPort);
-        }
-        else
-        {
-            _gameClient.SetConnectionData(_ServerAddress);
-        }
+        _gameClient.SetServerAddress(_ServerAddress);
         _gameClient.Connect(CallbackOnClientConnected);
 
         //network players for tetin
@@ -153,6 +141,8 @@ public class GameController : MonoBehaviour
 
         _Players.Add(_LocalPlayer);
         _LocalPlayer.gameObject.SetActive(false);
+
+        _localServer.EventAddApple.AddListener(GenerateNewFruit);
 
     }
 
