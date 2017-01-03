@@ -194,7 +194,7 @@ namespace Network
                 Debug.Log("Server: Assigning new id: " + newId.ToString());
 
                 Socket pSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                remoteEndPoint.Port = Client.CLIENT_PORT_LISTEN;
+                remoteEndPoint.Port = Client.ClientPort;
                 PlayerConnectionInfo pcinfo = new PlayerConnectionInfo(pSocket, remoteEndPoint);
                 _players.Add(newId, pcinfo);
 

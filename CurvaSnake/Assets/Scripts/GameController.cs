@@ -26,6 +26,9 @@ public class GameController : MonoBehaviour
     protected string _ServerAddress;
 
     [SerializeField]
+    protected int _ClientPort = -1;
+
+    [SerializeField]
     protected NetworkMode _NetworkMode;
 
     [SerializeField]
@@ -119,7 +122,15 @@ public class GameController : MonoBehaviour
 
         _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
         _gameClient.gameObject.transform.parent = transform;
-        _gameClient.SetServerAddress(_ServerAddress);
+
+        if (_ClientPort != -1)
+        {
+            _gameClient.SetConnectionData(_ServerAddress, _ClientPort);
+        }
+        else
+        {
+            _gameClient.SetConnectionData(_ServerAddress);
+        }
         _gameClient.Connect(CallbackOnClientConnected);
 
         //network players for tetin
@@ -142,6 +153,7 @@ public class GameController : MonoBehaviour
 
         _Players.Add(_LocalPlayer);
         _LocalPlayer.gameObject.SetActive(false);
+
     }
 
     // Update is called once per frame
