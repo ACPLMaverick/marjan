@@ -114,6 +114,7 @@ public class GameController : MonoBehaviour
             GameObject srv = Instantiate(_ServerPrefab);
             srv.transform.parent = transform;
             _localServer = srv.GetComponent<Network.Server>();
+            _localServer.EventAddApple.AddListener(GenerateNewFruit);
         }
 
         _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
@@ -141,9 +142,6 @@ public class GameController : MonoBehaviour
 
         _Players.Add(_LocalPlayer);
         _LocalPlayer.gameObject.SetActive(false);
-
-        _localServer.EventAddApple.AddListener(GenerateNewFruit);
-
     }
 
     // Update is called once per frame
