@@ -110,7 +110,7 @@ namespace Network
 
         protected virtual void BreakConnection()
         {
-            Debug.LogError("Connection broken, sent packet was not ack'ed.");
+            Debug.LogWarning("Packet was not ack'ed. Dropping it.");
         }
 
         protected virtual void SendPlayerData(PlayerData pd)

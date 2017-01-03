@@ -71,6 +71,20 @@ public class GameController : MonoBehaviour
 
     #region Protected
 
+    protected internal class FruitData
+    {
+        public Vector2 _Pos;
+        public Fruit _Fruit;
+        public int _FruitID;
+
+        public FruitData(Vector2 pos, Fruit fruit, int fruitID)
+        {
+            _Pos = pos;
+            _Fruit = fruit;
+            _FruitID = fruitID;
+        }
+    }
+
     protected Network.Server _localServer;
 
      /** 
@@ -86,11 +100,11 @@ public class GameController : MonoBehaviour
     //protected Transform _fruitAreaMax;
 
     protected List<Player> _playersInGame = new List<Player>();
-    protected List<Fruit> _fruitsOnLevel = new List<Fruit>();
+    protected List<FruitData> _fruitsOnLevel = new List<FruitData>();
     protected List<int> _connectedPlayerIds = new List<int>();
     protected List<int> _disconnectedPlayerIds = new List<int>();
     protected List<KeyValuePair<int, Network.PlayerData>> _playerDatasToUpdate = new List<KeyValuePair<int, Network.PlayerData>>();
-    protected List<Vector2> _applePositionsToGenerate = new List<Vector2>();
+    protected List<FruitData> _appleDatasToGenerate = new List<FruitData>();
     //protected float _currentDelay = 0.0f;
     //protected float _delayTimer = 0.0f;
     protected int _localPlayerIDToSpawn = -1;
@@ -115,7 +129,6 @@ public class GameController : MonoBehaviour
             GameObject srv = Instantiate(_ServerPrefab);
             srv.transform.parent = transform;
             _localServer = srv.GetComponent<Network.Server>();
-            _localServer.EventAddApple.AddListener(GenerateNewFruit);
         }
 
         _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
@@ -164,13 +177,36 @@ public class GameController : MonoBehaviour
             }
         }
         */
-        if(_applePositionsToGenerate.Count != 0)
+        if(_appleDatasToGenerate.Count != 0)
         {
-            for(int i = 0; i < _applePositionsToGenerate.Count; ++i)
+        DuplicateFoundTryAgain:;
+            for(int i = 0; i < _appleDatasToGenerate.Count; ++i)
             {
-                GenerateNewFruit(_applePositionsToGenerate[i]);
+                FruitData data = _appleDatasToGenerate[i];
+
+                // check for duplicates
+                for (int j = 0; j < _appleDatasToGenerate.Count; ++j)
+                {
+                    if(_appleDatasToGenerate[i] != data && _appleDatasToGenerate[i]._FruitID == data._FruitID)
+                    {
+                        _appleDatasToGenerate.Remove(data);
+                        goto DuplicateFoundTryAgain;
+                    }
+                }
+
+                for (int j = 0; j < _fruitsOnLevel.Count; ++j)
+                {
+                    if(_fruitsOnLevel[i]._FruitID == data._FruitID)
+                    {
+                        goto DuplicateFound;
+                    }
+                }
+
+                GenerateNewFruit(ref data);
+
+            DuplicateFound:;
             }
-            _applePositionsToGenerate.Clear();
+            _appleDatasToGenerate.Clear();
         }
 
         if(_canEnableLocalPlayer && !_LocalPlayer.enabled)
@@ -289,7 +325,14 @@ public class GameController : MonoBehaviour
 
     protected void OnFruitCollected(Fruit fruit)
     {
-        _fruitsOnLevel.Remove(fruit);
+        foreach(FruitData frData in _fruitsOnLevel)
+        {
+            if(frData._Fruit == fruit)
+            {
+                _fruitsOnLevel.Remove(frData);
+                break;
+            }
+        }
         //_currentDelay = UnityEngine.Random.Range(_FruitGenerateDelayMin, _FruitGenerateDelayMax);
         //_delayTimer = _currentDelay;
     }
@@ -307,14 +350,14 @@ public class GameController : MonoBehaviour
         Application.Quit();
     }
 
-    protected void GenerateNewFruit(Vector2 pos)
+    protected void GenerateNewFruit(ref FruitData data)
     {
         int n = UnityEngine.Random.Range(0, _FruitPrefabs.Count - 1);
         GameObject newFruitObject = Instantiate(_FruitPrefabs[n]);
-        newFruitObject.GetComponent<Transform>().position = pos;
-        Fruit fr = newFruitObject.GetComponent<Fruit>();
-        fr.EventCollected.AddListener(new UnityEngine.Events.UnityAction<Fruit>(OnFruitCollected));
-        _fruitsOnLevel.Add(fr);
+        newFruitObject.GetComponent<Transform>().position = data._Pos;
+        data._Fruit = newFruitObject.GetComponent<Fruit>();
+        data._Fruit.EventCollected.AddListener(new UnityEngine.Events.UnityAction<Fruit>(OnFruitCollected));
+        _fruitsOnLevel.Add(data);
     }
 
     #region NetworkRelated
@@ -368,9 +411,9 @@ public class GameController : MonoBehaviour
         _disconnectedPlayerIds.Add(id);
     }
 
-    protected void CallbackOnAddApple(Vector2 pos)
+    protected void CallbackOnAddApple(int id, Vector2 pos)
     {
-        _applePositionsToGenerate.Add(pos);
+        _appleDatasToGenerate.Add(new FruitData(pos, null, id));
     }
 
 

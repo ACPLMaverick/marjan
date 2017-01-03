@@ -113,9 +113,11 @@ namespace Network
 
                 EventAddApple.Invoke(_applePosition);
 
+                int appleID = BitConverter.ToInt32(BitConverter.GetBytes(Time.time), 0);
+
                 foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
                 {
-                    MulticastApplePosition(pair.Key, _applePosition);
+                    MulticastApplePosition(pair.Key, appleID, _applePosition);
                 }
             }
             else // decrement the timer
@@ -247,25 +249,33 @@ namespace Network
             MulticastPacket(packet, playerID);
         }
 
-        protected void MulticastApplePosition(int playerID, Vector2 pos)
+        protected void MulticastApplePosition(int playerID, int appleID, Vector2 pos)
         {
             Packet packet = new Packet();
             packet.ControlSymbol = SYMBOL_APL;
 
-            byte[] bytes = new byte[8]; //4 per float
+            byte[] bytes = new byte[12]; // one int and two floats
 
-            for (int i = 0; i < 4; ++i)
+            byte[] idBytes = BitConverter.GetBytes(appleID);
+            byte[] xBytes = BitConverter.GetBytes(pos.x);
+            byte[] yBytes = BitConverter.GetBytes(pos.y);
+
+            for(int i = 0, w = 0; i < 4; ++i, ++w)
             {
-                bytes[i] = BitConverter.GetBytes(pos.x)[i];
+                bytes[i] = idBytes[w];
             }
-            for(int j = 0; j < 4; ++j)
+            for (int i = 4, w = 0; i < 8; ++i, ++w)
             {
-                bytes[4 + j] = BitConverter.GetBytes(pos.y)[j];
+                bytes[i] = xBytes[w];
+            }
+            for(int i = 8, w = 0; i < 12; ++i, ++w)
+            {
+                bytes[i] = yBytes[w];
             }
 
             packet.AdditionalData = bytes;
 
-            MulticastPacket(packet, playerID);
+            MulticastPacket(packet);
         }
 
         protected void MulticastPacket(Packet packet, int playerIDToOmitt = -1, bool noAck = false)
