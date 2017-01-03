@@ -187,7 +187,7 @@ public class GameController : MonoBehaviour
                 // check for duplicates
                 for (int j = 0; j < _appleDatasToGenerate.Count; ++j)
                 {
-                    if(_appleDatasToGenerate[i] != data && _appleDatasToGenerate[i]._FruitID == data._FruitID)
+                    if(_appleDatasToGenerate[j] != data && _appleDatasToGenerate[j]._FruitID == data._FruitID)
                     {
                         _appleDatasToGenerate.Remove(data);
                         goto DuplicateFoundTryAgain;
@@ -196,7 +196,7 @@ public class GameController : MonoBehaviour
 
                 for (int j = 0; j < _fruitsOnLevel.Count; ++j)
                 {
-                    if(_fruitsOnLevel[i]._FruitID == data._FruitID)
+                    if(_fruitsOnLevel[j]._FruitID == data._FruitID)
                     {
                         goto DuplicateFound;
                     }
