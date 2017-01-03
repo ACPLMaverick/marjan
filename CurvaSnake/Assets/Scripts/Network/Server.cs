@@ -44,7 +44,7 @@ namespace Network
             public PlayerData NewestData;
             public PlayerData PreviousData;
             public float TimeStamp;
-            public bool NeedToMulticast;
+            public bool NeedToMulticast = false;
             public float LastReceiveTime;
             public float NewReceiveTime;
 
@@ -59,6 +59,7 @@ namespace Network
         }
 
         protected Dictionary<int, PlayerConnectionInfo> _players = new Dictionary<int, PlayerConnectionInfo>();
+        protected Dictionary<int, PlayerConnectionInfo> _playersPending = new Dictionary<int, PlayerConnectionInfo>();
 
         protected float _timer = 0.0f;
 
@@ -194,13 +195,23 @@ namespace Network
                     }
                 }
 
+                // check if player is already pending
+                foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _playersPending)
+                {
+                    if (pair.Value.EndP.Address.Equals(remoteEndPoint.Address))
+                    {
+                        Debug.LogWarning("Server: Already pending connected player is connecting.");
+                        return true;
+                    }
+                }
+
                 int newId = _players.Count + 1;
                 Debug.Log("Server: Assigning new id: " + newId.ToString());
 
                 Socket pSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 remoteEndPoint.Port = Client.CLIENT_PORT_LISTEN;
                 PlayerConnectionInfo pcinfo = new PlayerConnectionInfo(pSocket, remoteEndPoint);
-                _players.Add(newId, pcinfo);
+                _playersPending.Add(newId, pcinfo);
 
                 AckPacket(pck, pcinfo.Socket, pcinfo.EndP, BitConverter.GetBytes(newId));
 
@@ -211,17 +222,32 @@ namespace Network
                 info.PacketID = newId;
 
                 MulticastPacket(info, newId);
+            }
 
-                // tell that player about all connected players on server
-                foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+            // pending player sends his regards
+            else if(_playersPending.Count != 0 && pck.ControlSymbol == SYMBOL_ACK && pck.AdditionalData != null)
+            {
+                int ackID = BitConverter.ToInt32(pck.AdditionalData, 0);
+
+                PlayerConnectionInfo pInfo = null;
+                _playersPending.TryGetValue(ackID, out pInfo);
+                if(pInfo != null)
                 {
-                    if(pair.Key != newId)
+                    // tell that player about all connected players on server
+                    foreach (KeyValuePair<int, PlayerConnectionInfo> pairInter in _players)
                     {
                         Packet oldPlayersPacket = new Packet();
-                        info.ControlSymbol = SYMBOL_PCN;
-                        info.PacketID = pair.Key;
-                        SendPacket(oldPlayersPacket, pcinfo.Socket, pcinfo.EndP);
+                        oldPlayersPacket.ControlSymbol = SYMBOL_PCN;
+                        oldPlayersPacket.PacketID = pairInter.Key;
+                        SendPacket(oldPlayersPacket, pInfo.Socket, pInfo.EndP);
                     }
+
+                    _playersPending.Remove(ackID);
+                    _players.Add(ackID, pInfo);
+                }
+                else
+                {
+                    Debug.LogWarning("Server: Player sends his ACK for ID but isn't in pending players list.");
                 }
             }
             return true;
