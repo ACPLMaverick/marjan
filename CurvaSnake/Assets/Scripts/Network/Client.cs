@@ -74,19 +74,31 @@ namespace Network
          * instantiate him locally.
          * Arg - player ID 
          */
-        public ClientEventPlayerID EventPlayerConnected = new ClientEventPlayerID();
+        public ClientEventPlayerID EventPlayerConnected;
 
         /**
          * Used to notify that a player has been disconnected and can safely be destroyed locally
          * Arg - player ID
          */
-        public ClientEventPlayerID EventPlayerDisconnected = new ClientEventPlayerID();
+        public ClientEventPlayerID EventPlayerDisconnected;
 
-        public ClientEventPlayerIDData EventPlayerDataReceived = new ClientEventPlayerIDData();
+        public ClientEventPlayerIDData EventPlayerDataReceived;
 
-        public ClientEventIntVector2 EventAddApple = new ClientEventIntVector2();
+        public ClientEventIntVector2 EventAddApple;
 
         #endregion
+
+        #endregion
+
+        #region Monobehaviours
+
+        protected virtual void Awake()
+        {
+            EventPlayerConnected = new ClientEventPlayerID();
+            EventPlayerDisconnected = new ClientEventPlayerID();
+            EventPlayerDataReceived = new ClientEventPlayerIDData();
+            EventAddApple = new ClientEventIntVector2();
+        }
 
         #endregion
 

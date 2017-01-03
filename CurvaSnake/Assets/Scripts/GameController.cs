@@ -133,6 +133,10 @@ public class GameController : MonoBehaviour
 
         _gameClient = Instantiate(_ClientPrefab).GetComponent<Network.Client>();
         _gameClient.gameObject.transform.parent = transform;
+        _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
+        _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
+        _gameClient.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
+        _gameClient.EventAddApple.AddListener(CallbackOnAddApple);
         _gameClient.SetServerAddress(_ServerAddress);
         _gameClient.Connect(CallbackOnClientConnected);
 
@@ -383,11 +387,6 @@ public class GameController : MonoBehaviour
     {
         if(_LocalPlayer.MyID != id)
         {
-            _gameClient.EventPlayerConnected.AddListener(CallbackOnAnotherPlayerConnected);
-            _gameClient.EventPlayerDisconnected.AddListener(CallbackOnAnotherPlayerDisconnected);
-            _gameClient.EventPlayerDataReceived.AddListener(CallbackOnClientDataReceived);
-            _gameClient.EventAddApple.AddListener(CallbackOnAddApple);
-
             _LocalPlayer.EventLose.AddListener(new UnityEngine.Events.UnityAction<Player>(OnPlayerLose));
             _LocalPlayer.Initialize(id, _gameClient);
             _playersInGame.Add(_LocalPlayer);
