@@ -90,6 +90,7 @@ public class GameController : MonoBehaviour
     protected List<int> _connectedPlayerIds = new List<int>();
     protected List<int> _disconnectedPlayerIds = new List<int>();
     protected List<KeyValuePair<int, Network.PlayerData>> _playerDatasToUpdate = new List<KeyValuePair<int, Network.PlayerData>>();
+    protected List<Vector2> _applePositionsToGenerate = new List<Vector2>();
     //protected float _currentDelay = 0.0f;
     //protected float _delayTimer = 0.0f;
     protected int _localPlayerIDToSpawn = -1;
@@ -163,6 +164,15 @@ public class GameController : MonoBehaviour
             }
         }
         */
+        if(_applePositionsToGenerate.Count != 0)
+        {
+            for(int i = 0; i < _applePositionsToGenerate.Count; ++i)
+            {
+                GenerateNewFruit(_applePositionsToGenerate[i]);
+            }
+            _applePositionsToGenerate.Clear();
+        }
+
         if(_canEnableLocalPlayer && !_LocalPlayer.enabled)
         {
             _LocalPlayer.enabled = true;
@@ -301,12 +311,7 @@ public class GameController : MonoBehaviour
     {
         int n = UnityEngine.Random.Range(0, _FruitPrefabs.Count - 1);
         GameObject newFruitObject = Instantiate(_FruitPrefabs[n]);
-        newFruitObject.GetComponent<Transform>().position = pos;//new Vector3
- //           (
- //               UnityEngine.Random.Range(_fruitAreaMin.position.x, _fruitAreaMax.position.x),
- //               UnityEngine.Random.Range(_fruitAreaMin.position.y, _fruitAreaMax.position.y),
- //               UnityEngine.Random.Range(_fruitAreaMin.position.z, _fruitAreaMax.position.z)
- //           );
+        newFruitObject.GetComponent<Transform>().position = pos;
         Fruit fr = newFruitObject.GetComponent<Fruit>();
         fr.EventCollected.AddListener(new UnityEngine.Events.UnityAction<Fruit>(OnFruitCollected));
         _fruitsOnLevel.Add(fr);
@@ -365,7 +370,7 @@ public class GameController : MonoBehaviour
 
     protected void CallbackOnAddApple(Vector2 pos)
     {
-        GenerateNewFruit(pos);
+        _applePositionsToGenerate.Add(pos);
     }
 
 

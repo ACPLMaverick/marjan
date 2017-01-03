@@ -13,7 +13,8 @@ namespace Network
 
         public static readonly int ADDRESS_LOCAL = Utility.GetAddressAsInt(IPAddress.Loopback);
         public const float PLAYER_TIMEOUT_SECONDS = 5.0f;
-        public const float PLAYER_PACKAGE_TIME_OFFSET = 0.5f;
+        public const float PLAYER_PACKAGE_TIME_OFFSET_MIN = 0.01f;
+        public const float PLAYER_PACKAGE_TIME_OFFSET_MAX = 1.0f;
         public const int PORT_SEND = 2301;
         public const int PORT_LISTEN = 2302;
 
@@ -147,12 +148,13 @@ namespace Network
                     info.NewReceiveTime = _timer;
                     if(info.NewReceiveTime != 0.0f && info.LastReceiveTime != 0.0f)
                     {
-                        if (info.NewReceiveTime - info.LastReceiveTime >= PLAYER_PACKAGE_TIME_OFFSET)
+                        float diff = info.NewReceiveTime - info.LastReceiveTime;
+                        if (diff > PLAYER_PACKAGE_TIME_OFFSET_MAX)
                         {
                             print("Server: Player at ID " + playerID.ToString() + " is sending packets TOO SLOW.");
                             DropPlayer(playerID);
                         }
-                        else if (info.LastReceiveTime - info.NewReceiveTime <= -PLAYER_PACKAGE_TIME_OFFSET)
+                        else if (diff < PLAYER_PACKAGE_TIME_OFFSET_MIN)
                         {
                             print("Server: Player at ID " + playerID.ToString() + " is sending packets TOO FAST.");
                             DropPlayer(playerID);

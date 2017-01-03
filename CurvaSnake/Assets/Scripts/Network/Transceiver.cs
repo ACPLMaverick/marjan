@@ -20,7 +20,7 @@ namespace Network
         public const byte SYMBOL_APL = 0x03;
 
         public const float MAX_SEND_PACKET_WAIT = 0.2f;
-        public const int MAX_SEND_PACKET_RETRY_TIMES = 10;
+        public const int MAX_SEND_PACKET_RETRY_TIMES = 50;
 
         #endregion
 
@@ -126,7 +126,7 @@ namespace Network
         protected virtual void SendPacket(Packet packet, Socket sck, EndPoint ep, bool noAck = false)
         {
             packet.CreateRawData();
-            int sent = sck.SendTo(packet.RawData, ep);
+            sck.SendTo(packet.RawData, ep);
 
             if (!noAck)
             {
@@ -151,7 +151,7 @@ namespace Network
             }
 
             // check for acks for sent packets
-            if(pck.RawData[0] == SYMBOL_ACK)
+            if(pck.ControlSymbol == SYMBOL_ACK)
             {
                 int snum = _packetsSent.Count;
                 for(int i = 0; i < snum; ++i)
@@ -196,13 +196,13 @@ namespace Network
             EndPoint remoteEndPoint = new IPEndPoint(0, 0);
             try
             {
-                int bytesRead = _receiveSocket.EndReceiveFrom(data, ref remoteEndPoint);
-
-                ListenerInternal(data, (IPEndPoint)remoteEndPoint);
+                _receiveSocket.EndReceiveFrom(data, ref remoteEndPoint);
 
                 _receiveSocket.BeginReceiveFrom(_receiveData, 0, Server.MAX_PACKET_SIZE, SocketFlags.None, ref _receiveEndPoint, CbListener, this);
+
+                ListenerInternal(data, (IPEndPoint)remoteEndPoint);
             }
-            catch (SocketException e)
+            catch
             {
                 _receiveSocket.EndReceiveFrom(data, ref remoteEndPoint);
             }
