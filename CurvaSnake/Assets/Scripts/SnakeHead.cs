@@ -331,7 +331,6 @@ public class SnakeHead : SnakeBody
 
     public void SetPositionsAndDirectionsForAllParts(int allPartCount, Vector2[] positions, DirectionType[] directions)
     {
-        Vector2 offset = new Vector2(-2.0f, -2.0f);
         // data check
         if(positions.Length != directions.Length)
         {
@@ -361,7 +360,7 @@ public class SnakeHead : SnakeBody
             // allbodyparts doesnt contain head.
         }
 
-        transform.position = positions[0] + offset;
+        transform.position = positions[0];
         Direction = DirectionTypeToDirection(directions[0]);
         _movementTimer = 0.0f;
 
@@ -376,7 +375,7 @@ public class SnakeHead : SnakeBody
             {
                 // this is a bent part. Set position and direction from received data
                 // And set this as governing part
-                _allBodyParts[i].transform.position = positions[b] + offset;
+                _allBodyParts[i].transform.position = positions[b];
                 _allBodyParts[i].Direction = directionVectors[b];
 
                 ++b;
