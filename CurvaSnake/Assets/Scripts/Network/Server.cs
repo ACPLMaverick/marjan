@@ -13,7 +13,7 @@ namespace Network
 
         public static readonly int ADDRESS_LOCAL = Utility.GetAddressAsInt(IPAddress.Loopback);
         public const float PLAYER_TIMEOUT_SECONDS = 5.0f;
-        public const float PLAYER_PACKAGE_TIME_OFFSET_MIN = 0.01f;
+        public const float PLAYER_PACKAGE_TIME_OFFSET_MIN = 0.0001f;
         public const float PLAYER_PACKAGE_TIME_OFFSET_MAX = 1.0f;
         public const int PORT_SEND = 2301;
         public const int PORT_LISTEN = 2302;
@@ -220,7 +220,7 @@ namespace Network
                         Packet oldPlayersPacket = new Packet();
                         info.ControlSymbol = SYMBOL_PCN;
                         info.PacketID = pair.Key;
-                        SendPacket(oldPlayersPacket);
+                        SendPacket(oldPlayersPacket, pcinfo.Socket, pcinfo.EndP);
                     }
                 }
             }

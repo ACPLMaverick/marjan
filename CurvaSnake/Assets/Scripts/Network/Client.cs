@@ -165,21 +165,20 @@ namespace Network
             if(pck.ControlSymbol == SYMBOL_DTA)
             {
                 AckPacket(pck, _sendSocket, _sendEndPoint, null);
-                Debug.Log("Data received.");
                 EventPlayerDataReceived.Invoke(GetPlayerIDFromPacket(pck), pck.PData);
             }
 
             else if(pck.ControlSymbol == SYMBOL_PCN)
             {
+                AckPacket(pck, _sendSocket, _sendEndPoint, null);
                 int id = GetPlayerIDFromPacket(pck);
                 EventPlayerConnected.Invoke(id);
-                AckPacket(pck, _sendSocket, _sendEndPoint, null);
             }
 
             else if(pck.ControlSymbol == SYMBOL_PDN)
             {
-                EventPlayerDisconnected.Invoke(GetPlayerIDFromPacket(pck));
                 AckPacket(pck, _sendSocket, _sendEndPoint, null);
+                EventPlayerDisconnected.Invoke(GetPlayerIDFromPacket(pck));
             }
 
             // check for connection ACK

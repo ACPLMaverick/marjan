@@ -15,9 +15,9 @@ namespace Network
         public const byte SYMBOL_DTA = 0x69;
         public const byte SYMBOL_ACK = 0x6;
         public const byte SYMBOL_NAK = 0x15;
-        public const byte SYMBOL_PCN = 0x01;
-        public const byte SYMBOL_PDN = 0x02;
-        public const byte SYMBOL_APL = 0x03;
+        public const byte SYMBOL_PCN = 0x1;
+        public const byte SYMBOL_PDN = 0x2;
+        public const byte SYMBOL_APL = 0x3;
 
         public const float MAX_SEND_PACKET_WAIT = 0.2f;
         public const int MAX_SEND_PACKET_RETRY_TIMES = 50;
