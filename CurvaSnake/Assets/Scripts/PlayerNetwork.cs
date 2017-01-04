@@ -2,6 +2,9 @@
 using System.Collections;
 using Network;
 
+/// <summary>
+/// Derived class for player set as network player
+/// </summary>
 public class PlayerNetwork : Player
 {
 
