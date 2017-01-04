@@ -92,27 +92,27 @@ public class SnakeBody : MonoBehaviour
                 PickFruit(fr);
             }
         }
-        else if (coll.gameObject.CompareTag("head"))
-        {
-            SnakeHead head = coll.GetComponent<SnakeHead>();
-            if (head != Previous)
-            {
-                Head.RegisterCollision(this);
-                Head.BodyPartCleanup();
-                Kill();
-            }
-        }
-        else if (coll.gameObject.CompareTag("snake"))
-        {
-            SnakeBody body = coll.GetComponent<SnakeBody>();
-            if (body != Previous && body != Next)
-            {
-                Head.RegisterCollision(this);
-                Head.BodyPartCleanup();
-                Kill();
-            }
-        }
-        else
+        //else if (coll.gameObject.CompareTag("head"))
+        //{
+        //    SnakeHead head = coll.GetComponent<SnakeHead>();
+        //    if (head != Previous)
+        //    {
+        //        Head.RegisterCollision(this);
+        //        Head.BodyPartCleanup();
+        //        Kill();
+        //    }
+        //}
+        //else if (coll.gameObject.CompareTag("snake"))
+        //{
+        //    SnakeBody body = coll.GetComponent<SnakeBody>();
+        //    if (body != Previous && body != Next)
+        //    {
+        //        Head.RegisterCollision(this);
+        //        Head.BodyPartCleanup();
+        //        Kill();
+        //    }
+        //}
+        else if (coll.gameObject.CompareTag("wall"))
         {
             Head.RegisterCollision(this);
             Head.BodyPartCleanup();

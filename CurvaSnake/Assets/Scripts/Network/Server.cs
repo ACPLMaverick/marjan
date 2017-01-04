@@ -94,6 +94,35 @@ namespace Network
 
             _timer += Time.deltaTime;
 
+            // calculate collisions with other players
+            foreach(KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+            {
+                int collisionID, otherPlayerID, otherPlayerCollisionID;
+                CalculateCollisionWithPlayers(pair, out collisionID, out otherPlayerID, out otherPlayerCollisionID);
+
+                if(collisionID != -1)
+                {
+                    // tell that player that he had a collision
+                    Packet colPacket = new Packet();
+                    colPacket.ControlSymbol = SYMBOL_COL;
+                    colPacket.PacketID = pair.Key;
+                    colPacket.PData = pair.Value.NewestData;
+                    colPacket.PData.CollisionAtPart = collisionID;
+                    SendPacket(colPacket, pair.Value.Socket, pair.Value.EndP);
+
+                    // tell other players that this player has lost
+                    Packet disPacket = new Packet();
+                    disPacket.ControlSymbol = SYMBOL_PDN;
+                    disPacket.PacketID = pair.Key;
+                    MulticastPacket(disPacket, pair.Key);
+
+                    // remove that player
+                    _players.Remove(pair.Key);
+                    break;
+                }
+            }
+
+            // send all current player data
             foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
             {
                 if (pair.Value.NeedToMulticast)
@@ -179,6 +208,27 @@ namespace Network
                 else
                 {
                     Debug.LogWarning("Server: Received data of not logged player.");
+                }
+            }
+
+            // collision drop
+            else if(pck.ControlSymbol == SYMBOL_COL)
+            {
+                int playerID = GetPlayerIDFromPacket(pck);
+                PlayerConnectionInfo info;
+                _players.TryGetValue(playerID, out info);
+
+                if(info != null)
+                {
+                    Debug.Log("Server: Dropping player " + playerID.ToString());
+                    // tell other players that this player has lost
+                    Packet disPacket = new Packet();
+                    disPacket.ControlSymbol = SYMBOL_PDN;
+                    disPacket.PacketID = playerID;
+                    MulticastPacket(disPacket, playerID);
+
+                    // remove that player
+                    _players.Remove(playerID);
                 }
             }
 
@@ -313,6 +363,51 @@ namespace Network
 
                 SendPacket(packet, pair.Value.Socket, pair.Value.EndP, noAck);
             }
+        }
+
+        protected void CalculateCollisionWithPlayers(KeyValuePair<int, PlayerConnectionInfo> player, out int playerCollisionID, out int otherPlayerID, out int otherPlayerCollisionID)
+        {
+            float offset = 0.55f;
+            playerCollisionID = -1;
+            otherPlayerID = -1;
+            otherPlayerCollisionID = -1;
+
+            if(player.Value.NewestData != null)
+            {
+                Vector2 ph = player.Value.NewestData.PartsBentPositions[0];
+                foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
+                {
+                    if (pair.Key != player.Key)
+                    {
+                        Vector2[] otherBendPositions = pair.Value.NewestData.PartsBentPositions;
+                        int otherBendCount = otherBendPositions.Length;
+                        for (int i = 0; i < otherBendCount - 1; ++i)
+                        {
+                            Vector2 a = otherBendPositions[i];
+                            Vector2 b = otherBendPositions[i + 1];
+
+                            Vector2 min = Vector2.Min(a, b);
+                            Vector2 max = Vector2.Max(a, b);
+
+                            if ((ph.x > (min.x - offset) && ph.y > (min.y - offset)) &&
+                                (ph.x < (max.y + offset) && ph.y < (max.y - offset)))
+                            {
+                                float dist = Mathf.Abs
+                                (
+                                    ((b.y - a.y) / (b.x - a.x)) * ph.x - ph.y + ((b.x * a.y - a.x * b.y) / (b.x - a.x))
+                                ) / Mathf.Sqrt(Mathf.Pow((b.y - a.y) / (b.x - a.x), 2.0f) + 1.0f);
+
+                                if (dist < offset)
+                                {
+                                    playerCollisionID = 0;
+                                    otherPlayerID = -1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         #endregion

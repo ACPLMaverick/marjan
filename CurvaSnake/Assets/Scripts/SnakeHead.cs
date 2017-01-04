@@ -119,25 +119,25 @@ public class SnakeHead : SnakeBody
         base.Update();
     }
 
-    protected override void OnTriggerEnter2D(Collider2D coll)
-    {
-        if (coll.gameObject.CompareTag("fruit"))
-        {
-            Fruit fr = coll.gameObject.GetComponent<Fruit>();
-            if (fr != null)
-            {
-                PickFruit(fr);
-            }
-        }
-        //else if(coll.gameObject.CompareTag("snake") || coll.gameObject.CompareTag("head"))
-        //{
-        //    // do nothing
-        //}
-        else
-        {
-            Kill();
-        }
-    }
+    //protected override void OnTriggerEnter2D(Collider2D coll)
+    //{
+    //    if (coll.gameObject.CompareTag("fruit"))
+    //    {
+    //        Fruit fr = coll.gameObject.GetComponent<Fruit>();
+    //        if (fr != null)
+    //        {
+    //            PickFruit(fr);
+    //        }
+    //    }
+    //    //else if(coll.gameObject.CompareTag("snake") || coll.gameObject.CompareTag("head"))
+    //    //{
+    //    //    // do nothing
+    //    //}
+    //    else
+    //    {
+    //        Kill();
+    //    }
+    //}
 
     #endregion
 

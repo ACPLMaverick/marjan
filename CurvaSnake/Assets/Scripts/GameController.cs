@@ -248,9 +248,16 @@ public class GameController : MonoBehaviour
 
         if (_disconnectedPlayerIds.Count != 0)
         {
-            for (int i = 0; i < _connectedPlayerIds.Count; ++i)
+            for (int i = 0; i < _disconnectedPlayerIds.Count; ++i)
             {
-                DestroyNetworkPlayer(_disconnectedPlayerIds[i]);
+                if(_disconnectedPlayerIds[i] == _LocalPlayer.MyID)
+                {
+                    _LocalPlayer.DestroyPlayer();
+                }
+                else
+                {
+                    DestroyNetworkPlayer(_disconnectedPlayerIds[i]);
+                }
             }
             _disconnectedPlayerIds.Clear();
         }
@@ -326,16 +333,13 @@ public class GameController : MonoBehaviour
 
     protected void OnPlayerLose(Player player)
     {
-        Debug.Log(player.gameObject.name + ", you died, sir.");
+        _gameClient.SendLocalLoseInfo(player.MyID);
+
         _playersInGame.Remove(player);
 
         if(_playersInGame.Count == 1)
         {
             WinForPlayer(_playersInGame[0]);
-        }
-        else if(_playersInGame.Count == 0)
-        {
-            Draw();
         }
     }
 

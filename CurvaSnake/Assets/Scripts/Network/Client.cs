@@ -162,6 +162,14 @@ namespace Network
             SendPacket(packet);
         }
 
+        public void SendLocalLoseInfo(int id)
+        {
+            Packet packet = new Packet();
+            packet.ControlSymbol = SYMBOL_COL;
+            packet.PacketID = id;
+            SendPacket(packet);
+        }
+
         #endregion
 
         #region Functions Protected
@@ -188,6 +196,12 @@ namespace Network
             }
 
             else if(pck.ControlSymbol == SYMBOL_PDN)
+            {
+                AckPacket(pck, _sendSocket, _sendEndPoint, null);
+                EventPlayerDisconnected.Invoke(GetPlayerIDFromPacket(pck));
+            }
+
+            else if(pck.ControlSymbol == SYMBOL_COL)
             {
                 AckPacket(pck, _sendSocket, _sendEndPoint, null);
                 EventPlayerDisconnected.Invoke(GetPlayerIDFromPacket(pck));

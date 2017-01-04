@@ -18,6 +18,7 @@ namespace Network
         public const byte SYMBOL_PCN = 0x1;
         public const byte SYMBOL_PDN = 0x2;
         public const byte SYMBOL_APL = 0x3;
+        public const byte SYMBOL_COL = 0x4;
 
         public const float MAX_SEND_PACKET_WAIT = 0.2f;
         public const int MAX_SEND_PACKET_RETRY_TIMES = 50;
@@ -198,7 +199,7 @@ namespace Network
             {
                 _receiveSocket.EndReceiveFrom(data, ref remoteEndPoint);
 
-                _receiveSocket.BeginReceiveFrom(_receiveData, 0, Server.MAX_PACKET_SIZE, SocketFlags.None, ref _receiveEndPoint, CbListener, this);
+                _receiveSocket.BeginReceiveFrom(_receiveData, 0, MAX_PACKET_SIZE, SocketFlags.None, ref _receiveEndPoint, CbListener, this);
 
                 ListenerInternal(data, (IPEndPoint)remoteEndPoint);
             }
