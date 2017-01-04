@@ -386,10 +386,13 @@ namespace Network
                             Vector2 a = otherBendPositions[i];
                             Vector2 b = otherBendPositions[i + 1];
 
-                            // horizontal
+                            Vector2 min = Vector2.Min(a, b);
+                            Vector2 max = Vector2.Max(a, b);
+
+                            // vertical
                             if(Mathf.Abs(a.x - b.x) < offset)
                             {
-                                if(Mathf.Abs(ph.x - a.x) < offset)
+                                if(ph.y > (min.y - offset) && ph.y < (max.y + offset) && Mathf.Abs(ph.x - a.x) < offset)
                                 {
                                     // collision!
                                     playerCollisionID = 0;
@@ -397,10 +400,10 @@ namespace Network
                                     otherPlayerID = pair.Key;
                                 }
                             }
-                            // vertical
+                            // horizontal
                             else if(Mathf.Abs(a.y - b.y) < offset)
                             {
-                                if (Mathf.Abs(ph.y - a.y) < offset)
+                                if (ph.x > (min.x - offset) && ph.x < (max.x + offset) && Mathf.Abs(ph.y - a.y) < offset)
                                 {
                                     // collision!
                                     playerCollisionID = 0;
