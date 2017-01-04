@@ -315,7 +315,7 @@ public class GameController : MonoBehaviour
             if(_playersInGame[i].MyID == id)
             {
                 GetSpawner(id).IsPlayerAssigned = false;
-                Destroy(_playersInGame[i].gameObject);
+                _playersInGame[i].DestroyPlayer();
                 _playersInGame.RemoveAt(i);
                 return;
             }

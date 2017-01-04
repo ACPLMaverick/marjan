@@ -367,7 +367,7 @@ namespace Network
 
         protected void CalculateCollisionWithPlayers(KeyValuePair<int, PlayerConnectionInfo> player, out int playerCollisionID, out int otherPlayerID, out int otherPlayerCollisionID)
         {
-            float offset = 0.001f;
+            float offset = 0.275f;
             playerCollisionID = -1;
             otherPlayerID = -1;
             otherPlayerCollisionID = -1;
