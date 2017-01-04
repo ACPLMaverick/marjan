@@ -2,6 +2,9 @@
 using UnityEngine.Events;
 using System.Collections;
 
+/// <summary>
+/// Fruit is an element which makes player longer and faster
+/// </summary>
 public class Fruit : MonoBehaviour
 {
     #region Fields
@@ -59,7 +62,9 @@ public class Fruit : MonoBehaviour
     #endregion
 
     #region Functions Protected
-
+    /// <summary>
+    /// Destroys fruit on collect
+    /// </summary>
     protected void Kill()
     {
         Destroy(gameObject);

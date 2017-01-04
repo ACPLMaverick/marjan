@@ -9,6 +9,9 @@ using System.IO;
 
 namespace Network
 {
+    /// <summary>
+    /// Network packet class
+    /// </summary>
     public class Packet
     {
         private const int HEADER_SIZE = 4 * sizeof(int) + 4 + sizeof(float);
@@ -30,6 +33,9 @@ namespace Network
         private byte[] _rawData;
         private int _packetID = 0;
 
+        /// <summary>
+        /// Player's packet is being serialized to byte type
+        /// </summary>
         public void CreateRawData()
         {
             if(PacketID == 0)
@@ -106,6 +112,11 @@ namespace Network
             Array.Copy(csArray, 0, _rawData, 16, sizeof(int));
         }
 
+        /// <summary>
+        /// Packet deserialization
+        /// </summary>
+        /// <param name="rawData">Array of bytes containing received packet data</param>
+        /// <returns></returns>
         public static Packet FromRawData(byte[] rawData)
         {
             Packet pck = new Packet();
@@ -140,6 +151,10 @@ namespace Network
             return pck;
         }
 
+        /// <summary>
+        /// Checks packet's checksum
+        /// </summary>
+        /// <returns></returns>
         public bool CheckDataIntegrity()
         {
             if(Checksum == 0)
@@ -156,6 +171,10 @@ namespace Network
             }
         }
 
+        /// <summary>
+        /// Serializes and adds additional data to packet into proper field
+        /// </summary>
+        /// <param name="data">Data to serialize</param>
         public void AddAdditionalData(object data)
         {
             BinaryFormatter bf = new BinaryFormatter();

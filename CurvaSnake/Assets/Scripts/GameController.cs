@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Manages the gameplay on local machine
+/// </summary>
 public class GameController : MonoBehaviour
 {
     #region Enums
@@ -284,11 +287,20 @@ public class GameController : MonoBehaviour
 
     #region Functions Public
 
+    /// <summary>
+    /// Getter for PlayerSpawn from _Spawners array
+    /// </summary>
+    /// <param name="i">Index of the spawner</param>
+    /// <returns></returns>
     public PlayerSpawner GetSpawner(int i)
     {
         return _Spawners[Mathf.Clamp(i - 1, 0, _Spawners.Length - 1)];
     }
 
+    /// <summary>
+    /// Spawns player set as network
+    /// </summary>
+    /// <param name="id"></param>
     public void SpawnNetworkPlayer(int id)
     {
         if (!GetSpawner(id).IsPlayerAssigned)
@@ -307,6 +319,10 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Destroys player set as network with proper ID
+    /// </summary>
+    /// <param name="id">Network player's ID</param>
     public void DestroyNetworkPlayer(int id)
     {
         int pCount = _playersInGame.Count;

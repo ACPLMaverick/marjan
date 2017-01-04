@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Derived class for special type of body part - snake's head
+/// </summary>
 public class SnakeHead : SnakeBody
 {
     #region Enum
@@ -148,6 +151,11 @@ public class SnakeHead : SnakeBody
 
     #region Functions Public
 
+    /// <summary>
+    /// Converts direction from enum type to Vector2
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static Vector2 DirectionTypeToDirection(DirectionType type)
     {
         Vector2 v = new Vector2(0.0f, 0.0f);
@@ -174,6 +182,11 @@ public class SnakeHead : SnakeBody
         return v;
     }
 
+    /// <summary>
+    /// Converts direction from Vector2 to enum type
+    /// </summary>
+    /// <param name="dir"></param>
+    /// <returns></returns>
     public static DirectionType DirectionToDirectionType(Vector2 dir)
     {
         if (dir == Vector2.up)
@@ -289,6 +302,9 @@ public class SnakeHead : SnakeBody
         MyPlayer.Lose();
     }
 
+    /// <summary>
+    /// Destroys all body parts
+    /// </summary>
     public void DestroyBody()
     {
         for(int i = 0; i < _allBodyParts.Count; ++i)
@@ -297,6 +313,10 @@ public class SnakeHead : SnakeBody
         }
     }
 
+    /// <summary>
+    /// Assigns movement direction for snake
+    /// </summary>
+    /// <param name="dir"></param>
     public void AssignDirection(DirectionType dir)
     {
         if(/*_distanceSinceLastDirectionChange >= _sizeWorld.x &&*/     // assuming it is square
@@ -311,16 +331,28 @@ public class SnakeHead : SnakeBody
         }
     }
 
+    /// <summary>
+    /// Cleans _allBodyParts array
+    /// </summary>
     public void BodyPartCleanup()
     {
         _allBodyParts.RemoveAll(x => x == null);
     }
 
+    /// <summary>
+    /// Returns body part position from _allBodyParts array
+    /// </summary>
+    /// <param name="i">Index of body part</param>
+    /// <returns></returns>
     public Transform GetBodyPartPosition(int i)
     {
         return _allBodyParts[i].GetComponent<Transform>();
     }
 
+    /// <summary>
+    /// Invoked when player collects the fruit 
+    /// </summary>
+    /// <param name="addition"></param>
     public void OnFruitCollected(float addition)
     {
         Speed += addition + 0.1f * Speed;
@@ -334,6 +366,12 @@ public class SnakeHead : SnakeBody
         _allBodyParts.Add(next);
     }
 
+    /// <summary>
+    /// Sets new positions and directions for all body parts
+    /// </summary>
+    /// <param name="allPartCount"></param>
+    /// <param name="positions"></param>
+    /// <param name="directions"></param>
     public void SetPositionsAndDirectionsForAllParts(int allPartCount, Vector2[] positions, DirectionType[] directions)
     {
         // data check
@@ -397,6 +435,10 @@ public class SnakeHead : SnakeBody
         }
     }
 
+    /// <summary>
+    /// Sets the body part with which collision has been registered
+    /// </summary>
+    /// <param name="body"></param>
     public void RegisterCollision(SnakeBody body)
     {
         _lastBodyCollision = body;

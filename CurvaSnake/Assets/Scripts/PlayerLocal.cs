@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Derived class for player set as local player
+/// </summary>
 public class PlayerLocal : Player
 {
     #region Protected

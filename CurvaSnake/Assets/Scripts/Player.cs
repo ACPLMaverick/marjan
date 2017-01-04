@@ -2,6 +2,9 @@
 using UnityEngine.Events;
 using System.Collections.Generic;
 
+/// <summary>
+/// Player's class, contains f.e. number of points, his body (SnakeBody objects) and ID
+/// </summary>
 public class Player : MonoBehaviour
 {
     #region Fields
@@ -53,6 +56,10 @@ public class Player : MonoBehaviour
 
     #region Functions Public
 
+    /// <summary>
+    /// Player's initialize with new ID given by server
+    /// </summary>
+    /// <param name="id"></param>
     public virtual void Initialize(int id)
     {
         MyID = id;
@@ -73,26 +80,43 @@ public class Player : MonoBehaviour
         ChangePlayerLocationOnStart(_AssignedSpawner.MyPosition);
     }
 
+    /// <summary>
+    /// Updates player's data received from server
+    /// </summary>
+    /// <param name="data"></param>
     public virtual void UpdateFromPlayerData(Network.PlayerData data)
     {
         // this function does nothing in default implementation
     } 
 
+    /// <summary>
+    /// Adds points after eating apple
+    /// </summary>
+    /// <param name="count"></param>
     public void AddPoints(int count)
     {
         Points += count;
     }
 
+    /// <summary>
+    /// Stops player from movement
+    /// </summary>
     public void Stop()
     {
         _MySnakeHead.AssignDirection(SnakeHead.DirectionType.STOP);
     }
 
+    /// <summary>
+    /// Invokes EventLose event
+    /// </summary>
     public void Lose()
     {
         EventLose.Invoke(this);
     }
 
+    /// <summary>
+    /// Destroys player's game object
+    /// </summary>
     public void DestroyPlayer()
     {
         //Added this because invoking Lose() didn't work
@@ -101,6 +125,10 @@ public class Player : MonoBehaviour
         Destroy(this);
     }
 
+    /// <summary>
+    /// Sends player's data to PlayerData structure
+    /// </summary>
+    /// <returns></returns>
     public Network.PlayerData GetPlayerData()
     {
         Network.PlayerData data = new Network.PlayerData();
@@ -126,6 +154,10 @@ public class Player : MonoBehaviour
         return data;
     }
 
+    /// <summary>
+    /// Sets player's movement direction on initialize
+    /// </summary>
+    /// <param name="target"></param>
     public void ChangePlayerLocationOnStart(Vector3 target)
     {
         GetComponent<Transform>().position = target;

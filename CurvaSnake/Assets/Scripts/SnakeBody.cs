@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Elements which player's body contains
+/// </summary>
 public class SnakeBody : MonoBehaviour
 {
     #region Classes
@@ -124,6 +127,14 @@ public class SnakeBody : MonoBehaviour
 
     #region Functions Public
 
+    /// <summary>
+    /// Single snake body part initialization
+    /// </summary>
+    /// <param name="player">Player to whom belongs this body part</param>
+    /// <param name="head">Reference to Snake's head</param>
+    /// <param name="next">Reference to next body part</param>
+    /// <param name="prev">Reference to previous body part</param>
+    /// <param name="number"></param>
     public virtual void Initialize(Player player, SnakeHead head, SnakeBody next, SnakeBody prev, uint number)
     {
         _distanceSinceLastDirectionChange = 0.0f;
@@ -142,6 +153,9 @@ public class SnakeBody : MonoBehaviour
         _initialized = true;
     }
 
+    /// <summary>
+    /// Destroys single body part and decrements player's points
+    /// </summary>
     public virtual void Kill()
     {
         if(_initialized)
@@ -156,6 +170,9 @@ public class SnakeBody : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Moves body part in certain direction
+    /// </summary>
     public void Move()
     {
         if (_initialized)

@@ -54,6 +54,9 @@ namespace Network
         }
     }
 
+    /// <summary>
+    /// Class represents client mode in client-server architecture
+    /// </summary>
     public class Client : Transceiver
     {
         #region Const
@@ -115,6 +118,11 @@ namespace Network
 
         #region Functions Public
 
+        /// <summary>
+        /// Sets local server address.
+        /// </summary>
+        /// <param name="serverAddress">String contains server address which is parsed later</param>
+        /// <param name="port">Optional argument: sets port number for endpoint to receive packets</param>
         public void SetServerAddress(string serverAddress, int port = CLIENT_PORT_LISTEN)
         {
             if (!IPAddress.TryParse(serverAddress, out _serverAddress))
@@ -162,6 +170,10 @@ namespace Network
             SendPacket(packet);
         }
 
+        /// <summary>
+        /// Sends the packet which contains collision information which means losing the game
+        /// </summary>
+        /// <param name="id">ID of sending packet</param>
         public void SendLocalLoseInfo(int id)
         {
             Packet packet = new Packet();
@@ -248,6 +260,10 @@ namespace Network
             return true;
         }
 
+        /// <summary>
+        /// Connects the player to the game after acquiring ACK packet from server
+        /// </summary>
+        /// <param name="newID">Player's ID acquired from server</param>
         protected void ConnectAfterAck(int newID)
         {
             _connected = true;
