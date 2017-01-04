@@ -367,7 +367,7 @@ namespace Network
 
         protected void CalculateCollisionWithPlayers(KeyValuePair<int, PlayerConnectionInfo> player, out int playerCollisionID, out int otherPlayerID, out int otherPlayerCollisionID)
         {
-            float offset = 0.55f;
+            float offset = 0.001f;
             playerCollisionID = -1;
             otherPlayerID = -1;
             otherPlayerCollisionID = -1;
@@ -377,33 +377,35 @@ namespace Network
                 Vector2 ph = player.Value.NewestData.PartsBentPositions[0];
                 foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
                 {
-                    if (pair.Key != player.Key && pair.Value.NewestData != null)
+                    if (/*pair.Key != player.Key && */pair.Value.NewestData != null)
                     {
-                        
                         Vector2[] otherBendPositions = pair.Value.NewestData.PartsBentPositions;
                         int otherBendCount = otherBendPositions.Length;
-                        for (int i = 0; i < otherBendCount - 1; ++i)
+                        for (int i = (pair.Key == player.Key ? 1 : 0); i < otherBendCount - 1; ++i)
                         {
                             Vector2 a = otherBendPositions[i];
                             Vector2 b = otherBendPositions[i + 1];
 
-                            Vector2 min = Vector2.Min(a, b);
-                            Vector2 max = Vector2.Max(a, b);
-
-                            if ((ph.x > (min.x - offset) && ph.y > (min.y - offset)) &&
-                                (ph.x < (max.y + offset) && ph.y < (max.y - offset)))
+                            // horizontal
+                            if(Mathf.Abs(a.x - b.x) < offset)
                             {
-                                Debug.Log("Server: Checking collisions internal from " + player.Key.ToString() + " to " + pair.Key.ToString());
-                                float dist = Mathf.Abs
-                                (
-                                    ((b.y - a.y) / (b.x - a.x)) * ph.x - ph.y + ((b.x * a.y - a.x * b.y) / (b.x - a.x))
-                                ) / Mathf.Sqrt(Mathf.Pow((b.y - a.y) / (b.x - a.x), 2.0f) + 1.0f);
-
-                                if (dist <= offset)
+                                if(Mathf.Abs(ph.x - a.x) < offset)
                                 {
-                                    Debug.Log("Server: Collision found from " + player.Key.ToString() + " to " + pair.Key.ToString());
+                                    // collision!
                                     playerCollisionID = 0;
-                                    otherPlayerID = -1;
+                                    otherPlayerCollisionID = -1;
+                                    otherPlayerID = pair.Key;
+                                }
+                            }
+                            // vertical
+                            else if(Mathf.Abs(a.y - b.y) < offset)
+                            {
+                                if (Mathf.Abs(ph.y - a.y) < offset)
+                                {
+                                    // collision!
+                                    playerCollisionID = 0;
+                                    otherPlayerCollisionID = -1;
+                                    otherPlayerID = pair.Key;
                                 }
                             }
                         }

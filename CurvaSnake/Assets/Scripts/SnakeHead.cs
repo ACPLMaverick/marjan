@@ -75,6 +75,11 @@ public class SnakeHead : SnakeBody
                 }
             }
 
+            if(bent[bent.Count - 1] != _allBodyParts[_allBodyParts.Count - 1])
+            {
+                bent.Add(_allBodyParts[_allBodyParts.Count - 1]);
+            }
+
             return bent;
         }
     }
