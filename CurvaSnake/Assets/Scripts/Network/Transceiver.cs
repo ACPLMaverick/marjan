@@ -14,6 +14,7 @@ namespace Network
         public const byte SYMBOL_LOG = 0x96;
         public const byte SYMBOL_DTA = 0x69;
         public const byte SYMBOL_ACK = 0x6;
+        public const byte SYMBOL_CCK = 0x7;
         public const byte SYMBOL_NAK = 0x15;
         public const byte SYMBOL_PCN = 0x1;
         public const byte SYMBOL_PDN = 0x2;
@@ -94,6 +95,7 @@ namespace Network
                 else if(_packetsSent[i].Timer > MAX_SEND_PACKET_WAIT)
                 {
                     SendPacket(_packetsSent[i].Pck, _packetsSent[i].Sck, _packetsSent[i].Ep, true);
+
                     ++_packetsSent[i].RetryTimes;
                     _packetsSent[i].Timer = 0.0f;
                 }
@@ -144,9 +146,10 @@ namespace Network
 
         protected virtual bool ReceivePacket(IAsyncResult data, Packet pck, IPEndPoint remoteEndPoint)
         {
-            Debug.Log("Received packet from " + remoteEndPoint.Address.ToString() + ":" + remoteEndPoint.Port.ToString() + " with control symbol " + pck.ControlSymbol.ToString());
+            Debug.Log("Received packet from " + remoteEndPoint.Address.ToString() + ":" + remoteEndPoint.Port.ToString() + " with control symbol " + pck.ControlSymbol.ToString() + 
+                " and ID " + pck.PacketID.ToString());
 
-            if(!pck.CheckDataIntegrity())
+            if (!pck.CheckDataIntegrity())
             {
                 return false;
             }
@@ -154,13 +157,14 @@ namespace Network
             // check for acks for sent packets
             if(pck.ControlSymbol == SYMBOL_ACK)
             {
+                Begin:;
                 int snum = _packetsSent.Count;
                 for(int i = 0; i < snum; ++i)
                 {
                     if(_packetsSent[i].Pck.PacketID == pck.PacketID)
                     {
                         _packetsSent.RemoveAt(i);
-                        break;
+                        goto Begin;
                     }
                 }
             }

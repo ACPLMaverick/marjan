@@ -240,7 +240,7 @@ namespace Network
                 {
                     if (pair.Value.EndP.Address.Equals(remoteEndPoint.Address))
                     {
-                        Debug.LogWarning("Server: Already connected player is connecting.");
+                        //Debug.LogWarning("Server: Already connected player is connecting.");
                         return true;
                     }
                 }
@@ -250,7 +250,7 @@ namespace Network
                 {
                     if (pair.Value.EndP.Address.Equals(remoteEndPoint.Address))
                     {
-                        Debug.LogWarning("Server: Already pending connected player is connecting.");
+                        //Debug.LogWarning("Server: Already pending connected player is connecting.");
                         return true;
                     }
                 }
@@ -275,9 +275,9 @@ namespace Network
             }
 
             // pending player sends his regards
-            else if(_playersPending.Count != 0 && pck.ControlSymbol == SYMBOL_ACK && pck.AdditionalData != null)
+            else if(_playersPending.Count != 0 && pck.ControlSymbol == SYMBOL_CCK)
             {
-                int ackID = BitConverter.ToInt32(pck.AdditionalData, 0);
+                int ackID = GetPlayerIDFromPacket(pck);
 
                 PlayerConnectionInfo pInfo = null;
                 _playersPending.TryGetValue(ackID, out pInfo);
@@ -297,7 +297,7 @@ namespace Network
                 }
                 else
                 {
-                    Debug.LogWarning("Server: Player sends his ACK for ID but isn't in pending players list.");
+                    Debug.LogWarning("Server: Player sends his CCK for ID but isn't in pending players list.");
                 }
             }
             return true;

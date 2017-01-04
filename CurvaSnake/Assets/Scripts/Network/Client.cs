@@ -210,7 +210,11 @@ namespace Network
             // check for connection ACK
             else if (!_connected && pck.ControlSymbol == SYMBOL_ACK)
             {
-                AckPacket(pck, _sendSocket, _sendEndPoint, pck.AdditionalData);
+                Packet cck = new Packet();
+                cck.ControlSymbol = SYMBOL_CCK;
+                cck.PacketID = BitConverter.ToInt32(pck.AdditionalData, 0);
+                AckPacket(pck, _sendSocket, _sendEndPoint, null);
+                SendPacket(cck, _sendSocket, _sendEndPoint, true);
 
                 ConnectAfterAck(BitConverter.ToInt32(pck.AdditionalData, 0));
             }
