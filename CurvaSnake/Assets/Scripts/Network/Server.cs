@@ -379,7 +379,7 @@ namespace Network
                 {
                     if (pair.Key != player.Key && pair.Value.NewestData != null)
                     {
-                        Debug.Log("Server: Checking collisions.");
+                        
                         Vector2[] otherBendPositions = pair.Value.NewestData.PartsBentPositions;
                         int otherBendCount = otherBendPositions.Length;
                         for (int i = 0; i < otherBendCount - 1; ++i)
@@ -393,13 +393,15 @@ namespace Network
                             if ((ph.x > (min.x - offset) && ph.y > (min.y - offset)) &&
                                 (ph.x < (max.y + offset) && ph.y < (max.y - offset)))
                             {
+                                Debug.Log("Server: Checking collisions internal from " + player.Key.ToString() + " to " + pair.Key.ToString());
                                 float dist = Mathf.Abs
                                 (
                                     ((b.y - a.y) / (b.x - a.x)) * ph.x - ph.y + ((b.x * a.y - a.x * b.y) / (b.x - a.x))
                                 ) / Mathf.Sqrt(Mathf.Pow((b.y - a.y) / (b.x - a.x), 2.0f) + 1.0f);
 
-                                if (dist < offset)
+                                if (dist <= offset)
                                 {
+                                    Debug.Log("Server: Collision found from " + player.Key.ToString() + " to " + pair.Key.ToString());
                                     playerCollisionID = 0;
                                     otherPlayerID = -1;
                                 }
