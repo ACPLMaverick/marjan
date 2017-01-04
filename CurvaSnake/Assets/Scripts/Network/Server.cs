@@ -377,8 +377,9 @@ namespace Network
                 Vector2 ph = player.Value.NewestData.PartsBentPositions[0];
                 foreach (KeyValuePair<int, PlayerConnectionInfo> pair in _players)
                 {
-                    if (pair.Key != player.Key)
+                    if (pair.Key != player.Key && pair.Value.NewestData != null)
                     {
+                        Debug.Log("Server: Checking collisions.");
                         Vector2[] otherBendPositions = pair.Value.NewestData.PartsBentPositions;
                         int otherBendCount = otherBendPositions.Length;
                         for (int i = 0; i < otherBendCount - 1; ++i)

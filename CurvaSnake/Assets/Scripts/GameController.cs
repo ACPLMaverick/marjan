@@ -213,7 +213,7 @@ public class GameController : MonoBehaviour
             _appleDatasToGenerate.Clear();
         }
 
-        if(_canEnableLocalPlayer && !_LocalPlayer.enabled)
+        if(_canEnableLocalPlayer && _LocalPlayer != null && !_LocalPlayer.enabled)
         {
             _LocalPlayer.enabled = true;
         }
