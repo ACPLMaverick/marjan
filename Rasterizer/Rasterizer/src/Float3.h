@@ -8,18 +8,20 @@
 #include "Float4.h"
 #include "Float2.h"
 
+typedef __declspec(align(16)) __m128 __am128;
+
 namespace math
 {
-	struct alignas(16) Float3
+	struct __declspec(align(16)) Float3
 	{
 		union
 		{
+#ifdef RENDERER_FGK_SIMD
+			__am128 vector;
+#endif // RENDERER_FGK_SIMD
+
 			float tab[3];
 			struct { float x, y, z; };
-
-#ifdef RENDERER_FGK_SIMD
-			__m128 vector;
-#endif // RENDERER_FGK_SIMD
 		};
 
 		Float3()
@@ -63,7 +65,7 @@ namespace math
 
 #ifdef RENDERER_FGK_SIMD
 
-		Float3(__m128 vec)
+		Float3(const __am128& vec)
 		{
 			vector = vec;
 		}
@@ -190,7 +192,8 @@ namespace math
 		{
 #ifdef RENDERER_FGK_SIMD
 
-			return Float3(_mm_add_ps(this->vector, right.vector));
+			__am128 res = _mm_add_ps(this->vector, right.vector);
+			return Float3(res);
 
 #else
 

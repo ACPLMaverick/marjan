@@ -87,39 +87,23 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	Timer::GetInstance()->Initialize();
 	Input::GetInstance()->Initialize();
-	/*
-	// tu bedom testy a co
 
+	// tu bedom testy a co
+	/*
 
 	const int num = 10000;
 
-	//math::Float3 aTab[num];
-	//math::Float3 bTab[num];
-	//math::Float3 resTab[num];
-
-	//for (int i = 0; i < num; ++i)
-	//{
-	//	aTab[i] = math::Float3(2.0f, 4.0f, 6.0f);
-	//	bTab[i] = math::Float3(1.0f, 1.0f, 1.0f);
-	//}
-
-	float aVec[num][4];
-	float bVec[num][4];
-	float cVec[num][4];
+	math::Float3 aTab;
+	math::Float3 bTab;
+	math::Float3 resTab;
 
 	Timer::GetInstance()->Update();
 	double time = Timer::GetInstance()->GetActualTime();
 
 	//for (int i = 0; i < num; ++i)
 	//{
-	//	resTab[i] = aTab[i] + bTab[i];
+		resTab = aTab + bTab;
 	//}
-
-	for (int i = 0; i < num; ++i)
-	{
-		for (int j = 0; j < 4; ++j)
-			cVec[i][j] = aVec[i][j] + bVec[i][j];
-	}
 
 	Timer::GetInstance()->Update();
 	time = Timer::GetInstance()->GetActualTime() - time;
@@ -127,6 +111,7 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	// tu sie koñczom testy 
 	*/
+
 	// initialize scenes
 	//_scenes.push_back(new SceneTriangle());
 	//std::string sName = "SceneTriangle";
