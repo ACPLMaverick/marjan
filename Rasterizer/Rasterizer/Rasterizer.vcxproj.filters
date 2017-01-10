@@ -272,5 +272,8 @@
     <ClInclude Include="src\SceneCornel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Optimizations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

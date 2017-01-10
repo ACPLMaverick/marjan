@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Optimizations.h"
+
 #include <Windows.h>
 #include <iostream>
 #include "Math.h"
@@ -40,6 +42,10 @@ namespace math
 				float a32;
 				float a33;
 			};
+
+#ifdef RENDERER_FGK_SIMD
+			__m128 vector[4];
+#endif // RENDERER_FGK_SIMD
 		};
 
 #pragma region Ctors

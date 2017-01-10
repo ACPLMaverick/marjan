@@ -14,6 +14,8 @@ namespace rendererFGK
 		_bbMinMul(_bbMin),
 		_bbMaxMul(_bbMax)
 	{
+#ifdef RENDERER_FGK_BOUNDINGBOX
+
 		// calculate bounding box.
 		for (std::vector<math::Float3>::iterator it = _positionArray.begin(); it != _positionArray.end(); ++it)
 		{
@@ -42,7 +44,7 @@ namespace rendererFGK
 				_bbMax.z = (*it).z;
 			}
 		}
-
+#endif
 		// generate triangles
 		for (std::vector<math::UShort3>::iterator it = _indexArray.begin(); it != _indexArray.end(); (it += 3))
 		{
@@ -81,6 +83,8 @@ namespace rendererFGK
 	RayHit MeshFGK::CalcIntersect(Ray & ray)
 	{
 		RayHit rayHit(false, math::Float3(FLT_MAX, FLT_MAX, FLT_MAX));
+
+#ifdef RENDERER_FGK_BOUNDINGBOX
 		// bounding box check
 		math::Float3 dirFrac
 		(
@@ -107,6 +111,7 @@ namespace rendererFGK
 
 		if (tMax >= 0.0f && (tMin <= tMax))
 		{
+#endif
 			// per-triangle check
 			for (std::vector<TriangleFGK>::iterator it = _triangles.begin(); it != _triangles.end(); ++it)
 			{
@@ -121,12 +126,13 @@ namespace rendererFGK
 					}
 				}
 			}
+#ifdef RENDERER_FGK_BOUNDINGBOX
 		}
 		else
 		{
 			return RayHit();
 		}
-
+#endif
 		return rayHit;
 	}
 

@@ -18,6 +18,8 @@ protected:
 	double _currentTime = 0.0;
 	double _deltaTime = 0.0;
 	double _fps = 0.0;
+	double _fpsAcum = 0.0;
+	double _frameCount = 0.0;
 
 	Timer();
 
@@ -32,11 +34,10 @@ public:
 
 #pragma region Accessors
 
-	double GetStartTime() { return _startTime; }
 	double GetActualTime() { return _currentTime; }
 	double GetDeltaTime() { return _deltaTime; }
-	double GetTotalTimeElapsed() { return _currentTime - _startTime; }
 	double GetFPS() { return _fps; }
+	double GetFPSAverage() { return _fpsAcum / _frameCount; }
 
 #pragma endregion
 

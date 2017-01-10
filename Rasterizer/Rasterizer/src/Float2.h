@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Optimizations.h"
+#include <Windows.h>
+#include <iostream>
+
 namespace math
 {
 	struct Float2
@@ -9,6 +13,9 @@ namespace math
 			float tab[2];
 			struct { float u; float v; };
 			struct { float x; float y; };
+#ifdef RENDERER_FGK_SIMD
+			__m128 vector;
+#endif // RENDERER_FGK_SIMD
 		};
 		Float2();
 		Float2(float nx, float ny);

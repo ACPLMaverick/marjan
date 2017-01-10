@@ -30,4 +30,4 @@
 //#define RENDERER_MAV
 //#define RENDERER_MAJSTER
 
-#define RENDERER_FGK_MULTITHREAD
+#include "Optimizations.h"

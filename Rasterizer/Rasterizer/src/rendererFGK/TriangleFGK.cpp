@@ -41,12 +41,14 @@ namespace rendererFGK
 		RayHit rayHit(_plane.CalcIntersect(ray));
 		if (rayHit.hit)
 		{
+#ifdef RENDERER_FGK_BOUNDINGBOX
 			// bounding box check
 			if (
 				rayHit.point.GreaterEqualsEpsilon(_bbMin, 0.1f) &&
 				rayHit.point.SmallerEqualsEpsilon(_bbMax, 0.1f)
 				)
 			{
+#endif
 				// barycentric check
 				
 				math::Float3 g0 = v2 - v1, g1 = v3 - v1, g2 = rayHit.point - v1;
@@ -88,11 +90,13 @@ namespace rendererFGK
 
 					rayHit.hit = true;
 				}
+#ifdef RENDERER_FGK_BOUNDINGBOX
 			}
 			else
 			{
 				rayHit.hit = false;
 			}
+#endif
 		}
 
 		return rayHit;

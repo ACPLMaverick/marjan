@@ -13,12 +13,12 @@
 #include "rendererFGK\RendererFGK.h"
 
 // testing
-#ifdef _DEBUG
+//#ifdef _DEBUG
 #define _CRT_SECURE_NO_DEPRECATE
 #include "Float3.h"
 #include "Matrix4x4.h"
 #include "Float4.h"
-#endif // _DEBUG
+//#endif // _DEBUG
 
 #include <Commctrl.h>
 
@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <io.h>
 #include <string>
+#include <iomanip>
 
 System::System()
 {
@@ -57,7 +58,6 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	
 #endif // _DEBUG
 
-
 	// initialize window in current OS
 	InitWindow(hInstance, lpCmdLine, nCmdShow);
 
@@ -87,7 +87,46 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	Timer::GetInstance()->Initialize();
 	Input::GetInstance()->Initialize();
+	/*
+	// tu bedom testy a co
 
+
+	const int num = 10000;
+
+	//math::Float3 aTab[num];
+	//math::Float3 bTab[num];
+	//math::Float3 resTab[num];
+
+	//for (int i = 0; i < num; ++i)
+	//{
+	//	aTab[i] = math::Float3(2.0f, 4.0f, 6.0f);
+	//	bTab[i] = math::Float3(1.0f, 1.0f, 1.0f);
+	//}
+
+	float aVec[num][4];
+	float bVec[num][4];
+	float cVec[num][4];
+
+	Timer::GetInstance()->Update();
+	double time = Timer::GetInstance()->GetActualTime();
+
+	//for (int i = 0; i < num; ++i)
+	//{
+	//	resTab[i] = aTab[i] + bTab[i];
+	//}
+
+	for (int i = 0; i < num; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+			cVec[i][j] = aVec[i][j] + bVec[i][j];
+	}
+
+	Timer::GetInstance()->Update();
+	time = Timer::GetInstance()->GetActualTime() - time;
+	std::cout << std::setiosflags(std::ios::fixed) << std::setprecision(10) << time;
+
+	// tu sie koñczom testy 
+	*/
 	// initialize scenes
 	//_scenes.push_back(new SceneTriangle());
 	//std::string sName = "SceneTriangle";
@@ -282,8 +321,16 @@ inline void System::DrawColorBuffer()
 inline void System::DrawFPS()
 {
 	std::string fps = std::to_string(Timer::GetInstance()->GetFPS());
+	std::string fpsAvg = std::to_string(Timer::GetInstance()->GetFPSAverage());
+	std::string time = std::to_string(Timer::GetInstance()->GetActualTime());
+	std::string deltaTime = std::to_string(Timer::GetInstance()->GetDeltaTime());
 	fps = fps.substr(0, 6);
-	std::string fpsFormatted = "FPS: " + fps ;
+	fpsAvg = fpsAvg.substr(0, 6);
+	time = time.substr(0, 6);
+	deltaTime = deltaTime.substr(0, 6);
+
+	std::string fpsFormatted = "FPS: " + fps + " | FPSAvg: " + fpsAvg + " | Time: " + time + " | Delta: " + deltaTime ;
+
 	PAINTSTRUCT ps;
 	HDC hdc = BeginPaint(_settings._hwndStatus, &ps);
 
