@@ -65,9 +65,9 @@ namespace math
 
 #ifdef RENDERER_FGK_SIMD
 
-		Float3(const __am128& vec)
+		Float3(const __am128& vec) :
+			vector(vec)
 		{
-			vector = vec;
 		}
 
 #endif // RENDERER_FGK_SIMD
@@ -192,8 +192,7 @@ namespace math
 		{
 #ifdef RENDERER_FGK_SIMD
 
-			__am128 res = _mm_add_ps(this->vector, right.vector);
-			return Float3(res);
+			return _mm_add_ps(this->vector, right.vector);
 
 #else
 

@@ -93,17 +93,17 @@ void System::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	const int num = 10000;
 
-	math::Float3 aTab;
-	math::Float3 bTab;
-	math::Float3 resTab;
+	math::Float3 aTab[num];
+	math::Float3 bTab[num];
+	math::Float3 resTab[num];
 
 	Timer::GetInstance()->Update();
 	double time = Timer::GetInstance()->GetActualTime();
 
-	//for (int i = 0; i < num; ++i)
-	//{
-		resTab = aTab + bTab;
-	//}
+	for (int i = 0; i < num; ++i)
+	{
+		resTab[i] = aTab[i] + bTab[i];
+	}
 
 	Timer::GetInstance()->Update();
 	time = Timer::GetInstance()->GetActualTime() - time;

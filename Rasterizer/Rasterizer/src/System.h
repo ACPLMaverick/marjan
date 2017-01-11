@@ -12,7 +12,7 @@
 
 class Scene;
 
-class System : public Singleton<System>
+class __declspec(align(16)) System : public Singleton<System>
 {
 	friend class Singleton<System>;
 protected:

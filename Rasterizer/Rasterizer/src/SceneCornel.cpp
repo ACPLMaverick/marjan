@@ -8,6 +8,8 @@
 #include "light/LightDirectional.h"
 #include "light/LightSpot.h"
 
+#include <string>
+
 SceneCornel::SceneCornel()
 {
 }
@@ -96,19 +98,34 @@ void SceneCornel::InitializeScene()
 
 	// meshes
 
-	math::Float3 cPos(3.0f, 2.0f, 2.0f);
+	math::Float3 cPos(1.0f, 2.0f, -10.0f);
+	math::Float3 cPos2(-1.0f, 2.0f, -10.0f);
 	math::Float3 cRot(0.0f, 0.0f, 0.0f);
-	math::Float3 cScl(2.0f, 2.0f, 2.0f);
-
+	math::Float3 cScl(0.5f, 0.5f, 0.5f);
 	std::string cPath = "sphere";
-	Mesh* sRefl = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
-	sRefl->SetMaterialPtr(matRefl);
-	_primitives.push_back(sRefl);
+	float offset = 1.0f;
+	int row = 10;
+	for (int i = 0, w = 0; i < 50; ++i)
+	{
+		if (i != 0 && i % row == 0)
+		{
+			++w;
+		}
 
-	cPos = math::Float3(-3.0f, 2.0f, 0.0f);
-	Mesh* sRefr = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
-	sRefr->SetMaterialPtr(matRefr);
-	_primitives.push_back(sRefr);
+		cPos.z = -10.0f + (i % row) * offset;
+		cPos.x = -(1.0f + w * offset);
+
+		cPos2.z = -10.0f + (i % row) * offset;
+		cPos2.x = 1.0f + w * offset;
+
+		Mesh* sRefl = SpecificObjectFactory::GetMesh(&cPos, &cRot, &cScl, &cPath);
+		sRefl->SetMaterialPtr(matRefl);
+		_primitives.push_back(sRefl);
+		Mesh* sRefr = SpecificObjectFactory::GetMesh(&cPos2, &cRot, &cScl, &cPath);
+		sRefr->SetMaterialPtr(matRefr);
+		_primitives.push_back(sRefr);
+	}
+
 
 	cPath = "cube";
 	cPos = math::Float3(0.0f, 10.0f, 20.0f);
